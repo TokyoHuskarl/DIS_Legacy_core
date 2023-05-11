@@ -1,0 +1,250 @@
+cev .id(2111), .name("cev2111"), {
+@call .cev 2112
+@loop .inf() {
+    @if s[39] .isOff() {
+        @mouse.getPos v[49], v[50]
+        
+    }
+    v[49].copy v[51], 2
+    v[51..52] -= 3
+    v[52..52] += 1
+    @key.input .dst v[43] {
+        .decision
+        .number
+        .lclick
+        .rclick
+        .wheelDown
+        .wheelUp
+    }
+    @comment "Check if it's okay"
+    @pic[2136].getInfo .cewh .baseRect v[341], v[342], v[343], v[344]
+    @comment "If pic2135 is gone, consider something bad is habbening"
+    @if v[341] != v[1115] {
+        @if v[341] != v[1116] {
+            @comment "So break loop"
+            @break
+            
+        }
+        
+    }
+    @comment "Close"
+    @pic[2136].getInfo .ltrb .baseRect v[341], v[342], v[343], v[344]
+    v[342] += 2
+    v[343] -= 2
+    @if `between(v[51], v[343] - 4, v[343] + 4) && between(v[52], v[342] - 5, v[342] + 5) {
+        @if v[43] == 1005 {
+            @if s[11] .isOff() {
+                @gsave.open
+                gv[1].copyTo v[2201], 100
+                @gsave.close
+                @break
+                
+            }
+            
+        }
+        
+    }
+    @comment "Buttons"
+    @comment "##"
+    v[21] = 0
+    @comment "Music"
+    @if s[1] .isOff() {
+        v[11] = 2166
+        v[12] = 2217
+        @pic[2136].getInfo .ltrb .baseRect v[341], v[342], v[343], v[344]
+        v[13] = v[341] + 36
+        v[14] = v[342] + 48
+        v[343] = v[14] - 14
+        @pic[v[11]].strpic {
+            "\t[20256]"
+            .pos v[13], v[343] .left
+            .size 100, 14            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font t[530], 11
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noGradation .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        v[11] += 1
+        @call .cev 2102
+        @if v[21] == 1 {
+            
+        }
+        v[21] = 0
+        
+    }
+    @comment "#Sound Volume"
+    v[11] = 2169
+    v[12] = 2216
+    @pic[2136].getInfo .ltrb .baseRect v[341], v[342], v[343], v[344]
+    v[13] = v[341] + 198
+    v[14] = v[342] + 48
+    v[343] = v[14] - 14
+    @pic[v[11]].strpic {
+        "\t[20257]"
+        .pos v[13], v[343] .left
+        .size 0, 0        .chromakey 1
+        .scale 100
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .font t[530], 11
+        .spacing 0, 4
+        .skin "" .nobg .noframe .noGradation .noPadding
+        .mapLayer 9
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    v[11] += 1
+    @call .cev 2102
+    @if v[21] == 1 {
+        
+    }
+    v[21] = 0
+    @comment "#Mouse sensitivity"
+    v[11] = 2172
+    v[12] = 2221
+    @pic[2136].getInfo .ltrb .baseRect v[341], v[342], v[343], v[344]
+    v[13] = v[341] + 36
+    v[14] = v[342] + 96
+    v[343] = v[14] - 14
+    @pic[v[11]].strpic {
+        "\t[20258]"
+        .pos v[13], v[343] .left
+        .size 0, 0        .chromakey 1
+        .scale 100
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .font t[530], 11
+        .spacing 0, 4
+        .skin "" .nobg .noframe .noGradation .noPadding
+        .mapLayer 9
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    v[11] += 1
+    @call .cev 2102
+    @if v[21] == 1 {
+        v[v[12]] += 1
+        v[v[12]] = min(v[v[12]], 100)
+        
+    }
+    v[21] = 0
+    @comment "#Cam Scroll"
+    v[11] = 2175
+    v[12] = 2225
+    @pic[2136].getInfo .ltrb .baseRect v[341], v[342], v[343], v[344]
+    v[13] = v[341] + 198
+    v[14] = v[342] + 96
+    v[343] = v[14] - 14
+    @pic[v[11]].strpic {
+        "\t[20259]"
+        .pos v[13], v[343] .left
+        .size 0, 0        .chromakey 1
+        .scale 100
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .font t[530], 11
+        .spacing 0, 4
+        .skin "" .nobg .noframe .noGradation .noPadding
+        .mapLayer 9
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    v[11] += 1
+    @call .cev 2102
+    @if v[21] == 1 {
+        v[v[12]] += 1
+        v[v[12]] = min(v[v[12]], 100)
+        
+    }
+    v[21] = 0
+    @comment "#Resume"
+    v[347] = 2136
+    v[347] = v[347] + 1
+    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
+    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
+        @pic[v[347]].move {
+            .pos v[1952], v[1953] .center
+            .scale 100
+            .trans 0
+            .time -2
+            .rgbs 0, 200, 0, 100
+        }
+        @if v[43] == 1005 {
+            @if s[11] .isOff() {
+                s[11].on
+                @gsave.open
+                gv[1].copyTo v[2201], 100
+                @gsave.close
+                @break
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @pic[v[347]].move {
+            .pos v[1952], v[1953] .center
+            .scale 100
+            .trans 0
+            .time -2
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    @comment "#Confirm"
+    v[347] = v[347] + 1
+    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
+    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
+        @pic[v[347]].move {
+            .pos v[1952], v[1953] .center
+            .scale 100
+            .trans 0
+            .time -2
+            .rgbs 0, 200, 0, 100
+        }
+        @if v[43] == 1005 {
+            @if s[11] .isOff() {
+                @comment "new save"
+                s[11].on
+                @gsave.open
+                gv[1].copyFrom v[2201], 100
+                @gsave.saveAndClose
+                v[1181] = v[2225] * 200
+                v[472] = divmul(100, 100, v[2217])
+                @bgm.play t[760] .opt 0, v[472], 100, 50
+                @break
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @pic[v[347]].move {
+            .pos v[1952], v[1953] .center
+            .scale 100
+            .trans 0
+            .time -2
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    @wait 0
+    @if v[43] != 1005 {
+        s[11].off
+        
+    }
+    
+}
+
+@pic[2136..2144].erase
+@pic[2166..2189].erase
+}

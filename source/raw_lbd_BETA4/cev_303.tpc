@@ -1,0 +1,48 @@
+cev .id(303), .name("cev303"), {
+@if v[702] == 2 {
+    @comment "#Not flying"
+    @if v[638] != 1 {
+        @comment "##Riding Perks"
+        @comment "###MountainBlade"
+        @if `(v[v[302] + 8] & 64) == 0 {
+            v[836] = muldiv(v[836], 88, 100)
+            v[714] = muldiv(v[714], 92, 100)
+            
+        } .else bl {
+            @comment "#Speed Bonus"
+            v[740] |= 134217728
+            
+        }
+        @comment "###HorseArchery"
+        @if `(v[v[302] + 8] & 128) == 0 {
+            v[837] /= 2
+            
+        } .else bl {
+            v[837] -= 5
+            
+        }
+        @comment "###Parthian Shot"
+        @if `(v[v[302] + 8] & 256) == 0 {
+            @if s[211] .isOn() {
+                @comment "AS penalty"
+                v[719] -= 6
+                @comment "Motion penalty"
+                v[720] += 2
+                @comment "Cannot Skirmish"
+                v[740] &= ~16
+                
+            }
+            
+        } .else bl {
+            
+        }
+        @if v[601] == 3 {
+            @comment "Sprite Offset Y"
+            v[882] -= 9
+            
+        }
+        
+    }
+    
+}
+}

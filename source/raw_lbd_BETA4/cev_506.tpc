@@ -1,0 +1,65 @@
+cev .id(506), .name("cev506"), {
+v[40] = 0
+v[11] = v[2412 + v[251] % 3]
+v[12] = 0
+v[18] = 5
+v[12] += v[11] & pow(2, 5) ? 1 : 0
+v[31..34] = 0
+v[33] = 1200
+v[34] = 1500
+@call .cev 435
+@if `v[11] & pow(2, v[18]) {
+    v[40] = -2
+    
+}
+@if v[40] <= -1 {
+    v[31] = 999999999
+    v[34] = 999999999
+    
+}
+v[13] = 32
+@if s[151] .isOff() {
+    @comment "Flag on"
+    v[2412 + v[251] % 3] |= pow(2, 5)
+    @if v[251] == 0 {
+        v[229] = 14
+        s[240].on
+        @comment "#########################"
+        v[471] = 11550
+        v[472] = divmul(80, 100, v[2216])
+        v[473] = 90
+        v[474] = 50
+        @cmd v[471], "cursor02", .args v[472], 3
+        @comment "#########################"
+        @call .cev 1924
+        v[341] = 2
+        v[601] = 1
+        @comment "Techname"
+        v[350] = v[4520] + 105
+        t[v[350]] .split "|", t[3000], v[350]
+        @pic[v[1155]].strpic {
+            t[20192]
+            .pos v[341], v[1126] .bottomLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 30
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @call .cev 1925
+        
+    }
+    @comment "v1=UnitID
+v2=UnitType"
+    v[15] = 10306
+    @call .cev 434
+    @call .cev 436
+    
+}
+}

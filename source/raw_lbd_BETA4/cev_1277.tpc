@@ -1,0 +1,439 @@
+cev .id(1277), .name("cev1277"), {
+@if s[122] .isOn() {
+    v[607] = v[215] + v[1076] + 7
+    v[v[607]].copy v[361], 2
+    @loop 8 .dst v[351] {
+        @if v[217] < v[4559] {
+            v[217] += 1
+            @loop v[4559] .dst v[320] {
+                v[216] %= v[4559]
+                v[301] = v[216] * 100
+                v[301] += v[1076]
+                v[295] = v[301] + 1
+                @if v[v[295]] == 0 {
+                    @comment "Access17 = AttackerObjチェックPtr"
+                    v[297] = v[299] * 300
+                    v[297] += 4700
+                    @comment "まず清掃"
+                    v[1301].copy v[601], 100
+                    v[1301].copy v[v[295]], 100
+                    @comment "ParentObjセット"
+                    v[609] = v[299]
+                    @comment "出る場所セット"
+                    v[361].copy v[605], 2
+                    v[605..606] *= 10000
+                    v[361].copy v[607], 2
+                    @comment "###############
+速度べくとるを作る
+###############"
+                    v[607].copy v[11], 2
+                    v[590].copy v[13], 2
+                    @comment "##狙いをランダマイズ"
+                    @comment "#単位ベクトルできた"
+                    @call .cev 2003
+                    v[603] = 1278
+                    @comment "#速度をかけよう"
+                    @comment "##*30"
+                    v[341] = 45
+                    @comment "##回転テスト"
+                    v[23] = v[21] * cos((1 - v[351]) * v[341], 1, 1000) - v[22] * sin((1 - v[351]) * v[341], 1, 1000)
+                    v[24] = v[21] * sin((1 - v[351]) * v[341], 1, 1000) + v[22] * cos((1 - v[351]) * v[341], 1, 1000)
+                    v[23].copy v[21], 2
+                    @comment "#速度パラメータ入力"
+                    v[21].copy v[612], 2
+                    @comment "#角度情報保存"
+                    v[619] = atan2(v[613], v[612], 1000)
+                    @if v[619] <= 0 {
+                        v[619] += 360000
+                        
+                    }
+                    @comment "Projectile team"
+                    v[341] = v[297] + 100
+                    v[618] = v[v[341]]
+                    @comment "パラメータ等入力begin"
+                    @comment "#Pic"
+                    v[602] = 2
+                    @comment "#ProjectileType"
+                    v[601] = 1
+                    @comment "#あたり判定"
+                    v[610] = 4
+                    v[611] = 4
+                    @comment "#威力"
+                    v[11] = v[299]
+                    v[12] = 1
+                    @call .cev 2004
+                    @comment "[AD]*80%"
+                    v[21] *= 15
+                    v[21] /= 10
+                    v[621] = v[21]
+                    @comment "#ARMRと属性"
+                    v[622] = 1
+                    v[623] = 0
+                    @comment "#Timer"
+                    v[628] |= 2
+                    v[700] = rnd(40, 50)
+                    @comment "#Effect"
+                    v[604] = 1279
+                    @comment "#Draw type"
+                    v[630] = 0
+                    @comment "#Colour"
+                    v[626] = 30
+                    v[631..631] = 0
+                    v[632..632] = 90
+                    v[633..633] = 90
+                    v[634] = 25
+                    @comment "パラメータ等入力end"
+                    v[601].copy v[v[295]], 100
+                    @comment "描画"
+                    v[302] = v[216]
+                    v[302] += 1001
+                    @if v[612] >= 0 {
+                        @pic[v[302]].show {
+                            "projectile\magicbomb_p1"
+                            .pos v[605], v[606] .center
+                            .scrollWithMap
+                            .chromakey 1
+                            .scale 100
+                            .trans 100
+                            .rgbs 100, 100, 100, 100
+                            .angle v[619], 1000
+                            .mapLayer 7
+                            .eraseWhenTransfer
+                            .affectedByTint
+                            .affectedByFlash
+                            .affectedByShake
+                        }
+                        
+                    } .else bl {
+                        @pic[v[302]].show {
+                            "projectile\magicbomb_p1"
+                            .pos v[605], v[606] .center
+                            .scrollWithMap
+                            .chromakey 1
+                            .scale 100
+                            .trans 100
+                            .rgbs 100, 100, 100, 100
+                            .angle v[619], 1000
+                            .hrev 
+                            .mapLayer 7
+                            .eraseWhenTransfer
+                            .affectedByTint
+                            .affectedByFlash
+                            .affectedByShake
+                        }
+                        
+                    }
+                    s[141].on
+                    s[141].on
+                    v[11] = v[216] + 0
+                    v[12] = v[700]
+                    @call .cev 150
+                    s[141].off
+                    @break
+                    
+                }
+                v[216] += 1
+                
+            }
+            
+            
+        }
+        
+    }
+    
+    v[607] = v[215] + v[1076] + 7
+    v[v[607]].copy v[361], 2
+    @loop 8 .dst v[351] {
+        @if v[217] < v[4559] {
+            v[217] += 1
+            @loop v[4559] .dst v[320] {
+                v[216] %= v[4559]
+                v[301] = v[216] * 100
+                v[301] += v[1076]
+                v[295] = v[301] + 1
+                @if v[v[295]] == 0 {
+                    @comment "Access17 = AttackerObjチェックPtr"
+                    v[297] = v[299] * 300
+                    v[297] += 4700
+                    @comment "まず清掃"
+                    v[1301].copy v[601], 100
+                    v[1301].copy v[v[295]], 100
+                    @comment "ParentObjセット"
+                    v[609] = v[299]
+                    @comment "出る場所セット"
+                    v[361].copy v[605], 2
+                    v[605..606] *= 10000
+                    v[361].copy v[607], 2
+                    @comment "###############
+速度べくとるを作る
+###############"
+                    v[607].copy v[11], 2
+                    v[590].copy v[13], 2
+                    @comment "##狙いをランダマイズ"
+                    @comment "#単位ベクトルできた"
+                    @call .cev 2003
+                    v[603] = 1278
+                    @comment "#速度をかけよう"
+                    @comment "##*30"
+                    v[341] = 45
+                    @comment "##回転テスト"
+                    v[23] = v[21] * cos((1 - v[351]) * v[341], 1, 1000) - v[22] * sin((1 - v[351]) * v[341], 1, 1000)
+                    v[24] = v[21] * sin((1 - v[351]) * v[341], 1, 1000) + v[22] * cos((1 - v[351]) * v[341], 1, 1000)
+                    v[23].copy v[21], 2
+                    v[21] = muldiv(v[21], 80, 100)
+                    v[22] = muldiv(v[22], 80, 100)
+                    @comment "#速度パラメータ入力"
+                    v[21].copy v[612], 2
+                    @comment "#角度情報保存"
+                    v[619] = atan2(v[613], v[612], 1000)
+                    @if v[619] <= 0 {
+                        v[619] += 360000
+                        
+                    }
+                    @comment "Projectile team"
+                    v[341] = v[297] + 100
+                    v[618] = v[v[341]]
+                    @comment "パラメータ等入力begin"
+                    @comment "#Pic"
+                    v[602] = 2
+                    @comment "#ProjectileType"
+                    v[601] = 1
+                    @comment "#あたり判定"
+                    v[610] = 4
+                    v[611] = 4
+                    @comment "#威力"
+                    v[11] = v[299]
+                    v[12] = 1
+                    @call .cev 2004
+                    @comment "[AD]*80%"
+                    v[21] *= 12
+                    v[21] /= 10
+                    v[621] = v[21]
+                    @comment "#ARMRと属性"
+                    v[622] = 1
+                    v[623] = 0
+                    @comment "#Timer"
+                    v[628] |= 2
+                    v[700] = rnd(40, 50)
+                    @comment "#Effect"
+                    v[604] = 1279
+                    @comment "#Draw type"
+                    v[630] = 0
+                    @comment "#Colour"
+                    v[626] = 30
+                    v[631..631] = 0
+                    v[632..632] = 90
+                    v[633..633] = 90
+                    v[634] = 25
+                    @comment "パラメータ等入力end"
+                    v[601].copy v[v[295]], 100
+                    @comment "描画"
+                    v[302] = v[216]
+                    v[302] += 1001
+                    @if v[612] >= 0 {
+                        @pic[v[302]].show {
+                            "projectile\magicbomb_p1"
+                            .pos v[605], v[606] .center
+                            .scrollWithMap
+                            .chromakey 1
+                            .scale 100
+                            .trans 100
+                            .rgbs 100, 100, 100, 100
+                            .angle v[619], 1000
+                            .mapLayer 7
+                            .eraseWhenTransfer
+                            .affectedByTint
+                            .affectedByFlash
+                            .affectedByShake
+                        }
+                        
+                    } .else bl {
+                        @pic[v[302]].show {
+                            "projectile\magicbomb_p1"
+                            .pos v[605], v[606] .center
+                            .scrollWithMap
+                            .chromakey 1
+                            .scale 100
+                            .trans 100
+                            .rgbs 100, 100, 100, 100
+                            .angle v[619], 1000
+                            .hrev 
+                            .mapLayer 7
+                            .eraseWhenTransfer
+                            .affectedByTint
+                            .affectedByFlash
+                            .affectedByShake
+                        }
+                        
+                    }
+                    s[141].on
+                    s[141].on
+                    v[11] = v[216] + 0
+                    v[12] = v[700]
+                    @call .cev 150
+                    s[141].off
+                    @break
+                    
+                }
+                v[216] += 1
+                
+            }
+            
+            
+        }
+        
+    }
+    
+    v[607] = v[215] + v[1076] + 7
+    v[v[607]].copy v[361], 2
+    @loop 8 .dst v[351] {
+        @if v[217] < v[4559] {
+            v[217] += 1
+            @loop v[4559] .dst v[320] {
+                v[216] %= v[4559]
+                v[301] = v[216] * 100
+                v[301] += v[1076]
+                v[295] = v[301] + 1
+                @if v[v[295]] == 0 {
+                    @comment "Access17 = AttackerObjチェックPtr"
+                    v[297] = v[299] * 300
+                    v[297] += 4700
+                    @comment "まず清掃"
+                    v[1301].copy v[601], 100
+                    v[1301].copy v[v[295]], 100
+                    @comment "ParentObjセット"
+                    v[609] = v[299]
+                    @comment "出る場所セット"
+                    v[361].copy v[605], 2
+                    v[605..606] *= 10000
+                    v[361].copy v[607], 2
+                    @comment "###############
+速度べくとるを作る
+###############"
+                    v[607].copy v[11], 2
+                    v[590].copy v[13], 2
+                    @comment "##狙いをランダマイズ"
+                    @comment "#単位ベクトルできた"
+                    @call .cev 2003
+                    v[603] = 1278
+                    @comment "#速度をかけよう"
+                    @comment "##*30"
+                    v[341] = 45
+                    @comment "##回転テスト"
+                    v[23] = v[21] * cos((1 - v[351]) * v[341], 1, 1000) - v[22] * sin((1 - v[351]) * v[341], 1, 1000)
+                    v[24] = v[21] * sin((1 - v[351]) * v[341], 1, 1000) + v[22] * cos((1 - v[351]) * v[341], 1, 1000)
+                    v[23].copy v[21], 2
+                    v[21] = muldiv(v[21], 60, 100)
+                    v[22] = muldiv(v[22], 60, 100)
+                    @comment "#速度パラメータ入力"
+                    v[21].copy v[612], 2
+                    @comment "#角度情報保存"
+                    v[619] = atan2(v[613], v[612], 1000)
+                    @if v[619] <= 0 {
+                        v[619] += 360000
+                        
+                    }
+                    @comment "Projectile team"
+                    v[341] = v[297] + 100
+                    v[618] = v[v[341]]
+                    @comment "パラメータ等入力begin"
+                    @comment "#Pic"
+                    v[602] = 2
+                    @comment "#ProjectileType"
+                    v[601] = 1
+                    @comment "#あたり判定"
+                    v[610] = 4
+                    v[611] = 4
+                    @comment "#威力"
+                    v[11] = v[299]
+                    v[12] = 1
+                    @call .cev 2004
+                    @comment "[AD]*80%"
+                    v[21] *= 10
+                    v[21] /= 10
+                    v[621] = v[21]
+                    @comment "#ARMRと属性"
+                    v[622] = 1
+                    v[623] = 0
+                    @comment "#Timer"
+                    v[628] |= 2
+                    v[700] = rnd(40, 50)
+                    @comment "#Effect"
+                    v[604] = 1279
+                    @comment "#Draw type"
+                    v[630] = 0
+                    @comment "#Colour"
+                    v[626] = 30
+                    v[631..631] = 0
+                    v[632..632] = 90
+                    v[633..633] = 90
+                    v[634] = 25
+                    @comment "パラメータ等入力end"
+                    v[601].copy v[v[295]], 100
+                    @comment "描画"
+                    v[302] = v[216]
+                    v[302] += 1001
+                    @if v[612] >= 0 {
+                        @pic[v[302]].show {
+                            "projectile\magicbomb_p1"
+                            .pos v[605], v[606] .center
+                            .scrollWithMap
+                            .chromakey 1
+                            .scale 100
+                            .trans 100
+                            .rgbs 100, 100, 100, 100
+                            .angle v[619], 1000
+                            .mapLayer 7
+                            .eraseWhenTransfer
+                            .affectedByTint
+                            .affectedByFlash
+                            .affectedByShake
+                        }
+                        
+                    } .else bl {
+                        @pic[v[302]].show {
+                            "projectile\magicbomb_p1"
+                            .pos v[605], v[606] .center
+                            .scrollWithMap
+                            .chromakey 1
+                            .scale 100
+                            .trans 100
+                            .rgbs 100, 100, 100, 100
+                            .angle v[619], 1000
+                            .hrev 
+                            .mapLayer 7
+                            .eraseWhenTransfer
+                            .affectedByTint
+                            .affectedByFlash
+                            .affectedByShake
+                        }
+                        
+                    }
+                    s[141].on
+                    s[141].on
+                    v[11] = v[216] + 0
+                    v[12] = v[700]
+                    @call .cev 150
+                    s[141].off
+                    @break
+                    
+                }
+                v[216] += 1
+                
+            }
+            
+            
+        }
+        
+    }
+    
+    s[141].on
+    v[607] = v[215] + v[1076] + 7
+    v[v[607]].copy v[607], 2
+    @call .cev 106
+    s[141].off
+    
+} .else bl {
+    
+}
+}

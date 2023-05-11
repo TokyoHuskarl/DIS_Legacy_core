@@ -1,0 +1,60 @@
+cev .id(2039), .name("cev2039"), {
+@pic[1007].show {
+    "..\assets\system\Akamas"
+    .pos 6, 326 .topLeft
+    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .mapLayer 8
+    .eraseWhenTransfer
+}
+v[350] = v[v[1261] + 104 - 1]
+v[351] = v[v[1261] + 105 - 1]
+v[352] = v[v[1261] + 106 - 1]
+@pic[1008].strpic {
+    "LV:\v[350]
+HP:\v[351]/\v[352]"
+    .pos 162, 328 .topLeft
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "misaki_gothic", 11 .noShadow
+    .spacing 0, 4
+    .skin "" .nobg .noframe .noGradation .noPadding
+    .mapLayer 9
+    .affectedByFlash
+    .affectedByShake
+}
+v[2470] = 20
+@pic[1009].strpic {
+    "TROOPS:\v[2469]/\v[2470]"
+    .pos 244, 340 .left
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "misaki_gothic", 11 .noShadow
+    .spacing 0, 4
+    .skin "" .nobg .noframe .noGradation .noPadding
+    .mapLayer 9
+    .affectedByFlash
+    .affectedByShake
+}
+@pic[1010].strpic {
+    "\c[8]Money:\c[0] \v[2461]Aurum
+\c[5]Provision:\c[0] \v[2462]"
+    .pos 526, 328 .topLeft
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "misaki_gothic", 11 .noShadow
+    .spacing 0, 4
+    .skin "" .nobg .noframe .noGradation .noPadding
+    .mapLayer 9
+    .affectedByFlash
+    .affectedByShake
+}
+}

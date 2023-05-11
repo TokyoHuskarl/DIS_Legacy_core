@@ -1,0 +1,72 @@
+#include "./../header_preset_particles.tpc"
+
+
+__fn set_particle_balista_bolt_shade $ParentProjectile {
+
+	@loop v[1017] .dst v[320] {
+	    v[244] %= v[1199]
+	    v[301] = v[244] * 50
+	    v[301] = v[301] + v[1198]
+	    @if v[v[301]] <= 1 {
+		//// "まず清掃"
+		v[1301].copy v[v[301]], 50
+		//// "ポインタセット開始"
+		//// "設定"
+		v[v[301]] = 1
+		//// "500F"
+		v[295] = v[301] + 49
+		v[v[295]] = 55555
+		//// "Set itself"
+		v[295] = v[301] + 3
+		v[v[295]] = id_balista_blot_shade
+		//// "Set Parent Projectile"
+		v[295] = v[301] + 9
+		v[v[295]] = v[11]
+		//// "けす処理をLinkedFuncに入れる"
+		v[295] = v[301] + 10
+		//// "普通にアニメ"
+		v[607] = v[301] + 6
+		v[361].copy v[v[607]], 2
+		//// "仕上げに登録消す"
+		s[141].off
+		v[244] += 1
+		@break
+		
+	    }
+	    v[244] += 1
+	    
+	}
+
+
+}
+
+__fn set_particle_simple $psp_id $Xstart $amount $time {
+	@loop v[1017] .dst v[320] {
+	    v[244] %= v[1199]
+	    v[351] = v[244] * 50 + v[1198]
+	    @if v[v[351]] <= 1 {
+		// "まず清掃"
+		v[1301].copy v[v[351]], 50
+		// "ポインタセット開始"
+		// simple
+		v[v[351]] = 1
+		// "500F"
+		v[v[351] + 49] = $time
+		// "Set itself"
+		v[v[351] + 3] = $psp_id
+		// "Set Amount"
+		v[v[351] + 1] = $amount
+		// "XY set"
+		v[357] = v[351] + 6
+		v[__id($Xstart)].copy v[v[357]], 2
+		// "仕上げに登録消す"
+		v[244] += 1
+		@break
+		
+	    }
+	    v[244] += 1
+	    
+	}
+
+
+}

@@ -1,0 +1,75 @@
+cev .id(1235), .name("cev1235"), {
+@comment "*ATTENTION*
+Spawning too many leader units will surely cause LAG"
+@if s[122] .isOn() {
+    @comment "Access19 = AttackerObjectID 0~
+Access20 = TargetObjectID 1~
+Access18 = ObjTypeチェックPtr
+reg10=bool_hit"
+    @comment "#Combat Penalty Resist"
+    @comment "################
+#交戦デバフを付与
+################"
+    v[v[300] * 300 + 4781] = (v[v[300] * 300 + 4974] & 128) == 128 ? 0 : 135
+    
+} .else bl {
+    @comment "PASSIVE"
+    v[299] = v[401] + 1
+    @if v[217] < v[4559] {
+        v[217] += 1
+        @loop v[4559] .dst v[320] {
+            v[216] %= v[4559]
+            v[301] = v[216] * 100
+            v[301] += v[1076]
+            v[295] = v[301] + 1
+            @if v[v[295]] == 0 {
+                @comment "Access17 = AttackerObjチェックPtr"
+                v[297] = v[299] * 300
+                v[297] += 4700
+                @comment "まず清掃"
+                v[1301].copy v[601], 100
+                v[1301].copy v[v[295]], 100
+                @comment "ParentObjセット"
+                v[609] = v[299]
+                @comment "出る場所セット"
+                v[341] = v[297] + 7
+                v[v[341]].copy v[605], 2
+                v[605..606] *= 10000
+                v[v[341]].copy v[607], 2
+                @comment "Projectile team"
+                v[341] = v[297] + 100
+                v[618] = v[v[341]]
+                @comment "パラメータ等入力begin"
+                @comment "#Pic"
+                v[602] = 1
+                @comment "#ProjectileType"
+                v[601] = 2
+                @comment "#あたり判定"
+                v[610..611] = 88
+                @comment "#威力"
+                v[621] = 0
+                @comment "#Timer"
+                v[700] = 2
+                @comment "#Effect"
+                v[604] = 1235
+                @comment "#ARMRと属性"
+                v[622] = -1
+                v[623] = 1
+                @comment "#Nopic"
+                v[628] |= 8
+                @comment "パラメータ等入力end"
+                v[601].copy v[v[295]], 100
+                @comment "Timer Reset"
+                v[v[297] + 94] = v[1139] * 3
+                @break
+                
+            }
+            v[216] += 1
+            
+        }
+        
+        
+    }
+    
+}
+}

@@ -1,0 +1,45 @@
+cev .id(2134), .name("cev2134"), {
+@comment "v1 x 
+v2 y 
+v3 xd
+v4 yd
+v5 cohort"
+v[11].copy v[2776], 5
+@comment "spawn_unit_group(125,33,46,0,0,0,0,0,15)"
+v[2775] = 0
+@comment "Give gyao"
+v[16] = v[2761 + 2 * v[2775]]
+v[17] = v[2762 + 2 * v[2775]]
+@if v[16] > 0 {
+    t[510] .asg "spawn_unit_group(\v[16],\v[2776],\v[2777],1,\v[2780],0,\v[2778],\v[2779],\v[17])" .extract
+    @call .cev 1821
+    
+}
+@wait 1
+v[2775] += 1
+v[16] = v[2761 + 2 * v[2775]]
+v[17] = v[2762 + 2 * v[2775]]
+@if v[16] > 0 {
+    t[510] .asg "spawn_unit_group(\v[16],\v[2776],\v[2777],1,\v[2780],0,\v[2778],\v[2779],\v[17])" .extract
+    @call .cev 1821
+    
+}
+@wait 1
+v[2775] += 1
+v[16] = v[2761 + 2 * v[2775]]
+v[17] = v[2762 + 2 * v[2775]]
+@if v[16] > 0 {
+    t[510] .asg "spawn_unit_group(\v[16],\v[2776],\v[2777],1,\v[2780],0,\v[2778],\v[2779],\v[17])" .extract
+    @call .cev 1821
+    
+}
+@wait 1
+v[2775] += 1
+v[16] = v[2761 + 2 * v[2775]]
+v[17] = v[2762 + 2 * v[2775]]
+@if v[16] > 0 {
+    t[510] .asg "spawn_unit_group(\v[16],\v[2776],\v[2777],1,\v[2780],0,\v[2778],\v[2779],\v[17])" .extract
+    @call .cev 1821
+    
+}
+}

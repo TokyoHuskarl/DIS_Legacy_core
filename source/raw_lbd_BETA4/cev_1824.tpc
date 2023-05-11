@@ -1,0 +1,39 @@
+cev .id(1824), .name("cev1824"), {
+@loop 1 {
+    @comment "map_set_nodeWP(x,y)"
+    @if t[510] .contains "map_set_nodeway(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        @call .cev 2017
+        @break
+        
+    }
+    @comment "map_randomise_height(xmin,ymin,xmax,ymax,Tryamount)"
+    @if t[510] .contains "map_randomise_height(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3004] .toNum v[15]
+        @loop v[15] {
+            t[3000] .toNum v[11]
+            t[3001] .toNum v[12]
+            t[3002] .toNum v[13]
+            t[3003] .toNum v[14]
+            v[11] = rnd(v[11], v[13])
+            v[12] = rnd(v[12], v[14])
+            v[13] = v[11] + rnd(12, 18)
+            v[14] = v[12] + rnd(10, 16)
+            @call .cev 1802
+            
+        }
+        
+        @break
+        
+    }
+    
+}
+
+}

@@ -1,0 +1,20 @@
+cev .id(9), .name("cev9"), {
+v[55] = ev[1].scrx
+v[56] = ev[1].scry
+@wait 0
+v[53] = ev[1].scrx - v[55]
+v[54] = ev[1].scry - v[56]
+v[92] = v[53] * 1000 + v[54]
+@comment "#そのうちループで置き換える"
+v[341] = 1021
+@loop 8 {
+    v[53].copy v[v[341]], 2
+    v[341] += 2
+    
+}
+
+v[261] .add v[1021], 14
+@comment "For AI"
+v[2806] .add v[53], 2
+s[49].on
+}

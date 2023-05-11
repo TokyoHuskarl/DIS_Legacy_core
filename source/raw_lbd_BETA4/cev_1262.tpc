@@ -1,0 +1,46 @@
+cev .id(1262), .name("cev1262"), {
+@if s[118] .isOn() {
+    v[1301].copy v[581], 20
+    @comment "#Q_ID and Q_Func"
+    v[581] = 62
+    v[582] = v[581] + 1200
+    @comment "#Q_Type"
+    v[583] = 6
+    v[584] = 0
+    @comment "#Q_Motion"
+    v[585] = 0
+    @comment "#Q_Cost"
+    v[587] = 999999
+    @comment "#Q_Range"
+    v[592] = -1
+    @comment "#Q_CD"
+    v[588] = 0
+    
+} .else bl {
+    @comment "Access19 = AttackerObjectID 0~
+Access20 = TargetObjectID 1~
+Access18 = ObjTypeチェックPtr"
+    @comment "#RangedDamageResist"
+    @if `!(v[v[300] * 300 + 4974] & 32) {
+        @comment "ADを取得"
+        v[11] = v[299]
+        v[12] = 1
+        @call .cev 2004
+        v[21] = v[v[11] * 300 + 4960 + v[12]]
+        v[301] = v[21] / 10
+        @if v[301] > 0 {
+            @comment "True Damage"
+            v[302] = 2
+            s[162].on
+            v[711] = v[300] * 300
+            v[607] = v[711] + 4707
+            v[v[607]].copy v[607], 2
+            v[421] = 100
+            @call .cev 40
+            
+        }
+        
+    }
+    
+}
+}

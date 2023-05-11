@@ -1,0 +1,84 @@
+cev .id(1990), .name("cev1990"), {
+v[1243] = v[157] + v[1248]
+@loop 100 .dst v[343] {
+    v[11] = v[173]
+    v[12] = v[343] + 1
+    @call .cev 1991
+    v[350] = 1500 + v[343]
+    v[351] = v[1243] + 4 + v[343] % 10 * 21
+    v[352] = v[1244] + 10 + v[343] / 10 * 17
+    @if v[21] == 0 {
+        @pic[v[350]].show {
+            "ui\PerkIcons"
+            .pos v[351], v[352] .center
+            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 20, 20, 20, 0
+            .grid 16, 15 .cell v[22]
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    } .else bl {
+        @if v[21] == 1 {
+            @pic[v[350]].show {
+                "ui\PerkIcons"
+                .pos v[351], v[352] .center
+                .chromakey 1
+                .scale 100
+                .trans 0
+                .rgbs 60, 60, 60, 0
+                .grid 16, 15 .cell v[22]
+                .mapLayer 9
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            
+        } .else bl {
+            @if v[21] == 2 {
+                @pic[v[350]].show {
+                    "ui\PerkIcons"
+                    .pos v[351], v[352] .center
+                    .chromakey 1
+                    .scale 100
+                    .trans 0
+                    .rgbs 100, 100, 100, 100
+                    .grid 16, 15 .cell v[22]
+                    .mapLayer 9
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            } .else bl {
+                @if s[1] .isOn() {
+                    @pic[v[350]].show {
+                        "ui\PerkIcons"
+                        .pos v[351], v[352] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 0
+                        .rgbs 30, 30, 30, 0
+                        .grid 16, 15 .cell 65
+                        .mapLayer 9
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
+v[350] = 1233
+}

@@ -1,0 +1,65 @@
+cev .id(2072), .name("cev2072"), {
+v[1301].copy v[v[1256]], v[2460]
+v[1952] = v[1256]
+@loop v[2460] .dst v[1953] {
+    v[1951] = v[146] + v[1953] * 40 + 39
+    @if v[v[1951]] >= 1 {
+        @comment "GetIndex"
+        v[v[1952]] = v[1953] + 1
+        @comment "GetID"
+        @comment "GetItemType"
+        v[v[1952]] += v[v[1951] - 11] * 100000000
+        @comment "value"
+        v[v[1952]] += v[v[1951] - 9] / 10 * 1000
+        v[1952] += 1
+        
+    }
+    
+}
+
+v[v[1256]].sort v[2460]
+@loop v[2460] .dst v[1953] {
+    v[1952] = v[1256] + v[1953]
+    v[v[1952]] %= 1000
+    
+}
+
+@loop v[2460] .dst v[1953] {
+    @if v[v[1256]] == 0 {
+        v[1951] = v[2460] - 1
+        v[1952] = v[1256] + 1
+        v[v[1952]].copy v[v[1256]], v[1951]
+        v[1951] = v[1256] + v[2460] - v[1953] - 1
+        v[v[1951]] = 0
+        
+    } .else bl {
+        @break
+        
+    }
+    
+}
+
+@comment "Init Strs"
+v[1951] = v[1257]
+v[1952] = v[1951] + 100
+t[v[1951]..v[1952]] .asg ""
+@loop v[2460] .dst v[1953] {
+    v[11..14] = 0
+    v[1951] = v[146] + v[1953] * 40 + 39
+    @if v[v[1951]] >= 1 {
+        @comment "GetID"
+        v[11] = v[v[1951]]
+        @comment "GetItemType"
+        v[13] = v[v[1951] - 11]
+        @comment "GetModifier"
+        @comment "*Currently underconstruction*"
+        v[14] = 0
+        @call .cev 390
+        v[1951] = v[1953] + v[1257]
+        t[v[1951]] .asg t[503]
+        
+    }
+    
+}
+
+}

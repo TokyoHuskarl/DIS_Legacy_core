@@ -1,0 +1,348 @@
+cev .id(1932), .name("cev1932"), {
+@if v[15] == 1 {
+    v[11] = max(v[1918] - 1200, 0)
+    @call .cev 1102
+    @if v[2201] == 0 {
+        @pic[996].strpic {
+            "\c[2]\t[503]\c[0] \t[504]
+\c[17]武器攻撃力:\c[0]\v[1902] \c[5]装甲貫通.:\c[0]\v[1904]% \c[5]対装甲有効率.:\c[0]\v[1943]%
+\c[5]命中ボーナス:\c[2]+\v[1905]\c[0] \c[14]クリティカル率:\c[2]+\v[1906]%\c[0] \c[5]射程:\c[0]\v[1944]
+\c[5]攻撃速度:\c[0]\v[1910] \c[10]SPコスト:\c[17]\v[1912]\c[0] \c[10]SPペナルティ:\c[17]-\v[1919]\c[0]
+\c[1]武器スキル:\c[0][\t[506]]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+            .pos v[51], v[52] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 10
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 0
+            .skin "" .stretch
+            .mapLayer 10
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    } .else bl {
+        @pic[996].strpic {
+            "\c[2]\t[503]\c[0] \t[504]
+\c[17]Damage:\c[0]\v[1902] \c[5]AR.Pen.:\c[0]\v[1904]% \c[5]AR.Dam.:\c[0]\v[1943]%
+\c[5]Hit:\c[2]+\v[1905]\c[0] \c[14]Crit:\c[2]+\v[1906]%\c[0] \c[5]Range:\c[0]\v[1944]
+\c[5]AS:\c[0]\v[1910] \c[10]SpCost:\c[17]\v[1912]\c[0] \c[10]Max.Sp:\c[17]-\v[1919]\c[0]
+\c[1]Weapon Skill:\c[0][\t[506]]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+            .pos v[51], v[52] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 10
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 0
+            .skin "" .stretch
+            .mapLayer 10
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    }
+    
+}
+@comment "Shield"
+@if v[15] == 2 {
+    @if v[2201] == 0 {
+        @pic[996].strpic {
+            "\c[2]\t[503]\c[0] \t[504]
+\c[3]回避上昇:\c[2]+\v[1902]\c[0] 頑丈さ.:\v[1904]
+\c[10]SPペナルティ:\c[17]-\v[1919]\c[0]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+            .pos v[51], v[52] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 10
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 0
+            .skin "" .stretch
+            .mapLayer 10
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    } .else bl {
+        @pic[996].strpic {
+            "\c[2]\t[503]\c[0] \t[504]
+\c[3]EVA:\c[2]+\v[1902]\c[0] Durability.:\v[1904]
+\c[10]Max.Sp:\c[17]-\v[1919]\c[0]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+            .pos v[51], v[52] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 10
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 0
+            .skin "" .stretch
+            .mapLayer 10
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    }
+    
+}
+@comment "Armor"
+@if v[15] == 3 {
+    @if v[2201] == 0 {
+        @pic[996].strpic {
+            "\c[2]\t[503]\c[0] \t[504]
+\c[0]装甲値:\c[0]:\c[2]\v[1902]\c[0] \c[6]魔法抵抗:\c[2]+\v[1903]\c[0]
+\c[3]回避ボーナス:\c[2]+\v[1905]\c[0]
+\c[10]SPペナルティ:\c[17]-\v[1919]\c[0]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+            .pos v[51], v[52] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 10
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 0
+            .skin "" .stretch
+            .mapLayer 10
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    } .else bl {
+        @pic[996].strpic {
+            "\c[2]\t[503]\c[0] \t[504]
+\c[0]AR:\c[0]:\c[2]\v[1902]\c[0] \c[6]MR:\c[2]+\v[1903]\c[0]
+\c[3]Bonus EVA:\c[2]+\v[1905]\c[0]
+\c[10]Max.Sp:\c[17]-\v[1919]\c[0]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+            .pos v[51], v[52] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 10
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 0
+            .skin "" .stretch
+            .mapLayer 10
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    }
+    
+}
+@comment "Helm"
+@if v[15] == 4 {
+    @if v[2201] == 0 {
+        @pic[996].strpic {
+            "\c[2]\t[503]\c[0] \t[504]
+クリティカル回避率:\c[2]-\v[1907]%\c[0]
+クリティカル軽減率:\c[2]-\v[1908]%\c[0]
+\c[6]魔法抵抗:\c[2]+\v[1903]\c[0]
+\c[5]遠隔命中ペナルティ:\c[17]-\v[1918]\c[0]
+\c[10]SPペナルティ:\c[17]-\v[1919]\c[0] \c[10]SP回復低下:\c[17]-\v[1920]\c[0]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+            .pos v[51], v[52] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 10
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 0
+            .skin "" .stretch
+            .mapLayer 10
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    } .else bl {
+        @pic[996].strpic {
+            "\c[2]\t[503]\c[0] \t[504]
+CritDamageReduction:\c[2]-\v[1907]%\c[0]
+CritChanceReduction:\c[2]-\v[1908]%\c[0]
+\c[6]MR:\c[2]+\v[1903]\c[0]
+\c[5]Ranged Hit Penalty:\c[17]-\v[1918]\c[0]
+\c[10]Max.Sp:\c[17]-\v[1919]\c[0] \c[10]SpReg.Penalty:\c[17]-\v[1920]\c[0]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+            .pos v[51], v[52] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 10
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 0
+            .skin "" .stretch
+            .mapLayer 10
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    }
+    
+}
+@comment "Acc"
+@if v[15] == 5 {
+    @comment "Add armor"
+    @if v[1901] == 3 {
+        @if v[2201] == 0 {
+            @pic[996].strpic {
+                "\c[2]\t[503]\c[0] \t[504]
+\c[0]装甲値:\c[0]:\c[2]\v[1902]\c[0] \c[6]魔法抵抗:\c[2]+\v[1903]\c[0]
+\c[3]回避ボーナス:\c[2]+\v[1905]\c[0]
+\c[10]SPペナルティ:\c[17]-\v[1919]\c[0]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+                .pos v[51], v[52] .topLeft
+                .size 0, 0                .chromakey 1
+                .scale 100
+                .trans 10
+                .rgbs 100, 100, 100, 100
+                .font t[530], v[4511]
+                .spacing 0, 0
+                .skin "" .stretch
+                .mapLayer 10
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            
+        } .else bl {
+            @pic[996].strpic {
+                "\c[2]\t[503]\c[0] \t[504]
+\c[0]AR:\c[0]:\c[2]\v[1902]\c[0] \c[6]MR:\c[2]+\v[1903]\c[0]
+\c[3]Bonus EVA:\c[2]+\v[1905]\c[0]
+\c[10]Max.Sp:\c[17]-\v[1919]\c[0]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+                .pos v[51], v[52] .topLeft
+                .size 0, 0                .chromakey 1
+                .scale 100
+                .trans 10
+                .rgbs 100, 100, 100, 100
+                .font t[530], v[4511]
+                .spacing 0, 0
+                .skin "" .stretch
+                .mapLayer 10
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            
+        }
+        
+    } .else bl {
+        @comment "horse"
+        @if v[1901] == 2 {
+            @if v[2201] == 0 {
+                @pic[996].strpic {
+                    "\c[2]\t[503]\c[0] \t[504]
+\c[1]増加HP:\c[2]+\v[1911]\c[0] \c[3]増加装甲(AR):\c[2]+\v[1902]\c[0]
+増加移動速度(MS):\c[2]+\v[1913] \c[0] 
+\c[3]回避力ペナルティ(EVA):\c[5]\v[1905]\c[0]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+                    .pos v[51], v[52] .topLeft
+                    .size 0, 0                    .chromakey 1
+                    .scale 100
+                    .trans 10
+                    .rgbs 100, 100, 100, 100
+                    .font t[530], v[4511]
+                    .spacing 0, 0
+                    .skin "" .stretch
+                    .mapLayer 10
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            } .else bl {
+                @pic[996].strpic {
+                    "\c[2]\t[503]\c[0] \t[504]
+\c[1]Additional HP:\c[2]+\v[1911]\c[0] \c[3]Additional Armor(AR):\c[2]+\v[1902]\c[0]
+Movement Speed Bonus:\c[2]+\v[1913] \c[0] 
+\c[3]Avoid Penalty:\c[5]\v[1905]\c[0]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+                    .pos v[51], v[52] .topLeft
+                    .size 0, 0                    .chromakey 1
+                    .scale 100
+                    .trans 10
+                    .rgbs 100, 100, 100, 100
+                    .font t[530], v[4511]
+                    .spacing 0, 0
+                    .skin "" .stretch
+                    .mapLayer 10
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            }
+            
+        } .else bl {
+            @if v[2201] == 0 {
+                @pic[996].strpic {
+                    "\c[2]\t[503]\c[0] \t[504]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+                    .pos v[51], v[52] .topLeft
+                    .size 0, 0                    .chromakey 1
+                    .scale 100
+                    .trans 10
+                    .rgbs 100, 100, 100, 100
+                    .font t[530], v[4511]
+                    .spacing 0, 0
+                    .skin "" .stretch
+                    .mapLayer 10
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            } .else bl {
+                @pic[996].strpic {
+                    "\c[2]\t[503]\c[0] \t[504]
+\v[1931]\c[8]\t[20035]\c[0]
+…\t[505]"
+                    .pos v[51], v[52] .topLeft
+                    .size 0, 0                    .chromakey 1
+                    .scale 100
+                    .trans 10
+                    .rgbs 100, 100, 100, 100
+                    .font t[530], v[4511]
+                    .spacing 0, 0
+                    .skin "" .stretch
+                    .mapLayer 10
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+}
+}

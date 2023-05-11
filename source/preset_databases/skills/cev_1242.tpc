@@ -1,0 +1,45 @@
+cev .id(1242), .name("cev1242"), {
+@comment "Access19 = AttackerObjectID 0~
+Access20 = TargetObjectID 1~
+Access18 = ObjTypeチェックPtr"
+@comment "#発動処理"
+@comment "#バフ番号指定"
+v[11] = 1197
+v[12] = v[300]
+@call .cev 1911
+@if v[22] >= 0 {
+    @comment "#Duration"
+    v[v[22]] = 28
+    
+}
+@comment "Give V vector"
+@if v[v[22]] == 28 {
+    @comment "#Set Dash/Knockback"
+    v[v[300] * 300 + 4942] = 4
+    v[v[300] * 300 + 4949] = v[v[22]]
+    @comment "###############
+速度べくとるを作る
+###############"
+    v[341] = v[299] * 300
+    v[341] += 4707
+    v[v[341]].copy v[11], 2
+    v[607].copy v[13], 2
+    @comment "#単位ベクトルできた"
+    @call .cev 2003
+    @comment "#PMsをかけよう"
+    @if `v[v[299] * 300 + 4701] > 0 {
+        v[341] = v[299] * 300
+        v[341] += 4968
+        v[21..22] *= muldiv(v[v[341]], 170, 100)
+        
+    } .else bl {
+        v[21..22] *= rnd(380, 450)
+        
+    }
+    @comment "#速度へ代入"
+    v[341] = v[300] * 300
+    v[341] += 4712
+    v[21].copy v[v[341]], 2
+    
+}
+}

@@ -1,0 +1,221 @@
+cev .id(1288), .name("cev1288"), {
+@comment "Access19 = AttackerObjectID
+Access20 = TargetObjectID
+Access18 = TargetObjTypeチェックPtr"
+@if v[217] < v[4559] {
+    v[217] += 1
+    @loop v[4559] .dst v[320] {
+        v[216] %= v[4559]
+        v[301] = v[216] * 100
+        v[301] += v[1076]
+        v[295] = v[301] + 1
+        @if v[v[295]] == 0 {
+            @comment "Access17 = AttackerObjチェックPtr"
+            v[297] = v[299] * 300
+            v[297] += 4700
+            @comment "まず清掃"
+            v[1301].copy v[601], 100
+            v[1301].copy v[v[295]], 100
+            @comment "ParentObjセット"
+            v[609] = v[299]
+            @comment "出る場所セット"
+            v[341] = v[297] + 7
+            v[v[341]].copy v[605], 2
+            v[605..606] *= 10000
+            v[v[341]].copy v[607], 2
+            @comment "###############
+速度べくとるを作る
+###############"
+            v[607].copy v[11], 2
+            v[341] = v[298] + 6
+            v[v[341]].copy v[13], 2
+            @comment "##狙いをランダマイズ"
+            v[13] += rnd(-6, 6)
+            v[14] += rnd(-6, 6)
+            @comment "##狙いをランダマイズ"
+            @comment "#単位ベクトルできた"
+            @call .cev 2003
+            @comment "#速度をかけよう"
+            v[21..22] *= 1500
+            @comment "#速度パラメータ入力"
+            v[21].copy v[612], 2
+            @comment "#角度情報保存"
+            v[619] = atan2(v[613], v[612], 1000)
+            @if v[619] <= 0 {
+                v[619] += 360000
+                
+            }
+            @comment "Projectile team"
+            v[341] = v[297] + 100
+            v[618] = v[v[341]]
+            @comment "パラメータ等入力begin"
+            @comment "#Pic"
+            v[602] = 2
+            @comment "#ProjectileType"
+            v[601] = 1
+            @comment "#あたり判定"
+            v[610] = 4
+            v[611] = 4
+            @comment "#威力"
+            v[11] = v[299]
+            v[12] = 1
+            @call .cev 2004
+            @comment "[AD]*80%"
+            v[621] = v[21]
+            @comment "#ARMRと属性"
+            v[622] = 0
+            v[341] = v[297] + 123
+            v[623] = v[v[341]]
+            @comment "#Timer"
+            v[700] = 21
+            @comment "#Effect"
+            v[604] = 0
+            @comment "#Hit Type"
+            v[627] = 1
+            v[628] = 1
+            v[628] |= 1
+            v[624] |= 1024
+            @comment "#Draw type"
+            v[630] = 0
+            @comment "#Colour"
+            v[626] = 30
+            v[631..631] = 155
+            v[632..632] = 110
+            v[633..633] = 20
+            v[634] = 25
+            @comment "パラメータ等入力end"
+            v[601].copy v[v[295]], 100
+            @comment "描画"
+            v[302] = v[216] + v[4560]
+            @if v[612] >= 0 {
+                @pic[v[302]].show {
+                    "projectile\blaster3"
+                    .pos v[605], v[606] .center
+                    .scrollWithMap
+                    .chromakey 1
+                    .scale 100
+                    .trans 100
+                    .rgbs 100, 100, 100, 100
+                    .angle v[619], 1000
+                    .mapLayer 7
+                    .eraseWhenTransfer
+                    .affectedByTint
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            } .else bl {
+                @pic[v[302]].show {
+                    "projectile\blaster3"
+                    .pos v[605], v[606] .center
+                    .scrollWithMap
+                    .chromakey 1
+                    .scale 100
+                    .trans 100
+                    .rgbs 100, 100, 100, 100
+                    .angle v[619], 1000
+                    .hrev 
+                    .mapLayer 7
+                    .eraseWhenTransfer
+                    .affectedByTint
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            }
+            @comment "演出"
+            v[371] = v[607] >= v[1008] ? 1 : 0
+            v[371] += v[607] <= v[1009] ? 1 : 0
+            v[371] += v[608] >= v[1010] ? 1 : 0
+            v[371] += v[608] <= v[1011] ? 1 : 0
+            @if v[371] >= 4 {
+                @if v[182] <= 5 {
+                    v[182] += 1
+                    @comment "#########################"
+                    v[471] = 11550
+                    v[472] = divmul(100, 100, v[2216])
+                    v[473] = rnd(90, 110)
+                    v[474] = divmul(v[607] + v[1001], v[1281], 50)
+                    @comment "#########################"
+                    t[510] .asg "weapons\rifle_shoot_0"
+                    v[329] = rnd(1, 1)
+                    t[510] .cat v[329]
+                    @cmd v[471], t[510], .args v[472], 3
+                    
+                }
+                
+            }
+            s[141].on
+            @if s[141] .isOn() {
+                v[242] += 1
+                v[242] %= v[1017]
+                v[301] = v[242] * 100
+                v[301] = v[301] + v[1018]
+                @comment "まず清掃"
+                v[1301].copy v[v[301]], 100
+                @comment "ポインタセット開始"
+                v[310] = v[242] + v[1220]
+                v[295] = v[301] + 99
+                @comment "設定"
+                v[v[301]] = 1
+                v[v[295]] = 2
+                @comment "普通にアニメ"
+                v[607].copy v[361], 2
+                @if `v[v[297] + 244] == 0 {
+                    v[361] += 36
+                    @pic[v[310]].show {
+                        "effects\muzzlefire2"
+                        .pos v[361], v[362] .center
+                        .scrollWithMap
+                        .chromakey 1
+                        .scale 100
+                        .trans 69
+                        .rgbs 100, 100, 100, 100
+                        .add
+                        .hrev 
+                        .grid 2, 1 .anim 3 .once
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[361] -= 36
+                    @pic[v[310]].show {
+                        "effects\muzzlefire2"
+                        .pos v[361], v[362] .center
+                        .scrollWithMap
+                        .chromakey 1
+                        .scale 100
+                        .trans 69
+                        .rgbs 100, 100, 100, 100
+                        .add
+                        .grid 2, 1 .anim 3 .once
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                @comment "仕上げに登録消す"
+                v[242..243] += 1
+                s[141..142].off
+                
+            }
+            s[141].on
+            v[11] = v[216] + 0
+            v[12] = v[700]
+            @call .cev 150
+            s[141].off
+            @break
+            
+        }
+        v[216] += 1
+        
+    }
+    
+    
+}
+}

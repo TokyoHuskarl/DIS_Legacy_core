@@ -1,0 +1,46 @@
+cev .id(490), .name("cev490"), {
+v[1301].copy v[601], 300
+v[664] = 0
+@comment "##################
+#Set Human Default#
+##################"
+@call .cev 309
+@comment "#Simplification
+#Unit Type to MS Add"
+v[0] = v[702..716] += [0, 0, 5, 450, 450, 45, 45, 10, 0, 0, 0, 15, 8, 0, 19]
+@comment "#rHit"
+v[740] = 25
+@comment "#Skin"
+@comment "#Hair"
+v[670] = 0
+@comment "#HairColour"
+v[671] = 0
+@comment "#Faction"
+v[822] = 7
+@comment "#Name"
+t[510] .asg "ランダム太郎"
+@comment "#####################
+set Talents"
+v[621] = 30
+v[622] = 2
+v[625] = 2
+v[629] = 3
+@comment "#####################
+set initial equipments"
+@comment "#Wpn"
+v[851] = rnd(1, 30)
+@comment "#Shi"
+v[852] = 0
+@comment "#Armor"
+v[853] = rnd(1, 30)
+@comment "#Helm"
+v[854] = rnd(1, 30)
+@comment "###################"
+@comment "#State - Alive"
+v[601] = 1
+@if s[1] .isOff() {
+    v[701] = 117
+    
+}
+@call .cev 499
+}

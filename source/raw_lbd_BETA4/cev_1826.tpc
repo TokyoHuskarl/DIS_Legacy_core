@@ -1,0 +1,44 @@
+cev .id(1826), .name("cev1826"), {
+@loop 1 {
+    @comment "player_change_view(x,y)"
+    @if t[510] .contains "_change_view(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        @map[v[501]].setVehiclePos .boat .pos v[11], v[12] .retain
+        v[66] = boat.x
+        v[67] = boat.y
+        s[44].on
+        @break
+        
+    }
+    @if t[510] .contains "_victory(" {
+        v[2820] = 1
+        @call .cev 2135
+        @break
+        
+    }
+    @if t[510] .contains "_defeat(" {
+        v[2820] = 2
+        @call .cev 2135
+        @break
+        
+    }
+    @if t[510] .contains "_end_flag(" {
+        @pic[1760].move {
+            .pos v[1115], v[1116] .center
+            .scale 100
+            .trans 100
+            .time 15
+            .rgbs 100, 100, 100, 100
+        }
+        s[461].on
+        @break
+        
+    }
+    
+}
+
+}

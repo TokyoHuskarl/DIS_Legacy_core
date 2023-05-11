@@ -1,0 +1,151 @@
+cev .id(807), .name("cev807"), {
+@comment "NonWallType"
+v[35] = 0
+v[21] = 0
+t[501] .asg "ヴァイキング船"
+@if v[2201] == 1 {
+    
+} .else bl {
+    
+}
+@if s[151] .isOff() {
+    @if v[204] < v[1004] {
+        v[204] += 1
+        @loop v[1004] .dst v[320] {
+            v[201] %= v[1004]
+            v[301] = v[201] * 300
+            v[301] += 5000
+            v[300] = v[301] + 1
+            @if v[v[300]] <= 0 {
+                @comment "まず清掃"
+                v[1301].copy v[601], 300
+                v[1301].copy v[v[300]], 300
+                @comment "出る場所セット"
+                v[252].copy v[605], 2
+                @comment "チームセット"
+                v[700] = v[251]
+                v[624] = v[700] + 1
+                v[822] = v[2403 + v[700] % 3]
+                @comment "ObjTyp"
+                v[601] = 11
+                @comment "生成場所の数値を入れる"
+                v[605].copy v[607], 2
+                v[605].copy v[641], 2
+                v[310..311] = 10000
+                v[605] .mul v[310], 2
+                @comment "あたり判定"
+                v[610] = 40
+                v[611] = 19
+                @comment "Staticなので生産目標地点をセット"
+                v[252].copy v[641], 2
+                v[642] += v[611]
+                @comment "パラメータ等入力begin"
+                @comment "#Unit ID"
+                v[701] = 7
+                @comment "#Unit Type"
+                v[702] = 106
+                @comment "#AAType"
+                v[703] = 2
+                @comment "#Level"
+                v[704] = 1
+                @comment "#HP"
+                v[705..706] = 4500
+                v[705..706] += v[2401] >= 3 ? 600 : 0
+                v[351] = v[2520] * 42
+                v[351] = v[2401] >= 1 ? v[351] : 0
+                v[351] += v[2520] > 55 ? v[2520] * 20 : 0
+                v[705..706] += v[351]
+                v[731] = 5
+                @comment "#MP"
+                v[707..707] = v[95] * 2150
+                v[708..708] = -1
+                @comment "#AD"
+                v[709] = 150 + v[2520]
+                @comment "#AP"
+                v[710] = 0
+                @comment "#AR"
+                v[711] = 450
+                v[352] = v[2401] >= 2 ? 3 : 2
+                v[352] += v[2401] >= 5 ? 2 : 0
+                v[351] = v[2520] * v[352]
+                v[351] += v[2520] > 55 ? 2 * v[2520] : 0
+                v[351] += v[2401] >= 5 && v[2520] > 55 ? 3 * v[2520] : 0
+                v[351] += v[2401] <= 3 && v[2520] > 58 ? 750 : 0
+                v[711] += v[351]
+                @comment "#MR"
+                @comment "#HIT"
+                v[713] = 55 + v[2520]
+                @comment "#Crit"
+                v[715] = 0
+                @comment "#MS"
+                v[716] = 0
+                @comment "#Range Melee"
+                v[717] = 235000
+                @comment "#Range Ranged"
+                v[718] = -1
+                @comment "#AttackSpeed"
+                v[719] = 225 + v[2520]
+                @comment "#AttackMotion"
+                v[720] = 1
+                @comment "#Attacktime"
+                v[728] = 12
+                @if s[1] .isOn() {
+                    @if v[2520] >= 35 {
+                        v[709] -= 52
+                        @comment "#AAType"
+                        v[703] = 4
+                        @comment "#Range Melee"
+                        v[717] = 215000
+                        @comment "#Range Ranged"
+                        v[718] = 0
+                        @comment "#AttackSpeed"
+                        v[719] = 75 + v[2520]
+                        @comment "#AttackMotion"
+                        v[720] = 1
+                        @comment "#Attacktime"
+                        v[728] = 9
+                        @comment "#AttackFunction"
+                        v[730] = 1219
+                        
+                    }
+                    
+                }
+                v[811] |= 2
+                @comment "#生産兵士1"
+                v[741] = 51
+                v[742] = 3
+                v[744] = 15
+                v[745] = 8
+                v[747] = 1
+                v[748] = 4
+                v[750] = 45
+                v[751] = 38
+                @comment "描画"
+                v[822] = 2
+                @if v[2401] >= 2 {
+                    @comment "##TimerPassive"
+                    v[823] = 1
+                    @comment "###Rallying Effect"
+                    v[739] = 150
+                    v[824] = 1296
+                    
+                }
+                @call .cev 1903
+                v[201] += 1
+                @break
+                
+            }
+            @if v[v[320]] >= v[1004] {
+                @comment "Obj多すぎ"
+                @break
+                
+            }
+            v[201] += 1
+            
+        }
+        
+        
+    }
+    
+}
+}

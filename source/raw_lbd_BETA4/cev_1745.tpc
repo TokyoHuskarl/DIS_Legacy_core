@@ -1,0 +1,44 @@
+cev .id(1745), .name("cev1745"), {
+@comment "v1=UnitID
+v2=Team, 0/1
+v3=ifStatic 0/1"
+@if s[261] .isOff() {
+    v[14] = 9999
+    
+}
+v[2881] = v[11]
+v[2883] = v[13]
+@call .cev 1748
+@loop v[1012] .dst v[301] {
+    @comment "Check Enemy Team List"
+    v[300] = v[301] + v[1145 + v[12] % 3]
+    @if v[v[300]] >= 1 {
+        v[299] = v[v[300]] * 300
+        v[299] += 4801
+        @comment "has same id"
+        @if v[v[299]] == v[2881] {
+            @comment "static check"
+            v[299] -= 100
+            @if v[2883] != 1 {
+                v[371] = v[v[299]] < 11 ? 1 : 0
+                
+            } .else bl {
+                v[371] = v[v[299]] == 11 ? 1 : 0
+                
+            }
+            @if v[371] == 1 {
+                v[11] = v[v[300]]
+                @call .cev 1747
+                @if v[2841] >= v[14] {
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
+}

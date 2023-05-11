@@ -1,0 +1,260 @@
+cev .id(1933), .name("cev1933"), {
+v[341] = v[700] == 0 ? v[601] == 3 ? 2 : 1 : 17
+v[345] = v[717] / 1000
+v[346] = v[736] + 100
+@comment "Skill check"
+t[501..504] .asg ""
+v[11] = v[741]
+v[1957] = v[(v[173] - 1) * 300 + v[1261] + 199]
+@if v[11] >= 1 {
+    @call .cev 1102
+    t[501] .asg t[506]
+    v[1959] = v[1957] & 1
+    @if v[1959] == 0 {
+        t[501] .cat " [AutoCast]"
+        
+    }
+    
+}
+v[11] = v[761]
+@if v[11] >= 1 {
+    @call .cev 1102
+    t[502] .asg t[506]
+    v[1959] = v[1957] & 2
+    @if v[1959] == 0 {
+        t[502] .cat " [AutoCast]"
+        
+    }
+    
+}
+v[11] = v[781]
+@if v[11] >= 1 {
+    @call .cev 1102
+    t[503] .asg t[506]
+    v[1959] = v[1957] & 4
+    @if v[1959] == 0 {
+        t[503] .cat " [AutoCast]"
+        
+    }
+    
+}
+v[11] = v[801]
+@if v[11] >= 1 {
+    @call .cev 1102
+    t[504] .asg t[506]
+    v[1959] = v[1957] & 8
+    @if v[1959] == 0 {
+        t[504] .cat " [AutoCast]"
+        
+    }
+    
+}
+@comment "Lv Check"
+v[1957] = (v[173] - 1) * 300 + v[1261] + 58
+v[v[1957]].copy v[1957], 2
+@if s[20] .isOn() {
+    v[340] = v[145] + v[4562]
+    
+} .else bl {
+    v[340] = (v[256] - 1) * 5 + v[1262]
+    
+}
+@if v[601] == 3 {
+    @if v[2201] == 0 {
+        @pic[v[350]].strpic {
+            "\c[\v[341]]\t[\v[340]]\c[0]
+
+
+
+
+R-Hand:
+L-Hand:
+Armor:
+Helm:
+Acc.:
+R-Sub:
+L-Sub:
+Lv.\v[704] 
+総XP:\v[1957] 次のLvまで:\v[1958]
+
+\c[1]HP:\c[0]\v[706]/\v[705]\c[0] \c[10]SP:\c[0]\v[708]/\v[707]\c[0]
+$A\c[17]攻撃力(AD):\c[0]\v[709]\c[5] 攻撃速度:\c[0]\v[719]
+   \c[5]射程:\c[0]\v[345]\c[0] \c[5]武器命中(HIT):\c[0]\v[713] 
+   \c[5]装甲貫通.:\c[0]\v[737]% \c[5]対装甲有効率.:\c[0]\v[346]%
+   基本近接命中:\v[836] 基本遠隔命中:\v[837]
+   \c[14]クリティカル率:\c[0]\v[715]%
+$B\c[3]装甲(AR)\c[0]:\v[711]/\v[738] \c[3]回避力(EVA):\c[0]\v[714]
+   クリティカル回避率:-\v[839]%
+   クリティカル軽減率:-\v[840]%
+$C\c[16]魔力(AP):\c[0]\v[710] \c[6]魔法抵抗(MR):\c[0]\v[712] 
+$D移動速度(MS):\v[716] \c[0]意志(WILL):\c[0]\v[739]
+
+Qスキル:\t[501]
+Wスキル:\t[502]
+Eスキル:\t[503]
+Rスキル:\t[504]"
+            .pos v[353], v[354] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 0
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    } .else bl {
+        @pic[v[350]].strpic {
+            "\c[\v[341]]\t[\v[340]]\c[0]
+
+
+
+
+R-Hand:
+L-Hand:
+Armor:
+Helm:
+Acc.:
+R-Sub:
+L-Sub:
+Lv.\v[704] 
+Total XP:\v[1957] XP to next Lv:\v[1958]
+
+\c[1]HP:\c[0]\v[706]/\v[705]\c[0] \c[10]SP:\c[0]\v[708]/\v[707]\c[0]
+$A\c[17]Attack Damage:\c[0]\v[709]\c[5] Attack Speed:\c[0]\v[719]
+   \c[5]Attack Range:\c[0]\v[345]\c[0] \c[5]Hit:\c[0]\v[713] 
+   \c[5]AR.Pen.:\c[0]\v[737]% \c[5]AR.Eff.:\c[0]\v[346]%
+   Base Melee Hit:\v[836] Base Ranged Hit:\v[837]
+   \c[14]Critical Chance:\c[0]\v[715]%
+$B\c[3]Armor\c[0]:\v[711]/\v[738] \c[3]Evasion:\c[0]\v[714]
+   Critical Chance Reduction:-\v[839]%
+   Critical Damage Reduction:-\v[840]%
+$C\c[16]Ability Power:\c[0]\v[710] \c[6]Magic Resist:\c[0]\v[712] 
+$DMove Speed:\v[716] \c[0]Will:\c[0]\v[739]
+Q:\t[501]
+W:\t[502]
+E:\t[503]
+R:\t[504]
+"
+            .pos v[353], v[354] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 0
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    }
+    
+} .else bl {
+    s[151].on
+    s[151].off
+    @if v[2201] == 0 {
+        @pic[v[350]].strpic {
+            "\c[\v[341]]\t[\v[340]]\c[0]
+
+
+
+
+R-Hand:
+L-Hand:
+Armor:
+Helm:
+Acc.:
+R-Sub:
+L-Sub:
+Lv.\v[704] 
+
+
+\c[1]HP:\c[0]\v[706]/\v[705]\c[0] \c[10]SP:\c[0]\v[708]/\v[707]\c[0]
+$A\c[17]攻撃力(AD):\c[0]\v[709]\c[5] 攻撃速度:\c[0]\v[719]
+   \c[5]射程:\c[0]\v[345]\c[0] \c[5]武器命中(HIT):\c[0]\v[713] 
+   \c[5]装甲貫通.:\c[0]\v[737]% \c[5]対装甲有効率.:\c[0]\v[346]%
+   \c[14]クリティカル率:\c[0]\v[715]%
+$B\c[3]装甲(AR)\c[0]:\v[711]/\v[738] \c[3]回避力(EVA):\c[0]\v[714]
+   クリティカル回避率:-\v[839]%
+   クリティカル軽減率:-\v[840]%
+$C\c[16]魔力(AP):\c[0]\v[710] \c[6]魔法抵抗(MR):\c[0]\v[712] 
+$D移動速度(MS):\v[716] \c[0]意志(WILL):\c[0]\v[739]
+
+
+Qスキル:\t[501]
+Wスキル:\t[502]
+Eスキル:\t[503]
+Rスキル:\t[504]"
+            .pos v[353], v[354] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 0
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    } .else bl {
+        @pic[v[350]].strpic {
+            "\c[\v[341]]\t[\v[340]]\c[0]
+
+
+
+
+R-Hand:
+L-Hand:
+Armor:
+Helm:
+Acc.:
+R-Sub:
+L-Sub:
+Lv.\v[704] 
+
+
+\c[1]HP:\c[0]\v[706]/\v[705]\c[0] \c[10]SP:\c[0]\v[708]/\v[707]\c[0]
+$A\c[17]Attack Damage:\c[0]\v[709]\c[5] Attack Speed:\c[0]\v[719]
+   \c[5]Attack Range:\c[0]\v[345]\c[0] \c[5]Hit:\c[0]\v[713] 
+   \c[5]AR.Pen.:\c[0]\v[737]% \c[5]AR.Eff.:\c[0]\v[346]%
+   \c[14]Critical Chance:\c[0]\v[715]%
+$B\c[3]Armor\c[0]:\v[711]/\v[738] \c[3]Evasion:\c[0]\v[714]
+   Critical Chance Reduction:-\v[839]%
+   Critical Damage Reduction:-\v[840]%
+$C\c[16]Ability Power:\c[0]\v[710] \c[6]Magic Resist:\c[0]\v[712] 
+$DMove Speed:\v[716] \c[0]Will:\c[0]\v[739]
+
+
+Q:\t[501]
+W:\t[502]
+E:\t[503]
+R:\t[504]
+"
+            .pos v[353], v[354] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font "", v[4511]
+            .spacing 0, 0
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    }
+    
+}
+}

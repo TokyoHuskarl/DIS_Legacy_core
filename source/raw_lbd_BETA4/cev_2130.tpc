@@ -1,0 +1,98 @@
+cev .id(2130), .name("cev2130"), {
+@bgm.stop
+@call .cev 1915
+v[342] = 20
+v[343] = v[1002] - 30
+@pic[1001].strpic {
+    "TIPS:\t[3000]"
+    .pos v[1115], v[342] .center
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "k8x12S", 12
+    .spacing 0, 4
+    .skin "" .nobg .noframe
+    .mapLayer 10
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+@pic[999].strpic {
+    "　NOW LOADING..."
+    .pos v[1115], v[343] .center
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "k8x12S", 12
+    .spacing 0, 4
+    .skin "" .nobg .noframe
+    .mapLayer 10
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+v[342] = muldiv(100, v[1001], 800)
+@if v[342] > 100 {
+    v[342] += 5
+    
+}
+v[344] = v[1001] / 2
+v[345] = v[1002] / 2
+@if v[2223] != 1 {
+    @pic[997].show {
+        "..\assets\logo"
+        .pos v[344], v[345] .center
+        .chromakey 1
+        .scale v[342]
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .mapLayer 10
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    v[341] = rnd(1, 3)
+    @pic[996].show {
+        "..\assets\dis_backn" .repl 1 v[341]
+        .pos v[344], v[345] .center
+        .chromakey 0
+        .scale v[342]
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .mapLayer 10
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    
+} .else bl {
+    @pic[997].show {
+        "..\assets\logo_2"
+        .pos v[344], v[345] .center
+        .chromakey 1
+        .scale v[342]
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .overlay
+        .mapLayer 10
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    @pic[996].show {
+        "..\assets\legback"
+        .pos v[344], v[345] .center
+        .chromakey 0
+        .scale v[342]
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .mapLayer 10
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    
+}
+}

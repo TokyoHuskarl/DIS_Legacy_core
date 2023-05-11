@@ -1,0 +1,77 @@
+cev .id(2102), .name("cev2102"), {
+@comment "Close"
+v[11] += 1
+@pic[v[11]].strpic {
+    "        \c[17]\v[\v[12]]"
+    .pos v[13], v[14] .left
+    .size 100, 14    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font t[530], 11 .noShadow
+    .spacing 0, 4
+    .skin "" .nobg .noGradation .noPadding
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+@pic[v[11]].getInfo .ltrb .baseRect v[341], v[342], v[343], v[344]
+v[342] += 2
+v[343] -= 2
+v[21] = 0
+@if `between(v[51], v[341] - 4, v[343] + 4) && between(v[52], v[342] - 2, v[344] + 2) {
+    @if v[43] == 1005 {
+        v[11] -= 1
+        v[350] = v[51] - v[13]
+        v[350] = min(max(v[350], 0), 100)
+        v[346] = 14
+        @pic[v[11]].strpic {
+            ""
+            .pos v[13], v[14] .left
+            .size v[350], v[346]            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 0, 200, 0, 100
+            .font "", 12 .noShadow
+            .spacing 0, 4
+            .skin "" .stretch .noGradation .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        v[v[12]] = v[350]
+        v[21] = 1
+        
+    }
+    
+}
+@if v[21] == 0 {
+    @comment "First Draw"
+    v[11] -= 1
+    @pic[v[11]].getInfo .cewh .baseRect v[341], v[342], v[343], v[344]
+    @if v[344] <= 10 {
+        v[350] = v[v[12]]
+        v[350] = min(max(v[350], 0), 100)
+        v[346] = 14
+        @pic[v[11]].strpic {
+            ""
+            .pos v[13], v[14] .left
+            .size v[350], v[346]            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 0, 200, 0, 100
+            .font "", 12 .noShadow
+            .spacing 0, 4
+            .skin "" .stretch .noGradation .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    }
+    
+}
+}

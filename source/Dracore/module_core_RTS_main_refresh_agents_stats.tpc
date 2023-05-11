@@ -1,0 +1,527 @@
+__fn agent_ref_stats(){
+    //@comment "Get [1-100]"
+
+    //@comment "remove inertia"
+    v[603] &= ~16
+    /*@comment "########################
+    Process Parameters Setting BEGIN
+########################"*/
+    //@comment "#Set ForceSprite Default"
+    @if v[843] < 4 {
+        v[850] = -2
+        
+    }
+    //@comment "#Base Parameters Get"
+    v[709].copy v[861], 11
+    v[731].copy v[872], 2
+    v[874] = v[740]
+    v[875] = v[739]
+    //@comment "#SP fatigue penalty"
+    v[868] -= !(v[726] & 2048) ? muldiv(v[868], v[707] - v[708], v[707]) / 2 / (!(v[665] & 32768) ? 1 : 2) : 0
+    //@comment "#ProcessCamo dealed in per3f"
+    v[877] = 0
+    /*@comment "##############
+#Terrain Check#
+##############"*/
+    //@comment "#Suitable Terrain"
+    @if `v[603] & 2 {
+        v[868] = muldiv(v[868], 120, 100)
+        
+    }
+    //@comment "#Water Terrain"
+    @if `v[603] & 1 {
+        //@comment "pathfinder"
+        @if `v[665] & 128 {
+            v[868] = muldiv(v[868], 3, 4)
+            v[873] -= 1
+            
+        } .else bl {
+            v[866] = muldiv(v[866], 3, 4)
+            v[868] /= 2
+            v[873] -= 2
+            
+        }
+        
+    }
+    //@comment "#Ice"
+    @if `v[603] & 32 {
+        v[603] |= 16
+        v[868] = muldiv(v[868], 125, 100)
+        
+    }
+    //@comment "#Horse in forest"
+    v[868] = v[603] & 8 ? muldiv(v[868], v[603] & 128 ? 60 : 80, 100) : v[868]
+    /*@comment "##################
+#Terrain Check End#
+##################"*/
+
+
+    //Check TileFlags begin
+
+    //Crowded?
+    Temp2 = Const_save_var_TileFlags + v[632]
+    v[868] -= v[Temp2]&FLAG_Maptile_Crowded?v[868]>>3:0 //-12.5%
+
+
+
+
+    //Check TileFlags end
+
+
+    //@comment "#Buff/Debuff Effects"
+    s[119].on
+    v[235] = 671
+    v[371] = 0
+    @while v[v[235]] > v[1186] {
+        v[234] = v[235] + 15
+        @call .cev v[v[235]]
+        //@comment "#タイマー切れてたら消す"
+        @if v[v[234]] <= 0 {
+            v[v[235]] = 0
+            v[371] = 1
+            
+        }
+        v[235] += 1
+        
+    }
+
+    @if v[371] == 1 {
+        v[235] = 671
+        v[234] = 686
+        v[v[235]].sortDescending 8 .sync v[v[234]]
+        
+    }
+    s[119].off
+    /*@comment "##############
+	#Perk Check#
+	##############"*/
+    /*@comment "#Last Stand
+    gains Attack Speed based on missing Health."*/
+    v[871] += v[665] & 524288 ? divmul(v[871], v[705], v[705] - v[706]) : 0
+    /*@comment "##################
+	#Perk Check End#
+	##################"
+        ##############
+	#Morale Check#
+	##############"*/
+    v[341] = v[860]
+    v[862..866] *= 10 - v[341]
+    v[862..866] /= 10
+    //@comment "##Flee"
+    @if v[341] == 3 {
+        v[877] |= 2
+        v[874] |= 67110400//1024+512+67108864
+        v[874] &= ~16793600//(16777216+16384)
+        //v[874] |= 67108864 24.4.23
+        v[842] = 11
+        v[843] = 0
+        //@comment "#Break Discipline"
+        //@comment "Will/4"
+        v[875] /= 4
+        //v[869] = v[869..870] = [9899999, 0]
+	v[870] = 9899999
+	v[869] = 0
+        v[868] += v[868]>>3 //muldiv(v[868], 110, 100)
+        
+    } .else bl {
+        v[875] = muldiv(v[875], 10 - v[341], 10)
+        //@comment "#Mages"
+        @if v[702] == 4 {
+            //@comment "Player only"
+            @if v[800] == 0 {
+                v[862] += muldiv(v[710], 4 * v[493], 100) + v[493]
+                
+            }
+            
+        } .else bl {
+            //@comment "#Civilians"
+            @if v[702] == 9 {
+		v[861] = v[709]
+                v[341] = v[2409 + v[700] % 3]
+                //@comment "cart1"
+                @if `v[341] & 16 {
+                    v[871] += muldiv(v[719], 12, 100)
+                    v[868] = muldiv(v[868], 11, 10)
+                    
+                }
+                //@comment "cart2"
+                @if `v[341] & 32 {
+                    v[871] += muldiv(v[719], 10, 100)
+                    v[868] = muldiv(v[868], 11, 10)
+                    
+                }
+                //@comment "crane"
+                v[861] += v[341] & 64 ? muldiv(v[861], 20, 100) : 0
+                
+            }
+            
+        }
+        /*@comment "##############
+	#Fighting Order#
+	##############"*/
+        v[341] = v[848]
+        @if v[341] >= 1 {
+
+                    
+ 		@if `v[341] & 2 {
+ 			@if `!(v[874] & 67108864) {
+				v[863] += muldiv(v[711], 30, 100)
+				v[864] += muldiv(v[712], 30, 100)
+				v[866] += muldiv(v[714], 40, 100)
+				v[871] /= 2
+				v[868] = muldiv(v[868], 8, 10)
+				//@comment "#Force Spr"
+				v[850] = 2
+                        }
+                }.elif `v[341] & 4 {//stronger shield wall
+ 			@if `!(v[874] & 67108864) {
+				v[863] += muldiv(v[711], 40, 100)
+				v[864] += muldiv(v[712], 40, 100)
+				v[866] += v[714] / 2
+				v[871] /= 2
+				v[868] = muldiv(v[868], 8, 10)
+				v[874] |= 8192
+				//@comment "#Force Spr"
+				v[850] = 2
+			}
+                        
+                }.elif `v[341] & 1 {//@comment "##pikewall"
+                    v[865] = muldiv(v[865], 12, 10)
+                    v[871] = muldiv(v[871], 88, 100)
+                    v[869] += 5000
+                    v[868] /= 2
+                    //@comment "##knock back immunity"
+                    v[874] |= 8
+                    //@comment "#ForceSpr"
+                    v[850] = 2
+                    
+                } .elif `v[341] & 8 {//@comment "##Skirmishing" 
+                    v[870] = v[869] / 2
+                    v[869] = muldiv(v[869], 9, 10)
+                    v[865] = muldiv(v[865], 9, 10)
+                    v[871] = muldiv(v[871], 14, 10)
+                    
+                } .elif `v[341] & 16 {//@comment "##Cast Support"
+                    v[870] = v[869] / 2
+                    v[869] += v[869]>>3 //muldiv(v[869], 11, 10)
+                    v[868] = muldiv(v[868], 75, 100)
+                    v[873] += 2
+                    
+                }.elif `v[341] & 64 {//@comment "##Rallying"
+                    v[863] += muldiv(v[711], 10, 100)
+                    v[864] += muldiv(v[712], 10, 100)
+                    v[871] /= 2
+                    v[868] = muldiv(v[868], 8, 10)
+                    v[875] += muldiv(v[875], 50, 100)
+                    v[876] = 0
+                    
+                }.elif `v[341] & 128 {//@comment "##Obs"
+                    v[863] += muldiv(v[711], 10, 100)
+                    v[864] += muldiv(v[712], 10, 100)
+                    v[871] /= 2
+                    v[868] = muldiv(v[868], 8, 10)
+                    v[875] += muldiv(v[875], 50, 100)
+                    v[876] += 500000
+                    
+                }
+
+                
+            
+            
+        }
+        /*@comment "########################
+#Fighting Order END
+########################"*/
+        
+    }
+    /*@comment "#################
+#Morale Check End#
+#################"*/
+    //@comment "#In Melee Combat"
+    //v[0] = v[681] >= 1 ? (v[868..874] = [divmul(v[868], 100, 75), v[869], v[870], muldiv(v[871], 9, 10), v[872], divmul(v[873], 5, 4), v[874] & ~16384 & ~1 & ~134217728]) : 0
+    @if v[681]>1{
+	    v[868] -= v[868]>>2 //divmul(v[868], 100, 75)
+	    v[871] -= v[871]>>3
+	    v[873] = muldiv(v[873],5,4)
+	    v[874] &= ~134234113//~16384 & ~1 & ~134217728
+
+
+    }.elif v[874] & 134217728 {
+        @if v[703] == 0 {
+            v[861] += muldiv(v[868], 8, 100)
+            
+        }
+        
+    }
+    //@comment "#Set Process Parameters"
+    /*@comment "########################
+    Process Parameters Setting END
+########################"*/
+}
+
+
+
+
+__fn agent_ref_stats_leg(){
+    //@comment "Get [1-100]"
+    v[601] = v[301] + 1
+    v[601] = v[v[601]]
+    //@comment "remove inertia"
+    v[603] = v[301] + 3
+    v[v[603]] &= ~16
+    /*@comment "########################
+    Process Parameters Setting BEGIN
+########################"*/
+    v[705] = v[301] + 105
+    v[v[705]].copy v[705], 4
+    //@comment "#Set ForceSprite Default"
+    v[850] = v[301] + 250
+    @if `v[v[301] + 243] < 4 {
+        v[v[850]] = -2
+        
+    }
+    //@comment "#Base Parameters Get"
+    v[861] = v[301] + 109
+    v[v[861]].copy v[861], 11
+    v[861].copy v[709], 11
+    v[872] = v[301] + 131
+    v[v[872]].copy v[872], 2
+    v[874] = v[301] + 140
+    v[874] = v[v[874]]
+    v[875] = v[301] + 139
+    v[875] = v[v[875]]
+    //@comment "#SP fatigue penalty"
+    v[868] -= !(v[v[301] + 126] & 2048) ? muldiv(v[868], v[707] - v[708], v[707]) / 2 / (!(v[665] & 32768) ? 1 : 2) : 0
+    //@comment "#ProcessCamo dealed in per3f"
+    v[876] = v[301] + 276
+    v[876] = v[v[876]]
+    v[877] = 0
+    v[665] = v[301] + 65
+    v[665] = v[v[665]]
+    /*@comment "##############
+#Terrain Check#
+##############"*/
+    //@comment "#Suitable Terrain"
+    @if `v[v[603]] & 2 {
+        v[868] = muldiv(v[868], 120, 100)
+        
+    }
+    //@comment "#Water Terrain"
+    @if `v[v[603]] & 1 {
+        //@comment "pathfinder"
+        @if `v[665] & 128 {
+            v[868] = muldiv(v[868], 3, 4)
+            v[873] -= 1
+            
+        } .else bl {
+            v[866] = muldiv(v[866], 3, 4)
+            v[868] /= 2
+            v[873] -= 2
+            
+        }
+        
+    }
+    //@comment "#Ice"
+    @if `v[v[603]] & 32 {
+        v[v[603]] |= 16
+        v[868] = muldiv(v[868], 125, 100)
+        
+    }
+    //@comment "#Horse in forest"
+    v[868] = v[v[603]] & 8 ? muldiv(v[868], v[v[603]] & 128 ? 60 : 80, 100) : v[868]
+    /*@comment "##################
+#Terrain Check End#
+##################"*/
+    v[680] = v[301]+80
+    v[680] = v[v[680]]
+    //@comment "#Buff/Debuff Effects"
+    s[119].on
+    v[235] = v[301] + 71
+    v[371] = 0
+    @while v[v[235]] > v[1186] {
+        v[234] = v[235] + 15
+        @call .cev v[v[235]]
+        //@comment "#タイマー切れてたら消す"
+        @if v[v[234]] <= 0 {
+            v[v[235]] = 0
+            v[371] = 1
+            
+        }
+        v[235] += 1
+        
+    }
+
+    @if v[371] == 1 {
+        v[235] = v[301] + 71
+        v[234] = v[235] + 15
+        v[v[235]].sortDescending 8 .sync v[v[234]]
+        
+    }
+    s[119].off
+    /*@comment "##############
+	#Perk Check#
+	##############"*/
+    /*@comment "#Last Stand
+    gains Attack Speed based on missing Health."*/
+    v[871] += v[665] & 524288 ? divmul(v[871], v[705], v[705] - v[706]) : 0
+    /*@comment "##################
+	#Perk Check End#
+	##################"
+        ##############
+	#Morale Check#
+	##############"*/
+    v[341] = v[301] + 260
+    v[341] = v[v[341]]
+    v[862..866] *= 10 - v[341]
+    v[862..866] /= 10
+    //@comment "##Flee"
+    @if v[341] == 3 {
+        v[877] |= 2
+        v[874] |= 67110400//1024+512+67108864
+        v[874] &= ~(16777216+16384)
+        //v[874] |= 67108864 24.4.23
+        v[842] = v[301] + 242
+        v[v[842]] = 11
+        v[843] = v[301] + 243
+        v[v[843]] = 0
+        //@comment "#Break Discipline"
+        //@comment "Will/4"
+        v[875] /= 4
+        //v[869] = v[869..870] = [9899999, 0]
+	v[870] = 9899999
+	v[869] = 0
+        v[868] = muldiv(v[868], 110, 100)
+        
+    } .else bl {
+        v[875] = muldiv(v[875], 10 - v[341], 10)
+        v[702] = v[301] + 102
+        //@comment "#Mages"
+        @if v[v[702]] == 4 {
+            //@comment "Player only"
+            @if `v[v[301] + 100] == 0 {
+                v[862] += muldiv(v[v[301] + 110], 4 * v[493], 100) + v[493]
+                
+            }
+            
+        } .else bl {
+            //@comment "#Civilians"
+            @if v[v[702]] == 9 {
+		v[861] = v[301] + 109
+                v[861] = v[v[861]]
+                v[341] = v[2409 + v[v[301] + 100] % 3]
+                //@comment "cart1"
+                @if `v[341] & 16 {
+                    v[871] += muldiv(v[v[301] + 119], 12, 100)
+                    v[868] = muldiv(v[868], 11, 10)
+                    
+                }
+                //@comment "cart2"
+                @if `v[341] & 32 {
+                    v[871] += muldiv(v[v[301] + 119], 10, 100)
+                    v[868] = muldiv(v[868], 11, 10)
+                    
+                }
+                //@comment "crane"
+                v[861] += v[341] & 64 ? muldiv(v[861], 20, 100) : 0
+                
+            }
+            
+        }
+        /*@comment "##############
+	#Fighting Order#
+	##############"*/
+	v[341] = v[301] + 248
+        v[341] = v[v[341]]
+        @if v[341] >= 1 {
+
+                    
+ 		@if `v[341] & 2 {
+ 			@if `!(v[874] & 67108864) {
+				v[863] += muldiv(v[711], 30, 100)
+				v[864] += muldiv(v[712], 30, 100)
+				v[866] += muldiv(v[714], 40, 100)
+				v[871] /= 2
+				v[868] = muldiv(v[868], 8, 10)
+				//@comment "#Force Spr"
+				v[v[850]] = 2
+                        }
+                }.elif `v[341] & 4 {//stronger shield wall
+ 			@if `!(v[874] & 67108864) {
+				v[863] += muldiv(v[711], 40, 100)
+				v[864] += muldiv(v[712], 40, 100)
+				v[866] += v[714] / 2
+				v[871] /= 2
+				v[868] = muldiv(v[868], 8, 10)
+				v[874] |= 8192
+				//@comment "#Force Spr"
+				v[v[850]] = 2
+			}
+                        
+                }.elif `v[341] & 1 {//@comment "##pikewall"
+                    v[865] = muldiv(v[865], 12, 10)
+                    v[871] = muldiv(v[871], 88, 100)
+                    v[869] += 5000
+                    v[868] /= 2
+                    //@comment "##knock back immunity"
+                    v[874] |= 8
+                    //@comment "#ForceSpr"
+                    v[v[850]] = 2
+                    
+                } .elif `v[341] & 8 {//@comment "##Skirmishing" 
+                    v[870] = v[869] / 2
+                    v[869] = muldiv(v[869], 9, 10)
+                    v[865] = muldiv(v[865], 9, 10)
+                    v[871] = muldiv(v[871], 14, 10)
+                    
+                } .elif `v[341] & 16 {//@comment "##Cast Support"
+                    v[870] = v[869] / 2
+                    v[869] = muldiv(v[869], 11, 10)
+                    v[868] = muldiv(v[868], 75, 100)
+                    v[873] += 2
+                    
+                }.elif `v[341] & 64 {//@comment "##Rallying"
+                    v[863] += muldiv(v[711], 10, 100)
+                    v[864] += muldiv(v[712], 10, 100)
+                    v[871] /= 2
+                    v[868] = muldiv(v[868], 8, 10)
+                    v[875] += muldiv(v[875], 50, 100)
+                    v[876] = 0
+                    
+                }.elif `v[341] & 128 {//@comment "##Obs"
+                    v[863] += muldiv(v[711], 10, 100)
+                    v[864] += muldiv(v[712], 10, 100)
+                    v[871] /= 2
+                    v[868] = muldiv(v[868], 8, 10)
+                    v[875] += muldiv(v[875], 50, 100)
+                    v[876] += 500000
+                    
+                }
+
+                
+            
+            
+        }
+        /*@comment "########################
+#Fighting Order END
+########################"*/
+        
+    }
+    /*@comment "#################
+#Morale Check End#
+#################"*/
+    //@comment "#In Melee Combat"
+    v[0] = v[681] >= 1 ? (v[868..874] = [divmul(v[868], 100, 75), v[869], v[870], muldiv(v[871], 9, 10), v[872], divmul(v[873], 5, 4), v[874] & ~16384 & ~1 & ~134217728]) : 0
+    @if `v[874] & 134217728 {
+        @if `v[v[301] + 103] == 0 {
+            v[861] += muldiv(v[868], 8, 100)
+            
+        }
+        
+    }
+    //@comment "#Set Process Parameters"
+    v[341] = v[301] + 261
+    v[861].copy v[v[341]], 17
+    /*@comment "########################
+    Process Parameters Setting END
+########################"*/
+}

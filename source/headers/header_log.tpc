@@ -1,0 +1,55 @@
+__fn func_logupdate_begin{
+
+	v[341] = v[1136] + v[1155]
+	@pic[v[341]].erase
+	@loop v[1136] .dst v[342] {
+	    v[343] = v[341] - 1
+	    @pic[v[343]].setId .move v[341], 1 .ignoreError
+	    v[341] -= 1
+	}
+
+}
+__fn func_logupdate_end{
+	v[341] = v[1155]
+	v[350] = 2
+	v[351] = v[4515]
+	v[345] = v[239]
+	@loop v[1136] .dst v[342] {
+	    v[342] += v[341]
+	    @pic[v[342]].move {
+		.pos v[350], v[351] .bottomLeft
+		.scale 100
+		.trans v[345]
+		.time -1
+		.rgbs 100, 100, 100, 100
+	    }
+	    v[351] -= v[1137]
+	    v[345] += v[231]
+	    v[345] = min(v[345], 100)
+	    
+	}
+	v[238] = v[239] < 100 ? 360 : 0
+
+}
+
+__fn func_show_msg $str {
+	t[3000].asg $str .extract
+	func_logupdate_begin()
+	v[341] = 2
+	@pic[v[1155]].strpic {
+	    t[3000]
+	    .pos v[341], v[1126] .bottomLeft
+	    .size 0, 0    .chromakey 1
+	    .scale 100
+	    .trans 30
+	    .rgbs 100, 100, 100, 100
+	    .font t[530], v[4511]
+	    .spacing 0, 4
+	    .skin "" .nobg .noframe .noPadding
+	    .mapLayer 8
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
+	func_logupdate_end()
+}

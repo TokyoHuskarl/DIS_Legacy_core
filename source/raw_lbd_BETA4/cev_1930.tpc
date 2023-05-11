@@ -1,0 +1,24 @@
+cev .id(1930), .name("cev1930"), {
+@if v[2820] == 1 {
+    @comment "#########################"
+    v[471] = 11550
+    v[472] = divmul(80, 100, v[2217])
+    v[473] = 100
+    v[474] = 50
+    @comment "#########################"
+    @cmd v[471], "jingles\cx-short", .args v[472], 3
+    @cmd v[471], "jingles\cx-short", .args v[472], 3
+    
+}
+@if v[2820] == 2 {
+    @comment "#########################"
+    v[471] = 11550
+    v[472] = divmul(80, 100, v[2217])
+    v[473] = 100
+    v[474] = 50
+    @comment "#########################"
+    @cmd v[471], "jingles\gameover2", .args v[472], 3
+    @cmd v[471], "jingles\gameover2", .args v[472], 3
+    
+}
+}

@@ -1,0 +1,106 @@
+cev .id(488), .name("cev488"), {
+v[1301].copy v[601], 300
+v[664] = 0
+@comment "##################
+#Set Human Default#
+##################"
+@call .cev 309
+@comment "#Simplification
+#Unit Type to MS Add"
+v[0] = v[702..716] += [0, 0, 5, 450, 450, 55, 55, 18, 0, 0, 25, 30, 16, 2, 23]
+@comment "#AS Bonus"
+v[719] += 8
+@comment "#WILL"
+v[739] = 92
+@comment "#rHit"
+v[740] = 40
+@comment "#Skin"
+v[663] = 1
+@comment "#Hair"
+v[670] = 0
+@comment "#HairColour"
+v[671] = 0
+@comment "#Passive"
+v[821] = 19
+@comment "#Faction"
+v[822] = 1
+@comment "#Name"
+t[510] .asg "ヴァランゴイ"
+@comment "#####################
+set HitBox"
+v[681] = 10
+v[682] = 11
+@comment "#####################
+set Traits"
+@comment "IronLung"
+v[603] |= 1
+@comment "#####################
+set Perks"
+@comment "Brawny"
+v[606] |= 2
+@comment "Battle Forged"
+v[606] |= 4
+@comment "Stalwart"
+v[606] |= 16
+@comment "Anticipation"
+v[606] |= 64
+@comment "Fearsome"
+v[606] |= 256
+@comment "##Mastery Axe"
+v[607] |= 64
+@comment "##KillingFrenzy"
+v[607] |= 1
+@comment "##BattleFlow"
+v[607] |= 2
+@comment "##Berserk"
+v[607] |= 4
+@comment "##HeadHunter"
+v[607] |= 8
+@comment "Determination"
+v[608] |= 2
+@comment "DevastatingStrikes"
+v[608] |= 4
+@comment "#####################
+set Talents"
+v[621] = 1
+v[622] = 2
+v[623] = 2
+v[625] = 2
+v[627] = 2
+@comment "#####################
+set Skills"
+v[802] = 1208
+@comment "#####################
+set initial equipments"
+@comment "#Helm Lock"
+v[850] |= 8
+@if s[1] .isOn() {
+    @comment "#Hand Lock"
+    v[850] |= 1
+    v[850] |= 2
+    
+}
+@comment "#Wpn"
+v[851] = 11
+v[851] = 9
+@comment "#Armor"
+v[853] = 19
+v[853] = 42
+@comment "#Helm"
+v[854] = 17
+v[854] = 61
+@comment "###################"
+@comment "#####################
+set Flags"
+@comment "CantDismiss"
+v[610] |= 1
+@comment "essential"
+v[610] |= 2
+@comment "#State - Alive"
+v[601] = 1
+@if s[1] .isOff() {
+    v[701] = 117
+    
+}
+@call .cev 499
+}

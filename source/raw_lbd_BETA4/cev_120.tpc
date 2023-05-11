@@ -1,0 +1,93 @@
+cev .id(120), .name("cev120"), {
+@comment "Particle Effecter"
+@comment "ずれセット"
+v[294] = v[301] + 6
+v[v[294]] .add v[53], 2
+v[347] = v[301] + 4
+v[0] = v[345..346] = [v[53] * 10000, v[54] * 10000]
+v[v[347]] .add v[345], 2
+@if s[2] .isOff() {
+    @if `v[v[301] + 48] == 0 {
+        v[v[294]].copy v[341], 2
+        v[245] %= v[2215]
+        v[345] = v[245] + v[1200]
+        v[343] = v[v[301] + 27]
+        @pic[v[345]].show {
+            "effects\particles"
+            .pos v[341], v[342] .top
+            .scrollWithMap
+            .chromakey 1
+            .scale 145
+            .trans 50
+            .rgbs 0, 0, 0, 100
+            .angle v[343], 1000
+            .multi
+            .grid 12, 12 .cell 18
+            .mapLayer 6
+            .affectedByTint
+            .affectedByFlash
+            .affectedByShake
+        }
+        @pic[v[345]].move {
+            .pos v[341], v[342] .top
+            .scale 145
+            .trans 100
+            .time -2
+            .rgbs 0, 0, 0, 100
+            .angle v[343], 1000
+            .multi
+        }
+        v[245] += 1
+        @comment "###"
+        v[341] = v[v[301] + 9] * 100 + v[1018]
+        @if `v[v[341] + 10] == 31 {
+            @comment "Access13 = x"
+            v[293] = v[341] + 6
+            v[343] = v[v[341] + 27]
+            v[v[293]].copy v[341], 2
+            v[245] %= v[2215]
+            v[345] = v[245] + v[1200]
+            @pic[v[345]].show {
+                "effects\particles"
+                .pos v[341], v[342] .center
+                .scrollWithMap
+                .chromakey 1
+                .scale 170
+                .trans 45
+                .rgbs 100, 100, 100, 100
+                .angle v[343], 1000
+                .add
+                .grid 12, 12 .cell 14
+                .mapLayer 5
+                .affectedByTint
+                .affectedByFlash
+                .affectedByShake
+            }
+            @pic[v[345]].move {
+                .pos v[341], v[342] .center
+                .scale 170
+                .trans 100
+                .time -5
+                .rgbs 100, 100, 100, 100
+                .angle v[343], 1000
+                .add
+            }
+            v[245] += 1
+            
+        }
+        
+    }
+    @comment "Access14 = x"
+    v[342] = v[301] + 4
+    @comment "V"
+    v[341] = v[301] + 11
+    v[v[342]] .add v[v[341]], 2
+    v[v[342]].copy v[343], 2
+    v[343..344] /= 10000
+    v[343].copy v[v[294]], 2
+    
+} .else bl {
+    v[v[301] + 49] += 1
+    
+}
+}

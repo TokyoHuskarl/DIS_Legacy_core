@@ -1,0 +1,59 @@
+#include "./../headers/header_common.tpc"
+//Actual script commands -> header_scripts_functions
+#include "./../headers/header_scripts.tpc"
+
+
+cev .id(1821), .name("*MapScriptGeneral*"), {
+	/*
+	So einfach ist das.
+		    */
+	s[261].on
+	t[510] .asg t[510] .extract
+	t[510] .inStr "//", 321,  .beg 0
+	// "#""//""Comment out"
+	@if v[321] == -1 {
+	    @loop 1 {
+		@if t[510] .contains "cond_" {
+		    //@call .cev 1825
+		    scripts_cond()
+		    @break
+		    
+		}
+		@if t[510] .contains "map_" {
+		    //@call .cev 1824
+		    scripts_map()
+		    @break
+		    
+		}
+		@if t[510] .contains "AI_" {
+		    //@call .cev 1822
+		    scripts_AI()
+		    @break
+		    
+		}
+		@if t[510] .contains "team_" {
+		    //@call .cev 1823
+		    scripts_team()
+		    @break
+		    
+		}
+		@if t[510] .contains "player_" {
+		    //@call .cev 1826
+		    scripts_player()
+		    @break
+		    
+		}
+		@if t[510] .contains "var_" {
+		    //@call .cev 1827
+		    scripts_var()
+		    @break
+		    
+		}
+		scripts_misc()
+	    }
+	    
+	    
+	}
+	s[261].off
+
+}

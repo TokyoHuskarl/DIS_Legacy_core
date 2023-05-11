@@ -1,0 +1,57 @@
+cev .id(1289), .name("cev1289"), {
+v[31..34] = 0
+v[13] = 888888888
+@if s[151] .isOff() {
+    v[252].copy v[607], 2
+    @if `!(v[v[603]] & 8) {
+        v[182] += 1
+        @comment "#########################"
+        v[472] = divmul(70, 100, v[2216])
+        v[473] = 100
+        v[474] = divmul(v[607] + v[1001], v[1281], 50)
+        @cmd 11550, "rtp\Close2", .args v[472], 3
+        @comment "#########################"
+        @call .cev 1924
+        v[341] = 2
+        v[601] = 1
+        @pic[v[1155]].strpic {
+            t[20316]
+            .pos v[341], v[1126] .bottomLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 30
+            .rgbs 100, 100, 100, 100
+            .font "misaki_gothic", 10
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @call .cev 1925
+        
+    }
+    @if `!(v[v[401] * v[1117] + 5003] & 8) {
+        v[298] = v[401] * v[1117] + 5000
+        v[807] = v[298] + 207
+        v[v[807]].copy v[807], 3
+        @loop v[809] .dst v[2064] {
+            v[286] = v[4564] * (v[807] + v[433] * v[2064]) + v[4569] - 1
+            @loop v[808] .dst v[2065] {
+                @comment "Cost Set"
+                v[v[286] + 3] += 45
+                @comment "1"
+                v[286] += v[4564]
+                
+            }
+            
+            
+        }
+        
+        
+    }
+    v[v[401] * v[1117] + 5003] |= 8
+    
+}
+}

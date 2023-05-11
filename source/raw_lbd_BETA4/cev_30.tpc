@@ -1,0 +1,136 @@
+cev .id(30), .name("cev30"), {
+@if v[300] > 0 {
+    v[v[298]] = 0
+    v[306] += 4943
+    v[v[306]] = 0
+    v[311] = v[300] * 300 + 4707
+    v[305] = v[v[311]]
+    v[v[311]].copy v[305], 2
+    v[609] = v[311] + 2
+    v[v[300] * 300 + 4806] = -1
+    v[341] = v[300] * 300 + 4707
+    v[305].copy v[607], 2
+    v[371] = between(v[607], v[1008], v[1009]) && between(v[608], v[1010], v[1011]) ? 1 : 0
+    @if v[371] >= 1 {
+        @loop v[1017] .dst v[320] {
+            v[242] %= v[1017]
+            v[301] = v[242] * 100
+            v[301] = v[301] + v[1018]
+            @if v[v[301]] <= 1 {
+                v[242] %= v[1017]
+                v[281] = v[242] * 100
+                v[281] = v[281] + v[1018]
+                v[1301].copy v[v[301]], 100
+                v[310] = v[242] + 801
+                v[295] = v[301] + 99
+                v[v[301]] = 1
+                v[v[295]] = 0
+                v[607].copy v[361], 2
+                @pic[v[310]].strpic {
+                    "RETREAT!"
+                    .pos v[361], v[362] .center
+                    .size 0, 0                    .scrollWithMap
+                    .chromakey 1
+                    .scale 100
+                    .trans v[1066]
+                    .rgbs 100, 100, 100, 100
+                    .font "misaki_gothic_2nd", 10
+                    .spacing 0, 0
+                    .skin "" .nobg .noframe .noGradation .noPadding
+                    .mapLayer 7
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                v[362] -= 48
+                @pic[v[310]].move {
+                    .pos v[361], v[362] .center
+                    .scale 100
+                    .trans 100
+                    .time 20
+                    .rgbs 100, 100, 100, 100
+                }
+                v[242..242] += 1
+                s[141].off
+                @break
+                
+            }
+            v[242] += 1
+            
+        }
+        
+        
+    }
+    v[320] = v[311] + 94
+    v[320] = v[v[320]]
+    v[321] = 1
+    v[700] = 4800 + v[308]
+    @if s[313] .isOn() {
+        @call .cev 1924
+        v[341] = 2
+        v[342] = [10, 5, 8, 1][v[v[700]]]
+        v[330] = v[4562] + v[300]
+        @pic[v[1155]].strpic {
+            t[20305]
+            .pos v[341], v[1126] .bottomLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 30
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @call .cev 1925
+        
+    }
+    v[11] = v[300]
+    v[12] = v[v[300] * 300 + 4701]
+    @call .cev 1896
+    v[700] = v[300] * 300 + 4800
+    v[308] = v[v[700]] % 3
+    @if v[308] != 2 {
+        v[310] = v[v[308] + 205]
+        v[309] = v[1145 + v[308]]
+        v[310] += v[309]
+        @while v[309] <= v[310] {
+            v[311] = (v[309] + v[310]) / 2
+            @if v[v[311]] == v[300] {
+                v[v[311]] = 0
+                @break
+                
+            } .else bl {
+                @if v[v[311]] < v[300] {
+                    v[310] = v[311] - 1
+                    
+                } .else bl {
+                    v[309] = v[311] + 1
+                    
+                }
+                
+            }
+            
+        }
+        
+        v[309] = v[1145 + v[308]]
+        v[v[309]].sortDescending v[1012]
+        v[v[1259] + (v[v[700] + 1] - 1) * 4 + 3 + v[v[700] - 42] * v[1260] * 4] += 1
+        v[343] = v[298] + 101
+        @if v[308] == 0 {
+            v[205] -= v[v[343]] != 104 && v[v[343]] != 105 ? 1 : 0
+            
+        } .else bl {
+            v[206] -= v[v[343]] != 104 && v[v[343]] != 105 ? 1 : 0
+            
+        }
+        
+    }
+    v[196] -= v[v[300] * 300 + 4739] != -1 ? 1 : 0
+    v[204] -= 1
+    
+}
+}

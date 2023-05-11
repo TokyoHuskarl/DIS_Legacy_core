@@ -1,0 +1,82 @@
+cev .id(77), .name("cev77"), {
+@if v[100] >= 1 {
+    v[1971..1973] = -1
+    v[81] = 3
+    v[325] = v[100] * 300
+    v[325] += 4800
+    v[v[325]].copy v[700], 40
+    @call .cev 72
+    s[27].off
+    v[841] = v[325] + 141
+    v[841] = v[v[841]]
+    v[325] -= 99
+    v[601] = v[v[325]]
+    v[330] = v[4562] + v[100]
+    @call .cev 200
+    v[342] = [10, 17, 8, 1][v[700]]
+    @pic[977].strpic {
+        " \c[\v[342]]\t[\v[330]]\c[0] - \N[3] "
+        .pos v[1296], v[1297] .topLeft
+        .size 0, 0        .chromakey 1
+        .scale 100
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .font t[530], 11 .noShadow
+        .spacing 0, 0
+        .skin "" .nobg .noframe .noGradation .noPadding
+        .mapLayer 8
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    @pic[980].strpic {
+        "
+
+\c[17] AD \v[709] \c[16]AP \v[710] \c[6]MR \v[712] \c[5]HIT \v[713] \c[3]EVA \v[714] \c[0]WILL \v[739]"
+        .pos v[1296], v[1297] .topLeft
+        .size 0, 0        .chromakey 1
+        .scale 100
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .font t[530], 11 .noShadow
+        .spacing 0, 0
+        .skin "" .nobg .noframe .noGradation .noPadding
+        .mapLayer 8
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    @pic[981].move {
+        .pos v[305], v[306] .center
+        .scale 100
+        .trans 100
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    @comment "#Static Tech Icon"
+    @pic[v[1226]].move {
+        .pos v[1041], v[1042] .center
+        .scale 100
+        .trans 100
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    v[341] = v[1226] + 1
+    @pic[v[341]].move {
+        .pos v[1051], v[1052] .center
+        .scale 100
+        .trans 100
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    v[341] = v[1226] + 2
+    @pic[v[341]].move {
+        .pos v[1051], v[1052] .center
+        .scale 100
+        .trans 100
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    
+}
+}

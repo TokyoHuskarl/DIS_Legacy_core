@@ -1,0 +1,35 @@
+cev .id(122), .name("cev122"), {
+@comment "v1=amount"
+@comment "v2=direction -1=right 0=cent 1=left"
+@comment "Particle Effecter"
+@comment "Access14 = x"
+v[294] = v[301] + 6
+@comment "ずれセット"
+v[v[294]] .add v[53], 2
+v[v[294]].copy v[341], 2
+v[245] %= v[2215]
+v[345] = v[245] + v[1200]
+v[245] += 1
+v[346] = 94 - v[v[301] + 49] / 2
+@pic[v[345]].show {
+    "effects\particles"
+    .pos v[341], v[342] .center
+    .scrollWithMap
+    .chromakey 1
+    .scale 100
+    .trans 25
+    .rgbs 100, 100, 100, 100
+    .grid 12, 12 .cell v[346]
+    .mapLayer 7
+    .affectedByTint
+    .affectedByFlash
+    .affectedByShake
+}
+@pic[v[345]].move {
+    .pos v[341], v[342] .center
+    .scale 100
+    .trans 100
+    .time -2
+    .rgbs 100, 100, 100, 100
+}
+}

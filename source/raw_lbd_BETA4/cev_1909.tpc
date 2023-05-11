@@ -1,0 +1,31 @@
+cev .id(1909), .name("cev1909"), {
+@if s[20] .isOn() {
+    v[355] = 2
+    @pic[996].move {
+        .pos v[1115], v[355] .top
+        .scale 100
+        .trans 100
+        .time 1 .wait
+        .rgbs 100, 100, 100, 100
+    }
+    
+} .else bl {
+    @pic[996].move {
+        .pos v[1115], v[1002] .bottom
+        .scale 100
+        .trans 100
+        .time 1 .wait
+        .rgbs 100, 100, 100, 100
+    }
+    
+}
+s[18].on
+s[43].off
+s[2].off
+s[39].on
+@if s[20] .isOn() {
+    s[38].off
+    
+}
+@pic[996].erase
+}

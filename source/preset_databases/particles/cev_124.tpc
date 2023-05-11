@@ -1,0 +1,69 @@
+cev .id(124), .name("cev124"), {
+@comment "Access14 = x"
+v[294] = v[301] + 6
+@comment "ずれセット"
+v[v[294]] .add v[53], 2
+v[341] = v[v[301] + 9]
+@if `s[v[341] + 500] {
+    @comment "Particle Effecter"
+    @comment "Is Parent effect alive?"
+    v[341] = v[v[301] + 9] * 300 + 4701
+    @if v[v[341]] >= 1 {
+        @comment "Frame Ck"
+        v[296] = v[301] + 10
+        v[v[296]] += 1
+        v[v[296]] %= 6
+        @if v[v[296]] == 0 {
+            @comment "Access15 = x"
+            v[295] = v[301] + 6
+            @comment "ずれセット"
+            v[341] = v[v[301] + 9] * 300 + 4707
+            v[v[341]].copy v[v[295]], 2
+            @loop 1 {
+                v[v[295]].copy v[341], 2
+                v[341] += rnd(-9, 9)
+                v[342] += rnd(-12, -6)
+                v[341].copy v[343], 2
+                v[344] += rnd(20, 24)
+                v[245] %= v[2215]
+                v[345] = v[245] + v[1200]
+                v[245] += 1
+                @pic[v[345]].show {
+                    "effects\particles"
+                    .pos v[341], v[342] .center
+                    .scrollWithMap
+                    .chromakey 1
+                    .scale 50
+                    .trans 40
+                    .rgbs 0, 70, 160, 50
+                    .add
+                    .grid 12, 12 .cell 15
+                    .mapLayer 5
+                    .affectedByTint
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                @pic[v[345]].move {
+                    .pos v[343], v[344] .center
+                    .scale 50
+                    .trans 100
+                    .time -28
+                    .rgbs 0, 20, 150, 50
+                    .add
+                }
+                
+            }
+            
+            
+        }
+        
+    } .else bl {
+        @comment "Delete Emitter"
+        v[295] = v[301] + 49
+        v[v[295]] = 0
+        
+    }
+    
+}
+v[v[301] + 49] += s[2] == 1 ? 1 : 0
+}

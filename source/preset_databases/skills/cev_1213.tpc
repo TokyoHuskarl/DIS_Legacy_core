@@ -1,0 +1,37 @@
+cev .id(1213), .name("cev1213"), {
+@if s[118] .isOn() {
+    v[1301].copy v[581], 20
+    @comment "#Q_ID and Q_Func"
+    v[581] = 13
+    v[582] = v[581] + 1200
+    @comment "#Q_Type"
+    v[583] = 5
+    v[584] = 2
+    @comment "#Q_Motion"
+    v[585] = 1
+    @comment "#Q_ExtraMotion"
+    v[586] = 1
+    @comment "#Q_Cost"
+    v[587] = 10
+    @comment "#Q_Range"
+    @comment "#Q_Range
+#AutoAttackRange"
+    v[592] = v[718] / 1000
+    v[592] *= v[592]
+    v[592] += 4800
+    @comment "#Q_CD"
+    v[588] = 650
+    
+} .else bl {
+    @comment "#バフ番号指定"
+    v[11] = 1191
+    v[12] = v[299]
+    @call .cev 1911
+    @if v[22] >= 0 {
+        @comment "#Duration"
+        v[v[22]] = v[1240] * 8
+        
+    }
+    
+}
+}

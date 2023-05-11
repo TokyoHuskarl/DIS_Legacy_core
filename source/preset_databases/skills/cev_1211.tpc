@@ -1,0 +1,184 @@
+cev .id(1211), .name("cev1211"), {
+@if s[118] .isOn() {
+    v[1301].copy v[581], 20
+    @comment "#Q_ID and Q_Func"
+    v[581] = 11
+    v[582] = v[581] + 1200
+    @comment "#Q_Type"
+    v[583] = 4
+    @comment "#Q_Motion"
+    v[585] = 3
+    @comment "#Q_ExtraMotion"
+    v[586] = 1
+    @comment "#Q_Cost"
+    v[587] = 10
+    @comment "#Q_Range"
+    v[592] = 1300
+    @comment "#Q_CD"
+    v[588] = 245
+    
+} .else bl {
+    @comment "Access19 = AttackerObjectID
+Access20 = TargetObjectID
+Access18 = TargetObjTypeチェックPtr"
+    @if s[120] .isOff() {
+        @if v[217] < v[4559] {
+            v[217] += 1
+            @loop v[4559] .dst v[320] {
+                v[216] %= v[4559]
+                v[301] = v[216] * 100
+                v[301] += v[1076]
+                v[295] = v[301] + 1
+                @if v[v[295]] == 0 {
+                    @comment "Access17 = AttackerObjチェックPtr"
+                    v[297] = v[299] * 300
+                    v[297] += 4700
+                    @comment "まず清掃"
+                    v[1301].copy v[601], 100
+                    v[1301].copy v[v[295]], 100
+                    @comment "ParentObjセット"
+                    v[609] = v[299]
+                    @comment "出る場所セット"
+                    v[341] = v[297] + 7
+                    v[v[341]].copy v[605], 2
+                    v[605..606] *= 10000
+                    v[v[341]].copy v[607], 2
+                    @comment "Projectile team"
+                    v[341] = v[297] + 100
+                    v[618] = v[v[341]]
+                    @comment "パラメータ等入力begin"
+                    @comment "#Pic"
+                    v[602] = 1
+                    @comment "#ProjectileType"
+                    v[601] = 2
+                    @comment "#あたり判定"
+                    v[610] = 24
+                    v[611] = 24
+                    @comment "#威力"
+                    v[11] = v[299]
+                    v[12] = 1
+                    @call .cev 2004
+                    @comment "[AD]*110%"
+                    v[21] *= 11
+                    v[21] /= 10
+                    v[621] = v[21]
+                    @comment "#ARMRと属性"
+                    v[622] = 0
+                    v[341] = v[297] + 123
+                    v[623] = v[v[341]]
+                    @comment "#Timer"
+                    v[700] = 1
+                    @comment "#Effect"
+                    v[604] = 99
+                    @comment "パラメータ等入力end"
+                    v[601].copy v[v[295]], 100
+                    @comment "描画"
+                    v[302] = v[216]
+                    v[302] += 1001
+                    @pic[v[302]].show {
+                        "projectile\null"
+                        .pos v[605], v[606] .center
+                        .scrollWithMap
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .angle v[619], 1000
+                        .mapLayer 7
+                        .eraseWhenTransfer
+                        .affectedByTint
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    @comment "演出"
+                    @break
+                    
+                }
+                
+            }
+            
+            v[216] += 1
+            
+        }
+        
+    } .else bl {
+        @comment "#Motion Setting
+#From Obj描写->"
+        v[341] = v[v[330]]
+        @if v[341] != 4 {
+            v[350] = v[301] + 280
+            v[325] = 53
+            v[v[350]] = 1
+            
+        } .else bl {
+            v[350] = v[301] + 280
+            v[345] = v[v[350]] / 2
+            @if s[2] .isOff() {
+                v[v[350]] += v[v[350]] < 8 ? 2 : 0
+                @if v[v[350]] == 7 {
+                    v[607] = v[301] + 7
+                    v[v[607]].copy v[607], 2
+                    @if v[607] >= v[1008] {
+                        @if v[607] <= v[1009] {
+                            @if v[608] >= v[1010] {
+                                @if v[608] <= v[1011] {
+                                    @if v[182] <= 5 {
+                                        v[182] += 1
+                                        v[329] = rnd(0, 3)
+                                        v[472] = divmul(70, 100, v[2216])
+                                        v[473] = 70
+                                        v[474] = divmul(v[607] + v[1001], v[1281], 50)
+                                        @se.play "swing31_b" .opt v[472], 70, v[474]
+                                        
+                                    }
+                                    @comment "$"
+                                    v[242] %= v[1017]
+                                    v[281] = v[242] * 100
+                                    v[281] = v[281] + v[1018]
+                                    @comment "まず清掃"
+                                    v[1301].copy v[v[281]], 100
+                                    @comment "ポインタセット開始"
+                                    v[350] = v[242] + 801
+                                    v[285] = v[281] + 99
+                                    @comment "設定"
+                                    v[v[281]] = 1
+                                    v[v[285]] = 2
+                                    @comment "普通にアニメ"
+                                    v[607].copy v[361], 2
+                                    @pic[v[350]].show {
+                                        "effects\shadow_slash"
+                                        .pos v[361], v[362] .center
+                                        .scrollWithMap
+                                        .chromakey 1
+                                        .scale 75
+                                        .trans 40
+                                        .rgbs 120, 100, 100, 100
+                                        .grid 4, 1 .anim 3 .once
+                                        .mapLayer 8
+                                        .eraseWhenTransfer
+                                        .affectedByFlash
+                                        .affectedByShake
+                                    }
+                                    @comment "仕上げに登録消す"
+                                    v[242..243] += 1
+                                    s[141].off
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            v[325] = v[345] + 53
+            
+        }
+        
+    }
+    
+}
+}

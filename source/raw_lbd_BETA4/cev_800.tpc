@@ -1,0 +1,127 @@
+cev .id(800), .name("cev800"), {
+@if s[1] .isOn() {
+    @if v[204] < v[1004] {
+        v[204] += 1
+        @loop v[1004] .dst v[320] {
+            v[201] %= v[1004]
+            v[301] = v[201] * 300
+            v[301] += 5000
+            v[300] = v[301] + 1
+            @if v[v[300]] <= 0 {
+                @comment "まず清掃"
+                v[1301].copy v[601], 300
+                v[1301].copy v[v[300]], 300
+                @comment "出る場所セット"
+                v[252].copy v[605], 2
+                @comment "チームセット"
+                v[700] = v[251]
+                v[624] = v[700] + 1
+                @comment "ObjTyp"
+                v[601] = 11
+                @comment "生成場所の数値を入れる"
+                v[605].copy v[607], 2
+                v[605].copy v[641], 2
+                v[310..311] = 10000
+                v[605] .mul v[310], 2
+                @comment "あたり判定"
+                v[11].copy v[610], 2
+                @comment "Staticなので生産目標地点をセット"
+                v[252].copy v[641], 2
+                v[642] += v[611]
+                @comment "パラメータ等入力begin"
+                @comment "#Unit ID"
+                v[701] = 0
+                @comment "#Unit Type"
+                v[702] = 103
+                @comment "#AAType"
+                v[703] = 1
+                @comment "#Level"
+                v[704] = 1
+                @comment "Inflammable"
+                v[603] |= 2048
+                @comment "#HP"
+                v[705..706] = 500
+                @comment "#MP"
+                v[707..707] = 0
+                v[708..708] = -1
+                @comment "#AD"
+                v[709] = 0
+                @comment "#AP"
+                v[710] = 0
+                @comment "#AR"
+                v[711] = 999
+                @comment "#MR"
+                v[712] = 500
+                @comment "#Apen"
+                v[713] = 2
+                @comment "#Mpen"
+                v[714] = 2
+                @comment "#Crit"
+                v[715] = 0
+                @comment "#MS"
+                v[716] = 0
+                @comment "#Range Melee"
+                v[717] = 0
+                @comment "#Range Ranged"
+                v[718] = -1
+                @comment "#AttackSpeed"
+                v[719] = 60
+                @comment "#AttackMotion"
+                v[720] = 1
+                @comment "パラメータ等入力end"
+                v[601].copy v[v[300]], 300
+                @comment "描画"
+                v[302] = v[201]
+                v[302] *= 2
+                v[302] += 2
+                v[321] = 2
+                v[320] = v[701]
+                @pic[v[302]].show {
+                    "static\spr_static_1" .repl 1 v[320]
+                    .pos v[605], v[606] .center
+                    .scrollWithMap
+                    .chromakey 1
+                    .scale 100
+                    .trans 100
+                    .rgbs 100, 100, 100, 100
+                    .grid 5, 1 .cell v[321]
+                    .mapLayer 5
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                v[302] -= 1
+                @pic[v[302]].show {
+                    "marker"
+                    .pos v[605], v[606] .center
+                    .chromakey 1
+                    .scale 100
+                    .trans 100
+                    .rgbs 100, 100, 100, 100
+                    .grid 1, 4 .cell v[624]
+                    .mapLayer 2
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                v[201] += 1
+                v[21] = v[201]
+                @comment "Avoid PictID0 Bug"
+                s[80].off
+                @break
+                
+            }
+            @if v[v[320]] >= v[1004] {
+                @comment "Obj多すぎ"
+                @break
+                
+            }
+            v[201] += 1
+            
+        }
+        
+        
+    }
+    
+}
+}

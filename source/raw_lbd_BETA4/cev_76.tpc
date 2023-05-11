@@ -1,0 +1,858 @@
+cev .id(76), .name("cev76"), {
+@if v[102] > 0 {
+    @if v[100] >= 1 {
+        v[1971..1973] = -1
+        @pic[1799..1800].erase
+        @pic[975..977].erase
+        @pic[979..985].erase
+        v[81] = 6
+        v[325] = v[100] * 300 + 4800
+        v[v[325]].copy v[700], 17
+        @call .cev 72
+        v[841] = v[325] + 141
+        v[841] = v[v[841]]
+        v[330] = v[4562] + v[101]
+        @pic[979].strpic {
+            " \t[20141]:\v[99]/\v[99]
+
+"
+            .pos v[1296], v[1297] .topLeft
+            .size 200, 24            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font t[530], 11
+            .spacing 0, 0
+            .skin "" .nobg .noframe .noGradation .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @if s[24] .isOn() {
+            v[330] = v[4562] + v[101]
+            @pic[977].strpic {
+                "
+ \t[\v[330]]"
+                .pos v[1296], v[1297] .topLeft
+                .size 200, 24                .chromakey 1
+                .scale 100
+                .trans 0
+                .rgbs 0, 90, 0, 100
+                .font t[530], 11
+                .spacing 0, 0
+                .skin "" .nobg .noframe .noGradation .noPadding
+                .mapLayer 8
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            
+        } .else bl {
+            @pic[977].strpic {
+                " \c[2]\t[\v[330]]\c[0] "
+                .pos v[1296], v[1297] .topLeft
+                .size 200, 24                .chromakey 1
+                .scale 100
+                .trans 0
+                .rgbs 0, 90, 0, 100
+                .font t[530], 11 .noShadow
+                .spacing 0, 0
+                .skin "" .nobg .noframe .noGradation .noPadding
+                .mapLayer 8
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            v[702] = -1
+            
+        }
+        @comment "#生産手段あればアイコン出す"
+        v[300] = v[101] * 300
+        v[300] += 4700
+        @if `v[v[300] + 1] == 11 {
+            @comment "生産できるやつを見る"
+            v[301] = v[300] + 138
+            @comment "Q"
+            v[301] += 3
+            s[201].off
+            @if v[v[301]] > 0 {
+                v[466] = v[v[301]] >= 200 ? 2 : 1
+                v[341] = v[v[301] + 1]
+                @if v[341] <= 0 {
+                    @pic[982].show {
+                        "StaticIcon"
+                        .pos v[1037], v[1038] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 25
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell v[466]
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1038] - 2
+                    @pic[982].show {
+                        "product_icons\icon_n" .repl 1 v[341]
+                        .pos v[1037], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 10
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                s[201].on
+                
+            } .else bl {
+                @pic[982].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            @comment "W"
+            v[301] += 3
+            @if v[v[301]] > 0 {
+                v[466] = v[v[301]] >= 200 ? 2 : 1
+                v[341] = v[v[301] + 1]
+                @if v[341] <= 0 {
+                    @pic[983].show {
+                        "StaticIcon"
+                        .pos v[1039], v[1040] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 25
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell v[466]
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1040] - 2
+                    @pic[983].show {
+                        "product_icons\icon_n" .repl 1 v[341]
+                        .pos v[1039], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 10
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                s[201].on
+                
+            } .else bl {
+                @pic[983].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            v[301] += 3
+            @if v[v[301]] > 0 {
+                v[466] = v[v[301]] >= 200 ? 2 : 1
+                v[341] = v[v[301] + 1]
+                @if v[341] <= 0 {
+                    @pic[984].show {
+                        "StaticIcon"
+                        .pos v[1041], v[1042] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 25
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell v[466]
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1042] - 2
+                    @pic[984].show {
+                        "product_icons\icon_n" .repl 1 v[341]
+                        .pos v[1041], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 10
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                s[201].on
+                
+            } .else bl {
+                @pic[984].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            v[301] += 3
+            @if v[v[301]] > 0 {
+                v[466] = v[v[301]] >= 200 ? 2 : 1
+                v[341] = v[v[301] + 1]
+                @if v[341] <= 0 {
+                    @pic[985].show {
+                        "StaticIcon"
+                        .pos v[1043], v[1044] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 25
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell v[466]
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1044] - 2
+                    @pic[985].show {
+                        "product_icons\icon_n" .repl 1 v[341]
+                        .pos v[1043], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 10
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                s[201].on
+                
+            } .else bl {
+                @pic[985].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            @comment "#########
+CONVERT
+#########"
+            @if s[201] .isOn() {
+                @pic[981].show {
+                    "StaticIcon"
+                    .pos v[1051], v[1052] .center
+                    .chromakey 1
+                    .scale 100
+                    .trans 20
+                    .rgbs 100, 100, 100, 100
+                    .grid 8, 1 .cell 8
+                    .mapLayer 8
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            } .else bl {
+                @pic[981].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            @comment "#########
+TechSlots"
+            @if `v[v[300] + 153] > 0 {
+                v[342] = v[v[300] + 154]
+                @if v[342] <= 0 {
+                    @pic[v[1226]].show {
+                        "StaticIcon"
+                        .pos v[1045], v[1046] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell 2
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1046] - 1
+                    @pic[v[1226]].show {
+                        "tech_icons\n" .repl 1 v[342]
+                        .pos v[1045], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[v[1226]].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            @comment "#########
+TechSlots"
+            v[341] = v[1226] + 1
+            @if `v[v[300] + 156] > 0 {
+                v[342] = v[v[300] + 157]
+                @if v[342] <= 0 {
+                    @pic[v[341]].show {
+                        "StaticIcon"
+                        .pos v[1047], v[1048] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell 2
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1048] - 1
+                    @pic[v[341]].show {
+                        "tech_icons\n" .repl 1 v[342]
+                        .pos v[1047], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[v[341]].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            @comment "#########
+TechSlots"
+            v[341] = v[1226] + 2
+            @if `v[v[300] + 159] > 0 {
+                v[342] = v[v[300] + 160]
+                @if v[342] <= 0 {
+                    @pic[v[341]].show {
+                        "StaticIcon"
+                        .pos v[1049], v[1050] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell 2
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1050] - 1
+                    @pic[v[341]].show {
+                        "tech_icons\n" .repl 1 v[342]
+                        .pos v[1049], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[v[341]].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            s[52].on
+            
+        }
+        
+    }
+    
+} .else bl {
+    @if v[100] >= 1 {
+        v[99] = 1
+        v[1971..1973] = -1
+        @pic[1799..1800].erase
+        @pic[979].erase
+        v[81] = 4
+        v[325] = v[100] * 300 + 4800
+        v[v[325]].copy v[700], 17
+        @call .cev 72
+        v[841] = v[325] + 141
+        v[841] = v[v[841]]
+        v[330] = v[4562] + v[101]
+        @pic[980].strpic {
+            "
+    
+ AD \v[709] AR \v[711] MR \v[712]"
+            .pos v[1296], v[1297] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font t[530], 11
+            .spacing 0, 0
+            .skin "" .nobg .noframe .noGradation .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @pic[977].strpic {
+            " \c[2]\t[\v[330]]\c[0] "
+            .pos v[1296], v[1297] .topLeft
+            .size 200, 24            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 0, 90, 0, 100
+            .font t[530], 11 .noShadow
+            .spacing 0, 0
+            .skin "" .nobg .noframe .noGradation .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @comment "#生産手段あればアイコン出す"
+        v[300] = v[101] * 300
+        v[300] += 4700
+        @if `v[v[300] + 1] == 11 {
+            @comment "生産できるやつを見る"
+            v[301] = v[300] + 138
+            @comment "Q"
+            v[301] += 3
+            s[201].off
+            @if v[v[301]] > 0 {
+                v[466] = v[v[301]] >= 200 ? 2 : 1
+                v[341] = v[v[301] + 1]
+                @if v[341] <= 0 {
+                    @pic[982].show {
+                        "StaticIcon"
+                        .pos v[1037], v[1038] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 25
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell v[466]
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1038] - 2
+                    @pic[982].show {
+                        "product_icons\icon_n" .repl 1 v[341]
+                        .pos v[1037], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 10
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                s[201].on
+                
+            } .else bl {
+                @pic[982].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            @comment "W"
+            v[301] += 3
+            @if v[v[301]] > 0 {
+                v[466] = v[v[301]] >= 200 ? 2 : 1
+                v[341] = v[v[301] + 1]
+                @if v[341] <= 0 {
+                    @pic[983].show {
+                        "StaticIcon"
+                        .pos v[1039], v[1040] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 25
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell v[466]
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1040] - 2
+                    @pic[983].show {
+                        "product_icons\icon_n" .repl 1 v[341]
+                        .pos v[1039], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 10
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                s[201].on
+                
+            } .else bl {
+                @pic[983].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            v[301] += 3
+            @if v[v[301]] > 0 {
+                v[466] = v[v[301]] >= 200 ? 2 : 1
+                v[341] = v[v[301] + 1]
+                @if v[341] <= 0 {
+                    @pic[984].show {
+                        "StaticIcon"
+                        .pos v[1041], v[1042] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 25
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell v[466]
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1042] - 2
+                    @pic[984].show {
+                        "product_icons\icon_n" .repl 1 v[341]
+                        .pos v[1041], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 10
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                s[201].on
+                
+            } .else bl {
+                @pic[984].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            v[301] += 3
+            @if v[v[301]] > 0 {
+                v[466] = v[v[301]] >= 200 ? 2 : 1
+                v[341] = v[v[301] + 1]
+                @if v[341] <= 0 {
+                    @pic[985].show {
+                        "StaticIcon"
+                        .pos v[1043], v[1044] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 25
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell v[466]
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1044] - 2
+                    @pic[985].show {
+                        "product_icons\icon_n" .repl 1 v[341]
+                        .pos v[1043], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 10
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                s[201].on
+                
+            } .else bl {
+                @pic[985].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            @comment "#########
+CONVERT
+#########"
+            @if s[201] .isOn() {
+                @pic[981].show {
+                    "StaticIcon"
+                    .pos v[1051], v[1052] .center
+                    .chromakey 1
+                    .scale 100
+                    .trans 20
+                    .rgbs 100, 100, 100, 100
+                    .grid 8, 1 .cell 8
+                    .mapLayer 8
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            } .else bl {
+                @pic[981].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            @comment "#########
+TechSlots"
+            @if `v[v[300] + 153] > 0 {
+                v[342] = v[v[300] + 154]
+                @if v[342] <= 0 {
+                    @pic[v[1226]].show {
+                        "StaticIcon"
+                        .pos v[1045], v[1046] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell 2
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1046] - 1
+                    @pic[v[1226]].show {
+                        "tech_icons\n" .repl 1 v[342]
+                        .pos v[1045], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[v[1226]].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            @comment "#########
+TechSlots"
+            v[341] = v[1226] + 1
+            @if `v[v[300] + 156] > 0 {
+                v[342] = v[v[300] + 157]
+                @if v[342] <= 0 {
+                    @pic[v[341]].show {
+                        "StaticIcon"
+                        .pos v[1047], v[1048] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell 2
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1048] - 1
+                    @pic[v[341]].show {
+                        "tech_icons\n" .repl 1 v[342]
+                        .pos v[1047], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[v[341]].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            @comment "#########
+TechSlots"
+            v[341] = v[1226] + 2
+            @if `v[v[300] + 159] > 0 {
+                v[342] = v[v[300] + 160]
+                @if v[342] <= 0 {
+                    @pic[v[341]].show {
+                        "StaticIcon"
+                        .pos v[1049], v[1050] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .grid 8, 1 .cell 2
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    v[343] = v[1050] - 1
+                    @pic[v[341]].show {
+                        "tech_icons\n" .repl 1 v[342]
+                        .pos v[1049], v[343] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[v[341]].move {
+                    .pos v[1051], v[1052] .center
+                    .scale 100
+                    .trans 100
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            
+        }
+        s[52].on
+        
+    }
+    
+}
+}

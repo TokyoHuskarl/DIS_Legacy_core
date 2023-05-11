@@ -1,0 +1,87 @@
+cev .id(2135), .name("cev2135"), {
+@if v[2820] == 1 {
+    @if v[2403] == 1 {
+        @pic[1760].strpic {
+            "MISSION COMPLETED"
+            .pos v[1115], v[1116] .center
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 100
+            .rgbs 100, 100, 100, 100
+            .font "Roman", 80 .bold
+            .spacing 0, 0
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByShake
+        }
+        
+    } .else bl {
+        @pic[1760].strpic {
+            "\C[5]VICTORY"
+            .pos v[1115], v[1116] .center
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 100
+            .rgbs 100, 100, 100, 100
+            .font "Norse", 80 .bold
+            .spacing 0, 0
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 10
+            .eraseWhenTransfer
+            .affectedByShake
+        }
+        
+    }
+    @pic[1760].move {
+        .pos v[1115], v[1116] .center
+        .scale 100
+        .trans 0
+        .time 10
+        .rgbs 100, 100, 100, 100
+    }
+    
+} .else bl {
+    @if v[2403] == 1 {
+        @pic[1760].strpic {
+            "MISSION FAILED"
+            .pos v[1115], v[1116] .center
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 100
+            .rgbs 100, 100, 100, 100
+            .font "Roman", 80 .bold
+            .spacing 0, 0
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByShake
+        }
+        
+    } .else bl {
+        @pic[1760].strpic {
+            "\C[10]DEFEAT"
+            .pos v[1115], v[1116] .center
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 100
+            .rgbs 100, 100, 100, 100
+            .font "Norse", 80 .bold
+            .spacing 0, 0
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 10
+            .eraseWhenTransfer
+            .affectedByShake
+        }
+        
+    }
+    @pic[1760].move {
+        .pos v[1115], v[1116] .center
+        .scale 100
+        .trans 0
+        .time 10
+        .rgbs 100, 100, 100, 100
+    }
+    
+}
+}

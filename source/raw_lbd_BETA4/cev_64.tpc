@@ -1,0 +1,57 @@
+cev .id(64), .name("cev64"), {
+v[341] = v[1226] + 3
+@pic[v[341]].move {
+    .relative
+    .pos 0, 0 .center
+    .scale 0
+    .trans 0
+    .time 0
+    .rgbs 150, 150, 150, 150
+}
+@if s[57] .isOn() {
+    @msg.show "\>Cohort"
+    @msg.inputNum .digit 2 .dst v[258]
+    
+} .else bl {
+    v[301] = v[101] * 300
+    v[301] += 4700
+    v[300] = v[301] + 1
+    v[299] = v[301] + 107
+    v[371] = v[v[300]] > 0 ? 1 : 0
+    v[371] += v[99] > 1 ? 1 : 0
+    @if v[371] >= 1 {
+        @if s[27] .isOn() {
+            v[11] = 7
+            @call .cev 2162
+            
+        } .else bl {
+            @if s[29] .isOn() {
+                @if v[486] > -1 {
+                    @if v[204] <= v[1004] {
+                        v[344] = v[486]
+                        @comment "###################"
+                        @call .cev 796
+                        
+                    } .else bl {
+                        @comment "ユニット数上限"
+                        
+                    }
+                    
+                } .else bl {
+                    s[204].off
+                    v[11] = 7
+                    @call .cev 797
+                    
+                }
+                
+            } .else bl {
+                @call .cev 55
+                
+            }
+            
+        }
+        
+    }
+    
+}
+}

@@ -1,0 +1,15 @@
+cev .id(2149), .name("cev2149"), {
+t[501] .asg "start from \v[11] *\v[12]
+" .extract
+v[341] = v[11]
+@loop v[12] {
+    t[501] .cat v[v[341]]
+    t[501] .cat "
+"
+    v[341] += 1
+    
+}
+
+t[503] .asg "debugvars.txt"
+t[501] .toFile t[503], .utf8
+}

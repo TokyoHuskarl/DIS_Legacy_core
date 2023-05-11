@@ -1,0 +1,103 @@
+cev .id(419), .name("cev419"), {
+v[40] = 0
+v[11] = v[2412 + v[251] % 3]
+v[12] = 0
+@comment "bitshift"
+v[18] = 2
+v[12] += v[11] & pow(2, v[18]) ? 1 : 0
+@comment "############"
+v[31..34] = 0
+v[31] = 1340
+v[34] = 1000
+@call .cev 435
+@comment "#bit"
+@if `v[11] & pow(2, v[18]) {
+    v[40] = -2
+    
+}
+@if v[40] <= -1 {
+    v[31] = 999999999
+    v[34] = 999999999
+    
+}
+v[13] = 10
+@if s[151] .isOff() {
+    @comment "Flag on"
+    v[2412 + v[251] % 3] |= pow(2, v[18])
+    @if v[251] == 0 {
+        @comment "#########################"
+        v[471] = 11550
+        v[472] = divmul(80, 100, v[2216])
+        v[473] = 90
+        v[474] = 50
+        @cmd v[471], "cursor02", .args v[472], 3
+        @comment "#########################"
+        @call .cev 1924
+        v[341] = 2
+        v[601] = 1
+        @comment "Techname"
+        v[350] = v[4520] + 18
+        t[v[350]] .split "|", t[3000], v[350]
+        @pic[v[1155]].strpic {
+            t[20192]
+            .pos v[341], v[1126] .bottomLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 30
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @call .cev 1925
+        
+    }
+    v[15] = 10219
+    @call .cev 434
+    @comment "v1=UnitID
+v2=UnitType"
+    @loop v[1012] .dst v[141] {
+        @comment "Check Player Team List"
+        v[601] = v[141] + v[1145 + v[251] % 3]
+        @if v[v[601]] >= 1 {
+            v[601] = v[v[601]] * 300 + 4700
+            @comment "Firedragon"
+            @if `v[v[601] + 1] < 11 {
+                @if `v[v[601] + 101] == 29 {
+                    v[v[601] + 110] += 25
+                    
+                }
+                
+            }
+            v[602] = v[601] + 1
+            @if v[v[602]] == 11 {
+                v[602] += 100
+                @if v[v[602]] == 3 {
+                    v[602] += 49
+                    v[v[602]] = 176
+                    v[v[602] + 1] = 69
+                    
+                }
+                @if v[v[602]] == 16 {
+                    @if `v[2406 + v[251] % 3] & 0x1 {
+                        v[v[602] + 49] = 204
+                        v[v[602] + 50] = 70
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    @call .cev 436
+    
+}
+}

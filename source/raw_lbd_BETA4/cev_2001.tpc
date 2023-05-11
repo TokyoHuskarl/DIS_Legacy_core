@@ -1,0 +1,10 @@
+cev .id(2001), .name("cev2001"), {
+@comment "#
+input:TT1,TT2
+output:reg2,reg3
+#"
+@map[v[501]].setVehiclePos .airship .pos v[341], v[342] .retain
+v[22] = airship.scrx
+v[23] = airship.scry
+v[23] -= 8
+}

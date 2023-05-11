@@ -1,0 +1,12 @@
+cev .id(1199), .name("cev1199"), {
+v[868] *= 6
+v[868] /= 10
+v[871] *= 9
+v[871] /= 10
+@comment "#SPReg*4/5"
+v[873] = divmul(v[873], 5, 4)
+@comment "#Break Discipline"
+v[874] ^= 16384
+@comment "#Icon Number"
+v[21] = 19
+}

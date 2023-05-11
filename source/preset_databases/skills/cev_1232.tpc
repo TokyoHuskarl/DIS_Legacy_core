@@ -1,0 +1,132 @@
+cev .id(1232), .name("cev1232"), {
+@comment "癒し"
+@if s[118] .isOn() {
+    v[1301].copy v[581], 20
+    @comment "#Q_ID and Q_Func"
+    v[581] = 32
+    v[582] = v[581] + 1200
+    @comment "#Q_Type"
+    v[583] = 4
+    v[584] = 1
+    @comment "#Q_Motion"
+    v[585] = 1
+    @comment "#Q_ExtraMotion"
+    v[586] = 1
+    @comment "#Q_Cost"
+    v[587] = 24
+    @comment "#Q_Range"
+    v[592] = 100000
+    @comment "#Q_CD"
+    v[588] = 150
+    @comment "#Spellpowerbase"
+    v[598] = 90
+    v[598] = 100075
+    
+} .else bl {
+    @comment "Access19 = AttackerObjectID
+Access20 = TargetObjectID
+Access18 = TargetObjTypeチェックPtr"
+    @if s[120] .isOff() {
+        @if v[217] < v[4559] {
+            v[217] += 1
+            @loop v[4559] .dst v[320] {
+                v[216] %= v[4559]
+                v[301] = v[216] * 100
+                v[301] += v[1076]
+                v[295] = v[301] + 1
+                @if v[v[295]] == 0 {
+                    @comment "Access17 = AttackerObjチェックPtr"
+                    v[297] = v[299] * 300
+                    v[297] += 4700
+                    @comment "まず清掃"
+                    v[1301].copy v[601], 100
+                    v[1301].copy v[v[295]], 100
+                    @comment "ParentObjセット"
+                    v[609] = v[299]
+                    @comment "出る場所セット"
+                    v[341] = v[297] + 7
+                    v[v[341]].copy v[605], 2
+                    v[605..606] *= 10000
+                    v[v[341]].copy v[607], 2
+                    @comment "Projectile team"
+                    v[341] = v[297] + 100
+                    v[618] = v[v[341]] == 0 ? 1 : 0
+                    @comment "パラメータ等入力begin"
+                    @comment "#Pic"
+                    v[602] = 1
+                    @comment "#ProjectileType"
+                    v[601] = 2
+                    @comment "#あたり判定"
+                    v[610] = 80
+                    v[611] = 80
+                    @comment "#威力"
+                    v[11] = v[299]
+                    v[12] = 2
+                    @call .cev 2004
+                    @comment "[AP]*100%"
+                    v[21] *= -75
+                    v[21] /= 100
+                    v[21] -= 10
+                    v[621] = v[21]
+                    @comment "#ARMRと属性"
+                    v[622] = -1
+                    v[623] = 1
+                    @comment "#Timer"
+                    v[700] = 1
+                    @comment "#Effect"
+                    v[604] = 107
+                    v[641] = 1172
+                    v[642] = 96
+                    @comment "パラメータ等入力end"
+                    v[601].copy v[v[295]], 100
+                    @comment "#Nopic"
+                    v[628] |= 8
+                    @comment "描画"
+                    v[302] = v[216] + v[4560]
+                    @pic[v[302]].show {
+                        "projectile\null"
+                        .pos v[605], v[606] .center
+                        .scrollWithMap
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .angle v[619], 1000
+                        .mapLayer 7
+                        .eraseWhenTransfer
+                        .affectedByTint
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    @comment "演出"
+                    @break
+                    
+                }
+                v[216] += 1
+                
+            }
+            
+            @comment "##############"
+            v[297] = v[299] * 300
+            v[297] += 4700
+            @comment "出る場所セット"
+            v[341] = v[297] + 7
+            v[v[341]].copy v[607], 2
+            @if `s[500 + v[299]] == 1 {
+                v[182] += 1
+                @comment "#########################"
+                v[472] = divmul(80, 100, v[2216])
+                v[474] = divmul(v[607] + v[1001], v[1281], 50)
+                @comment "#########################"
+                @se.play "Recovery8" .opt v[472], 130, v[474]
+                
+            }
+            
+        }
+        
+    } .else bl {
+        
+    }
+    
+}
+}

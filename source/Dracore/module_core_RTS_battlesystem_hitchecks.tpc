@@ -1,0 +1,117 @@
+
+//9.3.23
+//cev 42
+__fn func_bs_melee_hit_check $attacker $victim {
+	Ptr9 = $attacker *300
+	Ptr10 = $victim *300
+
+	@if `v[Ptr9 + 4944] == v[Ptr10 + 4944] {
+	    s[164].on
+	    
+	} .else bl {
+	    s[164].off
+	    
+	}
+	//@comment "HITを取得"
+	v[301] = Ptr9 + 4965
+	v[301] = v[v[301]]
+	//@comment "AVDを取得"
+	v[21] = Ptr10 + 4966
+	v[21] = v[v[21]]
+	//@comment "#################GetParaNow v1v2r1 END#################"
+	//@comment "#DodgeMS*12%"
+	v[21] += v[Ptr10 + 4765] & 32 ? muldiv(v[Ptr10 + 4968], 12, 100) : 0
+	//@comment "＃＃＃＃＃＃＃＃＃＃Elevation Bonus＃＃＃＃＃＃＃＃＃＃"
+	v[320] = v[Ptr9 + 4757] - v[Ptr10 + 4757]
+	//@comment "＃＃＃＃＃＃＃＃＃＃BackAttack Bonus＃＃＃＃＃＃＃＃＃＃"
+	v[301] += s[164] == 1 ? 15 : 0
+	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per...10% min5% max95%＃＃＃＃＃＃＃＃＃＃"
+	v[301] += 10 - v[21] + 5 * v[320]
+	v[301] = max(5, min(95, v[301]))
+	//@comment "＃＃＃＃＃＃＃＃＃＃Roll!	＃＃＃＃＃＃＃＃＃＃"
+	v[303] = rnd(0, 99)
+	v[21] = v[303] <= v[301] ? 1 : 0
+	@if v[21] == 0 {
+	    v[843] = Ptr10 + 4965
+	    //@comment "＃＃＃＃＃＃＃＃＃＃Check Shield?	＃＃＃＃＃＃＃＃＃＃"
+	    //@comment "Shieldを取得 302	...ADVに先行で算入されている"
+	    v[302] = 100 - v[Ptr10 + 4835]
+	    v[22] = v[303] >= v[302] ? 1 : 0
+	    @if v[22] == 0 {
+		@if s[164] .isOff() {
+		    //@comment "Parry chance"
+		    v[874] = Ptr10 + 4974
+		    @if `v[v[874]] & 16777216 {
+			@if `v[v[843]] != 1 {
+			    v[22] = rnd(0, 99) <= v[Ptr10 + 4965] / (v[v[874]] & 131072 ? 2 : 3) + 16 ? 2 : 0
+			    
+			}
+			
+		    }
+		    
+		}
+		
+	    }
+	    
+	}
+
+}
+
+__fn func_bs_ranged_hit_check $attacker $victim $dir{
+	Ptr9 = $attacker *300
+	Ptr10 = $victim *300
+	//@comment "HITを取得"
+	v[301] = Ptr9 + 4965
+	v[301] = v[v[301]]
+	//@comment "AVD/4を取得"
+	v[21] = Ptr10 + 4966
+	v[21] = v[v[21]]
+	//@comment "#DodgeMS*12%"
+	v[21] += v[Ptr10 + 4765] & 32 ? muldiv(v[Ptr10 + 4968], 12, 100) : 0
+	v[21] /= 4
+	//@comment "##########Perk##########"
+	//@comment "Anticipation"
+	v[21] += v[Ptr10 + 4765] & 64 ? 18 + v[21] : 0
+	//@comment "＃＃＃＃＃＃＃＃＃＃Elevation Bonus＃＃＃＃＃＃＃＃＃＃"
+	v[320] = v[Ptr9 + 4757] - v[Ptr10 + 4757]
+	v[301] += 7 * v[320]
+	//@comment "＃＃＃＃＃＃＃＃＃＃Check Shield?＃＃＃＃＃＃＃＃＃＃"
+	//@comment "Shieldを取得 302...ADV/4+302*2"
+	v[302] = v[Ptr10 + 4974] & 67108864 ? 0 : v[Ptr10 + 4948] & 6 ? muldiv(v[Ptr10 + 4835], 250, 100) : v[Ptr10 + 4835] * 2
+	//@comment "BackAttack one-thirds shield bonus "
+	v[21] = (v[21] + v[302]) / ($dir == v[Ptr10 + 4944] ? 3 : 1)
+	v[303] = rnd(0, 99)
+	v[22] = v[303] >= 100 - v[302] ? 1 : 0
+	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per...38%min1% max99%＃＃＃＃＃＃＃＃＃＃"
+	v[301] += 38 - v[21]
+	v[301] = max(1, min(99, v[301]))
+	//@comment "Ambush"
+	v[21] /= (v[Ptr10 + 4976] & 1) > 0 ? 2 : 1
+	//@comment "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"
+	v[21] = v[303] <= v[301] ? 1 : 0
+}
+
+__fn func_bs_dummy_hit_check {
+	v[21] = 1
+}
+
+__fn func_bs_mind_hit_check $attacker $victim{
+	Ptr10 = $victim *300
+	//@comment "＃＃＃＃＃＃＃＃＃＃memo	＃＃＃＃＃＃＃＃＃＃"
+	//@comment "V1=spell power"
+	//@comment "#そのうち処理作る"
+	//@comment "#################GetParaNow v1v2r1 END#################"
+	v[301] = v[11]
+	//@comment "#################	GetWillPower#################"
+	v[21] = v[v[300] * 300 + 4975]
+	//@comment "＃＃＃＃＃＃＃＃＃＃	Base Hit Per...10%	min5% max95%	＃＃＃＃＃＃＃＃＃＃"
+	v[301] -= v[21]
+	v[12] = v[v[300] * 300 + 4974]
+	@if s[319] .isOn() {
+	    v[301] -= v[21] >= 150 || v[12] & 4096 || v[12] & 4194304 ? 9999 : 0
+	    
+	}
+	//@comment "＃＃＃＃＃＃＃＃＃＃	Roll!	＃＃＃＃＃＃＃＃＃＃"
+	v[21] = rnd(0, 99) <= v[301] ? 1 : 0
+}
+

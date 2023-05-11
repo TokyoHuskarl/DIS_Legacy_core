@@ -1,0 +1,15 @@
+cev .id(1102), .name("cev1102"), {
+@actor[3].name "undefined"
+@comment "###############"
+@comment "Init"
+t[3000..3300] .asg ""
+@comment "Load"
+v[1961] = v[4519] + v[11] - 1
+t[3000] .asg t[v[1961]] .extract
+t[3000] .split "|", t[3001], v[1961]
+@comment "###############"
+@comment "Tech:"
+@actor[3].name t[3001]
+@comment "文字列変数: T[0506] = 主人公, 3, 実行中の値"
+t[506] .asg  .actor[3].name .dynamic
+}

@@ -1,0 +1,60 @@
+cev .id(1908), .name("cev1908"), {
+s[39].off
+s[19].off
+s[18].off
+s[43].on
+s[50].on
+s[2].on
+@if s[20] .isOn() {
+    s[38].on
+    
+}
+@wait 0
+@pic[971..972].erase
+@pic[1767..1769].erase
+s[100].off
+@sys.gameOpt .mouse.disableMsgProcession 0
+@if s[20] .isOn() {
+    @msg.opt {
+        .trans
+        .top
+        .size 0, 0
+        .font "", 0
+}
+    @pic[996].strpic {
+        ""
+        .pos v[1115], v[1301] .top
+        .size 480, 80        .chromakey 1
+        .scale 100
+        .trans 15
+        .rgbs 100, 100, 100, 100
+        .font "ＭＳ ゴシック", 12 .noShadow
+        .spacing 0, 0
+        .skin "" .stretch .noGradation
+        .mapLayer 8
+        .affectedByShake
+    }
+    
+} .else bl {
+    @msg.opt {
+        .trans
+        .bottom
+        .size 0, 0
+        .font "", 0
+}
+    @pic[996].strpic {
+        ""
+        .pos v[1115], v[1002] .bottom
+        .size 480, 80        .chromakey 1
+        .scale 100
+        .trans 15
+        .rgbs 100, 100, 100, 100
+        .font "ＭＳ ゴシック", 12 .noShadow
+        .spacing 0, 0
+        .skin "" .stretch .noGradation
+        .mapLayer 8
+        .affectedByShake
+    }
+    
+}
+}

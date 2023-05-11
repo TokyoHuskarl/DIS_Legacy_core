@@ -1,0 +1,38 @@
+cev .id(1853), .name("cev1853"), {
+@comment "*map tile check*"
+t[502] .asg "lower{
+"
+t[503] .asg "upper{
+"
+@loop v[2062] .dst v[2064] {
+    v[286] = v[2061] * v[2064] + v[4529]
+    v[287] = v[2061] * v[2064] + v[1182]
+    @loop v[2061] .dst v[2065] {
+        v[341] = v[2065] + v[69]
+        v[342] = v[2064] + v[70]
+        @sys.getInfo .tiles v[341], v[342], 1, 1 .lower .dst v[30]
+        t[502] .cat "\v[30]," .extract
+        @comment "Set LowerChipID"
+        v[v[287]] += v[30] * 100
+        @sys.getInfo .tiles v[341], v[342], 1, 1 .upper .dst v[30]
+        t[503] .cat "\v[30]," .extract
+        v[286..287] += 1
+        
+    }
+    
+    t[502] .cat t[525]
+    t[503] .cat t[525]
+    
+}
+
+t[502..503] .cat "}"
+t[501] .asg t[502]
+t[501] .cat t[525]
+t[501] .cat t[503]
+t[510] .asg "..\Maps\"
+t[510] .cat t[750]
+t[510] .cat "\"
+t[510] .cat "tilegen"
+t[501] .toFile t[510], .utf8
+@se.play "decide1" .opt 100, 100, 50
+}

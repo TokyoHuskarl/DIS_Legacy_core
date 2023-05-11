@@ -1,0 +1,41 @@
+cev .id(1803), .name("cev1803"), {
+v[341] = v[13] - v[11] + 1
+v[342] = v[14] - v[12] + 1
+@loop v[342] .dst v[2064] {
+    v[287] = v[2061] * (v[2064] + v[12] - v[70]) + v[1182] + v[11] - v[69]
+    @loop v[341] .dst v[2065] {
+        v[343] = v[2065] + v[11]
+        v[344] = v[2064] + v[12]
+        v[v[287]] -= v[v[287]] > 100000000 ? 100000000 : 0
+        v[287] += 1
+        
+    }
+    
+    
+}
+
+v[341].copy v[343], 2
+v[11].copy v[341], 2
+@call .cev 2001
+v[343..344] *= 16
+v[23] -= 8
+v[344] += 12
+@pic[v[2080]].strpic {
+    ""
+    .pos v[22], v[23] .topLeft
+    .size v[343], v[344]    .scrollWithMap
+    .chromakey 1
+    .scale 100
+    .trans 90
+    .rgbs 20, 20, 20, 100
+    .font "", 12 .noShadow
+    .spacing 0, 4
+    .skin "mapshade" .stretch .noGradation .noPadding
+    .multi
+    .mapLayer 2
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+v[2080] += 1
+}

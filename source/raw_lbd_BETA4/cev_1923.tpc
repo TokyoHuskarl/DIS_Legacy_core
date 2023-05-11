@@ -1,0 +1,277 @@
+cev .id(1923), .name("cev1923"), {
+@comment "module_core_Game_items_general.tpc"
+@comment "Weapon"
+@comment "#Equip"
+@if v[1929] == 1 {
+    v[709] += v[1902]
+    v[713] += v[1905]
+    @comment "#Aggressive perks"
+    @comment "#######################
+     Weapon Mastery
+#######################"
+    @call .cev 1928
+    @comment "#######################
+     Weapon MasteryEnd
+#######################"
+    @comment "##Duelist"
+    s[154].off
+    v[725] &= ~8
+    @if v[1901] < 100 {
+        @if `v[665] & 262144 {
+            @if `between(v[833], 1, 3) {
+                
+            } .else bl {
+                v[1904] += 30
+                v[740] |= 131072
+                
+            }
+            
+        }
+        @if v[1925] < 1 {
+            s[154].on
+            
+        } .else bl {
+            
+        }
+        
+    } .else bl {
+        @if `v[1901] / 10 == 10 {
+            v[725] |= 8
+            
+        }
+        
+    }
+    v[0] = v[736..737] = v[1903..1904]
+    @comment "##Head Hunter
+###[Crit]*2"
+    v[1941] = v[666] & 8
+    v[1906] *= v[1941] == 8 ? 2 : 1
+    v[715] += v[1906]
+    @comment "##Head Hunter End"
+    v[703] = v[1907]
+    v[0] = v[717..718] = v[1908..1909]
+    @comment "#AS"
+    v[719] += v[1910]
+    v[0] = v[720..721] = v[1911..1912]
+    v[724] = v[1913]
+    v[0] = v[727..730] = v[1914..1917]
+    v[741] = v[1918] > 0 ? v[1918] : 0
+    v[858] = v[1930]
+    @comment "If the weapon is bow, can skirmishing"
+    v[740] |= v[1901] == 211 ? 16 : 0
+    @comment "If the weapon is wand, can support"
+    v[740] |= v[1901] == 121 ? 8388608 : 0
+    @comment "Max Ammo"
+    v[831] += v[1920]
+    @comment "Elements"
+    v[0] = v[722..723] = v[1922..1923]
+    @comment "Or?"
+    v[740] |= v[1921]
+    v[259] = v[1901]
+    @comment "temp extramotion flag"
+    v[726] |= v[1927]
+    v[725] |= v[1926]
+    @comment "Ranged?"
+    v[0] = v[1901] >= 200 ? (s[211] = 1) : (s[211] = 0)
+    
+}
+@comment "#Unequip"
+@if v[1929] == -1 {
+    v[709] -= v[1902]
+    v[0] = v[736..737] = 0
+    v[713] -= v[1905]
+    @call .cev 1928
+    v[1941] = v[666] & 8
+    v[1906] *= v[1941] == 8 ? 2 : 1
+    v[715] -= v[1906]
+    v[703] = v[1907]
+    v[0] = v[717..718] = [18000, 0]
+    v[719] -= v[1910]
+    v[0] = v[720..721] = [1, 5]
+    v[724] = 0
+    v[0] = v[727..730] = 0
+    v[741] = 0
+    v[858] = 0
+    v[740] ^= v[1901] == 211 ? 16 : 0
+    v[740] ^= v[1901] == 121 ? 8388608 : 0
+    v[740] ^= v[1921]
+    @if `!v[726] & 8388608 {
+        @if s[1] .isOn() {
+            v[726] &= ~pow(2, v[1927] - 1)
+            
+        } .else bl {
+            v[726] &= ~v[1927]
+            @if `v[726] & 512 {
+                v[725] &= ~v[1926]
+                
+            }
+            
+        }
+        
+    }
+    v[725] &= ~8
+    @comment "Weight"
+    v[1919] *= -1
+    
+}
+@comment "Shield"
+@comment "#Equip"
+@if v[1929] == 2 {
+    @comment "
+     Shield Value"
+    v[735] = v[1902]
+    @comment "#Check Shield Master"
+    v[735] = (v[665] & 1) == 1 ? muldiv(v[735], 15, 10) : v[735]
+    v[714] += v[735]
+    @comment "ShieldType"
+    v[833] = v[1901]
+    @comment "##Duelist"
+    v[1941] = v[740] & 131072
+    @if v[1941] > 0 {
+        @if `between(v[833], 1, 3) {
+            v[737] -= 30
+            v[740] &= ~131072
+            
+        }
+        
+    }
+    @comment "Cracking Resistance"
+    v[834] = v[1904]
+    @comment "#Check Shield Master"
+    v[834] = (v[665] & 1) == 1 ? muldiv(v[834], 15, 10) : v[834]
+    @comment "Can ShieldWall?"
+    v[740] |= v[1903] == 1 ? 4 : 0
+    @comment "Show Shield Sprite"
+    v[859] = v[1930]
+    @comment "If equip assigning unit is customtroop"
+    @if v[601] == 4 {
+        
+    }
+    s[154].off
+    
+}
+@comment "#Unequip"
+@if v[1929] == -2 {
+    @comment "
+     Shield Value"
+    v[735] = v[1902]
+    @comment "#Check Shield Master"
+    v[735] = (v[665] & 1) == 1 ? muldiv(v[735], 15, 10) : v[735]
+    v[714] -= v[735]
+    v[735] = 0
+    @comment "ShieldType"
+    v[833] = 0
+    @comment "#Duelist Check?"
+    @comment "Cracking Resistance"
+    v[834] = 0
+    @comment "Can ShieldWall?"
+    v[740] ^= v[1903] == 1 ? 4 : 0
+    @comment "If equip assigning unit is customtroop"
+    @if v[601] == 4 {
+        @comment "Show Shield Sprite"
+        v[859] = 0
+        
+    }
+    @comment "Weight"
+    v[1919] *= -1
+    
+}
+@comment "#Armor"
+@if v[1929] == 3 {
+    @comment "#AR-AVD"
+    v[0] = v[711..714] += v[1902..1905]
+    @comment "#Pic"
+    v[886] = v[1930]
+    @comment "#Is Arm Covered?"
+    v[0] = (v[1927] & 1) == 1 ? (s[159] = 1) : (s[159] = 0)
+    @comment "#Metal Armor AP Penalty"
+    v[710] -= v[1901] != 1 ? muldiv(v[710], 2, 10) : 0
+    @comment "#Motion"
+    @if v[601] == 3 {
+        v[726] |= v[1926]
+        v[725] |= v[1925]
+        
+    }
+    
+}
+@comment "#Helm"
+@if v[1929] == 4 {
+    @comment "#AR-AVD"
+    v[0] = v[711..714] += v[1902..1905]
+    @comment "#HELM MAIN "
+    v[0] = v[839..840] += [v[1908], v[1907]]
+    @comment "#Ranged penalty"
+    v[837] -= v[1918]
+    @comment "#SPreg penalty"
+    v[828] = v[1920]
+    @comment "#SPreg penalty"
+    v[732] -= v[1920]
+    @comment "#Pic"
+    v[888] = v[1930]
+    @comment "#Is_cover_head"
+    @if `(v[1921] & 1) > 0 {
+        @comment "#NOT Dragons"
+        v[887] = v[664] != 3 ? 999999 + v[663] * 1000000 + v[664] * 10000000 : v[887]
+        s[155].on
+        
+    }
+    
+}
+@comment "#Acc"
+@if v[1929] == 5 {
+    @if v[1901] == 3 {
+        @comment "Is_attatchment"
+        @comment "#AR-AVD"
+        v[0] = v[711..714] += v[1902..1905]
+        @comment "#CritChanceReduction"
+        v[839] += v[1910]
+        
+    } .else bl {
+        @if v[1901] == 2 {
+            @comment "Is_horse"
+            @comment "#AR-AVD"
+            v[0] = v[711..714] += v[1902..1905]
+            @comment "#BonusHP"
+            v[705..706] += v[1911]
+            @comment "#BonusSP"
+            v[707..708] += v[1912]
+            @comment "#BonusMS"
+            v[716] += v[1913]
+            @comment "#Make unit cav"
+            v[702] = 2
+            
+        } .else bl {
+            @comment "#AR-AVD"
+            v[0] = v[711..714] += v[1902..1905]
+            @comment "#AD/AP"
+            v[0] = v[709..710] += [v[1907], v[1908]]
+            @comment "#Bonus Crit"
+            v[0] = v[715] += v[1909]
+            @comment "#CritChanceReduction"
+            v[839] += v[1910]
+            
+        }
+        
+    }
+    @comment "#Pic"
+    v[889] = v[1930]
+    
+}
+@comment "############
+#Weight Proc#
+############"
+v[1941] = v[1919]
+@comment "#Set ArmorWeight"
+v[838] += v[1929] >= 3 ? v[1941] : 0
+@comment "#Check Brawny"
+v[1942] = (v[665] & 2) == 2 ? 1 : 0
+v[1942] += between(v[1929], 3, 4) ? 1 : 0
+@if v[1942] == 2 {
+    v[1941] = muldiv(v[1941], 75, 100)
+    
+}
+@comment "#[SP]-[Weight]"
+v[707..708] -= v[1941]
+@comment "#[MS]-[Weight]"
+v[716] -= v[1941]
+}

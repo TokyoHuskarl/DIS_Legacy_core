@@ -1,0 +1,138 @@
+cev .id(197), .name("cev197"), {
+@comment "Access19 = AttackerObjectID
+Access20 = TargetObjectID
+Access18 = TargetObjTypeチェックPtr"
+@if v[217] < 180 {
+    v[217] += 1
+    @loop 180 .dst v[320] {
+        v[216] %= 180
+        v[301] = v[216] * 100
+        v[301] += v[1076]
+        v[295] = v[301] + 1
+        @if v[v[295]] == 0 {
+            @comment "Access17 = AttackerObjチェックPtr"
+            v[297] = v[299] * 300
+            v[297] += 4700
+            @comment "まず清掃"
+            v[1301].copy v[601], 100
+            v[1301].copy v[v[295]], 100
+            @comment "ParentObjセット"
+            v[341] = v[297] + 1
+            v[609] = v[v[341]]
+            @comment "出る場所セット"
+            v[341] = v[297] + 7
+            v[v[341]].copy v[605], 2
+            v[605..606] *= 10000
+            v[v[341]].copy v[607], 2
+            @comment "###############
+速度べくとるを作る
+###############"
+            v[607].copy v[11], 2
+            v[341] = v[298] + 6
+            v[v[341]].copy v[13], 2
+            @comment "##狙いをランダマイズ"
+            v[13] += rnd(-45, 45)
+            v[14] += rnd(-45, 45)
+            @comment "#単位ベクトルできた"
+            @call .cev 2003
+            @comment "#速度をかけよう"
+            @comment "##AAvelocityから取得"
+            v[341] = v[297] + 127
+            v[21..22] *= v[v[341]]
+            @comment "#速度パラメータ入力"
+            v[21].copy v[612], 2
+            @comment "#角度情報保存"
+            v[619] = atan2(v[613], v[612], 1000)
+            @if v[619] <= 0 {
+                v[619] += 180000
+                
+            }
+            @comment "Projectile team"
+            v[341] = v[297] + 100
+            v[618] = v[v[341]]
+            @comment "パラメータ等入力begin"
+            @comment "#ProjectileType"
+            v[601] = 1
+            @comment "#あたり判定"
+            v[610] = 2
+            v[611] = 2
+            @comment "#威力"
+            v[11] = v[299]
+            v[12] = 1
+            @call .cev 2004
+            v[621] = v[21]
+            @comment "#ARMRと属性"
+            v[622] = 0
+            v[341] = v[297] + 123
+            v[623] = v[v[341]]
+            @comment "#Timer"
+            v[700] = 60
+            @comment "パラメータ等入力end"
+            v[601].copy v[v[295]], 100
+            @comment "描画"
+            v[302] = v[216]
+            v[302] += 1001
+            @if v[612] >= 0 {
+                @pic[v[302]].show {
+                    "bullet"
+                    .pos v[605], v[606] .center
+                    .scrollWithMap
+                    .chromakey 1
+                    .scale 100
+                    .trans 100
+                    .rgbs 100, 100, 100, 100
+                    .angle v[619], 1000
+                    .mapLayer 3
+                    .eraseWhenTransfer
+                    .affectedByTint
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            } .else bl {
+                @pic[v[302]].show {
+                    "bullet"
+                    .pos v[605], v[606] .center
+                    .scrollWithMap
+                    .chromakey 1
+                    .scale 100
+                    .trans 100
+                    .rgbs 100, 100, 100, 100
+                    .angle v[619], 1000
+                    .hrev 
+                    .mapLayer 3
+                    .eraseWhenTransfer
+                    .affectedByTint
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            }
+            @comment "演出"
+            @if v[607] >= v[1008] {
+                @if v[607] <= v[1009] {
+                    @if v[608] >= v[1010] {
+                        @if v[608] <= v[1011] {
+                            @if v[182] <= 5 {
+                                v[182] += 1
+                                @se.play "mg42_fire" .opt 90, 70, 50
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            @break
+            
+        }
+        
+    }
+    
+    v[216] += 1
+    
+}
+}

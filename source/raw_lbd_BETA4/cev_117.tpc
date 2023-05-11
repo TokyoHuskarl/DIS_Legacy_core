@@ -1,0 +1,85 @@
+cev .id(117), .name("cev117"), {
+@comment "v1=amount"
+@comment "v2=direction -1=right 0=cent 1=left"
+@if s[141] .isOn() {
+    @loop v[1017] .dst v[320] {
+        v[244] %= v[1199]
+        v[351] = v[244] * 50 + v[1198]
+        @if v[v[351]] <= 1 {
+            @comment "まず清掃"
+            v[1301].copy v[v[351]], 50
+            @comment "ポインタセット開始"
+            @comment "設定"
+            v[v[351]] = 1
+            @comment "500F"
+            v[v[351] + 49] = 2
+            @comment "Set itself"
+            v[v[351] + 3] = 117
+            @comment "Set Amount"
+            v[v[351] + 1] = v[11]
+            @comment "Set Dire"
+            v[v[351] + 27] = v[12]
+            @comment "XY set"
+            v[357] = v[351] + 6
+            v[361].copy v[v[357]], 2
+            @comment "仕上げに登録消す"
+            s[141].off
+            v[244] += 1
+            @break
+            
+        }
+        v[244] += 1
+        
+    }
+    
+    s[141].off
+    
+} .else bl {
+    @comment "Particle Effecter"
+    @comment "Access14 = x"
+    v[294] = v[301] + 6
+    @comment "ずれセット"
+    v[v[294]] .add v[53], 2
+    @if `s[2] == 0 && v[v[301] + 48] == 0 {
+        v[293] = v[301] + 1
+        @loop v[v[293]] {
+            v[v[294]].copy v[341], 2
+            v[341] += rnd(-12, 12)
+            v[342] += rnd(-12, 12)
+            v[341].copy v[343], 2
+            v[343] += rnd(-36, 36)
+            v[344] += rnd(-8, -34)
+            v[245] %= v[2215]
+            v[345] = v[245] + v[1200]
+            v[245] += 1
+            v[346] = rnd(28, 31)
+            @pic[v[345]].show {
+                "effects\particles"
+                .pos v[341], v[342] .center
+                .scrollWithMap
+                .chromakey 1
+                .scale 70
+                .trans 25
+                .rgbs 85, 0, 0, 100
+                .grid 12, 12 .cell v[346]
+                .mapLayer 5
+                .affectedByTint
+                .affectedByFlash
+                .affectedByShake
+            }
+            @comment "7f->9f->12f"
+            @pic[v[345]].move {
+                .pos v[343], v[344] .center
+                .scale 0
+                .trans 100
+                .time -15
+                .rgbs 40, 0, 0, 150
+            }
+            
+        }
+        
+        
+    }
+    
+}
+}

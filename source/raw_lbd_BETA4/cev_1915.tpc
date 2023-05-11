@@ -1,0 +1,11 @@
+cev .id(1915), .name("cev1915"), {
+s[43].on
+t[510] .asg "..\Languages\" .extract
+t[510] .cat t[528]
+t[510] .cat "lang_tips"
+t[510] .asg  .file t[510], .utf8, .extract
+t[510] .split "*/", t[509], v[341]
+t[510] .split t[525], t[3001], v[341]
+v[341] = rnd(1, v[341]) + 3000
+t[3000] .asg t[v[341]]
+}

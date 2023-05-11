@@ -1,0 +1,68 @@
+cev .id(1240), .name("cev1240"), {
+@if s[118] .isOn() {
+    v[823] = 1
+    
+} .else bl {
+    @comment "PASSIVE"
+    v[299] = v[401] + 1
+    @if v[217] < v[4559] {
+        v[217] += 1
+        @loop v[4559] .dst v[320] {
+            v[216] %= v[4559]
+            v[301] = v[216] * 100
+            v[301] += v[1076]
+            v[295] = v[301] + 1
+            @if v[v[295]] == 0 {
+                @comment "Access17 = AttackerObjチェックPtr"
+                v[297] = v[299] * 300
+                v[297] += 4700
+                @comment "まず清掃"
+                v[1301].copy v[601], 100
+                v[1301].copy v[v[295]], 100
+                @comment "ParentObjセット"
+                v[609] = v[299]
+                @comment "出る場所セット"
+                v[341] = v[297] + 7
+                v[v[341]].copy v[605], 2
+                v[605..606] *= 10000
+                v[v[341]].copy v[607], 2
+                @comment "Projectile team"
+                v[341] = v[297] + 100
+                v[618] = v[v[341]] == 0 ? 1 : 0
+                @comment "パラメータ等入力begin"
+                @comment "#Pic"
+                v[602] = 1
+                @comment "#ProjectileType"
+                v[601] = 2
+                @comment "#あたり判定"
+                v[610] = 48
+                v[611] = 48
+                @comment "#威力"
+                v[11] = v[299]
+                v[12] = 2
+                @call .cev 2004
+                @comment "[AP]*100%"
+                v[21] *= -9
+                v[21] /= 10
+                v[621] = v[21]
+                @comment "#ARMRと属性"
+                v[622] = -1
+                v[623] = 1
+                @comment "#Timer"
+                v[700] = 1
+                @comment "パラメータ等入力end"
+                v[601].copy v[v[295]], 100
+                @comment "Timer Reset"
+                v[v[297] + 94] = v[1139] * 6
+                @break
+                
+            }
+            v[216] += 1
+            
+        }
+        
+        
+    }
+    
+}
+}

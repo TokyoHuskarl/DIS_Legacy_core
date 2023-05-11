@@ -1,0 +1,115 @@
+cev .id(111), .name("cev111"), {
+@comment "普通のアニメ雛形"
+@if s[141] .isOn() {
+    @comment "if Bleed Immunity == 0 "
+    @if v[372] == 0 {
+        @loop v[1163] .dst v[320] {
+            v[418] %= v[1163]
+            v[301] = v[418] * 100
+            v[301] = v[301] + v[1162]
+            @if v[v[301]] <= 1 {
+                @comment "まず清掃"
+                v[1301].copy v[v[301]], 100
+                @comment "ポインタセット開始"
+                v[310] = v[418] + v[1164]
+                v[295] = v[301] + 99
+                @comment "設定"
+                v[v[301]] = 3
+                @comment "400F"
+                v[v[295]] = 280
+                @comment "ziko"
+                v[295] = v[301] + 3
+                v[v[295]] = 111
+                @comment "普通にアニメ"
+                v[361] += rnd(-6, 6)
+                v[362] += rnd(14, 11)
+                v[305] = rnd(1, 4)
+                v[361].copy v[11], 2
+                @call .cev 2010
+                @comment "WATER"
+                v[634] = 100
+                @if `(v[v[4505] + v[23]] & 1) > 0 {
+                    v[631] = 160
+                    v[632..633] = 30
+                    @pic[v[310]].show {
+                        "effects\sprite_fresheffects"
+                        .pos v[361], v[362] .center
+                        .scrollWithMap
+                        .chromakey 1
+                        .scale 100
+                        .trans 8
+                        .rgbs v[631], v[632], v[633], v[634]
+                        .multi
+                        .grid 20, 20 .cell v[305]
+                        .mapLayer 2
+                        .eraseWhenTransfer
+                        .affectedByTint
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                } .else bl {
+                    @pic[v[310]].show {
+                        "effects\sprite_fresheffects"
+                        .pos v[361], v[362] .center
+                        .scrollWithMap
+                        .chromakey 1
+                        .scale 100
+                        .trans 8
+                        .rgbs 100, 100, 100, 100
+                        .grid 20, 20 .cell v[305]
+                        .mapLayer 2
+                        .eraseWhenTransfer
+                        .affectedByTint
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    v[631..633] = 100
+                    
+                }
+                v[295] = v[301] + 30
+                v[631].copy v[v[295]], 4
+                v[607] = v[301] + 6
+                v[361].copy v[v[607]], 2
+                @comment "仕上げに登録消す"
+                v[418] += 1
+                s[141].off
+                @break
+                
+            }
+            v[418] += 1
+            
+        }
+        
+        
+    }
+    s[141].off
+    
+} .else bl {
+    @comment "タイマー切れのときの処理"
+    v[v[295]] -= s[2] == 0 ? 1 : 0
+    @if v[v[295]] == 0 {
+        v[v[301]] = 1
+        
+    }
+    @comment "Access15 = x"
+    v[295] = v[301] + 6
+    @comment "ずれセット"
+    v[v[295]] .add v[53], 2
+    @comment "描画"
+    v[v[301]].copy v[601], 8
+    v[310] = v[241] + v[1164]
+    v[341] = v[301] + 30
+    v[v[341]].copy v[631], 4
+    @pic[v[310]].move {
+        .pos v[607], v[608] .center
+        .scale 100
+        .trans 12
+        .time 0
+        .rgbs v[631], v[632], v[633], v[634]
+        .keepEffect
+        .keepBlend
+    }
+    
+}
+}

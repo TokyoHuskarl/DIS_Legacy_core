@@ -1,0 +1,161 @@
+cev .id(2071), .name("cev2071"), {
+v[1243] = v[157] + v[1248]
+v[1243] = v[157] + v[1248]
+v[1958] = 1500
+v[1959] = v[1958] + v[1247]
+v[1951] = v[146] + v[176]
+v[1951] = v[1256] + 0
+v[v[1951]].copy v[v[1255]], v[1247]
+v[351] = v[1243] + 24
+v[352] = v[1244]
+@loop v[1247] .dst v[343] {
+    v[1951] = v[1255] + v[343]
+    v[1951] = v[v[1951]] * 40 + v[146] - 40
+    v[350] = v[1958] + v[343]
+    @pic[v[350]].erase
+    v[1951] += 39
+    @if v[v[1951]] > 0 {
+        v[1951] -= 39
+        v[1951] = v[1255] + v[343]
+        v[1951] = v[v[1951]] + v[1257]
+        v[1951] -= 1
+        @pic[v[350]].strpic {
+            "\t[\v[1951]]"
+            .pos v[351], v[352] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511] .noShadow
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noGradation .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        v[352] += v[1245]
+        
+    }
+    
+}
+
+v[352] = v[1244]
+@loop v[1247] .dst v[343] {
+    v[350] = v[1959] + v[343]
+    v[1951] = v[1255] + v[343]
+    v[1951] = v[v[1951]] * 40 + v[146] - 40
+    v[1951] += 39
+    @pic[v[350]].erase
+    @if v[v[1951]] > 0 {
+        v[1951] -= 39
+        v[1951] += 28
+        v[1952] = v[1951] + 1
+        v[1952] = v[v[1952]]
+        @if v[v[1951]] == 0 {
+            @pic[v[350]].show {
+                "InvItems\item_misc_0"
+                .pos v[1243], v[352] .center
+                .chromakey 1
+                .scale 100
+                .trans 0
+                .rgbs 100, 100, 100, 100
+                .mapLayer 9
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            
+        }
+        @if v[v[1951]] == 1 {
+            v[352] += 6
+            @pic[v[350]].show {
+                "parts\weapons\spr_cweapons_0" .repl 1 v[1952]
+                .pos v[1243], v[352] .center
+                .chromakey 1
+                .scale 100
+                .trans 0
+                .rgbs 100, 100, 100, 100
+                .grid 5, 1 .cell 1
+                .mapLayer 9
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            v[352] -= 6
+            
+        }
+        @if v[v[1951]] == 2 {
+            v[352] += 6
+            @pic[v[350]].show {
+                "parts\weapons\spr_cweapons_0" .repl 1 v[1952]
+                .pos v[1243], v[352] .center
+                .chromakey 1
+                .scale 100
+                .trans 0
+                .rgbs 100, 100, 100, 100
+                .grid 5, 1 .cell 1
+                .mapLayer 9
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            v[352] -= 6
+            
+        }
+        @if v[v[1951]] == 3 {
+            @pic[v[350]].show {
+                "parts\armor\spr_armor_0" .repl 1 v[1952]
+                .pos v[1243], v[352] .center
+                .chromakey 1
+                .scale 100
+                .trans 0
+                .rgbs 100, 100, 100, 100
+                .grid 5, 1 .cell 2
+                .mapLayer 9
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            
+        }
+        @if v[v[1951]] == 4 {
+            v[352] += 12
+            @pic[v[350]].show {
+                "parts\helm\spr_helm_1" .repl 1 v[1952]
+                .pos v[1243], v[352] .center
+                .chromakey 1
+                .scale 100
+                .trans 0
+                .rgbs 100, 100, 100, 100
+                .grid 5, 1 .cell 2
+                .mapLayer 9
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            v[352] -= 12
+            
+        }
+        @if v[v[1951]] == 5 {
+            @pic[v[350]].show {
+                "InvItems\item_misc_0"
+                .pos v[1243], v[352] .center
+                .chromakey 1
+                .scale 100
+                .trans 0
+                .rgbs 100, 100, 100, 100
+                .mapLayer 9
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            
+        }
+        v[352] += v[1245]
+        
+    }
+    
+}
+
+}

@@ -1,0 +1,822 @@
+
+cev .id(1800), .name("Mission:MapInit"), {
+	var_allocatedmapsize = v[2061] * v[2062]
+	@comment "########
+#Sight System
+########"
+	@if s[300] .isOff() {
+	    s[2001..2500].on
+	    s[299].on
+	    
+	} .else bl {
+	    s[299].off
+	    v[562447..572446] = 0
+	    v[2927] = v[2061] / 5
+	    v[2927] += v[2061] % 5 > 0 ? 1 : 0
+	    v[2928] = v[2062] / 5
+	    v[2928] += v[2062] % 5 > 0 ? 1 : 0
+	    v[4526] = 96
+	    v[4526] = (v[1001] / 80 + 2) * (v[1002] / 80 + 2)
+	    @comment "temp"
+	    v[4526] = min(v[4526], 156)
+	    v[345] = 80
+	    v[346] = 80
+	    @loop v[4526] .dst v[341] {
+		v[342] = v[4525] + v[341]
+		v[343] = 80 * (v[341] % 12) - 40
+		v[344] = 80 * (v[341] / 12) - 40
+		@pic[v[342]].strpic {
+		    ""
+		    .pos v[343], v[344] .center
+		    .size v[345], v[346]            .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .font "", 12
+		    .spacing 0, 4
+		    .skin "FogOfWar" .stretch
+		    .mapLayer 7
+		    .eraseWhenTransfer
+		    .affectedByFlash
+		    .affectedByShake
+		}
+		
+	    }
+	    
+	    
+	}
+	@if s[1] .isOn() {
+	    t[501] .asg  .file "../Maps/define_maps", .utf8
+	    @if t[750] .eq "" {
+		t[502] .asg ".*@"
+		t[502] .cat t[751]
+		t[501].exMatch {
+		    t[502]
+		    t[501]
+		    v[341]
+		    .beg 0
+		    .extract
+		}
+		t[501] .split "@", t[501], v[341]
+		t[750] .asg t[501]
+		
+	    } .else bl {
+		t[502] .asg t[750]
+		t[502] .cat "@.*"
+		t[501].exMatch {
+		    t[502]
+		    t[501]
+		    v[341]
+		    .beg 0
+		    .extract
+		}
+		t[501] .split "@", t[501], v[341]
+		t[502] .toNum v[341]
+		@comment "need to load mapgen.txt"
+		@if v[341] == 0 {
+		    
+		}
+		
+	    }
+	    
+	}
+	@comment "*init map str*"
+	t[40000..45000] .asg ""
+	@comment "*get map str*"
+	t[510] .asg "..\Maps\"
+	t[510] .cat t[750]
+	t[510] .cat "\\"
+	t[510] .cat "strings"
+	t[510] .cat t[526]
+	t[510] .asg  .file t[510], .utf8, .extract
+	t[510] .split "*/", t[509], v[341]
+	t[510] .split t[525], t[40000], v[341]
+	@comment "*Weather Init*"
+	@if s[312] .isOff() {
+	    @call .cev 1798
+	    
+	}
+	@comment "*MAP INIT*"
+	v[v[v[4569]]..v[v[4569] + v[4564] * 200 * 200]] = 0
+	v[0] = [v[286]..v[286] + 160000] = 0
+	v[2063] = v[2061] * v[2062]
+	v[504] = 3
+	@loop v[2062] .dst v[2064] {
+	    v[286] = v[2061] * v[2064] + v[4529]
+	    v[287] = v[2061] * v[2064] + v[1182]
+	    @loop v[2061] .dst v[2065] {
+		v[341] = v[2065] + v[69]
+		v[342] = v[2064] + v[70]
+		@map.getTerrain .pos v[341], v[342] .dst v[30]
+		v[v[287]] = v[30]
+		@comment "HEIGHT LEVEL 1"
+		v[v[287]] += 300000000
+		@comment "lower water height"
+		v[v[287]] -= (v[v[4505] + v[30]] & 1) > 0 ? 100000000 : 0
+		@comment "#TileFuncPushFlag"
+		v[v[286]] |= v[30] >= 20 ? 1 : 0
+		v[286..287] += 1
+		
+	    }
+	    
+	    
+	}
+
+	@comment "set v[2060]-> cev (mission init)"
+	@comment "*Load Tile Config*"
+	t[510] .asg "..\\Chipset\\tiledata\\tileconf_"
+	t[510] .cat "\v[2060]" .extract
+	t[510] .asg  .file t[510], .utf8, .extract
+	t[510] .split t[525], t[v[1219]], v[505]
+	@loop v[505] .dst v[506] {
+	    v[11] = v[1219] + v[506]
+	    t[510] .asg t[v[11]]
+	    @call .cev 1820
+	    t[3000..3300] .asg ""
+	    
+	}
+
+	@comment "*map tile check*"
+	@loop v[2062] .dst v[2064] {
+	    v[286] = v[2061] * v[2064] + v[4529]
+	    v[287] = v[2061] * v[2064] + v[1182]
+	    @loop v[2061] .dst v[2065] {
+		v[341] = v[2065] + v[69]
+		v[342] = v[2064] + v[70]
+		@sys.getInfo .tiles v[341], v[342], 1, 1 .lower .dst v[30]
+		@comment "Set LowerChipID"
+		v[v[287]] += v[30] * 100
+		@comment "Highgroundset"
+		v[371] = 0
+		@loop v[701] .dst v[345] {
+		    v[371] += v[30] == v[v[345] + 702] && v[30] != 0 ? 1 : 0
+		    
+		}
+		
+		v[v[287]] += v[371] >= 1 ? 100000000 : 0
+		@comment "CliffCheck"
+		v[371] = 0
+		@loop v[751] .dst v[345] {
+		    v[371] += v[30] == v[v[345] + 752] && v[30] != 0 ? 1 : 0
+		    
+		}
+		
+		@if v[371] >= 1 {
+		    v[289] = v[287]
+		    @while v[289] >= v[1182] {
+			@comment "HEIGHT LEVEL UP"
+			v[v[289]] += 100000000
+			v[289] -= v[2061]
+			
+		    }
+		    
+		    
+		}
+		@comment "CliffEndCheck"
+		v[371] = 0
+		@loop v[801] .dst v[345] {
+		    v[371] += v[30] == v[v[345] + 802] && v[30] != 0 ? 1 : 0
+		    
+		}
+		
+		@if v[371] >= 1 {
+		    v[289] = v[287]
+		    @while v[289] >= v[1182] {
+			@comment "HEIGHT LEVEL DOWN"
+			v[v[289]] -= 100000000
+			v[289] -= v[2061]
+			
+		    }
+		    
+		    
+		}
+		@sys.getInfo .tiles v[341], v[342], 1, 1 .upper .dst v[30]
+		@comment "Set UpperChipID"
+		v[v[287]] += v[30] * 100000
+		@comment "#TileFuncPushFlag"
+		v[371] = 0
+		@loop v[601] .dst v[345] {
+		    v[371] += v[30] == v[v[345] + 602] && v[30] != 0 ? 1 : 0
+		    
+		}
+		
+		v[v[286]] |= v[371] >= 1 ? 1 : 0
+		v[286..287] += 1
+		
+	    }
+	    
+	    
+	}
+
+	@wait 0
+	@comment "set mapnodes"
+	v[433] = (v[71] - v[69]) / 2
+	@if `(v[71] - v[69]) % 2 == 1 {
+	    v[433] += 1
+	    
+	}
+	v[434] = (v[72] - v[70]) / 2
+	@if `(v[72] - v[70]) % 2 == 1 {
+	    v[434] += 1
+	    
+	}
+	@loop v[434] .dst v[2064] {
+	    v[286] = v[4564] * v[433] * v[2064] + v[4569]
+	    @loop v[433] .dst v[2065] {
+		v[341] = v[2065] * 2 + v[69]
+		v[342] = v[2064] * 2 + v[70]
+		v[341].copy v[v[286]], 2
+		@comment "tile check
+#detect init static"
+		v[v[286] + 2] += 100
+		@comment "Road Counter"
+		v[316] = 0
+		@loop 2 .dst v[2066] {
+		    v[344] = v[342] + v[2066]
+		    @loop 2 .dst v[2067] {
+			v[343] = v[341] + v[2067]
+			v[313] = v[v[1182] + v[343] - v[69] + (v[344] - v[70]) * v[2061]]
+			v[314] = v[313] % 100
+			@comment "Evaluate Cost"
+			v[315] = 0
+			@comment "DENSE FOREST"
+			@if v[314] == 5 {
+			    v[315] = 1
+			    
+			}
+			@comment "Stone Road"
+			@if v[314] == 11 {
+			    v[316] += 2
+			    @if v[316] >= 5 {
+				v[315] = -3
+				
+			    }
+			    
+			}
+			@comment "Dirt Road"
+			@if v[314] == 12 {
+			    v[316] += 1
+			    @if v[316] >= 2 {
+				v[315] = -2
+				
+			    }
+			    
+			}
+			@comment "WATER"
+			@if v[314] == 18 {
+			    v[315] = 1
+			    
+			}
+			@if v[314] >= 21 {
+			    v[315] = 4
+			    
+			}
+			v[v[286] + 2] += v[315]
+			v[v[286] + 2] += v[v[4529] + v[343] - v[69] + (v[344] - v[70]) * v[2061]] & 1
+			v[v[286] + 7] += v[313] / 100000000
+			
+		    }
+		    
+		    
+		}
+		
+		v[v[286] + 7] /= 4
+		v[286] += v[4564]
+		
+	    }
+	    
+	    
+	}
+
+	@wait 0
+	@comment "Make Link"
+	v[301] = 0
+	@loop v[434] .dst v[2064] {
+	    v[286] = v[4564] * v[433] * v[2064] + v[4569] - 1
+	    @loop v[433] .dst v[2065] {
+		@comment "init"
+		v[287] = v[286] + 12
+		v[v[287]..v[287] + 7] = -1
+		v[371..374] = 0
+		@comment "X=0"
+		@if v[2065] == 0 {
+		    v[371] = 1
+		    
+		}
+		@if v[2065] == v[433] {
+		    v[371] = 2
+		    
+		}
+		@if v[2064] == 0 {
+		    v[372] = 1
+		    
+		}
+		@if v[2064] == v[434] {
+		    v[372] = 2
+		    
+		}
+		@comment "#"
+		@comment "##"
+		@if v[372] != 1 {
+		    @if v[371] != 1 {
+			v[288] = v[286] - v[4564] - v[433] * v[4564] + 1
+			v[302] = 1
+			@call .cev 1793
+			
+		    }
+		    v[288] = v[286] - v[433] * v[4564] + 1
+		    v[302] = 2
+		    @call .cev 1793
+		    @if v[371] != 2 {
+			v[288] = v[286] + v[4564] - v[433] * v[4564] + 1
+			v[302] = 3
+			@call .cev 1793
+			
+		    }
+		    
+		}
+		@comment "##"
+		@if v[371] != 1 {
+		    v[288] = v[286] - v[4564] + 1
+		    v[302] = 8
+		    @call .cev 1793
+		    
+		}
+		@if v[371] != 2 {
+		    v[288] = v[286] + v[4564] + 1
+		    v[302] = 4
+		    @call .cev 1793
+		    
+		}
+		@comment "##"
+		@if v[372] != 2 {
+		    @if v[371] != 1 {
+			v[288] = v[286] - v[4564] + v[433] * v[4564] + 1
+			v[302] = 7
+			@call .cev 1793
+			
+		    }
+		    v[288] = v[286] + v[433] * v[4564] + 1
+		    v[302] = 6
+		    @call .cev 1793
+		    @if v[371] != 2 {
+			v[288] = v[286] + v[4564] + v[433] * v[4564] + 1
+			v[302] = 5
+			@call .cev 1793
+			
+		    }
+		    
+		}
+		@comment "Add Setup Static cost"
+		v[v[286] + 3] += v[v[286] + 4]
+		v[v[286] + 4] = 0
+		@comment "1"
+		v[286] += v[4564]
+		v[301] += 1
+		
+	    }
+	    
+	    
+	}
+
+	@wait 0
+	@comment "*Map script load*"
+	t[510] .asg "..\Maps\"
+	t[510] .cat t[750]
+	t[510] .cat "\"
+	t[510] .cat "init"
+	t[510] .asg  .file t[510], .utf8, .extract
+	@call .cev 1840
+	func_convert_str_into_map_script(510)
+	t[510] .split t[525], t[v[1219]], v[505]
+	@loop v[505] .dst v[506] {
+	    v[11] = v[1219] + v[506]
+	    t[510] .asg t[v[11]]
+	    @call .cev 1821
+	    t[3000..3300] .asg ""
+	    
+	}
+
+	@wait 0
+	@comment "MINIMAPS!"
+	v[550445..560445] = 0
+	@call .cev 1794
+	@comment "################"
+	@pic[2200].show {
+	    "ui\cameraicon"
+	    .pos v[341], v[342] .center
+	    .chromakey 1
+	    .scale 100
+	    .trans 100
+	    .rgbs 100, 100, 100, 100
+	    .mapLayer 9
+	    .eraseWhenTransfer
+	    .affectedByShake
+	}
+	v[341] = divmul(5000, 800, v[1001]) / v[430]
+	v[342] = divmul(2800, 450, v[1002]) / v[431]
+	@pic[2200].strpic {
+	    ""
+	    .pos v[341], v[342] .center
+	    .size v[341], v[342]    .chromakey 1
+	    .scale 100
+	    .trans 100
+	    .rgbs 0, 200, 200, 100
+	    .font "", 12 .noShadow
+	    .spacing 0, 4
+	    .skin "Odinscall_mapcam" .nobg .noGradation
+	    .mapLayer 9
+	    .affectedByShake
+	}
+	s[78].on
+	@comment "*Map triggers load*"
+	v[507] = 0
+	v[287] = v[4577]
+	t[510] .asg "..\Maps\"
+	t[510] .cat t[750]
+	t[510] .cat "\\"
+	t[510] .cat "simple_triggers"
+	t[510] .asg  .file t[510], .utf8
+	@call .cev 1840
+	func_convert_str_into_map_script(510)
+	@if .testPlay() {
+	    t[510] .toFile "debug_simpletriggers", .utf8
+	    
+	}
+	t[510] .split t[525], t[v[1219]], v[505]
+
+	@call .cev 1818
+	@comment "*AI script load*"
+	t[510] .asg "..\\Scripts\\ai"
+	t[510] .cat "\\"
+	t[510] .cat t[753]
+	t[754] .asg t[510]
+	t[510] .asg  .file t[510], .utf8
+	@call .cev 1840
+	func_convert_str_into_map_script(510)
+	t[755] .asg t[510]
+	t[510] .split t[525], t[v[1219]], v[505]
+	@call .cev 1818
+	s[290].off
+	@if v[507] >= 1 {
+	    s[290].on
+	    
+	}
+	@comment "#TRY"
+	@if v[2404] >= 1 {
+	    t[1..100] .asg ""
+	    v[12] = 0
+	    t[510] .asg "..\Maps\"
+	    t[510] .cat t[750]
+	    t[510] .cat "\\"
+	    t[510] .cat "map_faction_party_template_"
+	    t[510] .cat v[2404]
+	    t[510] .asg  .file t[510], .sjis
+	    @call .cev 1840
+	    @if .testPlay() {
+		t[510] .toFile "debug_template", .utf8
+		
+	    }
+	    t[510] .split "*/", t[509], v[341]
+	    t[510] .split t[525], t[3100], v[301]
+	    @loop v[301] .dst v[320] {
+		t[3001..3100] .asg ""
+		v[302] = 3101 + v[320]
+		t[v[302]] .split ",", t[3000], v[341]
+		t[3001] .toNum v[341]
+		v[303] = 1 + 10 * (v[341] - 1) + v[2740 + v[341]]
+		t[v[303]] .asg t[v[302]]
+		v[2740 + v[341]] += 1
+		
+	    }
+	    
+	    
+	}
+	@if s[308] .isOff() {
+	    @comment "#########
+	NEED CONVERTING
+#########"
+	    v[341] = muldiv(100, v[1001], 800)
+	    @if v[1001] > 800 {
+		v[341] += 5
+		
+	    }
+	    @if v[2403] == 1 {
+		@pic[2101].show {
+		    "shade_twilight"
+		    .pos v[1115], v[1116] .center
+		    .chromakey 0
+		    .scale v[341]
+		    .trans 50
+		    .rgbs 100, 100, 100, 100
+		    .overlay
+		    .mapLayer 7
+		    .eraseWhenTransfer
+		    .affectedByTint
+		}
+		
+	    } .else bl {
+		@pic[2101].show {
+		    "shade_16ex"
+		    .pos v[1115], v[1116] .center
+		    .chromakey 0
+		    .scale v[341]
+		    .trans 50
+		    .rgbs 100, 100, 100, 100
+		    .overlay
+		    .mapLayer 7
+		    .eraseWhenTransfer
+		    .affectedByTint
+		}
+		
+	    }
+	    @if v[2401] == 5 {
+		@pic[2101].show {
+		    "shade_twilight"
+		    .pos v[1115], v[1116] .center
+		    .chromakey 0
+		    .scale v[341]
+		    .trans 35
+		    .rgbs 100, 100, 100, 100
+		    .overlay
+		    .mapLayer 7
+		    .eraseWhenTransfer
+		    .affectedByTint
+		}
+		
+	    }
+	    
+	}
+	@wait 0
+	@comment "Advanced heightmap system"
+	@if v[2056] == 2 {
+	    @call .cev 1804
+	    
+	} .else bl {
+	    @if v[2056] == 1 {
+		t[501] .asg "../Maps/"
+		t[501] .cat t[750]
+		t[502..503] .asg t[501]
+		t[502] .cat "/heightmap_light"
+		t[503] .cat "/heightmap_dark"
+		v[341] = ev[3].scrx
+		v[342] = ev[3].scry
+		v[341..342] -= 8
+		v[342] -= 10
+		v[343] = ev[4].scrx - ev[3].scrx
+		v[344] = ev[4].scry - ev[3].scry
+		@pic[1].show {
+		    t[502]
+		    .pos v[341], v[342] .topLeft
+		    .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .add
+		    .mapLayer 4
+		    .eraseWhenTransfer
+		    .affectedByTint
+		    .affectedByFlash
+		    .affectedByShake
+		}
+		@pic[2].show {
+		    t[503]
+		    .pos v[341], v[342] .topLeft
+		    .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .multi
+		    .mapLayer 4
+		    .eraseWhenTransfer
+		    .affectedByTint
+		    .affectedByFlash
+		    .affectedByShake
+		}
+		
+	    }
+	    
+	}
+	@comment "Advanced Maptile system"
+	@if s[1] .isOn() {
+	    @if s[316] .isOn() {
+		v[v[1068]..v[1068] + 500 * 500] = 0
+		v[341] = ev[3].scrx
+		v[342] = ev[3].scry
+		v[341..342] -= 8
+		v[342] -= 8
+		v[343] = ev[4].scrx - ev[3].scrx
+		v[344] = ev[4].scry - ev[3].scry
+		@pic[1].strpic {
+		    ""
+		    .pos v[341], v[342] .topLeft
+		    .size v[343], v[344]            .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .font "", 12 .noShadow
+		    .spacing 0, 4
+		    .skin "" .nobg .noframe .noGradation .noPadding
+		    .mapLayer 2
+		    .eraseWhenTransfer
+		    .affectedByTint
+		    .affectedByFlash
+		    .affectedByShake
+		}
+		@pic[2].strpic {
+		    ""
+		    .pos v[341], v[342] .topLeft
+		    .size v[343], v[344]            .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans 60
+		    .rgbs 10, 10, 10, 100
+		    .font "", 12 .noShadow
+		    .spacing 0, 4
+		    .skin "" .nobg .noframe .noGradation .noPadding
+		    .multi
+		    .mapLayer 4
+		    .eraseWhenTransfer
+		    .affectedByTint
+		    .affectedByFlash
+		    .affectedByShake
+		}
+		@pic[3].strpic {
+		    ""
+		    .pos v[341], v[342] .topLeft
+		    .size v[343], v[344]            .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .font "", 12 .noShadow
+		    .spacing 0, 4
+		    .skin "" .nobg .noframe .noGradation .noPadding
+		    .mapLayer 5
+		    .eraseWhenTransfer
+		    .affectedByTint
+		    .affectedByFlash
+		    .affectedByShake
+		}
+		v[2063] = v[2061] * v[2062]
+		v[2061].copy v[321], 2
+		v[310] = v[1068]
+		@loop v[322] .dst v[2064] {
+		    v[286] = v[2061] * v[2064] + v[4529]
+		    v[287] = v[2061] * v[2064] + v[1182]
+		    @loop v[321] .dst v[2065] {
+			v[341] = v[2065] + v[69]
+			v[342] = v[2064] + v[70]
+			v[343] = v[v[287]] % 100
+			v[343] = v[v[287]] / 100 % 1000
+			@sys.getInfo .tiles v[341], v[342], 1, 1 .lower .dst v[30]
+			v[v[310]] = v[30]
+			v[286..287] += 1
+			v[310] += 1
+			
+		    }
+		    
+		    
+		}
+		
+		@pic[1].drawTile {
+		    .xywh 0, 0, v[2061], v[2062]
+		    .range v[v[1068]]
+		    .lower
+		    .tilesetId v[2060]
+		    .pattern -1
+	}
+		v[v[1068]..v[1068] + 500 * 500] = 0
+		
+	    }
+	    
+	}
+	@if s[1] .isOn() {
+	    v[v[1068]..v[1068] + 500 * 500] = 0
+	    @if s[316] .isOn() {
+		v[341] = ev[3].scrx
+		v[342] = ev[3].scry
+		v[343] = ev[4].scrx - ev[3].scrx
+		v[344] = ev[4].scry - ev[3].scry
+		@pic[1].strpic {
+		    ""
+		    .pos v[341], v[342] .topLeft
+		    .size v[343], v[344]            .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .font "", 12 .noShadow
+		    .spacing 0, 4
+		    .skin "" .nobg .noframe .noGradation .noPadding
+		    .mapLayer 2
+		    .eraseWhenTransfer
+		    .affectedByTint
+		    .affectedByFlash
+		    .affectedByShake
+		}
+		@pic[2].strpic {
+		    ""
+		    .pos v[341], v[342] .topLeft
+		    .size v[343], v[344]            .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans 60
+		    .rgbs 10, 10, 10, 100
+		    .font "", 12 .noShadow
+		    .spacing 0, 4
+		    .skin "" .nobg .noframe .noGradation .noPadding
+		    .multi
+		    .mapLayer 4
+		    .eraseWhenTransfer
+		    .affectedByTint
+		    .affectedByFlash
+		    .affectedByShake
+		}
+		@pic[3].strpic {
+		    ""
+		    .pos v[341], v[342] .topLeft
+		    .size v[343], v[344]            .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .font "", 12 .noShadow
+		    .spacing 0, 4
+		    .skin "" .nobg .noframe .noGradation .noPadding
+		    .mapLayer 5
+		    .eraseWhenTransfer
+		    .affectedByTint
+		    .affectedByFlash
+		    .affectedByShake
+		}
+		v[2063] = v[2061] * v[2062]
+		v[2061].copy v[321], 2
+		@loop v[322] .dst v[2064] {
+		    v[286] = v[2061] * v[2064] + v[4529]
+		    v[287] = v[2061] * v[2064] + v[1182]
+		    @loop v[321] .dst v[2065] {
+			v[341] = v[2065] + v[69]
+			v[342] = v[2064] + v[70]
+			v[343] = v[v[287]] % 100
+			@if v[343] < 21 {
+			    v[343] = v[v[287]] / 100 % 1000
+			    @sys.getInfo .tiles v[341], v[342], 1, 1 .lower .dst v[30]
+			    v[345] = v[2065] * 16
+			    v[346] = v[2064] * 16
+			    @pic[1].drawTile {
+				.xywh v[345], v[346], 1, 1
+				.single v[343]
+				.lower
+				.tilesetId v[2060]
+				.pattern -1
+	}
+			    v[343] = v[v[287]] / 100000 % 1000
+			    @sys.getInfo .tiles v[341], v[342], 1, 1 .upper .dst v[30]
+			    @if v[30] >= 1 {
+				@pic[1].drawTile {
+				    .xywh v[345], v[346], 1, 1
+				    .single v[343]
+				    .upper
+				    .tilesetId v[2060]
+				    .pattern 0
+	}
+				@pic[2].drawTile {
+				    .xywh v[345], v[346], 1, 1
+				    .single v[343]
+				    .upper
+				    .tilesetId v[2060]
+				    .pattern 0
+	}
+				@pic[3].drawTile {
+				    .xywh v[345], v[346], 1, 1
+				    .single v[343]
+				    .upper
+				    .tilesetId v[2060]
+				    .pattern 0
+	}
+				
+			    }
+			    v[343] = v[v[287]] % 100
+			    @if `v[343] == 5 || v[343] == 2 {
+				
+			    }
+			    
+			}
+			v[286..287] += 1
+			
+		    }
+		    
+		    
+		}
+		
+		
+	    }
+	    
+	}
+	v[2511] = 0
+	@wait 0
+}

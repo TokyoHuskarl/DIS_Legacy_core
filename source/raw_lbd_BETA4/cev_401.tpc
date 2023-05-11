@@ -1,0 +1,197 @@
+cev .id(401), .name("cev401"), {
+v[13] = 30
+v[31..34] = 0
+v[31] = s[491] == 1 ? 999999999 : 700
+v[34] = s[491] == 1 ? 999999999 : 200
+@comment "Hero: Orthunass Nasun Solanum"
+@if v[2402] == 1 {
+    v[31] = muldiv(v[31], 75, 100)
+    v[34] = muldiv(v[34], 75, 100)
+    
+}
+@comment "Kismet Draco Lindwurm"
+v[34] = v[2402] == 2 ? muldiv(v[34], 85, 100) : v[34]
+@if s[151] .isOff() {
+    v[18] = 28
+    v[2409 + v[251] % 3] |= pow(2, v[18])
+    @if s[491] .isOff() {
+        @if v[251] == 0 {
+            v[229] = 7
+            s[59].on
+            @comment "#########################"
+            v[471] = 11550
+            v[472] = divmul(90, 100, v[2216])
+            v[473] = 90
+            v[474] = 50
+            @cmd v[471], "jingle25", .args v[472], 3
+            @comment "#########################"
+            @call .cev 1924
+            v[341] = 2
+            v[601] = 1
+            @pic[v[1155]].strpic {
+                "\t[20080]"
+                .pos v[341], v[1126] .bottomLeft
+                .size 0, 0                .chromakey 1
+                .scale 100
+                .trans 30
+                .rgbs 100, 100, 100, 100
+                .font t[530], v[4511]
+                .spacing 0, 4
+                .skin "" .nobg .noframe .noPadding
+                .mapLayer 8
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            @call .cev 1925
+            @call .cev 1924
+            v[341] = 2
+            v[601] = 1
+            @pic[v[1155]].strpic {
+                "\t[20081]"
+                .pos v[341], v[1126] .bottomLeft
+                .size 0, 0                .chromakey 1
+                .scale 100
+                .trans 30
+                .rgbs 100, 100, 100, 100
+                .font t[530], v[4511]
+                .spacing 0, 4
+                .skin "" .nobg .noframe .noPadding
+                .mapLayer 8
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            @call .cev 1925
+            s[491].on
+            @actor[1].level .add 1
+            
+        }
+        @comment "v1=UnitID
+v2=UnitType"
+        @loop v[1012] .dst v[141] {
+            @comment "Check Player Team List"
+            v[601] = v[141] + v[1145 + v[251] % 3]
+            @if v[v[601]] >= 1 {
+                v[602] = v[v[601]] * 300
+                v[602] += 4701
+                @comment "ドラゴンナイトの強化"
+                @if v[v[602]] == 1 {
+                    v[602] += 100
+                    @if v[v[602]] == 26 {
+                        v[705] = 4 + v[602]
+                        v[706..707] = 300
+                        v[v[705]] .add v[706], 2
+                        v[705] = 12 + v[602]
+                        v[v[705]] += 10
+                        @if s[1] .isOn() {
+                            v[705] = 8 + v[602]
+                            v[v[705]] += 20
+                            v[705] = 10 + v[602]
+                            v[v[705]] += 20
+                            v[705] = 11 + v[602]
+                            v[v[705]] += 20
+                            v[705] = 29 + v[602]
+                            v[v[705]] = 1215
+                            
+                        }
+                        
+                    }
+                    
+                }
+                @if v[v[602]] == 11 {
+                    v[602] += 100
+                    @if v[v[602]] == 1 {
+                        v[602] += 40
+                        v[602] += 6
+                        v[602] += 6
+                        v[602] += 3
+                        v[602] += 3
+                        @if v[2402] == 1 {
+                            v[v[602]] = 10282
+                            
+                        }
+                        
+                    }
+                    @comment "しろ"
+                    @if v[v[602]] == 3 {
+                        v[602] += 46
+                        @comment "#件きゅ"
+                        v[v[602]] = 9
+                        @comment "##Hero:Orthunass"
+                        @if v[2402] == 1 {
+                            v[v[v[601]] * 300 + 4847] = 69
+                            v[v[v[601]] * 300 + 4848] = 7
+                            @comment "#件きゅ"
+                            v[v[v[601]] * 300 + 4853] = 10203
+                            v[v[v[601]] * 300 + 4854] = 17
+                            
+                        } .else bl {
+                            @comment "##Hero:Kismet"
+                            @if v[2402] == 2 {
+                                v[v[v[601]] * 300 + 4847] = 60
+                                v[v[v[601]] * 300 + 4848] = 18
+                                @comment "#2"
+                                v[v[v[601]] * 300 + 4844] = 0
+                                v[v[v[601]] * 300 + 4845] = 0
+                                v[v[v[601]] * 300 + 4847] = 60
+                                v[v[v[601]] * 300 + 4848] = 15
+                                @comment "#件きゅ"
+                                v[v[v[601]] * 300 + 4853] = 10269
+                                v[v[v[601]] * 300 + 4854] = 32
+                                v[v[v[601]] * 300 + 4856] = 10272
+                                v[v[v[601]] * 300 + 4857] = 37
+                                
+                            } .else bl {
+                                v[v[v[601]] * 300 + 4847] = 9
+                                v[v[v[601]] * 300 + 4848] = 23
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    @comment "兵舎にれしぴ追加"
+                    @if v[v[602]] == 11 {
+                        v[602] += 43
+                        @comment "Hero:Orthunass"
+                        @if v[2402] == 1 {
+                            v[v[602]] = 5
+                            v[v[602] + 1] = 6
+                            
+                        }
+                        @comment "Crossbow"
+                        v[v[v[601]] * 300 + 4856] = 10211
+                        @comment "Squires"
+                        v[v[v[601]] * 300 + 4859] = 10213
+                        
+                    }
+                    @comment "塔HP増加"
+                    @if v[v[602]] == 14 {
+                        v[705] = 4 + v[602]
+                        v[706..707] = 300
+                        v[v[705]] .add v[706], 2
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+        
+    } .else bl {
+        
+    }
+    @if v[2402] == 2 {
+        v[15] = 10201
+        v[16] = 10219
+        v[17] = 42
+        @call .cev 433
+        
+    }
+    @call .cev 436
+    
+}
+}

@@ -1,0 +1,382 @@
+cev .id(1905), .name("cev1905"), {
+v[45] %= v[45] == 10 ? 20 : 10
+@if s[19] .isOff() {
+    @if s[313] .isOn() {
+        @call .cev 1924
+        v[341] = 2
+        v[601] = 1
+        v[11] = v[45]
+        @pic[v[1155]].strpic {
+            t[20442]
+            .pos v[341], v[1126] .bottomLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 30
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @call .cev 1925
+        
+    }
+    
+}
+@comment "NOT preresgister in map setting phase"
+@if s[18] .isOn() {
+    @loop v[1012] {
+        v[141] %= v[1012]
+        @comment "Check Player Team List"
+        v[341] = v[141] + v[1145]
+        @if v[v[341]] >= 1 {
+            v[342] = v[v[341]] * 300 + 4701
+            @if v[v[342]] > 0 {
+                v[342] += 34
+                @comment "Init the selected id Cohort"
+                v[v[342]] = v[v[342]] == v[45] ? 0 : v[v[342]]
+                
+            }
+            
+        }
+        v[141] += 1
+        
+    }
+    
+    
+}
+v[82] = v[45]
+v[341] = v[4530] + (v[82] - 1) * 20 + 1
+v[1301].copy v[v[341]], 20
+v[45] -= 1
+v[45] *= 40
+v[45] += v[1077]
+v[101].copy v[v[45]], 40
+v[341] = 100
+v[345] = v[82] - 1
+v[302] = v[1118] + v[345]
+v[305] = v[1119] - 10
+v[306] = 24 * v[345] + v[1120] - 12
+v[335] = 100
+@loop 40 {
+    v[335] += 1
+    v[341] = v[335]
+    @if s[1] .isOn() {
+        @if v[v[341]] <= 0 {
+            v[342] = v[101] * 300 + 4702
+            v[310] = v[v[342]]
+            @pic[v[302]].show {
+                "minions\spr_minions_1" .repl 1 v[310]
+                .pos v[305], v[306] .center
+                .chromakey 1
+                .scale 100
+                .trans 0
+                .rgbs 100, 100, 100, 100
+                .grid 5, 1 .cell 2
+                .mapLayer 8
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            @break
+            
+        }
+        
+    }
+    v[342] = v[v[341]] * 300
+    v[342] += 4701
+    @if v[v[342]] == 1 {
+        v[342] = v[v[335]] * 300 + 4702
+        v[310] = v[v[342]]
+        v[726] = v[v[v[341]] * 300 + 4826]
+        v[463] = 5
+        v[464] = 1
+        v[4101..4110] = v[463]
+        v[4107] = v[726] & 512 ? 7 : 5
+        v[463] = v[4107]
+        @pic[v[302]].show {
+            "minions\spr_minions_1" .repl 1 v[310]
+            .pos v[305], v[306] .center
+            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .grid v[463], v[464] .cell 2
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @break
+        
+    }
+    @if v[v[342]] == 2 {
+        @comment "HERO Found"
+        v[342] += 100
+        v[310] = v[v[342]]
+        @pic[v[302]].show {
+            "heroes\spr_heroes_1" .repl 1 v[310]
+            .pos v[305], v[306] .center
+            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .grid 12, 7 .cell 4
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @break
+        
+    }
+    @if v[v[342]] == 3 {
+        @comment "User"
+        @if s[1] .isOff() {
+            @comment "Count Picture Layer Array"
+            v[899] = v[v[v[341]] * 300 + 4999]
+            v[345] = v[899]
+            @comment "#get damaged variation"
+            v[604] = v[v[v[341]] * 300 + 4704]
+            v[0] = v[343..352] = [v[604] % 10, v[604] / 10 % 10, v[604] / 100 % 10]
+            @pic[v[302]].strpic {
+                ""
+                .pos -166, -166 .center
+                .size 64, 64                .chromakey 1
+                .scale 100
+                .trans 100
+                .rgbs 100, 100, 100, 100
+                .font "", 12 .noShadow
+                .spacing 0, 4
+                .skin "" .nobg .noframe .noGradation .noPadding
+                .mapLayer 8
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            v[463] = 5
+            v[464] = 1
+            v[726] = v[v[v[341]] * 300 + 4826]
+            v[4101..4110] = v[463]
+            v[4106] = v[726] & 16777216 ? 7 : 5
+            v[4107] = v[726] & 512 ? 7 : 5
+            v[4101] = v[726] & 512 ? 7 : 5
+            v[4121..4130] = 1
+            v[4124] = v[726] & 134217728 ? 2 : 1
+            v[725] = v[v[341]] * 300 + 4825
+            v[4121] = [1, 2][(v[v[725]] & 1)]
+            @while v[899] >= 1 {
+                v[341] = v[899] % 10
+                v[286] = 900 + v[341] + 10 * v[v[341] + 342]
+                v[463] = v[4100 + v[341]]
+                v[464] = v[4120 + v[341]]
+                @comment "#########################
+Layer own Setting"
+                v[891] = v[314] + 291
+                v[341] = (v[341] - 1) % 6
+                @comment "Layer own Setting END
+#########################"
+                v[320] = v[(v[v[335]] - 1) * 6 + v[341] + v[1185]]
+                @comment "Strings = t[v[286]]"
+                v[11] = v[302]
+                v[12..13] = 32
+                @pic[2599].show {
+                    t[v[286]] .repl 1 v[320]
+                    .pos -111, -111 .center
+                    .chromakey 1
+                    .scale 100
+                    .trans 0
+                    .rgbs 100, 100, 100, 100
+                    .grid v[463], v[464] .cell 2
+                    .mapLayer 7
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                @pic[2599].getInfo .cewh .currentRect v[360], v[360], v[355], v[356]
+                @pic[2599].getInfo .pixel 0, 0, v[355], v[356] .dst 550445
+                v[18] = 550445
+                @loop v[356] .dst v[15] {
+                    @loop v[355] .dst v[16] {
+                        v[17] = v[v[18]]
+                        @if `(v[17] & 0xFF000000) == 0xFF000000 {
+                            v[358] = v[12] + v[16]
+                            v[359] = v[13] + v[15]
+                            v[358] -= v[355] / 2
+                            v[359] -= v[356] / 2
+                            @pic[v[11]].setPixel .xywh v[358], v[359], 1, 1 .src v[17]
+                            
+                        }
+                        v[18] += 1
+                        
+                    }
+                    
+                    
+                }
+                
+                v[899] /= 10
+                
+            }
+            
+            
+        }
+        @if s[1] .isOn() {
+            @if .testPlay() {
+                @img.save .pic v[11] .static .dst "user\debug"
+                
+            }
+            
+        }
+        @break
+        
+    }
+    @if v[v[342]] == 4 {
+        @comment "CUSTOM"
+        v[342] = v[v[335]] * 300 + 4702
+        v[310] = v[v[342]]
+        v[726] = v[v[v[335]] * 300 + 4826]
+        v[463] = 5
+        v[464] = 1
+        v[4101..4110] = v[463]
+        v[463] = v[4107]
+        v[463] = v[726] & 512 ? 7 : 5
+        @pic[v[302]].show {
+            "minions\spr_minions_1" .repl 1 v[310]
+            .pos v[305], v[306] .center
+            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .grid v[463], v[464] .cell 2
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @break
+        
+    }
+    @if v[v[342]] == 11 {
+        v[v[4530] + (v[82] - 1) * 20 + 2] = 2
+        @comment "STATIC"
+        @break
+        
+    }
+    @if v[v[342]] == 9 {
+        v[342] = v[v[335]] * 300 + 4702
+        v[310] = v[v[342]]
+        v[726] = v[v[v[335]] * 300 + 4826]
+        v[463] = 5
+        v[464] = 1
+        v[4101..4110] = v[463]
+        v[463] = v[4107]
+        v[463] = v[726] & 512 ? 7 : 5
+        @pic[v[302]].show {
+            "minions\spr_minions_1" .repl 1 v[310]
+            .pos v[305], v[306] .center
+            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .grid v[463], v[464] .cell 2
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @break
+        
+    }
+    
+}
+
+@comment "assign cohortID"
+v[341] = 100
+@loop 40 {
+    v[341] += 1
+    @if v[v[341]] >= 1 {
+        v[342] = v[v[341]] * 300
+        v[342] += 4701
+        @if v[v[342]] >= 1 {
+            v[342] += 34
+            v[v[342]] = v[82]
+            
+        }
+        
+    } .else bl {
+        @break
+        
+    }
+    
+}
+
+@comment "set initial cohort parameter"
+v[v[4530] + (v[82] - 1) * 20 + 11] = 2
+v[v[4530] + (v[82] - 1) * 20 + 15] = 11
+@comment "#################
+generate cohort banner"
+v[341] = v[4513] + (v[82] - 1)
+v[342] = 30 * (v[82] - 1) + 120
+v[343] = 120
+@if v[2403] == 1 {
+    @pic[v[341]].show {
+        "ui/cohortflagbase1"
+        .pos v[342], v[343] .center
+        .scrollWithMap
+        .chromakey 1
+        .scale 100
+        .trans 100
+        .rgbs 100, 100, 100, 100
+        .mapLayer 8
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    
+} .else bl {
+    @pic[v[341]].show {
+        "ui/cohortflagbase0"
+        .pos v[342], v[343] .center
+        .scrollWithMap
+        .chromakey 1
+        .scale 100
+        .trans 100
+        .rgbs 100, 100, 100, 100
+        .mapLayer 8
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    
+}
+@pic[v[302]].getInfo .cewh .currentRect v[360], v[360], v[355], v[356]
+@pic[v[302]].getInfo .pixel 0, 0, v[355], v[356] .dst 550445
+v[18] = 550445
+v[12] = 15
+v[13] = 29
+@loop v[356] .dst v[15] {
+    @if v[15] >= 46 {
+        @break
+        
+    }
+    @loop v[355] .dst v[16] {
+        v[17] = v[v[18]]
+        @if `(v[17] & 0xFF000000) == 0xFF000000 {
+            v[358] = v[12] + v[16]
+            v[359] = v[13] + v[15]
+            v[358] -= v[355] / 2
+            v[359] -= v[356] / 2
+            @pic[v[341]].setPixel .xywh v[358], v[359], 1, 1 .src v[17]
+            
+        }
+        v[18] += 1
+        
+    }
+    
+    
+}
+
+}

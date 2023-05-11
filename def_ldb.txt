@@ -1,0 +1,754 @@
+
+def magic pstr
+
+def cba {
+    2: ber
+    3: ber
+    4: ber
+    5: ber
+    6: ber
+    7: ber
+    8: i8
+    9: ber
+    12: ber
+    13: ber
+    14: ber
+}
+
+def bgm {
+    1: str
+    2: ber
+    3: ber
+    4: ber
+    5: ber
+}
+
+def se {
+    1: str
+    3: ber
+    4: ber
+    5: ber
+}
+
+def toBeLearned {
+    1: ber
+    2: ber
+}
+
+def enemyAct {
+    1: i8
+    2: i8
+    3: ber
+    4: ber
+    5: i8
+    6: ber
+    7: ber
+    8: ber
+    9: i8
+    10: ber
+    11: i8
+    12: ber
+    13: ber
+}
+
+def member {
+    1: ber
+    2: ber
+    3: ber
+    4: ber
+}
+
+def battleEventTrigger {
+    1: i16
+    2: ber
+    3: ber
+    4: ber
+    5: ber
+    6: ber
+    7: ber
+    8: ber
+    9: ber
+    10: ber
+    11: ber
+    12: ber
+    13: ber
+    14: ber
+    15: ber
+    16: ber
+    17: ber
+    18: ber
+    19: ber
+    20: ber
+    21: ber
+    22: ber
+    23: ber
+}
+
+def battleEventPage {
+    2: battleEventTrigger
+    11: $size
+    12: [tkc]
+}
+
+def timing {
+    1: ber
+    2: se
+    3: i8
+    4: ber
+    5: ber
+    6: ber
+    7: ber
+    8: ber
+}
+
+def cell {
+    1: i8
+    2: ber
+    3: ber
+    4: ber
+    5: ber
+    6: ber
+    7: ber
+    8: ber
+    9: ber
+    10: ber
+}
+
+def pattern {
+    1: [ber: cell]
+}
+
+def battleTest {
+    1: ber
+    2: ber
+    11: ber
+    12: ber
+    13: ber
+    14: ber
+    15: ber    
+}
+
+def swvar {
+    1: str
+}
+
+def battleGraphic {
+    1: str
+    2: str
+    3: ber
+    4: ber
+    5: ber
+}
+
+def cbaWeapon {
+    1: str
+    2: str
+    3: ber
+}
+
+def battleCommand {
+    1: str
+    2: ber
+}
+
+
+def actor {
+    1: str
+    2: str
+    3: str
+    4: ber
+    5: i8
+    7: ber
+    8: ber
+    9: i8
+    10: ber
+    15: str
+    16: ber
+    21: i8
+    22: i8
+    23: i8
+    24: i8
+    31: [i16, 594]
+    41: ber
+    42: ber
+    43: ber
+    51: [i16, 5]
+    56: ber
+    57: ber
+    58: ber
+    59: ber
+    60: ber
+    62: ber
+    63: [ber: toBeLearned]
+    64: ber
+    67: str
+    71: ber
+    72: [i8]
+    73: ber
+    74: [i8]
+    80: [i32, 7]
+}
+
+def skill {
+    1: str
+    2: str
+    3: str
+    4: str
+    7: ber
+    8: i8
+    9: ber
+    10: ber
+    11: ber
+    12: i8
+    13: ber
+    14: ber
+    16: se
+    18: i8
+    19: i8
+    20: ber
+    21: ber
+    22: ber
+    23: ber
+    24: ber
+    25: ber
+    31: i8
+    32: i8
+    33: i8
+    34: i8
+    35: i8
+    36: i8
+    37: i8
+    38: i8
+    39: i8
+    41: ber
+    42: [i8]
+    43: ber
+    44: [i8]
+    45: i8
+    49: ber
+    50: [ber: cba]
+}
+
+def item {
+    1: str
+    2: str
+    3: i8
+    5: ber
+    6: ber
+    11: ber
+    12: ber
+    13: ber
+    14: ber
+    15: i8
+    16: ber
+    17: ber
+    18: ber
+    20: ber
+    21: i8
+    22: i8
+    23: i8
+    24: i8
+    25: i8
+    26: i8
+    27: i8
+    28: i8
+    29: i8
+    31: i8
+    32: ber
+    33: ber
+    34: ber
+    35: ber
+    37: i8
+    38: ber
+    41: ber
+    42: ber
+    43: ber
+    44: ber
+    45: ber
+    46: ber
+    51: i8
+    53: ber
+    55: ber
+    57: i8
+    58: i8
+    61: ber
+    62: [i8]
+    63: ber
+    64: [i8]
+    65: ber
+    66: [i8]
+    67: ber
+    68: ber
+    69: ber
+    70: [ber: cba]
+    71: i8
+    72: ber
+    73: [i8]
+    75: ber
+    76: ber
+}
+
+def enemy {
+    1: str
+    2: str
+    3: ber
+    4: ber
+    5: ber
+    6: ber
+    7: ber
+    8: ber
+    9: ber
+    10: i8
+    11: ber
+    12: ber
+    13: ber
+    14: ber
+    21: i8
+    22: ber
+    26: i8
+    28: i8
+    31: ber
+    32: [i8]
+    33: ber
+    34: [i8]
+    42: [ber: enemyAct]
+}
+
+def troop {
+    1: str
+    2: [ber: member]
+    3: ber
+    4: ber
+    5: [i8]
+    6: i8
+    11: [ber: battleEventPage]
+}
+
+def terrain {
+    1: str
+    2: ber
+    3: ber
+    4: str
+    5: i8
+    6: i8
+    7: i8
+    9: i8
+    11: i8
+    15: se
+    16: i8
+    17: ber
+    21: str
+    22: i8
+    23: i8
+    24: ber
+    25: ber
+    30: i8
+    31: str
+    32: i8
+    33: i8
+    34: ber
+    35: ber
+    40: ber
+    41: ber
+    42: ber
+    43: ber
+    44: ber
+    45: ber
+    46: ber
+    47: ber
+    48: ber
+}
+
+def element {
+    1: str
+    2: i8
+    11: ber
+    12: ber
+    13: ber
+    14: ber
+    15: ber
+}
+
+def state {
+    1: str
+    2: i8
+    3: ber
+    4: ber
+    5: i8
+    11: ber
+    12: ber
+    13: ber
+    14: ber
+    15: ber
+    21: ber
+    22: ber
+    23: ber
+    30: ber
+    31: i8
+    32: i8
+    33: i8
+    34: i8
+    35: ber
+    36: i8
+    37: i8
+    38: i8
+    39: ber
+    41: i8
+    42: ber
+    43: i8
+    44: ber
+    45: ber
+    46: ber
+    51: str
+    52: str
+    53: str
+    54: str
+    55: str
+    61: ber
+    62: ber
+    63: ber
+    64: ber
+    65: ber
+    66: ber
+    67: ber
+    68: ber
+}
+
+def animation {
+    1: str
+    2: str
+    3: i8
+    6: [ber: timing]
+    9: i8
+    10: i8
+    12: [ber: pattern]
+}
+
+def tileset {
+    1: str
+    2: str
+    3: [i16, 162]
+    4: [i8, 162]
+    5: [i8, 144]
+    11: ber
+    12: ber
+}
+
+def terms {
+    2: str
+    4: str
+    5: str
+    6: str
+    7: str
+    8: str
+    9: str
+    10: str
+    11: str
+    12: str
+    13: str
+    14: str
+    15: str
+    16: str
+    17: str
+    18: str
+    19: str
+    20: str
+    21: str
+    22: str
+    23: str
+    24: str
+    25: str
+    26: str
+    27: str
+    28: str
+    29: str
+    30: str
+    31: str
+    32: str
+    33: str
+    34: str
+    35: str
+    36: str
+    37: str
+    38: str
+    39: str
+    41: str
+    42: str
+    43: str
+    44: str
+    45: str
+    46: str
+    47: str
+    48: str
+    49: str
+    50: str
+    51: str
+    54: str
+    55: str
+    56: str
+    57: str
+    58: str
+    59: str
+    60: str
+    61: str
+    62: str
+    63: str
+    64: str
+    67: str
+    68: str
+    69: str
+    70: str
+    71: str
+    72: str
+    73: str
+    74: str
+    75: str
+    76: str
+    77: str
+    80: str
+    81: str
+    82: str
+    83: str
+    84: str
+    85: str
+    86: str
+    87: str
+    88: str
+    89: str
+    92: str
+    93: str
+    95: str
+    101: str
+    102: str
+    103: str
+    104: str
+    105: str
+    106: str
+    107: str
+    108: str
+    110: str
+    112: str
+    114: str
+    115: str
+    117: str
+    118: str
+    119: str
+    120: str
+    121: str
+    122: str
+    123: str
+    124: str
+    125: str
+    126: str
+    127: str
+    128: str
+    129: str
+    130: str
+    131: str
+    132: str
+    133: str
+    134: str
+    135: str
+    136: str
+    137: str
+    138: str
+    139: str
+    140: str
+    146: str
+    147: str
+    148: str
+    151: str
+    152: str
+    153: str
+
+    161: str
+    162: str
+    163: str
+    164: str
+    165: str
+    166: str
+    200: str
+    201: str
+    202: str
+    203: str
+    204: str
+    205: str
+    206: str
+    207: str
+    208: str
+    209: str
+    210: str
+    211: str
+    212: str
+    213: str
+    214: str
+    215: str
+    216: str
+    217: str
+    218: str
+    219: str
+    
+    
+}
+
+def system {
+    10: ber
+    11: str
+    12: str
+    13: str
+    14: ber
+    15: ber
+    16: ber
+    17: str
+    18: str
+    19: str
+    20: str
+    21: ber
+    22: [i16]
+    26: ber
+    27: [i16]
+    31: bgm
+    32: bgm
+    33: bgm
+    34: bgm
+    35: bgm
+    36: bgm
+    37: bgm
+    38: bgm
+    41: se
+    42: se
+    43: se
+    44: se
+    45: se
+    46: se
+    47: se
+    48: se
+    49: se
+    50: se
+    51: se
+    52: se
+    61: i8
+    62: i8
+    63: i8
+    64: i8
+    65: i8
+    66: i8
+    71: ber
+    72: ber
+    73: ber
+    81: ber
+    82: i8
+    84: str
+    85: [ber: battleTest]
+    91: ber
+    94: ber
+    95: ber
+    96: ber
+    97: ber
+    98: ber
+    99: ber
+    100: str
+    101: i8
+    111: i8
+    121: ber
+    122: ber
+    123: ber
+    124: ber
+    125: ber
+    126: ber
+}
+
+def switch swvar
+
+def variable swvar
+
+def strvar swvar
+
+def commonEvent {
+    1: str
+    11: i8
+    12: i8
+    13: ber
+    21: $size
+    22: [tkc]
+}
+
+def class {
+    1: str
+    2: str
+    21: i8
+    22: i8
+    23: i8
+    24: i8
+    31: [i16, 594]
+    41: ber
+    42: ber
+    43: ber
+    62: ber
+    63: [ber: toBeLearned]
+    71: ber
+    72: [i8]
+    73: ber
+    74: [i8]
+    80: [i32, 7]
+}
+
+def animation2 {
+    1: str
+    2: ber
+    10: [ber: battleGraphic]
+    11: [ber: cbaWeapon]
+}
+
+def battle {
+    2: ber
+    4: ber
+    6: ber
+    7: ber
+    9: i8
+    10: [ber: battleCommand]
+    15: ber
+    16: ber
+    20: ber
+    24: i8
+    25: i8
+    26: ber
+    27: ber
+    28: ber
+    29: ber
+}
+
+def trash str
+
+def database ? {
+    11: [ber: actor]
+    12: [ber: skill]
+    13: [ber: item]
+    14: [ber: enemy]
+    15: [ber: troop]
+    16: [ber: terrain]
+    17: [ber: element]
+    18: [ber: state]
+    19: [ber: animation]
+    20: [ber: tileset]
+    21: terms
+    22: system
+    23: [ber: switch]
+    24: [ber: variable]
+    25: [ber: commonEvent]
+    29: battle
+    30: [ber: class]
+    32: [ber: animation2]
+    33: [ber: strvar]
+    
+    26: trash
+    27: trash
+    28: trash
+    31: trash
+}
+
+
+magic
+database
+
+

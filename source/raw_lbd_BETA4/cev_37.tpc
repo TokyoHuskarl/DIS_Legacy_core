@@ -1,0 +1,71 @@
+cev .id(37), .name("cev37"), {
+@comment "Access19 = AttackerObjectID
+Access20 = TargetObjectID"
+v[299] = v[207] + 1
+v[300] = v[v[300]]
+@comment "対象Objがある"
+@if v[300] >= 1 {
+    @comment "ObjTypeチェック"
+    v[298] = 300 * v[300]
+    v[298] += 4701
+    @comment "攻撃モーション処理"
+    v[720] = v[210] + 120
+    v[629] = v[210] + 29
+    s[202..203].off
+    @if v[v[298]] > 0 {
+        @if v[v[629]] >= v[v[720]] {
+            @if v[243] < 120 {
+                @comment "射撃成功！"
+                @comment "#親Objと対象Objをセット"
+                v[609] = v[299]
+                v[623] = v[300]
+                s[121].on
+                @call .cev 196
+                v[842] = v[210] + 242
+                v[v[842]] = 0
+                v[843] = v[210] + 243
+                @comment "AAクールタイムモーション"
+                v[726] = v[210] + 126
+                @comment "ビット見る"
+                v[341] = v[v[726]] & 1
+                v[v[843]] = v[341] == 1 ? 2 : 0
+                @comment "AAモーション初期化"
+                v[629] = v[210] + 29
+                v[v[629]] = 0
+                
+            } .else bl {
+                s[202].on
+                s[203].off
+                
+            }
+            
+        } .else bl {
+            v[v[629]] += 1
+            
+        }
+        
+    } .else bl {
+        s[202].on
+        s[203].off
+        
+    }
+    
+} .else bl {
+    s[202].on
+    s[203].on
+    
+}
+@if s[202] .isOn() {
+    @comment "不発"
+    @if s[203] .isOn() {
+        v[842] = v[210] + 242
+        v[v[842]] = 0
+        
+    }
+    v[v[843]] = 0
+    @comment "#AAタイマー初期化"
+    v[628] = v[210] + 28
+    v[v[628]] = 0
+    
+}
+}

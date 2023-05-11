@@ -1,0 +1,77 @@
+cev .id(3), .name("cev3"), {
+@comment "module_core_RTS_mission_general.tpc"
+@comment "初期化"
+@if s[7] .isOn() {
+    @if v[2820] == 1 {
+        @if v[2401] >= 2 {
+            @comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+            v[229] = 4
+            s[240].on
+            @comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+            
+        }
+        @wait 0
+        @if v[2401] >= 2 {
+            @if v[2403] == 12 {
+                @comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+                v[229] = 20
+                s[240].on
+                @comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+                
+            }
+            @if v[2403] == 9 {
+                @comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+                v[229] = 27
+                s[240].on
+                @comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+                
+            }
+            @if v[2403] == 8 {
+                @comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+                v[229] = 33
+                s[240].on
+                @comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+                
+            }
+            @if v[2403] == 3 {
+                @comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+                v[229] = 5
+                s[240].on
+                @comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+                
+            }
+            @if v[2403] == 1 {
+                @comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+                v[229] = 12
+                s[240].on
+                @comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+                
+            }
+            
+        }
+        
+    }
+    
+}
+@wait 0
+v[2403..2405] = 0
+@call .cev 1926
+s[1..181].off
+s[6].on
+s[183..300].off
+s[401..440].off
+s[472].off
+s[461].off
+s[2].on
+v[1..46] = 0
+v[1021..1036] = 0
+v[53..1000] = 0
+v[2001..2200] = 0
+v[2800..4400] = 0
+v[341] = 5000
+v[5000..v[1079]] = 0
+t[1..400] .asg ""
+@sys.gameOpt .fatal 60, 0, 0
+@sys.gameOpt .pauseWhenInactive
+v[156] = 0
+}

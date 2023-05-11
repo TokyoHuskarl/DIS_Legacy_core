@@ -1,0 +1,43 @@
+cev .id(167), .name("cev167"), {
+@comment "Frame Ck"
+v[296] = v[301] + 10
+v[v[296]] += 1
+v[v[296]] %= 3
+@comment "Particle Effecter"
+@comment "Access14 = x"
+v[294] = v[301] + 6
+@comment "ずれセット"
+v[v[294]] .add v[53], 2
+@if v[v[296]] == 0 {
+    v[v[294]].copy v[341], 2
+    v[342] -= 8
+    v[341].copy v[343], 2
+    v[245] %= v[2215]
+    v[345] = v[245] + v[1200]
+    v[245] += 1
+    @pic[v[345]].show {
+        "effects\particles"
+        .pos v[341], v[342] .center
+        .scrollWithMap
+        .chromakey 1
+        .scale 600
+        .trans 95
+        .rgbs 150, 150, 15, 160
+        .add
+        .grid 12, 12 .cell 1
+        .mapLayer 4
+        .affectedByTint
+        .affectedByFlash
+        .affectedByShake
+    }
+    @pic[v[345]].move {
+        .pos v[343], v[344] .center
+        .scale 200
+        .trans 100
+        .time -45
+        .rgbs 120, 120, 60, 100
+        .add
+    }
+    
+}
+}

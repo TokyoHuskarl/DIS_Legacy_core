@@ -1,0 +1,13 @@
+
+//cev 2007 Skill Cooldown check macro.
+__fn macro_SkillCDck $agent $skillno {
+	/*comment "Var1 = agent 1~
+	Var2 = SkillNo
+	r1 = TimerNowPtr
+	r2 = SkillCD"*/
+	//TT1 = $agent * 300 + 4794
+	//TT2 = TT1 + 34
+	reg1 = ($agent * 300 + 4794) +$skillno
+	reg2 = v[($agent * 300 + 4828)+($skillno * 20)]
+
+}

@@ -1,0 +1,130 @@
+cev .id(1823), .name("cev1823"), {
+@loop 1 {
+    @comment "unco(team,[seen_or_not],[cohort])"
+    @comment "team_get_SP(team,[seen_or_not],[cohort])
+reg3 = amount"
+    @if t[510] .contains "team_get_SP(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        t[3002] .toNum v[13]
+        v[2881] = v[11]
+        v[2806..2808] = 0
+        v[23] = 0
+        @loop v[1012] .dst v[301] {
+            @comment "Check Player Team List"
+            @comment "Check AllyTeam List"
+            v[2821] = v[301] + v[1145 + v[2881] % 3]
+            @if v[v[2821]] >= 1 {
+                v[2822] = v[v[2821]] * 300
+                v[2822] += 4701
+                @if v[v[2822]] <= 9 {
+                    @if `v[v[2822] + 99] == v[2881] {
+                        v[11] = v[v[2821]]
+                        @call .cev 2009
+                        @if v[21] >= 1 {
+                            v[23] += 1
+                            
+                        }
+                        v[2808] += v[21]
+                        v[v[2822]].copy v[601], 9
+                        v[607..608] *= v[21]
+                        v[2806] .add v[607], 2
+                        
+                    }
+                    
+                }
+                
+            } .else bl {
+                @break
+                
+            }
+            
+        }
+        
+        v[2812 + v[2881] % 3] = v[2808]
+        v[2806..2807] /= v[2808]
+        v[2806].copy v[2853], 2
+        @break
+        
+    }
+    @comment "UNCO"
+    @comment "team_countup_troops(team,ID,[cohort])"
+    @if t[510] .contains "team_countup_troops(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        t[3002] .toNum v[13]
+        @comment "safety"
+        v[11] = max(v[11], 0)
+        v[11] = min(v[11], 4)
+        v[14] = v[4575] + min(v[12], 4) + 40 * v[11]
+        v[v[14]] = max(v[v[14]] + v[13], 0)
+        @comment "return reg1"
+        @break
+        
+    }
+    @comment "team_set_pop_limit(team,amount)"
+    @if t[510] .contains "team_set_pop_limit(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        v[v[4580] + v[11]] = v[12]
+        @break
+        
+    }
+    @comment "team_set_faction(team,faction)"
+    @if t[510] .contains "team_set_faction(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        v[2403 + v[11]] = v[12]
+        @break
+        
+    }
+    @comment "team_give_resource(team,resource,amount)"
+    @if t[510] .contains "team_give_resource(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        t[3002] .toNum v[13]
+        @comment "safety"
+        v[11] = max(v[11], 0)
+        v[11] = min(v[11], 4)
+        v[14] = v[4575] + min(v[12], 4) + 40 * v[11]
+        v[v[14]] = max(v[v[14]] + v[13], 0)
+        @break
+        
+    }
+    @comment "team_give_tech_flag(team,techgroup,flag)"
+    @if t[510] .contains "_give_tech_flag(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        t[3002] .toNum v[13]
+        @comment "safety"
+        v[11] = max(v[11], 0)
+        v[11] = min(v[11], 3)
+        v[12] = max(v[12], 1)
+        v[12] = min(v[12], 3)
+        v[12] -= 1
+        v[2406 + v[11] + 3 * v[12]] |= pow(2, v[13] - 1)
+        @break
+        
+    }
+    
+}
+
+}

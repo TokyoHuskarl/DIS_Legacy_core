@@ -1,0 +1,113 @@
+cev .id(1895), .name("cev1895"), {
+@comment "v1= AgentID
+v2 = team
+r1 = succeed?"
+v[21] = 0
+v[702] = v[11] * 300 + 4802
+@if v[v[702]] != 104 {
+    @if v[v[702]] != 105 {
+        @comment "Team Get
+!TEAM LIST!"
+        v[700] = v[11] * 300 + 4800
+        v[308] = v[v[700]] % 3
+        @comment "Check team amount"
+        @if `v[205 + v[12]] < v[1080] {
+            @comment "NOT  neutral"
+            @if v[308] != 2 {
+                @comment "NOT  Gaia"
+                @if v[308] > -1 {
+                    v[310] = v[v[308] + 205]
+                    v[309] = v[1145 + v[308]]
+                    v[310] += v[309]
+                    @while v[309] <= v[310] {
+                        v[311] = (v[309] + v[310]) / 2
+                        @if v[v[311]] == v[11] {
+                            v[v[311]] = 0
+                            @break
+                            
+                        } .else bl {
+                            @if v[v[311]] < v[11] {
+                                v[310] = v[311] - 1
+                                
+                            } .else bl {
+                                v[309] = v[311] + 1
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                    v[309] = v[1145 + v[308]]
+                    v[v[309]].sortDescending v[1012]
+                    v[343] = v[11] * 300 + 4802
+                    @comment "Coｌなし施設はカウントされてないので引かない"
+                    @if v[308] == 0 {
+                        v[205] -= 1
+                        
+                    } .else bl {
+                        @if v[308] == 1 {
+                            v[206] -= 1
+                            
+                        } .else bl {
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            @comment "#####
+assign to new team"
+            v[700] = v[12]
+            @if v[700] == 0 {
+                @comment "Register Battle ally units list"
+                @comment "Safety"
+                @if v[205] < v[1080] {
+                    v[v[1145] + v[1012] - 1] = v[11]
+                    v[v[1145]].sortDescending v[1012]
+                    v[205] += 1
+                    v[v[4804] + v[11] - 1] = -16106753
+                    
+                } .else bl {
+                    @comment "最大数超過したらなかったことに"
+                    @comment "undercostruction"
+                    
+                }
+                
+            } .else bl {
+                @if v[700] == 1 {
+                    @if v[206] < v[1080] {
+                        @comment "敵リストに登録"
+                        v[v[1146] + v[1012] - 1] = v[11]
+                        v[v[1146]].sortDescending v[1012]
+                        v[206] += 1
+                        v[v[4804] + v[11] - 1] = -65536 + 8224
+                        
+                    } .else bl {
+                        @comment "最大数超過したらなかったことに"
+                        @comment "undercostruction"
+                        
+                    }
+                    
+                } .else bl {
+                    @comment "中立Obj"
+                    
+                }
+                
+            }
+            v[v[11] * 300 + 4724] = [1, 2, 3, 4][v[v[700]]]
+            v[v[11] * 300 + 4800] = v[12]
+            
+        } .else bl {
+            @comment "最大数超過したらなかったことに"
+            @comment "undercostruction"
+            v[21] = -1
+            
+        }
+        
+    }
+    
+}
+}

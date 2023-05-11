@@ -1,0 +1,82 @@
+cev .id(1795), .name("cev1795"), {
+t[510] .asg  .file "..\Data\version_info", .sjis
+t[510] .split " /", t[3000], v[341]
+@if t[3000] .eq "D.I.S.:Legacy v.1.161Beta3" {
+    @if t[520] .neq t[3000] {
+        v[472] = divmul(90, 100, v[2216])
+        @se.play "cursor19" .opt v[472], 100, 50
+        @pic[927].strpic {
+            t[20355]
+            .pos v[1115], v[1116] .center
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 4
+            .skin "" .stretch
+            .mapLayer 10
+            .eraseWhenTransfer
+        }
+        t[520] .asg t[3000]
+        @sys.gameOpt .picLimit 10400
+        v[2299] = 10400
+        v[1166] = 8601
+        v[1167] = 1799
+        v[4806] = v[4804] + 1000
+        v[4805] = v[4805] + 1000
+        v[1080] = v[1012]
+        @loop v[1004] .dst v[341] {
+            v[342] = v[341] + 1
+            @if `v[v[342] * 300 + 4701] >= 1 {
+                v[v[4806] + v[342] - 1] = sqrt(v[v[342] * 300 + 4930], 1)
+                
+            }
+            
+        }
+        
+        s[6].on
+        @pic[927].move {
+            .pos v[1115], v[1116] .center
+            .scale 100
+            .trans 100
+            .time 20
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    
+}
+@if s[300] .isOn() {
+    s[236].on
+    s[237].on
+    
+}
+@loop v[2062] .dst v[2064] {
+    v[286] = v[2061] * v[2064] + v[4529]
+    v[287] = v[2061] * v[2064] + v[1182]
+    @loop v[2061] .dst v[2065] {
+        v[341] = v[2065] + v[69]
+        v[342] = v[2064] + v[70]
+        v[343] = v[v[287]] / 100 % 1000
+        @sys.getInfo .tiles v[341], v[342], 1, 1 .lower .dst v[30]
+        @if v[30] != v[343] {
+            @map.rewrite .lower .single v[343] .xywh v[341], v[342], 1, 1
+            
+        }
+        v[343] = v[v[287]] / 100000 % 1000
+        @sys.getInfo .tiles v[341], v[342], 1, 1 .upper .dst v[30]
+        @if v[30] != v[343] {
+            @map.rewrite .upper .single v[343] .xywh v[341], v[342], 1, 1
+            
+        }
+        v[286..287] += 1
+        
+    }
+    
+    
+}
+
+@map.tileset v[2060]
+@ev[4].setPos .pos v[71], v[72]
+}

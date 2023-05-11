@@ -1,0 +1,67 @@
+cev .id(94), .name("cev94"), {
+@if s[141] .isOn() {
+    @loop v[1017] .dst v[320] {
+        v[242] %= v[1017]
+        v[301] = v[242] * 100
+        v[301] = v[301] + v[1018]
+        @if v[v[301]] <= 1 {
+            v[301] = v[301] + v[1018]
+            @comment "まず清掃"
+            v[1301].copy v[v[301]], 100
+            @comment "ポインタセット開始"
+            v[310] = v[242] + v[1220]
+            v[295] = v[301] + 99
+            @comment "設定"
+            v[v[301]] = 1
+            v[v[295]] = 2
+            @comment "普通にアニメ"
+            v[607].copy v[361], 2
+            @if s[142] .isOn() {
+                v[361] += 23
+                @pic[v[310]].show {
+                    "effects\muzzlefire"
+                    .pos v[361], v[362] .center
+                    .scrollWithMap
+                    .chromakey 1
+                    .scale 70
+                    .trans 30
+                    .rgbs 100, 100, 100, 100
+                    .hrev 
+                    .grid 2, 1 .anim 3 .once
+                    .mapLayer 8
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            } .else bl {
+                v[361] -= 23
+                @pic[v[310]].show {
+                    "effects\muzzlefire"
+                    .pos v[361], v[362] .center
+                    .scrollWithMap
+                    .chromakey 1
+                    .scale 70
+                    .trans 30
+                    .rgbs 100, 100, 100, 100
+                    .grid 2, 1 .anim 3 .once
+                    .mapLayer 8
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            }
+            @comment "仕上げに登録消す"
+            v[242..243] += 1
+            @break
+            
+        }
+        v[242] += 1
+        
+    }
+    
+    s[141..142].off
+    
+}
+}

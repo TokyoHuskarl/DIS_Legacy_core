@@ -1,0 +1,171 @@
+cev .id(227), .name("cev227"), {
+v[13] = 105
+v[31..34] = 0
+v[31] = 125
+v[34] = 140
+t[501] .asg "ドラゴナスカール"
+@if v[2201] == 1 {
+    
+} .else bl {
+    
+}
+@if s[151] .isOff() {
+    s[152].on
+    v[254] = 27
+    @call .cev 300
+    @if v[251] == 0 {
+        @if s[19] .isOff() {
+            v[301] = rnd(0, 3)
+            
+        }
+        
+    }
+    @if s[1] .isOn() {
+        @if v[204] < v[1004] {
+            v[204] += 1
+            @loop v[1004] .dst v[320] {
+                v[201] %= v[1004]
+                v[301] = v[201] * 300
+                v[301] += 5000
+                v[300] = v[301] + 1
+                @if v[v[300]] <= 0 {
+                    @comment "まず清掃"
+                    v[1301].copy v[601], 300
+                    v[1301].copy v[v[300]], 300
+                    v[664] = 3
+                    @comment "WP消しておく"
+                    v[655] = -1
+                    @comment "出る場所セット"
+                    v[252].copy v[605], 2
+                    @comment "チームセット"
+                    v[700] = v[251]
+                    v[624] = v[700] + 1
+                    @comment "ObjTyp"
+                    v[601] = 1
+                    @comment "生成場所の数値を入れる"
+                    v[605].copy v[607], 2
+                    v[605].copy v[641], 2
+                    v[310..311] = 10000
+                    v[605] .mul v[310], 2
+                    @comment "あたり判定"
+                    v[610] = 10
+                    v[611] = 12
+                    @comment "パラメータ等入力begin"
+                    @comment "#Unit ID"
+                    v[701] = 27
+                    @comment "#Unit Type"
+                    v[702] = 2
+                    @comment "#AAType"
+                    v[703] = 0
+                    @comment "#Move Type"
+                    v[638] = 1
+                    @comment "#Level"
+                    v[704] = 20
+                    @comment "#HP"
+                    v[705..706] = 1600
+                    @comment "#HPReg"
+                    v[731] = 12
+                    @comment "#MP"
+                    v[707..708] = 200
+                    v[732] = 12
+                    @comment "#AD"
+                    v[709] = 126
+                    @comment "#AP"
+                    v[710] = 0
+                    @comment "#AR"
+                    v[711] = 270
+                    @comment "#MR"
+                    v[712] = 100
+                    @comment "#HIT"
+                    v[713] = 70
+                    @comment "#ADV"
+                    v[714] = 24
+                    @comment "#Crit"
+                    v[715] = 12
+                    @comment "#AReff"
+                    v[736] = 20
+                    @comment "#Pen"
+                    v[736] = 15
+                    @comment "#WILL"
+                    v[739] = 65
+                    @comment "#MS"
+                    v[716] = 88
+                    @comment "#Range Melee"
+                    v[717] = 23000
+                    @comment "#Range Ranged"
+                    v[718] = -1
+                    @comment "#AttackSpeed"
+                    v[719] = 125
+                    @comment "#AttackMotion"
+                    v[720] = 1
+                    @comment "#Attack Function"
+                    v[730] = 1247
+                    @comment "#Have Motion"
+                    v[726] = 7
+                    @comment "#Perks"
+                    @comment "##Shield Master"
+                    v[665] |= 1
+                    @comment "##Brawny"
+                    v[665] |= 2
+                    @comment "##Battle Forged"
+                    v[665] |= 4
+                    @comment "##KillingFrenzy"
+                    v[666] |= 1
+                    @comment "##Battle Flow"
+                    v[666] |= 2
+                    @comment "##Berserk"
+                    v[666] |= 4
+                    @comment "#####
+SKILL
+##### "
+                    s[118].on
+                    @comment "#Q_ID and Q_Func"
+                    @call .cev 1246
+                    v[581].copy v[741], 20
+                    @comment "#W"
+                    @call .cev 1237
+                    v[581].copy v[761], 20
+                    @comment "#E"
+                    @call .cev 1208
+                    v[581].copy v[781], 20
+                    @comment "#Passive"
+                    v[821] = 6
+                    v[822] = 3
+                    @comment "#wont get combat penalty"
+                    v[740] |= 128
+                    s[118].off
+                    @comment "描画"
+                    @comment "描画"
+                    @comment "DEBUG"
+                    @if v[700] == 0 {
+                        @if s[19] .isOff() {
+                            v[301] = rnd(0, 3)
+                            @se.play "chari16" .opt 70, 80, 50
+                            @comment "#Achievement"
+                            v[229] = 28
+                            s[59].on
+                            
+                        }
+                        
+                    }
+                    @call .cev 1903
+                    @comment "#reg1 = ObjNum"
+                    @break
+                    
+                }
+                @if v[v[320]] >= v[1004] {
+                    @comment "Obj多すぎ"
+                    @break
+                    
+                }
+                v[201] += 1
+                
+            }
+            
+            
+        }
+        
+    }
+    
+}
+}

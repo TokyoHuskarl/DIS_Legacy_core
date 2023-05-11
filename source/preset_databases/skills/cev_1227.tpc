@@ -1,0 +1,53 @@
+cev .id(1227), .name("cev1227"), {
+@if s[118] .isOn() {
+    v[1301].copy v[581], 20
+    @comment "#Q_ID and Q_Func"
+    v[581] = 27
+    v[582] = v[581] + 1200
+    @comment "#Q_Type"
+    v[583] = 5
+    v[584] = 2
+    @comment "#Q_Motion"
+    v[585] = 1
+    @comment "#Q_Cost"
+    v[587] = 10
+    @comment "#Q_Range"
+    v[592] = 5500
+    @comment "#Q_CD"
+    v[588] = 2520
+    
+} .else bl {
+    @if s[119] .isOn() {
+        v[861] += 33
+        v[863] += 70 + muldiv(v[861], 25, 100)
+        v[864] += 70
+        @comment "#Icon Number"
+        v[21] = 24
+        
+    } .else bl {
+        @comment "#発動処理"
+        v[297] = v[299] * 300
+        v[297] += 4700
+        @comment "#バフ番号指定"
+        v[11] = 1227
+        v[12] = v[299]
+        @call .cev 1911
+        @if v[22] >= 0 {
+            @comment "#Duration"
+            v[v[22]] = v[1240] * 8
+            
+        }
+        v[341] = v[297] + 7
+        v[v[341]].copy v[605], 2
+        v[605..606] *= 10000
+        v[v[341]].copy v[607], 2
+        @if `s[500 + v[299]] == 1 {
+            s[141].on
+            @call .cev 100
+            
+        }
+        
+    }
+    
+}
+}

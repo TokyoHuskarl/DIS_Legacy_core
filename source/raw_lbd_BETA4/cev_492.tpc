@@ -1,0 +1,83 @@
+cev .id(492), .name("cev492"), {
+v[1301].copy v[601], 300
+v[664] = 0
+@comment "##################
+#Set Human Default#
+##################"
+@call .cev 309
+@comment "#Simplification
+#Unit Type to MS Add"
+v[0] = v[702..716] += [0, 0, 1, 320, 320, 45, 45, 12, 0, 0, 0, 23, 10, 1, 25]
+@comment "#AS Bonus"
+v[719] += 16
+@comment "#WILL"
+v[739] = 100
+@comment "#rHit"
+v[740] = 28
+@comment "#Skin"
+@comment "#Hair"
+v[670] = 0
+@comment "#HairColour"
+v[671] = 0
+@comment "#Passive"
+v[821] = 13
+@comment "#Faction"
+v[822] = 7
+@comment "#Name"
+t[510] .asg "アカマース"
+@comment "#####################
+set HitBox"
+v[681] = 10
+v[682] = 11
+@comment "#####################
+set Perks"
+v[606] |= 1024
+@comment "Battle Master"
+v[608] |= 1
+@comment "Determination"
+v[608] |= 2
+@comment "DevastatingStrikes"
+v[608] |= 4
+@comment "SkillCaster"
+v[607] |= 131072
+@comment "##Mastery ALL"
+v[607] |= 131056
+@comment "#####################
+set Talents"
+v[621] = 3
+v[622] = 2
+v[625] = 2
+v[627] = 1
+v[629] = 3
+@comment "#####################
+set Skills"
+v[802] = 1212
+v[803] = 1226
+v[804] = 1227
+@comment "#####################
+set initial equipments"
+@comment "#Helm Lock"
+v[850] |= 8
+@comment "#Wpn"
+v[851] = 6
+@comment "#Shi"
+v[852] = 3
+@comment "#Armor"
+v[853] = 6
+@comment "#Helm"
+v[854] = 15
+@comment "###################"
+@comment "#####################
+set Flags"
+@comment "CantDismiss"
+v[610] |= 1
+@comment "essential"
+v[610] |= 2
+@comment "#State - Alive"
+v[601] = 1
+@if s[1] .isOff() {
+    v[701] = 117
+    
+}
+@call .cev 499
+}

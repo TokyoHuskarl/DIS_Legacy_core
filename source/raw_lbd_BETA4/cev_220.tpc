@@ -1,0 +1,14 @@
+cev .id(220), .name("cev220"), {
+@if s[151] .isOff() {
+    s[152].on
+    v[254] = 20
+    @call .cev 300
+    @if v[251] == 0 {
+        @if s[19] .isOff() {
+            
+        }
+        
+    }
+    
+}
+}

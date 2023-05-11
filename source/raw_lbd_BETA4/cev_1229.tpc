@@ -1,0 +1,137 @@
+cev .id(1229), .name("cev1229"), {
+@comment "Gloryhammer"
+@if s[118] .isOn() {
+    v[1301].copy v[581], 20
+    @comment "#Q_ID and Q_Func"
+    v[581] = 29
+    v[582] = v[581] + 1200
+    @comment "#Q_Type"
+    v[583] = 2
+    @comment "#Q_Motion"
+    v[585] = 1
+    @comment "#Q_Cost"
+    v[587] = 50
+    @comment "#Q_Range"
+    v[592] = 38000
+    @comment "#Q_CD"
+    v[588] = 345
+    @comment "#Spellpowerbase"
+    v[598] = 110
+    
+} .else bl {
+    @if s[143] .isOn() {
+        v[607].copy v[361], 2
+        @comment "エフェクト処理から呼び出される"
+        v[341] = v[301] + 8
+        v[342] = v[301] + 22
+        @comment "Access19 = AttackerObjectID
+Access20 = TargetObjectID
+Access18 = TargetObjTypeチェックPtr"
+        v[299] = v[v[341]]
+        v[300] = v[v[342]]
+        v[298] = 300 * v[300]
+        v[298] += 4701
+        @if v[217] < v[4559] {
+            v[217] += 1
+            @loop v[4559] .dst v[355] {
+                v[216] %= v[4559]
+                v[281] = v[216] * 100
+                v[281] += v[1076]
+                v[285] = v[281] + 1
+                @if v[v[285]] == 0 {
+                    @comment "Access17 = AttackerObjチェックPtr"
+                    v[287] = v[299] * 300
+                    v[287] += 4700
+                    @comment "まず清掃"
+                    v[1301].copy v[601], 100
+                    v[1301].copy v[v[285]], 100
+                    @comment "ParentObjセット"
+                    v[609] = v[299]
+                    @comment "出る場所セット"
+                    v[361].copy v[605], 2
+                    v[605..606] *= 10000
+                    v[361].copy v[607], 2
+                    @comment "Projectile team"
+                    v[341] = v[287] + 100
+                    v[618] = v[v[341]]
+                    @comment "パラメータ等入力begin"
+                    @comment "#Pic"
+                    @comment "#ProjectileType"
+                    v[601] = 2
+                    @comment "#あたり判定"
+                    v[610] = 44
+                    v[611] = 44
+                    @comment "#威力"
+                    v[11] = v[299]
+                    v[12] = 2
+                    @call .cev 2004
+                    @comment "[AP]*110%"
+                    v[21] *= 11
+                    v[21] /= 10
+                    v[621] = v[21]
+                    @comment "#ARMRと属性"
+                    v[622] = 1
+                    @comment "#Timer"
+                    v[700] = 1
+                    @comment "#Nopic"
+                    v[628] |= 8
+                    @comment "パラメータ等入力end"
+                    v[601].copy v[v[285]], 100
+                    @comment "描画"
+                    @break
+                    
+                }
+                v[216] += 1
+                
+            }
+            
+            
+        }
+        s[141].on
+        @call .cev 106
+        s[141].off
+        
+    } .else bl {
+        v[341] = v[299] * 300
+        @comment "#親Objと対象Objをセット"
+        v[609] = v[299]
+        v[623] += v[341] + 4718
+        v[623] = v[v[623]] > 0 ? v[v[623]] : 0
+        v[341] += 4700
+        @comment "#始点を設定"
+        v[607] = v[341] + 7
+        v[v[607]].copy v[607], 2
+        @comment "#終点を設定"
+        v[590].copy v[624], 2
+        v[729] = 0
+        @comment "発射音"
+        @if `s[500 + v[299]] == 1 && v[182] < 3 {
+            v[182] += 2
+            @comment "#########################"
+            v[472] = divmul(65, 100, v[2216])
+            v[473] = 150
+            v[474] = divmul(v[361] + v[1001], v[1281], 50)
+            @comment "#########################"
+            @se.play "Raise3" .opt v[472], v[473], v[474]
+            v[473] = 100
+            @se.play "Ice5" .opt v[472], v[473], v[474]
+            
+        }
+        @loop 5 {
+            v[700] = rnd(21, 31)
+            v[603] = v[700] - 1
+            @comment "#フレーム数を設定"
+            s[141].on
+            @comment "#Set CallFunc this function"
+            v[20] = 1229
+            @call .cev 105
+            
+        }
+        
+        s[141].off
+        
+    }
+    v[1301].copy v[601], 100
+    
+}
+}

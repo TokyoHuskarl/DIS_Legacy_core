@@ -1,0 +1,303 @@
+cev .id(1297), .name("cev1297"), {
+@comment "Access19 = AttackerObjectID
+Access20 = TargetObjectID
+Access18 = TargetObjTypeチェックPtr"
+@if s[122] .isOn() {
+    @comment "#発動処理"
+    @comment "#バフ番号指定"
+    v[11] = 1196
+    v[12] = v[300]
+    @call .cev 1911
+    @if v[22] >= 0 {
+        @comment "#Duration"
+        v[v[22]] = 18
+        
+    }
+    @comment "Give V vector"
+    @if v[v[22]] == 18 {
+        @comment "#Set Dash/Knockback"
+        v[v[300] * 300 + 4942] = 4
+        v[v[300] * 300 + 4949] = v[v[22]]
+        @comment "###############
+速度べくとるを作る
+###############"
+        v[341] = v[299] * 300
+        v[341] += 4707
+        v[v[341]].copy v[11], 2
+        v[607].copy v[13], 2
+        @comment "#単位ベクトルできた"
+        @call .cev 2003
+        v[21..22] *= 800
+        @comment "#速度へ代入"
+        v[341] = v[300] * 300
+        v[341] += 4712
+        v[21].copy v[v[341]], 2
+        
+    }
+    
+} .else bl {
+    @loop 6 {
+        @if v[217] < v[4559] {
+            @loop v[4559] .dst v[320] {
+                v[216] %= v[4559]
+                v[301] = v[216] * 100
+                v[301] += v[1076]
+                v[295] = v[301] + 1
+                @if v[v[295]] == 0 {
+                    @comment "Access17 = AttackerObjチェックPtr"
+                    v[297] = v[299] * 300
+                    v[297] += 4700
+                    @comment "まず清掃"
+                    v[1301].copy v[601], 100
+                    v[1301].copy v[v[295]], 100
+                    @comment "ParentObjセット"
+                    v[609] = v[299]
+                    @comment "出る場所セット"
+                    v[341] = v[297] + 7
+                    v[v[341]].copy v[605], 2
+                    v[605..606] *= 10000
+                    v[v[341]].copy v[607], 2
+                    @comment "###############
+速度べくとるを作る
+###############"
+                    v[607].copy v[11], 2
+                    v[341] = v[298] + 6
+                    v[v[341]].copy v[13], 2
+                    @comment "##狙いをランダマイズ"
+                    v[13] += rnd(-34, 34)
+                    v[14] += rnd(-34, 34)
+                    @comment "##狙いをランダマイズ"
+                    @comment "#単位ベクトルできた"
+                    @call .cev 2003
+                    @comment "#速度をかけよう"
+                    v[21..22] *= 1250
+                    @comment "#速度パラメータ入力"
+                    v[21].copy v[612], 2
+                    @comment "#角度情報保存"
+                    v[619] = atan2(v[613], v[612], 1000)
+                    @if v[619] <= 0 {
+                        v[619] += 360000
+                        
+                    }
+                    @comment "Projectile team"
+                    v[341] = v[297] + 100
+                    v[618] = v[v[341]]
+                    @comment "パラメータ等入力begin"
+                    @comment "#Pic"
+                    v[602] = 2
+                    @comment "#ProjectileType"
+                    v[601] = 1
+                    @comment "#あたり判定"
+                    v[610] = 2
+                    v[611] = 2
+                    @comment "#威力"
+                    v[11] = v[299]
+                    v[12] = 1
+                    @call .cev 2004
+                    @comment "[AD]*80%"
+                    v[621] = muldiv(v[21], 80, 100)
+                    @comment "#ARMRと属性"
+                    v[622] = 0
+                    v[341] = v[297] + 123
+                    v[623] = v[v[341]]
+                    @comment "#Timer"
+                    v[700] = 14
+                    v[700] = v[v[297] + 128]
+                    @comment "#Effect"
+                    v[604] = 1297
+                    @comment "#Hit Type"
+                    v[627] = 1
+                    v[628] = 1
+                    v[624] |= 1024
+                    v[624] |= 131072
+                    v[624] |= 1
+                    @comment "#Draw type"
+                    v[630] = 0
+                    @comment "#Colour"
+                    v[626] = 30
+                    v[631..631] = 125
+                    v[632..632] = 89
+                    v[633..633] = 20
+                    v[634] = 25
+                    @comment "パラメータ等入力end"
+                    v[628] |= 1
+                    v[601].copy v[v[295]], 100
+                    v[607].copy v[361], 2
+                    @comment "描画"
+                    v[302] = v[216] + v[4560]
+                    @pic[v[302]].show {
+                        "projectile\shrapnel"
+                        .pos v[605], v[606] .center
+                        .scrollWithMap
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .angle v[619], 1000
+                        .mapLayer 7
+                        .eraseWhenTransfer
+                        .affectedByTint
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    v[11] = v[216] + 0
+                    v[12] = v[700]
+                    @loop v[1017] .dst v[320] {
+                        v[244] %= v[1199]
+                        v[310] = v[244] * 50
+                        v[310] = v[310] + v[1198]
+                        @if v[v[310]] <= 1 {
+                            @comment "まず清掃"
+                            v[1301].copy v[v[310]], 50
+                            @comment "ポインタセット開始"
+                            @comment "設定"
+                            v[v[310]] = 1
+                            @comment "500F"
+                            v[294] = v[310] + 49
+                            v[v[294]] = v[12]
+                            v[v[294]] = 55555
+                            @comment "Set itself"
+                            v[294] = v[310] + 3
+                            v[v[294]] = 158
+                            @comment "Set Parent Projectile"
+                            v[294] = v[310] + 9
+                            v[v[294]] = v[11]
+                            @comment "けす処理をLinkedFuncに入れる"
+                            v[294] = v[310] + 10
+                            @comment "普通にアニメ"
+                            v[607] = v[310] + 6
+                            v[361].copy v[v[607]], 2
+                            @comment "仕上げに登録消す"
+                            v[244] += 1
+                            @break
+                            
+                        }
+                        v[244] += 1
+                        
+                    }
+                    
+                    v[217] += 1
+                    @break
+                    
+                }
+                v[216] += 1
+                
+            }
+            
+            
+        }
+        v[216] += 1
+        
+    }
+    
+    v[v[297] + 83] = 6
+    @comment "演出"
+    @if `s[v[299] + 500] == 1 && v[182] < 5 {
+        v[182] += 1
+        @comment "#########################"
+        v[471] = 11550
+        v[472] = divmul(100, 100, v[2216])
+        v[473] = rnd(95, 105)
+        v[474] = divmul(v[361] + v[1001], v[1281], 50)
+        @comment "#########################"
+        t[510] .asg "weapons\handgonne"
+        @cmd v[471], t[510], .args v[472], 3
+        
+    }
+    s[141].on
+    @if s[141] .isOn() {
+        v[361].copy v[607], 2
+        v[242] += 1
+        v[242] %= v[1017]
+        v[301] = v[242] * 100
+        v[301] = v[301] + v[1018]
+        @comment "まず清掃"
+        v[1301].copy v[v[301]], 100
+        @comment "ポインタセット開始"
+        v[310] = v[242] + v[1220]
+        v[295] = v[301] + 99
+        @comment "設定"
+        v[v[301]] = 1
+        v[v[295]] = 2
+        @comment "普通にアニメ"
+        v[607].copy v[361], 2
+        v[362] += 3
+        @if `v[v[297] + 244] == 0 {
+            v[361] += 32
+            @pic[v[310]].show {
+                "effects\muzzlefire2"
+                .pos v[361], v[362] .center
+                .scrollWithMap
+                .chromakey 1
+                .scale 100
+                .trans 25
+                .rgbs 100, 100, 100, 100
+                .add
+                .hrev 
+                .grid 2, 1 .anim 4 .once
+                .mapLayer 8
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            
+        } .else bl {
+            v[361] -= 32
+            @pic[v[310]].show {
+                "effects\muzzlefire2"
+                .pos v[361], v[362] .center
+                .scrollWithMap
+                .chromakey 1
+                .scale 100
+                .trans 25
+                .rgbs 100, 100, 100, 100
+                .add
+                .grid 2, 1 .anim 4 .once
+                .mapLayer 8
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            
+        }
+        @comment "仕上げに登録消す"
+        v[242..243] += 1
+        @loop v[1017] .dst v[320] {
+            v[244] %= v[1199]
+            v[351] = v[244] * 50 + v[1198]
+            @if v[v[351]] <= 1 {
+                @comment "init"
+                v[1301].copy v[v[351]], 50
+                v[v[351]] = 1
+                @comment "timer"
+                v[v[351] + 49] = 12
+                @comment "Set itself"
+                v[v[351] + 3] = 157
+                @comment "Set Parent Obj"
+                v[v[351] + 9] = v[299]
+                @comment "set pos"
+                v[341] = v[351] + 6
+                v[361].copy v[v[341]], 2
+                v[244] += 1
+                @break
+                
+            }
+            v[244] += 1
+            
+        }
+        
+        s[141..142].off
+        
+    }
+    s[141].off
+    v[11] = 1189
+    v[12] = v[299]
+    @call .cev 1911
+    @if v[22] >= 0 {
+        @comment "#Duration"
+        v[v[22]] = 6
+        
+    }
+    
+}
+}

@@ -1,0 +1,255 @@
+cev .id(1949), .name("cev1949"), {
+@if s[20] .isOn() {
+    @if s[25] .isOff() {
+        v[340] = v[101]
+        
+    } .else bl {
+        v[340] = v[100]
+        
+    }
+    
+} .else bl {
+    v[173] = v[256]
+    v[340] = 1
+    
+}
+v[353] = v[157] + 4
+v[354] = v[158] + 21
+v[350] = v[542] - 1
+v[345] = v[717] / 1000
+v[341] = v[700] == 0 ? 2 : 17
+@call .cev 1933
+@comment "##
+Show Equipment
+Text"
+v[353] = v[157] + 38
+v[354] = v[158] + 76
+v[355] = v[172] + (v[173] - 1) * 7 + 0
+@pic[v[542]].strpic {
+    "\t[\v[355]]"
+    .pos v[353], v[354] .left
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "", 10 .noShadow
+    .spacing 0, 0
+    .skin "" .nobg .noframe .noPadding
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+v[353] = v[157] + 38
+v[354] += 10
+v[355] = v[172] + (v[173] - 1) * 7 + 1
+@pic[v[543]].strpic {
+    "\t[\v[355]]"
+    .pos v[353], v[354] .left
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "", 10 .noShadow
+    .spacing 0, 0
+    .skin "" .nobg .noframe .noPadding
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+v[353] = v[157] + 33
+v[354] += 10
+v[355] = v[172] + (v[173] - 1) * 7 + 2
+@pic[v[544]].strpic {
+    "\t[\v[355]]"
+    .pos v[353], v[354] .left
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "", 10 .noShadow
+    .spacing 0, 0
+    .skin "" .nobg .noframe .noPadding
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+v[353] = v[157] + 28
+v[354] += 10
+v[355] = v[172] + (v[173] - 1) * 7 + 3
+@pic[v[545]].strpic {
+    "\t[\v[355]]"
+    .pos v[353], v[354] .left
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "", 10 .noShadow
+    .spacing 0, 0
+    .skin "" .nobg .noframe .noPadding
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+v[353] = v[157] + 28
+v[354] += 10
+v[355] = v[172] + (v[173] - 1) * 7 + 4
+@pic[v[546]].strpic {
+    "\t[\v[355]]"
+    .pos v[353], v[354] .left
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "", 10 .noShadow
+    .spacing 0, 0
+    .skin "" .nobg .noframe .noPadding
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+v[353] = v[157] + 33
+v[354] += 10
+v[355] = v[172] + (v[173] - 1) * 7 + 5
+@pic[v[547]].strpic {
+    "\t[\v[355]]"
+    .pos v[353], v[354] .left
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "", 10 .noShadow
+    .spacing 0, 0
+    .skin "" .nobg .noframe .noPadding
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+v[353] = v[157] + 33
+v[354] += 10
+v[355] = v[172] + (v[173] - 1) * 7 + 6
+@pic[v[548]].strpic {
+    "\t[\v[355]]"
+    .pos v[353], v[354] .left
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "", 10 .noShadow
+    .spacing 0, 0
+    .skin "" .nobg .noframe .noPadding
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+@comment "#####"
+@comment "Show unit appearance
+#########################"
+v[441] = 357
+v[442] = 1
+v[443] = 305
+v[444] = 306
+v[445] = 1
+v[448] = 1
+v[453..454] = 0
+v[457] = 0
+v[458] = 1
+v[459] = 1
+v[460] = 320
+v[461..462] = 0
+v[465] = 1
+v[466] = 321
+v[467] = 0
+v[470] = 0
+@comment "Force Sprite"
+@comment "Failsafe"
+v[446] = 100
+v[447] = 0
+v[455] = 0
+v[468] = 9
+@comment "Reset Pictures"
+v[357] = v[160] + 5
+@pic[v[160]..v[357]].erase
+@comment "Get Picture Layer Array"
+v[358] = v[159]
+v[357] = v[160]
+@while v[358] >= 1 {
+    v[321] = 2
+    v[463] = 5
+    v[464] = 1
+    @comment "Colour"
+    v[449..452] = 100
+    @comment "#"
+    v[305] = v[157] + 24
+    v[306] = v[158] + 54
+    @comment "Add Initial Offsets to SpriteXY"
+    v[0] = v[305..306] += v[881..882]
+    @comment "Add Initial Offsets to SpriteXY#End"
+    v[320] = v[v[340] * 6 + v[341] + v[1185] - 1 - 6]
+    v[341] = v[358] % 10
+    v[341] -= 1
+    v[286] = 901 + v[341]
+    v[341] %= 6
+    @if v[341] == 0 {
+        @comment "#Body"
+        v[1951] = v[1191] + 2 * 40 + (v[173] - 1) * 280 + 29
+        v[320] = v[v[1951]]
+        
+    } .else bl {
+        @if v[341] == 1 {
+            @comment "#Head"
+            v[341] += 1
+            v[320] = v[1 * 6 + v[341] + v[1185] - 1 - 6]
+            
+        } .else bl {
+            @if v[341] == 2 {
+                @comment "#Helm"
+                v[1951] = v[1191] + 3 * 40 + (v[173] - 1) * 280 + 29
+                v[320] = v[v[1951]]
+                v[320] = v[320] == 0 ? v[1 * 6 + (v[341] + 1) + v[1185] - 1 - 6] : v[320]
+                
+            } .else bl {
+                @if v[341] == 3 {
+                    @comment "#Weapon"
+                    v[1951] = v[1191] + 0 * 40 + (v[173] - 1) * 280 + 29
+                    v[320] = v[v[1951]]
+                    
+                } .else bl {
+                    @if v[341] == 4 {
+                        @comment "#Shield"
+                        v[1951] = v[1191] + 1 * 40 + (v[173] - 1) * 280 + 29
+                        v[320] = v[v[1951]]
+                        
+                    } .else bl {
+                        @if v[341] == 5 {
+                            @comment "#Acc"
+                            v[1951] = v[1191] + 4 * 40 + (v[173] - 1) * 280 + 29
+                            v[320] = v[v[1951]]
+                            
+                        } .else bl {
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    @comment "Strings = t[v[286]]"
+    @cmd 11110, t[v[286]], .args v[441], 30
+    v[357] += 1
+    v[358] /= 10
+    
+}
+
+}

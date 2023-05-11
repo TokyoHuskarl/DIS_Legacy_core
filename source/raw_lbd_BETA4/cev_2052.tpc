@@ -1,0 +1,38 @@
+cev .id(2052), .name("cev2052"), {
+@comment "module_core_Game_ui_escape_menu"
+v[472] = divmul(75, 100, v[2216])
+@se.play "cursor21" .opt v[472], 150, 50
+s[43].on
+@if s[2] .isOn() {
+    s[201].on
+    
+} .else bl {
+    s[201].off
+    
+}
+s[2].on
+s[18].off
+s[38].on
+v[951] = 1
+@mouse.setPos v[49], v[50]
+@call .cev 2051
+@pic[996].erase
+@if s[201] .isOff() {
+    s[2].off
+    
+} .else bl {
+    s[2].on
+    @if v[2401] >= 5 {
+        s[2].off
+        
+    }
+    
+}
+s[35].on
+s[43].off
+s[39].on
+s[51].off
+s[18].on
+@mouse.setPos 160, 120
+s[38].off
+}

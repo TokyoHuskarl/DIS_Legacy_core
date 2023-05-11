@@ -1,0 +1,166 @@
+cev .id(395), .name("cev395"), {
+@comment "module_core_Game_items_general.tpc"
+@comment "V1 = EquipmentID
+v2 = variation"
+@comment "Init"
+v[0] = v[1901..1940] = 0
+v[1941] = 0
+v[1941] += 1
+@actor[4].name ""
+t[503] .asg ""
+t[505] .asg t[20034]
+@comment "Load"
+v[1941] = v[1206] + v[11]
+t[2998] .asg t[v[1941]]
+t[2998] .split ",", t[2998], v[1941]
+t[503] .asg t[2999]
+t[505] .asg t[3000]
+t[2999..3000] .asg ""
+@loop 40 .dst v[1941] {
+    v[1942] = 3001 + v[1941]
+    v[1943] = 1901 + v[1941]
+    t[v[1942]] .toNum v[1944]
+    v[v[1943]] = v[1944]
+    
+}
+
+@comment "####Objflag"
+@if v[1907] == 0 {
+    @comment "Melee"
+    @if v[1923] != 1 {
+        @comment "Not Pierce weapon"
+        @comment "Then can parry"
+        v[1921] |= 16777216
+        
+    }
+    
+}
+@comment "####Exmotion"
+v[1926] = 0
+t[3026] .split "|", t[3200], v[1941]
+@loop v[1941] .dst v[1945] {
+    v[1942] = 3200 + v[1945]
+    t[v[1942]] .toNum v[1944]
+    v[1926] |= pow(2, v[1944] - 1)
+    
+}
+
+@comment "####Exmotion"
+v[1927] = 0
+t[3027] .split "|", t[3200], v[1941]
+@loop v[1941] .dst v[1945] {
+    v[1942] = 3200 + v[1945]
+    t[v[1942]] .toNum v[1944]
+    v[1927] |= pow(2, v[1944] - 1)
+    
+}
+
+t[3001..3040] .asg ""
+@comment "###################
+Set Variation"
+v[12] = max(v[12], -1)
+v[1930] += v[12] == -1 ? rnd(0, v[1928]) * 100000 : min(v[12], v[1928]) * 100000
+@comment "###################"
+@comment "###################
+Adjustment
+###################"
+@if v[1901] >= 1 {
+    @comment "1H"
+    @if v[1901] < 100 {
+        v[1902] += 3
+        v[1902] = muldiv(v[1902], 11, 10)
+        v[1910] -= 2
+        
+    } .else bl {
+        @comment "2H Melee"
+        @if v[1901] < 200 {
+            v[1902] += 6
+            v[1902] = muldiv(v[1902], 117, 100)
+            v[1910] -= 4
+            
+        } .else bl {
+            @comment "2H Ranged"
+            @if v[1901] < 300 {
+                v[1902] += 2
+                v[1910] -= 6
+                
+            }
+            
+        }
+        
+    }
+    @comment "Overall
+AS-5"
+    v[1910] -= 5
+    @comment "min range"
+    v[1909] = v[1909] <= 0 ? -999999 : v[1909]
+    
+}
+@comment "###################
+Explain Str
+###################"
+t[504] .asg ""
+@if v[1901] >= 200 {
+    
+} .else bl {
+    @if v[1901] >= 100 {
+        t[504] .asg t[20022]
+        
+    } .else bl {
+        t[504] .asg t[20023]
+        
+    }
+    
+}
+v[1942] = v[1901] % 100
+@if v[1942] == 1 {
+    t[504] .cat t[20024]
+    
+}
+@if v[1942] == 2 {
+    t[504] .cat t[20025]
+    
+}
+@if v[1942] == 3 {
+    t[504] .cat t[20026]
+    
+}
+@if v[1942] == 4 {
+    t[504] .cat t[20027]
+    
+}
+@if v[1942] == 5 {
+    t[504] .cat t[20028]
+    
+}
+@if v[1942] == 6 {
+    t[504] .cat t[20029]
+    
+}
+@if v[1942] == 8 {
+    t[504] .cat t[20030]
+    
+}
+@if v[1942] == 11 {
+    t[504] .cat t[20031]
+    
+}
+@if v[1942] == 12 {
+    t[504] .cat t[20032]
+    
+}
+@if v[1942] == 13 {
+    t[504] .cat t[20233]
+    
+}
+@if v[1942] == 21 {
+    t[504] .cat t[20241]
+    
+}
+@comment "###################
+Set ID
+###################"
+v[1940] = v[11]
+@comment "If v:1901==0, consider called item undefined"
+v[1940] = v[1901] == 0 ? 0 : v[1940]
+}

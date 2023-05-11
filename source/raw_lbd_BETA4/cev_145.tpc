@@ -1,0 +1,42 @@
+cev .id(145), .name("cev145"), {
+v[v[301]].copy v[601], 100
+v[305] = v[700]
+@if v[305] == 6 {
+    v[310] = v[241] + v[1220]
+    @comment "Access15 = x"
+    v[295] = v[301] + 6
+    @comment "ずれセット"
+    v[v[295]] .add v[53], 2
+    @pic[v[310]].show {
+        "effects\wind1"
+        .pos v[607], v[608] .center
+        .scrollWithMap
+        .chromakey 1
+        .scale 60
+        .trans 60
+        .rgbs 100, 100, 100, 100
+        .add
+        .grid 5, 5 .cell 21
+        .mapLayer 7
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    @pic[v[310]].move {
+        .pos v[607], v[608] .center
+        .scale 200
+        .trans 100
+        .time -6
+        .rgbs 100, 100, 100, 100
+        .add
+    }
+    
+}
+v[295] = v[301] + 99
+@comment "タイマー切れのときの処理"
+@if v[v[295]] == 0 {
+    v[310] = v[241] + v[1220]
+    @pic[v[310]].erase
+    
+}
+}

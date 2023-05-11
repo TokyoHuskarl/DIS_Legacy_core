@@ -1,0 +1,16 @@
+cev .id(1749), .name("cev1749"), {
+@if v[2875] < 6 {
+    @comment "WPをとおる"
+    v[2863].copy v[2861], 2
+    v[2865].copy v[2863], 2
+    v[2867].copy v[2865], 2
+    v[2869].copy v[2867], 2
+    v[2871].copy v[2869], 2
+    v[2873].copy v[2871], 2
+    @comment "#Set 移動するX"
+    @comment "#Set 移動するY"
+    v[2851].copy v[2873], 2
+    v[2875] += 1
+    
+}
+}

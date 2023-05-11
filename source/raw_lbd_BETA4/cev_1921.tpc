@@ -1,0 +1,123 @@
+cev .id(1921), .name("cev1921"), {
+@comment "0=set face"
+@if v[11] == 0 {
+    @if v[12] == 0 {
+        @pic[100].strpic {
+            ""
+            .pos v[1231], v[1232] .center
+            .size 104, 104            .chromakey 1
+            .scale 100
+            .trans 100
+            .rgbs 100, 100, 100, 100
+            .font "", 12 .noShadow
+            .spacing 0, 4
+            .skin "サイバーシステム2" .stretch .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+        }
+        @pic[100].move {
+            .pos v[1231], v[1232] .center
+            .scale 100
+            .trans 0
+            .time 1
+            .rgbs 100, 100, 100, 100
+            .hrev 
+        }
+        
+    } .else bl {
+        @pic[102].strpic {
+            ""
+            .pos v[1233], v[1234] .center
+            .size 104, 104            .chromakey 1
+            .scale 100
+            .trans 100
+            .rgbs 100, 100, 100, 100
+            .font "", 12 .noShadow
+            .spacing 0, 4
+            .skin "サイバーシステム2" .stretch .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+        }
+        @pic[102].move {
+            .pos v[1233], v[1234] .center
+            .scale 100
+            .trans 0
+            .time 1
+            .rgbs 100, 100, 100, 100
+            .hrev 
+        }
+        
+    }
+    
+}
+@comment "1=remove"
+@if v[11] == 1 {
+    @if v[12] == 0 {
+        @pic[100..101].erase
+        
+    } .else bl {
+        @pic[102..103].erase
+        
+    }
+    
+}
+@comment "2=highlight"
+@if v[11] == 2 {
+    @if v[12] == 0 {
+        @pic[101].move {
+            .pos v[1231], v[1232] .center
+            .scale 100
+            .trans 0
+            .time -2
+            .rgbs 100, 100, 100, 100
+            .hrev 
+        }
+        @pic[103].move {
+            .pos v[1233], v[1234] .center
+            .scale 100
+            .trans 0
+            .time -2
+            .rgbs 60, 60, 60, 100
+        }
+        
+    } .else bl {
+        @if v[12] == 1 {
+            @pic[101].move {
+                .pos v[1231], v[1232] .center
+                .scale 100
+                .trans 0
+                .time -2
+                .rgbs 60, 60, 60, 100
+                .hrev 
+            }
+            @pic[103].move {
+                .pos v[1233], v[1234] .center
+                .scale 100
+                .trans 0
+                .time -2
+                .rgbs 100, 100, 100, 100
+            }
+            
+        } .else bl {
+            @pic[101].move {
+                .pos v[1231], v[1232] .center
+                .scale 100
+                .trans 0
+                .time -2
+                .rgbs 100, 100, 100, 100
+                .hrev 
+            }
+            @pic[103].move {
+                .pos v[1233], v[1234] .center
+                .scale 100
+                .trans 0
+                .time -2
+                .rgbs 100, 100, 100, 100
+            }
+            
+        }
+        
+    }
+    
+}
+}

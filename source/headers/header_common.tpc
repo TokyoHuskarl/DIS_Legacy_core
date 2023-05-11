@@ -1,0 +1,248 @@
+#apply
+//You have to put Append directory in the game directory to compile DraCore and etc into .ldb
+#directory "../../.."
+//And you need to put tpc.exe and its blueprint txt files in Append directory. 
+#blueprint.db("../../def_ldb.txt")
+#blueprint.map("../../def_lmu.txt")
+#blueprint.tree("../../def_lmt.txt")
+//Backup is for faggots
+#copyMode .force
+
+//Set basic FPS - 60 in Maniacs patch default setting, 45 in DIS:Classic, 48 in DIS:Legacy.  
+def DIS_Game_FPS = 48
+
+#include "./header_log.tpc"
+
+//common macros
+__fn file_output_cooldown(){
+	@loop .inf()  {
+			@if  .canOutput() {  
+			    @break
+			}
+			@wait 0
+		    }
+}
+
+/*
+__fn macro_get_agent_slot_ptr $pointer $agent $slot{
+	def consttoslot = 4700+$slot //idk if this def is possible
+	$pointer = $agent * 300 + consttoslot
+}*/
+
+//cev 2004 GetParaNow v1v2 r1
+def {
+
+
+	Const_var_bit_maniacs = 32
+	Const_AgentMetaTeam_begin = 460318
+    	Const_Map_Allocate_Limit = 160000
+	
+	UNIT_CLASS_INF=0
+	UNIT_CLASS_ARCHER=1
+	UNIT_CLASS_CAV=2
+
+
+	UNIT_CLASS_STATIC=11
+
+
+    //Maptile Flags 
+    	FLAG_Maptile_Occupied = 1
+	FLAG_Maptile_Crowded = 2
+
+
+
+	AGENT_SLOT_CURRENT_AD=261
+	AGENT_SLOT_CURRENT_AP=262
+	AGENT_SLOT_CURRENT_AR=263
+	AGENT_SLOT_CURRENT_MR=264
+	AGENT_SLOT_CURRENT_HIT=265
+	AGENT_SLOT_CURRENT_EVA=266
+	AGENT_SLOT_CURRENT_CRIT=267
+	AGENT_SLOT_CURRENT_MS=268
+
+
+	AGENT_STATIC_SLOT_MINIMAP_X=258
+	AGENT_STATIC_SLOT_MINIMAP_Y=259
+
+	//Legacy
+	SLOT_CURRENT_AD=261
+	SLOT_CURRENT_AP=262
+	SLOT_CURRENT_AR=263
+	SLOT_CURRENT_MR=264
+	SLOT_CURRENT_HIT=265
+	SLOT_CURRENT_EVA=266
+	SLOT_CURRENT_CRIT=267
+	SLOT_CURRENT_MS=268
+}
+
+
+
+__fn macro_get_agent_slot_to_r1 $agent $slot{
+	
+	/*@comment "Var1 = Obj 1~ Var2 = パラメータ番号# 1~9 AD~MS Reg1 = 取得した数値(Process)"*/
+	v[21] = v[$agent * 300 + 4700 + $slot]
+}
+__fn macro_set_agent_slot $agent $slot $setpar{
+	v[$agent * 300 + 4700 + $slot] = $setpar
+}
+
+deft Str_MapDirectory = 750
+deft Str_MapID = 751
+deft Str_MapName = 752
+
+deft StrConst_LF = 525
+
+//Fundamental Switches
+def Const_Is_RTS_Mode = 20
+defs Is_RTS_Mode = 20
+def Const_Is_SightSystem_On = 300
+defs Is_SightSystem_On = 300
+def Const_Is_Drawing_Units = 35
+def Const_Is_Minimap_Set = 78
+
+//vars
+defv{
+    
+    ConstPtr_ObjPicSort_begin = 1112
+    ConstPtr_ObjDrawnList_begin =1184
+
+    //vars and regs
+    //they are usually used as ARG and REG in common events
+
+    //vars
+	var1=11
+	var2=12
+	var3=13
+	var4=14
+	var5=15
+	var6=16
+	var7=17
+	var8=18
+	var9=19
+	var10=20
+    //regs
+	reg1=21
+	reg2=22
+	reg3=23
+	reg4=24
+	reg5=25
+	reg6=26
+	reg7=27
+	reg8=28
+	reg9=29
+	reg10=30
+    //Temporary variables begin
+    //I know it's freaking terrible but you cannot avoid using them; DIS project started in 2019 - it's before the maniacs patch implements common event self variables and etc.
+
+    //temporary Ptrs
+	Ptr1=281
+	Ptr2=282
+	Ptr3=283
+	Ptr4=284
+	Ptr5=285
+	Ptr6=286
+	Ptr7=287
+	Ptr8=288
+	Ptr9=289
+	Ptr10=290
+	Ptr11=291
+	Ptr12=292
+	Ptr13=293
+	Ptr14=294
+	Ptr15=295
+	Ptr16=296
+	Ptr17=297
+	Ptr18=298
+	Ptr19=299
+	Ptr20=300
+
+
+    //TEMP vars
+	Temp1=301
+	Temp2=302
+	Temp3=303
+	Temp4=304
+	Temp5=305
+	Temp6=306
+	Temp7=307
+	Temp8=308
+	Temp9=309
+	Temp10=310
+	Temp11=311
+	Temp12=312
+	Temp13=313
+	Temp14=314
+	Temp15=315
+	Temp16=316
+	Temp17=317
+	Temp18=318
+	Temp19=319
+	Temp20=320
+	Temp32=332
+	Temp37=337
+    //TEMPTEMPS
+    //They are more temporary than regular TEMPS... what?
+	TT1=341
+	TT2=342
+	TT3=343
+	TT4=344
+	TT5=345
+	TT6=346
+	TT7=347
+	TT8=348
+	TT9=349
+	TT10=350
+	TT11=351
+	TT12=352
+	TT13=353
+	TT14=354
+	TT15=355
+	TT16=356
+	TT17=357
+	TT18=358
+	TT19=359
+	TT20=360
+
+	var_allocatedmapsize=2063
+    //Consts for allocating memories
+    	Const_save_var_UnitAISightRoot = 4806
+	Const_save_var_TileFlags = 4805 
+	Const_var_save_all_morton_memories = 4825
+	ptr_null =  4824
+}
+
+//strs
+deft{
+	str1=501
+	str2=502
+	str3=503
+	str4=504
+	str5=505
+	str6=506
+	str7=507
+	str8=508
+	str9=509
+
+
+}
+
+__fn func_extract_agent_vars $agent {
+	    Ptr1 = $agent*300
+	    Ptr1 += 4701
+	    v[Ptr1].copy v[601], 300
+}
+
+__fn macro_check_agent_is_killed $agentid{
+	//v[341] = 300 * v[11] + 4701
+	//v[21] = v[v[341]] <= 0 ? 1 : 0
+	//v[21] = v[11] >= 1 ? v[21] : 0
+	reg1 = $agentid >= 1 ? (v[(300 * $agentid + 4701)] <= 0 ? 1 : 0) : 0
+}
+
+__fn func_init_allay $ptr $amount{
+	v[ptr_null].copy $ptr, $amount
+}
+
+#include "./header_common_items.tpc"
+
+$DIS_h_common_included = 1

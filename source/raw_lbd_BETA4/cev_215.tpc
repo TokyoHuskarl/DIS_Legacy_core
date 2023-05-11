@@ -1,0 +1,46 @@
+cev .id(215), .name("cev215"), {
+@comment "Reformed?"
+v[13] = 190
+v[31..34] = 0
+v[31] = 100
+v[34] = 80
+t[501] .asg "ベルセルク"
+@if v[2201] == 1 {
+    
+} .else bl {
+    
+}
+@if s[151] .isOff() {
+    s[152].on
+    v[254] = 15
+    @call .cev 300
+    v[472] = divmul(90, 100, v[2216])
+    @if v[251] == 0 {
+        @if s[19] .isOff() {
+            v[301] = rnd(0, 3)
+            @if v[301] == 0 {
+                @se.play "barbarian_quote_1" .opt v[472], 100, 50
+                
+            } .else bl {
+                @if v[301] == 1 {
+                    @se.play "barbarian_quote_2" .opt v[472], 100, 50
+                    
+                } .else bl {
+                    @if v[301] == 2 {
+                        @se.play "barbarian_quote_3" .opt v[472], 100, 50
+                        
+                    } .else bl {
+                        @se.play "barbarian_quote_4" .opt v[472], 100, 50
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+}
+}

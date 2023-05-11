@@ -1,0 +1,37 @@
+//Compiling this file updates the DIS-RTS UI system in the ldb 
+//このファイルをコンパイルするとRTSモードのUIシステムが更新されます
+
+#include "./../headers/header_common.tpc"
+
+def moduletitle="module_core_RTS_ui_general"
+
+//Map Common UI
+cev .id(26) ,.name("UI:Map Common UI"), .parallel , .cond(Const_Is_RTS_Mode), {
+@comment moduletitle
+#include "./module_core_RTS_ui_map_common.tpc"
+}
+
+//Minimap
+cev .id(27) ,.name("UI:Minimap"), .parallel , .cond(Const_Is_Minimap_Set), {
+@comment moduletitle
+#include "module_core_RTS_ui_minimap.tpc"
+}
+
+//Central monitor
+cev .id(28) ,.name("UI:Cent Monitor"), .parallel , .cond(Const_Is_RTS_Mode), {
+@comment moduletitle
+#include "./module_core_RTS_ui_central_monitor.tpc"
+}
+
+//Unit management
+cev .id(29) ,.name("UI:Unit management"), .parallel , .cond(Const_Is_RTS_Mode), {
+@comment moduletitle
+#include "./module_core_RTS_ui_unit_management.tpc"
+}
+
+//Mouse Observe
+cev .id(47) ,.name("UI:Mouse Observer"), .parallel , .cond(Const_Is_RTS_Mode), {
+@comment moduletitle
+#include "./module_core_RTS_ui_mouse.tpc"
+}
+

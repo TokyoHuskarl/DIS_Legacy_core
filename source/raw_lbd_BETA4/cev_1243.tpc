@@ -1,0 +1,30 @@
+cev .id(1243), .name("cev1243"), {
+@if s[118] .isOn() {
+    v[1301].copy v[581], 20
+    @comment "#Q_ID and Q_Func"
+    v[581] = 43
+    v[582] = v[581] + 1200
+    @comment "#Q_Type"
+    v[583] = 6
+    v[584] = 2
+    @comment "#Q_Motion"
+    v[585] = 0
+    @comment "#Q_Cost"
+    v[587] = 999999
+    @comment "#Q_Range"
+    v[592] = -1
+    @comment "#Q_CD"
+    v[588] = 0
+    
+} .else bl {
+    @if s[119] .isOn() {
+        v[871] *= 15
+        v[871] /= 10
+        v[866] += muldiv(v[865], 8, 100)
+        @comment "#Icon Number"
+        v[877] |= 8
+        
+    }
+    
+}
+}

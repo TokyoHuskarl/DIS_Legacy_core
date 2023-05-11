@@ -1,0 +1,113 @@
+cev .id(845), .name("cev845"), {
+v[21] = 0
+@comment "v1= width
+v2 = height
+v3 = MaxHP(time to finish constructing)
+v4 = finished building
+
+reg11 Food Cost
+reg12 Wood Cost
+reg13 Stone Cost
+reg14 Gold Cost"
+v[11] = 16
+v[12] = 16
+v[13] = 50
+v[31..34] = 0
+v[32] = 50
+v[91] = 0
+@if s[151] .isOff() {
+    @if v[204] < v[1004] {
+        v[204] += 1
+        @loop v[1004] .dst v[320] {
+            v[201] %= v[1004]
+            v[301] = v[201] * 300
+            v[301] += 5000
+            v[300] = v[301] + 1
+            @if v[v[300]] <= 0 {
+                @comment "まず清掃"
+                v[1301].copy v[601], 300
+                v[1301].copy v[v[300]], 300
+                @comment "出る場所セット"
+                v[252].copy v[605], 2
+                @comment "チームセット"
+                v[700] = v[251]
+                v[624] = v[700] + 1
+                @comment "ObjTyp"
+                v[601] = 11
+                @comment "生成場所の数値を入れる"
+                v[605].copy v[607], 2
+                v[605].copy v[641], 2
+                v[310..311] = 10000
+                v[605] .mul v[310], 2
+                @comment "あたり判定"
+                v[610] = v[11]
+                v[611] = v[12]
+                @comment "Staticなので生産目標地点をセット"
+                v[252].copy v[641], 2
+                v[642] += v[611]
+                @comment "パラメータ等入力begin"
+                @comment "#Collision"
+                v[639] = -1
+                @comment "#Unit ID"
+                v[701] = 45
+                @comment "#Unit Type"
+                v[702] = 105
+                @comment "#AAType"
+                v[703] = 0
+                @comment "Inflammable"
+                v[603] |= 2048
+                v[603] |= 2097152
+                @comment "#Level"
+                v[704] = 1
+                @comment "#HP"
+                v[705..706] = 750
+                @comment "#MP"
+                v[707..708] = 1500
+                v[707..708] = 1
+                @comment "#AD"
+                v[709] = 0
+                @comment "#AP"
+                v[710] = 0
+                @comment "#AR"
+                v[711] = 0
+                @comment "#MR"
+                v[712] = 30
+                @comment "#Apen"
+                v[713] = 2
+                @comment "#Mpen"
+                v[714] = 2
+                @comment "#Crit"
+                v[715] = 0
+                @comment "#MS"
+                v[716] = 0
+                @comment "#Range Melee"
+                v[717] = 0
+                @comment "#Range Ranged"
+                v[718] = -1
+                @comment "#AttackSpeed"
+                v[719] = 150
+                @comment "#AttackMotion"
+                v[720] = 1
+                v[881] = 3
+                @comment "パラメータ等入力end"
+                v[601].copy v[v[300]], 300
+                @comment "描画"
+                s[157].on
+                @call .cev 1903
+                @break
+                
+            }
+            @if v[320] >= v[1004] {
+                @comment "Obj多すぎ"
+                @break
+                
+            }
+            v[201] += 1
+            
+        }
+        
+        
+    }
+    
+}
+}

@@ -1,0 +1,15 @@
+cev .id(301), .name("cev301"), {
+@comment "#SecondWind"
+v[732] += (v[v[302] + 8] & 1024) == 1024 ? 2 : 0
+@comment "#IronFresh"
+v[706] += (v[v[302] + 8] & 512) == 512 ? divmul(v[705], 100, 25) : 0
+v[705] += (v[v[302] + 8] & 512) == 512 ? divmul(v[705], 100, 25) : 0
+@comment "#SteelWill"
+v[739] += (v[v[302] + 8] & 2048) > 0 ? divmul(v[739], 100, 25) : 0
+@comment "#Battlemage"
+v[710] += (v[v[302] + 8] & 4096) > 0 ? 20 : 0
+@comment "#Warmage"
+v[710] += (v[v[302] + 8] & 16384) > 0 ? 40 : 0
+@comment "#MageBlaster"
+v[712] += (v[v[302] + 8] & 8192) > 0 ? 50 : 0
+}

@@ -1,0 +1,495 @@
+cev .id(1), .name("cev1"), {
+t[525] .asg "
+"
+@comment "module_core_Game_init.tpc"
+t[510] .asg  .file "..\Data\version_info", .sjis
+t[510] .split " /", t[3000], v[341]
+t[520] .asg t[3000]
+@sys.gameOpt .pauseWhenInactive
+v[4701] = 0
+v[1240] = 48
+v[1227] = 526
+v[1228] = 228
+v[1229] = 420
+v[1229] -= 44
+v[1230] = 80
+@msg.opt {
+    .opaq
+    .bottom
+    .size 480, 80
+    .font "", 0
+}
+v[4575] = 300000
+@sys.getInfo .winSize  .dst v[1001]
+v[1219] = 100000
+@call .cev 1790
+v[1218] = 40000
+v[4577] = 800
+v[4577] = 50000
+v[4578] = 274001
+v[4565] = 274501
+v[4807] = 200
+@comment "DATABASE END
+########################"
+s[319].on
+@comment "##################
+ MANIACS VERSION
+###################"
+v[1140] = sys.version
+s[304].on
+v[4516] = 6
+@sys.gameOpt .picLimit 6680
+v[2299] = 6680
+v[1166] = 1
+v[1167] = 800
+@sys.gameOpt .picLimit 9200
+v[2299] = 9200
+@sys.gameOpt .picLimit 10400
+v[2299] = 10400
+v[1166] = 7401
+v[1201] = 2600
+v[1202] = v[1201] - 6
+v[1166] = 8601
+v[1167] = 1799
+v[1168] = v[1166] + v[1167]
+@if s[1] .isOn() {
+    @sys.gameOpt .animLimit 30
+    
+}
+@sys.gameOpt .mouse.disableMsgProcession 0
+v[1148] = 28
+v[1148] = 32
+v[4812] = 262144 + 131072 + 1024 + 4096
+@comment "Preload"
+@comment "StringConsts"
+v[1183] = 911
+t[901] .asg "parts\armor\spr_armor_0"
+t[902] .asg "parts\bodyset\set\spr_head_0"
+t[903] .asg "parts\helm\spr_helm_0"
+t[904..905] .asg "parts\weapons\spr_cweapons_1"
+t[906] .asg "parts\misc\spr_misc_0"
+t[907] .asg "minions\spr_minions_1"
+t[908] .asg "static\spr_static_1"
+t[909] .asg "parts\hair\spr_hair_0"
+t[911] .asg "parts\armor\damaged\spr_damaged_armor_0"
+t[912] .asg "parts\bodyset\set\damaged\spr_damaged_head_0"
+t[917] .asg "minions\damaged\spr_damaged_minions_0"
+@comment "#USER DIRECTORY"
+t[941] .asg "..\user\parts\armor\spr_armor_0"
+t[942] .asg "..\user\parts\bodyset\set\spr_head_0"
+t[943] .asg "..\user\parts\helm\spr_helm_0"
+t[944..945] .asg "..\user\parts\weapons\spr_cweapons_1"
+t[946] .asg "..\user\parts\misc\spr_misc_0"
+t[947] .asg "..\user\minions\spr_minions_1"
+t[949] .asg "..\user\parts\hair\spr_hair_0"
+@comment "文字列変数: T[0526] = ""\c[\v[341]]\t[\v[340]]\c[0]
+
+
+
+
+ R-Hand:
+ L-Hand:
+ Armor:
+ Helm:
+ Acc.:
+ R-Sub:
+ L-Sub:
+ Lv.\v[704]
+ \c[1]HP:\c[0]\v[706]/\v[705]\c[0] \c[10]SP:\c[0]\v[708]/\v[707]\c[0]
+ $A\c[17]Attack Damage:\c[0]\v[709]\c[5] Attack Speed:\c[0]\v[719]
+    \c[5]Attack Range:\c[0]\v[345]\c[0] \c[5]H it:\c[0]\v[713] 
+    Base Melee H it:\v[836] Base Ranged H it:\v[837]
+    \c[14]Critical:\c[0]\v[715]%
+ $B\c[3]Armor\c[0]:\v[711]/\v[738] \c[3]Avoid:\c[0]\v[714]
+    Critical Chance Reduction:-\v[839]%
+    Critical Damage Reduction:-\v[840]%
+ $C\c[16]Ability Power:\c[0]\v[710] \c[6]Magic Resist:\c[0]\v[712] 
+ $DMove Speed:\v[716] \c[0]Will:\c[0]\v[739]"", 0字, opt(ext, )"
+@comment "Set Const"
+v[4580] = 2438
+v[1266] = 1500001
+v[4501] = 63
+v[4502] = 63
+v[1267] = v[1266] + (300 + 40 * v[4502]) * v[4501]
+v[4503] = 63
+v[4504] = 16
+v[1268] = v[1266] + (300 + 40 * v[4504]) * v[4503]
+@comment "Allocate mem"
+v[v[1268]] = 0
+@comment "Footstepsounds"
+v[1178] = -9600
+v[1179] = 530
+t[531..550] .asg "footsteps\dirt"
+t[532] .asg "footsteps\bush"
+t[533] .asg "footsteps\sand"
+t[535] .asg "footsteps\bush"
+t[537] .asg "footsteps\snow"
+t[541] .asg "footsteps\road"
+t[548] .asg "footsteps\water"
+t[551..570] .asg "footsteps\horse_dirt"
+t[552] .asg "footsteps\bush"
+t[553] .asg "footsteps\sand"
+t[555] .asg "footsteps\bush"
+t[568] .asg "footsteps\water"
+@comment "system sounds"
+t[521] .asg "system\key1"
+v[4562] = 4000
+@comment "####################"
+v[2222] = 270
+@comment "Set Const"
+v[4559] = 180
+v[4570] = 10
+v[4529] = 572947
+v[1182] = 300317
+v[4528] = 572447
+v[4527] = 562447
+v[4525] = 2441
+v[4530] = 159528
+v[4530] = 463759
+v[4523] = 561446
+v[4523] = 746949
+v[4518] = 461318
+v[1186] = 90
+v[1204] = 42
+@comment "#Objs"
+v[4522] = 50
+v[1117] = 300
+v[1005] = 5000
+@comment "####"
+v[1185] = 740948
+v[1145] = 462319
+v[1146] = 462821
+v[1004] = 725
+v[1004] = 845
+v[1012] = 350
+@comment "this one is dynamic"
+v[1080] = 350
+@comment "#Unit Lists"
+v[4531] = 732947
+v[4532] = 733947
+v[4533] = 734947
+v[4561] = 735947
+v[1184] = 736447
+v[4524] = 125001
+v[4524] = 738946
+v[1077] = v[4524]
+@comment "#Companions"
+v[1261] = 159729
+v[1262] = 1743
+v[1192] = 63
+v[1263] = 4500
+v[1263] = 4600
+v[1264] = 100
+@comment "#Inventories"
+v[1188] = 4001
+v[1187] = 178630
+v[1188] = 190631
+v[1189] = 300
+v[1190] = 1001
+v[1193] = 1301
+v[1191] = 190932
+v[1246] = 4301
+v[1255] = 4351
+v[1256] = 4001
+v[1257] = 3301
+@comment "#Temp"
+v[2460] = 288
+v[176] = 0
+@comment "#game balance const"
+v[1194] = 16
+@comment "#Table"
+v[0] = v[2081..2092] = [200, 500, 1000, 2000, 3500, 5000, 7000, 9000, 12000, 15000, 20000]
+@loop 8 .dst v[341] {
+    v[v[341] + 2092] = v[2092 + v[341]] + 4000 + 1000 * v[341]
+    
+}
+
+@comment "#game balance const end"
+@comment "#NewObjDrawingSystem"
+v[1196] = 1800
+v[1203] = 300
+@comment "#Fresh Effect"
+v[1162] = 530445
+v[1163] = 100
+v[1164] = 2201
+@comment "#Particle"
+v[1205] = 12
+v[1198] = 275001
+v[1199] = 100
+v[1200] = 1301
+@comment "+Logs+"
+v[1137] = 11
+v[1136] = 40
+v[1155] = 2104
+@comment "*Events Link*"
+v[1135] = 44
+v[1150] = 395
+v[1151] = 396
+v[1152] = 397
+v[1153] = 398
+v[1154] = 399
+v[1147] = 1899
+@comment "*Events Link end*"
+v[1122] = 8
+v[1123] = 8
+v[1007] = 140
+@if s[1] .isOff() {
+    v[1115] = v[1001] / 2
+    v[1116] = v[1002] / 2 - 8
+    v[1281] = muldiv(v[1001], 15, 10)
+    v[1008] = -40
+    v[1009] = v[1001] + 40
+    v[1010] = -32
+    v[1011] = v[1002] + 32
+    @comment "UI分"
+    @if v[1001] == 800 {
+        v[1011] -= 38
+        
+    }
+    
+}
+v[1013] = 10
+@comment "#Charactors"
+v[1149] = 159529
+v[1180] = 4500
+@comment "#Effect"
+v[4572] = 13
+v[1138] = 25
+v[1018] = 243001
+@comment "#otamesi"
+v[1018] = 900000
+v[1017] = 120
+v[1124] = 65
+v[1220] = 801
+@comment "#Projectile"
+v[1075] = 225001
+@comment "#otamesi"
+v[1075] = 800000
+v[1076] = v[1075] - 1
+v[4560] = 1001
+@comment "#AI Group"
+v[1131] = 300221
+v[1212] = 3801
+@comment "#OTHERS"
+v[1128] = 120
+@comment "##OBJ"
+v[1112] = 4200
+v[1112] = 280001
+v[1113] = v[1112] + v[1004]
+v[v[1113]].enum 0, v[1004]
+@comment "##BattleCount"
+v[1259] = 471544
+v[1260] = 4500
+@comment "#END"
+@comment "##event scene"
+v[1231] = 198
+v[1232] = 224
+v[1233] = 442
+v[1234] = v[1232]
+@comment "UI setting"
+v[4513] = 751
+v[4556] = 1737
+@pic[974].show {
+    "UI\Basic_UI"
+    .pos v[1115], v[1002] .bottom
+    .chromakey 1
+    .scale 100
+    .trans 100
+    .rgbs 100, 100, 100, 100
+    .mapLayer 8
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+@pic[974].show {
+    "UI\Basic_UI"
+    .pos v[1301], v[1002] .bottomLeft
+    .chromakey 1
+    .scale 100
+    .trans 100
+    .rgbs 100, 100, 100, 100
+    .mapLayer 8
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+@pic[974].getInfo .cewh .baseRect v[341], v[342], v[343], v[344]
+v[1037] = v[341] - v[343] / 2 + 4
+v[341] += 4
+v[341] += 80
+v[342] /= 2
+v[344] /= 2
+v[1286] = v[1002] - 39
+v[4514] = 161
+v[4514] = v[1001] / 2 - 239
+v[4515] = v[1002] - 64
+v[1291] = 15
+v[1292] = 14
+v[1037] += v[1291]
+v[1038] = v[4515] + 4
+v[1038] += v[1292]
+v[1039] = v[1037] + 2 * v[1291] + 1
+v[1040] = v[1038]
+v[1041] = v[1039] + 2 * v[1291] + 1
+v[1042] = v[1038]
+v[1043] = v[1041] + 2 * v[1291] + 1
+v[1044] = v[1038]
+v[1045] = v[1037]
+v[1046] = v[1038] + 2 * v[1292] + 1
+v[1047] = v[1039]
+v[1048] = v[1046]
+v[1049] = v[1041]
+v[1050] = v[1046]
+v[1051] = v[1043]
+v[1052] = v[1046]
+v[1298] = (v[1039] + v[1041]) / 2 + v[1291] + 2
+v[1299] = v[1046]
+v[1157] = v[1001] - 22
+v[1158] = 28
+v[1159] = v[1002] - 30
+v[1160] = v[1159] + 12
+v[1287] = v[341] - v[343] / 2 + 80
+v[1288] = v[1002] - 36
+v[1289] = 38
+v[1290] = 32
+v[1296] = v[341] - v[343] / 2 + 126
+v[1297] = v[1002] - 35
+v[1065] = v[4515]
+v[1066] = 10
+v[1226] = 1734
+v[1165] = 2559
+v[1165] = 701
+v[4521] = 2401
+@comment "##Side HP bar"
+v[1119] = v[1001]
+v[1120] = 63
+@comment "##Inv"
+v[1249] = 524
+v[1250] = 220
+v[1253] = v[1249] + 24
+v[1254] = v[1250] + 14
+@comment "#視界
+#小さめに"
+v[1019] = 62500
+v[1133] = 275000
+v[1053] = 200
+v[1054] = 800
+v[1061] = 80000
+v[1062] = 240000
+v[1063] = 9
+v[1156] = 40
+v[1601].enum 5001, 300
+@comment "Camera"
+v[1181] = v[2225] * 200
+v[1110] = 6
+v[1111] = 24
+v[1078] = 463718
+@comment "##Minimap"
+v[4808] = 2538
+v[4808] = 800
+v[4809] = 2539
+v[4809] = 771
+v[4810] = 2549
+v[4810] = 781
+v[4811] = 789
+v[1258] = 2158
+v[1277] = 112
+v[1276] = 72
+v[1277] = 148 * 2
+v[1276] = 92 * 2
+v[4563] = 10000000
+v[1277] = 148
+v[1276] = 92
+v[1282] = v[1001] - 2 - v[1277]
+v[1283] = v[1002] - 2 - v[1276]
+v[1282] -= 2
+v[1283] -= 1
+v[1284] = v[1282] + v[1277]
+v[1285] = v[1283] + v[1276]
+v[1293] = v[1001] + 29
+v[1294] = v[1002] - 37
+v[1279] = 463718
+v[1280] = 464631
+v[1197] = 300221
+v[1278] = 200001
+v[1278] = 525545
+v[1197] = 300221
+v[4563] = 748949
+v[4802] = v[4563] + v[1277] * v[1276]
+v[4803] = v[4802] + v[1276]
+v[4804] = v[4803] + v[1277]
+v[4806] = v[4804] + 1000
+v[4805] = v[4805] + 1000
+@comment "##OBJ数拡張する場合ここもいじる必要あり"
+@comment "#Pathfinding"
+v[4564] = 20
+v[4558] = 3001
+v[4569] = 764742
+v[4569] = 1000001
+v[4568] = v[4569] + v[4564] * 200 * 200 + 1
+v[4555] = v[4568] + 200 * 200 + 1
+v[4567] = v[4555] + 200 * 200 + 1
+v[4600] = v[4567] + 200 * 200 + 1
+@comment "#BattlePartyList"
+v[1270] = v[4600] + 200 * 200 + 1
+v[1271] = 8
+v[1272] = v[1270] + 800 * v[1271] + 1
+v[1273] = 4
+v[1274] = v[1272] + 400 * v[1273] + 1
+v[1275] = v[1274] + 4001
+@comment "#TT5=00110011 (51) prepared for masking
+#TT6=01010101 (85)
+
+ TT5=1100110011 (204) prepared for masking
+ TT6=0101010101 (341)"
+v[4539] = 3276
+v[4540] = 1365
+v[4579] = v[1275] + 4001
+v[1067] = v[4579] + v[1004] * (v[1012] + 2)
+v[1068] = v[1067] + v[1004]
+v[341] = v[1004] * 4
+v[1069] = v[1068] + v[341]
+v[341] = v[1004] * 16
+v[1070] = v[1069] + v[341]
+v[341] = v[1004] * 64
+v[4534] = v[1070] + v[341]
+v[341] = v[1004] * 256
+v[4535] = v[4534] + v[341]
+v[0] = v[4541..4546] = [v[1067], v[1068], v[1069], v[1070], v[4534], v[4535]]
+@comment "##OBJ数拡張する場合ここもいじる必要あり　END"
+v[341] = v[1004] * 1024
+v[1071] = v[4535] + v[341]
+v[1072] = v[1071] + 1
+v[1073] = v[1072] + 4
+v[1074] = v[1073] + 16
+v[4537] = v[1074] + 64
+v[4538] = v[4537] + 256
+v[1079] = v[4538] + 1024
+v[0] = v[4547..4553] = [v[1071], v[1072], v[1073], v[1074], v[4537], v[4538]]
+v[1020] = 20
+@comment "#四分木用End"
+@comment "8方向のConst"
+v[341] = 1080
+v[342] = 0
+v[1081..1088] = -22500
+@loop 8 {
+    v[341..342] += 1
+    v[v[341]] += 45000 * v[342]
+    
+}
+
+@comment "ObjTimer Begin"
+v[1059] = 80
+v[1060] = 20
+v[1195] = 12
+v[1134] = 13
+v[4571] = 9
+@comment "ObjTimer End"
+v[421] = 100
+v[1089..1109] = 1
+s[38].on
+s[239].on
+s[6].on
+@comment "####################
+ DEBUG"
+}

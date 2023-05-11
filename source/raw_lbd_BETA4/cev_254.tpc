@@ -1,0 +1,22 @@
+cev .id(254), .name("cev254"), {
+v[13] = 125
+v[31..34] = 0
+@if v[2201] == 1 {
+    
+} .else bl {
+    
+}
+@if s[151] .isOff() {
+    s[152].on
+    v[254] = 54
+    @call .cev 300
+    @if v[251] == 0 {
+        @if s[19] .isOff() {
+            @se.play "Barrier1" .opt 70, 100, 50
+            
+        }
+        
+    }
+    
+}
+}

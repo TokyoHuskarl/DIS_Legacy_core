@@ -1,0 +1,25 @@
+cev .id(1960), .name("cev1960"), {
+@comment "#You need to deploy Item data in v[1901]-v[1940] and T[503] before calling this function
+v9=InventoryStart
+v10=MaxDatas"
+v[21] = 1
+@loop v[20] .dst v[1953] {
+    v[1951] = v[19] + v[1953] * 40
+    @if v[v[1951]] == 0 {
+        v[1901].copy v[v[1951]], 40
+        @if v[19] == v[1187] {
+            v[1960] = v[1190] + v[1953]
+            @comment "文字列変数: T[V[1960]] = T[0503], 0字"
+            t[v[1960]] .asg t[503]
+            
+        } .else bl {
+            
+        }
+        v[21] = 0
+        @break
+        
+    }
+    
+}
+
+}

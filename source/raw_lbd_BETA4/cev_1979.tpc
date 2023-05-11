@@ -1,0 +1,31 @@
+cev .id(1979), .name("cev1979"), {
+@comment "v2=UniqueCharaID"
+v[351] = v[12] - 1
+v[329] = v[351] * 300 + v[1261]
+@comment "Is_Companion"
+@if v[v[329]] >= 1 {
+    @if v[v[329]] <= 2 {
+        @comment "Unequip
+
+#You need to make exceptional process for equipment that originally can't be unequipped (like Ork head etc)
+##There's no necessity of it any more, the description above is seemingly obsolete"
+        @loop 7 .dst v[350] {
+            v[13] = 1 + v[350] % 6
+            v[14] = v[350] / 6
+            v[19] = v[1187]
+            @call .cev 1962
+            
+        }
+        
+        
+    }
+    
+}
+@comment "REMOVE Parameters"
+v[1301].copy v[v[329]], 300
+@comment "ERASE STRINGS
+#str10=name"
+v[302] = v[351] * 5 + v[1262]
+v[303] = v[302] + 4
+t[v[302]..v[303]] .asg ""
+}

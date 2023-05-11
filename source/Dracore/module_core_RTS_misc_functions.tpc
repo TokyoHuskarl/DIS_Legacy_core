@@ -1,0 +1,19 @@
+
+__fn func_remove_dead_agent_picture $agentid {
+	v[21] = Const_layer_amount * $agentid + v[1202]
+	@comment "safety"
+	@if v[21] <= v[2299] {
+	    v[22] = v[21] + v[4516] - 1
+	    @pic[v[21]..v[22]].erase
+	    v[21] = (v[11] - 1) 
+	    v[21] *= v[4516] + v[1185]
+	    v[1301].copy v[v[21]], v[4516]
+	    
+	}
+
+}
+
+cev .id(2152), .name("miscfunc:remove dead agent pic"), {
+	func_remove_dead_agent_picture(var1)
+}
+

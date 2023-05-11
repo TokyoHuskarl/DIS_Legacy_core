@@ -1,0 +1,145 @@
+
+変数定義等はできません
+
+/*変数やスイッチの使い方*/
+
+/*引数の仕組みと型（仕様変更の可能性あり）*/ 
+
+/scripts/const_*.txtで定義されている文字列をconstとして代入して用いることができます。
+ユニットや変数，スイッチのIDを要求される場面ではconstの文字列を使うことをおすすめします。
+
+var
+	ツクールの変数と同じ整数の数字が入ります
+	定数を入れたい場合はそのまま定数を入力
+	変数n番の値を参照したい場合は\v[n]を入力
+	
+*var
+	定数を入れるとその番号のツクールの変数を参照します
+	引数番号の変数と言ったほうがツクール経験者にはわかりやすいかもしれません
+
+str
+	定数を入れると対応する番号行のmapstringが呼び出されます
+	固定の文字列「Hello」を挿入したい場合は"Hello"のようにダブルクォーテーションを使って入れてください
+	文字列変数n番の値を参照したい場合は\t[n]を入力
+
+bool
+	0と1しか入らない想定の引数です
+	便宜上にbool型と言っているだけで内部的にはvarと扱いが同じです
+
+*bool
+	定数を入れるとその番号のツクール内スイッチを参照します。
+	\v[n]との組み合わせで変数番号のスイッチを参照することも可能
+	
+
+
+/*基本構文*/ 
+今はifしかないです。
+ネスト可能。
+
+if(){}
+	()内の関数が真を返した場合，{}の中の処理を実行します。
+	()内では現状cond_から始まる関数しか解釈しません。
+	また現状()内では一個のcond関数しか解釈できません。
+	　また，if(
+	condition)
+	{...}
+	のような記法はできません。必ず
+	if(condition){
+	という記法で始まる必要があります。
+	　一方，}はどう書いても大丈夫です。
+	//また，if(cond){func()}のように一行で完結する書き方は現状できないことにも注意してく..できるかも？
+
+
+
+#############################
+
+
+//変数とスイッチへのアクセス
+/*Section - Switch and Variable*/ {
+
++set_switch_on
+	-[Purpose]
+	 指定番号のスイッチをオンにします。
+	 Turns on a RM switch.
+	-[Syntax]
+	 set_switch_on(*bool switchID)
+	-[Example]
+	 //simply turn on s[1]
+	 set_switch_on(1)
+	 //turn on switch pointed by v[1]
+	 set_switch_on(\v[1])
+
++set_switch_off
+	-[Purpose]
+	 指定番号のスイッチをオフにします。
+	 Turns off a RM switch.
+	-[Syntax]
+	 set_switch_off(*bool switchID)
+
+}
+
+//要件関連
+/*Section - Condition*/ {
+
+/*
+以下のcond_から始まる関数は，現状if文の()内で解釈されなかった場合，偽を返した時点で処理をbreakします。
+例を挙げると，
+simpletrigger{
+	set_switch_on(1)
+	cond_cf(\v[1]>0)
+	set_switch_on(2)
+	cond_cf(\v[2]>0)
+	set_switch_on(3)
+}
+という構造の処理においては，変数1番が0より大きい数字にならない限り1番スイッチがオンになるところで処理が止まり，
+[変数1番が0より大きく，変数2番は0より大きくない]という状態では2番スイッチがオンになるところで処理が止まります。
+*/
+
++
+
++cond_cf
+	-[Purpose]
+	 二つの数値を用いた条件式を解釈し，真偽を返します。==,>=,>,<,<=が使えます。
+	-[Syntax]
+	 cond_cf(var var1 [==,>=,>,<,<=] var var2)
+	-[Example]
+	 
+}
+
+//ユニット生成関連
+/*Section - Spawn Agent */ {
+
+
++spawn_Unit
+	-[Purpose]
+	 ID番号で指定したユニットを指定位置にspawnさせます。
+	 Spawns an agent as a designated Unit.
+	-[Syntax]
+	 spawn_Unit(var UnitID,var MapX,var MapY,var TeamID,var CohortID,bool Direction,var Stance)
+	-[Example]
+	 //spawn JOMSVIKING at (114,514)
+	 spawnUnit(TRP_nord_viking,114,514,TEAM_EN,0,DIR_RIGHT,ORD_AGG)
+
++spawn_Unit_group
+	-[Purpose]
+	 ID番号で指定したユニットを指定位置から一定数，一体ずつ位置をずらして，一度にspawnさせます。
+	 Spawns agents as designated unit in a row.
+	-[Syntax]
+	 spawn_Unit_group(var UnitID,var MapX,var MapY,var TeamID,var CohortID,bool Direction,var dX,var dY,var Amount,var Stance)
+	-[Example]
+	 //spawn Berserks
+	 
+	-[Comment]
+	 負荷スパイク防止のため，大量のユニットを登場させる場合はwait()を挟んで数回に分けることをおすすめします。
+
+}
+
+#############################
+
+/*内部処理の関係上直接記述してはいけない語句*/
+/*Forbidden tokens*/
+[N:
+*nE
+
+
+

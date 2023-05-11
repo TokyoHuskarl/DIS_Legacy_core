@@ -1,0 +1,61 @@
+def moduletitle="module_core_RTS_agent_general.tpc"
+#include "./../headers/header_common.tpc"
+//loading functions and macros
+//__fn func_bs_register_buff $buff_id $agent
+#include "./../headers/header_battlesystem.tpc"
+//macro_SkillCDck($agent $skillno)
+#include "./../headers/header_agent.tpc"
+//func_CkIfSklCall($agent $skillno)
+#include "./module_core_RTS_agent_skill_functions.tpc"
+//Fresh effects functions
+#include "./module_core_RTS_main_effects_gib_functions.tpc"
+
+//Hit check functions
+#include "./module_core_RTS_battlesystem_hitchecks.tpc"
+
+//damage calculation funcition
+#include "./module_core_RTS_battlesystem_morale.tpc"
+#include "./module_core_RTS_battlesystem_damage_calculation.tpc"
+
+//Stance Order Functions
+#include "./module_core_RTS_agent_order_stance.tpc"
+//################################################
+
+
+//general cev setting start
+#include "./module_core_RTS_agent_action.tpc"
+
+cev .id(11), .name("Agent:Search Target AI") , .parallel , .cond(Const_Is_RTS_Mode), {   
+#include "./module_core_RTS_agent_ai_search.tpc"
+}
+
+#include "./module_core_RTS_agent_ai_cast_skills.tpc"
+
+cev .id(34), .name("AgentAct:MeleeAA"), {
+#include "./module_core_RTS_agent_autoattack_melee.tpc"
+}
+
+//Ranged Auto Attack
+#include "./module_core_RTS_agent_autoattack_ranged.tpc"
+
+//Worker AA
+#include "./module_core_RTS_agent_autoattack_worker.tpc"
+
+//Agent Spawn
+#include "./module_core_RTS_agent_spawn_basic.tpc"
+
+
+//set misc macros into cev - legacy feature
+
+//Legacy Stance Order Function cevs
+cev .id(1740), .name("-Alert Order func v2v3") ,  {   
+	func_agentlist_order_alert(v[202] var2 var3)
+}
+cev .id(1742), .name("-Def Order func v2v3") ,  {   
+	func_agentlist_order_def(v[202] var2 var3)
+}
+
+//skill cooldown check
+cev .id(2008), .name("CkIfSklCall v1v2 r1") ,  {   
+	func_CkIfSklCall(var1 var2)
+}

@@ -1,0 +1,62 @@
+cev .id(1217), .name("cev1217"), {
+@if s[118] .isOn() {
+    v[1301].copy v[581], 20
+    @comment "#Q_ID and Q_Func"
+    v[581] = 17
+    v[582] = v[581] + 1200
+    @comment "#Q_Type"
+    v[583] = 11
+    v[584] = -1
+    @comment "#Q_Motion"
+    v[585] = 1
+    v[587] = 0
+    @comment "#Q_Range"
+    v[592] = 999999999
+    @comment "#Q_CD"
+    v[588] = 1
+    
+} .else bl {
+    v[341] = v[204] >= 400 ? 1 : 0
+    @if v[341] == 0 {
+        @comment "Access19 = AttackerObjectID
+Access20 = TargetObjectID
+Access18 = TargetObjTypeチェックPtr"
+        v[341] = v[299] * 300
+        v[342] = v[341] + 4943
+        v[342] = v[v[342]] - 4
+        v[342] *= 20
+        v[342] += v[341] + 4854
+        v[344] = v[v[342]]
+        @comment "＃特例措置"
+        @if s[54] .isOn() {
+            v[344] = v[344] == 11 ? 15 : v[344]
+            v[344] = v[344] == 14 ? 16 : v[344]
+            v[344] = v[344] == 3 ? 17 : v[344]
+            
+        }
+        v[343] = 800 + v[344]
+        s[151].on
+        @call .cev v[343]
+        s[151].off
+        v[31].copy v[15], 4
+        v[341] = v[300001] >= v[15] ? 1 : 0
+        v[341] += v[300002] >= v[16] ? 1 : 0
+        v[341] += v[300003] >= v[17] ? 1 : 0
+        v[341] += v[300004] >= v[18] ? 1 : 0
+        v[21] = v[341] != 4 ? -1 : 0
+        @if v[21] == 0 {
+            v[87] = 2
+            v[88] = v[344]
+            
+        } .else bl {
+            @se.play "Cancel1" .opt 90, 100, 50
+            
+        }
+        
+    } .else bl {
+        @comment "ユニット数上限"
+        
+    }
+    
+}
+}

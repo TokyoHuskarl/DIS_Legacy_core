@@ -1,0 +1,57 @@
+cev .id(55), .name("cev55"), {
+v[202] = 101
+s[21].off
+@if v[v[202]] > 0 {
+    @comment "待機指示"
+    @loop .inf() {
+        @if v[v[202]] == 0 {
+            @comment "とぎれた"
+            @break
+            
+        }
+        @if v[202] > v[1007] {
+            @break
+            
+        }
+        @comment "配列ゲット"
+        v[301] = v[v[202]] * 300
+        v[301] += 4700
+        @if `v[v[301] + 1] < 9 {
+            v[296] = v[301] + 241
+            @comment "処理開始"
+            v[v[296]] = 1
+            @comment "Break Manual Flag"
+            v[v[301] + 34] &= ~131072
+            @comment "処理終わり"
+            v[202] += 1
+            
+        }
+        
+    }
+    
+    
+}
+@if v[82] >= 1 {
+    @if v[82] <= 10 {
+        v[v[4530] + (v[82] - 1) * 20 + 20] = 1
+        
+    }
+    
+}
+s[201].on
+@call .cev 48
+v[341] = 4
+@pic[981].show {
+    "OperationIconSpr_1"
+    .pos v[1298], v[1299] .center
+    .chromakey 1
+    .scale 100
+    .trans 50
+    .rgbs 100, 100, 100, 100
+    .grid 1, 10 .cell v[341]
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+}

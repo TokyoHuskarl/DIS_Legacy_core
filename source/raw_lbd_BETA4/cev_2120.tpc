@@ -1,0 +1,354 @@
+cev .id(2120), .name("cev2120"), {
+@gsave.open
+gs[301].copyTo s[301], 100
+gv[1].copyTo v[2201], 100
+@gsave.close
+@loop .inf() {
+    @if .canOutput() {
+        @break
+        
+    }
+    @wait 0
+    
+}
+
+s[239].on
+s[38].on
+s[317].off
+s[316].off
+t[525] .asg "
+"
+t[510] .asg  .file "..\config\boot_config", .utf8
+@if t[510] .eq "" {
+    t[510] .asg "//Generated in DraCore version - "
+    t[510] .cat "v1.0pre"
+    t[510] .cat t[525]
+    t[510] .cat "//0=normal mode,1=developer mode
+devmode = 0
+//0=autosave off, 1=autosave on
+autosave = 1
+//you can set particle amount in range of 0-400. default:350
+particle_amount = 350
+//you can switch gore VFX (unco)
+gore = 1
+//unco
+moduleselect = 0"
+    @loop .inf() {
+        @if .canOutput() {
+            @break
+            
+        }
+        @wait 0
+        
+    }
+    
+    t[510] .toFile "../Config/boot_config", .utf8
+    
+}
+@comment "*Load Config*"
+t[510] .split t[525], t[1], v[505]
+@loop v[505] .dst v[506] {
+    v[11] = 1 + v[506]
+    t[510] .asg t[v[11]]
+    t[510] .inStr "//", 321,  .beg 0
+    @if v[321] == -1 {
+        @if t[510] .contains "autosave" {
+            t[510] .split "=", t[3000], v[341]
+            t[3001] .toNum v[341]
+            @if v[341] == 0 {
+                s[317].on
+                
+            }
+            
+        }
+        @if t[510] .contains "devmode" {
+            t[510] .split "=", t[3000], v[341]
+            t[3001] .toNum v[341]
+            @if v[341] >= 1 {
+                @sys.gameOpt .fatal 60, 2, 1
+                
+            }
+            @if v[341] == 114514 {
+                s[316].on
+                
+            }
+            
+        }
+        @if t[510] .contains "particle_amount" {
+            t[510] .split "=", t[3000], v[341]
+            t[3001] .toNum v[341]
+            v[2215] = max(0, min(400, v[341]))
+            
+        }
+        
+    }
+    
+}
+
+t[510] .asg  .file "..\User\user_custom_config", .utf8
+@if t[510] .eq "" {
+    t[510] .asg "//Generated in DraCore version - "
+    t[510] .cat "v1.0pre"
+    t[510] .cat t[525]
+    t[510] .cat "//put your own custom cursor in ""DIS_Legacy/User/userui/""
+custom_cursor = """"
+//custom_cursor = ""map_pointer_classic"" <-sample"
+    @loop .inf() {
+        @if .canOutput() {
+            @break
+            
+        }
+        @wait 0
+        
+    }
+    
+    t[510] .toFile "..\User\user_custom_config", .utf8
+    
+}
+@comment "*Load User Custom Config*"
+t[510] .split t[525], t[1], v[505]
+t[522] .asg "map_pointer"
+@loop v[505] .dst v[506] {
+    v[11] = 1 + v[506]
+    t[510] .asg t[v[11]]
+    t[510] .inStr "//", 321,  .beg 0
+    @comment "#""//""Comment out"
+    @if v[321] == -1 {
+        @if t[510] .contains "custom_cursor" {
+            t[510] .split "=", t[3000], v[341]
+            t[3001] .split """", t[3000], v[341]
+            @if t[3001] .eq "" {
+                t[522] .asg "map_pointer"
+                
+            } .else bl {
+                t[522] .asg "..//user/userui/"
+                t[522] .cat t[3001]
+                
+            }
+            @pic[1].show {
+                t[522]
+                .pos 160, 120 .center
+                .chromakey 1
+                .scale 100
+                .trans 100
+                .rgbs 100, 100, 100, 100
+                .mapLayer 7
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            
+        }
+        
+    }
+    
+}
+
+t[1..100] .asg ""
+t[3000..3300] .asg ""
+@sys.getInfo .winSize  .dst v[1001]
+v[1115] = v[1001] / 2
+v[1116] = v[1002] / 2 - 8
+@if s[1] .isOn() {
+    @if s[314] .isOn() {
+        @pic[1].strpic {
+            "NOW LOADING..."
+            .pos v[1115], v[1116] .center
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font "", 12
+            .spacing 0, 4
+            .skin "" .stretch .noframe
+            .mapLayer 10
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @loop 10000 .dst v[341] {
+            t[3000] .asg "num\\num_\v[341]" .extract
+            @pic[2].show {
+                t[3000]
+                .pos 160, 120 .center
+                .chromakey 1
+                .scale 100
+                .trans 100
+                .rgbs 100, 100, 100, 100
+                .mapLayer 6
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            
+        }
+        
+        @loop 10000 .dst v[341] {
+            t[3000] .asg "num\\num_ex_\v[341]" .extract
+            @pic[2].show {
+                t[3000]
+                .pos 160, 120 .center
+                .chromakey 1
+                .scale 100
+                .trans 100
+                .rgbs 100, 100, 100, 100
+                .mapLayer 6
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            
+        }
+        
+        
+    }
+    
+}
+@if v[2300] == 0 {
+    s[38].on
+    t[510] .asg  .file "..\\config\language_config", .sjis
+    t[510] .split t[525], t[2999], v[12]
+    v[21] = 2
+    v[22] = 2
+    @loop v[12] .dst v[10] {
+        v[1] = 3000 + v[10]
+        t[v[1]] .split ",", t[3100], v[341]
+        v[3] = 1 + v[10]
+        t[v[3]] .asg t[3100]
+        @pic[v[3]].strpic {
+            t[v[3]]
+            .pos v[21], v[22] .topLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font "k8x12S", 12 .noShadow
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noGradation .noPadding
+            .mapLayer 7
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        v[22] += 12
+        
+    }
+    
+    @pic[800].strpic {
+        "SELECT LANGUAGE BY LEFT MOUSE"
+        .pos v[1115], v[1116] .center
+        .size 0, 0        .chromakey 1
+        .scale 100
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .font "k8x12S", 12 .noShadow
+        .spacing 0, 4
+        .skin "" .stretch
+        .mapLayer 7
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    @loop .inf() {
+        @if s[39] .isOff() {
+            @mouse.getPos v[49], v[50]
+            
+        }
+        v[49].copy v[51], 2
+        v[51..52] -= 3
+        v[52..52] += 1
+        @if v[47] > 0 {
+            v[41] = v[49] - 1
+            v[48] = v[50] - 1
+            v[47] -= 1
+            
+        } .else bl {
+            v[41] = v[49]
+            v[48] = v[50]
+            
+        }
+        @pic[1000].show {
+            t[522]
+            .pos v[41], v[48] .center
+            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .mapLayer 10
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @if s[2] .isOn() {
+            @if s[4] .isOn() {
+                @pic[1000].show {
+                    t[522]
+                    .pos v[41], v[48] .center
+                    .chromakey 1
+                    .scale 100
+                    .trans 0
+                    .rgbs 200, 60, 60, 50
+                    .mapLayer 10
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                
+            }
+            
+        }
+        @key.input .dst v[43] {
+            .decision
+            .number
+            .lclick
+            .rclick
+            .wheelDown
+            .wheelUp
+        }
+        @loop v[12] .dst v[10] {
+            v[347] = 1 + v[10]
+            @comment "#Resume"
+            @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
+            @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
+                @pic[v[347]].move {
+                    .pos v[1952], v[1953] .center
+                    .scale 100
+                    .trans 0
+                    .time -2
+                    .rgbs 0, 200, 0, 100
+                }
+                @if v[43] == 1005 {
+                    @if s[11] .isOff() {
+                        s[11].on
+                        v[2201] = v[347] - 1
+                        @break .level 2
+                        
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[v[347]].move {
+                    .pos v[1952], v[1953] .center
+                    .scale 100
+                    .trans 0
+                    .time -2
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            
+        }
+        
+        @wait 0
+        
+    }
+    
+    @pic.erase .all
+    @gsave.open
+    gv[1].copyFrom v[2201], 1
+    @gsave.saveAndClose
+    
+}
+@map[4].setPlayerPos .pos 9, 1 .retain
+}

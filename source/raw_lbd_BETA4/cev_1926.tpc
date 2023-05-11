@@ -1,0 +1,11 @@
+cev .id(1926), .name("cev1926"), {
+@comment "Units Pictures"
+@pic[1..999].erase
+@pic[1001..1230].erase
+@pic[2001..2100].erase
+v[341] = 2101
+@if s[1] .isOn() {
+    @pic[v[341]..v[2299]].erase
+    
+}
+}

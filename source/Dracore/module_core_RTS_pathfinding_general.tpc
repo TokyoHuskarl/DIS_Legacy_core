@@ -1,0 +1,117 @@
+//Compiling this file updates the DIS-RTS pathfinding in the ldb 
+//このファイルをコンパイルするとRTSモードの経路探索システムが更新されます
+
+#include "./../headers/header_common.tpc"
+//pathfinding funcs load
+#include "./module_core_RTS_pathfinding_functions.tpc"
+def moduletitle="module_core_RTS_pathfinding_general"
+
+
+//include better one - main pathfinding algorithm, A*
+//func_pathfinding_Astar()
+#include "./module_core_RTS_pathfinding_Astar.tpc"
+
+//include worse one - will be called only when unclear path result is allowed  
+//func_pathfinding_retarded()
+#include "./module_core_RTS_pathfinding_legacy.tpc"
+
+cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode), {   
+	v[4599] = 0
+	v[4598] = v[4532]
+	@while v[v[4598]] != 0 {
+	    v[4596] = v[v[4598]] - 1
+	    v[4597] = v[v[4598]] * 300 
+	    v[4597] += 4700
+	    v[v[4597]].copy v[600], 300
+	    @if `!(v[874] & 512) {
+		    //opt 28.4.23
+		    //v[634] = v[4597] + 34
+		@if `v[634] & 16384 {
+		    @if `v[634] & 65536 {
+			 v[634] = v[4597] + 34
+			 v[v[634]] &= ~65536
+
+			
+		    } .else bl {
+			@if `v[634] & 8388608 {
+			    @if `!(v[603] & 8388608) {
+				@if v[4599] <= 3 {
+				    func_pathfinding_retarded()
+				    v[4599] += 1
+				    
+				}
+				v[634] = v[4597] + 34
+				v[[634]] &= ~8388608
+				v[[634]] |= 65536
+				
+			    }
+			    
+			} .else bl {
+			    @if v[4599] <= 16 {
+				func_pathfinding_Astar()
+				v[4599] += 1
+				v[634] = v[4597] + 34
+				@if `!(v[v[634]] & 8388608) {
+				    v[v[634]] &= ~16384
+				    
+				}
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		}
+		
+	    }
+	    v[4598] += 1
+
+	/*
+	    v[4596] = v[v[4598]] - 1
+	    v[4597] = v[v[4598]] * 300 
+	    v[4597] += 4700
+	    @if `!(v[v[4597] + 274] & 512) {
+		    //opt 28.4.23
+		    v[634] = v[4597] + 34
+		@if `v[v[634]] & 16384 {
+		    @if `v[v[634]] & 65536 {
+			 v[v[634]] &= ~65536
+			
+		    } .else bl {
+			@if `v[v[634]] & 8388608 {
+			    @if `!(v[v[4597] + 3] & 8388608) {
+				@if v[4599] <= 3 {
+				    func_pathfinding_retarded()
+				    v[4599] += 1
+				    
+				}
+				v[v[634]] &= ~8388608
+				v[v[634]] |= 65536
+				
+			    }
+			    
+			} .else bl {
+			    @if v[4599] <= 16 {
+				func_pathfinding_Astar()
+				v[4599] += 1
+				@if `!(v[v[634]] & 8388608) {
+				    v[v[634]] &= ~16384
+				    
+				}
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		}
+		
+	    }
+	    v[4598] += 1
+	 */   
+	}
+
+
+}

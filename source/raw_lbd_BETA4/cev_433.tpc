@@ -1,0 +1,47 @@
+cev .id(433), .name("cev433"), {
+@comment "15=staticid
+16=newtech
+17=icon"
+@loop v[1012] .dst v[141] {
+    @comment "Check Player Team List"
+    v[601] = v[141] + v[1145 + v[251] % 3]
+    @if v[v[601]] >= 1 {
+        v[602] = v[v[601]] * 300
+        v[602] += 4701
+        @comment "兵舎にれしぴ追加"
+        @if v[v[602]] == 11 {
+            @comment "#doubled"
+            v[602] = v[v[601]] * 300
+            v[602] += 4853
+            @loop 3 {
+                @if v[v[602]] == v[15] {
+                    v[v[602]] = v[16]
+                    @if v[17] > 0 {
+                        v[v[602] + 1] = v[17]
+                        
+                    }
+                    v[21] = v[16] - 9800
+                    @if v[21] > 300 {
+                        s[151].on
+                        @call .cev v[21]
+                        s[151].off
+                        v[v[602] + 2] = v[13]
+                        
+                    }
+                    @break
+                    
+                }
+                v[602] += 3
+                
+            }
+            
+            
+        }
+        
+    }
+    
+}
+
+@comment "#tech_ref_flag"
+v[377] = 1
+}

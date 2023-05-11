@@ -1,0 +1,103 @@
+cev .id(500), .name("cev500"), {
+@comment "#Companions"
+@if s[1] .isOn() {
+    v[1261] = 159729
+    v[1262] = 1743
+    v[1192] = 63
+    
+}
+@comment "#str10=name"
+@loop v[1192] {
+    v[301] = v[144] * 300 + v[1261]
+    @comment "SET XP"
+    @if v[v[301]] <= 0 {
+        v[660] = v[v[704] + 2080]
+        v[355] = v[704] - 1
+        @if v[355] >= 1 {
+            @loop v[355] .dst v[354] {
+                v[659] += v[v[354] + 2081]
+                
+            }
+            
+            
+        }
+        @comment "SET ALL"
+        v[601].copy v[v[301]], 300
+        @comment "SET NAME
+#str10=name"
+        v[302] = v[144] * 5 + v[1262]
+        t[v[302]] .asg t[510]
+        @comment "Init Items"
+        v[1952] = v[1191] + 0 * 40 + v[144] * 280
+        v[1301].copy v[v[1952]], 280
+        @comment "Set Initial Items"
+        @loop 7 .dst v[341] {
+            v[11] = v[600 + 251 + v[341]]
+            @comment "dumb"
+            @if v[341] == 0 {
+                @call .cev v[1150]
+                
+            } .else bl {
+                @if v[341] == 1 {
+                    @call .cev v[1151]
+                    
+                } .else bl {
+                    @if v[341] == 2 {
+                        @call .cev v[1152]
+                        
+                    } .else bl {
+                        @if v[341] == 3 {
+                            @call .cev v[1153]
+                            
+                        } .else bl {
+                            @if v[341] == 4 {
+                                @call .cev v[1154]
+                                
+                            } .else bl {
+                                @if v[341] == 5 {
+                                    @call .cev v[1150]
+                                    
+                                } .else bl {
+                                    @call .cev v[1151]
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            v[1952] = v[1191] + v[341] * 40 + v[144] * 280
+            v[1901].copy v[v[1952]], 40
+            v[355] = v[1193] + v[144] * 7 + v[341]
+            @comment "文字列変数: T[V[0355]] = T[0503], 0字"
+            t[v[355]] .asg t[503]
+            
+        }
+        
+        v[12] = v[144] + 1
+        @call .cev 1982
+        @comment "If the registered char is minion..."
+        @if v[601] == 3 {
+            s[19].on
+            s[150].on
+            v[11] = 200 + v[701]
+            @call .cev v[11]
+            s[150].off
+            v[v[144] * 300 + v[1261] + 79] = v[702] + 1
+            s[19].off
+            
+        }
+        @break
+        
+    }
+    v[144] += 1
+    v[144] %= v[1192]
+    
+}
+
+}

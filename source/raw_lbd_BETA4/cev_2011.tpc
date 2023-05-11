@@ -1,0 +1,45 @@
+cev .id(2011), .name("cev2011"), {
+@comment "V4  #0, 1= center"
+@pic[2599].show {
+    t[501]
+    .pos -111, -111 .center
+    .chromakey 1
+    .scale 100
+    .trans 100
+    .rgbs 100, 100, 100, 100
+    .mapLayer 7
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+@pic[2599].getInfo .cewh .baseRect v[360], v[360], v[355], v[356]
+@pic[2599].getInfo .pixel 0, 0, v[355], v[356] .dst 550445
+@if v[14] == 1 {
+    @pic[v[11]].getInfo .cewh .baseRect v[360], v[360], v[19], v[20]
+    v[19..20] /= 2
+    
+} .else bl {
+    v[19..20] = 0
+    
+}
+v[18] = 550445
+@loop v[356] .dst v[15] {
+    @loop v[355] .dst v[16] {
+        v[17] = v[v[18]]
+        @if `(v[17] & 0xFF000000) == 0xFF000000 {
+            v[358] = v[12] + v[16]
+            v[358] -= v[355] / 2
+            v[359] = v[13] + v[15]
+            v[359] -= v[356] / 2
+            v[358] .add v[19], 2
+            @pic[v[11]].setPixel .xywh v[358], v[359], 1, 1 .src v[17]
+            
+        }
+        v[18] += 1
+        
+    }
+    
+    
+}
+
+}

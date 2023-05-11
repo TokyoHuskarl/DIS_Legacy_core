@@ -1,0 +1,24 @@
+cev .id(1294), .name("cev1294"), {
+@comment "Access19 = AttackerObjectID 0~
+Access20 = TargetObjectID 1~
+Access18 = ObjTypeチェックPtr"
+@comment "#発動処理"
+v[11] = v[v[292] + 49]
+@call .cev 35
+@if v[21] == 1 {
+    @comment "#バフ番号指定"
+    v[11] = 1185
+    v[12] = v[300]
+    @call .cev 1911
+    @if v[22] >= 0 {
+        @comment "#Duration"
+        v[v[22]] = 120
+        
+    }
+    s[141].on
+    v[607] = v[215] + v[1075] + 6
+    v[v[607]].copy v[361], 2
+    @call .cev 149
+    
+}
+}

@@ -1,0 +1,79 @@
+cev .id(38), .name("cev38"), {
+@comment "Access19 = AttackerObjectID
+Access20 = TargetObjectID"
+v[299] = v[207] + 1
+v[300] = v[v[300]]
+@comment "対象Objがある"
+@if v[300] >= 1 {
+    @comment "ObjTypeチェック"
+    v[298] = 300 * v[300]
+    v[298] += 4701
+    @comment "攻撃モーション処理"
+    v[720] = v[210] + 120
+    v[629] = v[210] + 29
+    s[202..203].off
+    @if v[v[298]] > 0 {
+        @if v[v[629]] >= v[v[720]] {
+            @comment "射撃成功！"
+            @comment "Auto Attack SP Cost"
+            v[v[210] + 108] = max(v[v[210] + 108] - v[v[210] + 121], 0)
+            @comment "#親Objと対象Objをセット"
+            v[609] = v[299]
+            v[623] = v[300]
+            v[730] = v[210] + 130
+            @if v[v[730]] >= 1 {
+                s[121].on
+                v[341] = v[298] + 6
+                v[v[341]].copy v[590], 2
+                @call .cev v[v[730]]
+                s[121].off
+                
+            }
+            v[842] = v[210] + 242
+            @if v[v[842]] != 4 {
+                v[v[842]] = 0
+                
+            }
+            v[843] = v[210] + 243
+            @comment "AAクールタイムモーション"
+            v[726] = v[210] + 126
+            @comment "ビット見る"
+            v[341] = v[v[726]] & 1
+            v[v[843]] = v[341] == 1 ? 2 : 0
+            @comment "AAモーション初期化"
+            v[629] = v[210] + 29
+            v[v[629]] = 0
+            @comment "Initialize AI Timer"
+            v[v[210] + 84] = v[v[210] + 300] % v[1195]
+            v[v[210] + 80] = v[v[210] + 3] & 2097152 ? 0 : v[1240] * v[4571] / 2
+            
+        } .else bl {
+            v[v[629]] += 1
+            
+        }
+        
+    } .else bl {
+        s[202].on
+        s[203].off
+        
+    }
+    
+} .else bl {
+    s[202].on
+    s[203].on
+    
+}
+@if s[202] .isOn() {
+    @comment "不発"
+    @if s[203] .isOn() {
+        v[842] = v[210] + 242
+        v[v[842]] = 0
+        
+    }
+    v[v[843]] = 0
+    @comment "#AAタイマー初期化"
+    v[628] = v[210] + 28
+    v[v[628]] = 0
+    
+}
+}

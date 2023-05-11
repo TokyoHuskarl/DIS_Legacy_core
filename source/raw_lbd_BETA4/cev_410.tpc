@@ -1,0 +1,103 @@
+cev .id(410), .name("cev410"), {
+@comment "Naskarl"
+@if v[701] == 27 {
+    @if `v[2406 + v[251] % 3] & 0x4000 {
+        v[731] *= 2
+        
+    } .else bl {
+        v[801] = 0
+        
+    }
+    
+}
+@comment "Firedragon"
+@if `v[2412 + v[251] % 3] & 0x4 {
+    @if v[701] == 29 {
+        v[710] += 25
+        
+    }
+    
+}
+@comment "J'drago"
+@if `!(v[2412 + v[251] % 3] & 0x1) {
+    @if v[701] == 36 {
+        v[781] = 0
+        
+    }
+    
+}
+@comment "Dragonu"
+@if v[701] == 28 {
+    @if `v[2406 + v[251] % 3] & 0x80 {
+        @comment "GreatCrossbow"
+        v[851] = 40
+        v[709] += 25
+        @comment "Hit"
+        v[713] += 5
+        
+    }
+    @comment "Tra"
+    @if `v[2406 + v[251] % 3] & 0x1000 {
+        v[713] += 10
+        v[666] |= 8
+        v[666] |= 32768
+        
+    }
+    
+}
+@comment "DragonForge"
+@if `v[2406 + v[251] % 3] & 0x100 {
+    @if v[702] < 3 {
+        @if v[702] != 1 {
+            @comment "AD"
+            v[709] += 10
+            
+        }
+        
+    }
+    
+}
+@comment "Inf Dragons"
+@if `v[2406 + v[251] % 3] & 0x2000 {
+    @comment "Inf Dragons"
+    @if v[702] == 0 {
+        @comment "Hit/Avd"
+        v[713] += 6
+        v[714] += 4
+        
+    }
+    
+}
+@comment "Squires"
+@if `v[2406 + v[251] % 3] & 0x200 {
+    @comment "Warrior Dragons"
+    @if v[702] <= 2 {
+        @comment "Not Naskarl"
+        @if v[701] != 27 {
+            @comment "MS"
+            v[716] = muldiv(v[716], 11, 10)
+            v[705..706] += 100
+            
+        }
+        
+    }
+    
+}
+@comment "Armor"
+@if `v[2406 + v[251] % 3] & 0x400 {
+    @comment "AR"
+    v[711] += 28
+    v[738] += 28
+    
+}
+@comment "Orthunass"
+@if v[2402] == 1 {
+    v[739] += 15
+    
+}
+@comment "Dragonne"
+@if v[701] == 176 {
+    v[740] |= [0, 0, 0, 2097152][rnd(0, 3)]
+    
+}
+}

@@ -1,0 +1,68 @@
+cev .id(141), .name("cev141"), {
+@comment "Access14 = x"
+v[294] = v[301] + 6
+@comment "ずれセット"
+v[v[294]] .add v[53], 2
+v[341] = v[v[301] + 9]
+@if `s[v[341] + 500] {
+    @comment "Particle Effecter"
+    @comment "Is Parent effect alive?"
+    v[341] = v[v[301] + 9] * 300 + 4701
+    @if v[v[341]] >= 1 {
+        @comment "Frame Ck"
+        v[296] = v[301] + 10
+        v[v[296]] += 1
+        v[v[296]] %= 3
+        @if v[v[296]] == 0 {
+            @comment "Access15 = x"
+            v[295] = v[301] + 6
+            @comment "ずれセット"
+            v[341] = v[v[301] + 9] * 300 + 4707
+            v[v[341]].copy v[v[295]], 2
+            @loop 1 {
+                v[344] = muldiv(v[v[341] + 3], 100, 6)
+                v[v[295]].copy v[343], 2
+                v[344] -= 3
+                v[344] += rnd(-5, 5)
+                v[245] %= v[2215]
+                v[345] = v[245] + v[1200]
+                v[245] += 1
+                @pic[v[345]].show {
+                    "effects\particles"
+                    .pos v[343], v[344] .center
+                    .scrollWithMap
+                    .chromakey 1
+                    .scale v[344]
+                    .trans 80
+                    .rgbs 200, 200, 0, 50
+                    .add
+                    .grid 12, 12 .cell 12
+                    .mapLayer 5
+                    .affectedByTint
+                    .affectedByFlash
+                    .affectedByShake
+                }
+                @pic[v[345]].move {
+                    .pos v[343], v[344] .center
+                    .scale 0
+                    .trans 10
+                    .time -18
+                    .rgbs 200, 200, 0, 50
+                    .add
+                }
+                
+            }
+            
+            
+        }
+        
+    } .else bl {
+        @comment "Delete Emitter"
+        v[295] = v[301] + 49
+        v[v[295]] = 0
+        
+    }
+    
+}
+v[v[301] + 49] += s[2] == 1 ? 1 : 0
+}

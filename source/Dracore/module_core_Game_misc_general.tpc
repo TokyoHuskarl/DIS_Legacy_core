@@ -1,0 +1,175 @@
+#include "./../headers/header_common.tpc"
+
+//Achievement
+
+
+//Achievement get effect
+cev .id(83), .name("Game:Achievement Check"), .parallel ,   {
+	@comment "module_core_Game_misc.tpc"
+	@if s[240] .isOn() {
+	    s[240].off
+	    v[260] = 320 + v[229]
+	    @if v[260] >= 321 {
+		@if s[v[260]] .isOff() {
+		    v[2214] += 1
+		    s[v[260]].on
+		    v[472] = divmul(90, 100, v[2216])
+		    @se.play "decide1" .opt v[472], 100, 50
+		    v[471] = s[20] == 1 ? v[1158] : 10
+		    @pic[927].strpic {
+			"\t[20054]"
+			.pos v[1157], v[471] .center
+			.size 0, 0                .chromakey 1
+			.scale 100
+			.trans 100
+			.rgbs 200, 0, 0, 100
+			.font "美咲ゴシック第2", 10 .noShadow
+			.spacing 0, 4
+			.skin "" .nobg .noframe .noPadding
+			.mapLayer 10
+			.eraseWhenTransfer
+		    }
+		    @gsave.open
+		    gs[301].copyFrom s[301], 100
+		    @gsave.saveAndClose
+		    v[228] = 100
+		    v[227] = 0
+		    @while v[227] <= 25 {
+			v[227] += 1
+			@if v[227] <= 10 {
+			    v[228] -= 10
+			    
+			} .else bl {
+			    @if v[227] >= 15 {
+				v[228] += 10
+				@if v[228] >= 100 {
+				    v[228] = 100
+				    
+				}
+				
+			    }
+			    
+			}
+			@pic[927].getInfo .xywh .baseRect v[342], v[342], v[341], v[342]
+			@if v[341] >= 100 {
+			    @ev.abort
+			    
+			}
+			@pic[927].move {
+			    .pos v[1157], v[1158] .center
+			    .scale 100
+			    .trans v[228]
+			    .time 0
+			    .rgbs 200, 0, 0, 100
+			}
+			@wait 0
+			@pic[927].getInfo .xywh .baseRect v[342], v[342], v[341], v[342]
+			@if v[341] >= 100 {
+			    @ev.abort
+			    
+			}
+			@pic[927].move {
+			    .pos v[1157], v[1158] .center
+			    .scale 100
+			    .trans v[228]
+			    .time 0
+			    .rgbs 0, 0, 200, 100
+			}
+			@wait 0
+			@pic[927].getInfo .xywh .baseRect v[342], v[342], v[341], v[342]
+			@if v[341] >= 100 {
+			    @ev.abort
+			    
+			}
+			@pic[927].move {
+			    .pos v[1157], v[1158] .center
+			    .scale 100
+			    .trans v[228]
+			    .time 0
+			    .rgbs 200, 200, 0, 100
+			}
+			@wait 0
+			@pic[927].getInfo .xywh .baseRect v[342], v[342], v[341], v[342]
+			@if v[341] >= 100 {
+			    @ev.abort
+			    
+			}
+			@pic[927].move {
+			    .pos v[1157], v[1158] .center
+			    .scale 100
+			    .trans v[228]
+			    .time 0
+			    .rgbs 0, 200, 200, 100
+			}
+			@wait 0
+			@pic[927].getInfo .xywh .baseRect v[342], v[342], v[341], v[342]
+			@if v[341] >= 100 {
+			    @ev.abort
+			    
+			}
+			@pic[927].move {
+			    .pos v[1157], v[1158] .center
+			    .scale 100
+			    .trans v[228]
+			    .time 0
+			    .rgbs 200, 0, 200, 100
+			}
+			@wait 0
+			@pic[927].getInfo .xywh .baseRect v[342], v[342], v[341], v[342]
+			@if v[341] >= 100 {
+			    @ev.abort
+			    
+			}
+			@pic[927].move {
+			    .pos v[1157], v[1158] .center
+			    .scale 100
+			    .trans v[228]
+			    .time 0
+			    .rgbs 200, 200, 200, 100
+			}
+			@wait 0
+			@pic[927].getInfo .xywh .baseRect v[342], v[342], v[341], v[342]
+			@if v[341] >= 100 {
+			    @ev.abort
+			    
+			}
+			@pic[927].move {
+			    .pos v[1157], v[1158] .center
+			    .scale 100
+			    .trans v[228]
+			    .time 0
+			    .rgbs 0, 200, 0, 100
+			}
+			@wait 0
+			@pic[927].getInfo .xywh .baseRect v[342], v[342], v[341], v[342]
+			@if v[341] >= 100 {
+			    @ev.abort
+			    
+			}
+			@pic[927].move {
+			    .pos v[1157], v[1158] .center
+			    .scale 100
+			    .trans v[228]
+			    .time 0
+			    .rgbs 100, 100, 100, 100
+			}
+			@wait 0
+			@pic[927].getInfo .xywh .baseRect v[342], v[342], v[341], v[342]
+			@if v[341] >= 100 {
+			    @ev.abort
+			    
+			}
+			
+		    }
+		    
+		    @pic[927].erase
+		    
+		}
+		
+	    } .else bl {
+		s[240].off
+		
+	    }
+	    
+	}
+}

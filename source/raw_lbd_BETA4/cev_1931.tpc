@@ -1,0 +1,256 @@
+cev .id(1931), .name("cev1931"), {
+@comment "Access19 = AttackerObjectID 1~ +4700
+Access20 = TargetObjectID 1~ +4700
+Access18 = ObjTypeチェックPtr
+
+temp1 = ダメージ量
+temp3 = 属性
+var9  = AttackBits
+var10 = DefBits
+reg1= damage
+reg2= damage-armor"
+@if v[301] != 0 {
+    v[190] = v[303]
+    @comment "#ダメージポップカラーもみておく"
+    v[224] = v[302]
+    v[302] = 0
+    @comment "##############
+CheckBits
+##############"
+    v[305..314] = v[300] * 300
+    @comment "#T13 = UnitTypePtr"
+    v[313] += 4802
+    @if v[19] > 0 {
+        @comment "#Anti Inf"
+        v[421] += (v[19] & 1) > 0 && v[v[313]] == 0 ? 70 : 0
+        v[421] += (v[19] & 2) > 0 && v[v[313]] == 1 ? 70 : 0
+        v[421] += (v[19] & 4) > 0 && v[v[313]] == 2 ? 70 : 0
+        v[421] += (v[19] & 8) > 0 && v[v[313]] == 3 ? 70 : 0
+        v[421] += (v[19] & 256) > 0 && v[v[313]] >= 100 ? 1400 : 0
+        
+    }
+    @comment "Check Obj Bit"
+    v[314] += 4840
+    @comment "##############
+CheckBitsEND
+##############"
+    @comment "########
+ALERT
+#######"
+    v[2509] = (v[2510] <= 0 ? 1 : 0) + (v[224] >= 0 ? 1 : 0) + (v[v[313]] == 9 ? 1 : 0) == 3 ? 9 : v[2509]
+    @comment "#If the victim has no target obj AND is in the alert stance, then try to target the attacker"
+    v[341] = v[299] * 300 + 4718
+    v[342] = v[v[299] * 300 + 4941] == 0 ? v[300] : 0
+    v[v[341]] = v[v[341]] == 0 ? v[300] : v[v[341]]
+    @comment "########
+ALERT END
+####### "
+    @comment "##############
+patch_maniacs_200126
+Experimental Var func
+##############"
+    @comment "Physical Damage"
+    @comment "#Get Perks1"
+    v[665] = v[v[300] * 300 + 4765]
+    v[736] = v[299] * 300 + 4836
+    v[v[736]].copy v[736], 2
+    @comment "(実際に受けるダメージ)=
+(計算前のダメージ)×(100 / (100 +(AR.MR)))×(ダメージ倍率)
+(temp1)X(temp4*(100 + temp2)*100)/100
+
+ARならARから引いていく
+Pen分はHPに通る
+"
+    v[21..22] = v[301]
+    @comment "#引き算開始"
+    v[305] += 4811
+    @comment "#HP check"
+    v[305] -= 5
+    v[v[305]] = v[v[305]] - v[22]
+    v[341] = v[305] - 1
+    v[v[305]] = min(v[v[305]], v[v[341]])
+    @comment "ダメージポップアップ処理"
+    v[607].copy v[221], 2
+    v[225] = v[421]
+    @comment "#描画範囲内か？"
+    v[371] = between(v[221], v[1008], v[1009]) && between(v[222], v[1010], v[1011]) && v[183] < 18 ? 1 : 0
+    @if v[371] >= 1 {
+        v[220] = v[220] % 30 + 1202
+        v[223] = v[220]
+        v[221] += rnd(-6, 6)
+        v[222] += rnd(-3, 3)
+        v[222] += s[162] == 1 ? 10 : 0
+        @comment "#サイズは最低100%"
+        v[225] = max(100, v[225])
+        @comment "#サイズは最高150%"
+        v[225] = min(150, v[225])
+        @actor[5].name ""
+        @if v[225] >= 150 {
+            @actor[5].name "!"
+            v[221] += 4
+            
+        }
+        @if s[307] .isOff() {
+            @comment "AR"
+            v[341] = v[1204] - 10
+            @pic[v[223]].strpic {
+                "\v[21]\n[5]"
+                .pos v[221], v[222] .center
+                .size 0, 0                .scrollWithMap
+                .chromakey 1
+                .scale v[225]
+                .trans v[341]
+                .rgbs 100, 100, 100, 100
+                .font "", 10
+                .spacing 0, 4
+                .skin "" .nobg .noframe .noGradation .noPadding
+                .mapLayer 7
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            v[222] = v[608] - 24
+            v[222] += s[162] == 1 ? 10 : 0
+            @pic[v[223]].move {
+                .pos v[221], v[222] .center
+                .scale v[225]
+                .trans 100
+                .time 12
+                .rgbs 100, 100, 100, 100
+            }
+            
+        }
+        @if v[247] <= 4 {
+            s[141].on
+            v[247] += 1
+            @comment "#Blood"
+            v[11] = min(v[22] / 13, 30)
+            v[12] = 0
+            v[607].copy v[361], 2
+            v[13] = (v[v[314]] & 4096) == 4096 ? 118 : 117
+            @call .cev v[13]
+            s[141].off
+            
+        }
+        v[183] += v[184] >= v[1128] ? 2 : 1
+        
+    }
+    @if s[313] .isOn() {
+        @if v[2218] == 0 {
+            @call .cev 1924
+            v[341] = 2
+            v[601] = 1
+            v[355] = v[300] * 300 + 4801
+            v[701] = v[v[355]]
+            @call .cev 200
+            v[700] = v[355] - 1
+            v[342] = v[v[700]] == 1 ? 5 : 10
+            @pic[v[1155]].strpic {
+                "\c[\v[342]]\n[2]\c[0]は\v[21]ダメージを受けた"
+                .pos v[341], v[1126] .bottomLeft
+                .size 0, 0                .chromakey 1
+                .scale 100
+                .trans 30
+                .rgbs 100, 100, 100, 100
+                .font "misaki_gothic", 10
+                .spacing 0, 4
+                .skin "" .nobg .noframe .noPadding
+                .mapLayer 8
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            @call .cev 1925
+            
+        }
+        
+    }
+    @comment "ダメージポップアップ処理end"
+    @comment "KILL"
+    v[371] = v[v[305]] <= 0 ? 1 : 0
+    v[371] += v[v[298]] > 0 ? 1 : 0
+    @if v[371] >= 2 {
+        @comment "#Get Attacker Perks2"
+        v[665] = v[299] * 300 + 4766
+        @comment "#####################
+Fatality Check"
+        @comment "#At least you need 85 dmg to cause fatality"
+        v[11] = 0
+        @if v[22] >= 85 {
+            v[341] = v[22] / 15
+            @comment "#Critical Quadruple the possibility
+#Headhunter gives additional bonus"
+            v[341] *= ((v[665] & 8) == 8 ? 1 : 0) + (v[421] >= 200 ? 4 : 1)
+            @comment "ROLL!"
+            v[11] = v[341] >= rnd(1, 100) ? 1 : 0
+            
+        }
+        @comment "Fatality Check END
+#####################"
+        @comment "Element"
+        v[12] = v[190]
+        @comment "#####################
+Call Command Preparing"
+        v[472] = 0
+        v[473] = 41
+        v[474] = 16
+        v[471] = 12330
+        @comment "Call Command Preparing end
+#####################"
+        @cmd v[471], "", .args v[472], 3
+        @if v[v[665]] > 0 {
+            @comment "Killing Frenzy"
+            v[371] = (v[v[665]] & 1) > 0 ? 1 : 0
+            @if v[371] == 1 {
+                @comment "#Gain Rage for about 5sec "
+                v[11] = 1181
+                v[12] = v[299]
+                @call .cev 1911
+                v[v[22]] = v[22] >= 0 ? 250 : v[v[22]]
+                
+            }
+            @comment "Battle Flow"
+            v[371] = (v[v[665]] & 2) > 0 ? 1 : 0
+            @if v[371] == 1 {
+                @comment "#gain 12% WeaponSkill CD per kill"
+                v[v[299] * 300 + 4795] -= muldiv(v[v[299] * 300 + 4848], 12, 100)
+                
+            }
+            @comment "Berserk"
+            v[371] = (v[v[665]] & 4) > 0 ? 1 : 0
+            @if v[371] == 1 {
+                v[341] = v[299] * 300 + 4807
+                v[v[341]].copy v[342], 2
+                @comment "#regain SP*10% per kill
+#THIS MIGHT BE TOO STRONG be careful to adjust"
+                v[v[341] + 1] = min(v[v[341]], v[v[341] + 1] + muldiv(v[v[341]], 10, 100))
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @comment "Morale Check"
+        @comment "v1= targobj
+v2=power#...?"
+        v[11] = v[300]
+        v[12] = v[22] / 9
+        @comment "#Base"
+        v[12] += 15
+        @comment "#Fearsome"
+        v[12] *= (v[v[299] * 300 + 4974] & 2048) == 2048 ? 2 : 1
+        @comment "Cap"
+        v[12] = min(v[12], 100)
+        @call .cev 1193
+        @comment "Morale Check End
+################"
+        
+    }
+    v[421] = 100
+    v[19..20] = 0
+    s[162].off
+    @comment "r1=raw damage
+r2=damage to HP"
+    
+}
+}

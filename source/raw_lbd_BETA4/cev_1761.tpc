@@ -1,0 +1,48 @@
+cev .id(1761), .name("cev1761"), {
+@comment "Order Direction"
+v[2878] = v[1212]
+v[2881..2883] = 0
+@loop .inf() {
+    @if v[v[2878]] == 0 {
+        @comment "とぎれた"
+        @break
+        
+    }
+    v[300] = v[2878]
+    @if v[v[300]] >= 1 {
+        v[299] = v[v[300]] * 300
+        v[299] += 4701
+        @if `between(v[v[299]], 1, 10) {
+            v[11] = v[v[300]]
+            @call .cev 2009
+            v[2881] += v[21]
+            v[v[299]].copy v[601], 9
+            v[607..608] *= v[21]
+            v[2882] .add v[607], 2
+            
+        }
+        
+    }
+    v[2878] += 1
+    
+}
+
+@comment "#########################"
+v[2882..2883] /= v[2881]
+v[2882].copy v[2809], 2
+v[2809].copy v[21], 2
+@if s[1] .isOn() {
+    @pic[2144].show {
+        "camera_ball"
+        .pos v[21], v[22] .center
+        .scrollWithMap
+        .chromakey 0
+        .scale 100
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .mapLayer 9
+        .eraseWhenTransfer
+    }
+    
+}
+}

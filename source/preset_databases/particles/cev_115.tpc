@@ -1,0 +1,102 @@
+cev .id(115), .name("cev115"), {
+@if s[141] .isOn() {
+    @loop v[1017] .dst v[320] {
+        v[244] %= v[1199]
+        v[301] = v[244] * 50
+        v[301] = v[301] + v[1198]
+        @if v[v[301]] <= 1 {
+            @comment "まず清掃"
+            v[1301].copy v[v[301]], 50
+            @comment "ポインタセット開始"
+            @comment "設定"
+            v[v[301]] = 1
+            @comment "500F"
+            v[295] = v[301] + 49
+            v[v[295]] = v[12]
+            @comment "Set itself"
+            v[295] = v[301] + 3
+            v[v[295]] = 115
+            @comment "Set Parent Obj"
+            v[295] = v[301] + 9
+            v[v[295]] = v[11]
+            @comment "けす処理をLinkedFuncに入れる"
+            v[295] = v[301] + 10
+            @comment "普通にアニメ"
+            v[607] = v[301] + 6
+            v[361].copy v[v[607]], 2
+            @comment "仕上げに登録消す"
+            s[141].off
+            v[244] += 1
+            @break
+            
+        }
+        v[244] += 1
+        
+    }
+    
+    s[141].off
+    
+} .else bl {
+    @comment "Particle Effecter"
+    @if s[2] .isOff() {
+        @comment "Is Parent effect alive?"
+        v[341] = v[v[301] + 9] * 300 + 4701
+        @if v[v[341]] >= 1 {
+            @comment "Access15 = x"
+            v[295] = v[301] + 6
+            @comment "Frame Ck"
+            v[296] = v[301] + 10
+            v[v[296]] += 1
+            v[v[296]] %= 3
+            @if v[v[296]] == 0 {
+                v[341] = v[v[301] + 9] * 300 + 4707
+                @comment "ずれセット"
+                v[v[341]].copy v[v[295]], 2
+                
+            }
+            @if v[v[296]] == 2 {
+                @loop 2 {
+                    v[v[295]].copy v[341], 2
+                    v[341] += rnd(-6, 6)
+                    v[342] += rnd(-3, 1)
+                    v[342] += 9
+                    v[341].copy v[343], 2
+                    v[344] += rnd(-12, -16)
+                    v[245] %= v[2215]
+                    v[345] = v[245] + v[1200]
+                    v[245] += 1
+                    @pic[v[345]].show {
+                        "effects\particles"
+                        .pos v[341], v[342] .center
+                        .scrollWithMap
+                        .chromakey 1
+                        .scale 100
+                        .trans 31
+                        .rgbs 100, 100, 100, 100
+                        .grid 12, 12 .cell 1
+                        .mapLayer 4
+                        .affectedByTint
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    @pic[v[345]].move {
+                        .pos v[343], v[344] .center
+                        .scale 5
+                        .trans 100
+                        .time -15
+                        .rgbs 100, 100, 100, 100
+                    }
+                    
+                }
+                
+                
+            }
+            
+        } .else bl {
+            
+        }
+        
+    }
+    
+}
+}

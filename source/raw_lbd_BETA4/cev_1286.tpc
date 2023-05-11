@@ -1,0 +1,11 @@
+cev .id(1286), .name("cev1286"), {
+@comment "PASSIVE"
+v[299] = v[401] + 1
+v[297] = v[299] * 300
+v[297] += 4700
+@comment "Food"
+v[v[4575] + 1 + 40 * (v[v[297] + 100] % 3)] += v[2409 + v[v[297] + 100] % 3] & 0x80000 ? 4 : 2
+@call .cev 84
+@comment "Timer Reset"
+v[v[297] + 94] = v[1139] * 28
+}

@@ -1,0 +1,490 @@
+defv ProjectileTeamSave = 531
+
+v[441] = 303
+v[442] = 1
+v[443] = 607
+v[444] = 608
+v[445] = 1
+v[446] = 100
+v[447] = 626
+v[448] = 1000
+v[453] = 3
+v[454] = 341
+v[455] = 0
+v[456] = 0
+v[458] = 1
+v[459..461] = 0
+v[462] = 1
+v[217] = 0
+@loop v[4559] .dst v[214] {
+    v[215] = v[214] * 100
+    //@comment "Access15 = ProjType"
+    v[292] = v[215] + v[1075]
+    //@comment "弾が存在する"
+    @if v[v[292]] >= 1 {
+        //@comment "Access15 = タイマー"
+        v[295] = v[292] + 99
+        //@comment "タイマーが切れていない"
+        @if v[v[295]] >= 1 {
+            v[217] += 1
+            v[v[292]].copy v[601], 30
+           /* @comment "#T2 = Vxのポインタ
+	#T3 = ピクチャ番号
+	#G5 = 詳細位置xPtr
+	#G6 = 詳細位置上yPtr
+	#G7 = xPtr
+	#G8 = yPtr"*/
+            //@comment "##process delta "
+            v[605].enum 4, 9
+            v[605..613] += v[292]
+            v[302] = v[612]
+            //@comment ""
+            @if s[2] .isOff() {
+                //@comment "タイマー減らす"
+                v[v[295]] -= 1
+                @if v[603] >= v[1186] {
+                    //@comment "##If a function is registered in Get3, call it"
+                    s[123].on
+                    @call .cev v[603]
+                    s[123].off
+                    
+                }
+                //@comment "まず加速の処理から"
+                v[v[302]] .add v[615], 2
+                //@comment "次に速度を加える"
+                v[v[605]] .add v[v[302]], 2
+                
+            }
+            //@comment "座標セット"
+            v[v[605]] += v[53] * 10000
+            v[v[607]] = v[v[605]] / 10000
+            v[v[606]] += v[54] * 10000
+            v[v[608]] = v[v[606]] / 10000
+            //@comment "#範囲攻撃処理分岐#仮置き"
+            v[v[607]].copy v[381], 2
+            v[v[610]].copy v[383], 3
+            @if s[2] .isOff() {
+                //@comment "#Width+Height"
+                v[341] = v[v[610]] + v[v[611]]
+                //@comment "#範囲攻撃処理分岐#0なら当たり判定を持たない"
+                v[30] = 0
+                @if v[341] > 0 {
+                    v[640] = v[607] + 33
+                    v[v[640]] -= 1
+                    @if v[v[640]] <= 0 {
+                        v[v[607]].copy v[11], 2
+                        v[11] .sub v[v[610]], 2
+                       /* @comment "#########################
+#2002 Crd->Mort V1V2 reg1
+##########################"*/
+                        v[11].copy v[341], 2
+                        v[341] .add v[53], 2
+                        v[341] .sub v[76], 2
+                        v[341] .div v[74], 2
+                        /*@comment "TT1=MortX
+TT2=MortY
+ビット演算して処理するよ"*/
+                        v[341] = (v[341] | v[341] << 8) & 0xFF00FF
+                        v[341] = (v[341] | v[341] << 4) & 0xF0F0F0F
+                        v[341] = (v[341] | v[341] << 2) & 0x33333333
+                        v[341] = (v[341] | v[341] << 1) & 0x55555555
+                        v[342] = (v[342] | v[342] << 8) & 0xFF00FF
+                        v[342] = (v[342] | v[342] << 4) & 0xF0F0F0F
+                        v[342] = (v[342] | v[342] << 2) & 0x33333333
+                        v[342] = ((v[342] | v[342] << 1) & 0x55555555)<<1
+                        //@comment "yは1bitシフトで終わり"
+                        //v[342] <<= 1
+                        //@comment "最後にTT1 OR TT2"
+                        v[21] = v[341] | v[342]
+                        /*@comment "#########################
+#2002 Crd->Mort V1V2 reg1 end
+##########################"*/
+                        v[351] = v[21]
+                        v[v[607]].copy v[11], 2
+                        v[11] .add v[v[610]], 2
+                        /*@comment "#########################
+#2002 Crd->Mort V1V2 reg1
+##########################"*/
+                        v[11].copy v[341], 2
+                        v[341] .add v[53], 2
+                        v[341] .sub v[76], 2
+                        v[341] .div v[74], 2
+                        /* @comment "TT1=MortX
+TT2=MortY
+ビット演算して処理するよ" */
+                        v[341] = (v[341] | v[341] << 8) & 0xFF00FF
+                        v[341] = (v[341] | v[341] << 4) & 0xF0F0F0F
+                        v[341] = (v[341] | v[341] << 2) & 0x33333333
+                        v[341] = (v[341] | v[341] << 1) & 0x55555555
+                        v[342] = (v[342] | v[342] << 8) & 0xFF00FF
+                        v[342] = (v[342] | v[342] << 4) & 0xF0F0F0F
+                        v[342] = (v[342] | v[342] << 2) & 0x33333333
+                        v[342] = ((v[342] | v[342] << 1) & 0x55555555)<<1
+                        //@comment "yは1bitシフトで終わり"
+                        //v[342] <<= 1
+                        //@comment "最後にTT1 OR TT2"
+                        v[21] = v[341] | v[342]
+                        /*@comment "#########################
+#2002 Crd->Mort V1V2 reg1 end
+##########################"*/
+                        v[341] = v[351]
+                        v[342] = v[21]
+                        /*@comment "TT1 = upper left morton TT2 = bottom right morton TT5 = shift num"*/
+                        v[343] = v[341] ^ v[342]
+                        /*@comment "#mask with 11000000"
+                        @comment "#mask with 110000"
+                        @comment "#mask with 001100"
+                        @comment "#mask with 000011"*/
+                        v[345] = v[343] & 768 ? 10 : v[343] & 192 ? 8 : v[343] & 48 ? 6 : v[343] & 12 ? 4 : v[343] & 3 ? 2 : 0
+                        //@comment "#TT6 = morton id"
+                        v[346] = v[342] >> v[345]
+                        //@comment "#mask end"
+                        v[340] = v[4546 - v[345] / 2] + v[346] * v[1004]
+                        v[424] = 0
+                        v[327] = v[v[4552 - v[345] / 2] + v[346]]
+                        //@comment "Check overcrowded Space"
+                        v[v[640]] = v[327] < v[4522] ? v[v[640]] : 2
+                        v[424] = v[340]
+			//Projectile Team Save
+			ProjectileTeamSave = v[v[292] + 17] % 3
+                        @loop v[327] .dst v[310] {
+                            v[312] = v[424] + v[310]
+                            v[311] = v[v[312]] * v[1117] 
+			    v[311] += 4701
+                            //@comment "dead objs never get assigned into mort lists, so immediately check obj's team"
+                            @if `ProjectileTeamSave != v[(Const_AgentMetaTeam_begin+v[v[312]]-1)] {//v[v[311] + 99] % 3 {  //24.4.23
+                                //@comment "当たり判定"
+                                v[311] += 6
+                                v[v[311]].copy v[327], 5
+                                //@comment "とりあえず矩形判定"
+                                @if `abs(v[381] - v[327]) < v[383] + v[330] && abs(v[382] - v[328]) < v[384] + v[331] {
+                                    //@comment "Hit flag switch v[377]"
+                                    v[377] = 1
+                                    //@comment "If the projectile is SingleHit Pierce type"
+                                    @if v[v[292]] == 2 {
+					//opt 28.4.23
+                                        v[290] = v[292] + 70 
+					v[290] += v[v[312]] / 30
+                                        v[343] = pow(2, (v[v[312]] - 1) % 30)
+                                        //@comment "Check if already hit the unit or not"
+                                        v[377] -= v[v[290]] & v[343] ? 1 : 0
+                                        v[v[290]] |= v[343]
+                                        
+                                    }
+                                    @if v[377] == 1 {
+                                        //@comment "ＨＩＴ！"
+                                        /*@comment "Access19 = AttackerObjectID
+					Access20 = TargetObjectID
+					Access18 = ObjTypeチェックPtr
+					temp1 = ダメージ量
+					temp2 = 防御　#0=ARで計算,1=MR
+					#temp3 = 属性 元のダメージ量を減らすべき？"*/
+                                        v[298] = v[311] - 6
+                                        v[299] = v[v[292] + 8]
+                                        v[300] = v[v[312]]
+                                        //@comment "HITCHECK"
+                                        v[471] = [44, 43, 42][v[v[292] + 26]]
+                                        v[13] = -1
+                                        @call .cev v[471]
+                                        //@comment "reg10= 0:miss 1:hit 2:blocked"
+                                        @if v[21] == 1 {
+                                           // @comment "Hit!"
+                                            //@comment "#Buff"
+                                            v[11] = v[v[292] + 40]
+                                            @if v[11] >= v[1186] {
+						//9.3.23
+                                                //v[12] = v[300]
+                                                //@call .cev 1911
+                                                /*@if v[22] >= 0 {
+                                                    //@comment "#Duration"
+                                                    v[v[22]] = v[v[292] + 41]
+                                                    
+                                                }*/
+						v[13] = (v[v[292] + 41])
+						func_bs_register_buff_with_time(v[11] v[300] v[13])
+                                                
+                                            }
+                                            v[301] = v[621]
+                                            v[302] = v[622]
+                                            v[303] = v[623]
+                                            v[327].copy v[607], 2
+                                            //@comment "Perk:Grimreaper"
+                                            @if `v[v[299] * 300 + 4766] & 262144 {
+                                                //@comment "#CheckCrit"
+                                                /*@comment "Var1 = Obj 1~V[421] = ダメージ倍率"*/
+                                                v[15] = v[300] * 300 
+						v[15] += 4700
+                                                v[421] = v[v[299] * 300 + 4815] / 2 + (2 - v[v[15] + 239]) >= rnd(0, 99) ? 450 - v[v[15] + 240] : 100
+                                                
+                                            }
+                                            //@comment "AABits"
+                                            v[19] = v[624]
+					    v[422] = v[292] + 68
+                                            v[422] = v[v[422]]
+                                            @call .cev 40
+                                            v[30] = 1
+                                            v[300] = v[36]
+                                            
+                                        } .else bl {
+                                            //@comment "Miss!"
+                                            @if `s[v[300] + 500] && v[183] < v[4572] {
+                                                v[381].copy v[221], 2
+                                                @if v[22] == 1 {
+                                                    v[30] = 2
+                                                    //@comment "Shield Blocked!"
+                                                    v[23] = 0
+                                                    //@comment "Shield Cracking"
+                                                    v[300] = v[v[312]]
+                                                    @if `v[624] & 1024 {
+                                                       /* @comment "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"*/
+                                                        v[341] = v[v[300] * 300 + 4934]
+                                                        @if `v[v[300] * 300 + 4765] & 1 {
+                                                            v[341] = muldiv(v[341], 130, 100)
+                                                            
+                                                        }
+                                                        /*@comment "＃＃＃＃＃＃＃＃＃＃Chance Roll＃＃＃＃＃＃＃＃＃＃"*/
+                                                        v[21] = v[621] / 3
+                                                        @if `v[624] & 131072 {
+                                                            v[21] *= 2
+                                                            
+                                                        }
+                                                        /*@comment "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"*/
+                                                        v[343] = rnd(0, v[21])
+                                                        @if v[343] >= v[341] {
+                                                            //@comment "#バフ番号指定"
+                                                            /*9.3.23
+							    v[11] = 1258
+                                                            v[12] = v[300]
+                                                            @call .cev 1911*/
+							    func_bs_register_buff_old(1258 v[300])
+                                                            @if v[22] >= 0 {
+                                                                v[23] = 1
+                                                                //@comment "#Duration24sec"
+                                                                v[v[22]] = 1344
+                                                                
+                                                            }
+                                                            
+                                                        }
+                                                        
+                                                    }
+                                                    @if v[23] == 0 {
+                                                        @if v[182] <= 2 {
+                                                            //@comment "#########################"
+                                                            v[472] = divmul(60, 100, v[2216])
+                                                            v[473] = rnd(115, 120)
+                                                            v[474] = divmul(v[381] + v[1001], v[1281], 50)
+                                                            @cmd 11550, "weapons/shield_hit", .args v[472], 3
+                                                            //@comment "#########################"
+                                                            
+                                                        }
+                                                        
+                                                    } .else bl {
+                                                        @if v[182] <= 3 {
+                                                            //@comment "#########################"
+                                                            v[472] = divmul(78, 100, v[2216])
+                                                            v[473] = rnd(87, 100)
+                                                            v[474] = divmul(v[381] + v[1001], v[1281], 50)
+                                                            @cmd 11550, "weapons/shield_cracked01", .args v[472], 3
+                                                            //@comment "#########################"
+                                                            
+                                                        }
+                                                        
+                                                    }
+                                                    //@comment "Call Shield"
+                                                    v[342] = v[300] * 300 + 4952
+                                                    v[v[342] + 32] = v[v[342]] > 0 ? 4 : 0
+                                                    //@comment "#Shield Motion"
+                                                    v[342] = v[300] * 300 + 4943
+                                                    @if v[v[342]] != 1 {
+                                                        v[v[342]] = 2
+                                                        v[342] -= 215
+                                                        v[v[342]] += v[v[342]] < 300 ? 900 : 0
+                                                        
+                                                    }
+                                                    @if s[307] .isOff() {
+                                                        @if `v[183] < v[4572] / 2 {
+                                                            //@comment "#描画範囲内か？"
+                                                            v[220] %= 30
+                                                            v[220] += 1201
+                                                            v[220] += 1
+                                                            v[223] = v[220]
+                                                            v[221] += rnd(-6, 6)
+                                                            v[222] += rnd(-3, 3)
+                                                            v[222] += s[162] == 1 ? 10 : 0
+                                                            //@comment "#サイズは最低100%"
+                                                            v[225] = 100
+                                                            //@comment "AR"
+                                                            v[341] = v[1204] - 10
+                                                            @pic[v[223]].show {
+                                                                "num\num_block"
+                                                                .pos v[221], v[222] .center
+                                                                .scrollWithMap
+                                                                .chromakey 1
+                                                                .scale v[225]
+                                                                .trans v[341]
+                                                                .rgbs 100, 100, 100, 100
+                                                                .mapLayer 7
+                                                                .eraseWhenTransfer
+                                                                .affectedByFlash
+                                                                .affectedByShake
+                                                            }
+                                                            v[222] = v[382] - 24
+                                                            v[222] += s[162] == 1 ? 10 : 0
+                                                            @pic[v[223]].move {
+                                                                .pos v[221], v[222] .center
+                                                                .scale v[225]
+                                                                .trans 100
+                                                                .time 12
+                                                                .rgbs 100, 100, 100, 100
+                                                            }
+                                                            v[183] += v[184] >= v[1128] ? 2 : 1
+                                                            
+                                                        }
+                                                        
+                                                    }
+                                                    
+                                                } .else bl {
+                                                    @if s[307] .isOff() {
+                                                        @if `v[183] < v[4572] / 2 {
+                                                            //@comment "#描画範囲内か？"
+                                                            v[220] %= 30
+                                                            v[220] += 1201
+                                                            v[220] += 1
+                                                            v[223] = v[220]
+                                                            v[221] += rnd(-6, 6)
+                                                            v[222] += rnd(-3, 3)
+                                                            v[222] += s[162] == 1 ? 10 : 0
+                                                            //@comment "#サイズは最低100%"
+                                                            v[225] = 100
+                                                            //@comment "AR"
+                                                            v[341] = v[1204] - 10
+                                                            @pic[v[223]].show {
+                                                                "num\num_miss"
+                                                                .pos v[221], v[222] .center
+                                                                .scrollWithMap
+                                                                .chromakey 1
+                                                                .scale v[225]
+                                                                .trans v[341]
+                                                                .rgbs 100, 100, 100, 100
+                                                                .mapLayer 7
+                                                                .eraseWhenTransfer
+                                                                .affectedByFlash
+                                                                .affectedByShake
+                                                            }
+                                                            v[222] = v[382] - 24
+                                                            v[222] += s[162] == 1 ? 10 : 0
+                                                            @pic[v[223]].move {
+                                                                .pos v[221], v[222] .center
+                                                                .scale v[225]
+                                                                .trans 100
+                                                                .time 12
+                                                                .rgbs 100, 100, 100, 100
+                                                            }
+                                                            v[183] += v[184] >= v[1128] ? 2 : 1
+                                                            
+                                                        }
+                                                        
+                                                    }
+                                                    
+                                                }
+                                                
+                                            }
+                                            
+                                        }
+                                        //@comment "#Parent Agent"
+                                        v[299] = v[v[215] + v[1076] + 9]
+                                        //@comment "#HitFuncあれば呼ぶ"
+                                        v[604] = v[292] + 3
+                                        @if v[v[604]] > 0 {
+                                            v[v[215] + v[1076] + 28] &= ~2
+                                            s[122].on
+                                            v[423] = v[214]
+                                            @call .cev v[v[604]]
+                                            v[214] = v[423]
+                                            s[122].off
+                                            
+                                        }
+                                        //@comment "Hit Limit check"
+                                        v[v[292] + 38] += 1
+                                        v[v[292]] = v[v[292] + 38] == v[v[292] + 28] ? 1 : v[v[292]]
+                                        @if v[v[292]] == 1 {
+                                            v[v[292] + 99] = 0
+                                            @break
+                                            
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                        
+                    }
+                    
+                }
+                
+            }
+            //@comment "ピクチャ番号を考える"
+            v[303] = v[4560] + v[214]
+	    //opt 28.4.23
+	    v[628] = v[292] + 27
+            v[628] = v[v[628]]
+            @if `!(v[628] & 8) {
+                //@comment "ここおもそう"
+                v[v[292]].copy v[601], 34
+                v[341] = v[292] + 18
+                //@comment "#add angle delta"
+                v[342] = 1
+                @if v[620] != 0 {
+                    v[v[341]] += s[2] == 0 ? v[620] : 0
+                    v[342] = v[612] >= 0 ? 1 : 0
+                    
+                }
+                v[341] = v[v[341]]
+                //@comment "#MirrorFlag#4096"
+                v[457] = v[342] * 4096
+                //@comment "#Lightening#512"
+                v[457] |= 256 * v[630]
+                //@comment "#Colors"
+                v[449..452] = 100
+                v[449] .add v[631], 4
+                @cmd 11120, "", .args v[441], 22
+                
+            } .else bl {
+                v[604] = v[v[292] + 3]
+                
+            }
+            //@comment "時間切れ消滅処理"
+            @if `v[v[292] + 99] <= 0 {
+                @pic[v[303]].erase
+                @if v[604] > 0 {
+                    @if `v[628] & 2 {
+                        s[122].on
+                        //@comment "#Parent Agent"
+                        v[299] = v[v[215] + v[1076] + 9]
+                        v[423] = v[214]
+                        v[607] = v[v[292] + 6]
+                        v[608] = v[v[292] + 7]
+                        @call .cev v[604]
+                        v[214] = v[423]
+                        s[122].off
+                        
+                    }
+                    
+                }
+                v[292] = v[215] + v[1075]
+                v[1301].copy v[v[292]], 100
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
+
+

@@ -1,0 +1,97 @@
+//cev 2006 
+
+
+//cev 2008 CkIfSklCall v1v2 r1
+__fn func_CkIfSklCall $agent $skillno {
+	/*@comment "Var1 = Obj 1~
+	Var2 = SkillNo
+
+	r1 = Cant_call_skill
+	"*/
+	v[21] = 0
+	v[341] = $agent * 300
+	//@comment "#Is the ordered skill registered to the obj?"
+	v[342] = v[341] + 4821 
+	v[342] += ($skillno * 20)
+	/*9.3.23 kick out needless var v[343]
+	v[343] = $skillno * 20
+	v[342] += v[343]*/
+	v[21] += v[v[342]] > 0 ? 0 : 1
+	//@comment "#If Pointed Type, Ck range"
+	v[342] += 2
+	@if v[v[342]] == 2 {
+	    v[344] = v[342] + 9
+	    v[352] = v[341] + 4707
+	    //v[351] = v[344] - 2
+	    //camera difference
+	    v[351] = 51
+	    v[v[351]].copy v[353], 2
+	    v[353] .sub v[v[352]], 2
+	    v[353] .mul v[353], 2
+	    v[351] = v[353] + v[354]
+	    v[352] = v[v[344]]
+	    //if out of range 
+	    @if v[351] > v[v[344]] {
+		v[21] += 1
+		//call ranged indicator
+		@call .cev 81
+		
+	    }
+	    
+	}
+	//@comment "#If Target Type, Ck range and ID"
+	@if v[v[342]] == 3 {
+	    v[344] = v[342] + 9
+	    v[352] = v[341] + 4707
+	    v[351] = v[341] + 4718
+	    //@comment "If target exists"
+	    @if v[v[351]] >= 1 {
+		v[353] = v[v[351]] * 300 
+		v[353] += 4707
+		v[v[353]].copy v[353], 2
+		v[353] .sub v[v[352]], 2
+		v[353] .mul v[353], 2
+		v[351] = v[353] + v[354]
+		v[352] = v[v[344]]
+	        //if out of range 
+		@if v[351] > v[v[344]] {
+		    v[21] += 1
+		    //call ranged indicator
+		    @call .cev 81
+		    
+		}
+		
+	    } .else bl {
+		v[21] += 1
+		
+	    }
+	    
+	}
+	//@comment "#Check usage"
+	v[342] += 1
+	//@comment "If DamageSkill"
+	@if v[v[342]] == 0 {
+	    //@comment "You cannot use damage skill with shieldwall/pikewall/Scout" 9.3.23 you should check what is going on with Scout tactics flag.
+	    v[21] += v[v[341] + 4948] & 135 ? 1 : 0
+	    
+	}
+	//@comment "#Check CD"
+	v[342] = v[341] + 4794 
+	v[342] += $skillno
+	v[21] += v[v[342]] <= 0 ? 0 : 1
+	//@comment "#Check Cost"
+	v[342] = v[341] + 4827 
+	v[342] += ($skillno * 20)
+	/*9.3.23 kick out needless var v[343]
+	//v[343] = $skillno * 20
+	//v[342] += v[343]*/
+	v[344] = v[341] + 4808
+	v[21] += v[v[342]] <= v[v[344]] ? 0 : 1
+	//@comment "#Check Casting Motion"
+	v[21] += v[v[341] + 4943] < 4 ? 0 : 1
+	//@comment "#Check silence"
+	v[21] += v[v[341] + 4974] & 262144 ? 1 : 0
+}
+
+
+

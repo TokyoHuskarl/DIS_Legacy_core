@@ -1,0 +1,211 @@
+
+
+
+cev .id(19), .name("Agent:Unit Action") , .parallel , .cond(Const_Is_RTS_Mode), {   
+	@comment "Normal Units"
+	v[536] = v[4532]
+	@while v[v[536]] != 0 {
+    //@comment "AITimer==1 "
+	    @if `v[v[v[536]] * v[1117] + 4784] == 1 {
+		v[207] = v[v[536]] - 1
+		v[210] = v[207] * v[1117] 
+		v[210] += 5000
+		v[843] = v[210] + 243
+		//@comment "Auto Attack"
+		@if v[v[843]] == 1 {
+		    //@comment "Set Timer"
+		    v[v[210] + 84] = 3
+		    //@comment "Auto Attack"
+		    v[703] = v[210] + 103
+		    v[300] = v[210] + 18
+		    v[340] = 34 + v[v[703]]
+		    @call .cev v[340]
+		    
+		} .else bl {
+		    //@comment "#Skill
+		    //#たぶんまだこの辺の処理にバグがある"
+		    @if v[v[843]] >= 4 {
+			//@comment "Access19 = CallerObjectID
+			//Access18 = SkillDataPtr"
+			@if v[v[843]] <= 10 {
+			    v[299] = v[207] + 1
+			    v[297..298] = 300 * v[299]
+			    //v[298] += 4821
+			    v[846] = v[210] + 246
+			    v[580] = v[v[843]] - 3
+			    v[281] = v[210] + 29
+			    v[298] += v[580] * 20 
+			    v[298] += 4821
+			    v[v[298]].copy v[581], 20
+			    @if v[v[846]] > 0 {
+				//@comment "#スキル番号取得ついでにCDセット"
+				//v[11] = v[299]
+				//v[12] = v[580]
+				//@call .cev 2007
+				macro_SkillCDck(v[299] v[580])
+				v[v[21]] = v[22]
+				//@comment "#CDセット End"
+				//@comment "#CDセット End"
+				v[v[281]] = 0
+				//@comment "#Spend Cost"
+				v[v[297]+4808] -= v[587]
+				//@comment "#Spend Cost END"
+				//@comment "#Set SkillOrder 0"
+				//v[297] += 138
+				v[v[297]+4946] = 0
+				@if `v[599] & 1 {
+				    s[114].on
+				    v[341] = v[210] + 7
+				    v[590] .add v[v[341]], 2
+				    @call .cev v[582]
+				    s[114].off
+				    
+				}
+				
+			    }
+			    //@comment "詠唱モーション処理"
+			    v[v[210] + 84] = 2
+			    v[v[281]] += 1
+			    @if v[v[281]] == v[585] {
+				//@comment "Initialize AI Timer"
+				v[v[210] + 84] = v[v[210] + 300] % v[1195]
+				//@comment "If dmg skill then in combat"
+				v[v[210] + 80] = v[584] == 0 ? v[1240] * v[4571] : v[v[210] + 80]
+				//@comment "ちゃんとFuncが存在してるなら"
+				v[582] = v[582] > 0 ? v[582] : 1899
+				//@comment "よびだすv197=continuous or not"
+				v[197] = 0
+				v[341] = v[210] + 7
+				v[590] .add v[v[341]], 2
+				@call .cev v[582]
+				@if v[197] == 0 {
+				    //@comment "#Log"
+				    @if v[582] != 1899 {
+					@if s[313] .isOn() {
+					    @if v[2218] <= 1 {
+						@call .cev 1924
+						v[341] = 2
+						v[601] = 1
+						v[11] = v[582] - 1200
+						@call .cev 1102
+						v[355] = v[210] + 101
+						v[701] = v[v[355]]
+						@call .cev 200
+						v[700] = v[355] - 1
+						v[342] = v[v[700]] == 1 ? 5 : 10
+						v[330] = v[4562] + v[v[536]]
+						@pic[v[1155]].strpic {
+						    "\c[\v[342]]\t[\v[330]\c[0]は[\n[3]]を使った"
+						    .pos v[341], v[1126] .bottomLeft
+						    .size 0, 0                                            .chromakey 1
+						    .scale 100
+						    .trans 30
+						    .rgbs 100, 100, 100, 100
+						    .font t[530], v[4511]
+						    .spacing 0, 4
+						    .skin "" .nobg .noframe .noPadding
+						    .mapLayer 8
+						    .eraseWhenTransfer
+						    .affectedByFlash
+						    .affectedByShake
+						}
+						@call .cev 1925
+						
+					    }
+					    
+					}
+					
+				    } .else bl {
+					@if s[313] .isOn() {
+					    @call .cev 1924
+					    v[341] = 2
+					    v[601] = 1
+					    @pic[v[1155]].strpic {
+						"\c[17]エラー！存在しないスキルを使おうとしています！"
+						.pos v[341], v[1126] .bottomLeft
+						.size 0, 0                                        .chromakey 1
+						.scale 100
+						.trans 30
+						.rgbs 100, 100, 100, 100
+						.font t[530], v[4511]
+						.spacing 0, 4
+						.skin "" .nobg .noframe .noPadding
+						.mapLayer 8
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
+					    }
+					    @call .cev 1925
+					    
+					}
+					
+				    }
+				    @if v[586] == 1 {
+					//@comment "モーション初期化"
+					v[v[281]] = 0
+					//v[843] = v[210] + 243
+					//@comment "Should I Check AA CD?"
+					v[v[210] + 243] = 0
+					
+				    }
+				    
+				}
+				
+			    } .else bl {
+				@if v[v[281]] > v[585] {
+				    //@comment "モーション初期化"
+				    v[v[281]] = 0
+				    //v[843] = v[210] + 243
+				    //@comment "Should I Check AA CD?"
+				    v[v[210] + 243] = 0
+				    
+				} .else bl {
+				    @if v[586] > 100 {
+					v[v[210] + 250] = v[586]
+					
+				    }
+				    
+				}
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		}
+		
+	    }
+	    //@comment "++"
+	    v[536] += 1
+	    
+	}
+
+	//@comment "STATIC"
+	v[536] = v[4533]
+	@while v[v[536]] != 0 {
+	    v[207] = v[v[536]] - 1
+	    v[210] = v[207] * v[1117] 
+	    v[210] += 5001
+	    //@comment "AITimer==1 "
+	    @if `v[v[210] + 83] == 1 {
+		v[210] -= 1
+		v[843] = v[210] + 243
+		//@comment "Auto Attack"
+		@if v[v[843]] == 1 {
+		    //@comment "Set Timer"
+		    v[v[210] + 84] = 3
+		    //@comment "Auto Attack"
+		    v[703] = v[210] + 103
+		    v[300] = v[210] + 18
+		    v[340] = 34 + v[v[703]]
+		    @call .cev v[340]
+		    
+		}
+		
+	    }
+	    //@comment "++"
+	    v[536] += 1
+	    
+	}
+}

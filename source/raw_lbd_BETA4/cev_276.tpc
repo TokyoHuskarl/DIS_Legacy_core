@@ -1,0 +1,82 @@
+cev .id(276), .name("cev276"), {
+@comment "#Unit Type"
+v[702] = 9
+@comment "#AAType"
+v[703] = 4
+@comment "#Level"
+v[704] = 1
+@comment "#HP"
+v[705..706] = 500
+v[731] = 3
+@comment "#MP"
+v[707..707] = 10
+v[708] = 0
+v[732] = 0
+@comment "#AD"
+v[709] = 5
+@if s[1] .isOn() {
+    v[709] = 54444
+    
+}
+@comment "#AP"
+v[710] = 0
+@comment "#AR"
+v[711] = 45
+@comment "#MR"
+v[712] = 30
+@comment "#Apen"
+v[713] = 45
+@comment "#Mpen"
+v[714] = 0
+@comment "#Crit"
+v[715] = 0
+@comment "#MS"
+v[716] = 92
+@if s[1] .isOn() {
+    v[716] = 360
+    
+}
+@comment "#Range Melee"
+v[717] = 21000
+@comment "#Range Ranged"
+v[718] = -1
+@comment "#AttackSpeed"
+v[719] = 100
+@comment "##Hero:Orthunass"
+@if v[2402] == 1 {
+    v[719] = muldiv(v[719], 108, 100)
+    
+}
+@comment "#AttackMotion"
+v[720] = 1
+v[726] = 3
+v[726] |= 2048
+v[726] |= 512
+@comment "#AttackFunction"
+v[730] = 32
+@comment "#####
+SKILL
+##### "
+s[118].on
+@comment "#Q_ID and Q_Func"
+@call .cev 1217
+@comment "#Build"
+v[594] = 2
+v[581].copy v[741], 20
+@comment "#W_ID and W_Func"
+@call .cev 1217
+@comment "#Build"
+v[594] = 9
+v[581].copy v[761], 20
+@comment "#E_ID and E_Func"
+@call .cev 1217
+@comment "#Build"
+v[594] = 10
+v[581].copy v[781], 20
+@comment "#E_ID and E_Func"
+@call .cev 1217
+@comment "#Build"
+v[594] = 8
+v[581].copy v[801], 20
+s[118].off
+}

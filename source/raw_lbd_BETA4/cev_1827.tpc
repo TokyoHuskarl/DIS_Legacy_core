@@ -1,0 +1,66 @@
+cev .id(1827), .name("cev1827"), {
+@loop 1 {
+    @comment "var_add(var,n)"
+    @if t[510] .contains "_add(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split "v", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        v[v[11]] += v[12]
+        @break
+        
+    }
+    @comment "var_sub(var,n)"
+    @if t[510] .contains "_sub(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split "v", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        v[v[11]] -= v[12]
+        @break
+        
+    }
+    @comment "var_mul(var,n)"
+    @if t[510] .contains "_mul(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split "v", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        v[v[11]] *= v[12]
+        @break
+        
+    }
+    @comment "var_div(var,n)"
+    @if t[510] .contains "_div(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split "v", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        v[v[11]] /= v[12]
+        @break
+        
+    }
+    @comment "var_asg(var,n)"
+    @if t[510] .contains "_asg(" {
+        t[510] .split "(", t[3000], v[341]
+        t[3001] .split "v", t[3000], v[341]
+        t[3001] .split ")", t[3000], v[341]
+        t[3000] .split ",", t[3000], v[341]
+        t[3000] .toNum v[11]
+        t[3001] .toNum v[12]
+        v[v[11]] = v[12]
+        @break
+        
+    }
+    
+}
+
+}

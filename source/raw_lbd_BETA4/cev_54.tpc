@@ -1,0 +1,153 @@
+cev .id(54), .name("cev54"), {
+v[202] = 101
+s[21].off
+v[371..380] = 0
+v[12] = 40
+v[13] = v[944] >= 1 ? 1 : 0
+@call .cev 1742
+@if s[313] .isOn() {
+    v[701] = v[v[301] + 101]
+    v[330] = v[4562] + v[101]
+    t[501] .asg t[v[330]]
+    @if s[24] .isOff() {
+        t[501] .asg t[20056]
+        
+    }
+    @comment "#ShieldWall"
+    @if v[371] == 1 {
+        @call .cev 1924
+        v[341] = 2
+        v[601] = 1
+        @pic[v[1155]].strpic {
+            "\c[2]\t[501]\c[0]\t[20062]"
+            .pos v[341], v[1126] .bottomLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 30
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @call .cev 1925
+        
+    }
+    @if v[372] == 1 {
+        @call .cev 1924
+        v[341] = 2
+        v[601] = 1
+        v[342] = v[v[700]] == 1 ? 5 : 10
+        @pic[v[1155]].strpic {
+            "\c[2]\t[501]\c[0]\t[20061]"
+            .pos v[341], v[1126] .bottomLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 30
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @call .cev 1925
+        
+    }
+    @if v[373] == 1 {
+        @call .cev 1924
+        v[341] = 2
+        v[601] = 1
+        @pic[v[1155]].strpic {
+            "\c[2]\t[501]\c[0]\t[20060]"
+            .pos v[341], v[1126] .bottomLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 30
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @call .cev 1925
+        
+    }
+    @if v[374] == 1 {
+        @call .cev 1924
+        v[341] = 2
+        v[601] = 1
+        @pic[v[1155]].strpic {
+            "\c[2]\t[501]\c[0]\t[20180]"
+            .pos v[341], v[1126] .bottomLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 30
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @call .cev 1925
+        
+    }
+    @if v[375] == 1 {
+        @call .cev 1924
+        v[341] = 2
+        v[601] = 1
+        @pic[v[1155]].strpic {
+            t[20465]
+            .pos v[341], v[1126] .bottomLeft
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 30
+            .rgbs 100, 100, 100, 100
+            .font t[530], v[4511]
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 8
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        @call .cev 1925
+        
+    }
+    
+}
+@if v[82] >= 1 {
+    @if v[82] <= 10 {
+        v[v[4530] + (v[82] - 1) * 20 + 20] = 3
+        
+    }
+    
+}
+s[201].on
+@call .cev 48
+v[341] = 3
+@pic[981].show {
+    "OperationIconSpr_1"
+    .pos v[1298], v[1299] .center
+    .chromakey 1
+    .scale 100
+    .trans 50
+    .rgbs 100, 100, 100, 100
+    .grid 1, 10 .cell v[341]
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+}

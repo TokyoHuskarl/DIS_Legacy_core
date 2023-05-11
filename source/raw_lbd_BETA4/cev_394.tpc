@@ -1,0 +1,44 @@
+cev .id(394), .name("cev394"), {
+@se.play "corvus-macrorhynchos-cry1" .opt 100, 100, 50
+@comment "var1=ItemType
+var2=ItemID"
+@actor[2].name "その他"
+@comment "Consumable"
+@if v[11] == 1 {
+    @actor[2].name "消耗品"
+    
+}
+@comment "Weapon"
+@if v[11] == 2 {
+    @actor[2].name "武器"
+    
+}
+@comment "Shield"
+@if v[11] == 3 {
+    @actor[2].name "盾"
+    
+}
+@comment "Helm"
+@if v[11] == 4 {
+    @actor[2].name "兜"
+    
+}
+@comment "Armor"
+@if v[11] == 5 {
+    @actor[2].name "鎧"
+    
+}
+@comment "Accessory"
+@if v[11] == 6 {
+    @actor[2].name "装飾品"
+    
+}
+@comment "sozai"
+@if v[11] == 7 {
+    @actor[2].name "素材"
+    
+}
+v[341] = v[1150] - 1 + v[11]
+v[11].swap v[12], 1
+@call .cev v[341]
+}

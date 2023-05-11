@@ -1,0 +1,35 @@
+cev .id(2050), .name("cev2050"), {
+v[501] = 0
+t[501] .asg  .file "../Maps/define_maps", .utf8
+t[502] .asg t[511]
+t[503] .asg "\t[502]@.*" .extract
+t[501].exMatch {
+    t[503]
+    t[501]
+    v[341]
+    .beg 0
+    .extract
+}
+t[750] .asg t[502]
+@map[62].setPlayerPos .pos 12, 6 .retain
+@scr.hide 19
+@wait 0
+@if t[501] .neq "" {
+    t[501] .split "@", t[501], v[341]
+    t[502] .toNum v[501]
+    
+}
+@if v[501] != 0 {
+    v[341] = 0
+    @map[v[501]].setPlayerPos .pos v[341] v[341]
+    
+} .else bl {
+    @map[60].setPlayerPos .pos 0, 0 .retain
+    
+}
+s[43].on
+@call .cev 2130
+s[2].off
+s[458].on
+s[459].off
+}

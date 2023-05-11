@@ -1,0 +1,42 @@
+cev .id(1170), .name("cev1170"), {
+v[868] = 0
+v[871] = 0
+v[874] |= 262144
+@comment "#ForceSpr"
+v[v[850]] = 0
+@if `v[v[235] + 15] % 3 == 0 {
+    @if s[2] .isOff() {
+        @comment "Bless Particle"
+        @loop v[1017] .dst v[320] {
+            v[244] %= v[1199]
+            v[331] = v[244] * 50
+            v[331] = v[331] + v[1198]
+            @if v[v[331]] <= 1 {
+                @comment "まず清掃"
+                v[1301].copy v[v[331]], 50
+                @comment "ポインタセット開始"
+                @comment "設定"
+                v[v[331]] = 1
+                @comment "500F"
+                v[v[331] + 49] = 5
+                @comment "Set itself"
+                v[v[331] + 3] = 141
+                @comment "Set Parent Obj"
+                v[v[331] + 9] = v[401] + 1
+                @comment "普通にアニメ"
+                v[341] = v[331] + 6
+                v[607].copy v[v[341]], 2
+                @comment "仕上げに登録消す"
+                v[244] += 1
+                @break
+                
+            }
+            v[244] += 1
+            
+        }
+        
+        
+    }
+    
+}
+}

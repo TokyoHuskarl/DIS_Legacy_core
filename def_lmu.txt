@@ -1,0 +1,98 @@
+
+magic
+map
+
+
+
+def magic pstr
+
+def map {
+    1: ber
+    2: ber
+    3: ber
+    11: i8
+    31: i8
+    32: str    
+    33: i8
+    34: i8
+    35: i8
+    36: ber
+    37: i8
+    38: ber
+    40: i8
+    41: ber
+    42: i8
+    43: ber
+    44: ber
+    45: ber
+    46: ber
+    47: ber
+    48: ber
+    49: ber
+    50: ber
+    51: i8
+    52: i8
+    53: i8
+    54: i8
+    55: i8
+    56: i8
+    60: [i16, 18]
+    61: [i16, 18]
+    62: [i16, 18]
+    71: [i16]
+    72: [i16]
+    81: [ber: mev]
+    90: ber
+    91: ber
+}
+
+def mev {
+    1: str
+    2: ber
+    3: ber
+    5: [ber: mep]    
+}
+
+def mep {
+    2: cond
+    21: str
+    22: ber
+    23: i8
+    24: ber
+    25: i8
+    31: i8
+    32: ber
+    33: i8
+    34: i8
+    35: i8
+    36: i8
+    37: ber
+    41: route
+    51: $size
+    52: [tkc]
+}
+
+def cond {
+    1: i8
+    2: ber
+    3: ber
+    4: ber
+    5: ber
+    6: ber
+    7: ber
+    8: ber
+    9: ber
+    10: ber
+}
+
+def route {
+    11: $size
+    12: tkroute
+    21: i8
+    22: i8
+}
+
+
+
+
+

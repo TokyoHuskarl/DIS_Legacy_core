@@ -1,0 +1,270 @@
+#include "./../headers/header_common.tpc"
+
+
+//CEV SightSystemPL
+cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSystem_On), {   
+	@comment "module_RTS_sightsystem_general.tpc"
+	v[161].copy v[2923], 2
+	v[2923] .sub v[1115], 1
+	v[2924] += 8 
+	v[2924] -= v[1002] / 2
+	v[2923].copy v[2921], 2
+	v[2923..2924] /= 80
+	v[2923] += v[2924] * v[2927]
+	@comment "#0,0"
+	v[2921..2922] %= 80
+	v[2931] = v[4527] + v[2923]
+	v[346] = muldiv(12, v[1001], 800)
+	v[342] = v[4525]
+	@loop v[4526] .dst v[341] {
+	    v[348] =v[341] % v[346]
+	    v[349] =v[341] / v[346]
+
+	    v[345] = v[2931] + v[348]
+	    v[345] += v[349] * v[2927]
+	    v[350] = v[v[345]] & 1 ? 100 : v[v[345]] & 2 ? 50 : 0
+	    v[343] = 80 * v[348]
+	    v[344] = 80 * v[349]
+	    v[343] .sub v[2921], 2
+	    @pic[v[342]].move {
+		.pos v[343], v[344] .topLeft
+		.scale 100
+		.trans v[350]
+		.time 0
+		.rgbs 100, 100, 100, 100
+	    }
+	    v[342] += 1
+	    
+	}
+	v[536] = v[4532]
+	@while v[v[536]] != 0 {
+	    v[401] = v[v[536]] - 1
+	    v[341] = 2001 + v[401]
+	    //@if `v[v[301] + 100] % 3 == 0 {
+	    //v[303] = Const_AgentMetaTeam_begin + v[401]
+	    @if `v[Const_AgentMetaTeam_begin + v[401]]==0{ //v[v[303]] == 0 {
+		//v[0] = s[2001 + v[401]] = 1 opt 25.4.23
+		s[v[341]].on
+	    } .else bl {
+	        v[301] = v[401] * v[1117] 
+		v[301] += 5026
+		v[v[301]].copy v[626], 2
+		v[626..627] /= 5
+
+		v[302] = v[4518] + v[401]
+		//opt 28.4.23
+		//v[0] = s[2001 + v[401]] = (v[v[302]] = v[v[4527] + v[v[301] + 26] / 5 + v[v[301] + 27] / 5 * v[2927]] & 1 ? 100 : v[v[302]] - 1) > 0
+		s[v[341]].off
+		@if `(v[v[302]] = v[v[4527] + v[626] + v[627] * v[2927]] & 1 ? 100 : v[v[302]] - 1) > 0 {
+		    s[v[341]].on
+		    
+		}
+		
+		
+	    }
+	    //++
+	    v[536] += 1
+	    
+	}
+
+	//Static
+	v[536] = v[4533]
+	@while v[v[536]] != 0 {
+	    v[401] = v[v[536]] - 1
+	    //@if `v[v[301] + 100] % 3 == 0 {
+	    //v[303] = Const_AgentMetaTeam_begin + v[401]
+	    v[341] = 2001 + v[401]
+	    @if `v[Const_AgentMetaTeam_begin + v[401]]==0{ //v[v[303]] == 0 {
+		//v[0] = s[2001 + v[401]] = 1 opt 25.4.23
+		s[v[341]].on
+		
+	    } .else bl {
+	        v[301] = v[401] * v[1117] 
+		v[301] += 5258
+		v[v[301]].copy v[858], 2
+		v[302] = v[4518] + v[401]
+		//opt 28.4.23
+		//get from saved slot for optimizing
+		s[v[341]].off
+		@if `(v[v[302]] = v[v[4527] + v[858]  + v[859]  * v[2927]] & 1 ? 100 : v[v[302]]) > 0 {
+			s[v[341]].on
+		}
+
+	    }
+	    //++
+	    v[536] += 1
+	    
+	}
+}
+
+cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem_On), {
+	@comment "module_RTS_sightsystem_general.tpc"
+	@if s[20] .isOn() {
+	    @wait 0
+	    @if s[2] .isOff() {
+		v[v[4527]..v[4527] + 100 * 100] &= ~1
+		
+	    }
+	    v[310] = (v[2409] & 0x1000000 ? 1 : 0) + (v[2409] & 0x2000000 ? 1 : 0)
+	    @loop v[205] .dst v[325] {
+		v[401] = v[325] + v[1145]
+		v[401] = v[v[401]] - 1
+		v[301] = v[401] * v[1117] 
+		v[301] += 5000
+		
+		v[v[301]].copy v[600], 300
+
+		//@comment "Minions"
+		//@comment "In sight?"
+		v[626..627] /= 5
+		v[341] = v[4527] + v[626] 
+		v[341] += v[627] * v[2927]
+		v[350] = v[877] & 2 ? 0 : v[v[4528] + v[401]] + max(v[657] - v[504], 0) + v[310]
+		//@comment "1=sight?"
+		v[341] -= v[350] * v[2927] 
+		v[341] -= v[350]
+		v[351..352] = v[350] * 2 
+		v[351..352] += 1
+		@if v[341] < v[4527] {
+		    v[352] -= 1
+		    v[341] += v[2927]
+		    
+		}
+		/*
+		v[626] = v[301] + 26
+		v[v[626]].copy v[626], 2
+		v[626..627] /= 5
+		v[341] = v[4527] + v[626] 
+		v[341] += v[627] * v[2927]
+		v[350] = v[v[301] + 277] & 2 ? 0 : v[v[4528] + v[401]] + max(v[v[301] + 57] - v[504], 0) + v[310]
+		//@comment "1=sight?"
+		v[341] -= v[350] * v[2927] 
+		v[341] -= v[350]
+		v[351..352] = v[350] * 2 
+		v[351..352] += 1
+		@if v[341] < v[4527] {
+		    v[352] -= 1
+		    v[341] += v[2927]
+		    
+		}
+
+		*/
+
+
+
+		v[319] = v[626] - v[350]
+		//@comment "hori"
+		@loop v[351] .dst v[343] {
+		    @if `between(v[319] + v[343], 0, v[2927]) {
+			//@comment "vert"
+			@loop v[352] .dst v[342] {
+			    v[360] = v[341] 
+			    v[360] += v[342] * v[2927]
+			    @if `!(v[v[360]] & 2) {
+				s[236].on
+				
+			    }
+			    @if `!(v[v[360]] & 4) {
+				s[237].on
+				
+			    }
+			    v[v[360]] |= 7
+			    
+			}
+			
+			
+		    }
+		    v[341] += 1
+		    
+		}
+		
+		
+	    }
+	    
+	    @wait 0
+	    v[360] = v[4527]
+	    @loop v[2928] {
+		@loop v[2927] {
+		    @if `(v[v[360]] & 5) == 4 {
+			s[237].on
+			v[v[360]] &= ~4
+			
+		    }
+		    v[360] += 1
+		    
+		}
+		
+		
+	    }
+	    
+	    @wait 0
+	    @if s[236] .isOn() {
+		@if s[78] .isOn() {
+		    @if s[299] .isOff() {
+			@pic[v[2932]].getInfo .cewh .baseRect v[341], v[341], v[342], v[343]
+			@pic[v[2932]].show {
+			    "ui\minimapback"
+			    .pos v[1282], v[1283] .topLeft
+			    .chromakey 1
+			    .scale 100
+			    .trans 0
+			    .rgbs 100, 100, 100, 100
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			}
+			v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
+			@loop v[1276] .dst v[344] {
+			    @loop v[1277] .dst v[343] {
+				v[v[4563] + v[343] + v[344] * v[1277]] = v[v[4527] + v[v[4803] + v[343]] + v[v[4802] + v[344]] * v[2927]] & 2 ? 0x0 : 0xFF111111
+				
+			    }
+			    
+			    
+			}
+			
+			@pic[v[2932]].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
+			
+		    }
+		    
+		}
+		s[236].off
+		
+	    }
+	    //@comment "##################"
+	    @wait 0
+	    @if s[237] .isOn() {
+		@if s[78] .isOn() {
+		    v[331] = v[2932] + 1
+		    @pic[v[331]].show {
+			"ui\minimapback"
+			.pos v[1282], v[1283] .topLeft
+			.chromakey 1
+			.scale 100
+			.trans 50
+			.rgbs 100, 100, 100, 100
+			.mapLayer 9
+			.eraseWhenTransfer
+		    }
+		    v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
+		    @loop v[1276] .dst v[344] {
+			@loop v[1277] .dst v[343] {
+			    v[v[4563] + v[343] + v[344] * v[1277]] = v[v[4527] + v[v[4803] + v[343]] + v[v[4802] + v[344]] * v[2927]] & 1 ? 0x0 : 0xFF111111
+			    
+			}
+			
+			
+		    }
+		    
+		    @pic[v[331]].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
+		    
+		}
+		s[237].off
+		
+	    }
+	    @if s[314] .isOn() {
+		@wait 1
+		
+	    }
+	    
+	}
+}

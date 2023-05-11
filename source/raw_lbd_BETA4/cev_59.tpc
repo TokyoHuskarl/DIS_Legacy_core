@@ -1,0 +1,248 @@
+cev .id(59), .name("cev59"), {
+@comment ""
+@pic[983].getInfo .cewh .baseRect v[341], v[342], v[343], v[344]
+@pic[982].move {
+    .relative
+    .pos 0, 0 .center
+    .scale 0
+    .trans 0
+    .time 0
+    .rgbs 100, 100, 100, 100
+}
+@pic[983].move {
+    .relative
+    .pos 0, 0 .center
+    .scale 0
+    .trans 0
+    .time 0
+    .rgbs 150, 150, 150, 100
+}
+@pic[984].move {
+    .relative
+    .pos 0, 0 .center
+    .scale 0
+    .trans 0
+    .time 0
+    .rgbs 100, 100, 100, 100
+}
+@pic[985].move {
+    .relative
+    .pos 0, 0 .center
+    .scale 0
+    .trans 0
+    .time 0
+    .rgbs 100, 100, 100, 100
+}
+v[301] = v[101] * 300
+v[301] += 4700
+v[300] = v[301] + 1
+v[299] = v[301] + 107
+@if s[57] .isOn() {
+    @msg.show "\>Static"
+    @msg.inputNum .digit 3 .dst v[2101]
+    v[87] = 2
+    
+} .else bl {
+    @if v[v[300]] > 0 {
+        @if s[27] .isOn() {
+            v[298] = v[301] + 3
+            @if `v[v[298]] & 8192 {
+                v[341] = v[942] >= 1 ? 5 : 1
+                v[341] = v[943] >= 1 ? 10 : v[341]
+                @loop v[341] {
+                    v[11] = 0
+                    v[12] = 1
+                    @if s[84] .isOff() {
+                        @call .cev 793
+                        
+                    } .else bl {
+                        @call .cev 794
+                        
+                    }
+                    
+                }
+                
+                
+            } .else bl {
+                @comment "最大MPを持っているか（Unit生産できるか）"
+                @if v[v[299]] >= 1 {
+                    @comment "#兵舎の生産コマンド"
+                    v[341] = v[942] >= 1 ? 5 : 1
+                    v[341] = v[943] >= 1 ? 10 : v[341]
+                    v[148] = v[341]
+                    v[341] *= v[99]
+                    v[147] = 0
+                    @loop v[341] {
+                        v[147] %= v[99]
+                        v[301] = v[v[147] + 101] * 300 + 4700
+                        v[300] = v[301] + 1
+                        v[298] = v[300] + 137
+                        v[v[298]].copy v[738], 62
+                        v[311] = v[300] + 169
+                        @if v[v[311]] < 30 {
+                            s[201].off
+                            v[314..315] = v[300] + 137
+                            v[312] = v[300] + 170
+                            @loop 29 {
+                                @if v[v[312]] == 0 {
+                                    s[201].on
+                                    @comment "#仮置き
+1番だけ"
+                                    v[330] = 2
+                                    v[315] += v[330] * 3
+                                    @if v[v[315]] >= 1 {
+                                        @break
+                                        
+                                    } .else bl {
+                                        s[201].off
+                                        @break
+                                        
+                                    }
+                                    
+                                }
+                                v[312] += 1
+                                
+                            }
+                            
+                            @comment "#RS check"
+                            v[1301].copy v[31], 4
+                            s[151].on
+                            s[152].on
+                            v[254] = v[v[315]]
+                            @call .cev 300
+                            s[151].off
+                            v[31].copy v[15], 4
+                            @call .cev 1916
+                            v[316] = v[315] + 2
+                            v[v[316]] = v[v[316]] == 0 ? v[13] : v[v[316]]
+                            @if v[21] != 0 {
+                                s[201].off
+                                
+                            }
+                            @if s[201] .isOn() {
+                                v[v[312]] = v[330]
+                                v[472] = divmul(80, 100, v[2216])
+                                @se.play "Clock" .opt v[472], 50, 50
+                                v[300001] .sub v[31], 4
+                                @comment "#Tech Flag"
+                                @call .cev 84
+                                @comment "#TT6=MP"
+                                v[v[314]].copy v[326], 3
+                                v[346] = v[301] + 108
+                                v[v[346]] *= v[v[346]] == -1 ? 0 : 1
+                                @if v[v[311]] == 0 {
+                                    v[v[315]].copy v[v[314]], 3
+                                    
+                                }
+                                v[v[311]] += 1
+                                v[148] -= 1
+                                @if v[148] <= 0 {
+                                    @break
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        v[147] += 1
+                        
+                    }
+                    
+                    @if s[201] .isOff() {
+                        v[472] = divmul(90, 100, v[2216])
+                        @se.play "Buzzer1" .opt v[472], 100, 50
+                        @break
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        } .else bl {
+            @if s[29] .isOn() {
+                @if v[558] > -1 {
+                    @if v[204] <= v[1004] {
+                        v[344] = v[558]
+                        @comment "###################"
+                        @call .cev 796
+                        
+                    } .else bl {
+                        @comment "ユニット数上限"
+                        
+                    }
+                    
+                } .else bl {
+                    v[11] = 2
+                    s[204].off
+                    @call .cev 797
+                    
+                }
+                
+            } .else bl {
+                @if v[943] >= 1 {
+                    v[11] = 2
+                    @call .cev 2097
+                    
+                } .else bl {
+                    @comment "TEST"
+                    @if s[1] .isOff() {
+                        s[81].on
+                        
+                    }
+                    v[202] = 101
+                    @loop .inf() {
+                        v[301] = v[v[202]] * 300
+                        v[301] += 4700
+                        @if v[v[202]] == 0 {
+                            @comment "とぎれた"
+                            @break
+                            
+                        }
+                        @if v[202] > v[1007] {
+                            @comment "とりあえず40体までしか選択できない"
+                            @break
+                            
+                        }
+                        @if s[81] .isOn() {
+                            @comment "if player controlling only one unit, then the unit immediately cast skill"
+                            v[v[301] + 84] = v[202] == 101 ? 2 : v[v[301] + 84]
+                            @comment "スキル使用指令を出す"
+                            v[11] = v[v[202]]
+                            v[12] = 2
+                            s[83].on
+                            @call .cev 2008
+                            s[83].off
+                            @if v[21] <= 0 {
+                                @comment "とりあえずマウス座標だけ
+Skill2"
+                                @comment "とりあえずマウス座標だけ"
+                                v[341] = v[301] + 170
+                                v[51].copy v[v[341]], 2
+                                v[342] = v[301] + 7
+                                v[v[341]] .sub v[v[342]], 2
+                                @comment "set Order to cast Skill2"
+                                v[v[301] + 246] = 2
+                                
+                            } .else bl {
+                                v[472] = divmul(90, 100, v[2216])
+                                @se.play "Buzzer3" .opt v[472], 100, 50
+                                
+                            }
+                            
+                        }
+                        v[202] += 1
+                        
+                    }
+                    
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+}
+}

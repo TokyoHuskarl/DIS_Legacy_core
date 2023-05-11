@@ -1,0 +1,46 @@
+#include "./../headers/header_common.tpc"
+#include "./../headers/header_battlesystem.tpc"
+#include "./../headers/header_picture_edit.tpc"
+#include "./module_core_RTS_battlesystem_morale.tpc"
+#include "./module_core_RTS_battlesystem_functions.tpc"
+
+
+def moduletitle="module_core_RTS_battlesystem_general.tpc"
+
+//Hit Checks
+//load functions
+#include "./module_core_RTS_battlesystem_hitchecks.tpc"
+//Please never change these hit check common events id, they are used in Agent Aciton - AA
+cev .id(42) .name("BattleSystemFunc:MeleeHitCheck"){
+	func_bs_melee_hit_check(v[299] v[300])
+}
+cev .id(43) .name("BattleSystemFunc:RangedHitCheck"){
+	func_bs_ranged_hit_check(v[299] v[300] v[13])
+}
+cev .id(44), .name("BattleSystemFuncNoHitCheck"), {
+	func_bs_dummy_hit_check()
+}
+cev .id(35) .name("BattleSystemFunc:MindHitCheck"){
+	func_bs_mind_hit_check(v[299] v[300])
+}
+
+//damage calculation
+#include "./module_core_RTS_battlesystem_damage_calculation.tpc"
+cev .id(40) .name("BattleSystemFunc:Damage Cal"){
+	func_damage_calculation()
+}
+
+//kill/retreat/disband agent
+#include "./module_core_RTS_battlesystem_remove_agent.tpc"
+
+//Morales
+cev .id(1192) .name("BS_MoraleFunc:Morale Recover"),{
+	func_bs_morale_recover(var1 var2)
+}
+cev .id(1193) .name("BS_MoraleFunc:Morale Check"),{
+	func_bs_morale_check(var1 var2)
+}
+
+cev .id(1895) .name("BS_Func:Change Agent Team"),{
+	func_bs_change_agent_team(var1 var2)
+}

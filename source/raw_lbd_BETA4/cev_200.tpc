@@ -1,0 +1,611 @@
+cev .id(200), .name("cev200"), {
+@comment "###############"
+@comment "Init"
+@comment "###############"
+@if s[1] .isOn() {
+    @actor[2].name "帝国皇帝親衛隊"
+    @actor[2].name "ｳﾞｧﾗﾝｶﾞｰ隊"
+    @actor[2].name "ﾉﾙﾄﾞﾖﾑｽﾊｽｶｰﾙ"
+    @actor[2].name "鉄十字修道騎士"
+    @if s[27] .isOff() {
+        @if v[601] == 2 {
+            @if v[701] == 1 {
+                @actor[2].name "Furious ninja boy"
+                
+            }
+            @if v[701] == 2 {
+                @actor[2].name "アレックス"
+                
+            }
+            @if v[701] == 3 {
+                @if s[7] .isOff() {
+                    @actor[2].name "ブライアン"
+                    
+                } .else bl {
+                    @actor[2].name "北方セイン"
+                    
+                }
+                
+            }
+            @if v[701] == 4 {
+                @actor[2].name "キャロル"
+                
+            }
+            @if v[701] == 5 {
+                @actor[2].name "デイジー"
+                
+            }
+            
+        } .else bl {
+            @comment "NOT STATIC"
+            @if v[701] == 1 {
+                @actor[2].name "ＪＯＭＳＶＩＫＩＮＧ"
+                
+            }
+            @if v[701] == 2 {
+                @comment "Levy Pikeman"
+                @actor[2].name "ポテチ召集槍兵"
+                
+            }
+            @if v[701] == 3 {
+                @comment "Elite Cavarly"
+                @actor[2].name "帝国エクイテ騎兵"
+                
+            }
+            @if v[701] == 4 {
+                @comment "Einherjar"
+                @actor[2].name "エインヘリャル"
+                
+            }
+            @if v[701] == 5 {
+                @comment "Elite Pikeman"
+                @actor[2].name "ポテチ正規槍兵"
+                
+            }
+            @if v[701] == 6 {
+                @comment "Arbalestier"
+                @actor[2].name "弩兵"
+                
+            }
+            @if v[701] == 7 {
+                @comment "Elite Swordman"
+                @actor[2].name "近衛剣兵"
+                
+            }
+            @if v[701] == 8 {
+                @actor[2].name "エインヘリャル"
+                
+            }
+            @if v[701] == 9 {
+                @comment "Mamluke H.Archer"
+                @actor[2].name "ﾏﾑﾙｰｸ弓騎兵"
+                
+            }
+            @if v[701] == 10 {
+                @comment "Farmer Dragon"
+                @actor[2].name "農民ドラゴン"
+                
+            }
+            @if v[701] == 11 {
+                @comment "Militia"
+                @actor[2].name "自警団"
+                
+            }
+            @if v[701] == 12 {
+                @comment "Militia"
+                @actor[2].name "民兵"
+                
+            }
+            @if v[701] == 13 {
+                @comment "Spearman"
+                @actor[2].name "槍軍兵"
+                
+            }
+            @if v[701] == 14 {
+                @actor[2].name "古参修道騎士"
+                
+            }
+            @if v[701] == 15 {
+                @comment "Berserkr"
+                @actor[2].name "ベルセルク"
+                
+            }
+            @if v[701] == 16 {
+                @comment "Scorpion"
+                @actor[2].name "カルバリン砲"
+                
+            }
+            @if v[701] == 17 {
+                @comment "Scorpion"
+                @actor[2].name "スコーピオン"
+                
+            }
+            @if v[701] == 18 {
+                @comment "GoblinArcher"
+                @actor[2].name "ゴブリン弓兵"
+                
+            }
+            @if v[701] == 19 {
+                @comment "Orc Infantry"
+                @actor[2].name "オーク支援斧兵"
+                
+            }
+            @if v[701] == 20 {
+                @comment "Bone Golem"
+                @actor[2].name "ボーンゴーレム"
+                
+            }
+            @if v[701] == 21 {
+                @comment "Cataphract"
+                @actor[2].name "ｶﾀﾌﾗｸﾄ重騎兵"
+                
+            }
+            @if v[701] == 22 {
+                @comment "Slave Skirmisher"
+                @actor[2].name "奴隷散兵"
+                
+            }
+            @if v[701] == 23 {
+                @comment "Elven Longbow"
+                @actor[2].name "エルフ長弓兵"
+                
+            }
+            @if v[701] == 24 {
+                @comment "Militia Dragon"
+                @actor[2].name "民兵ドラゴン"
+                
+            }
+            @if v[701] == 25 {
+                @if v[2540] >= 1 {
+                    @actor[2].name "JOKAGON"
+                    
+                } .else bl {
+                    @actor[2].name "Depressive Dragon"
+                    
+                }
+                
+            }
+            @if v[701] == 26 {
+                @comment "DragonKnight"
+                @actor[2].name "ドラゴンナイト"
+                
+            }
+            @if v[701] == 27 {
+                @comment "Dragonaskarl"
+                @actor[2].name "ドラゴナスカール"
+                
+            }
+            @if v[701] == 28 {
+                @comment "Dragonu"
+                @actor[2].name "弩ラゴン"
+                
+            }
+            @if v[701] == 29 {
+                @actor[2].name "ファイアドラゴン"
+                
+            }
+            @if v[701] == 30 {
+                @actor[2].name "職人ドラゴン"
+                
+            }
+            @if v[701] == 31 {
+                @actor[2].name "メイドラゴン"
+                
+            }
+            @if v[701] == 32 {
+                @actor[2].name "カタパルト"
+                
+            }
+            @if v[701] == 33 {
+                @actor[2].name "ドラゴンランサー"
+                
+            }
+            @if v[701] == 34 {
+                @actor[2].name "ストーンゴーレム"
+                
+            }
+            @if v[701] == 35 {
+                @comment ""
+                @actor[2].name "破城槌"
+                
+            }
+            @if v[701] == 36 {
+                @actor[2].name "ジェイ・ドラゴ"
+                
+            }
+            @if v[701] == 37 {
+                @comment "DragonMage"
+                @actor[2].name "ドラゴンメイジ"
+                
+            }
+            @if v[701] == 38 {
+                @comment "Globaligon"
+                @actor[2].name "ｸﾞﾛｰﾊﾞ竜ｴﾘｰﾄ"
+                
+            }
+            @if v[701] == 39 {
+                @comment "Dragonfantry"
+                @actor[2].name "軍兵ドラゴン"
+                
+            }
+            @if v[701] == 40 {
+                @comment "Mushagon"
+                @actor[2].name "武者ゴン"
+                
+            }
+            @if v[701] == 41 {
+                @comment "Snail"
+                @actor[2].name "かたつむり"
+                
+            }
+            @if v[701] == 42 {
+                @comment "NordicSpearman"
+                @actor[2].name "北方長槍兵"
+                
+            }
+            @if v[701] == 43 {
+                @comment "NordicInfantry"
+                @actor[2].name "北方軍兵"
+                
+            }
+            @if v[701] == 44 {
+                @comment "Hirdman"
+                @actor[2].name "北方ヒルド戦士"
+                
+            }
+            @if v[701] == 45 {
+                @actor[2].name "JOMSHERSIR"
+                
+            }
+            @if v[701] == 46 {
+                @comment "Merc.Cavalry"
+                @actor[2].name "傭騎兵"
+                
+            }
+            @if v[701] == 47 {
+                @comment "CavalryRaider"
+                @actor[2].name "北方襲撃騎兵"
+                
+            }
+            @if v[701] == 48 {
+                @comment "Raven"
+                @actor[2].name "大鴉"
+                
+            }
+            @if v[701] == 49 {
+                @comment "Nevermore"
+                @actor[2].name "ネヴァーモア"
+                
+            }
+            @if v[701] == 50 {
+                @comment "Drandsknecht"
+                @actor[2].name "ドランツクネヒト"
+                
+            }
+            @if v[701] == 51 {
+                @comment "VeteranSwordman"
+                @actor[2].name "北方古参剣兵"
+                
+            }
+            @if v[701] == 52 {
+                @comment "VeteranSpearman"
+                @actor[2].name "北方古参槍兵"
+                
+            }
+            @if v[701] == 53 {
+                @actor[2].name "PzKfz IV Ausf.G"
+                
+            }
+            @if v[701] == 54 {
+                @comment "Totenkopf"
+                @actor[2].name "トーテンコプフ"
+                
+            }
+            @if v[701] == 55 {
+                @comment "ImperialScorpio"
+                @actor[2].name "帝国スコルピオ"
+                
+            }
+            @if v[701] == 56 {
+                @comment "AuxiliaSkirmisher"
+                @actor[2].name "帝国ｸﾞﾘｰﾝ･ｽｷﾝ"
+                
+            }
+            @if v[701] == 57 {
+                @comment "LimitaneiSpearnan"
+                @actor[2].name "帝国ﾘﾐﾀﾈｲ槍兵"
+                
+            }
+            @if v[701] == 58 {
+                @comment "Imperial Onager"
+                @actor[2].name "帝国破城投石機"
+                
+            }
+            @if v[701] == 59 {
+                @comment "Legio Baristarii"
+                @actor[2].name "帝国軍団ﾊﾞﾘｽﾀﾘ"
+                
+            }
+            @if v[701] == 60 {
+                @actor[2].name "帝国装甲騎兵"
+                
+            }
+            @if v[701] == 61 {
+                @comment "Cohort Infantry"
+                @actor[2].name "帝国大隊歩兵"
+                
+            }
+            @if v[701] == 62 {
+                @actor[2].name "JOKAGON"
+                
+            }
+            @if v[701] == 63 {
+                @comment "Legionarius"
+                @actor[2].name "帝国軍団兵"
+                
+            }
+            @if v[701] == 64 {
+                @comment "Legio Hastati"
+                @actor[2].name "帝国軍団槍兵"
+                
+            }
+            @if v[701] == 65 {
+                @comment "Evocatii"
+                @actor[2].name "帝国軍団古参兵"
+                
+            }
+            @if v[701] == 66 {
+                @comment "Armored Legio"
+                @actor[2].name "帝国重装軍団兵"
+                
+            }
+            @if v[701] == 67 {
+                @comment "Centurio"
+                @actor[2].name "帝国百人隊長"
+                
+            }
+            @if v[701] == 68 {
+                @comment "Signifer"
+                @actor[2].name "帝国軍団旗手"
+                
+            }
+            @if v[701] == 69 {
+                @actor[2].name "王国下馬騎士"
+                
+            }
+            @if v[701] == 70 {
+                @actor[2].name "町の人"
+                
+            }
+            @if v[701] == 71 {
+                @actor[2].name "Dragonic Empress"
+                
+            }
+            @if v[701] == 72 {
+                @comment "Dratina Guard"
+                @actor[2].name "ﾊﾟﾗﾃｨｰﾅ竜衛兵"
+                
+            }
+            @if v[701] == 73 {
+                @comment "Scholae Sorcerer"
+                @actor[2].name "ｽｺﾗｴ魔道兵"
+                
+            }
+            @if v[701] == 74 {
+                @comment "Auxilia Harpy"
+                @actor[2].name "ハーピー斥候兵"
+                
+            }
+            @if v[701] == 75 {
+                @comment "Auxilia Minotaur"
+                @actor[2].name "ﾐﾉﾀｳﾛｽ支援兵"
+                
+            }
+            @comment "######################
+Eastern Rtpic Empire
+######################"
+            @if v[701] == 112 {
+                @comment "Elite Toxotai"
+                @actor[2].name "帝国ﾄｸｿﾀｲ弓兵"
+                
+            }
+            @if v[701] == 113 {
+                @comment "Elite Toxotai"
+                @actor[2].name "帝国精鋭ﾄｸｿﾀｲ"
+                
+            }
+            @if v[701] == 114 {
+                @comment "Levy"
+                @actor[2].name "帝国召集兵"
+                
+            }
+            @if v[701] == 115 {
+                @comment "Psiloi"
+                @actor[2].name "帝国ﾌﾟｼﾛｲ歩兵"
+                
+            }
+            @if v[701] == 116 {
+                @comment "Menavlatoi"
+                @actor[2].name "帝国メナウラトイ"
+                
+            }
+            @if v[701] == 117 {
+                @comment "Skutatoi"
+                @actor[2].name "帝国スクタトイ"
+                
+            }
+            @if v[701] == 118 {
+                @comment "Centurion"
+                @actor[2].name "帝国百人隊長"
+                
+            }
+            @if v[701] == 119 {
+                @comment "Spatharioi"
+                @actor[2].name "帝国儀仗兵"
+                
+            }
+            @comment "######################
+Osach Kingdom
+######################"
+            @if v[701] == 320 {
+                @comment "Potetic Footman"
+                @actor[2].name "王国歩兵"
+                
+            }
+            @if v[701] == 321 {
+                @comment "Potetic Guard"
+                @actor[2].name "王国衛兵"
+                
+            }
+            @if v[701] == 322 {
+                @comment "Potetic Arbalestier"
+                @actor[2].name "王国弩兵"
+                
+            }
+            @if v[701] == 323 {
+                @comment "Potetic Sentinel"
+                @actor[2].name "王国番兵"
+                
+            }
+            @if v[701] == 201 {
+                @actor[2].name "時代進化"
+                
+            }
+            @if v[701] == 202 {
+                @actor[2].name "攻城兵器の研究"
+                
+            }
+            @if v[701] == 203 {
+                @actor[2].name "近衛部隊の招集"
+                
+            }
+            @if v[701] == 204 {
+                @actor[2].name "徴用"
+                
+            }
+            @if v[701] == 205 {
+                @actor[2].name "民兵アップグレード"
+                
+            }
+            @if v[701] == 206 {
+                @actor[2].name "軍兵アップグレード"
+                
+            }
+            @if v[701] == 207 {
+                @actor[2].name "重剣兵アップグレード"
+                
+            }
+            @if v[701] == 208 {
+                @actor[2].name "道具の改良"
+                
+            }
+            @if v[701] == 209 {
+                @actor[2].name "地下蔵の研究"
+                
+            }
+            @if v[701] == 318 {
+                @comment "Skutatoi"
+                @actor[2].name "帝国スクタトイ"
+                @actor[2].name "帝国剣闘士"
+                
+            }
+            @comment "Menavlatoi"
+            @if v[701] == 1001 {
+                @comment "Skutatoi"
+                @actor[2].name "帝国剣闘士"
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @comment "STATIC"
+        @if v[701] == 1 {
+            @actor[2].name "町の中心"
+            
+        }
+        @if v[701] == 2 {
+            @actor[2].name "畑"
+            
+        }
+        @if v[701] == 3 {
+            @actor[2].name "砦"
+            
+        }
+        @if v[701] == 4 {
+            @actor[2].name "建築現場"
+            
+        }
+        @if v[701] == 6 {
+            @actor[2].name "影分身"
+            
+        }
+        @if v[701] == 7 {
+            @actor[2].name "ヴァイキング船"
+            
+        }
+        @if v[701] == 8 {
+            @actor[2].name "住宅"
+            
+        }
+        @if v[701] == 9 {
+            @actor[2].name "植林場"
+            
+        }
+        @if v[701] == 10 {
+            @actor[2].name "採掘場"
+            
+        }
+        @if v[701] == 11 {
+            @actor[2].name "兵舎"
+            
+        }
+        @if v[701] == 12 {
+            @actor[2].name "フルーツ"
+            
+        }
+        @if v[701] == 13 {
+            @actor[2].name "モンスターの巣"
+            
+        }
+        @if v[701] == 14 {
+            @actor[2].name "防御塔"
+            
+        }
+        @if v[701] == 15 {
+            @actor[2].name "鉄工所"
+            
+        }
+        @if v[701] == 16 {
+            @actor[2].name "重装兵器工廠"
+            
+        }
+        @if v[701] == 17 {
+            @actor[2].name "竜の殿堂"
+            
+        }
+        @if v[701] == 18 {
+            @actor[2].name "魔王"
+            
+        }
+        @if v[701] == 19 {
+            @actor[2].name "帝国軍団駐屯地"
+            
+        }
+        @if v[701] == 20 {
+            @actor[2].name "防壁"
+            
+        }
+        @if v[701] == 21 {
+            @actor[2].name "城門"
+            
+        }
+        @if v[701] == 22 {
+            @actor[2].name "帝国都市参議院"
+            
+        }
+        
+    }
+    
+}
+}

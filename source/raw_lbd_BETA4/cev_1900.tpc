@@ -1,0 +1,21 @@
+cev .id(1900), .name("cev1900"), {
+@msg.opt {
+    .trans
+    .bottom
+    .size 0, 0
+    .font "", 0
+}
+@scr.hide .default
+s[19].off
+s[18].off
+s[43].on
+s[50].on
+s[2].on
+@pic[971..972].erase
+@pic.erase .all
+s[1..300].off
+v[1..46] = 0
+v[53..1000] = 0
+v[2800..159529] = 0
+v[225001..461318] = 0
+}

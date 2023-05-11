@@ -1,0 +1,173 @@
+cev .id(229), .name("cev229"), {
+v[13] = 120
+v[31..34] = 0
+v[31] = 125
+v[34] = 55
+t[501] .asg "ファイアドラゴン"
+@if v[2201] == 1 {
+    
+} .else bl {
+    
+}
+@if s[151] .isOff() {
+    @if s[1] .isOn() {
+        @if v[204] < v[1004] {
+            v[204] += 1
+            @loop v[1004] .dst v[320] {
+                v[201] %= v[1004]
+                v[301] = v[201] * 300
+                v[301] += 5000
+                v[300] = v[301] + 1
+                @if v[v[300]] <= 0 {
+                    @comment "まず清掃"
+                    v[1301].copy v[601], 300
+                    v[1301].copy v[v[300]], 300
+                    v[664] = 3
+                    @comment "WP消しておく"
+                    v[655] = -1
+                    @comment "出る場所セット"
+                    v[252].copy v[605], 2
+                    @comment "チームセット"
+                    v[700] = v[251]
+                    v[624] = v[700] + 1
+                    @comment "ObjTyp"
+                    v[601] = 1
+                    @comment "生成場所の数値を入れる"
+                    v[605].copy v[607], 2
+                    v[605].copy v[641], 2
+                    v[310..311] = 10000
+                    v[605] .mul v[310], 2
+                    @comment "あたり判定"
+                    v[610] = 13
+                    v[611] = 14
+                    @comment "パラメータ等入力begin"
+                    @comment "#Unit ID"
+                    v[701] = 29
+                    @comment "#Unit Type"
+                    v[702] = 3
+                    @comment "#AAType"
+                    v[703] = 4
+                    @comment "#Level"
+                    v[704] = 5
+                    @comment "#HP"
+                    v[705..706] = 1000
+                    @comment "#HPReg"
+                    v[731] = 4
+                    @comment "#MP"
+                    v[707..708] = 2500
+                    @comment "#MPReg"
+                    v[732] = 25
+                    @comment "#AD"
+                    v[709] = 30
+                    @comment "#AP"
+                    v[710] = 250
+                    @comment "#AR"
+                    v[711] = 80
+                    @comment "#MR"
+                    v[712] = 90
+                    @comment "#Apen"
+                    v[713] = 2
+                    @comment "#Mpen"
+                    v[714] = 2
+                    @comment "#Crit"
+                    v[715] = 0
+                    @comment "#MS"
+                    v[716] = 53
+                    @comment "#Range Melee"
+                    v[717] = 150000
+                    @comment "#Range Ranged"
+                    v[718] = 40000
+                    @comment "#AttackSpeed"
+                    v[719] = 38
+                    @comment "#AttackMotion"
+                    v[720] = 1
+                    @comment "#Have AA Cooldown Motion"
+                    v[726] = 3
+                    @comment "#AttackFunction"
+                    v[730] = 1206
+                    @comment "##############"
+                    @comment "#####
+Sprite Setting
+##### "
+                    v[885] = 0
+                    @comment "#Control mode SET"
+                    v[841] = 3
+                    @comment "DEBUG"
+                    @if v[700] == 0 {
+                        @if s[19] .isOff() {
+                            v[301] = rnd(0, 3)
+                            v[2539] += s[7] == 1 ? 1 : 0
+                            v[229] = v[2539] >= 15 ? 46 : v[229]
+                            s[59].on
+                            
+                        }
+                        
+                    }
+                    v[302] = v[201]
+                    v[302] *= 2
+                    v[302] += 2
+                    v[321] = 2
+                    v[320] = v[701]
+                    v[350] = 1301 + v[201]
+                    @pic[v[350]].show {
+                        "minions\spr_minions_1" .repl 1 v[320]
+                        .pos v[605], v[606] .center
+                        .scrollWithMap
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .grid 5, 1 .cell v[321]
+                        .mapLayer 5
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    v[302] -= 1
+                    @pic[v[302]].show {
+                        "marker"
+                        .pos v[605], v[606] .center
+                        .chromakey 1
+                        .scale 100
+                        .trans 100
+                        .rgbs 100, 100, 100, 100
+                        .grid 1, 4 .cell v[624]
+                        .mapLayer 3
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    @call .cev 1903
+                    @comment "#reg1 = ObjNum"
+                    @break
+                    
+                }
+                @if v[v[320]] >= v[1004] {
+                    @comment "Obj多すぎ"
+                    @break
+                    
+                }
+                v[201] += 1
+                
+            }
+            
+            
+        }
+        
+    }
+    @if s[151] .isOff() {
+        s[152].on
+        v[254] = 29
+        @call .cev 300
+        @if v[251] == 0 {
+            @if s[19] .isOff() {
+                @se.play "Fire5" .opt 70, 100, 50
+                
+            }
+            
+        }
+        
+    }
+    
+}
+}

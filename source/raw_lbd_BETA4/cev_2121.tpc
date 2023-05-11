@@ -1,0 +1,261 @@
+cev .id(2121), .name("cev2121"), {
+@comment "To 60FPS"
+@pic.erase .all
+@sys.gameOpt .mouse.disableMsgProcession 0
+@sys.gameOpt .fatal 60, 0, 0
+v[1139] = 60
+@scr.tint .rgbs 100, 100, 100, 100 .time 0
+@scr.show 19
+@scr.weather .none .strong
+s[1..300].off
+s[6].on
+s[401..500].off
+s[38].on
+@comment "Player Party"
+v[310] = 1
+v[311] = 200
+v[311] += 80
+v[312] = 12
+@pic[v[310]].strpic {
+    "$u  $A  $o  $B"
+    .pos v[311], v[312] .topLeft
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font t[530], 11
+    .spacing 0, 4
+    .skin "" .nobg .noframe .noPadding
+    .mapLayer 8
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+v[310] = 5
+v[312] = 32
+@comment "Disabled in DIS series"
+@comment "Player Troops"
+s[151].on
+@loop v[1260] .dst v[341] {
+    v[342] = v[341] * 4
+    v[342] += v[1259]
+    @if v[v[342]] > 0 {
+        v[v[342]].copy v[321], 4
+        v[343] = v[341] + 201
+        @if v[343] >= v[1180] {
+            @break
+            
+        }
+        v[254] = v[343]
+        @call .cev 300
+        @comment "x"
+        v[311] = 24
+        v[311] += 80
+        @pic[v[310]].strpic {
+            "\c[10]\t[501]"
+            .pos v[311], v[312] .left
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font t[530], 11
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 7
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        v[310] += 1
+        @comment "x"
+        v[311] = 200
+        v[311] += 80
+        @pic[v[310]].strpic {
+            "\D[3]\v[321] \c[2]\D[3]\v[322] \c[17]\D[3]\v[323] \c[5]\D[3]\v[324]"
+            .pos v[311], v[312] .left
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font t[530], 11
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 7
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        v[310] += 1
+        v[312] += 11
+        @comment "Wound"
+        @comment "Dead"
+        @if v[323] > 0 {
+            v[11] = v[341] + 1
+            @loop v[323] {
+                @loop v[1192] .dst v[329] {
+                    v[330] = v[329] * 300 + v[1261]
+                    @if v[v[330]] == 3 {
+                        v[331] = v[330] + 100
+                        @if v[v[331]] == v[11] {
+                            v[12] = v[329] + 1
+                            @call .cev 1979
+                            @break
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+                
+            }
+            
+            @if s[1] .isOn() {
+                v[0] = v[11..12] = [v[341] + 1, v[323]]
+                @call .cev 2032
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
+@comment "Enemy"
+v[310] = 1001
+v[311] = v[1001] - 280
+v[311] += 80
+v[312] = 12
+@pic[v[310]].strpic {
+    "$u  $A  $o  $B"
+    .pos v[311], v[312] .topLeft
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font t[530], 11
+    .spacing 0, 4
+    .skin "" .nobg .noframe .noPadding
+    .mapLayer 8
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+v[310] = 1005
+v[312] = 32
+s[151].on
+@loop v[1260] .dst v[341] {
+    v[342] = v[341] * 4
+    v[342] += v[1259]
+    v[342] += v[1260] * 4
+    @if v[v[342]] > 0 {
+        v[v[342]].copy v[321], 4
+        v[343] = v[341] + 201
+        v[254] = v[343]
+        @call .cev 300
+        @comment "x"
+        v[311] = v[1001] - 456
+        v[311] += 80
+        @pic[v[310]].strpic {
+            "\c[5]\t[501]"
+            .pos v[311], v[312] .left
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font t[530], 11
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 7
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        v[310] += 1
+        @comment "x"
+        v[311] = v[1001] - 280
+        v[311] += 80
+        @pic[v[310]].strpic {
+            "\D[3]\v[321] \c[2]\D[3]\v[322] \c[17]\D[3]\v[323] \c[5]\D[3]\v[324]"
+            .pos v[311], v[312] .left
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font t[530], 11
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noPadding
+            .mapLayer 7
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        v[310] += 1
+        v[312] += 11
+        
+    }
+    
+}
+
+@if s[319] .isOn() {
+    @if v[2401] >= 2 {
+        v[229] = 4
+        s[240].on
+        @wait 0
+        
+    }
+    @wait 0
+    @if s[1] .isOn() {
+        @if v[2401] == 5 {
+            @gsave.open
+            gv[101].copyTo v[3011], 100
+            @gsave.close
+            v[341] = v[2220] * 6 + 3011
+            v[342] = v[2220] * 5 + 3061
+            v[v[341]] = v[2520]
+            v[v[341]] *= 1000000
+            v[v[341]] += v[2403]
+            @if v[v[341]] > v[v[342]] {
+                s[201].on
+                
+            }
+            v[v[342]].sortDescending 6
+            
+        }
+        
+    }
+    @wait 0
+    @msg.opt {
+        .trans
+        .bottom
+        .size 0, 0
+        .font "", 0
+}
+    v[11] = 0
+    v[11] = 353
+    @call .cev 1890
+    @if s[477] .isOn() {
+        t[501] .asg t[20351]
+        
+    } .else bl {
+        t[501] .asg t[20352] .extract
+        
+    }
+    t[501] .cat t[3000] .extract
+    @msg.show "\>\t[501]"
+    @gsave.open
+    v[2203] .add v[2513], 3
+    v[2206] .add v[2521], 8
+    gv[1].copyFrom v[2201], 100
+    gs[301].copyFrom s[301], 100
+    @gsave.saveAndClose
+    
+}
+s[151].off
+@wait 0
+@call .cev 3
+s[38].on
+@scr.tint .rgbs 0, 0, 0, 100 .time 0
+@sys.reset
+}

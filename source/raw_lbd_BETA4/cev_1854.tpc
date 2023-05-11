@@ -1,0 +1,96 @@
+cev .id(1854), .name("cev1854"), {
+v[v[1068]..v[1068] + 500 * 500] = 0
+v[341] = ev[3].scrx
+v[342] = ev[3].scry
+v[341..342] -= 8
+v[342] -= 8
+v[343] = ev[4].scrx - ev[3].scrx
+v[344] = ev[4].scry - ev[3].scry
+@pic[1].strpic {
+    ""
+    .pos v[341], v[342] .topLeft
+    .size v[343], v[344]    .scrollWithMap
+    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "", 12 .noShadow
+    .spacing 0, 4
+    .skin "" .nobg .noframe .noGradation .noPadding
+    .mapLayer 2
+    .eraseWhenTransfer
+    .affectedByTint
+    .affectedByFlash
+    .affectedByShake
+}
+@pic[2].strpic {
+    ""
+    .pos v[341], v[342] .topLeft
+    .size v[343], v[344]    .scrollWithMap
+    .chromakey 1
+    .scale 100
+    .trans 60
+    .rgbs 10, 10, 10, 100
+    .font "", 12 .noShadow
+    .spacing 0, 4
+    .skin "" .nobg .noframe .noGradation .noPadding
+    .multi
+    .mapLayer 4
+    .eraseWhenTransfer
+    .affectedByTint
+    .affectedByFlash
+    .affectedByShake
+}
+@pic[3].strpic {
+    ""
+    .pos v[341], v[342] .topLeft
+    .size v[343], v[344]    .scrollWithMap
+    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font "", 12 .noShadow
+    .spacing 0, 4
+    .skin "" .nobg .noframe .noGradation .noPadding
+    .mapLayer 5
+    .eraseWhenTransfer
+    .affectedByTint
+    .affectedByFlash
+    .affectedByShake
+}
+v[2063] = v[2061] * v[2062]
+v[2061].copy v[321], 2
+v[310] = v[1068]
+@loop v[322] .dst v[2064] {
+    v[286] = v[2061] * v[2064] + v[4529]
+    v[287] = v[2061] * v[2064] + v[1182]
+    @loop v[321] .dst v[2065] {
+        v[341] = v[2065] + v[69]
+        v[342] = v[2064] + v[70]
+        v[343] = v[v[287]] % 100
+        v[343] = v[v[287]] / 100 % 1000
+        @sys.getInfo .tiles v[341], v[342], 1, 1 .lower .dst v[30]
+        v[v[310]] = v[30]
+        v[286..287] += 1
+        v[310] += 1
+        
+    }
+    
+    
+}
+
+@pic[1].drawTile {
+    .xywh 0, 0, v[2061], v[2062]
+    .range v[v[1068]]
+    .lower
+    .tilesetId v[2060]
+    .pattern -1
+}
+v[v[1068]..v[1068] + 500 * 500] = 0
+t[510] .asg "\Maps\"
+t[510] .cat t[750]
+t[510] .cat "\"
+t[501] .asg t[510]
+t[501] .cat "mappic"
+@img.save .pic 1 .static .dst t[501]
+}

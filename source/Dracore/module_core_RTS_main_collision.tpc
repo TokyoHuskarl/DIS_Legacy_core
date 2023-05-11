@@ -1,0 +1,445 @@
+//Collision check
+
+def Const_ColPushA=-980 //-950
+def Const_ColPushB=-1450 //-1350
+
+def Const_ColPushA2=-1470 //-1425
+def Const_ColPushB2=-2175 //-2025
+
+def Const_ColPushA3=-1960 //-1900
+def Const_ColPushB3=-2900 //-2700
+
+
+__fn macro_ColCheck_distance {
+    //24.4.23
+    /*v[320..321] = v[203] * 300
+    v[320] .add v[1607], 2
+    v[322] = v[4523] + v[203] * 2
+    v[v[322]].copy v[322], 2
+    //v[0] = v[320..321] = [v[v[320]] - v[v[333]], v[v[321]] - v[v[334]]]*/
+
+    v[320] = v[v[320]] - v[607]
+    v[321] = v[v[321]] - v[608]
+    v[322] = v[4523] 
+    v[322] += v[203] *2
+    //v[v[322]].copy v[322], 2
+    //v[321] = v[203] * 300
+    v[320] = v[(v[203] * 300)+v[1607]] - v[607]
+    //v[321] = v[(v[203] * 300)+v[1608]] - v[v[334]]
+}
+
+__fn macro_ColCheck_push {
+    //24.4.23
+    /*v[320].copy v[325], 2
+    v[351] = v[v[603]] | (v[v[603] + 35] & 2 && v[v[603] + 77] > 0 ? 256 : 0)
+    v[350] = v[527 + (v[351] & 256) / 256]
+    v[325..326] *= v[350]
+    v[v[299]] .add v[325], 2
+    v[v[603]] |= 64
+    @break*/
+
+    //v[320].copy v[325], 2
+    //v[325..326] *= v[527 + ((v[v[603]] | (v[v[603] + 35] & 2 && v[v[603] + 77] > 0 ? 256 : 0)) & 256) / 256]
+    //v[v[299]] .add v[325], 2
+
+    //v[320].copy v[325], 2
+
+    //opt 11.5.23
+    //v[320..321] *= v[527 + ((v[v[603]] | (v[v[603] + 35] & 2 && v[v[603] + 77] > 0 ? 256 : 0)) & 256) / 256]
+    TT1 = Const_save_var_TileFlags+v[632]//check Tile flag
+    v[320..321] *= (v[527 + ((v[Temp32] | (v[638] & 2 && v[680] > 0 ? 256 : 0)) & 256) / 256]) + (v[TT1]&FLAG_Maptile_Crowded?1:0)//if it's Crowded, push more
+    v[v[299]] .add v[320], 2
+    v[Temp32] |= 64
+    @break
+}
+
+__fn ColCheck {
+
+v[294] = v[301] + 25
+@if `(v[401] + v[2501] / 2) % v[v[294]] == 0 {
+    v[299] = v[301] + 15
+    v[298] = v[301] + 7
+    //v[296] = v[301] + 36
+    //save ptr to slot3
+    Temp32 = v[301] + 3
+    v[Temp32] &= ~192
+    //get map XY
+    //v[293] = v[301] + 26
+    //v[v[293]].copy v[311], 2
+    v[v[301]].copy v[600], 243
+    @if `v[v[4529] + v[632]] & 1 {
+        @if `v[53] * 1000 + v[54] == 0 {
+    	    v[300] = v[301] + 5
+    	    v[295] = v[301] + 296
+    	    v[297] = 53
+            v[Temp32] |= 64
+            //kabe no naka ni iru!
+            @ev[2].setPos .pos v[626], v[627]
+            v[316] = ev[2].scrx
+            v[317] = ev[2].scry
+            v[317] -= 16
+            v[v[298]].copy v[321], 2
+            v[321] .sub v[316], 2
+            v[321..322] *= 2800
+            v[v[300]] .add v[321], 2
+            v[v[300]] += v[v[297]] * 10000
+            v[v[298]] = v[v[300]] / 10000
+            v[v[296]] = v[v[298]] + v[v[295]]
+            v[295..300] += 1
+            v[v[300]] += v[v[297]] * 10000
+            v[v[298]] = v[v[300]] / 10000
+            v[v[296]] = v[v[298]] + v[v[295]]
+            v[295..300] -= 1
+            
+        }
+        
+    } .else bl {
+        //Obj Collision
+
+
+        v[319] = v[401]
+        //v[333] = v[301] + 7
+        //v[334] = v[301] + 8
+        //v[335] = v[301] + 10
+        //v[336] = v[301] + 11
+        //v[842] = v[301] + 242
+        //v[337] = v[301] + 80
+        
+        //######################
+        //Check Morton Start
+        //######################
+        //v[607] = v[333]
+        //v[610] = v[335]
+        //v[v[607]].copy v[11], 2
+	v[607].copy v[341], 2
+        v[341] .sub v[610], 2
+        //#########################
+        //#2002 Crd->Mort V1V2 reg1
+        //#########################
+        //v[11].copy v[341], 2
+        v[341] .sub v[76], 2
+        v[341] .div v[74], 2
+        //TT1=MortX
+        //TT2=MortY
+        //ビット演算して処理するよ
+        v[341] = (v[341] | v[341] << 8) & 0xFF00FF
+        v[341] = (v[341] | v[341] << 4) & 0xF0F0F0F
+        v[341] = (v[341] | v[341] << 2) & 0x33333333
+        v[341] = (v[341] | v[341] << 1) & 0x55555555
+        v[342] = (v[342] | v[342] << 8) & 0xFF00FF
+        v[342] = (v[342] | v[342] << 4) & 0xF0F0F0F
+        v[342] = (v[342] | v[342] << 2) & 0x33333333
+        v[342] = ((v[342] | v[342] << 1) & 0x55555555) << 1
+        //@comment "yは1bitシフトで終わり"
+        //v[342] <<= 1
+        //@comment "最後にTT1 OR TT2"
+	//opt 28.4.23
+        //v[21] = v[341] | v[342]
+        //v[351] = v[21]
+	v[351] = v[341] | v[342]
+        v[607].copy v[341], 2
+        v[341] .add v[610], 2
+        //@comment "#########################
+        //#2002 Crd->Mort V1V2 reg1
+        //##########################"
+        //v[11].copy v[341], 2
+        v[341] .sub v[76], 2
+        v[341] .div v[74], 2
+        //@comment "TT1=MortX
+        //TT2=MortY
+        //ビット演算して処理するよ"
+        v[341] = (v[341] | v[341] << 8) & 0xFF00FF
+        v[341] = (v[341] | v[341] << 4) & 0xF0F0F0F
+        v[341] = (v[341] | v[341] << 2) & 0x33333333
+        v[341] = (v[341] | v[341] << 1) & 0x55555555
+        v[342] = (v[342] | v[342] << 8) & 0xFF00FF
+        v[342] = (v[342] | v[342] << 4) & 0xF0F0F0F
+        v[342] = (v[342] | v[342] << 2) & 0x33333333
+        v[342] = ((v[342] | v[342] << 1) & 0x55555555) << 1
+        //@comment "yは1bitシフトで終わり"
+        //v[342] <<= 1
+        //@comment "最後にTT1 OR TT2"
+
+	//opt 28.4.23
+        //v[21] = v[341] | v[342]
+        //v[341] = v[351]
+        //v[342] = v[21]
+	v[342] = v[341] | v[342]
+        //@comment "TT1 = upper left morton
+        //TT2 = bottom right morton
+        //TT5 = shift num"
+        v[343] = v[351] ^ v[342]
+        //@comment "#mask with 11000000
+        //@comment ""#mask with 110000""
+        //@comment ""#mask with 001100""
+        //@comment ""#mask with 000011"""
+        v[345] = v[343] & 768 ? 10 : v[343] & 192 ? 8 : v[343] & 48 ? 6 : v[343] & 12 ? 4 : v[343] & 3 ? 2 : 0
+        v[609] = v[342] >> v[345]
+        //@comment "#mask end"
+	v[346] = v[345] / 2
+	//opt 28.4.23
+        //v[340] = v[4546 - v[346]]
+	v[340] = 4546 - v[346]
+        v[340] = v[v[340]]
+        v[327] = v[v[4552 - v[346]] + v[609]]
+        //@comment "##############"
+        v[v[294]] = 2 + v[327] / v[4522] + v[610] / 19 - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
+        //v[v[294]] = 2 + v[327] / v[4522] + v[v[335]] / 19 - s[2001 + v[401]] + (v[v[842]] >= 3 && v[v[337]] <= 0 ? 1 : 0)
+        //@comment "DisciplineCheck"
+	//opt
+        v[337] = v[4523] 
+	v[337] += v[401] * 2
+        v[v[337]].copy v[337], 2
+	//opt
+        v[339] = v[609] * v[1004] 
+	v[339] += v[340]
+        @if `v[Temp32] & 512 { //has discipline 
+	    //v[700] = v[301] + 100
+            //v[700] = v[v[700]]
+            @loop v[327] .dst v[342] {
+                v[203] = v[v[339] + v[342]] - 1
+                @if `v[700] != v[v[203]+ Const_AgentMetaTeam_begin ] { //v[v[203] * 300 + 5100] {
+
+                    /*v[320..321] = v[203] * 300
+                    v[320] .add v[1607], 2
+                    v[322] = v[4523] + v[203] * 2
+                    v[v[322]].copy v[322], 2
+                    v[0] = v[320..321] = [v[v[320]] - v[v[333]], v[v[321]] - v[v[334]]]*/
+
+		    macro_ColCheck_distance()
+
+                    //@if `v[322] + v[337] >= abs(v[320]) {
+                        //@if `v[323] + v[338] >= abs(v[321]) {
+		      @if `v[v[322]] + v[337] >= abs(v[320]) {
+			  //25.4.23
+			  //v[321] = v[(v[203] * 300)+v[1608]] - v[v[334]]
+			  v[321] = v[(v[203] * 300)+v[1608]] - v[608]
+                          @if `v[v[322]+1] + v[338] >= abs(v[321]) {
+			    macro_ColCheck_push()
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+            
+        } .else bl {
+            @loop v[327] .dst v[342] {
+                v[203] = v[v[339] + v[342]] - 1
+                @if v[319] != v[203] { //not unit itself
+
+                    /*v[320..321] = v[203] * 300
+                    v[320] .add v[1607], 2
+                    v[322] = v[4523] + v[203] * 2
+                    v[v[322]].copy v[322], 2
+                    v[0] = v[320..321] = [v[v[320]] - v[v[333]], v[v[321]] - v[v[334]]]*/
+
+		    macro_ColCheck_distance()
+
+                    //@if `v[322] + v[337] >= abs(v[320]) {
+                    //    @if `v[323] + v[338] >= abs(v[321]) {
+                    @if `v[v[322]] + v[337] >= abs(v[320]) {
+			//25.4.23
+			//v[321] = v[(v[203] * 300)+v[1608]] - v[v[334]]
+			v[321] = v[(v[203] * 300)+v[1608]] - v[608]
+                        @if `v[v[322]+1] + v[338] >= abs(v[321]) {
+
+			    macro_ColCheck_push()
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+            
+        }
+        @if `!(v[Temp32] & 64) {
+            v[Temp32] &= ~384
+            
+        }
+        
+    }
+    
+}
+
+
+}
+
+
+
+cev .id(68),.name("Main:Agents Collision"),.parallel , .cond(Const_Is_RTS_Mode), {
+@comment "module_core_RTS_collision.tpc"
+@if v[204] < 400 {
+    v[527] = Const_ColPushA
+    v[528] = Const_ColPushB
+    @if s[2] .isOff() {
+        //@comment "Even Normal Units Collision "
+        v[536] = v[4532]
+        @while v[v[536]] != 0 {
+            v[401] = v[v[536]] - 1
+            v[301] = v[401] * v[1117] 
+	    v[301] += 5000
+            //@comment "#Col"
+            ColCheck()
+            //@comment "++"
+            v[536] += 2
+            
+        }
+        
+        
+    }
+    @wait 0
+    @if s[2] .isOff() {
+        //@comment "Odd Normal Units Collision "
+        v[536] = v[4532] + 1
+        @while v[v[536]] != 0 {
+            v[401] = v[v[536]] - 1
+            v[301] = v[401] * v[1117] 
+	    v[301] += 5000
+            //@comment "#Col"
+            ColCheck()
+            //@comment "++"
+            v[536] += 2
+            
+        }
+        
+        
+    }
+    
+} .else bl {
+    @if v[204] < 600 {
+        v[527] = Const_ColPushA2
+        v[528] = Const_ColPushB2
+        @if s[2] .isOff() {
+            //@comment "Even Normal Units Collision "
+            v[536] = v[4532]
+            @while v[v[536]] != 0 {
+                v[401] = v[v[536]] - 1
+                v[301] = v[401] * v[1117] 
+	    	v[301] += 5000
+                //@comment "#Col"
+            ColCheck()
+                //@comment "++"
+                v[536] += 3
+                
+            }
+            
+            
+        }
+        @wait 0
+        @if s[2] .isOff() {
+            //@comment "Odd Normal Units Collision "
+            v[536] = v[4532] + 1
+            @while v[v[536]] != 0 {
+                v[401] = v[v[536]] - 1
+                v[301] = v[401] * v[1117]
+	    	v[301] += 5000
+                //@comment "#Col"
+            	ColCheck()
+                //@comment "++"
+                v[536] += 3
+                
+            }
+            
+            
+        }
+        @wait 0
+        @if s[2] .isOff() {
+            //@comment "Odd Normal Units Collision "
+            v[536] = v[4532] + 2
+            @while v[v[536]] != 0 {
+                v[401] = v[v[536]] - 1
+                v[301] = v[401] * v[1117]
+	    	v[301] += 5000
+                //@comment "#Col"
+            	ColCheck()
+                //@comment "++"
+                v[536] += 3
+                
+            }
+            
+            
+        }
+        
+    } .else bl {
+        v[527] = Const_ColPushA3
+        v[528] = Const_ColPushB3
+        @if s[2] .isOff() {
+            //@comment "Even Normal Units Collision "
+            v[536] = v[4532]
+            @while v[v[536]] != 0 {
+                v[401] = v[v[536]] - 1
+                v[301] = v[401] * v[1117] 
+	    	v[301] += 5000
+                //@comment "#Col"
+            	ColCheck()
+                //@comment "++"
+                v[536] += 4
+                
+            }
+            
+            
+        }
+        @wait 0
+        @if s[2] .isOff() {
+            //@comment "Odd Normal Units Collision "
+            v[536] = v[4532] + 1
+            @while v[v[536]] != 0 {
+                v[401] = v[v[536]] - 1
+                v[301] = v[401] * v[1117] 
+	    	v[301] += 5000
+                //@comment "#Col"
+            	ColCheck()
+                //@comment "++"
+                v[536] += 4
+                
+            }
+            
+            
+        }
+        @wait 0
+        @if s[2] .isOff() {
+            //@comment "Odd Normal Units Collision "
+            v[536] = v[4532] + 2
+            @while v[v[536]] != 0 {
+                v[401] = v[v[536]] - 1
+                v[301] = v[401] * v[1117] 
+	    	v[301] += 5000
+                //@comment "#Col"
+            	ColCheck()
+                //@comment "++"
+                v[536] += 4
+                
+            }
+            
+            
+        }
+        @wait 0
+        @if s[2] .isOff() {
+            //@comment "Odd Normal Units Collision "
+            v[536] = v[4532] + 3
+            @while v[v[536]] != 0 {
+                v[401] = v[v[536]] - 1
+                v[301] = v[401] * v[1117] 
+	    	v[301] += 5000
+                //@comment "#Col"
+            	ColCheck()
+                //@comment "++"
+                v[536] += 4
+                
+            }
+            
+            
+        }
+        
+    }
+    
+}
+}
+
+

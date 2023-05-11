@@ -1,0 +1,93 @@
+cev .id(1945), .name("cev1945"), {
+t[501] .asg ""
+@loop 10 .dst v[11] {
+    v[12] = v[(v[173] - 1) * 300 + v[1261] + 20 + v[11]]
+    @if v[11] == 0 {
+        t[502] .asg "HP:"
+        
+    }
+    @if v[11] == 1 {
+        t[502] .asg "SP:"
+        
+    }
+    @if v[11] == 2 {
+        t[502] .asg "AD:"
+        
+    }
+    @if v[11] == 3 {
+        t[502] .asg "AP:"
+        
+    }
+    @if v[11] == 4 {
+        t[502] .asg "mHIT:"
+        
+    }
+    @if v[11] == 5 {
+        t[502] .asg "rHIT:"
+        
+    }
+    @if v[11] == 6 {
+        t[502] .asg "AVD:"
+        
+    }
+    @if v[11] == 7 {
+        t[502] .asg "MR:"
+        
+    }
+    @if v[11] == 8 {
+        t[502] .asg "MS:"
+        
+    }
+    @if v[11] == 9 {
+        t[502] .asg "Will:"
+        
+    }
+    @loop v[12] {
+        t[502] .cat "+"
+        
+    }
+    
+    t[502] .cat "
+" .extract
+    t[501] .cat t[502] .extract
+    
+}
+
+@if v[2201] == 0 {
+    @pic[996].strpic {
+        "-潜在能力-
+\t[501]"
+        .pos v[353], v[354] .topLeft
+        .size 0, 0        .chromakey 1
+        .scale 100
+        .trans 10
+        .rgbs 100, 100, 100, 100
+        .font t[530], v[4511]
+        .spacing 0, 0
+        .skin "" .stretch
+        .mapLayer 10
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    
+} .else bl {
+    @pic[996].strpic {
+        "-TALENTS-
+"
+        .pos v[353], v[354] .topLeft
+        .size 0, 0        .chromakey 1
+        .scale 100
+        .trans 10
+        .rgbs 100, 100, 100, 100
+        .font t[530], v[4511]
+        .spacing 0, 0
+        .skin "" .stretch
+        .mapLayer 10
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    
+}
+}

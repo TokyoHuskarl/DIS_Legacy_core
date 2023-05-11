@@ -1,0 +1,527 @@
+cev .id(1821), .name("cev1821"), {
+s[261].on
+t[510] .asg t[510] .extract
+t[510] .inStr "//", 321,  .beg 0
+@comment "#""//""Comment out"
+@if v[321] == -1 {
+    @loop 1 {
+        @if t[510] .contains "cond_" {
+            @call .cev 1825
+            @break
+            
+        }
+        @if t[510] .contains "map_" {
+            @call .cev 1824
+            @break
+            
+        }
+        @if t[510] .contains "AI_" {
+            @call .cev 1822
+            @break
+            
+        }
+        @if t[510] .contains "team_" {
+            @call .cev 1823
+            @break
+            
+        }
+        @if t[510] .contains "player_" {
+            @call .cev 1826
+            @break
+            
+        }
+        @if t[510] .contains "var_" {
+            @call .cev 1827
+            @break
+            
+        }
+        @if t[510] .contains "spawn_" {
+            @comment "#spawnUnit"
+            @if t[510] .contains "spawn_unit(" {
+                t[510] .split "(", t[3000], v[341]
+                t[3001] .split ")", t[3000], v[341]
+                t[3000] .split ",", t[3000], v[341]
+                @if v[341] >= 4 {
+                    t[3000] .toNum v[254]
+                    t[3001] .toNum v[341]
+                    t[3002] .toNum v[342]
+                    t[3003] .toNum v[251]
+                    t[3004] .toNum v[258]
+                    s[156].off
+                    @if v[258] >= 1 {
+                        s[156].on
+                        
+                    }
+                    t[3005] .toNum v[280]
+                    t[3006] .toNum v[277]
+                    @call .cev 2001
+                    v[22].copy v[252], 2
+                    s[152].on
+                    @call .cev 300
+                    @if v[251] == 0 {
+                        @if s[156] .isOn() {
+                            @call .cev 1906
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            @comment "#spawn_unit_group"
+            @if t[510] .contains "spawn_unit_group(" {
+                t[510] .split "(", t[3000], v[341]
+                t[3001] .split ")", t[3000], v[341]
+                t[3000] .split ",", t[3000], v[341]
+                @if v[341] >= 8 {
+                    t[3000] .toNum v[254]
+                    t[3001] .toNum v[341]
+                    t[3002] .toNum v[342]
+                    @call .cev 2001
+                    v[22].copy v[252], 2
+                    t[3008] .toNum v[343]
+                    t[3003] .toNum v[251]
+                    t[3004] .toNum v[258]
+                    v[276] = v[258]
+                    s[156].off
+                    @if v[258] >= 1 {
+                        s[156].on
+                        
+                    }
+                    t[3005] .toNum v[280]
+                    t[3006] .toNum v[341]
+                    v[278] = v[341] * 16
+                    t[3007] .toNum v[342]
+                    v[279] = v[342] * 16
+                    t[3009] .toNum v[277]
+                    @loop v[343] {
+                        v[258] = v[276]
+                        s[152].on
+                        @call .cev 300
+                        v[252] += v[278]
+                        v[253] += v[279]
+                        @if v[251] == 0 {
+                            @if s[156] .isOn() {
+                                @call .cev 1906
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                    
+                }
+                
+            }
+            @comment "#spawnStatic"
+            @if t[510] .contains "spawn_static(" {
+                t[510] .split "(", t[3000], v[341]
+                t[3001] .split ")", t[3000], v[341]
+                t[3000] .split ",", t[3000], v[341]
+                @if v[341] >= 4 {
+                    t[3000] .toNum v[254]
+                    v[254] += 800
+                    s[177..180].off
+                    s[151].on
+                    @call .cev v[254]
+                    s[151].off
+                    @if s[179] .isOn() {
+                        t[3001] .toNum v[351]
+                        t[3002] .toNum v[352]
+                        v[351].copy v[353], 2
+                        v[351].copy v[341], 2
+                        v[351] += v[69] % 2
+                        v[352] += v[70] % 2
+                        v[353] += v[69] % 2
+                        v[354] += v[70] % 2
+                        v[351..354] /= 2
+                        v[351..354] *= 2
+                        v[355] = (v[351] + v[353] + v[69] % 2) / 2
+                        v[356] = (v[352] + v[354] + v[70] % 2) / 2
+                        @call .cev 2001
+                        v[22].copy v[252], 2
+                        v[353].copy v[341], 2
+                        @call .cev 2001
+                        @comment "############"
+                        v[11..12] = 0
+                        v[11] .add v[351], 2
+                        v[11] .sub v[353], 2
+                        v[11..12] *= 16
+                        @if v[11] == v[12] {
+                            v[11] *= 2
+                            v[12] *= 2
+                            
+                        } .else bl {
+                            @if v[11] > v[12] {
+                                v[11] *= 2
+                                
+                            } .else bl {
+                                v[12] *= 2
+                                
+                            }
+                            
+                        }
+                        v[11] = abs(v[11])
+                        v[12] = abs(v[12])
+                        v[11..12] += 16
+                        v[11..12] += 16
+                        @comment "############"
+                        v[355].copy v[341], 2
+                        @call .cev 2001
+                        v[22] += 8 - 16 * (v[69] % 2)
+                        v[23] += 8 - 16 * (v[70] % 2)
+                        @if s[177] .isOn() {
+                            v[22] -= 16
+                            
+                        }
+                        @if s[178] .isOn() {
+                            v[23] -= 16
+                            
+                        }
+                        v[22].copy v[252], 2
+                        t[3003] .toNum v[251]
+                        t[3004] .toNum v[258]
+                        s[177..180].off
+                        
+                    } .else bl {
+                        t[3001] .toNum v[341]
+                        t[3002] .toNum v[342]
+                        @call .cev 2001
+                        v[23] += 8
+                        v[22].copy v[252], 2
+                        t[3003] .toNum v[251]
+                        t[3004] .toNum v[258]
+                        
+                    }
+                    t[3000] .toNum v[254]
+                    v[254] += 800
+                    @call .cev v[254]
+                    
+                }
+                
+            }
+            @comment "#spawnpalisade"
+            @if t[510] .contains "spawn_palisade(" {
+                t[510] .split "(", t[3000], v[341]
+                t[3001] .split ")", t[3000], v[341]
+                t[3000] .split ",", t[3000], v[341]
+                @if v[341] >= 4 {
+                    @call .cev 2160
+                    @call .cev 835
+                    
+                }
+                @wait 0
+                
+            }
+            @comment "#spawnwall"
+            @if t[510] .contains "spawn_wall(" {
+                t[510] .split "(", t[3000], v[341]
+                t[3001] .split ")", t[3000], v[341]
+                t[3000] .split ",", t[3000], v[341]
+                @if v[341] >= 4 {
+                    @call .cev 2160
+                    @call .cev 834
+                    
+                }
+                @wait 0
+                
+            }
+            @break
+            
+        }
+        @if t[510] .contains "set_" {
+            @comment "#set_switch_on(s)"
+            @if t[510] .contains "_switch_on(" {
+                t[510] .split "(", t[3000], v[341]
+                t[3001] .toNum v[11]
+                s[v[11]].on
+                
+            }
+            @comment "#set_switch_of(s)"
+            @if t[510] .contains "_switch_off(" {
+                t[510] .split "(", t[3000], v[341]
+                t[3001] .toNum v[11]
+                s[v[11]].off
+                
+            }
+            @comment "#set_last_agent_id_mapvar"
+            @if t[510] .contains "_last_agent_id_mapvar(" {
+                t[510] .split "(", t[3000], v[341]
+                t[3001] .split ")", t[3000], v[341]
+                t[3000] .split ",", t[3000], v[341]
+                @if v[341] >= 1 {
+                    t[3000] .toNum v[341]
+                    v[2000 + v[341]] = v[21]
+                    
+                }
+                
+            }
+            @break
+            
+        }
+        @comment "#cohort_register"
+        @if t[510] .contains "cohort_register(" {
+            t[510] .split "(", t[3000], v[341]
+            t[3001] .split ")", t[3000], v[341]
+            t[3000] .split ",", t[3000], v[341]
+            @wait 0
+            @call .cev 1907
+            @break
+            
+        }
+        @comment "#make_height"
+        @if t[510] .contains "make_height(" {
+            t[510] .split "(", t[3000], v[341]
+            t[3001] .split ")", t[3000], v[341]
+            t[3000] .split ",", t[3000], v[341]
+            @if v[341] >= 4 {
+                t[3000] .toNum v[11]
+                t[3001] .toNum v[12]
+                t[3002] .toNum v[13]
+                t[3003] .toNum v[14]
+                @call .cev 1802
+                
+            }
+            @break
+            
+        }
+        @comment "#make_basin"
+        @if t[510] .contains "make_basin(" {
+            t[510] .split "(", t[3000], v[341]
+            t[3001] .split ")", t[3000], v[341]
+            t[3000] .split ",", t[3000], v[341]
+            @if v[341] >= 4 {
+                t[3000] .toNum v[11]
+                t[3001] .toNum v[12]
+                t[3002] .toNum v[13]
+                t[3003] .toNum v[14]
+                @call .cev 1803
+                
+            }
+            @break
+            
+        }
+        @comment "#reveal_map"
+        @if t[510] .contains "reveal_" {
+            @if t[510] .contains "reveal_map(" {
+                v[562447..572446] ^= 2
+                s[299].on
+                @break
+                
+            }
+            @if t[510] .contains "reveal_area(" {
+                t[510] .split "(", t[3000], v[341]
+                t[3001] .split ")", t[3000], v[341]
+                t[3000] .split ",", t[3000], v[341]
+                t[3000] .toNum v[11]
+                t[3001] .toNum v[12]
+                v[11..12] /= 5
+                t[3002] .toNum v[350]
+                v[341] = v[4527] + v[11] + v[12] * v[2927]
+                @comment "v[350]=sight?"
+                v[341] -= v[350] * v[2927]
+                v[341] -= v[350]
+                v[351] = v[350] * 2 + 1
+                v[352] = v[350] * 2 + 1
+                @if v[341] < v[4527] {
+                    v[352] -= 1
+                    v[341] += v[2927]
+                    
+                }
+                @comment "hori"
+                @loop v[351] .dst v[343] {
+                    @if `between(v[626] - v[350] + v[343], 0, v[2927]) {
+                        @comment "vert"
+                        @loop v[352] .dst v[342] {
+                            v[v[341] + v[342] * v[2927]] |= 7
+                            
+                        }
+                        
+                        
+                    }
+                    v[341] += 1
+                    
+                }
+                
+                s[237].on
+                s[236].on
+                @break
+                
+            }
+            
+        }
+        @comment "#show_msg_dialog(strv)"
+        @if t[510] .contains "show_msg_dialog(" {
+            t[510] .split "(", t[3000], v[341]
+            t[3001] .split ")", t[3000], v[341]
+            @if t[3000] .contains "T:" {
+                t[3000] .split "T:", t[2999], v[341]
+                
+            } .else bl {
+                @if t[3000] .contains """" {
+                    t[3000] .split """", t[2999], v[341]
+                    
+                } .else bl {
+                    t[3000] .toNum v[11]
+                    v[11] = v[1218] + v[11]
+                    t[3000] .asg t[v[11]]
+                    
+                }
+                
+            }
+            @comment "#######################"
+            @call .cev 1924
+            v[12] = 2
+            v[601] = 1
+            @pic[v[1155]].strpic {
+                t[3000]
+                .pos v[12], v[1126] .bottomLeft
+                .size 0, 0                .chromakey 1
+                .scale 100
+                .trans 30
+                .rgbs 100, 100, 100, 100
+                .font "misaki_gothic", 10
+                .spacing 0, 4
+                .skin "" .nobg .noframe .noPadding
+                .mapLayer 8
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            @call .cev 1925
+            @comment "#######################"
+            @break
+            
+        }
+        @comment "#show_radio_dialog(str)"
+        @if t[510] .contains "show_radio_dialog(" {
+            t[510] .split "(", t[3000], v[341]
+            t[3001] .split ")", t[3000], v[341]
+            t[3000] .toNum v[11]
+            @call .cev 1889
+            @call .cev 2088
+            @comment "#########################"
+            @loop .inf() {
+                @if v[367] <= v[4570] {
+                    @break
+                    
+                }
+                @wait 0
+                
+            }
+            
+            @break
+            
+        }
+        @comment "#show_dialog_icon(str,gridx,gridy,cell)"
+        @if t[510] .contains "show_dialog_icon(" {
+            t[510] .split "(", t[3000], v[341]
+            t[3001] .split ",", t[3000], v[341]
+            t[3001] .toNum v[11]
+            t[3002] .toNum v[12]
+            t[3003] .toNum v[13]
+            v[341] = muldiv(v[1115], 3, 5)
+            v[342] = 32
+            @pic[1769].show {
+                t[3000]
+                .pos v[341], v[342] .center
+                .chromakey 1
+                .scale 100
+                .trans 0
+                .rgbs 100, 100, 100, 100
+                .grid v[11], v[12] .cell v[13]
+                .mapLayer 9
+                .eraseWhenTransfer
+                .affectedByFlash
+                .affectedByShake
+            }
+            @comment "#########################"
+            
+        }
+        @comment "#play_global_sound(soundfilename,v1,v2,v3)"
+        @if t[510] .contains "play_global_sound(" {
+            t[510] .split "play_global_sound(", t[3000], v[341]
+            t[3001] .split ",", t[3001], v[341]
+            t[3002] .toNum v[472]
+            v[472] = divmul(v[472], 100, v[2216])
+            t[3003] .toNum v[473]
+            t[3004] .toNum v[474]
+            t[3001] .split """", t[3000], v[341]
+            @cmd 11550, t[3001], .args v[472], 3
+            @break
+            
+        }
+        @comment "#play_global_music(soundfilename,v1,v2,v3)"
+        @if t[510] .contains "play_global_music(" {
+            t[510] .split "play_global_music(", t[3000], v[341]
+            t[3001] .split ",", t[3001], v[341]
+            t[3002] .toNum v[472]
+            t[3003] .toNum v[473]
+            t[3004] .toNum v[474]
+            t[3001] .split """", t[3000], v[341]
+            v[472] = divmul(v[472], 100, v[2217])
+            @bgm.play t[3001] .opt 0, v[472], v[473], v[474]
+            t[760] .asg t[3001]
+            @break
+            
+        }
+        @comment "#wait(sec)"
+        @if t[510] .contains "wait(" {
+            t[510] .split "(", t[3000], v[341]
+            t[3001] .split ")", t[3000], v[341]
+            t[3000] .toNum v[11]
+            @wait v[11]
+            @break
+            
+        }
+        @if t[510] .contains "call_" {
+            @comment "#call_cev(commonevID)"
+            @if t[510] .contains "call_cev(" {
+                t[510] .split "(", t[3000], v[341]
+                t[3001] .split ")", t[3000], v[341]
+                t[3000] .split ",", t[3000], v[341]
+                t[3000] .toNum v[11]
+                @if v[11] >= 1 {
+                    @call .cev v[11]
+                    
+                }
+                
+            }
+            @comment "#call_mev(evID,page)"
+            @if t[510] .contains "call_mev(" {
+                t[510] .split "(", t[3000], v[341]
+                t[3001] .split ")", t[3000], v[341]
+                t[3000] .split ",", t[3000], v[341]
+                t[3000] .toNum v[11]
+                t[3001] .toNum v[12]
+                @if v[11] >= 1 {
+                    @call .mev v[11], v[12]
+                    
+                }
+                
+            }
+            @comment "#call_mev(evID,page)"
+            @if t[510] .contains "call_script(" {
+                t[510] .split "(", t[3000], v[341]
+                t[3001] .split ")", t[3000], v[341]
+                t[3000] .split ",", t[3000], v[341]
+                t[3000] .toNum v[11]
+                t[3001] .toNum v[12]
+                @if v[11] >= 1 {
+                    @call .mev v[11], v[12]
+                    
+                }
+                
+            }
+            @break
+            
+        }
+        
+    }
+    
+    
+}
+s[261].off
+}

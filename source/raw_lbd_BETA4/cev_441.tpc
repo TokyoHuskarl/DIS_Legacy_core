@@ -1,0 +1,18 @@
+cev .id(441), .name("cev441"), {
+@comment "Race"
+v[664] = 0
+@comment "Hair and Face"
+@comment "#Skin"
+v[663] = 0
+@comment "#Head"
+v[669] = [0, 0, 1, 2, 3, 0]
+v[669] = rnd(0, 5)
+@comment "#HairColour"
+v[669] += rnd(0, 1) * 10000
+v[887] = v[669] + v[663] * 1000000
+v[887] += v[663] != -1 ? v[664] * 10000000 : 0
+@comment "#Hair"
+v[670] = 0
+v[670] += v[670] > 0 ? v[v[302] + 71] * 10000 : 0
+v[670] += v[663] == 6 ? 6000000 : 0
+}
