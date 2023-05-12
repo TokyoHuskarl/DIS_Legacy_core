@@ -8,6 +8,8 @@
 //Backup is for faggots
 #copyMode .force
 
+def DEBUG_BUILD = 0 //0 = release, 1 = debug
+def DIS_DEBUG_BUILD = DEBUG_BUILD
 //Set basic FPS - 60 in Maniacs patch default setting, 45 in DIS:Classic, 48 in DIS:Legacy.  
 def DIS_Game_FPS = 48
 
@@ -21,6 +23,22 @@ __fn file_output_cooldown(){
 			}
 			@wait 0
 		    }
+}
+
+
+__fn func_force_crash $str{
+	@pic[1].show {
+	    $str
+	    .pos 160, 120 .center
+	    .chromakey 1
+	    .scale 100
+	    .trans 0
+	    .rgbs 100, 100, 100, 100
+	    .mapLayer 7
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
 }
 
 /*
@@ -91,7 +109,7 @@ deft Str_MapID = 751
 deft Str_MapName = 752
 
 deft StrConst_LF = 525
-
+deft LF = 525
 //Fundamental Switches
 def Const_Is_RTS_Mode = 20
 defs Is_RTS_Mode = 20
@@ -209,6 +227,7 @@ defv{
 	Const_save_var_TileFlags = 4805 
 	Const_var_save_all_morton_memories = 4825
 	ptr_null =  4824
+	Const_2_combi = 4826
 }
 
 //strs
@@ -243,6 +262,34 @@ __fn func_init_allay $ptr $amount{
 	v[ptr_null].copy $ptr, $amount
 }
 
+__fn func_export_deblog_allay $name $ptr $amount {
+	__if DEBUG_BUILD ==1{
+		str2.asg $name
+		str1.asg"DIS DEBUG SYSTEM: EXPORT ALLAY"
+		str1.cat StrConst_LF
+		str1.cat "Address:"
+		str1.cat $ptr
+		str1.cat StrConst_LF
+		str1.cat "Amount:"
+		str1.cat $amount
+		str1.cat StrConst_LF
+		str1.cat StrConst_LF
+		@loop $amount .dst TT1{
+			var1=$ptr+TT1
+			reg1=v[var1]
+			str1.cat "Element["
+			str1.cat TT1
+			str1.cat "]:"
+			str1.cat reg1
+			str1.cat LF
+		}
+		str1.cat "EOF"
+		str1.toFile str2 .utf8
+		func_devlog("\t[502] Exported.")
+
+	}
+
+}
 #include "./header_common_items.tpc"
 
 $DIS_h_common_included = 1

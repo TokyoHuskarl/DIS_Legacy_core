@@ -9,18 +9,26 @@ v[243] = 0
     @if s[2] .isOff() {
         //@comment "タイマーが切れていない"
         @if v[v[301]] >= 1 {
-            @if `v[v[301] + 99] >= 1 {
+            v[v[301]].copy v[601], 100
+            @if `v[700] >= 1 {
                 s[141].off
                 //@comment "Access15 = タイマー"
                 v[295] = v[301] + 99
                 v[243] += 1
                 //@comment "タイマー減らす"
                 v[v[295]] -= 1
-                v[v[301]].copy v[601], 11
+		    __if DEBUG_BUILD==1{
+			@if v[611] >= 300 {
+			    @if v[611] <= 500 {
+				func_export_deblog_allay("illegal_effect_report_1" v[301] 100)
+			    }
+			}
+		    }
+
+
                 //@comment "#あとは個別イベントに丸投げ#V[604]>=1"
                 @if v[604] >= 1 {
                     @call .cev v[604]
-                    
                 }
                 //@comment "時間切れ消滅処理"
                 @if v[v[295]] <= 0 {
@@ -28,6 +36,20 @@ v[243] = 0
                     @if v[v[301]] == 2 {
                         @if v[611] >= 31 {
                             s[143].on
+			    
+
+			    //DEBUG FUNCTION!
+			    __if DEBUG_BUILD==1{
+			    	func_devlog("effect removed, cev called - id:\v[611]")
+				@if v[611] >= 300 {
+				    @if v[611] <= 500 {
+					func_export_deblog_allay("illegal_effect_report" v[301] 100)
+					func_force_crash("Illegal cev called in effect erasing")
+					
+				    }
+			    	}
+			    }
+
                             @call .cev v[611]
                             s[143].off
                             
