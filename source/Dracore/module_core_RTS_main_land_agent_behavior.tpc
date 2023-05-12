@@ -1,4 +1,10 @@
-    v[401] = v[v[536]] - 1
+
+__fn macro_get_tile_instant_flag_ptr $tilenum {
+	reg1 = Const_save_var_TileFlags + $tilenum
+}
+
+
+	    v[401] = v[v[536]] - 1
 	    v[301] = v[401] * v[1117] 
 	    v[301] += 5001
 
@@ -530,11 +536,6 @@
 	    //24.4.23
 	    macro_cord_diff(v[311] v[312])
 	    //macro_diff_var311to312()
-	    /*
-	    v[311] .sub v[403], 2
-	    v[311] .add v[53], 2
-	    //@comment "ずれおわり"
-	    v[311..312] /= 16*/
 
 	    //@comment "set mapXY"
 	    //v[293] = v[301] + 26
@@ -544,9 +545,11 @@
 
 	    //changed 11.5.23
 	    //v[313] = v[v[1182] + v[311] - v[69] + (v[312] - v[70]) * v[2061]]
-	    v[311].sub v[69],2
-	    TT1 = v[312] * v[2061]
-	    v[632] = v[311] + TT1//map point saved
+	    v[311].copy var1,2
+	    var1.sub v[69],2
+	    Temp17 = var2// Save v[312] - v[70] to Temp17
+	    TT1 = var2 * v[2061]
+	    v[632] = var1 + TT1//map point saved
 
 	    // set v313 as a pointer to map tile
 	    v[313] = v[1182] + v[632]
@@ -563,35 +566,49 @@
 	    //24.4.23
 	    //macro_diff_var303to304()
 	    macro_cord_diff(v[303] v[304])
-	    /*
-	    //@comment "ずれ計算"
-	    v[303] .sub v[403], 2
-	    v[303] .add v[53], 2
-	    //@comment "ずれおわり"
-	    v[303..304] /= 16*/
 
-	    v[313] = v[v[432] + v[303] + (v[312] - v[70]) * v[2061]] % 100
-	    v[314] = v[v[432] + v[311] + (v[304] - v[70]) * v[2061]] % 100
-	    v[313..314] /=20
-	    v[315] = (v[313] + v[314]) 
+	    Temp16 = v[304] - v[70] 
+	    v[__id(Temp16)..__id(Temp17)] *= v[2061]
+	    
+	    Temp17 += v[303]//Tile Number vertical
+	    Temp18 = Temp16 + v[311]//Tile Number horizontal
+
+	    v[313] = v[432] + Temp17 //vertical maptile col
+	    v[313] = v[v[313]] 
+	    v[314] = v[432] + Temp18 //horizontal maptile col
+	    v[314] = v[v[314]]
+	    v[313..314] %=100
+
+	    v[315] = v[313] + v[314]
+	    v[315] /= 20 
 	    v[315] %= 2
+
+	    Temp16 += v[303] //Tile Number of where unit goes
 
 	    @if s[2] .isOff() {
 		v[612] .add v[615], 2
 		v[1301].copy v[615], 2
 		@if v[315] == 0 {
 		    //@comment "nowall"
-		    v[315] = v[v[432] + v[303] + (v[304] - v[70]) * v[2061]] % 100
+		    v[315] = v[432] + Temp16
+		    v[315] = v[v[315]] % 100
 		    //@comment "斜め壁Ck"
 		    //@comment "##壁がなければ速度を足す"
 		    @if v[315] < 21 {
-			//@comment "#Agent can move onward"
+			//@comment "#Agent can move onward basically"
+			v[612].copy var1, 2
+			macro_get_tile_instant_flag_ptr(Temp16)
+			//func_show_msg("\c[17]DEBUG: \v[21] - \v[\v[21]]")
+			@if `v[reg1] & FLAG_Maptile_Crowded{//if crowded
+				var1.div Const_2_combi,2 //halve speed
+
+			}
 			@if v[842] > 1 {
 			    //@comment "#Then break wall detection flag"
 			    v[603] &= ~8388608
 			    
 			}
-			v[605] .add v[612], 2
+			v[605] .add var1, 2
 			
 		    } .else bl {
 			v[603] |= 8388608
@@ -618,8 +635,11 @@
 		    //@comment "##垂直方向に壁があれば進行方向vにMSかけたものが速度に"
 		    v[342] = abs(v[612])
 		    @if v[313] < 21 {
+			v[612].copy var1, 1
+			macro_get_tile_instant_flag_ptr(Temp18)
+			var1 /= v[reg1] & FLAG_Maptile_Crowded?2:1 //if crowded, halve speed
 			//@comment "##壁がなければ速度を足す"
-			v[605] += v[612]
+			v[605] += var1
 			
 		    } .else bl {
 			v[612] = divmul(v[612], v[342], v[341])
@@ -635,8 +655,11 @@
 		    //@comment "##垂直方向に壁があれば進行方向vにMSかけたものが速度に"
 		    v[342] = abs(v[613])
 		    @if v[314] < 21 {
+			v[613].copy var2, 1
+			macro_get_tile_instant_flag_ptr(Temp17)
+			var2 /= v[reg1] & FLAG_Maptile_Crowded?2:1 //if crowded, halve speed
 			//@comment "##壁がなければ速度を足す"
-			v[606] += v[613]
+			v[606] += var2
 			
 		    } .else bl {
 			v[613] = divmul(v[613], v[342], v[341])

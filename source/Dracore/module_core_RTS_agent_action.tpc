@@ -78,6 +78,8 @@ cev .id(19), .name("Agent:Unit Action") , .parallel , .cond(Const_Is_RTS_Mode), 
 				v[197] = 0
 				v[341] = v[210] + 7
 				v[590] .add v[v[341]], 2
+
+				func_devlog("Troop Casted Skill, cev called - id:\v[611]")
 				@call .cev v[582]
 				@if v[197] == 0 {
 				    //@comment "#Log"
@@ -118,7 +120,7 @@ cev .id(19), .name("Agent:Unit Action") , .parallel , .cond(Const_Is_RTS_Mode), 
 					
 				    } .else bl {
 					@if s[313] .isOn() {
-					    @call .cev 1924
+					    /*@call .cev 1924
 					    v[341] = 2
 					    v[601] = 1
 					    @pic[v[1155]].strpic {
@@ -136,7 +138,8 @@ cev .id(19), .name("Agent:Unit Action") , .parallel , .cond(Const_Is_RTS_Mode), 
 						.affectedByFlash
 						.affectedByShake
 					    }
-					    @call .cev 1925
+					    @call .cev 1925*/
+					    func_errlog("Illegal skill casted in agent action!")
 					    
 					}
 					

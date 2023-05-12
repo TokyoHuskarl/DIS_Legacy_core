@@ -53,3 +53,59 @@ __fn func_show_msg $str {
 	}
 	func_logupdate_end()
 }
+
+__fn func_errlog $str{
+	
+	t[3000].asg "\c[17]ERROR: "
+	t[3000].cat $str .extract
+	func_logupdate_begin()
+	v[341] = 2
+	@pic[v[1155]].strpic {
+	    t[3000]
+	    .pos v[341], v[1126] .bottomLeft
+	    .size 0, 0    .chromakey 1
+	    .scale 100
+	    .trans 30
+	    .rgbs 100, 100, 100, 100
+	    .font t[530], v[4511]
+	    .spacing 0, 4
+	    .skin "" .nobg .noframe .noPadding
+	    .mapLayer 8
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
+	func_logupdate_end()
+		
+
+
+}
+
+__fn func_devlog $str{
+
+	__if DIS_DEBUG_BUILD == 1{
+	
+	t[3000].asg "\c[5]DEBUG: "
+	t[3000].cat $str .extract
+	func_logupdate_begin()
+	v[341] = 2
+	@pic[v[1155]].strpic {
+	    t[3000]
+	    .pos v[341], v[1126] .bottomLeft
+	    .size 0, 0    .chromakey 1
+	    .scale 100
+	    .trans 30
+	    .rgbs 100, 100, 100, 100
+	    .font t[530], v[4511]
+	    .spacing 0, 4
+	    .skin "" .nobg .noframe .noPadding
+	    .mapLayer 8
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
+	func_logupdate_end()
+		
+
+	}
+}

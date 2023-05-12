@@ -399,6 +399,12 @@ TT2=MortY
                                             v[v[215] + v[1076] + 28] &= ~2
                                             s[122].on
                                             v[423] = v[214]
+					    __if DEBUG_BUILD ==1 {
+						@if v[538] != v[604] {
+						    	func_devlog("Projectile hit and Cev called - ID:\v[\v[604]]")
+							v[538] = v[604]
+						}
+					    }
                                             @call .cev v[v[604]]
                                             v[214] = v[423]
                                             s[122].off
@@ -468,6 +474,7 @@ TT2=MortY
                         v[423] = v[214]
                         v[607] = v[v[292] + 6]
                         v[608] = v[v[292] + 7]
+			func_devlog("Projectile removed and Cev called - ID:\v[604]")
                         @call .cev v[604]
                         v[214] = v[423]
                         s[122].off
