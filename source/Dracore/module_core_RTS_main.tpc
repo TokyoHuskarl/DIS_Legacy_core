@@ -1737,10 +1737,12 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				//@comment "指定地点まで歩かせる"
 				v[341] = v[21] * 300 + 4741
 				//@comment "set reserved target "
+				v[371]=0//Flag for trained troop
 				@if `v[v[301] + 18] >= 1 {
 				    //@comment "Worker"
 				    @if `v[v[21] * 300 + 4802] == 9 {
-				    v[v[21] * 300 + 4718] = v[v[301] + 18]
+					v[371] |= 1//IT'S WORKER!
+				        v[v[21] * 300 + 4718] = v[v[301] + 18]
 					v[v[21] * 300 + 4942] = 1
 					v[v[21] * 300 + 4941] = v[v[21] * 300 + 4941] != 4 ? 2 : 4
 					}.else bl{
@@ -1762,7 +1764,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				    v[v[21] * 300 + 4942] = 2
 				    
 				} .else bl {
-				    v[v[21] * 300 + 4942] = 3
+				    v[v[21] * 300 + 4942] = v[371]&1 ? 2 : 3 //if the unit is worker, then give them loose move order 
 				    //@comment "指定されてる"
 				    v[641].copy v[v[341]], 2
 				    v[v[21] * 300 + 4734] |= 16384 + 524288
