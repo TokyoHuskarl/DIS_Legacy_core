@@ -73,7 +73,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	    v[301] -= 1
 	    @if s[2] .isOff() { //optimizing 26.4.23
 		    //@comment "Minions"
-		    v[603] &= ~67108864
+		    v[603] &= -67108865//~67108864
 		    //@comment "#AA Timer"
 		    @if v[628] > 0 {
 			//@comment "AA on CD"
@@ -148,7 +148,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 		    } .else bl {
 			//@comment "#指定Objが存在しない"
 			v[603] |= 134217728
-			v[634] &= ~2097152
+			v[634] &= -2097153//~2097152
 			//@comment "if AA Timer <1"
 			//@comment "#攻撃指令モードであれば、その場で警戒モードに移行"
 			@if v[841] == 2 {
@@ -168,15 +168,15 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			@if `v[603] & 16777216 {
 			    //v[341] = v[301] + 43
 			    v[1301].copy v[643], 13
-			    v[603] &= ~16777216
-			    v[634] &= ~49152
+			    v[603] &= -16777217//~16777216
+			    v[634] &= -49153//~49152
 			    
 			}
 			@if v[629] <= 0 {
 			    //@comment "#Obj目標を消す"
 			    v[618] = 0
 			    v[847] = 0
-			    v[634] &= ~8404992//(16384 + 8388608)
+			    v[634] &= -8404993//~8404992//(16384 + 8388608)
 			    @if v[655] < 1 {
 				v[607].copy v[619], 2
 				@if v[841] == 4 {
@@ -222,8 +222,8 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 		    @if `v[603] & 16777216 {
 			v[1301].copy v[643], 13
 			v[842] = 2
-			v[603] &= ~16777216
-			v[634] &= ~49152
+			v[603] &= -16777217//~16777216
+			v[634] &= -49153//~49152
 			
 		    }
 		    //@comment "has WP"
@@ -260,7 +260,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	    @if v[842] != 4 {
 		@if s[2] .isOff() {
 		    @if s[103] .isOn() {
-			v[845] &= ~1
+			v[845] &= -2//~1
 			//@comment "Objに向かっているときは"
 			//@comment "Set Dir"
 			v[844] = v[Ptr8 + 4707] - v[607] >= 0 ? 0 : 1
@@ -278,7 +278,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 				@if `v[603] & 16777216 {
 				    //v[341] = v[301] + 43
 				    v[1301].copy v[643], 13
-				    v[634] &= ~49152
+				    v[634] &= -49153//~49152
 				    
 				}
 				s[104].on
@@ -358,7 +358,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 				    v[1301].copy v[v[299]], 2
 
 				    //@comment "#WPへらす"
-				    v[845] &= ~1
+				    v[845] &= -2//~1
 				    v[655] -= 1
 				    s[204].on
 				    @if v[655] <= 2 {
@@ -374,7 +374,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 				    
 				}
 				@if v[655] == 0 {
-				    v[603] &= ~16777216
+				    v[603] &= -16777217//~16777216
 				    @if `v[634] & 32768 {
 					v[634] |= 16384
 					
@@ -384,19 +384,19 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 				    v[655] -= 1
 				    
 				}
-				v[634] &= ~12288
+				v[634] &= -12289//~12288
 				
 			    }
 			    @if s[204] .isOff() {
-				v[634] &= ~49152
-				v[603] &= ~37748736 //(4194304 + 33554432)
+				v[634] &= -49153//~49152
+				v[603] &= -37748737//~37748736 //(4194304 + 33554432)
 				v[844] = (cos(v[656], 1000, -100) + 200) / 200
 				s[104].on
 				@if `!(v[603] & 64) {
 				    //@comment "防御"
 				    @if v[841] == 3 {
 					//@comment "地点に戻った"
-					v[845] &= ~1
+					v[845] &= -2//~1
 					v[655] = -2
 					v[842] = -2
 					
@@ -491,7 +491,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	    } .else bl {
 		@if s[2] .isOff() {
 		    //@comment "nowall"
-		    v[603] &= ~8388608
+		    v[603] &= -8388609//~8388608
 		    //v[341] = v[301] + 249
 		    v[849] -= 1
 		    @if v[849] < 1 {
@@ -605,7 +605,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			}
 			@if v[842] > 1 {
 			    //@comment "#Then break wall detection flag"
-			    v[603] &= ~8388608
+			    v[603] &= -8388609//~8388608
 			    
 			}
 			v[605] .add var1, 2
