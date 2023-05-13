@@ -6,56 +6,58 @@
     
 }
 v[439] = v[1258]
-@if s[76] .isOn() {
-    v[2511] = (v[2511] + 1) 
-    v[2511] %= 8
-    @if v[2511] == 1 {
-        @pic[v[439]].show {
-            "ui\minimapback"
-            .pos v[1282], v[1283] .topLeft
-            .chromakey 1
-            .scale 100
-            .trans 0
-            .rgbs 100, 100, 100, 100
-            .mapLayer 9
-            .eraseWhenTransfer
-        }
+@if Bool_Refresh_Static_Minimap .isOn() { //STATIC REFRESH
+	@if s[76] .isOn() {
+	    v[2511] = (v[2511] + 1) 
+	    v[2511] %= 8
+	    @if v[2511] == 1 {
+		@pic[v[439]].show {
+		    "ui\minimapback"
+		    .pos v[1282], v[1283] .topLeft
+		    .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .mapLayer 9
+		    .eraseWhenTransfer
+		}
 
-        //v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
-	TT1 = v[1277] * v[1276]
-	v[ptr_null].copy v[v[4563]],TT1
-        v[536] = v[4533]
-        @while v[v[536]] != 0 {
-		//opt 25.4.23
-		v[341]=v[v[536]] + 2000
-	        @if s[v[341]] .isOn() {
-			v[401] = v[v[536]] - 1
-			v[301] = v[401] * v[1117] 
-			v[301] += 5000
-			@if `v[v[301] + 102] != 104 {
-			    v[335] = v[4804] + v[401]
-			    v[335] = v[v[335]]
-			    v[299] = v[301] + 233
-			    v[v[299]].copy v[319], 3
-			    @loop v[321] .dst v[342] {
-				v[334] = v[4563] + v[319] 
-				v[334] += v[342] * v[1277]
-				@loop v[320] .dst v[343] {
-				    v[v[334]] = v[335]
-				    v[334] += 1
+		//v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
+		TT1 = v[1277] * v[1276]
+		v[ptr_null].copy v[v[4563]],TT1
+		v[536] = v[4533]
+		@while v[v[536]] != 0 {
+			//opt 25.4.23
+			v[341]=v[v[536]] + 2000
+			@if s[v[341]] .isOn() {
+				v[401] = v[v[536]] - 1
+				v[301] = v[401] * v[1117] 
+				v[301] += 5000
+				@if `v[v[301] + 102] != 104 {
+				    v[335] = v[4804] + v[401]
+				    v[335] = v[v[335]]
+				    v[299] = v[301] + 233
+				    v[v[299]].copy v[319], 3
+				    @loop v[321] .dst v[342] {
+					v[334] = v[4563] + v[319] 
+					v[334] += v[342] * v[1277]
+					@loop v[320] .dst v[343] {
+					    v[v[334]] = v[335]
+					    v[334] += 1
+					}
+				    }
 				}
-			    }
-                	}
-                }
-            //@comment "++"
-            v[536] += 1
-            
-        }
-        
-        @pic[v[439]].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
-        
-    }
-    
+			}
+		    //@comment "++"
+		    v[536] += 1
+		    
+		}
+		
+		@pic[v[439]].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
+		Bool_Refresh_Static_Minimap.off
+	    }
+	    
+	}
 }
 //@comment "##################"
 @wait 0
