@@ -156,7 +156,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 							v[v[301] + 3] |= 1048576
 							v[v[301] + 18] = v[330]
 							v[v[301] + 34] |= 128
-							v[v[301] + 34] &= ~64
+							v[v[301] + 34] &= -65//~64
 						    }
 						    
 						}
@@ -205,7 +205,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 				
 				@if s[202] .isOff() {
 				    v[v[310] + 20] = v[v[310] + 20] == 2 ? 0 : v[v[310] + 20]
-				    v[v[310] + 4] &= ~4
+				    v[v[310] + 4] &= -5//~4
 				   //@comment "try restore formation"
 				    v[12] = v[360]
 				    v[13] = 0

@@ -67,6 +67,10 @@ def {
     	FLAG_Maptile_Occupied = 1
 	FLAG_Maptile_Crowded = 2
 
+	FLAG_Maptile_ShieldCoverTeam0 = 32
+	FLAG_Maptile_ShieldCoverTeam1 = 64
+	FLAG_Maptile_ShieldCoverTeam2 = 128
+
 
 
 	AGENT_SLOT_CURRENT_AD=261
@@ -117,6 +121,8 @@ def Const_Is_SightSystem_On = 300
 defs Is_SightSystem_On = 300
 def Const_Is_Drawing_Units = 35
 def Const_Is_Minimap_Set = 78
+
+defs Bool_Refresh_Static_Minimap = 75
 
 //vars
 defv{

@@ -750,6 +750,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	v[899] = 7
 	@comment "#STATIC"
 	@if v[601] == 11 {
+	    Bool_Refresh_Static_Minimap.on //request refresh minimap static
 	    v[834..835] = 0
 	    //MapXY/5 for minimap
 	    v[600+AGENT_STATIC_SLOT_MINIMAP_X]=v[626]/5

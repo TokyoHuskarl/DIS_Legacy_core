@@ -29,7 +29,7 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 		@if `v[634] & 16384 {
 		    @if `v[634] & 65536 {
 			 v[634] = v[4597] + 34
-			 v[v[634]] &= ~65536
+			 v[v[634]] &= -65537//~65536
 
 			
 		    } .else bl {
@@ -41,7 +41,7 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 				    
 				}
 				v[634] = v[4597] + 34
-				v[[634]] &= ~8388608
+				v[[634]] &= -8388609//~8388608
 				v[[634]] |= 65536
 				
 			    }
@@ -52,7 +52,7 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 				v[4599] += 1
 				v[634] = v[4597] + 34
 				@if `!(v[v[634]] & 8388608) {
-				    v[v[634]] &= ~16384
+				    v[v[634]] &= -16385//~16384
 				    
 				}
 				

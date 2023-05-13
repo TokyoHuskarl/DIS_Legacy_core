@@ -751,6 +751,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			
 		    } .else bl {
 			// "STATIC"
+	    		Bool_Refresh_Static_Minimap.on //request refresh minimap static
 			v[341] = Ptr10 + 4712 
 			v[1301].copy v[v[341]], 2
 			// "wrecks remain longer"
