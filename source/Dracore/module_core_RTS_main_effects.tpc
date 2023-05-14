@@ -20,7 +20,7 @@ v[243] = 0
 		    __if DEBUG_BUILD==1{
 			@if v[611] >= 300 {
 			    @if v[611] <= 500 {
-				func_export_deblog_allay("illegal_effect_report_1" v[301] 100)
+				func_export_deblog_array("illegal_effect_report_1" v[301] 100)
 			    }
 			}
 		    }
@@ -43,7 +43,7 @@ v[243] = 0
 			    	func_devlog("effect removed, cev called - id:\v[611]")
 				@if v[611] >= 300 {
 				    @if v[611] <= 500 {
-					func_export_deblog_allay("illegal_effect_report" v[301] 100)
+					func_export_deblog_array("illegal_effect_report" v[301] 100)
 					func_force_crash("Illegal cev called in effect erasing")
 					
 				    }

@@ -1,0 +1,68 @@
+
+
+defv Var_MouseMode = 87
+
+
+
+defv{
+Contvar1 = 150
+Contvar2 = 151
+}
+
+def{
+MODE_Normal=0
+MODE_Minion=3
+MODE_Static=2
+MODE_Elevation=10
+}
+
+
+def{
+LMB = 1005
+RMB = 1006
+WheelUp = 1004
+WheelDown = 1001
+
+
+
+}
+
+defv {
+Var_MAINCONT_get= 43
+Var_SUBCONT_get= 428
+
+}
+
+__fn func_draw_pointer $R $G $B $C {
+		@pic[1000].show {
+                    t[522]
+                    .pos v[41], v[48] .center
+                    .chromakey 1
+                    .scale 100
+                    .trans 0
+                    .rgbs $R, $G, $B, $C
+                    .mapLayer 10
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+
+}
+
+__fn func_get_mouse{
+
+    @comment "#そのうち整理"
+    @key.input .dst Var_MAINCONT_get {
+        .decision
+        .number
+        .lclick
+        .rclick
+        .wheelDown
+        .wheelUp
+    }
+    @key.input .dst Var_SUBCONT_get {
+        .lclick
+        .wheelDown
+        .wheelUp
+    }
+}
