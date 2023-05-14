@@ -984,11 +984,6 @@ T21=アクションステート取得"*/
                             v[305] = v[4040 + v[341]]
                             v[306] = v[4050 + v[341]]
                             v[454] = v[4140 + v[341]]
-                            //v[286] = 900 + v[341]
-                            //@comment "Layer Setting"
-                            //v[341] = (v[341] - 1) % Const_layer_amount
-                            //@comment "Layer Setting END"
-                            //v[320] = v[v[340] * Const_layer_amount + v[341] + v[1185]]
                             //@comment "Strings = t[v[286]]"
 			    v[286] = v[341] + v[11]
                             @if v[188] > 0 {
@@ -1086,11 +1081,6 @@ T21=アクションステート取得"*/
                                 v[306] = v[v[306]]
 				v[454] = 4140 + v[341]
                                 v[454] = v[v[454]]
-                                //v[286] = 400 + v[341] + 10 * v[v[341] + 342]
-                                //@comment "#########################Layer own Setting"
-                                //v[341] = (v[341] - 1) % 6
-                                //@comment "Layer own Setting END#########################"
-                                //v[320] = v[v[340] * 6 + v[341] + v[1185]]
                                 //@comment "Strings = t[v[286]]"
                                 @if v[188] > 0 {
                                     @if v[454] == 0 {
@@ -1135,7 +1125,7 @@ T21=アクションステート取得"*/
                             v[188] = v[178] = v[340] * Const_layer_amount + v[1201]
                             v[177] = v[186]
                             v[890] = v[186]
-                            v[320] = v[v[340] * Const_layer_amount + v[1185]]
+                            v[320] = v[v[340] * 6 + v[1185]]//ACHTUNG Legacy system, need to change
                             @pic[v[188]].show {
                                 t[v[286]] .repl 1 v[320]
                                 .pos v[305], v[306] .center

@@ -742,7 +742,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	v[899] += 1
 	t[v[899]] .asg t[501]
 	@comment "###################Set New Picture System###################"
-	v[302] = v[201] * Const_layer_amount + v[1185]
+	v[302] = v[201] * 6 + v[1185] //ACHTUNG you need to remove this system eventually - it's obsolete legacy system, almost no meaning now
 	@comment "#init"
 	v[v[302]..v[302] + 5] = 0
 	v[v[302]] = v[602] > 0 ? v[602] : v[701]

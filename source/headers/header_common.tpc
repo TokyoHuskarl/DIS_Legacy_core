@@ -8,7 +8,7 @@
 //Backup is for faggots
 #copyMode .force
 
-def DEBUG_BUILD = 0 //0 = release, 1 = debug
+def DEBUG_BUILD = 1 //0 = release, 1 = debug
 def DIS_DEBUG_BUILD = DEBUG_BUILD
 //Set basic FPS - 60 in Maniacs patch default setting, 45 in DIS:Classic, 48 in DIS:Legacy.  
 def DIS_Game_FPS = 48
@@ -312,8 +312,8 @@ __fn func_export_deblog_array $name $ptr $amount {
 		str1.cat StrConst_LF
 		str1.cat StrConst_LF
 		@loop $amount .dst TT1{
-			var1=$ptr+TT1
-			reg1=v[var1]
+			TT2=$ptr+TT1
+			reg1=v[TT2]
 			str1.cat "Element["
 			str1.cat TT1
 			str1.cat "]:"

@@ -181,6 +181,20 @@ cev .id(cevid_ConsoleCmd), .name("*Console Cmd*"),{
 	    
 	    
 	}
+	@if t[v[523]] .contains "exagent" {
+	    t[v[523]] .split " ", t[501], v[342]
+	    t[503].toNum var1
+	    var1=var1*300+4700
+	    t[504].toNum var2
+	    func_export_deblog_array(t[502] var1 var2)
+	}
+	@if t[v[523]] .contains "exarray" {
+	    t[v[523]] .split " ", t[501], v[342]
+	    t[503].toNum var1 .extract
+	    var1 = v[var1]
+	    t[504].toNum var2
+	    func_export_deblog_array(t[502] var1 var2)
+	}
 	@if t[v[523]] .eq "convert_text" {
 	    @se.play "decide1" .opt 90, 100, 50
 	    t[501] .asg  .file "import", .utf8
