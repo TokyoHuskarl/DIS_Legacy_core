@@ -4,7 +4,7 @@ Var_mapedit1=2101
 }
 
 
-__fn func_draw_elevation $MapX $MapY $ptr{
+__fn func_draw_elevation $MapX $MapY $ptr {
 
 		v[341] = $MapX + v[69]
 		v[342] = $MapY + v[70]
@@ -215,3 +215,5 @@ __fn func_generate_elevation_map {
 
 	@map.tileset v[2060]
 }
+
+
