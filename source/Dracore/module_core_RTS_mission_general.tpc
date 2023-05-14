@@ -1,8 +1,14 @@
 #include "./../headers/header_common.tpc"
 #include "./../headers/header_scripts.tpc"
 
+#include "./../headers/header_control.tpc"
 
+#include "./../Toolbox/module_console_functions_DIS.tpc"
 cev .id(1815), .name("script intepreter"),{func_script_interpreter_recursion(Ptr1,var2)}
+
+#include "./module_core_RTS_mission_map_functions.tpc"
+
+defv Mapgentype = 2055
 
 def moduletitle="module_core_RTS_mission_general.tpc"
 
@@ -11,7 +17,7 @@ def moduletitle="module_core_RTS_mission_general.tpc"
 //#etc etc
 //Somehow F2 copypasta won't work properly <- TPC cannot deal with setVehiclePos bug. it's over 
 //so This part needs to be adjusted manually
-/*cev .id(2) ,.name("@Mission Init") ,{
+cev .id(2) ,.name("@Mission Init") ,{
 	v[1080] = v[1012]
 	s[18].off
 	s[43].on
@@ -724,7 +730,9 @@ def moduletitle="module_core_RTS_mission_general.tpc"
 	@comment "＃＃＃＃＃＃
 	Camera Set Up"
 	@map.getPlayerPos v[68] v[351] v[352]
-	@map[v[68]].setVehiclePos .pos v[69], v[70] .retain
+	//@map[v[68]].setVehiclePos .pos v[69], v[70] .retain
+	@map[v[68]].setPlayerPos .pos v[69] v[70]
+	
 	@loop v[1276] .dst v[344] {
 		v[v[4802] + v[344]] = (muldiv(v[344], v[431], 100) + v[70]) / 5
 		
@@ -1026,63 +1034,12 @@ def moduletitle="module_core_RTS_mission_general.tpc"
 		t[502] .toNum v[341]
 		@comment "need to load tilegen.txt"
 		@if v[341] == 0 {
-			v[2055] = 1
+			Mapgentype = Mapgentype==0?1:Mapgentype
 			
 		}
 		
 	}
-	@comment "########
-#Tile Generation
-########"
-	@if v[2055] == 1 {
-		t[510] .asg "..\Maps\"
-		t[510] .cat t[750]
-		t[510] .cat "\"
-		t[510] .cat "tilegen"
-		t[501] .asg  .file t[510], .utf8
-		@if t[501] .neq "" {
-			t[3000..4999] .asg ""
-			t[501] .split "upper", t[502], v[341]
-			t[502] .split t[525], t[3000], v[341]
-			@loop v[2062] .dst v[2064] {
-				t[4001..4999] .asg ""
-				v[341] = 3001 + v[2064]
-				t[v[341]] .split ",", t[4001], v[341]
-				@loop v[2061] .dst v[2065] {
-					v[341] = v[2065] + v[69]
-					v[342] = v[2064] + v[70]
-					v[343] = 4001 + v[2065]
-					t[v[343]] .toNum v[343]
-					@map.rewrite .lower .single v[343] .xywh v[341], v[342], 1, 1
-					
-				}
-				
-				
-			}
-			
-			t[3000..4999] .asg ""
-			t[503] .split t[525], t[3000], v[341]
-			@loop v[2062] .dst v[2064] {
-				t[4001..4999] .asg ""
-				v[341] = 3001 + v[2064]
-				t[v[341]] .split ",", t[4001], v[341]
-				@loop v[2061] .dst v[2065] {
-					v[341] = v[2065] + v[69]
-					v[342] = v[2064] + v[70]
-					v[343] = 4001 + v[2065]
-					t[v[343]] .toNum v[343]
-					@map.rewrite .upper .single v[343] .xywh v[341], v[342], 1, 1
-					
-				}
-				
-				
-			}
-			
-			
-		}
-		
-	}
-}*/
+}
 
 cev .id(4) ,.name("@Mission Start") ,{
 	@comment moduletitle
@@ -1516,6 +1473,12 @@ cev .id(2121), .name("Game:Battle Result"),{
 	s[38].on
 	@scr.tint .rgbs 0, 0, 0, 100 .time 0
 	@sys.reset
+}
+
+cev .id(1804),.name("mission:gen_elevationmap"),{
+	func_generate_elevation_map()
+
+
 }
 
 #include "./module_core_RTS_mission_map_init.tpc"

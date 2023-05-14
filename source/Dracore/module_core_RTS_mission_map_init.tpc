@@ -1,6 +1,98 @@
 
 cev .id(1800), .name("Mission:MapInit"), {
+
+
 	var_allocatedmapsize = v[2061] * v[2062]
+
+		//@comment "#########Tile Generation########"
+		@if v[2055] == 1 {
+			t[510] .asg "..\Maps\"
+			t[510] .cat t[750]
+			t[510] .cat "\"
+			t[510] .cat "tilegen"
+			t[501] .asg  .file t[510], .utf8
+			@if t[501] .neq "" {
+				t[3000..4999] .asg ""
+				t[501] .split "upper", t[502], v[341]
+				t[502] .split t[525], t[3000], v[341]
+				@loop v[2062] .dst v[2064] {
+					t[4001..4999] .asg ""
+					v[341] = 3001 + v[2064]
+					t[v[341]] .split ",", t[4001], v[341]
+					@loop v[2061] .dst v[2065] {
+						v[341] = v[2065] + v[69]
+						v[342] = v[2064] + v[70]
+						v[343] = 4001 + v[2065]
+						t[v[343]] .toNum v[343]
+						@map.rewrite .lower .single v[343] .xywh v[341], v[342], 1, 1
+						
+					}
+					
+					
+				}
+				
+				t[3000..4999] .asg ""
+				t[503] .split t[525], t[3000], v[341]
+				@loop v[2062] .dst v[2064] {
+					t[4001..4999] .asg ""
+					v[341] = 3001 + v[2064]
+					t[v[341]] .split ",", t[4001], v[341]
+					@loop v[2061] .dst v[2065] {
+						v[341] = v[2065] + v[69]
+						v[342] = v[2064] + v[70]
+						v[343] = 4001 + v[2065]
+						t[v[343]] .toNum v[343]
+						@map.rewrite .upper .single v[343] .xywh v[341], v[342], 1, 1
+						
+					}
+					
+					
+				}
+				
+				
+			}
+			
+		}.elif v[2055] == 2 { //new
+			t[510] .asg "..\Maps\"
+			t[510] .cat t[750]
+			t[510] .cat "\"
+			t[510] .cat "mapdata"
+		        @pic[2599].show {
+			t[510] 
+			.pos -111, -111 .center
+			.chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.mapLayer 7
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+		        }
+		        @pic[2599].getInfo .pixel 0, 0, v[2061], v[2062] .dst Memory_MapInfo
+			//var_allocatedmapsize
+			@loop v[2062] .dst v[2064] {
+				@loop v[2061] .dst v[2065] {
+					TT1 = v[2065] + v[69]
+					TT2 = v[2064] + v[70]
+					TT3 = v[2065] + v[2064]  * v[2061] + v[1182]
+					TT4 = v[TT3] & 0x000000FF 
+					@map.rewrite .lower .single TT4 .xywh v[341], v[342], 1, 1
+					TT5 = (v[TT3] & 0x0000FF00) >> 8
+					@map.rewrite .upper .single TT5 .xywh v[341], v[342], 1, 1
+					TT6 = (v[TT3] & 0xff000000) >> 24
+					@map.getTerrain .pos v[341], v[342] .dst(reg10)
+					//set info
+					v[TT3] = TT6*100000000 + TT5*100000 + TT4 * 100 + reg10
+				}
+				
+				
+			}
+		
+			
+		}
+	
+
 	@comment "########
 #Sight System
 ########"
@@ -101,25 +193,48 @@ cev .id(1800), .name("Mission:MapInit"), {
 	v[0] = [v[286]..v[286] + 160000] = 0
 	v[2063] = v[2061] * v[2062]
 	v[504] = 3
-	@loop v[2062] .dst v[2064] {
-	    v[286] = v[2061] * v[2064] + v[4529]
-	    v[287] = v[2061] * v[2064] + v[1182]
-	    @loop v[2061] .dst v[2065] {
-		v[341] = v[2065] + v[69]
-		v[342] = v[2064] + v[70]
-		@map.getTerrain .pos v[341], v[342] .dst v[30]
-		v[v[287]] = v[30]
-		@comment "HEIGHT LEVEL 1"
-		v[v[287]] += 300000000
-		@comment "lower water height"
-		v[v[287]] -= (v[v[4505] + v[30]] & 1) > 0 ? 100000000 : 0
-		@comment "#TileFuncPushFlag"
-		v[v[286]] |= v[30] >= 20 ? 1 : 0
-		v[286..287] += 1
-		
+	@if  v[2055] == 2 { //new mapdata loaded
+	    @loop v[2062] .dst v[2064] {
+		    v[286] = v[2061] * v[2064] + v[4529]
+		    v[287] = v[2061] * v[2064] + v[1182]
+		    @loop v[2061] .dst v[2065] {
+			v[341] = v[2065] + v[69]
+			v[342] = v[2064] + v[70]
+			@comment "if elevation was not set"
+			@if v[v[287]]<100000000{
+				v[v[287]] += 300000000
+				@comment "lower water height"
+				v[v[287]] -= (v[v[4505] + v[30]] & 1) > 0 ? 100000000 : 0
+				}
+			@comment "#TileFuncPushFlag"
+			v[v[286]] |= v[v[287]]%100 >= 20 ? 1 : 0
+			v[286..287] += 1
+			
+		    }
 	    }
-	    
-	    
+
+	}.else{
+
+		@loop v[2062] .dst v[2064] {
+		    v[286] = v[2061] * v[2064] + v[4529]
+		    v[287] = v[2061] * v[2064] + v[1182]
+		    @loop v[2061] .dst v[2065] {
+			v[341] = v[2065] + v[69]
+			v[342] = v[2064] + v[70]
+			@map.getTerrain .pos v[341], v[342] .dst v[30]
+			v[v[287]] = v[30]
+			@comment "HEIGHT LEVEL 1"
+			v[v[287]] += 300000000
+			@comment "lower water height"
+			v[v[287]] -= (v[v[4505] + v[30]] & 1) > 0 ? 100000000 : 0
+			@comment "#TileFuncPushFlag"
+			v[v[286]] |= v[30] >= 20 ? 1 : 0
+			v[286..287] += 1
+			
+		    }
+
+
+		}
 	}
 
 	@comment "set v[2060]-> cev (mission init)"
@@ -137,75 +252,77 @@ cev .id(1800), .name("Mission:MapInit"), {
 	}
 
 	@comment "*map tile check*"
-	@loop v[2062] .dst v[2064] {
-	    v[286] = v[2061] * v[2064] + v[4529]
-	    v[287] = v[2061] * v[2064] + v[1182]
-	    @loop v[2061] .dst v[2065] {
-		v[341] = v[2065] + v[69]
-		v[342] = v[2064] + v[70]
-		@sys.getInfo .tiles v[341], v[342], 1, 1 .lower .dst v[30]
-		@comment "Set LowerChipID"
-		v[v[287]] += v[30] * 100
-		@comment "Highgroundset"
-		v[371] = 0
-		@loop v[701] .dst v[345] {
-		    v[371] += v[30] == v[v[345] + 702] && v[30] != 0 ? 1 : 0
-		    
-		}
-		
-		v[v[287]] += v[371] >= 1 ? 100000000 : 0
-		@comment "CliffCheck"
-		v[371] = 0
-		@loop v[751] .dst v[345] {
-		    v[371] += v[30] == v[v[345] + 752] && v[30] != 0 ? 1 : 0
-		    
-		}
-		
-		@if v[371] >= 1 {
-		    v[289] = v[287]
-		    @while v[289] >= v[1182] {
-			@comment "HEIGHT LEVEL UP"
-			v[v[289]] += 100000000
-			v[289] -= v[2061]
+	@if v[2055] != 2 { 
+		@loop v[2062] .dst v[2064] {
+		    v[286] = v[2061] * v[2064] + v[4529]
+		    v[287] = v[2061] * v[2064] + v[1182]
+		    @loop v[2061] .dst v[2065] {
+			v[341] = v[2065] + v[69]
+			v[342] = v[2064] + v[70]
+			@sys.getInfo .tiles v[341], v[342], 1, 1 .lower .dst v[30]
+			@comment "Set LowerChipID"
+			v[v[287]] += v[30] * 100
+			@comment "Highgroundset"
+			v[371] = 0
+			@loop v[701] .dst v[345] {
+			    v[371] += v[30] == v[v[345] + 702] && v[30] != 0 ? 1 : 0
+			    
+			}
+			
+			v[v[287]] += v[371] >= 1 ? 100000000 : 0
+			@comment "CliffCheck"
+			v[371] = 0
+			@loop v[751] .dst v[345] {
+			    v[371] += v[30] == v[v[345] + 752] && v[30] != 0 ? 1 : 0
+			    
+			}
+			
+			@if v[371] >= 1 {
+			    v[289] = v[287]
+			    @while v[289] >= v[1182] {
+				@comment "HEIGHT LEVEL UP"
+				v[v[289]] += 100000000
+				v[289] -= v[2061]
+				
+			    }
+			    
+			    
+			}
+			@comment "CliffEndCheck"
+			v[371] = 0
+			@loop v[801] .dst v[345] {
+			    v[371] += v[30] == v[v[345] + 802] && v[30] != 0 ? 1 : 0
+			    
+			}
+			
+			@if v[371] >= 1 {
+			    v[289] = v[287]
+			    @while v[289] >= v[1182] {
+				@comment "HEIGHT LEVEL DOWN"
+				v[v[289]] -= 100000000
+				v[289] -= v[2061]
+				
+			    }
+			    
+			    
+			}
+			@sys.getInfo .tiles v[341], v[342], 1, 1 .upper .dst v[30]
+			@comment "Set UpperChipID"
+			v[v[287]] += v[30] * 100000
+			@comment "#TileFuncPushFlag"
+			v[371] = 0
+			@loop v[601] .dst v[345] {
+			    v[371] += v[30] == v[v[345] + 602] && v[30] != 0 ? 1 : 0
+			    
+			}
+			
+			v[v[286]] |= v[371] >= 1 ? 1 : 0
+			v[286..287] += 1
 			
 		    }
 		    
 		    
 		}
-		@comment "CliffEndCheck"
-		v[371] = 0
-		@loop v[801] .dst v[345] {
-		    v[371] += v[30] == v[v[345] + 802] && v[30] != 0 ? 1 : 0
-		    
-		}
-		
-		@if v[371] >= 1 {
-		    v[289] = v[287]
-		    @while v[289] >= v[1182] {
-			@comment "HEIGHT LEVEL DOWN"
-			v[v[289]] -= 100000000
-			v[289] -= v[2061]
-			
-		    }
-		    
-		    
-		}
-		@sys.getInfo .tiles v[341], v[342], 1, 1 .upper .dst v[30]
-		@comment "Set UpperChipID"
-		v[v[287]] += v[30] * 100000
-		@comment "#TileFuncPushFlag"
-		v[371] = 0
-		@loop v[601] .dst v[345] {
-		    v[371] += v[30] == v[v[345] + 602] && v[30] != 0 ? 1 : 0
-		    
-		}
-		
-		v[v[286]] |= v[371] >= 1 ? 1 : 0
-		v[286..287] += 1
-		
-	    }
-	    
-	    
 	}
 
 	@wait 0
@@ -549,6 +666,71 @@ cev .id(1800), .name("Mission:MapInit"), {
 	}
 	@wait 0
 	@comment "Advanced heightmap system"
+	
+	__if DIS_EXPERIMENTAL == 1 {
+
+		v[341] = ev[3].scrx
+		v[342] = ev[3].scry
+		v[341..342] -= 8
+		v[342] -= 10
+		v[343] = ev[4].scrx - ev[3].scrx
+		v[344] = ev[4].scry - ev[3].scry
+		@pic[PicID_Map_base].strpic {
+		    ""
+		    .pos v[341], v[342] .topLeft
+		    .size v[343], v[344]    .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .font "", 12 .noShadow
+		    .spacing 0, 4
+		    .skin "" .nobg .noframe .noGradation .noPadding
+		    .mapLayer 2
+		    .eraseWhenTransfer
+		    .affectedByTint
+		    .affectedByFlash
+		    .affectedByShake
+		}
+		@pic[PicID_elevation_add].strpic {
+		    ""
+		    .pos v[341], v[342] .topLeft
+		    .size v[343], v[344]    .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans 60
+		    .rgbs 10, 10, 10, 100
+		    .font "", 12 .noShadow
+		    .spacing 0, 4
+		    .skin "" .nobg .noframe .noGradation .noPadding
+		    .multi
+		    .mapLayer 4
+		    .eraseWhenTransfer
+		    .affectedByTint
+		    .affectedByFlash
+		    .affectedByShake
+		}
+		@pic[PicID_elevation_multi].strpic {
+		    ""
+		    .pos v[341], v[342] .topLeft
+		    .size v[343], v[344]    .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .font "", 12 .noShadow
+		    .spacing 0, 4
+		    .skin "" .nobg .noframe .noGradation .noPadding
+		    .mapLayer 5
+		    .eraseWhenTransfer
+		    .affectedByTint
+		    .affectedByFlash
+		    .affectedByShake
+		}
+	}
+
+
+
 	@if v[2056] == 2 {
 	    @call .cev 1804
 	    
@@ -565,7 +747,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 		v[342] -= 10
 		v[343] = ev[4].scrx - ev[3].scrx
 		v[344] = ev[4].scry - ev[3].scry
-		@pic[1].show {
+		@pic[PicID_elevation_add].show {
 		    t[502]
 		    .pos v[341], v[342] .topLeft
 		    .scrollWithMap
@@ -580,7 +762,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 		    .affectedByFlash
 		    .affectedByShake
 		}
-		@pic[2].show {
+		@pic[PicID_elevation_multi].show {
 		    t[503]
 		    .pos v[341], v[342] .topLeft
 		    .scrollWithMap

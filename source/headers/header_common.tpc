@@ -12,6 +12,7 @@ def DEBUG_BUILD = 0 //0 = release, 1 = debug
 def DIS_DEBUG_BUILD = DEBUG_BUILD
 //Set basic FPS - 60 in Maniacs patch default setting, 45 in DIS:Classic, 48 in DIS:Legacy.  
 def DIS_Game_FPS = 48
+def DIS_EXPERIMENTAL = 1 //0=nah 1=compile experimental features
 
 #include "./header_log.tpc"
 
@@ -49,7 +50,7 @@ __fn macro_get_agent_slot_ptr $pointer $agent $slot{
 
 //cev 2004 GetParaNow v1v2 r1
 def {
-
+	EDITPIC = 2599
 
 	Const_var_bit_maniacs = 32
 	Const_AgentMetaTeam_begin = 460318
@@ -60,6 +61,7 @@ def {
 	UNIT_CLASS_CAV=2
 
 
+	Memory_MapInfo=300317
 	UNIT_CLASS_STATIC=11
 
 
@@ -95,8 +97,27 @@ def {
 	SLOT_CURRENT_EVA=266
 	SLOT_CURRENT_CRIT=267
 	SLOT_CURRENT_MS=268
-}
 
+
+
+
+	//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+#include "./const_picture_ids.tpc"
 
 
 __fn macro_get_agent_slot_to_r1 $agent $slot{
@@ -111,6 +132,13 @@ __fn macro_set_agent_slot $agent $slot $setpar{
 deft Str_MapDirectory = 750
 deft Str_MapID = 751
 deft Str_MapName = 752
+
+deft Font_Common = 529
+defv Font_Common_size = 4510 
+deft Font_UI = 530
+defv Font_UI_size = 4511
+//deft Font_Imperial =
+
 
 deft StrConst_LF = 525
 deft LF = 525
@@ -202,6 +230,9 @@ defv{
 	Temp18=318
 	Temp19=319
 	Temp20=320
+	Temp21=321
+	Temp22=322
+	Temp23=323
 	Temp32=332
 	Temp37=337
     //TEMPTEMPS
@@ -264,14 +295,14 @@ __fn macro_check_agent_is_killed $agentid{
 	reg1 = $agentid >= 1 ? (v[(300 * $agentid + 4701)] <= 0 ? 1 : 0) : 0
 }
 
-__fn func_init_allay $ptr $amount{
+__fn func_init_array $ptr $amount{
 	v[ptr_null].copy $ptr, $amount
 }
 
-__fn func_export_deblog_allay $name $ptr $amount {
+__fn func_export_deblog_array $name $ptr $amount {
 	__if DEBUG_BUILD ==1{
 		str2.asg $name
-		str1.asg"DIS DEBUG SYSTEM: EXPORT ALLAY"
+		str1.asg"DIS DEBUG SYSTEM: EXPORT ARRAY"
 		str1.cat StrConst_LF
 		str1.cat "Address:"
 		str1.cat $ptr
@@ -297,5 +328,6 @@ __fn func_export_deblog_allay $name $ptr $amount {
 
 }
 #include "./header_common_items.tpc"
+#include "./header_common_DIS_systemfuncs.tpc"
 
 $DIS_h_common_included = 1

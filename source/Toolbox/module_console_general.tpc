@@ -1,14 +1,20 @@
 #include "./../headers/header_common.tpc"
 
+defs Bool_call_console = 182
+
 def cevid_ConsoleMain=1848
 def cevid_ConsoleControlManager=1849
 def cevid_ConsoleCmd=1850
 
-cev .id(cevid_ConsoleMain), .name("Console:Main"), .auto{
-	@comment "2byte chars are shite"
-	@comment "#################"
+#include "./module_console_functions_DIS.tpc"
+#include "./module_console_commands.tpc"
+
+
+cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_call_console)),{
+	//@comment "2byte chars are shite"
+	//@comment "#################"
 	v[523] = 511
-	t[v[523]] .asg ""
+	t[v[523]].asg ""
 	@if s[20] .isOn() {
 	    s[39].off
 	    s[51].off
@@ -20,8 +26,7 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .auto{
 	    @key.inputEx .keybdWithBind .dst v[901]
 	    @key.inputEx .keyCode 8 .dst v[1224]
 	    @if v[942] >= 1 {
-		@comment "TEMP
-	unco"
+		@comment "TEMP	unco"
 		@key.inputEx .keyCode 189 .dst v[341]
 		@if v[341] >= 1 {
 		    s[205].on
@@ -1172,7 +1177,7 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .auto{
 		    .scale 100
 		    .trans 0
 		    .rgbs 100, 100, 100, 100
-		    .font "", 12
+		    .font Font_UI, Font_UI_size
 		    .spacing 0, 4
 		    .skin "SystemWindow" .stretch
 		    .mapLayer 10
@@ -1202,7 +1207,48 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .auto{
 
 }
 
+cev .id(cevid_ConsoleControlManager), .name("Console:Manager"), .parallel, {
 
-cev .id(cevid_ConsoleCmd), .name("Console:Cmd"),{
-#include "./module_console_commands.tpc"
+	@if .testPlay() {
+	    @key.inputEx .keyCode 121 .dst v[1223]
+	    @if v[1223] == 1 {
+		v[472] = divmul(90, 100, v[2216])
+		@se.play "cursor19" .opt v[472], 100, 50
+		@if s[20] .isOn() {
+		    s[2].on
+		    s[43].on
+		    s[18].off
+		    s[38].on
+		    
+		}
+		s[182].on
+		@loop .inf() {
+		    @if s[183] .isOn() {
+			@break
+			
+		    }
+		    @wait 0
+		    
+		}
+		
+		@pic[996].erase
+		s[183].off
+		s[182].off
+		@if s[20] .isOn() {
+		    s[38].off
+		    s[43].off
+		    s[18].on
+		    
+		} .else bl {
+		    
+		}
+		func_show_msg(t[v[523]])
+		@call .cev cevid_ConsoleCmd //call Cmd
+		
+	    }
+	    
+	}
+
 }
+
+#include "./module_console_cevset.tpc"
