@@ -36,9 +36,11 @@ __fn macro_ColCheck_push {
     //TT1 = Const_save_var_TileFlags+v[632]//check Tile flag
     v[320..321] *= (v[527 + ((v[Temp32] | (v[638] & 2 && v[680] > 0 ? 256 : 0)) & 256) / 256]) + (v[Ptr5]&FLAG_Maptile_Crowded?1:0)//if it's Crowded, push more
     v[v[299]] .add v[320], 2
-    	@if v[700]==0{
+    	//DEBUG
+    	/*@if v[700]==0{
 	 func_show_msg("pushed by \v[203] - mort \v[609] - amount \v[327] - shift \v[345]")
-	}
+	}*/
+
     v[Temp32] |= 64
     @break
 }
