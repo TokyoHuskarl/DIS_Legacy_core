@@ -312,8 +312,8 @@ __fn func_export_deblog_array $name $ptr $amount {
 		str1.cat StrConst_LF
 		str1.cat StrConst_LF
 		@loop $amount .dst TT1{
-			var1=$ptr+TT1
-			reg1=v[var1]
+			TT2=$ptr+TT1
+			reg1=v[TT2]
 			str1.cat "Element["
 			str1.cat TT1
 			str1.cat "]:"
