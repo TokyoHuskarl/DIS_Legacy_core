@@ -1,4 +1,55 @@
+__fn func_ui_show_terrain_info {
+       @if s[18] .isOn() {
+            @if s[5] .isOff() {
+                //@comment "#Check Terrain"
+                v[51].copy v[11], 2
+                v[12] -= 8
+                @call .cev 2000
+                @if `v[1974] != v[21] || v[1975] != v[22] {
+                    //@comment "######################Get Terrain and Elevation info"
+                    v[313] = v[v[1182] + v[21] - v[69] + (v[22] - v[70]) * v[2061]]
+                    v[341] = v[313] / 100000000
+                    v[350] = v[51]
+                    v[351] = v[52] - 16
+                    v[342] = v[1239] +v[313] % 100
+                    @if .testPlay() {
+                        t[501] .asg "
 
+    \t[20110] \t[\v[342]] \t[20111]\v[341] (\v[21],\v[22])" .extract
+                        
+                    } .else bl {
+                        t[501] .asg "
+    \t[20110] \t[\v[342]] \t[20111]\v[341]" .extract
+                        
+                    }
+                    @comment "######################"
+                    v[1974] = v[21]
+                    v[1975] = v[22]
+                    @pic[979].strpic {
+                        t[501]
+                        .pos v[1296], v[1297] .topLeft
+                        .size 0, 0                        .chromakey 1
+                        .scale 100
+                        .trans 0
+                        .rgbs 100, 100, 100, 100
+                        .font t[530], 11 .noShadow
+                        .spacing 0, 0
+                        .skin "" .nobg .noframe .noGradation .noPadding
+                        .mapLayer 8
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[979].erase
+                
+            }
+            
+        }
+}
 @comment "module_core_RTS_ui_central_monitor.tpc"
 //@comment "表示なし"
 @if s[57] .isOff() {
@@ -145,56 +196,7 @@
         v[1972] = v[206]
         v[1973] = v[v[4580]]
         @wait 0
-        @if s[18] .isOn() {
-            @if s[5] .isOff() {
-                //@comment "#Check Terrain"
-                v[51].copy v[11], 2
-                v[12] -= 8
-                @call .cev 2000
-                @if `v[1974] != v[21] || v[1975] != v[22] {
-                    //@comment "######################Get Terrain and Elevation info"
-                    v[313] = v[v[1182] + v[21] - v[69] + (v[22] - v[70]) * v[2061]]
-                    v[341] = v[313] / 100000000
-                    v[350] = v[51]
-                    v[351] = v[52] - 16
-                    v[342] = v[1239] +v[313] % 100
-                    @if .testPlay() {
-                        t[501] .asg "
-
-    \t[20110] \t[\v[342]] \t[20111]\v[341] (\v[21],\v[22])" .extract
-                        
-                    } .else bl {
-                        t[501] .asg "
-    \t[20110] \t[\v[342]] \t[20111]\v[341]" .extract
-                        
-                    }
-                    @comment "######################"
-                    v[1974] = v[21]
-                    v[1975] = v[22]
-                    @pic[979].strpic {
-                        t[501]
-                        .pos v[1296], v[1297] .topLeft
-                        .size 0, 0                        .chromakey 1
-                        .scale 100
-                        .trans 0
-                        .rgbs 100, 100, 100, 100
-                        .font t[530], 11 .noShadow
-                        .spacing 0, 0
-                        .skin "" .nobg .noframe .noGradation .noPadding
-                        .mapLayer 8
-                        .eraseWhenTransfer
-                        .affectedByFlash
-                        .affectedByShake
-                    }
-                    
-                }
-                
-            } .else bl {
-                @pic[979].erase
-                
-            }
-            
-        }
+ 	func_ui_show_terrain_info()
         @wait 0
         
     }
@@ -3708,7 +3710,8 @@ TechSlots"
         }
         
         @pic[1799..1800].erase
-        @pic[975..985].erase
+        @pic[975..977].erase
+        @pic[979..985].erase
         @pic[995].move {
             .pos v[1041], v[1042] .center
             .scale 100
@@ -3791,7 +3794,8 @@ TechSlots"
             .affectedByShake
         }
         @wait 0
-        @wait 0
+	func_ui_show_terrain_info()
+       // @wait 0
         
     }
     

@@ -1635,7 +1635,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    v[255] = v[401] + 1
 			    v[252] = v[v[301] + 7] + rnd(-6, 6)
 			    v[253] = v[v[301] + 8] + v[v[301] + 11] + rnd(-3, 3)
-			    @call .cev 46
+			    @call .cev 46 //spawn ev
 			    v[301] = v[401] * 300 
 			    v[301] += 5000
 			    @if `v[v[301] + 222] != 3 {

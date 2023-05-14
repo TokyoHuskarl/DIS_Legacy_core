@@ -253,6 +253,26 @@ cev .id(80),  .name("Mission:Environment Effect"), .parallel, .cond(20), {
 
 	//@comment "#########Env test########"
 	//@comment "#########Adv maptile########"
+	__if DIS_EXPERIMENTAL ==1 {
+	    v[341] = ev[3].scrx - 8
+	    v[342] = ev[3].scry - 16
+	    @pic[PicID_elevation_add].move {
+		.pos v[341], v[342] .topLeft
+		.scale v[438]
+		.trans 0
+		.add
+		.time 0
+	    }
+	    @pic[PicID_elevation_multi].move {
+		.pos v[341], v[342] .topLeft
+		.scale v[438]
+		.trans 0
+		.time 0
+		.rgbs 100, 100, 100, 100
+		.multi
+	    }
+
+	}
 	@if s[315] .isOn() {
 	    v[341] = ev[3].scrx - 8
 	    v[342] = ev[3].scry - 16

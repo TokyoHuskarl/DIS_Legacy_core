@@ -1,0 +1,4 @@
+__fn func_play_system_se $name $volume $tempo{
+	var1 = divmul($volume, 100, v[2216])
+	@se.play $name .opt var1, $tempo, 50
+}

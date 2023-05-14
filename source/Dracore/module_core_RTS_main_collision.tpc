@@ -185,7 +185,7 @@ v[294] = v[301] + 25
 	//experimental
 	Ptr5 = Const_save_var_TileFlags+v[632]
 	@if `v[Ptr5]&FLAG_Maptile_Crowded{
-		TT1 = min(v[327],16) // shuffling too much size allay causes lag so set limitation on the max num
+		TT1 = min(v[327],16) // shuffling too much size array causes lag so set limitation on the max num
 		v[v[339]].shuffle TT1
 	}
 
