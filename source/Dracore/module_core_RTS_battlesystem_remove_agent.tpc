@@ -641,7 +641,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 						v[341] = v[899] % 10
 						@if v[341] == 2 {
 						    // "set crushed head sprite"
-						    v[(v[300] - 1) * Const_layer_amount + 1 + v[1185]] = v[Ptr10 + 4764] * -1 - 1
+						    v[(v[300] - 1) * 6 + 1 + v[1185]] = v[Ptr10 + 4764] * -1 - 1 //ACHTUNG, outdated func
 						    @break
 						    
 						}
@@ -665,7 +665,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 						    v[341] = v[899] % 10
 						    @if v[341] == 2 {
 							// "set skull sprite"
-							v[(v[300] - 1) * Const_layer_amount + 1 + v[1185]] = 50000000
+							v[(v[300] - 1) * 6 + 1 + v[1185]] = 50000000//ACHTUNG outdatedfunc
 							@break
 							
 						    }
