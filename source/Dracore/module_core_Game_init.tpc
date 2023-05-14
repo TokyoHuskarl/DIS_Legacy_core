@@ -13,7 +13,7 @@ cev .id(1), .name("@Game Init") , {
 	v[__id(Const_2_combi)..__id(Const_2_combi)+1] = 2
 	@comment "module_core_Game_init.tpc"
 
-	ptr_null = 50000000 // This value itself has no meaning, just to get null allay from unallocated area to init an allay
+	ptr_null = 50000000 // This value itself has no meaning, just to get null array from unallocated area to init an array
 	
 
 	
@@ -57,7 +57,7 @@ cev .id(1), .name("@Game Init") , {
 	v[4575] = 300000
 	//set div 10000
 	v[4813..4814]=10000
-	//set allay for picture drawing - this seems needless now I guess?
+	//set array for picture drawing - this seems needless now I guess?
 	v[0] = v[4815..4823] = [4001, 4001, 4001, 4005, 4009, 4001, 4001, 4001, 4001]
 	@sys.getInfo .winSize  .dst v[1001]
 	v[1219] = 100000
@@ -1639,7 +1639,10 @@ cev .id(2120), .name("Game:Boot"),{
 	    }
 	    
 	}
-
+	__if DEBUG_BUILD == 1{ //if it's debug build, force debug mode
+		@sys.gameOpt .fatal 60, 2, 1
+		s[316].on
+	}
 	//Check if user_custom_config.txt is generated
 	t[510] .asg  .file "..\User\user_custom_config", .utf8
 	@if t[510] .eq ""{

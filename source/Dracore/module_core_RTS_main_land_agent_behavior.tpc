@@ -112,7 +112,8 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 		    v[304] = Ptr8+4701
 		    @if v[v[304]] >= 1 {
 			//@comment "#Target Switched"
-			@if v[v[304]] != v[631] {
+			TT1 = v[304]+100//fixed
+			@if v[TT1] != v[631] {
 			    @if `!(v[603] & 4194304) {
 				@if `v[634] & 49152 {
 				    v[842] = 2

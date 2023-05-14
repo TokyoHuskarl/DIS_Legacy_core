@@ -1628,33 +1628,35 @@
                         v[342] = v[22]
                         @call .cev 2001
                         v[344] = 63
-                        @pic[1766].show {
-                            "ui\terrainsquare"
-                            .pos v[22], v[23] .center
-                            .chromakey 1
-                            .scale 100
-                            .trans v[344]
-                            .rgbs 100, 100, 100, 100
-                            .add
-                            .mapLayer 5
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
+			@if Var_MouseMode != MODE_Elevation {
+				@pic[PicID_pointer_sub].show {
+				    "ui\terrainsquare"
+				    .pos v[22], v[23] .center
+				    .chromakey 1
+				    .scale 100
+				    .trans v[344]
+				    .rgbs 100, 100, 100, 100
+				    .add
+				    .mapLayer 5
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+			}
                         
                     } .else bl {
-                        @pic[1766].erase
+                        @pic[PicID_pointer_sub].erase
                         
                     }
                     
                 } .else bl {
-                    @pic[1766].erase
+                    @pic[PicID_pointer_sub].erase
                     
                 }
                 @pic[1764].erase
                 
             } .else bl {
-                @pic[1766].erase
+                @pic[PicID_pointer_sub].erase
                 
             }
             
