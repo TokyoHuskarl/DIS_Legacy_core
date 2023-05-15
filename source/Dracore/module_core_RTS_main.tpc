@@ -14,9 +14,6 @@ def Ptr_worker_on_job_start =2940
 
 def g_perFPS = 2041 //98000 / 48
 
-//shield wall
-def ShieldWall_Cover_SquareSide = 5
-def ShieldWall_Cover_Diff = 2
 
 
 //cev 2006
@@ -2564,6 +2561,44 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	}
 
 	@wait 0
+
+	//TILE INSTANT FLAG CHECK START
+
+	//shield wall
+	def ShieldWall_Cover_SquareSide = 5
+	def ShieldWall_Cover_Diff = 2
+	//Pike Wall
+	def PikeWall_Cover_SquareSide = 3 
+	def PikeWall_Cover_Diff = 1
+
+	__fn func_set_tileflag_in_square_range $flag $length $diff $var_rangestart $var_rangeend {
+		v[__id($var_rangestart)..__id($var_rangeend)] = $flag //set array for flag
+		//Start settting shield covered flag on
+		defv STARTPOINTx = __id(TT1)
+		defv STARTPOINTy = __id(TT2)
+		defv Length_x = __id(TT3)
+		defv Length_y = __id(TT4)
+
+		//Try not to be over from map range
+		agent_RelativeX.copy STARTPOINTx,2
+		agent_RelativeX.sub v[69],2
+		v[__id(STARTPOINTx).._id(STARTPOINTy)] -= $diff
+		STARTPOINTx = max(STARTPOINTx,0)
+		STARTPOINTy = max(STARTPOINTy,0)
+		STARTPOINTx.copy Length_x,2
+
+		Length_x.sub var_Map_Width,2
+		Length_x = min(Length_x,$length)
+		Length_y = min(Length_y,$length)
+
+		STARTPOINTx += STARTPOINTy * var_Map_Width
+		STARTPOINTx += Const_save_var_TileFlags
+		@loop Length_y {
+			v[STARTPOINTx].or Temp11, Length_x //set flag
+			STARTPOINTx += var_Map_Width
+		}
+	}
+
 	//initialize Tile Flags
 	//v[Const_save_var_TileFlags..Const_save_var_TileFlags+var_allocatedmapsize] >>=32 
 	v[ptr_null].copy v[Const_save_var_TileFlags], var_allocatedmapsize //Kill first 2 flags - it might be changed later. Idk
@@ -2636,15 +2671,32 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		
 	    }
 	    // "###################Terrain Check End###################"
+	
 
 	    //Set tile instants begin
 		//Use Temp2 as ptr to maptile
 		Temp2 = Const_save_var_TileFlags + v[632]
 		v[Temp2] |= v[Temp2]&FLAG_Maptile_Occupied ?FLAG_Maptile_Crowded:FLAG_Maptile_Occupied //set occupied flag
- 		/*@if v[874] & 67108864 {
-			TT1 = Const_AgentMetaTeam_begin+v[v[536]]
-			v[Temp2] |=
-		}*/
+		@if agent_TacticsOrderFlag > 0 {
+			@if `agent_TacticsOrderFlag & 6  {//using shieldwall
+				@if `!(agent_ProcessObjBit & 67108864){ //can use shield
+					defv flag_shieldcovered = __id(TT10)
+					defv bool_if_my_tile_is_covered = __id(TempFlag1)
+					TT1 = Const_AgentMetaTeam_begin + v[v[536]]//get meta team
+
+					flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << v[TT1] //shift Meta Team
+					bool_if_my_tile_is_covered = v[Temp2]&flag_shieldcovered?1:0//Check if agent tile is already covered
+					func_set_tileflag_in_square_range(flag_shieldcovered ShieldWall_Cover_SquareSide ShieldWall_Cover_Diff Temp11 Temp15)
+					v[Temp2]&= bool_if_my_tile_is_covered&1?~flag_shieldcovered:v[Temp2]//you must be covered by other unit to get shield covered bonus.
+				}
+
+			}.elif `agent_TacticsOrderFlag & 1{//spear wall 
+				defv flag_pikecovered = __id(TT10)
+				TT1 = Const_AgentMetaTeam_begin + v[v[536]]//get meta team
+				flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << v[TT1] //shift Meta Team
+				func_set_tileflag_in_square_range(flag_pikecovered ShieldWall_Cover_SquareSide ShieldWall_Cover_Diff Temp11 Temp13)
+			}
+		}
 
 	    //Set tile instants end
 
