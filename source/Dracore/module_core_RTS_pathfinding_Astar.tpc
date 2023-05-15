@@ -350,7 +350,7 @@ __fn func_pathfinding_Astar(){
 			v[23] = boat.scry
 			v[23] -= 8
 			v[22..23] += 8
-			@if s[1] .isOn() {
+			/*@if s[1] .isOn() {
 			    @pic[v[2070]].strpic {
 				"\v[2070]"
 				.pos v[22], v[23] .center
@@ -368,7 +368,7 @@ __fn func_pathfinding_Astar(){
 				.affectedByShake
 			    }
 			    
-			}
+			}*/
 			v[375] = v[2875] % 20
 			//opt 27.4.23
 			//v[2071] = 4359 - v[375] * 2

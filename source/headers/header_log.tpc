@@ -1,31 +1,30 @@
 __fn func_logupdate_begin{
 
-	v[341] = v[1136] + v[1155]
-	@pic[v[341]].erase
-	@loop v[1136] .dst v[342] {
-	    v[343] = v[341] - 1
-	    @pic[v[343]].setId .move v[341], 1 .ignoreError
-	    v[341] -= 1
+	var1 = v[1136] + v[1155]
+	@pic[var1].erase
+	@loop v[1136]  {
+	    var3 = var1 - 1
+	    @pic[var3].setId .move var1, 1 .ignoreError
+	    var1 -= 1
 	}
 
 }
 __fn func_logupdate_end{
-	v[341] = v[1155]
-	v[350] = 2
-	v[351] = v[4515]
-	v[345] = v[239]
-	@loop v[1136] .dst v[342] {
-	    v[342] += v[341]
-	    @pic[v[342]].move {
-		.pos v[350], v[351] .bottomLeft
+	var2 = 2
+	var3 = v[4515]
+	var4 = v[239]
+	@loop v[1136] .dst var5 {
+	    var5 += v[1155]
+	    @pic[var5].move {
+		.pos var2, var3 .bottomLeft
 		.scale 100
-		.trans v[345]
+		.trans var4
 		.time -1
 		.rgbs 100, 100, 100, 100
 	    }
-	    v[351] -= v[1137]
-	    v[345] += v[231]
-	    v[345] = min(v[345], 100)
+	    var3 -= v[1137]
+	    var4 += v[231]
+	    var4 = min(var4, 100)
 	    
 	}
 	v[238] = v[239] < 100 ? 360 : 0
@@ -35,10 +34,10 @@ __fn func_logupdate_end{
 __fn func_show_msg $str {
 	t[3000].asg $str .extract
 	func_logupdate_begin()
-	v[341] = 2
+	var1 = 2
 	@pic[v[1155]].strpic {
 	    t[3000]
-	    .pos v[341], v[1126] .bottomLeft
+	    .pos var1, v[1126] .bottomLeft
 	    .size 0, 0    .chromakey 1
 	    .scale 100
 	    .trans 30
@@ -88,10 +87,10 @@ __fn func_devlog $str{
 	t[3000].asg "\c[5]DEBUG: "
 	t[3000].cat $str .extract
 	func_logupdate_begin()
-	v[341] = 2
+	var1 = 2
 	@pic[v[1155]].strpic {
 	    t[3000]
-	    .pos v[341], v[1126] .bottomLeft
+	    .pos var1, v[1126] .bottomLeft
 	    .size 0, 0    .chromakey 1
 	    .scale 100
 	    .trans 30
