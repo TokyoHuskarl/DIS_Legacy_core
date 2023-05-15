@@ -135,7 +135,8 @@ Access18 = ObjTypeチェックPtr"*/
     @if s[167] .isOff() {
         //v[11] = v[299]
 	func_bs_melee_hit_check(v[299] v[300])
-        
+        v[607] = Ptr10 + 4707
+    	v[v[607]].copy v[607], 2
     } .else bl {
         v[21] = 1 //if target is STATIC, won't miss
     }

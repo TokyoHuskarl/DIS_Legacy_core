@@ -104,10 +104,10 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir{
 		v[302] = 0
 	}
 	//If you covered by ally's shield, you will gain+8 shield value, even if you don't have any shield
-	v[302] += victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check?8:0
+	v[302] += victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check?6:0
 	//@comment "BackAttack one-thirds evasion chance"
 	v[21] = (v[21] + v[302]) / ($dir == v[Ptr10 + 4944] ? 3 : 1)
-	v[21] += victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check?8:0
+	v[21] += victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check?7:0
 
 	v[303] = rnd(0, 99)
 	v[22] = v[303] >= 100 - v[302] ? 1 : 0
