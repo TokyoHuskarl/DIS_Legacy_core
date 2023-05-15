@@ -48,6 +48,9 @@ __fn macro_get_agent_slot_ptr $pointer $agent $slot{
 	$pointer = $agent * 300 + consttoslot
 }*/
 
+//basic structures definitions
+#include "./define_structures_agent.tpc"
+
 //cev 2004 GetParaNow v1v2 r1
 def {
 	EDITPIC = 2599
