@@ -10,6 +10,8 @@
 def AA_WAIT_FPSx1= 4800
 def AA_WAIT_FPSx2= 10000
 
+def Ptr_worker_on_job_start =2940 
+
 def g_perFPS = 2041 //98000 / 48
 
 //shield wall
@@ -2292,181 +2294,42 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
 	    v[301] = v[v[536]] * v[1117] 
-	    v[301] += 4703
+	    v[301] += 4700
+	    func_main_extract_agent_vars()
 	    //@comment "colck"
-	    @if `v[v[301]] & 256 {
-		@if `v[v[301]] & 128 {
-		    v[842] = v[301] + 239
-		    v[v[842]] = -1
-		    v[v[301] + 241] = (cos(v[v[301] + 53], 1000, -100) + 200) / 200
-		    v[v[301]] &= -129//~128
+	    @if `agent_AgentBits & 256 {
+		@if `agent_AgentBits & 128 {
+		    //v[842] = v[301] + 239
+		    //v[v[842]] = -1
+		    agent_MovementOrder = -1
+		    agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
+		    agent_AgentBits &= -129//~128
 		    
 		}
 		
 	    } .else bl {
-		@if `v[v[301]] & 128 {
-		    v[294] = v[301] + 22
-		    @if `v[2501] / 6 % (v[v[294]] * 16) == 0 {
-			v[v[301]] |= 256
+		@if `agent_AgentBits & 128 {
+		    //v[294] = v[301] + 22
+		    @if `v[2501] / 6 % (agent_ObjectCollideSkipFrame * 16) == 0 {
+			agent_AgentBits |= 256
 			
 		    }
 		    
 		}
-		@if `v[v[301] + 271] & 16384 {
-		    v[v[301]] &= -513//~512
-		    v[v[301]] |= v[v[301] + 77] <= 0 && v[v[301] + 239] <= 0 ? 512 : 0
+		@if `agent_ProcessObjBit & 16384 {
+		    agent_AgentBits &= -513//~512
+		    agent_AgentBits |= (agent_InCombatTimer <= 0 && agent_MovementOrder <= 0) ? 512 : 0
 		    
 		}
 		
 	    }
-	    //@comment "#########################PAssive#########################"
-	    v[301] -= 3
-	    //@comment "Passive"
-	    v[694] = v[301] + 94
-	    @if `v[v[694]] <= 0 {
-		v[401] = v[v[536]] - 1
-		v[v[694]] = 100
-		@if `v[v[301] + 223] & 1 {
-		    v[824] = v[v[301] + 224] > v[1186] ? v[v[301] + 224] : 1899
-		    @call .cev v[824]
-		    
-		}
-		v[874] = v[301] + 274
-		@if `v[v[874]] & 1048576 {
-		    //@comment "standard_bearer"
-		    v[299] = v[401] + 1
-		    @if v[217] < v[4559] {
-			v[217] += 1
-			@loop v[4559] .dst v[320] {
-			    v[216] %= v[4559]
-			    v[301] = v[216] * 100
-			    v[301] += v[1076]
-			    v[295] = v[301] + 1
-			    @if v[v[295]] == 0 {
-				//@comment "Access17 = AttackerObjチェックPtr"
-				v[297] = v[299] * 300
-				v[297] += 4700
-				//@comment "まず清掃"
-				v[1301].copy v[601], 100
-				v[1301].copy v[v[295]], 100
-				//@comment "ParentObjセット"
-				v[609] = v[299]
-				//@comment "出る場所セット"
-				v[341] = v[297] + 7
-				v[v[341]].copy v[605], 2
-				v[605..606] *= 10000
-				v[v[341]].copy v[607], 2
-				//@comment "Projectile team"
-				v[341] = v[297] + 100
-				v[618] = v[v[341]] == 0 ? 1 : 0
-				//@comment "パラメータ等入力begin"
-				//@comment "#Pic"
-				v[602] = 1
-				//@comment "#ProjectileType"
-				v[601] = 2
-				//@comment "#あたり判定"
-				v[610..611] = muldiv(v[v[297] + 275], 12, 10)
-				//@comment "#威力"
-				v[621] = 0
-				//@comment "#Timer"
-				v[700] = 1
-				//@comment "#Effect"
-				v[604] = 1231
-				//@comment "#ARMRと属性"
-				v[622] = -1
-				v[623] = 1
-				v[628] |= 8
-				//@comment "パラメータ等入力end"
-				v[601].copy v[v[295]], 100
-				//@comment "Having no timer passive conflict"
-				@if `!(v[v[297] + 223] & 1) {
-				    //@comment "Timer Reset"
-				    v[v[297] + 94] = v[1240] * 5
-				    
-				}
-				//@comment "Eff"
-				v[341] = v[v[299] * 300 + 4922]
-				@if v[341] >= 1 {
-				    v[342] = v[299] * 300 
-				    v[342] += 4925
-				    v[v[342]] = (v[v[342]] + 1) % 2
-				    @if v[v[342]] == 0 {
-					@if `s[500 + v[299]] == 1 {
-					    v[607].copy v[361], 2
-					    @loop v[1017] .dst v[320] {
-						v[242] %= v[1017]
-						v[301] = v[242] * 100
-						v[301] = v[301] + v[1018]
-						@if v[v[301]] <= 1 {
-						    v[243] -= v[v[301]] == 1 ? 1 : 0
-						    v[242] %= v[1017]
-						    v[281] = v[242] * 100
-						    v[281] = v[281] + v[1018]
-						    //@comment "まず清掃"
-						    v[1301].copy v[v[301]], 100
-						    //@comment "ポインタセット開始"
-						    v[310] = v[242] + v[1220]
-						    v[295] = v[301] + 99
-						    //@comment "設定"
-						    v[v[301]] = 1
-						    v[v[295]] = 0
-						    //@comment "普通にアニメ"
-						    @pic[v[310]].show {
-							"passive_icon\picon_0" .repl 1 v[341]
-							.pos v[361], v[362] .center
-							.scrollWithMap
-							.chromakey 1
-							.scale 100
-							.trans 40
-							.rgbs 100, 100, 100, 100
-							.mapLayer 5
-							.eraseWhenTransfer
-							.affectedByFlash
-							.affectedByShake
-						    }
-						    v[362] -= 36
-						    @pic[v[310]].move {
-							.pos v[361], v[362] .center
-							.scale 250
-							.trans 100
-							.time 21
-							.rgbs 100, 100, 100, 100
-						    }
-						    //@comment "仕上げに登録消す"
-						    v[242..243] += 1
-						    @break
-						    
-						}
-						v[242] += 1
-						
-					    }
-					    
-					    
-					}
-					
-				    }
-				    
-				}
-				@break
-				
-			    }
-			    
-			}
-			
-			v[216] += 1
-			
-		    }
-		    
-		}
-		
-	    }
+
+
 	    //@comment "Agent Effect"
 	    v[401] = v[v[536]] - 1
-	    v[301] = v[v[536]] * v[1117] 
-	    v[301] += 4700
-	    @if `s[v[401] + 501] {
+	    @if `s[v[401] + 501] ==1 {
 		//@comment "Hero Particle"
-		@if `v[v[301] + 274] & 4194304 {
+		@if `agent_ProcessObjBit & 4194304 { //is hero
 		    @loop v[1017] .dst v[320] {
 			v[244] %= v[1199]
 			v[331] = v[244] * 50 
@@ -2484,11 +2347,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    //@comment "Set Parent Obj"
 			    v[v[331] + 9] = v[401] + 1
 			    //@comment "普通にアニメ"
-			    v[607] = v[301] + 7
-			    v[v[607]].copy v[607], 2
-			    v[608] += 8
-			    v[341] = v[331] + 6
-			    v[607].copy v[v[341]], 2
+			    agent_RelativeX.copy var1, 2
+			    var2 += 8
+			    TT1 = v[331] + 6
+			    var1.copy v[TT1], 2
 			    //@comment "仕上げに登録消す"
 			    v[244] += 1
 			    @break
@@ -2503,43 +2365,194 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		
 	    }
 	    //@comment "Check flee end "
-	    @if `v[v[301] + 242] == 11 {
-		@if `!(v[v[301] + 274] & 512) {
-		    v[v[301] + 242] = 0
+	    @if agent_MovementOrder == 11 {
+		@if `!(agent_ProcessObjBit & 512) {
+		    agent_MovementOrder = 0
 		    
 		}
 		
 	    }
-	    v[827] = v[301] + 227
-	    v[640] = v[301] + 40
-	    v[640] = v[v[640]]
-	    @if v[640] == 22 {
-		v[v[827]] += 5
-		//@comment "Choke "
-		@if v[v[827]] >= 200 {
-		    v[300] = v[299] = v[v[536]]
+	    //v[827] = v[301] + 227
+	    //v[640] = v[301] + 40
+	    //v[640] = v[v[640]]
+	    @if agent_InCombatTimer < v[1178] {
+		agent_2hweapon_stain -= agent_2hweapon_stain > 0 ? 1 : 0
+		
+	    }
+	    @if agent_Morale <= -1 {
+		@if agent_InCombatTimer <= -1800 { 
+		    agent_Morale = 0
+		    
+		}
+		
+	    }
+
+	    @if agent_TerrainIDstanding == 22 { // On DeepWater tile..
+		agent_ChokeTimer += 5
+		//@comment "Choked to death"
+		@if agent_ChokeTimer >= 200 {
+		    //v[300] = v[299] = v[v[536]]
+		    v[299..300] = v[v[536]]
 		    v[298] = v[300] * 300 
 		    v[298] += 4701
 		    v[305..312] = v[300] * 300
-		    @call .cev 41
+		    func_main_save_agent_vars()//save anything before die - is this really necessary?
+		    @call .cev 41 // call choked to death event
 		    
 		}
 		
 	    } .else bl {
-		v[v[827]] = 0
-		
+		agent_ChokeTimer = 0 //reset choke timer
+		func_main_save_agent_vars()//save
 	    }
-	    @if `v[v[301] + 80] < v[1178] {
-		v[v[301] + 285] -= v[v[301] + 285] > 0 ? 1 : 0
-		
-	    }
-	    @if `v[v[301] + 260] <= -1 {
-		@if `v[v[301] + 80] <= -1800 {
-		    v[v[301] + 260] = 0
-		    
+
+	    //@comment "#########################PAssive#########################"
+	    //@comment "Passive"
+	    
+	    v[301] = v[v[536]] * v[1117] 
+	    v[301] += 4700
+	    TT1 = v[301] + 1
+	    @if TT1 > 0 { //if only the unit isn't choked to death
+		    v[694] = v[301] + 94
+		    @if `v[v[694]] <= 0 {
+			v[401] = v[v[536]] - 1
+			v[v[694]] = 100
+			@if `v[v[301] + 223] & 1 {
+			    v[824] = v[v[301] + 224] > v[1186] ? v[v[301] + 224] : 1899
+			    @call .cev v[824]
+			    
+			}
+			v[874] = v[301] + 274
+			@if `v[v[874]] & 1048576 {
+			    //@comment "standard_bearer"
+			    v[299] = v[401] + 1
+			    @if v[217] < v[4559] {
+				v[217] += 1
+				@loop v[4559] .dst v[320] {
+				    v[216] %= v[4559]
+				    v[301] = v[216] * 100
+				    v[301] += v[1076]
+				    v[295] = v[301] + 1
+				    @if v[v[295]] == 0 {
+					//@comment "Access17 = AttackerObjチェックPtr"
+					v[297] = v[299] * 300
+					v[297] += 4700
+					//@comment "まず清掃"
+					v[1301].copy v[601], 100
+					v[1301].copy v[v[295]], 100
+					//@comment "ParentObjセット"
+					v[609] = v[299]
+					//@comment "出る場所セット"
+					v[341] = v[297] + 7
+					v[v[341]].copy v[605], 2
+					v[605..606] *= 10000
+					v[v[341]].copy v[607], 2
+					//@comment "Projectile team"
+					v[341] = v[297] + 100
+					v[618] = v[v[341]] == 0 ? 1 : 0
+					//@comment "パラメータ等入力begin"
+					//@comment "#Pic"
+					v[602] = 1
+					//@comment "#ProjectileType"
+					v[601] = 2
+					//@comment "#あたり判定"
+					v[610..611] = muldiv(v[v[297] + 275], 12, 10)
+					//@comment "#威力"
+					v[621] = 0
+					//@comment "#Timer"
+					v[700] = 1
+					//@comment "#Effect"
+					v[604] = 1231
+					//@comment "#ARMRと属性"
+					v[622] = -1
+					v[623] = 1
+					v[628] |= 8
+					//@comment "パラメータ等入力end"
+					v[601].copy v[v[295]], 100
+					//@comment "Having no timer passive conflict"
+					@if `!(v[v[297] + 223] & 1) {
+					    //@comment "Timer Reset"
+					    v[v[297] + 94] = v[1240] * 5
+					    
+					}
+					//@comment "Eff"
+					v[341] = v[v[299] * 300 + 4922]
+					@if v[341] >= 1 {
+					    v[342] = v[299] * 300 
+					    v[342] += 4925
+					    v[v[342]] = (v[v[342]] + 1) % 2
+					    @if v[v[342]] == 0 {
+						@if `s[500 + v[299]] == 1 {
+						    v[607].copy v[361], 2
+						    @loop v[1017] .dst v[320] {
+							v[242] %= v[1017]
+							v[301] = v[242] * 100
+							v[301] = v[301] + v[1018]
+							@if v[v[301]] <= 1 {
+							    v[243] -= v[v[301]] == 1 ? 1 : 0
+							    v[242] %= v[1017]
+							    v[281] = v[242] * 100
+							    v[281] = v[281] + v[1018]
+							    //@comment "まず清掃"
+							    v[1301].copy v[v[301]], 100
+							    //@comment "ポインタセット開始"
+							    v[310] = v[242] + v[1220]
+							    v[295] = v[301] + 99
+							    //@comment "設定"
+							    v[v[301]] = 1
+							    v[v[295]] = 0
+							    //@comment "普通にアニメ"
+							    @pic[v[310]].show {
+								"passive_icon\picon_0" .repl 1 v[341]
+								.pos v[361], v[362] .center
+								.scrollWithMap
+								.chromakey 1
+								.scale 100
+								.trans 40
+								.rgbs 100, 100, 100, 100
+								.mapLayer 5
+								.eraseWhenTransfer
+								.affectedByFlash
+								.affectedByShake
+							    }
+							    v[362] -= 36
+							    @pic[v[310]].move {
+								.pos v[361], v[362] .center
+								.scale 250
+								.trans 100
+								.time 21
+								.rgbs 100, 100, 100, 100
+							    }
+							    //@comment "仕上げに登録消す"
+							    v[242..243] += 1
+							    @break
+							    
+							}
+							v[242] += 1
+							
+						    }
+						    
+						    
+						}
+						
+					    }
+					    
+					}
+					@break
+					
+				    }
+				    
+				}
+				
+				v[216] += 1
+				
+			    }
+			    
+			}
+			
+		    }
 		}
-		
-	    }
+
 	    //@comment "++"
 	    v[536] += 1
 	    
@@ -2644,32 +2657,37 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	s[187].off
 	@while v[v[536]] != 0 {
 	    v[301] = v[v[536]] * v[1117] 
-	    v[301] += 4703
-	    @if `v[v[301]] & 2097152 {
-		//@comment "Escaping time"
-		v[680] = v[301] + 77
-		v[v[680]] -= 4
-		@if `v[v[301] + 97] == 0 {
-		    //@comment "Count up worker assignment"
-		    v[v[v[301] + 244] + 2940] += between(v[v[301] + 244], 1, 4) ? 1 : 0
-		    //@comment "idle"
-		    v[842] = v[301] + 239
-		    v[v[842]].copy v[842], 6
-		    @if v[842] <= 0 {
-			@if v[843] == 0 {
-			    @if v[847] == 0 {
-				s[187].on
-				@if s[2] .isOff() {
-				    @if `s[500 + v[v[536]]] {
-					@if `(v[v[680]] + v[v[301] + 297]) / 4 % 124 == 0 {
-					    @if `!(v[v[301] + 271] & 4096) {
-						v[607] = v[301] + 4
-						v[v[607]].copy v[607], 2
-						v[v[607]].copy v[361], 2
-						v[341] = 20422
-						v[680] = v[301] + 77
+	    v[301] += 4700
+	    Ptr1 = v[301] + 1 
+	    v[Ptr1].copy v[601], 300
 
-						//
+	    @if `agent_AgentBits & 2097152 { //Worker AI flag is on
+		//@comment "Escaping time"
+		//v[680] = v[301] + 77
+		//v[v[680]] -= 4
+		agent_InCombatTimer -= 4
+		@if agent_TeamID == 0 { //`v[v[301] + 97] == 0 {
+		    //@comment "Count up worker assignment"
+		    //v[v[v[301] + 244] + 2940] += between(v[v[301] + 244], 1, 4) ? 1 : 0
+		    v[agent_worker_JobType + 2940] += between(agent_worker_JobType, 1, 4) ? 1 : 0
+		    //@comment "idle"
+		    //v[842] = v[301] + 239
+		    //v[v[842]].copy v[842], 6
+		    @if agent_StanceOrder <= 0 {
+			@if agent_ActionState == 0 {
+			    @if agent_worker_JobType == 0 {
+				s[187].on//there's at least one idle worker unit 
+				@if s[2] .isOff() {// not pause
+				    @if `s[500 + v[v[536]]]==1 {//somehow with == 1 it's faster 
+					@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { //124 = magic number but maybe 48*3
+					    @if `!(agent_ProcessObjBit & 4096) {
+						//v[607] = v[301] + 4
+						//v[v[607]].copy v[607], 2
+						agent_RelativeX.copy v[361], 2
+						v[341] = 20422
+						//v[680] = v[301] + 77
+
+						//Dragon voice, outdated 
 						/*@if `v[v[301] + 61] == 3 {
 						    @if s[1] .isOn() {
 							@if v[182] <= 4 {
@@ -2692,7 +2710,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						    
 						}*/
 
-						t[501] .asg t[v[341]]
+						t[501] .asg t[v[341]] //text that says "I'm idle"
 						//Set new particle emitter
 						@loop v[1017] .dst v[320] {
 						    v[242] %= v[1017]
@@ -2765,10 +2783,12 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		
 	    }
 	    //@comment "PF reset"
-	    @if `(v[v[301] + 297] + v[2501]) % 420 == 0 {
-		v[v[301] + 31] &= -4097//~4096
+	    @if `(agent_generated_ID + v[2501]) % 420 == 0 {
+		agent_AI_routine_bits &= -4097//~4096
 		
 	    }
+
+	    func_main_save_agent_vars()	
 	    //@comment "++"
 	    v[536] += 1
 	    
