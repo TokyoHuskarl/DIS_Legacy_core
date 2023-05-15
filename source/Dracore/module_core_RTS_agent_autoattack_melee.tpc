@@ -35,7 +35,7 @@ v[298] += 4701
 @if `v[v[629]] == 1 && v[v[298]] > 0 {
 
 	//extract Attacker's parameters
-	v[210].copy Address_agent_array_head, 301
+    v[v[210]].copy Address_agent_array_head, 301
 
     s[167].off
     @if `v[Ptr10 + 4701] == 11 { // the enemy is STATIC Type
@@ -86,7 +86,7 @@ Access18 = ObjTypeチェックPtr"*/
                     v[v[345]] = 8
                     // "Set itself"
                     v[345] = v[351] + 3
-                    v[v[345]] = 121 + agent_AAElement//v[Ptr9 + 4823]
+                    v[v[345]] = 121 + agent_AAElement //v[Ptr9 + 4823]
                     // "Set size"
                     v[v[351] + 26] = max(100, 75 + agent_ProcessAD>>2) //v[Ptr9 + 4809] / 4)
                     // "Set Dire"
@@ -133,8 +133,7 @@ Access18 = ObjTypeチェックPtr"*/
         
     }
     @if s[167] .isOff() {
-	//what is the reason of this formula? idk
-        v[11] = v[299]
+        //v[11] = v[299]
 	func_bs_melee_hit_check(v[299] v[300])
         
     } .else bl {
@@ -201,13 +200,13 @@ Access18 = ObjTypeチェックPtr"*/
             // "#CheckCrit"
             // "Var1 = Obj 1~V[421] = ダメージ倍率"
             v[11] = v[299]
-            v[15] = Ptr10 
-	    v[15] += 4700
+            //v[15] = Ptr10 
+	    //v[15] += 4700
             // "#Crit率ゲット+least_crit_melee-CritReduction"
-            v[342] = agent_ProcessCrit + least_crit_melee - v[v[15] + 239]
+            v[342] = agent_ProcessCrit + least_crit_melee - v[Ptr10 + 4939]
             v[341] = rnd(0, 99)
             // "#CritDamageReduction#(450-[Reduction])%"
-            v[343] = 450 - v[v[15] + 240]
+            v[343] = 450 - v[Ptr10 + 4940]
             // "#[Crit]%でフラグ"
             @if v[342] >= v[341] {
                 // "Set jump Timer"
@@ -239,7 +238,8 @@ Access18 = ObjTypeチェックPtr"*/
         //v[303] = v[v[843] - 120]
 	//v[303]=Ptr9+4823
 	//v[303]=v[v[303]]
-	agent_AA_ARorMR
+	v[302]= agent_AA_ARorMR
+	v[303]= agent_AAElement
         // "AABits"
         v[19] = agent_AABits & ~v[4812]
         v[422] = 0
