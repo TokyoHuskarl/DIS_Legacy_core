@@ -1315,12 +1315,13 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		
 	    }
 	    // "Get terrain's bit where the unit stands on"
-	    v[640] = v[v[4505] + v[640]]
+	    v[340] = v[4505] + v[640]
+	    v[340] = v[v[340]]
 	    /* "###############Camo Check###############"*/
 	    v[876] = v[617]
 	    // "#Ambush"
 	    // "#Bush"
-	    v[874] = v[640] & 4 && v[680] <= 0 ? v[874] | 1 : v[874]
+	    v[874] = v[340] & 4 && v[680] <= 0 ? v[874] | 1 : v[874]
 	    // "##big units cannot ambush"
 	    v[874] = v[874] & 524288 || v[843] > 3 ? v[874] & ~1 : v[874]
 	    // "##in melee combat"
@@ -2198,7 +2199,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			@if `!(v[603] & 4) {
 			    @if `!(v[603] & 8) {
 				v[v[301] + 243] = 1
-				v[603] |= 4
+				v[v[301] + 3] |= 4
 				v[803] = v[301] + 203
 				v[v[803]].copy v[803], 4
 				@loop v[806] .dst v[2064] {
@@ -2242,7 +2243,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    } .else bl {
 			@if `v[603] & 4 {
 			    v[v[301] + 243] = 0
-			    v[603] &= -5//~4
+			    v[v[301] + 3] &= -5//~4
 			    v[803] = v[301] + 203
 			    v[v[803]].copy v[803], 4
 			    @loop v[806] .dst v[2064] {
@@ -2568,8 +2569,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	def ShieldWall_Cover_SquareSide = 5
 	def ShieldWall_Cover_Diff = 2
 	//Pike Wall
-	def PikeWall_Cover_SquareSide = 3 
-	def PikeWall_Cover_Diff = 1
+	def PikeWall_Cover_SquareSide = 5 
+	def PikeWall_Cover_Diff = 2
 
 	__fn func_set_tileflag_in_square_range $flag $length $diff $var_rangestart $var_rangeend {
 		v[__id($var_rangestart)..__id($var_rangeend)] = $flag //set array for flag
@@ -2615,7 +2616,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "##############
 	    //#Terrain Check#
 	    //##############"
-	    v[340] = v[v[4505] + v[640]]
+	    v[340] = v[4505] + v[640]
+	    v[340] = v[v[340]]
 	    // "#Reset Terrain Flags"
 	    v[603] &= -1072//~1071 //15 + 32 + 1024
 	    //v[638] = v[301] + 38

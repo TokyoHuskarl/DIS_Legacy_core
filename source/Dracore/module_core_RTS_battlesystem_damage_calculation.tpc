@@ -27,6 +27,8 @@ __fn func_damage_calculation {
 	    v[224] = v[302]
 	    Ptr10 = v[300] * 300
 	    Ptr9 = v[299] * 300 
+	    v[607] = Ptr10 + 4707
+	    v[v[607]].copy v[607],2
 	    @if v[302] == 2 {
 		v[21..22] = v[301]
 		// "#HP check"

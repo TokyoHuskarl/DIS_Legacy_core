@@ -17,7 +17,7 @@ cev .id(19), .name("Agent:Unit Action") , .parallel , .cond(Const_Is_RTS_Mode), 
 		    v[v[210] + 84] = 3
 		    //@comment "Auto Attack"
 		    v[300] = v[210]+18
-		    v[340] = 34 + agent.AAType
+		    v[340] = 34 + agent_AAType
 		    //Legacy - give 843 Ptr
 		    v[843] = v[210] + 243
 		    @call .cev v[340]

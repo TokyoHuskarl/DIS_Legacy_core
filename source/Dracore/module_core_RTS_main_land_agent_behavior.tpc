@@ -334,7 +334,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			//@comment "before: 6700"
 			//v[340] = v[v[294]] > 0 ? (v[610] / 2 + 2) * 1000 : 6700
 			//this part was bugged since v[294] wasn't defined inititally - 9.5.23
-			v[340] = v[655] > 0 ? (v[610] / 2 + 2) * 1000 : 6700
+			v[340] = v[655] > 0 ? (v[610] / 2 + 3) * 1000 : 6700 //more fuzzy
 			@if v[318] <= v[340] {
 			    //v[294] = v[301] + 55
 			    //@comment "候補なし"
@@ -554,7 +554,9 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 
 	    // set v313 as a pointer to map tile
 	    v[313] = v[1182] + v[632]
-
+	    
+	    defv Saved_Current_MapTile_Info = __id(Temp35)
+	    Saved_Current_MapTile_Info = v[v[313]]
 	    v[657] = v[v[313]] / 100000000
 	    v[640] = v[v[313]] % 100
 
@@ -591,8 +593,8 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 		v[1301].copy v[615], 2
 		@if v[315] == 0 {
 		    //@comment "nowall"
-		    v[315] = v[432] + Temp16
-		    v[315] = v[v[315]] % 100
+		    Temp20 = v[432] + Temp16
+		    v[315] = v[Temp20] % 100
 		    //@comment "斜め壁Ck"
 		    //@comment "##壁がなければ速度を足す"
 		    @if v[315] < 21 {
@@ -604,6 +606,8 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 				var1.div Const_2_combi,2 //halve speed
 
 			}
+			agent_ProcessInstantState |= v[Temp20]-Saved_Current_MapTile_Info>90000000?agent_ProcessInstantState_FLAG_climb_hill:0
+			//@if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback {//horse back}
 			@if v[842] > 1 {
 			    //@comment "#Then break wall detection flag"
 			    v[603] &= -8388609//~8388608
