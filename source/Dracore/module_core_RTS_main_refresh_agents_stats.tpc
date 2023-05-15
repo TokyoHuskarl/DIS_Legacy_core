@@ -19,7 +19,7 @@ __fn agent_ref_stats(){
     //@comment "#SP fatigue penalty"
     v[868] -= !(agent_ExMotionFlags & 2048) ? muldiv(v[868], v[707] - v[708], v[707]) / 2 / (!(agent_PerkFlagBits1 & 32768) ? 1 : 2) : 0
     //@comment "#ProcessCamo dealed in per3f"
-    v[877] = 0
+    agent_ProcessInstantState &= 48//agent_ProcessInstantState_FLAG_shield_covered + agent_ProcessInstantState_FLAG_shield_covered_double_check //= 0 Instant States fade per refresh except few
     /*@comment "##############
 #Terrain Check#
 ##############"*/
@@ -59,24 +59,44 @@ __fn agent_ref_stats(){
     //Check TileFlags begin
 
     Ptr5 = Const_save_var_TileFlags + v[632]
-    
+
+	/*
+	__if DEBUG_BUILD==1{
+		@if v[Ptr5]>3 {
+			var1 = v[Ptr5] 
+			func_devlog("TileFlag found! its value is \v[11]")
+		}
+	}*/
+
     __if DIS_EXPERIMENTAL == 1 {
 	TT10 = Const_AgentMetaTeam_begin + v[v[536]]//get Meta team
 
-    	@if `v[Ptr5] & (FLAG_Maptile_ShieldCoverTeam0 << v[TT10])
-{//covered by other guy's shield wall
-		//EXPERIMENTAL - just check if it's working
-		agent_HP -= 1
-		agent_ProcessInstantState |= agent_ProcessInstantState_FLAG_shield_covered
-	}
+	//check aura effect only per 20f
+	TT1 = AllFrameCount % 5
+	@if TT1 == 0{
+		@if `v[Ptr5] & (FLAG_Maptile_ShieldCoverTeam0 << v[TT10]) {//covered by other guy's shield wall
+			//EXPERIMENTAL - just check if it's working
+			agent_ProcessInstantState |= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered ? agent_ProcessInstantState_FLAG_shield_covered_double_check : agent_ProcessInstantState_FLAG_shield_covered //needs double check
+			//andthen
 
-	//FLAG_Maptile_PikeWallTeam0 = 256
-	//FLAG_Maptile_PikeWallTeam1 = 512
-	//FLAG_Maptile_PikeWallTeam2 = 1024
-	//check if under other team's pike effect or not
-	agent_MeleeFightTimer = v[Ptr5] & (1792 & ~(FLAG_Maptile_PikeWallTeam0<<v[TT10]))?Const_Melee_Fight_Time_by_Melee_Attack:agent_MeleeFightTimer
-	
+		}.else bl{
+			agent_ProcessInstantState &= -49 //~(agent_ProcessInstantState_FLAG_shield_covered + agent_ProcessInstantState_FLAG_shield_covered_double_check)
+		}
+		//Big units like cavalries cannot be covered by infantry shieldwall
+		agent_ProcessInstantState &= agent_BaseObjBit&agent_BaseObjBit_FLAG_big_unit? -49:agent_ProcessInstantState
+
+		//FLAG_Maptile_PikeWallTeam0 = 256
+		//FLAG_Maptile_PikeWallTeam1 = 512
+		//FLAG_Maptile_PikeWallTeam2 = 1024
+		//check if under other team's pike effect or not
+		agent_MeleeFightTimer = v[Ptr5] & (1792 & ~(FLAG_Maptile_PikeWallTeam0<<v[TT10]))?Const_Melee_Fight_Time_by_Melee_Attack:agent_MeleeFightTimer
 		
+			
+	    }
+
+	@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
+		agent_ProcessEVA +=6 
+	}
     }
 
 
@@ -173,18 +193,20 @@ __fn agent_ref_stats(){
             }
             
         }
-        /*"##############
-	#Fighting Order#
-	##############"*/
+        /*"###############Fighting Order###############"*/
         //v[341] = v[848]
         @if agent_TacticsOrderFlag >= 1 {
-
                     
  		@if `agent_TacticsOrderFlag & 2 {
  			@if `!(agent_ProcessObjBit & 67108864) {
-				v[863] += muldiv(v[711], 30, 100)
-				v[864] += muldiv(v[712], 30, 100)
-				v[866] += muldiv(v[714], 40, 100)
+				//1.62BETA2... nerfed, because we introduce the team shieldwall aura effect
+				v[863] += v[711]>>2 //muldiv(v[711], 30, 100) 30%->25%
+				v[864] += v[712]>>2 //muldiv(v[712], 30, 100) 30%->25
+				v[866] += v[714] / 3  //muldiv(v[714], 40, 100) 40%->33%
+				v[866] += agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check?v[866]>>4:0
+				//single shield wall give you 33% bonus so you have 133% base 
+				//And team shield wall will additinally give unit ([Current EVA]*8%) 
+				//so bacially mass weaker shield wall gives you 141% boost at least  - Eva effect is bit stronger than before.
 				v[871] /= 2
 				v[868] = muldiv(v[868], 8, 10)
 				//@comment "#Force Spr"
@@ -192,9 +214,14 @@ __fn agent_ref_stats(){
                         }
                 }.elif `agent_TacticsOrderFlag & 4 {//stronger shield wall
  			@if `!(agent_ProcessObjBit & 67108864) {
-				v[863] += muldiv(v[711], 40, 100)
-				v[864] += muldiv(v[712], 40, 100)
-				v[866] += v[714] / 2
+				v[863] += v[711]/3 //muldiv(v[711], 40, 100) 40%->33%
+				v[864] += v[712]/3 //muldiv(v[712], 40, 100) 40%->33%
+				v[866] += muldiv(v[714], 40, 100)//50%->40%
+				v[866] += agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check?v[866]>>4:0
+				//single strong shield wall gives you 40% bonus so you have 140% base
+				//then team shield wall gives you ([Current EVA]*12%)
+				//so basically mass shield wall gives you 148% base - it seems bit weaker than before - still you have +5 assured eva bonus + anti ranged bonus.
+				
 				v[871] /= 2
 				v[868] = muldiv(v[868], 8, 10)
 				agent_ProcessObjBit |= 8192
@@ -265,7 +292,7 @@ __fn agent_ref_stats(){
 	    //Crowded?
 	    agent_ProcessMS -= v[Temp2]&FLAG_Maptile_Crowded?agent_ProcessMS>>3:0 //-12.5%
 
-    }.elif agent_ProcessObjBit & agent_BaseObjBit_FLAG_SpeedBonus {
+    }.elif `agent_ProcessObjBit & agent_BaseObjBit_FLAG_SpeedBonus {
         @if agent_AAType == 0 {//Melee - addition for throwing weapon owners are done in other proc I believe 
             agent_ProcessAD += muldiv(agent_ProcessMS, 8, 100)
             

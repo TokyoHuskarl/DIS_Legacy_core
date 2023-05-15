@@ -80,7 +80,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 				    @if agent_Morale < 3 {
 					v[314] += 1
 					//v[316] = v[301] + 26
-					v[v[313]] .add agent_TileX, 2
+					v[v[313]] .add agent_MapX, 2
 					//v[316] = v[301] + 7
 					v[v[320]] .add agent_RelativeX, 2
 					@if s[201] .isOff() {

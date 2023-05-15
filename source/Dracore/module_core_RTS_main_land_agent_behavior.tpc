@@ -549,7 +549,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	    v[311].copy var1,2
 	    var1.sub v[69],2
 	    Temp17 = var2// Save v[312] - v[70] to Temp17
-	    TT1 = var2 * v[2061]
+	    TT1 = var2 * var_Map_Width
 	    v[632] = var1 + TT1//map point saved
 
 	    // set v313 as a pointer to map tile

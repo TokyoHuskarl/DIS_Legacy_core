@@ -2580,21 +2580,23 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		defv Length_y = __id(TT4)
 
 		//Try not to be over from map range
-		agent_RelativeX.copy STARTPOINTx,2
-		agent_RelativeX.sub v[69],2
-		v[__id(STARTPOINTx).._id(STARTPOINTy)] -= $diff
+		agent_MapX.copy STARTPOINTx,2
+		STARTPOINTx.sub v[69],2 
+		v[__id(STARTPOINTx)..__id(STARTPOINTy)] -= $diff
 		STARTPOINTx = max(STARTPOINTx,0)
 		STARTPOINTy = max(STARTPOINTy,0)
-		STARTPOINTx.copy Length_x,2
+		var_Map_Width.copy Length_x,2
 
-		Length_x.sub var_Map_Width,2
+		Length_x.sub STARTPOINTx,2
 		Length_x = min(Length_x,$length)
 		Length_y = min(Length_y,$length)
-
+		//func_devlog("Shield Wall aura STARTs from \v[341],\v[342] - Length \v[343],\v[344] ")
 		STARTPOINTx += STARTPOINTy * var_Map_Width
 		STARTPOINTx += Const_save_var_TileFlags
+		//DEBUG
 		@loop Length_y {
-			v[STARTPOINTx].or Temp11, Length_x //set flag
+			//func_devlog("Shield Wall aura set to memory adress[\v[341]] + \v[343] ")
+			v[STARTPOINTx].or $var_rangestart, Length_x //set flag
 			STARTPOINTx += var_Map_Width
 		}
 	}
@@ -2687,7 +2689,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << v[TT1] //shift Meta Team
 					bool_if_my_tile_is_covered = v[Temp2]&flag_shieldcovered?1:0//Check if agent tile is already covered
 					func_set_tileflag_in_square_range(flag_shieldcovered ShieldWall_Cover_SquareSide ShieldWall_Cover_Diff Temp11 Temp15)
-					v[Temp2]&= bool_if_my_tile_is_covered&1?~flag_shieldcovered:v[Temp2]//you must be covered by other unit to get shield covered bonus.
+					v[Temp2]&= bool_if_my_tile_is_covered&1?v[Temp2]:~flag_shieldcovered//you must be covered by other unit to get shield covered bonus.
 				}
 
 			}.elif `agent_TacticsOrderFlag & 1{//spear wall 
@@ -2796,7 +2798,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							    .scale 100
 							    .trans v[1066]
 							    .rgbs 100, 100, 100, 100
-							    .font "misaki_gothic_2nd", 10
+							    .font Font_UI, 10
 							    .spacing 0, 0
 							    .skin "" .nobg .noframe .noGradation .noPadding
 							    .mapLayer 7

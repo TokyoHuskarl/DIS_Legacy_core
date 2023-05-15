@@ -17,10 +17,12 @@ agent_BaseCamoValue = 617
 agent_TargetAgentID = 618
 
 agent_ObjectCollideSkipFrame = 625
-agent_TileX = 626
-agent_TileY = 627
+agent_MapX = 626
+agent_MapY = 627
 agent_AATimer=628
 
+
+agent_TileLink = 632
 agent_AI_routine_bits=634
 agent_Cohort_ID=635
 
@@ -80,6 +82,7 @@ agent_BaseRegHP = 731
 
 agent_BaseObjBit = 740
 
+
 agent_ChokeTimer = 827
 
 
@@ -89,6 +92,8 @@ agent_MovementOrder = 842
 agent_ActionState = 843
 
 agent_Direction = 844
+agent_worker_JobType = 847
+agent_TacticsOrderFlag = 848
 agent_ForceSprite = 850
 
 agent_Morale = 860
@@ -111,8 +116,6 @@ agent_ProcessWill = 875
 agent_ProcessCamoValue = 876
 agent_ProcessInstantState = 877
 
-agent_worker_JobType = 847
-agent_TacticsOrderFlag = 848
 agent_2hweapon_stain = 885
 agent_generated_ID = 900
 }
@@ -135,6 +138,7 @@ agent_AI_routine_bits_FLAG_tracing_wp=8192
 agent_AI_routine_bits_FLAG_PATHFINDING=16384
 
 //ObjBits
+agent_BaseObjBit_FLAG_big_unit=524288
 agent_BaseObjBit_FLAG_SpeedBonus = 134217728
 //Tactical Orders
 
@@ -144,6 +148,7 @@ agent_ProcessInstantState_FLAG_blind = 2
 agent_ProcessInstantState_FLAG_magic_nullfying = 4
 agent_ProcessInstantState_FLAG_bladedance = 8
 agent_ProcessInstantState_FLAG_shield_covered = 16
+agent_ProcessInstantState_FLAG_shield_covered_double_check = 32
 }
 
 //STATICS

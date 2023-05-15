@@ -8,7 +8,7 @@
 //Backup is for faggots
 #copyMode .force
 
-def DEBUG_BUILD = 0 //0 = release, 1 = debug
+def DEBUG_BUILD = 1 //0 = release, 1 = debug
 def DIS_DEBUG_BUILD = DEBUG_BUILD
 //Set basic FPS - 60 in Maniacs patch default setting, 45 in DIS:Classic, 48 in DIS:Legacy.  
 def DIS_Game_FPS = 48
@@ -160,6 +160,7 @@ defs Bool_Refresh_Static_Minimap = 75
 //vars
 defv{
     
+    AllFrameCount = 2501
     ConstPtr_ObjPicSort_begin = 1112
     ConstPtr_ObjDrawnList_begin =1184
 
@@ -309,6 +310,26 @@ __fn macro_check_agent_is_killed $agentid{
 __fn func_init_array $ptr $amount{
 	v[ptr_null].copy $ptr, $amount
 }
+/*
+__fn func_debug_picture $Picid $string{
+	    @pic[v[2070]].strpic {
+		"\v[2070]"
+		.pos v[22], v[23] .center
+		.size 32, 32                        .scrollWithMap
+		.chromakey 1
+		.scale 100
+		.trans 10
+		.rgbs 200, 200, 100, 100
+		.font "", 12 .bold
+		.spacing 0, 4
+		.skin "" .nobg .noframe .noPadding
+		.mapLayer 7
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+	    }
+	
+}*/
 
 __fn func_export_deblog_array $name $ptr $amount {
 	__if DEBUG_BUILD ==1{
