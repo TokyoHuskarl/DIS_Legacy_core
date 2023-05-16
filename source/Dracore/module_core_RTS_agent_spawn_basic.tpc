@@ -40,7 +40,8 @@ cev .id(300), .name("Agent:Spawn Basic"), {
                 v[204] += 1
                 @loop v[1004] .dst v[320] {
                     v[201] %= v[1004]
-                    v[301] = v[201] * 300 + 5000
+                    v[301] = v[201] * 300 
+		    v[301] += 5000
                     v[300] = v[301] + 1
                     @if v[v[300]] <= 0 {
                         // "##################Init start"
@@ -419,7 +420,7 @@ cev .id(300), .name("Agent:Spawn Basic"), {
                         
                         @loop v[1941] .dst v[1945] {
                             v[1943] = v[1216] + v[1945]
-                            v[740] |= pow(2, v[v[1943]] - 1)
+                            agent_BaseObjBit |= pow(2, v[v[1943]] - 1)
                             
                         }
                         
@@ -493,19 +494,19 @@ cev .id(300), .name("Agent:Spawn Basic"), {
                                 }
                                 @if t[3081] .eq "" {
                                     t[3081] .asg "sword1"
-                                    @if v[702] == 1 {
+                                    @if agent_UnitType == 1 {
                                         t[3081] .asg "barrier1"
                                         
                                     }
-                                    @if v[702] == 2 {
+                                    @if agent_UnitType == 2 {
                                         t[3081] .asg "horse"
                                         
                                     }
-                                    @if v[702] == 4 {
+                                    @if agent_UnitType == 4 {
                                         t[3081] .asg "magic2"
                                         
                                     }
-                                    @if v[702] == 5 {
+                                    @if agent_UnitType == 5 {
                                         t[3081] .asg "earth4"
                                         
                                     }
@@ -559,7 +560,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	v[656] = v[280] * 180000
 	@comment "Stop Morale System below hard mode"
 	@if `(s[7] == 1 || s[474] == 1) && v[2401] < 3 || s[470] == 1 {
-	    v[740] |= 256
+	    agent_BaseObjBit |= 256
 	    
 	} .else bl {
 	    @if s[7] .isOn() {
@@ -599,7 +600,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    v[22] <<= 1
 	    @comment "最後にTT1 OR TT2"
 	    v[609] = v[21] | v[22]
-	    @if `between(v[702], 104, 105) {
+	    @if `between(agent_UnitType, 104, 105) {
 		@comment "Flat Static"
 		v[726] |= 1048576
 		
@@ -619,10 +620,10 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	@comment "Enabling Skill AI"
 	@if v[601] <= 8 {
 	    @comment "standard bearer"
-	    v[823] |= v[740] & 1048576 ? 4 : 0
+	    v[823] |= agent_BaseObjBit & 1048576 ? 4 : 0
 	    @comment "Access19 = Obj's Behavior
 	Access20 = Obj's target ID"
-	    @if v[702] <= 7 {
+	    @if agent_UnitType <= 7 {
 		v[603] |= [1048576, 1048576, 0, 1048576, 0][v[841]]
 		@if `v[752] > -1 || v[772] > -1 || v[792] > -1 || v[812] > -1 {
 		    v[603] |= 524288
@@ -631,8 +632,8 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 		
 	    }
 	    @comment "Blacksmith Bonus"
-	    @if v[702] <= 4 {
-		@if `v[702] == 1 || v[702] == 2 && v[703] > 0 {
+	    @if agent_UnitType <= 4 {
+		@if `agent_UnitType == 1 || agent_UnitType == 2 && v[703] > 0 {
 		    @comment "Arrow"
 		    v[709] += v[2409 + v[251] % 3] & 0x200 ? muldiv(v[709], 10, 100) : 0
 		    v[719] += v[2409 + v[251] % 3] & 0x400 ? muldiv(v[719], 10, 100) : 0
@@ -649,16 +650,16 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 		}
 		v[711] += v[2409 + v[251] % 3] & 0x800 ? muldiv(v[711], 8, 100) : 0
 		v[711] += v[2409 + v[251] % 3] & 0x1000 ? muldiv(v[711], 6, 100) : 0
-		@if v[702] == 3 {
+		@if agent_UnitType == 3 {
 		    v[710] += v[2409 + v[251] % 3] & 0x2000 ? 18 : 0
 		    v[705..706] += v[2409 + v[251] % 3] & 0x4000 ? muldiv(v[706], 18, 100) : 0
 		    v[707..708] += v[2409 + v[251] % 3] & 0x4000 ? muldiv(v[708], 18, 100) : 0
 		    @comment "can support tactics if the unit is mage with function AA"
-		    v[740] |= v[703] == 4 ? 8388608 : 0
+		    agent_BaseObjBit |= v[703] == 4 ? 8388608 : 0
 		    
 		}
-		@if v[702] == 4 {
-		    v[740] |= v[703] == 4 ? 8388608 : 0
+		@if agent_UnitType == 4 {
+		    agent_BaseObjBit |= v[703] == 4 ? 8388608 : 0
 		    v[739] += v[2409 + v[251] % 3] & 0x4000000 ? 25 : 0
 		    
 		}
@@ -666,11 +667,11 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    }
 	    
 	}
-	@if v[702] == 9 {
+	@if agent_UnitType == 9 {
 	    v[603] &= ~(1048576 + 524288)
 	    v[603] |= 2097152
 	    v[603] |= 256
-	    v[740] |= 256
+	    agent_BaseObjBit |= 256
 	    @comment "cart"
 	    v[711] += v[2409 + v[251] % 3] & 0x10 ? 25 : 0
 	    v[705..706] += v[2409 + v[251] % 3] & 0x20 ? 100 : 0
@@ -679,7 +680,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	@comment "Imperials"
 	@if v[822] == 1 {
 	    @if `v[2412 + v[251] % 3] & 0x40 {
-		@if `between(v[702], 0, 6) {
+		@if `between(agent_UnitType, 0, 6) {
 		    v[712] += 800
 		    
 		}
@@ -689,7 +690,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    @if `v[2412 + v[251] % 3] & 0x8 {
 		@comment "Cataphract"
 		@if v[701] == 21 {
-		    v[740] |= 32
+		    agent_BaseObjBit |= 32
 		    
 		}
 		
@@ -699,7 +700,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	@comment "Rus"
 	@if v[822] == 9 {
 	    @comment "Inf"
-	    @if v[702] == 0 {
+	    @if agent_UnitType == 0 {
 		@if `v[2409 + v[251] % 3] & 0x10000000 {
 		    v[705..706] += muldiv(v[706], 1, 10)
 		    
@@ -712,10 +713,10 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	@if v[822] == 12 {
 	    @comment "Divine Wind"
 	    @if `v[2412 + v[251] % 3] & 0x2 {
-		@if `between(v[702], 0, 4) {
+		@if `between(agent_UnitType, 0, 4) {
 		    @if `between(v[664], 1, 2) {
 			@comment "KAMIKAZE"
-			v[740] |= 2097152
+			agent_BaseObjBit |= 2097152
 			v[710] += 60
 			v[716] += 8
 			@comment "Will"
@@ -728,7 +729,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    }
 	    @comment "Tengger Cavalry"
 	    @if `v[2412 + v[251] % 3] & 1 {
-		@if v[702] == 2 {
+		@if agent_UnitType == 2 {
 		    v[716] = muldiv(v[716], 108, 100)
 		    
 		}
@@ -737,8 +738,8 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    
 	}
 	s[118].off
-	@comment "Name"
-	v[899] = v[201] + v[4562]
+	//Set Agent Name
+	v[899] = v[201] + Address_str_agent_name_array_head
 	v[899] += 1
 	t[v[899]] .asg t[501]
 	@comment "###################Set New Picture System###################"
@@ -753,15 +754,15 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    Bool_Refresh_Static_Minimap.on //request refresh minimap static
 	    v[834..835] = 0
 	    //MapXY/5 for minimap
-	    v[600+AGENT_STATIC_SLOT_MINIMAP_X]=v[626]/5
-	    v[600+AGENT_STATIC_SLOT_MINIMAP_Y]=v[627]/5
+	    v[600+AGENT_STATIC_SLOT_MINIMAP_X]=agent_MapX/5
+	    v[600+AGENT_STATIC_SLOT_MINIMAP_Y]=agent_MapY/5
 	    @comment "Node check"
 	    @comment "walls"
-	    @if v[702] == 107 {
+	    @if agent_UnitType == 107 {
 
 
-	    	v[600+AGENT_STATIC_SLOT_MINIMAP_X]=(v[803]+v[610]/16)/5
-	        v[600+AGENT_STATIC_SLOT_MINIMAP_Y]=(v[804]+v[611]/16)/5
+	    	v[600+AGENT_STATIC_SLOT_MINIMAP_X]=(v[803]+agent_Width/16)/5
+	        v[600+AGENT_STATIC_SLOT_MINIMAP_Y]=(v[804]+agent_Height/16)/5
 		@if `v[603] & 256 {
 		    
 
@@ -864,7 +865,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 		}
 		
 	    } .else bl {
-		@if `!between(v[702], 104, 105) {
+		@if `!between(agent_UnitType, 104, 105) {
 		    v[607].copy v[11], 2
 		    v[11] .sub v[610], 2
 		    v[11..12] *= 10000
@@ -936,26 +937,26 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    v[839] = 100
 	    @comment "Clean up production space"
 	    v[770..800] = 0
-	    v[740] |= 64
-	    v[740] |= 128
+	    agent_BaseObjBit |= 64
+	    agent_BaseObjBit |= 128
 	    @comment "no_fatigue"
 	    v[726] |= 2048
 	    @comment "Big flag"
-	    v[740] |= 524288
+	    agent_BaseObjBit |= 524288
 	    @comment "No mind"
-	    v[740] |= 256
+	    agent_BaseObjBit |= 256
 	    @comment "Halve Ranged"
-	    v[740] |= 32
+	    agent_BaseObjBit |= 32
 	    @comment "do not bleed"
-	    v[740] |= 4096
+	    agent_BaseObjBit |= 4096
 	    v[844] = 3
 	    @comment "Design Flaw, temp fix"
-	    v[820] = v[740]
+	    v[820] = agent_BaseObjBit
 	    @comment "Cost"
 	    v[31].copy v[851], 4
 	    @comment "##Team Bonus"
-	    @if v[702] != 105 {
-		@if v[702] != 104 {
+	    @if agent_UnitType != 105 {
+		@if agent_UnitType != 104 {
 		    v[711] += 50
 		    v[705..706] += muldiv(v[706], 2, 10)
 		    @comment "##Empire"
@@ -1314,18 +1315,18 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    }
 	    @comment "#Obj Bits"
 	    @comment "##If this is SiegeUnit, then flag bleed immunity"
-	    v[740] |= v[702] == 5 ? 4096 : 0
-	    v[740] |= v[601] == 11 ? 4096 : 0
+	    agent_BaseObjBit |= agent_UnitType == 5 ? 4096 : 0
+	    agent_BaseObjBit |= v[601] == 11 ? 4096 : 0
 	    @comment "#Cavalry Penalty"
 	    @comment "##Init FootStepSound"
 	    v[887] = 0
-	    @if v[702] == 2 {
+	    @if agent_UnitType == 2 {
 		@comment "#If not flying"
 		@if `(v[638] & 1) == 0 {
 		    @comment "#Horse Type Move Flag"
 		    v[638] |= 2
 		    @comment "#Won't get MS penalty from fatigue "
-		    v[740] |= 32768
+		    agent_BaseObjBit |= 32768
 		    @comment "#SP Bonus"
 		    v[707..708] += 20
 		    @comment "#HIT/AVD Penalty"
@@ -1340,9 +1341,9 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 		    v[610] += 2
 		    v[611] += 3
 		    @comment "Cant ShieldWall nor PikeWall"
-		    v[740] = v[740] & ~6
+		    agent_BaseObjBit = agent_BaseObjBit & ~6
 		    @comment "Big flag"
-		    v[740] |= 524288
+		    agent_BaseObjBit |= 524288
 		    @comment "Difficult to get hit on the head"
 		    v[839] += 1
 		    @comment "#set FootStepSound horse"
@@ -1358,24 +1359,24 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 		    
 		} .else bl {
 		    @comment "#Flying Troops usually treated as Cav"
-		    v[702] = v[702] == 0 ? 2 : v[702]
+		    agent_UnitType = agent_UnitType == 0 ? 2 : agent_UnitType
 		    
 		}
 		
 	    }
 	    @comment "#Siege Weapons"
-	    @if v[702] == 5 {
+	    @if agent_UnitType == 5 {
 		@comment "no_fatigue"
 		v[726] |= 2048
 		@comment "immune to stun"
-		v[740] |= 65536
+		agent_BaseObjBit |= 65536
 		@comment "Big flag"
-		v[740] |= 524288
+		agent_BaseObjBit |= 524288
 		@comment "No mind"
-		v[740] |= 256
-		v[740] |= 32
+		agent_BaseObjBit |= 256
+		agent_BaseObjBit |= 32
 		@comment "do not bleed"
-		v[740] |= 4096
+		agent_BaseObjBit |= 4096
 		v[709] += v[2409 + v[251] % 3] & 0x10000 ? muldiv(v[709], 10, 100) : 0
 		@comment "##Sushi"
 		@if v[822] == 12 {
@@ -1387,7 +1388,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    @comment "set Ammo"
 	    v[832] = v[831]
 	    @comment "#AS Bonus#[Lv]"
-	    v[719] += v[702] < 3 ? v[704] : 0
+	    v[719] += agent_UnitType < 3 ? v[704] : 0
 	    @comment "Crit"
 	    v[715] += 1
 	    @comment "set least parameter"
@@ -1404,19 +1405,19 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    @comment "############	Camo"
 	    @if v[601] < 11 {
 		v[617] = 4000
-		v[617] -= (v[740] & 524288) > 1 ? 2000 : 0
+		v[617] -= (agent_BaseObjBit & 524288) > 1 ? 2000 : 0
 		@if v[601] == 9 {
 		    v[617] += 8000
 		    
 		}
 		
 	    } .else bl {
-		@if v[702] == 106 {
+		@if agent_UnitType == 106 {
 		    @comment "Turret"
 		    v[617] = 10000
 		    
 		} .else bl {
-		    v[617] = v[702] != 107 ? 18000 : 80000
+		    v[617] = agent_UnitType != 107 ? 18000 : 80000
 		    @comment "GATE"
 		    @if `v[603] & 256 {
 			v[617] = 8500
@@ -1431,29 +1432,29 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    @comment "EyeSightForminimaps const =62500"
 	    v[v[4528] + v[201]] = min(v[830] / 31250, 6)
 	    @comment "#Cavs  have better sight"
-	    @if `between(v[702], 1, 2) {
+	    @if `between(agent_UnitType, 1, 2) {
 		v[v[4528] + v[201]] += 1
 		
 	    }
 	    @comment "towers"
-	    @if v[702] == 106 {
+	    @if agent_UnitType == 106 {
 		v[v[4528] + v[201]] += 2
 		
 	    }
 	    v[v[4528] + v[201]] -= v[828]
 	    @comment "walls"
-	    @if v[702] == 107 {
+	    @if agent_UnitType == 107 {
 		v[v[4528] + v[201]] = 1
 		
 	    }
 	    v[v[4528] + v[201]] = max(v[v[4528] + v[201]], 1)
-	    @if `between(v[702], 104, 105) {
+	    @if `between(agent_UnitType, 104, 105) {
 		@comment "In sight?"
 		v[0] = s[2001 + v[201]] = 1
 		
 	    }
 	    @comment "Civilians have better AI eyesight in order to find basement"
-	    @if `v[702] == 9 {
+	    @if `agent_UnitType == 9 {
 		v[830] *= 2
 		
 	    }
@@ -1477,11 +1478,11 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    v[829] = min(100, max(100 - 55 + muldiv(v[838] - 15, 12, 100), 45))
 	    @comment "#Nimble"
 	    @comment "#Speed Bonus"
-	    v[740] |= v[829] == 45 ? 134217728 : 0
+	    agent_BaseObjBit |= v[829] == 45 ? 134217728 : 0
 	    
 	}
 	@comment "##Stalwart ###Knockback immunity"
-	v[740] |= (v[665] & 16) == 16 ? 8 : 0
+	agent_BaseObjBit |= (v[665] & 16) == 16 ? 8 : 0
 	@comment "#Aggressive perks"
 	@comment "############	Perks Check End############"
 	@comment "Set Common Exp [Lv]*50"
@@ -1501,7 +1502,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    v[684] = v[154] % v[1195]
 	    
 	} .else bl {
-	    @if v[702] == 106 {
+	    @if agent_UnitType == 106 {
 		@comment "Turret"
 		v[603] |= 1048576
 		v[684] = v[154] % v[1195]
@@ -1583,7 +1584,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 			v[v[4533]].sortDescending v[1004]
 			@comment "BASEMENT"
 			@comment "#temp, this is not made for enemy team "
-			@if v[702] == 104 {
+			@if agent_UnitType == 104 {
 			    v[v[4561] + v[1012] - 1] = v[201] + 1
 			    v[v[4561] + v[1012]] += 1
 			    v[v[4561]].sortDescending v[1012]
@@ -1598,8 +1599,8 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 		    @comment "敵味方峻別リストに登録"
 		    @if s[157] .isOff() {
 			@if v[601] == 11 {
-			    @if v[702] != 105 {
-				@if v[702] != 104 {
+			    @if agent_UnitType != 105 {
+				@if agent_UnitType != 104 {
 				    v[v[4580] + v[700] % 3] += 1
 				    
 				}
@@ -1617,8 +1618,8 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 			    
 			}
 			@comment "##生産Staticはリスト処理しない"
-			v[700] = v[702] == 104 ? -1 : v[700]
-			v[700] = v[702] == 105 ? -2 : v[700]
+			v[700] = agent_UnitType == 104 ? -1 : v[700]
+			v[700] = agent_UnitType == 105 ? -2 : v[700]
 			v[700] %= 3
 			@if v[700] == 0 {
 			    @comment "Register Battle ally units list"
@@ -1629,8 +1630,8 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 				v[205] += 1
 				@comment "Records"
 				@if s[19] .isOff() {
-				    v[2522] += v[702] == 9 ? 1 : 0
-				    v[2523] += v[702] <= 7 ? 1 : 0
+				    v[2522] += agent_UnitType == 9 ? 1 : 0
+				    v[2523] += agent_UnitType <= 7 ? 1 : 0
 				    
 				}
 				
@@ -1661,7 +1662,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 			    
 			}
 			@comment "Register UnitsID joining battle List"
-			@if `between(v[658], 0, 1) && v[702] < 7 {
+			@if `between(v[658], 0, 1) && agent_UnitType < 7 {
 			    v[21] = v[1259] + 4 * (v[701] - 1) + v[658] * v[1260] * 4
 			    v[v[21]] += 1
 			    
@@ -1687,7 +1688,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 		    v[201] += 1
 		    v[21] = v[201]
 		    v[22] = v[701]
-		    v[23] = v[702]
+		    v[23] = agent_UnitType
 		    @if s[19] .isOff() {
 			@if v[700] == 0 {
 			    @if v[601] < 11 {
@@ -1714,7 +1715,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 				    
 				}
 				@if `v[205] >= min(v[1080], v[v[4580]]) {
-				    @if v[702] < 100 {
+				    @if agent_UnitType < 100 {
 					@call .cev 1924
 					v[341] = 2
 					v[601] = 1

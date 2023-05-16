@@ -1,10 +1,24 @@
-#apply
 //You have to put Append directory in the game directory to compile DraCore and etc into .ldb
-#directory "../../.."
-//And you need to put tpc.exe and its blueprint txt files in Append directory. 
-#blueprint.db("../../def_ldb.txt")
-#blueprint.map("../../def_lmu.txt")
-#blueprint.tree("../../def_lmt.txt")
+//And you need to put tpc.exe and its blueprint txt files in Append directory.
+
+//YOU HAVE TO CHANGE HERE TO BUILD ALL LDB AT ONCE
+def MAKE_TYPE = 1
+
+__if MAKE_TYPE == 0{
+#apply
+#directory "./../../.."
+#blueprint.db("./../../def_ldb.txt")
+#blueprint.map("./../../def_lmu.txt")
+#blueprint.tree("./../../def_lmt.txt")
+
+}.elif MAKE_TYPE == 1 {
+#apply
+#directory "./../.."
+#blueprint.db("./../def_ldb.txt")
+#blueprint.map("./../def_lmu.txt")
+#blueprint.tree("./../def_lmt.txt")
+}
+
 //Backup is for faggots
 #copyMode .force
 
