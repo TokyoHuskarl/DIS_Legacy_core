@@ -1,7 +1,10 @@
 // I actually wanted to define those defvs like "agent.brabrabra = n" but in TPC syntax it's invalid, sadly.
 
 defv {
-Address_agent_array_head=600
+
+Address_str_agent_name_array_head = 4562
+
+Address_agent_array_head = 600
 agent_ObjectType = 601
 agent_PicID = 602
 agent_AgentBits = 603
@@ -70,21 +73,39 @@ agent_HP = 706
 agent_MaxSP = 707
 agent_SP = 708
 agent_BaseAD = 709
+agent_BaseAP = 710
+agent_MaxAR = 738
+agent_BaseAR = 711
+agent_BaseMR = 712
+agent_BaseHIT = 713
+agent_BaseEVA = 714
+agent_BaseCrit = 715
+agent_BaseMS = 716
+agent_BaseRange_max = 717
+agent_BaseRange_min = 718
+agent_BaseAS = 719 // (4800 - [AS])
 
+agent_AAMotion = 720
+agent_AACost = 721
 agent_AA_ARorMR=722
 agent_AAElement=723
 agent_AABits=724
 agent_AddMotionBits=725
 agent_ExMotionFlags=726
 agent_AASfx = 729
-
+agent_AAFunction = 730
 agent_BaseRegHP = 731
-
+agent_AA_AR_effectiveness = 736
+agent_AA_AR_penetration = 737
+//agent_MaxAR = 738
+agent_BaseWill = 739
 agent_BaseObjBit = 740
 
 
 agent_ChokeTimer = 827
 
+agent_TakenDamageMultiplier = 829
+agent_Ammo = 832
 
 
 agent_StanceOrder = 841
