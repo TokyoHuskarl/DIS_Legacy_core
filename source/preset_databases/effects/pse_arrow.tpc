@@ -174,7 +174,7 @@ __fn func_effect_arrow_proc $arrowPictString {
 
 
 
-__fn func_effect_arrow_hit {
+__fn func_effect_arrow_hit $WeaponType {
 
 	// "Leave Arrow Picture"
 	//v[v[301]] = 1
@@ -233,7 +233,7 @@ __fn func_effect_arrow_hit {
 		    
 		}
 		@if v[21] == 1 {
-		    Var_bs_WeaponType = WeaponType_Arrow//arrow
+		    Var_bs_WeaponType = $WeaponType //arrow
 		    // "Hit!"
 		    // "#CheckCrit"
 		    // "Var1 = Obj 1~V[421] = ダメージ倍率"
@@ -479,7 +479,7 @@ __fn func_effect_arrow_hit {
 }
 
 
-__fn func_effect_arrow_on_ground $ground_picture {
+__fn func_effect_arrow_on_ground $ground_picture $WeaponType {
 
 	@if effect_Timer == 0 {
 	    //v[422] = 1
@@ -540,7 +540,8 @@ __fn func_effect_arrow_on_ground $ground_picture {
 		
 	    }
 
-	}.elif `effect_Flag&Arrow_Flag_Check_Hit {func_effect_arrow_hit()}
+	}.elif `effect_Flag&Arrow_Flag_Check_Hit {func_effect_arrow_hit($WeaponType)}
+
 }
 
 cev .id(cevid_eff_arrow), .name("effect:arrow"), {
@@ -646,7 +647,7 @@ __if DIS_EXPERIMENTAL == 1 {
 
 	func_effect_arrow_proc("arrows\arrow")
 	// "タイマー切れのときの処理	
-	func_effect_arrow_on_ground("arrows\arrow_g")
+	func_effect_arrow_on_ground("arrows\arrow_g" WeaponType_Arrow)
 		    
 
 }
