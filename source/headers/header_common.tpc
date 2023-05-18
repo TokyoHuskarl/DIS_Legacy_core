@@ -2,7 +2,7 @@
 //And you need to put tpc.exe and its blueprint txt files in Append directory.
 
 //YOU HAVE TO CHANGE HERE TO BUILD ALL LDB AT ONCE
-def MAKE_TYPE = 1
+def MAKE_TYPE = 0
 
 __if MAKE_TYPE == 0{
 #apply
@@ -22,11 +22,45 @@ __if MAKE_TYPE == 0{
 //Backup is for faggots
 #copyMode .force
 
-def DEBUG_BUILD = 0 //0 = release, 1 = debug
+def DEBUG_BUILD = 1 //0 = release, 1 = debug
 def DIS_DEBUG_BUILD = DEBUG_BUILD
-//Set basic FPS - 60 in Maniacs patch default setting, 45 in DIS:Classic, 48 in DIS:Legacy.  
-def DIS_Game_FPS = 48
+
 def DIS_EXPERIMENTAL = 1 //0=nah 1=compile experimental features
+
+
+//Set basic FPS - 60 in Maniacs patch default setting, 45 in DIS:Classic, 48 in DIS:Legacy.  
+def {
+	DIS_Game_FPS = 48
+	g_perFPS = 2041 //98000 / 48 - gravitational acceleration
+	g_perFPS_half = 1020
+
+	AA_WAIT_FPSx1= 4800
+	AA_WAIT_FPSx2= 10000
+}
+
+
+//Entity General Const Setting
+def {
+	
+	//ObjLimit = 845
+	Agents_Limit = 845
+	Effects_Limit = 120
+	Effects_Additional_Cap = 65
+	PicID_Effects_Begin = 801
+
+	Projectiles_Limit = 180
+
+}
+defv {
+	Const_save_var_Agents_Limit = 1004
+
+
+	Const_save_var_Effects_Limit = 1017
+	Const_save_var_Effects_PicID_Begin = 1220
+
+	Const_save_var_Projefctiles_Limit = 4559
+
+}
 
 #include "./header_log.tpc"
 
@@ -67,6 +101,8 @@ __fn macro_get_agent_slot_ptr $pointer $agent $slot{
 
 //cev 2004 GetParaNow v1v2 r1
 def {
+
+
 	Const_var_bit_maniacs = 32
 	Const_AgentMetaTeam_begin = 460318
     	Const_Map_Allocate_Limit = 160000
@@ -182,9 +218,10 @@ defv{
 	var_Map_Width = 2061
 	var_Map_Height = 2062
 
+	zeroArray100 = 1301 // only used for cleanup
+
     //vars and regs
     //they are usually used as ARG and REG in common events
-
     //vars
 	var1=11
 	var2=12
@@ -325,26 +362,16 @@ __fn macro_check_agent_is_killed $agentid{
 __fn func_init_array $ptr $amount{
 	v[ptr_null].copy $ptr, $amount
 }
-/*
-__fn func_debug_picture $Picid $string{
-	    @pic[v[2070]].strpic {
-		"\v[2070]"
-		.pos v[22], v[23] .center
-		.size 32, 32                        .scrollWithMap
-		.chromakey 1
-		.scale 100
-		.trans 10
-		.rgbs 200, 200, 100, 100
-		.font "", 12 .bold
-		.spacing 0, 4
-		.skin "" .nobg .noframe .noPadding
-		.mapLayer 7
-		.eraseWhenTransfer
-		.affectedByFlash
-		.affectedByShake
-	    }
-	
-}*/
+
+#include "./define_structures_effect.tpc"
+
+defv effect_set_ptr = __id(Temp1)
+__fn macro_effect_array_increment_ptr{
+	v[242] %= v[1017]
+	effect_set_ptr = v[242] * EffectArraySize
+	effect_set_ptr += v[1018]
+}
+
 
 __fn func_export_deblog_array $name $ptr $amount {
 	__if DEBUG_BUILD ==1{
@@ -376,5 +403,7 @@ __fn func_export_deblog_array $name $ptr $amount {
 }
 #include "./header_common_items.tpc"
 #include "./header_common_DIS_systemfuncs.tpc"
+
+
 
 $DIS_h_common_included = 1

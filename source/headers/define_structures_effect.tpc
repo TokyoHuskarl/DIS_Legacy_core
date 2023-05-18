@@ -1,0 +1,72 @@
+
+def EffectArraySize = 100
+
+defv {
+effect_EffectType = 4001	//1 = lowest priority animation, 2= Call LinkedFunc when the effect disappear, 3=simplesprite
+
+effect_PicID = 4002
+effect_AllFrame = 4003
+effect_CallEffFunc = 4004
+effect_milX = 4005 //*1000
+effect_milY = 4006
+effect_RelativeX = 4007
+effect_RelativeY = 4008
+effect_ParentObject = 4009
+effect_FrameCounter = 4010
+effect_LinkedFunc = 4011
+effect_milPixVx = 4012
+effect_milPixVy = 4013
+effect_milPixVab = 4014
+effect_milPixAx = 4015
+effect_milPixAy = 4016
+effect_milPixAab = 4017
+effect_Start_objectX = 4018
+effect_Start_objectY = 4019
+	
+	//
+	effect_Distance_to_goal = 4020
+	effect_ShootAngle =4021
+	//Legacy 
+	effect_auxiliary_object = 4020
+	effect_auxiliary_object_X = 4021
+	effect_auxiliary_object_Y = 4022
+
+effect_TargetObject = 4023
+effect_TargetObjectX = 4024
+effect_TargetObjectY = 4025
+effect_SavedPositionX = 4026
+effect_SavedPositionY = 4027
+effect_Angle = 4028
+effect_AngleDelta = 4029
+effect_DrawingType = 4030 //0=norm 1=mul 2=add
+effect_R = 4031
+effect_G = 4032
+effect_B = 4033
+effect_Saturation = 4034
+effect_Size= 4035
+effect_SpriteTypeID=4036
+effect_DirWhenShot=4037
+
+effect_milZ = 4041
+effect_milVz= 
+effect_milAz= 4043
+
+effect_Damage = 4099
+effect_Timer = 4100
+
+
+}
+
+//FLAGS
+def{
+EffectType_LowPriority = 1
+EffectType_Has_LinkedFunc = 2
+EffectType_Simple_Sprite = 2
+
+cevid_func_erace_effect = 31
+}
+
+
+//Victims var for attack check
+defv{
+}

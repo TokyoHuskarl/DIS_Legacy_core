@@ -1,4 +1,6 @@
 @echo off
+cd /d %~dp0
+
 
 rem // TPC exe
 set tpc="./../../tpc.exe"

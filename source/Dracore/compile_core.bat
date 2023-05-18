@@ -1,4 +1,5 @@
 @echo off
+cd /d %~dp0
 
 rem // TPC exe
 IF NOT DEFINED tpc (set tpc="./../../tpc.exe")
