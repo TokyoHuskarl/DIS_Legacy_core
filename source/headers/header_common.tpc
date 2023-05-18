@@ -57,8 +57,10 @@ defv {
 
 	Const_save_var_Effects_Limit = 1017
 	Const_save_var_Effects_PicID_Begin = 1220
-
+	//Const_save_var_Address_Effects_Array_PlusOne = 4840 No need, remove this from init
+	Const_save_var_Address_Effects_Array_Begin=1018
 	Const_save_var_Projefctiles_Limit = 4559
+
 
 }
 
@@ -200,6 +202,9 @@ deft LF = 525
 //Fundamental Switches
 def Const_Is_RTS_Mode = 20
 defs Is_RTS_Mode = 20
+defs Is_Paused = 2
+
+//What da fugg is this confusing naming rule lmao
 def Const_Is_SightSystem_On = 300
 defs Is_SightSystem_On = 300
 def Const_Is_Drawing_Units = 35
@@ -363,6 +368,8 @@ __fn func_init_array $ptr $amount{
 	v[ptr_null].copy $ptr, $amount
 }
 
+
+
 #include "./define_structures_effect.tpc"
 
 defv effect_set_ptr = __id(Temp1)
@@ -372,6 +379,7 @@ __fn macro_effect_array_increment_ptr{
 	effect_set_ptr += v[1018]
 }
 
+#include "./define_structures_particle.tpc"
 
 __fn func_export_deblog_array $name $ptr $amount {
 	__if DEBUG_BUILD ==1{

@@ -25,7 +25,7 @@ effect_Start_objectY = 4019
 	
 	//
 	effect_Distance_to_goal = 4020
-	effect_ShootAngle =4021
+	effect_2DAngle =4021
 	//Legacy 
 	effect_auxiliary_object = 4020
 	effect_auxiliary_object_X = 4021
@@ -48,8 +48,13 @@ effect_SpriteTypeID=4036
 effect_DirWhenShot=4037
 
 effect_milZ = 4041
-effect_milVz= 
+effect_milVz= 4042 
 effect_milAz= 4043
+	effect_ArrowHitX=4044
+	effect_ArrowHitY=4045
+	effect_ArrowCheckHeight=4046
+
+effect_Flag= 4070 //For arrow 1:1=Check_Hit, 2:2=already checked hit
 
 effect_Damage = 4099
 effect_Timer = 4100
@@ -62,8 +67,15 @@ def{
 EffectType_LowPriority = 1
 EffectType_Has_LinkedFunc = 2
 EffectType_Simple_Sprite = 2
+cevid_func_erase_effect = 89
+cevid_func_LEGACY_arrow_hitcheck = 31
 
-cevid_func_erace_effect = 31
+
+//Arrow	
+Arrow_Flag_Check_Hit = 0x1
+Arrow_Flag_Checked = 0x2
+
+
 }
 
 
