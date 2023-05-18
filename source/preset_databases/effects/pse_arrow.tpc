@@ -4,6 +4,7 @@ def Const_cos10 = 984  //0.9848077
 
 def Const_Arrow_Check_Height = 15000 //start hit check if Z <15000
 
+def Zero_Angle = 8000000
 
 __fn macro_parabolic_projectile_cal_angle $v $l {
 	/*TT1 = $l //pix
@@ -91,12 +92,12 @@ __fn func_effect_arrow_init{
 	    //Then start caluclation
 	    macro_parabolic_projectile_cal_angle(effect_milPixVab effect_Distance_to_goal)
 	    effect_Distance_to_goal /=1000 
-	    effect_Angle = max(reg1, 8000000)//zero-distance shooting(almost)
+	    effect_Angle = max(reg1, Zero_Angle)//zero-distance shooting(almost)
 	    effect_milVz = muldiv(effect_milPixVab,sin(effect_Angle,1000000,1000),1000)
 	    @if reg1<20000000{
 	    	effect_milZ = 13000 //give 13pix height if the angle is too low - below 20 degree
 		effect_milVz += g_perFPS
-		effect_ArrowCheckHeight = 20000 //almost check every frame when zero distance shoot
+		effect_ArrowCheckHeight = 21500 //almost check every frame when zero distance shoot
 	    }.else bl{
 		effect_ArrowCheckHeight = Const_Arrow_Check_Height
 	    }

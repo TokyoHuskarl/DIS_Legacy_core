@@ -756,7 +756,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	__if DIS_EXPERIMENTAL == 1 {
 		@if agent_AAType == 2 { //IF only AA type is ranged...
 			//v=sqr(g*l/2sinXcosX)
-			//in DIS, we consider the best anglee to shoot projectile is 40 degree - due to look more natural
+			//in DIS, we consider the best anglee to shoot projectile is 42 degree - since this suits more to the game environment
 			agent_AAvelocity = sqrt(muldiv(g_perFPS * agent_BaseRange_max,5000,sin(42,1,100)*cos(42,1,100)),1) //...?  1000/10^4*2
 			func_devlog("\t[501]: velocity caluculated - \v[727]milpix/f")
 			
