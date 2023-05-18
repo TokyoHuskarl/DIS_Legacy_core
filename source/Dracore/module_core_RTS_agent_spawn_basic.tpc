@@ -352,6 +352,9 @@ cev .id(300), .name("Agent:Spawn Basic"), {
                         // "##Attack Time"
                         t[3060] .toNum v[1941]
                         v[728] = v[1941] != 0 ? v[1941] : v[728]
+
+
+
                         // "##Motion"
                         t[3056] .toNum v[1941]
                         v[720] = v[1941] != 0 ? v[1941] : v[720]
@@ -463,6 +466,11 @@ cev .id(300), .name("Agent:Spawn Basic"), {
                         // "Horse"
                         v[302] = 4101 - 6
                         @call .cev 303
+
+
+
+
+
                         // "dir"
                         v[844] = v[280]
                         // "DEBUG"
@@ -742,6 +750,21 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	v[899] = v[201] + Address_str_agent_name_array_head
 	v[899] += 1
 	t[v[899]] .asg t[501]
+
+
+	//Cal arrow shoot velocity 
+	__if DIS_EXPERIMENTAL == 1 {
+		@if agent_AAType == 2 { //IF only AA type is ranged...
+			//v=sqr(g*l/2sinXcosX)
+			//in DIS, we consider the best anglee to shoot projectile is 40 degree - due to look more natural
+			agent_AAvelocity = sqrt(muldiv(g_perFPS * agent_BaseRange_max,5000,sin(42,1,100)*cos(42,1,100)),1) //...?  1000/10^4*2
+			func_devlog("\t[501]: velocity caluculated - \v[727]milpix/f")
+			
+		}
+	 
+	}
+
+
 	@comment "###################Set New Picture System###################"
 	v[302] = v[201] * 6 + v[1185] //ACHTUNG you need to remove this system eventually - it's obsolete legacy system, almost no meaning now
 	@comment "#init"

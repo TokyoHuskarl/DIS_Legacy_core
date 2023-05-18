@@ -1,7 +1,6 @@
 #include "./../headers/header_common.tpc"
 #include "./../headers/header_drawing.tpc"
 def DraCore_version="v1.0pre"
-def ObjLimit = 845
 
 #include "./../headers/header_config_files.tpc"
 
@@ -36,7 +35,7 @@ cev .id(1), .name("@Game Init") , {
 	v[1167] = 1799
 	v[1168] = v[1166] + v[1167]
 	v[1201] = v[1168]+1
-	v[2299] = v[1201] + ObjLimit * Const_layer_amount
+	v[2299] = v[1201] + Agents_Limit * Const_layer_amount
 	v[1202] = v[1201] - Const_layer_amount
 	@sys.gameOpt .picLimit v[2299]
 
@@ -162,7 +161,7 @@ cev .id(1), .name("@Game Init") , {
 	@comment "####################"
 	v[2222] = 270
 	@comment "Set Const"
-	v[4559] = 180
+	Const_save_var_Projefctiles_Limit = Projectiles_Limit
 	v[4570] = 10
 	v[4529] = 572947
 	v[1182] = 300317
@@ -184,7 +183,7 @@ cev .id(1), .name("@Game Init") , {
 	v[1185] = 740948
 	v[1145] = 462319
 	v[1146] = 462821
-	v[1004] = ObjLimit
+	Const_save_var_Agents_Limit = Agents_Limit
 	v[1012] = 350
 	@comment "this one is dynamic"
 	v[1080] = 350
@@ -286,13 +285,13 @@ cev .id(1), .name("@Game Init") , {
 	v[1138] = 25
 	//v[1018] = 243001
 	@comment "#otamesi"
-	v[1017] = 120
-	v[1124] = 65
-	v[1220] = 801
+	Const_save_var_Effects_Limit = Effects_Limit
+	v[1124] = Effects_Additional_Cap
+	Const_save_var_Effects_PicID_Begin = PicID_Effects_Begin
 	@comment "#Projectile"
-	v[1075] = 225001
-	@comment "#otamesi"
-	v[1076] = v[1075] - 1
+	//v[1075] = 225001
+	//@comment "#otamesi"
+	//v[1076] = v[1075] - 1
 	v[4560] = 1001
 	@comment "#AI Group"
 	v[1131] = 300221

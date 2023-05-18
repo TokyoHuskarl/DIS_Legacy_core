@@ -46,6 +46,9 @@ cev .id(36), .name("AgentAct:RangedAA_Shot"), {
 			v[637] = v[v[210] + 244]
 			s[141].on
 			v[607].copy v[361], 2
+			__if DIS_EXPERIMENTAL == 1{
+				agent_AAvelocity = v[v[210] + 127]
+			}
 			@call .cev v[729]
 			v[842] = v[210] + 242
 			v[v[842]] = 0
