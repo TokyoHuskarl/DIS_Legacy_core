@@ -1,9 +1,5 @@
-def eventid = 91
-()
 def Const_cos10 = 984  //0.9848077
-
-def Const_Arrow_Check_Height = 15000 //start hit check if Z <15000
-
+def Const_Arrow_Check_Height = 17000 //start hit check if Z <17000
 def Zero_Angle = 8000000
 
 __fn macro_parabolic_projectile_cal_angle $v $l {
@@ -50,7 +46,7 @@ __fn macro_parabolic_projectile_cal_angle $v $l {
 
 }
 
-__fn func_effect_arrow_init{
+__fn func_effect_arrow_init $selfid {
 
 	    // clean up 
 	    zeroArray100.copy v[effect_set_ptr], EffectArraySize
@@ -60,7 +56,7 @@ __fn func_effect_arrow_init{
 	    // set effect type
 	    effect_EffectType = EffectType_Has_LinkedFunc
 	    // set event id
-	    effect_CallEffFunc = eventid
+	    effect_CallEffFunc = $selfid
 	    // "描画終了時イベント番号設定"
 	    effect_LinkedFunc = cevid_func_erase_effect
 	    // set parents and targets - these vars handed down from ranged_shoot function
@@ -547,13 +543,13 @@ __fn func_effect_arrow_on_ground $ground_picture {
 	}.elif `effect_Flag&Arrow_Flag_Check_Hit {func_effect_arrow_hit()}
 }
 
-cev .id(eventid), .name("effect:arrow"), {
+cev .id(cevid_eff_arrow), .name("effect:arrow"), {
 __if DIS_EXPERIMENTAL == 1 {
 @if s[141] .isOn() {
     @loop v[1017] .dst v[320] {
-	macro_effect_array_increment_ptr()
+	macro_effect_array_increment_ptr(cevid_eff_arrow)
 	@if v[effect_set_ptr] <= 1 {
-	    func_effect_arrow_init()
+	    func_effect_arrow_init(cevid_eff_arrow)
 	    // "ポインタセット開始"
 	    // "画像"
 	    v[310] = v[242] + v[1220]
