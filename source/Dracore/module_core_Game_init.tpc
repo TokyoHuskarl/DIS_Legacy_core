@@ -451,7 +451,8 @@ cev .id(1), .name("@Game Init") , {
 	v[1075] = Const_save_var_TileFlags +400*400
 	v[1076] = v[1075] - 1
 	//Effects begin
-	v[1018] = v[1075] + v[4559] * 100 
+	v[1018] = v[1075] + v[4559] * 10
+	v[4840] = v[1018] + 1 
 	@comment "##OBJ数拡張する場合ここもいじる必要あり"
 	@comment "#Pathfinding"
 	v[4569] = v[1018] + v[1017] * 100 //

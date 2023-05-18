@@ -1,5 +1,18 @@
 
 #include "./../headers/header_common.tpc"
+//__fn func_bs_register_buff $buff_id $agent
+#include "./../headers/header_battlesystem.tpc"
+//macro_SkillCDck($agent $skillno)
+#include "./../headers/header_agent.tpc"
+//Hit check functions
+#include "./../Dracore/module_core_RTS_battlesystem_hitchecks.tpc"
+//damage calculation funcition
+#include "./../Dracore/module_core_RTS_battlesystem_morale.tpc"
+#include "./../Dracore/module_core_RTS_battlesystem_damage_calculation.tpc"
+#include "./../Dracore/module_core_RTS_main_effects_gib_functions.tpc"
+
+
+#include "./../DISLib/DISLib_math_functions.tpc"
 
 def moduletitle="module_preset_effects_general.tpc"
 
@@ -7,6 +20,21 @@ def moduletitle="module_preset_effects_general.tpc"
 defv{
 
 }
+
+//idk where should I put these functions for particlar type effects, so temporary put here...
+
+
+//Return Cleared Array Address and erased picture ID to reg1 reg2
+__fn func_erase_effect $id {
+	var1 = $id - 1
+	reg1 = var1 * EffectArraySize
+	reg1 += Const_save_var_Address_Effects_Array_Begin
+	zeroArray100.copy v[reg1], EffectArraySize
+	zeroArray100.copy effect_EffectType, EffectArraySize
+	reg2 = var1 + v[1220]
+	@pic[reg2].erase
+}
+
 
 //Preset Effect Common Events 
 
