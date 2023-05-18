@@ -1,10 +1,10 @@
-cev .id(101), .name("effects:bolt"), {
+cev .id(cevid_eff_bolt), .name("effects:bolt"), {
 
 @if s[141] .isOn() {
     @loop v[1017] .dst v[320] {
 	macro_effect_array_increment_ptr()
 	@if v[effect_set_ptr] <= 1 {
-	    func_effect_arrow_init()
+	    func_effect_arrow_init(cevid_eff_bolt)
 	    // "ポインタセット開始"
 	    // "画像"
 	    v[310] = v[242] + v[1220]
@@ -26,15 +26,17 @@ cev .id(101), .name("effects:bolt"), {
 	    // "仕上げに登録消す"
 	    v[242..243] += 1
 	    @if `s[v[609] + 500] {
-		@if v[182] < 2 {
+		@if v[182] < 3 {
 		    v[182] += 1
-		    // "#########################"
-		    v[471] = 11550
+		    v[329] = rnd(1, 3)
 		    v[472] = divmul(40, 100, v[2216])
-		    v[473] = rnd(90, 100)
+		    v[473] = rnd(95, 105)
 		    v[474] = divmul(v[361] + v[1001], v[1281], 50)
-		    // "#########################"
-		    @cmd v[471], "bow_shoot_01", .args v[472], 3
+		    t[510] .asg "weapons\crossbow_shoot_0"
+		    t[510] .cat v[329]
+		    v[341] = 510
+		    // "Strings = t[v[341]]"
+		    @cmd 11550, t[v[341]], .args v[472], 3
 		    
 		}
 		v[13] = v[v[295]]
@@ -99,64 +101,7 @@ cev .id(101), .name("effects:bolt"), {
     
 } .else bl {
 
-    v[v[301]].copy effect_EffectType, EffectArraySize
-    effect_RelativeX.copy effect_SavedPositionX,2
-    @if effect_Timer > 1 {
-
-	    effect_milX.add effect_milPixVx,2
-	    v[53].copy TT1, 2
-	    v[341..342] *= 1000
-	    effect_milX.add TT1,2
-
-
-	    effect_milX.copy effect_RelativeX,2
-	    v[__id(effect_RelativeX)..__id(effect_RelativeY)] /= 1000
-	    effect_milVz -= g_perFPS 
-	    effect_milZ += effect_milVz
-	    effect_RelativeX.copy effect_ArrowHitX,2
-	    effect_RelativeY -= effect_milZ/1024
-
-	    effect_RelativeX.copy TT1,2
-	    TT1.sub effect_SavedPositionX,2
-	    effect_Angle = atan2(v[342], v[341], 1000) +360000
-
-
-
-	    @if effect_milZ <= effect_ArrowCheckHeight{
-		@if `!(effect_Flag&Arrow_Flag_Checked){
-			effect_Flag|=Arrow_Flag_Check_Hit
-		}
-	    }
-	    @if effect_milZ <= 100 {//Fall into the Ground
-		effect_Timer=1
-	    }
-    }.else  bl{
-	    v[53].copy TT1, 2
-	    v[341..342] *= 1000
-	    effect_milX.add TT1,2
-	    effect_milX.copy effect_RelativeX,2
-	    v[__id(effect_RelativeX)..__id(effect_RelativeY)] /= 1000
-    }
-
-    effect_EffectType.copy v[v[301]], EffectArraySize
-	// "Draw"
-	v[310] = v[241] + v[1220]
-	@pic[v[310]].show {
-	    "arrows\arrow"
-	    .pos effect_RelativeX, effect_RelativeY .center
-	    .scrollWithMap
-	    .chromakey 1
-	    .scale 100
-	    .trans 0
-	    .rgbs 100, 100, 100, 100
-	    .angle effect_Angle, 1000
-	    .mapLayer 7
-	    .eraseWhenTransfer
-	    .affectedByTint
-	    .affectedByFlash
-	    .affectedByShake
-	}
-
+	func_effect_arrow_proc("arrows\bolt")
 	// "タイマー切れのときの処理	
 	func_effect_arrow_on_ground("arrows\bolt_g")
 		    
