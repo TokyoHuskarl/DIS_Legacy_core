@@ -1299,7 +1299,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    func_main_extract_agent_vars()
 	    // "Set Dir"
 	    @if s[2] .isOff() {
-		@if `v[603] & 134217728 {
+		@if `v[603] & AgentBits_FLAG_DirChange_skip {
 		    @if `v[726] & 8388608 {
 			v[603] &= -134217729 //~134217728
 			

@@ -22,6 +22,8 @@ agent_Height = 611
 
 agent_BaseCamoValue = 617 
 agent_TargetAgentID = 618
+agent_MovePointX = 619 
+agent_MovePointY = 620 
 agent_MilPixMoveOrderedPointDist = 623
 
 agent_ObjectCollideSkipFrame = 625
@@ -39,6 +41,7 @@ agent_SpriteX = 636
 agent_SpriteY = 637
 agent_MoveTypeBIts = 638
 agent_TerrainIDstanding = 640
+agent_HoldPointX = 641
 
 agent_LeftWPtoChase = 655
 agent_MarchingDirection = 656
@@ -154,15 +157,19 @@ agent_generated_ID = 900
 //FLAGS
 def{
 //Perks1
+
+
 agent_PerkFlagBits1_FLAG_Pathfinder=128
 
 AgentBits_FLAG_EnableBasicAI = 1048576
-
+AgentBits_FLAG_EnableCivAI = 2097152
 AgentBits_FLAG_ForcemoveFlag = 4194304
 AgentBits_FLAG_walldetected = 8388608
 AgentBits_FLAG_NeedWpToReachObj = 16777216
 
+AgentBits_FLAG_1fprocessed = 67108864
 
+AgentBits_FLAG_DirChange_skip = 134217728
 //AI routine bits
 AI_routine_bits_FLAG_siegeweapon_flag = 1
 AI_routine_bits_FLAG_skirmisher=2
@@ -176,17 +183,20 @@ AI_routine_bits_FLAG_tracing_flag=4096
 AI_routine_bits_FLAG_tracing_wp=8192
 AI_routine_bits_FLAG_PATHFINDING=16384
 AI_routine_bits_FLAG_PFcontinue=32768
-
+AI_routine_bits_FLAG_Manual_Ordered = 131072
 
 AI_routine_bits_FLAG_AIskip = 2097152
 AI_routine_bits_FLAG_ForcemoveFlag = 4194304
+
 //ObjBits
 agent_BaseObjBit_FLAG_big_unit=524288
 agent_BaseObjBit_FLAG_SpeedBonus = 134217728
 
-//Tactical Orders
-//
+//ExMotions
 agent_ExMotionFlags_FLAG_horseback = 16777216
+
+
+//Tactical Orders
 
 //InstantStates
 agent_ProcessInstantState_FLAG_overheal = 1
@@ -195,7 +205,30 @@ agent_ProcessInstantState_FLAG_magic_nullfying = 4
 agent_ProcessInstantState_FLAG_bladedance = 8
 agent_ProcessInstantState_FLAG_shield_covered = 16
 agent_ProcessInstantState_FLAG_shield_covered_double_check = 32
-agent_ProcessInstantState_FLAG_climb_hill = 64 
+agent_ProcessInstantState_FLAG_climb_hill = 64
+
+
+//MovementOrder
+//#-3 = WP_chasing_end -2 = returned -1 = do_not_move, 0 = free, 1 = moving, 2 = move_ordered, 3= force_moving, 4 = dashorknockback 5=mounting, 6=garrison 11= fleeing
+
+MovementOrder_TYPE_returned = -2
+MovementOrder_TYPE_do_not_move = -1
+MovementOrder_TYPE_moving = 1
+MovementOrder_TYPE_move_ordered = 2
+MovementOrder_TYPE_prioritize_moving = 3
+MovementOrder_TYPE_force_moving = 4
+
+MovementOrder_TYPE_fleeing = 11
+
+//Stances
+DIR_RIGHT=1
+DIR_LEFT=0
+ORD_AGG=0
+ORD_DEF=3
+ORD_STD=1
+ORD_ATK=2
+ORD_MANU=4
+
 }
 
 //STATICS
