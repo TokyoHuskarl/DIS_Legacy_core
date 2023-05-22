@@ -5,8 +5,14 @@
 
 def moduletitle="module_core_Game_ui_general.tpc"
 
+#include "./module_core_Game_ui_system.tpc"
+
 //Escape Menu
 #include "./module_core_Game_ui_escape_menu.tpc"
 
 //Inv
 #include "./module_core_Game_ui_inventory.tpc"
+
+cev[2131] .name("UI:Pick_faction") {
+	func_ui_start_pick_faction_window()
+}

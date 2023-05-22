@@ -86,9 +86,7 @@ Access20 = TargetObjectIDAccess18 = TargetObjTypeチェックPtr"
         }
         
     }
-    @comment "#################
-Change Graphic
-#################"
+    //@comment "#################Change Graphic#################"
     //NEED TO MODIFY THIS PROC WHEN YOU USE SHIELD SWAP
     //->header_drawing
     func_get_weapon_picture_id(v[851])
@@ -96,7 +94,6 @@ Change Graphic
     t[501].cat "\v[21]" .extract
     function_set_agent_picture(v[299] t[501] 4)
    
-    //v[(v[299] - 1) * 6 + v[1185] + 3] = v[858]
 
     
     @comment "Reset Flag"
@@ -115,9 +112,7 @@ Change Graphic
     @comment "Set changed stats "
     v[341] = v[297] + 102
     v[702].copy v[v[341]], 59
-    @comment "#############################
-Remove ShieldWall & Skirmishing
-#############################"
+    //@comment "#############################Remove ShieldWall & Skirmishing#############################"
     
 }
 }

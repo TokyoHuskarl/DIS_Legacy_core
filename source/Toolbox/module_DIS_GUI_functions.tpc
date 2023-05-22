@@ -1,0 +1,138 @@
+defv {
+DIS_gui_mouse_click = 43
+DIS_gui_mouse_pointer_X = 51
+DIS_gui_mouse_pointer_Y = 52
+
+DIS_gui_misc_var1 =1952
+DIS_gui_misc_var2 =1953
+DIS_gui_misc_var3 =1954
+DIS_gui_misc_var4 =1955
+}
+
+deft {
+DIS_gui_UI_font = 530 
+
+}
+
+defs {
+//DIS_gui_mouse_L_drag_switch = 11
+}
+
+
+//No need to touch here
+def{
+DIS_GUI_TYPE_OVERRAY = 1
+DIS_GUI_TYPE_BUTTON = 2
+
+
+DIS_GUI_TARGET_TYPE_VAR = 0
+DIS_GUI_TARGET_TYPE_SWITCH = 1
+DIS_GUI_TARGET_TYPE_BIT = 2
+DIS_GUI_TARGET_TYPE_STR = 3
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//DIS GUI systems will directly use picture id as UI overlay id to control gui, just for simplification
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+//#######################
+//simple button functions
+//#######################
+
+//create simple button - nothing but just a mere strpic process.
+//simple button has only single function.
+__fn ui_create_simple_button $picid $text $X $Y $SizeX $SizeY {
+//should I explain how those args work? it's bretty simple so I don't think so...
+
+	__if $SizeX == "" {
+		ui_create_simple_button_ERROR_You_have_to_set_Switch_Size
+	}
+
+	@pic[$picid].strpic {
+	    __str($text)
+	    .pos $X, $Y .center
+	    .size $SizeX, $SizeY    .chromakey 1
+	    .scale 100
+	    .trans 0
+	    .rgbs 100, 100, 100, 100
+	    .font t[530], 11
+	    .spacing 0, 4
+	    .skin "SystemSwitch" .nobg
+	    .mapLayer 9
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
+}
+
+//put this function in ui loop process 
+__fn ui_simple_button_process $picid $button_L $button_R $mp_on_button $mp_off_button {
+//ARGS
+//var $picid - Selected button picid
+//block $buttonL - Process Block for LMB (if you use only RMB, just put bl)
+//block $buttonR - Process Block for RMB (ignorable)
+//block $mp_on_button - Process Block that triggered by Mouse Pointer on button (ignorable)
+//block $mp_off_button -  Process Block that triggered by Mouse Pointer off button (ignorable)
+
+
+	__if $button_L == "" && $button_R == "" {
+		ui_simple_button_process_ERROR_No_functions_set_for_button
+	}
+
+	//Save picture infomation into miscvars
+	@pic[$picid].getInfo .cewh .currentRect DIS_gui_misc_var1, DIS_gui_misc_var2, DIS_gui_misc_var3, DIS_gui_misc_var4
+	@if `between(DIS_gui_mouse_pointer_X, DIS_gui_misc_var1 - DIS_gui_misc_var3 / 2, DIS_gui_misc_var1 + DIS_gui_misc_var3 / 2) && between(DIS_gui_mouse_pointer_Y, DIS_gui_misc_var2 - DIS_gui_misc_var4 / 2, DIS_gui_misc_var2 + DIS_gui_misc_var4 / 2) {
+
+		__if $mp_on_button == "" {
+		    @pic[$picid].move {
+			.pos DIS_gui_misc_var1, DIS_gui_misc_var2 .center
+			.scale 100
+			.trans 0
+			.time -2
+			.rgbs 0, 200, 0, 100
+		    }
+		} .else bl {
+			$mp_on_button
+		}
+
+
+	    @if DIS_gui_mouse_click == 1005 { // Only
+
+		    __if PROJECT_NAME == "DIS_LEGACY"{
+				@if s[11] .isOff() {
+
+				    $button_L
+				    
+				    s[11].on
+				    
+				}
+			} .else bl {
+				$button_L
+			}
+	    }.elif DIS_gui_mouse_click == 1006{
+
+		    $button_R
+	    }
+	    
+	} .else bl {
+
+	    __if $mp_off_button == "" {
+		    @pic[$picid].move {
+			.pos DIS_gui_misc_var1, DIS_gui_misc_var2 .center
+			.scale 100
+			.trans 0
+			.time -2
+			.rgbs 100, 100, 100, 100
+		    }
+	    } .else bl {
+		$mp_off_button
+	    }
+	}
+
+}
+
+
+//#######################
+//CHECK BOX functions
+//#######################

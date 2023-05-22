@@ -19,6 +19,9 @@ agent_RelativeY = 608
 agent_Morton = 609
 agent_Width = 610
 agent_Height = 611
+agent_MilPixVx = 612
+agent_MilPixVy = 613
+agent_MilPixVab = 614
 
 agent_BaseCamoValue = 617 
 agent_TargetAgentID = 618
@@ -76,6 +79,7 @@ agent_TeamID = 700
 agent_UnitID = 701
 agent_UnitType = 702
 agent_AAType = 703
+agent_Level = 704
 agent_MaxHP = 705
 agent_HP = 706
 agent_MaxSP = 707
@@ -101,7 +105,7 @@ agent_AABits=724
 agent_AddMotionBits=725
 agent_ExMotionFlags=726
 
-agent_AAamouut = 727
+agent_AAamount = 727
 agent_AAvelocity = 727
 agent_AAtime = 728
 
@@ -109,6 +113,7 @@ agent_AAtime = 728
 agent_AASfx = 729
 agent_AAFunction = 730
 agent_BaseRegHP = 731
+agent_Shield_Value = 735
 agent_AA_AR_effectiveness = 736
 agent_AA_AR_penetration = 737
 //agent_MaxAR = 738
@@ -118,9 +123,17 @@ agent_BaseObjBit = 740
 
 agent_ChokeTimer = 827
 
-agent_TakenDamageMultiplier = 829
-agent_Ammo = 832
 
+agent_HeadSPregPenalty = 828
+agent_TakenDamageMultiplier = 829
+
+
+agent_Ammo = 832
+agent_ShieldType = 833
+agent_ShieldBreakResistance = 834
+
+agent_CritChanceReduction = 839
+agent_CritDamageReduction = 840
 
 agent_StanceOrder = 841
 agent_MovementOrder = 842
@@ -152,6 +165,7 @@ agent_ProcessCamoValue = 876
 agent_ProcessInstantState = 877
 
 agent_2hweapon_stain = 885
+agent_PictArray = 899
 agent_generated_ID = 900
 }
 //FLAGS
