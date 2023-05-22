@@ -1,6 +1,7 @@
 def {
 DIS_gui_Layer = 9
 DIS_simple_switch_skin = "SystemSwitch"
+DIS_simple_window_skin = "SystemWindow"
 
 }
 
@@ -107,11 +108,50 @@ __fn ui_start_presentation $presen_name $flags $bg_picid $bg_pic_name $bg_pic_ar
 }
 
 __fn ui_create_window $picid $X $Y $SizeX $SizeY $flags $SystemPictureFile {
+	
+	__if $SystemPictureFile == "" {
+		$SystemPictureFile = DIS_simple_window_skin // try to use default window skin set in TPC 
+	}
 
-
+	@pic[$picid].strpic {
+	    ""
+	    .pos $X, $Y .center
+	    .size $SizeX, $SizeY    .chromakey 1
+	    .scale 100
+	    .trans 0
+	    .rgbs 100, 100, 100, 100
+	    .font "", 12 .noShadow
+	    .spacing 0, 4
+	    .skin $SystemPictureFile .stretch .noGradation .noPadding
+	    .mapLayer DIS_gui_Layer
+	    .eraseWhenTransfer
+	    .affectedByShake
+	}
 
 }
 
+__fn ui_create_textbox $picid $Str $X $Y $SizeX $SizeY $flags $SystemPictureFile $font $fontsize { // adjust later
+	__if $SystemPictureFile == "" {
+		$SystemPictureFile = DIS_simple_window_skin // try to use default window skin set in TPC 
+	}
+
+	@pic[$picid].strpic {
+	    $Str
+	    .pos $X, $Y .center
+	    .size $SizeX, $SizeY    .chromakey 1
+	    .scale 100
+	    .trans 0
+	    .rgbs 100, 100, 100, 100
+	    .font t[530], 11
+	    .spacing 0, 4
+	    .skin $SystemPictureFile .nobg .noframe .noGradation .noPadding
+	    .mapLayer DIS_gui_Layer
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
+
+}
 
 //#######################
 //simple button functions
@@ -123,7 +163,10 @@ __fn ui_create_simple_button $picid $text $X $Y $SizeX $SizeY {
 //should I explain how those args work? it's bretty simple so I don't think so...
 
 	__if $SizeX == "" {
-		ui_create_simple_button_ERROR_You_have_to_set_Switch_Size
+		$SizeX = 0
+	}
+	__if $SizeY == "" {
+		$SizeY = 0
 	}
 
 	@pic[$picid].strpic {
