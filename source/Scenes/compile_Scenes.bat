@@ -15,7 +15,7 @@ IF NOT DEFINED build (
 )
 set target=module_Scenes_Title_general
 echo Compiling Title. - %target% >> %log%".txt"
-call %tpc% %current%%target%".tpc" -en >> %log%".txt"
+call %tpc% %current%%target%".tpc" >> %log%".txt"
 echo; >> %log%".txt"
 
 
