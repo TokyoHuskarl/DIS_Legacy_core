@@ -1,0 +1,38 @@
+#include "./../headers/header_common.tpc"
+
+#include "./../headers/header_ui.tpc"
+
+
+
+
+//scene experiment - not available
+def TitleSceneID = 9
+
+
+
+mev .map(TitleSceneID), .name("Main"), .id(113), .pos (8,7)
+
+	mep[11] {
+		.ev {
+			ui_create_simple_button(1,"ur retard lol",122, 34,424,42)
+			@loop bl {
+				ui_simple_button_process(1, 
+
+
+
+					{//L
+						v[11]+=1
+
+					},
+
+					{
+						v[12]+=1
+					}
+
+
+
+				)
+
+			}
+		}
+	}

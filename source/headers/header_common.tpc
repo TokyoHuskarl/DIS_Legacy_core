@@ -1,3 +1,4 @@
+def PROJECT_NAME = "DIS_LEGACY"
 //You have to put Append directory in the game directory to compile DraCore and etc into .ldb
 //And you need to put tpc.exe and its blueprint txt files in Append directory.
 
@@ -22,7 +23,7 @@ __if MAKE_TYPE == 0{
 //Backup is for faggots
 #copyMode .force
 
-def DEBUG_BUILD = 1 //0 = release, 1 = debug
+def DEBUG_BUILD = 0 //0 = release, 1 = debug
 def DIS_DEBUG_BUILD = DEBUG_BUILD
 
 def DIS_EXPERIMENTAL = 1 //0=nah 1=compile experimental features

@@ -1,6 +1,33 @@
 #include "./../headers/header_common.tpc"
 
-//Achievement
+//Export Bonus Text
+
+cev[2140] .name("func_export_bonus_text") {
+	t[503] .asg "..\BONUS\"
+	t[503] .cat t[502]
+	t[501] .toFile t[503], .utf8
+	@pic[927].strpic {
+	    t[20285] //quickstring 285
+	    .pos v[1115], v[1116] .center
+	    .size 0, 0    .chromakey 1
+	    .scale 100
+	    .trans 0
+	    .rgbs 100, 100, 100, 100
+	    .font t[530], v[4511]
+	    .spacing 0, 4
+	    .skin "" .stretch
+	    .mapLayer 10
+	    .eraseWhenTransfer
+	}
+	@wait 1
+	@pic[927].move {
+	    .pos v[1115], v[1116] .center
+	    .scale 100
+	    .trans 100
+	    .time 9
+	    .rgbs 100, 100, 100, 100
+	}
+}
 
 
 //Achievement get effect
