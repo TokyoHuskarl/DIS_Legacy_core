@@ -11,20 +11,25 @@ agent_AgentBits = 603
 agent_Luck = 604
 
 
+
+agent_MilPixX = 605
+agent_MilPixY = 606
 agent_RelativeX = 607
 agent_RelativeY = 608
+agent_Morton = 609
 agent_Width = 610
 agent_Height = 611
 
 agent_BaseCamoValue = 617 
 agent_TargetAgentID = 618
+agent_MilPixMoveOrderedPointDist = 623
 
 agent_ObjectCollideSkipFrame = 625
 agent_MapX = 626
 agent_MapY = 627
 agent_AATimer=628
 
-
+agent_LastTarget = 631
 agent_TileLink = 632
 agent_AI_routine_bits=634
 agent_Cohort_ID=635
@@ -151,22 +156,34 @@ def{
 //Perks1
 agent_PerkFlagBits1_FLAG_Pathfinder=128
 
-//AI routine bits
-agent_AI_routine_bits_FLAG_siegeweapon_flag = 1
-agent_AI_routine_bits_FLAG_skirmisher=2
-agent_AI_routine_bits_FLAG_assassin=4
-agent_AI_routine_bits_FLAG_ranged=8
-agent_AI_routine_bits_FLAG_targetting_ally=16
-agent_AI_routine_bits_FLAG_target_switched_by_AI=32
-agent_AI_routine_bits_FLAG_IdleAfterEnemySearch=64
-agent_AI_routine_bits_FLAG_AICohortGatheringAttack=128
-agent_AI_routine_bits_FLAG_tracing_flag=4096
-agent_AI_routine_bits_FLAG_tracing_wp=8192
-agent_AI_routine_bits_FLAG_PATHFINDING=16384
+AgentBits_FLAG_EnableBasicAI = 1048576
 
+AgentBits_FLAG_ForcemoveFlag = 4194304
+AgentBits_FLAG_walldetected = 8388608
+AgentBits_FLAG_NeedWpToReachObj = 16777216
+
+
+//AI routine bits
+AI_routine_bits_FLAG_siegeweapon_flag = 1
+AI_routine_bits_FLAG_skirmisher=2
+AI_routine_bits_FLAG_assassin=4
+AI_routine_bits_FLAG_ranged=8
+AI_routine_bits_FLAG_targetting_ally=16
+AI_routine_bits_FLAG_target_switched_by_AI=32
+AI_routine_bits_FLAG_IdleAfterEnemySearch=64
+AI_routine_bits_FLAG_AICohortGatheringAttack=128
+AI_routine_bits_FLAG_tracing_flag=4096
+AI_routine_bits_FLAG_tracing_wp=8192
+AI_routine_bits_FLAG_PATHFINDING=16384
+AI_routine_bits_FLAG_PFcontinue=32768
+
+
+AI_routine_bits_FLAG_AIskip = 2097152
+AI_routine_bits_FLAG_ForcemoveFlag = 4194304
 //ObjBits
 agent_BaseObjBit_FLAG_big_unit=524288
 agent_BaseObjBit_FLAG_SpeedBonus = 134217728
+
 //Tactical Orders
 //
 agent_ExMotionFlags_FLAG_horseback = 16777216

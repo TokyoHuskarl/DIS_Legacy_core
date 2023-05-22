@@ -1,0 +1,1044 @@
+__fn func_control_moveorder_mil {
+
+
+	s[163].off
+	@if v[943] >= 1 {
+	    s[112].on
+	    
+	}
+	@if s[13] .isOff() {
+	    
+	}
+	// "Init Form info"
+	v[0] = v[341..342] = [v[1165], v[1165] + 39]
+	@pic[v[341]..v[342]].erase
+	v[38] = v[v[v[101]] * 300 + 4944]
+	@call .cev 1897
+	// "TempS1"
+	v[391] = s[40] == 1 ? v[11] : v[51]
+	v[392] = s[40] == 1 ? v[12] : v[52]
+	v[51].copy v[405], 2
+	v[391].copy v[489], 2
+	v[202] = 101
+	s[201].off
+	s[203].off
+	s[21].off
+	@if v[v[202]] > 0 {
+	    // "#敵イベントで重なってるやつを検索"
+	    @if s[40] .isOff() {
+		v[305] = 0
+		v[302] = v[1146]
+		@doWhile v[v[302]] >= 1 {
+		    @if `s[2000 + v[v[302]]] == 1 {
+			v[303] = v[v[302]] * 300
+			v[303] += 4707
+			s[202].off
+			@if s[201] .isOff() {
+			    v[v[303]].copy v[607], 5
+			    @call .cev 1910
+			    @if s[202] .isOn() {
+				// "#指定された"
+				v[303] = v[303] + 17
+				v[v[303]] = -1
+				v[304] = v[v[302]] * 300 + 4701
+				v[341] = v[v[304]] > 0 ? 1 : 0
+				v[341] += v[v[304]] != 11 ? 1 : 0
+				@if v[341] == 2 {
+				    v[100] = v[v[302]]
+				    s[201].on
+				    // "非STATICを見た"
+				    s[203].on
+				    
+				} .else bl {
+				    @if v[305] == 0 {
+					// "STATIC保存しておく"
+					v[305] = v[v[302]]
+					
+				    } .else bl {
+					// "STATIC保存があるのにStatic見たらスルー"
+					v[303] = v[303] + 17
+					v[v[303]] = 2
+					
+				    }
+				    
+				}
+				
+			    } .else bl {
+				v[303] = v[303] + 17
+				v[v[303]] = 2
+				
+			    }
+			    
+			} .else bl {
+			    v[303] = v[303] + 17
+			    v[v[303]] = 2
+			    
+			}
+			
+		    }
+		    v[302] += 1
+		    
+		}
+		
+		// "非STATICを見てない"
+		@if s[203] .isOff() {
+		    // "かつSTATICをひとつ見ている"
+		    @if v[305] >= 1 {
+			v[100] = v[305]
+			v[303] = v[100] * 300
+			v[303] += 4724
+			v[v[303]] = -1
+			s[201].on
+			
+		    }
+		    
+		}
+		@if s[201] .isOff() {
+		    v[305] = 0
+		    v[302] = v[4533]
+		    // "#StaticCk... in order to target walls"
+		    @doWhile v[v[302]] >= 1 {
+			@if `s[2000 + v[v[302]]] == 1 {
+			    v[303] = v[v[302]] * 300
+			    v[303] += 4707
+			    s[202].off
+			    @if s[201] .isOff() {
+				v[v[303]].copy v[607], 5
+				@call .cev 1910
+				@if s[202] .isOn() {
+				    v[304] = v[v[302]] * 300 + 4701
+				    @if v[v[304]] > 0 {
+					@if `v[v[304] + 99] % 3 == 1 {
+					    v[303] = v[303] + 17
+					    v[v[303]] = -1
+					    v[100] = v[v[302]]
+					    s[201].on
+					    @break
+					    
+					}
+					
+				    }
+				    
+				}
+				
+			    }
+			    
+			}
+			v[302] += 1
+			
+		    }
+		    
+		    
+		}
+		
+	    }
+	    @if s[163] .isOff() {
+		// "攻撃しないなら陣形を組もうとする"
+		@if s[201] .isOff() {
+		    // "Order DirectionEnd"
+		    v[393..398] = 0
+		    v[399] = 8888
+		    v[400] = 1
+		    v[2809..2810] = 0
+		    @if s[27] .isOff() {
+			@if v[99] > 1 {
+			    // "Order Direction"
+			    // "一体以上いる"
+			    v[202] = 101
+			    v[313..315] = 0
+			    v[491] = 0
+			    @loop v[1004] .dst v[401] {
+				@if v[v[202]] == 0 {
+				    // "とぎれた"
+				    @break
+				    
+				}
+				@if v[401] > 40 {
+				    // "とりあえず40体までしか選択できない"
+				    @break
+				    
+				}
+				// "配列ゲット"
+				v[301] = v[v[202]] * v[1117]
+				v[301] += 4700
+				v[299] = v[301] + 1
+				// "＃生きてる？"
+				@if v[v[299]] > 0 {
+				    v[315] += 1
+				    v[300] = v[301] + 7
+				    v[v[300]].copy v[311], 2
+				    // "処理開始"
+				    v[313] .add v[311], 2
+				    v[491] += v[v[301] + 10]
+				    
+				}
+				@if s[1] .isOn() {
+				    v[341] = v[v[202]] + 500
+				    @if s[v[341]] .isOn() {
+					s[112].off
+					
+				    }
+				    
+				}
+				v[202] += 1
+				
+			    }
+			    
+			    v[491] /= v[315]
+			    v[313..314] /= v[315]
+			    v[341] = v[391]
+			    v[342] = v[392]
+			    v[341] .sub v[313], 2
+			    v[388..389] = atan2(v[342], v[341], 1000)
+			    v[388..389] = v[315] > 0 ? atan2(v[342], v[341], 1000) : 0
+			    @loop .inf() {
+				@label.set 10
+				v[489].copy v[391], 2
+				v[49].copy v[51], 2
+				v[51..52] -= 3
+				v[52..52] += 1
+				@if v[47] > 0 {
+				    v[41] = v[49] - 1
+				    v[48] = v[50] - 1
+				    v[47] -= 1
+				    
+				} .else bl {
+				    v[41] = v[49]
+				    v[48] = v[50]
+				    
+				}
+				@pic[1000].show {
+				    t[522]
+				    .pos v[41], v[48] .center
+				    .chromakey 1
+				    .scale 100
+				    .trans 0
+				    .rgbs 100, 100, 100, 100
+				    .mapLayer 10
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+				@if s[2] .isOn() {
+				    @if s[4] .isOn() {
+					@pic[1000].show {
+					    t[522]
+					    .pos v[41], v[48] .center
+					    .chromakey 1
+					    .scale 100
+					    .trans 0
+					    .rgbs 200, 60, 60, 50
+					    .mapLayer 10
+					    .eraseWhenTransfer
+					    .affectedByFlash
+					    .affectedByShake
+					}
+					
+				    }
+				    
+				}
+				s[43].on
+				@if s[40] .isOff() {
+				    @pic[999].show {
+					"ui\direction_mouse"
+					.pos v[391], v[392] .center
+					.scrollWithMap
+					.chromakey 1
+					.scale 100
+					.trans 20
+					.rgbs 100, 100, 100, 100
+					.angle v[389], 1000
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+				    }
+				    
+				} .else bl {
+				    @pic[999].show {
+					"ui\direction_mouse"
+					.pos v[407], v[408] .center
+					.scrollWithMap
+					.chromakey 1
+					.scale 50
+					.trans 0
+					.rgbs 100, 100, 100, 100
+					.angle v[389], 1000
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+				    }
+				    
+				}
+				// "#そのうち整理"
+				@key.input .dst v[43] {
+				    .decision
+				    .number
+				    .lclick
+				    .rclick
+				    .wheelDown
+				    .wheelUp
+				}
+				@if `v[51] == v[405] && v[52] == v[406] {
+				    
+				} .else bl {
+				    @if s[40] .isOff() {
+					v[341] = v[51] - v[391]
+					v[342] = v[52] - v[392]
+					
+				    } .else bl {
+					v[341] = v[51] - v[407]
+					v[342] = v[52] - v[408]
+					
+				    }
+				    v[389] = atan2(v[342], v[341], 1000)
+				    
+				}
+				// "################experimental"
+				@if s[40] .isOff() {
+				    v[202] = 101
+				    v[390] = 0
+				    // "列数設定"
+				    v[11] = v[427]
+				    v[17] = v[99]
+				    @call .cev 1762
+				    v[400] = v[21]
+				    // "一列の長さを決定"
+				    // "仮置き、そのうちなおす"
+				    v[399] = v[99]
+				    v[399] /= v[400]
+				    v[341] = v[399] % 2
+				    v[399] = v[99]
+				    v[399] += v[99] > 6 ? 1 : 0
+				    v[399] /= v[400]
+				    // ""
+				    v[391..392] *= 1000
+				    v[393..394] = muldiv(v[399], v[1148] + max(v[491] - 12, 0), 2)
+				    v[393] *= sin(v[389], 1000, -1000)
+				    v[394] *= cos(v[389], 1000, 1000)
+				    v[393].copy v[395], 2
+				    v[391] .sub v[393], 2
+				    v[395..396] /= v[399] / 2
+				    v[397] = cos(90, 1, 1000) * v[395] - sin(90, 1, 1000) * v[396]
+				    v[398] = sin(90, 1, 1000) * v[395] + cos(90, 1, 1000) * v[396]
+				    v[397..398] /= 1000
+				    // "仮置き、そのうちなおす"
+				    // "中心をあわせるため1単位ずらす"
+				    @if v[341] == 0 {
+					v[395..396] /= 2
+					v[391] .add v[395], 2
+					v[395..396] *= 2
+					
+				    } .else bl {
+					v[395..396] /= 4
+					v[391] .add v[395], 2
+					v[395..396] *= 4
+					
+				    }
+				    v[391].copy v[393], 2
+				    @loop v[1004] .dst v[340] {
+					@if v[v[202]] == 0 {
+					    // "とぎれた"
+					    @break
+					    
+					}
+					@if v[202] > v[1007] {
+					    // "とりあえず40体までしか選択できない"
+					    @break
+					    
+					}
+					// "配列ゲット"
+					// "処理開始"
+					v[391].copy v[361], 2
+					v[391] .add v[395], 2
+					// "Formation Indicator"
+					@if v[99] > 1 {
+					    v[361..362] /= 1000
+					    v[341] = v[1165] + v[340]
+					    @pic[v[341]].show {
+						"ui\direction_indicator"
+						.pos v[361], v[362] .center
+						.scrollWithMap
+						.chromakey 1
+						.scale 100
+						.trans 35
+						.rgbs 100, 100, 100, 100
+						.angle v[389], 1000
+						.mapLayer 4
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
+					    }
+					    
+					}
+					// "Make 2nd line"
+					v[390] += 1
+					v[390] %= v[399]
+					@if v[390] == 0 {
+					    v[393].copy v[391], 2
+					    v[391] .add v[397], 2
+					    v[391].copy v[393], 2
+					    
+					}
+					// "処理終わり"
+					v[202] += 1
+					
+				    }
+				    
+				    
+				}
+				@key.input .dst v[428] {
+				    .lclick
+				    .wheelDown
+				    .wheelUp
+				}
+				@if v[428] == 1001 {
+				    s[205].on
+				    @loop .inf() {
+					@if v[427] <= 0 {
+					    @break
+					    
+					}
+					v[11] = v[427]
+					@call .cev 1762
+					v[22] = v[21]
+					v[427] -= 1
+					v[11] = v[427]
+					@call .cev 1762
+					@if v[21] != v[22] {
+					    v[472] = divmul(70, 100, v[2216])
+					    @se.play "click1" .opt v[472], 150, 50
+					    v[400] = v[21]
+					    @break
+					    
+					}
+					
+				    }
+				    
+				    
+				}
+				@if v[428] == 1004 {
+				    s[205].on
+				    @loop .inf() {
+					@if v[427] >= 4 {
+					    @break
+					    
+					}
+					v[11] = v[427]
+					@call .cev 1762
+					v[22] = v[21]
+					v[427] += 1
+					v[11] = v[427]
+					@call .cev 1762
+					@if v[21] != v[22] {
+					    v[472] = divmul(70, 100, v[2216])
+					    @se.play "click1" .opt v[472], 150, 50
+					    v[400] = v[21]
+					    @break
+					    
+					}
+					
+				    }
+				    
+				    
+				}
+				@if v[428] == 1005 {
+				    @pic[999].erase
+				    s[201].off
+				    s[43].off
+				    v[202] = 101
+				    v[0] = v[341..342] = [v[1165], v[1165] + 39]
+				    @pic[v[341]..v[342]].erase
+				    @ev.abort
+				    
+				}
+				@if v[43] != 1006 {
+				    @if s[205] .isOff() {
+					@pic[999].erase
+					s[201].off
+					s[43].off
+					v[202] = 101
+					@if v[82] >= 1 {
+					    @if v[82] <= 10 {
+						v[v[4530] + (v[82] - 1) * 20 + 11] = v[427]
+						v[v[4530] + (v[82] - 1) * 20 + 12] = v[489] - v[403]
+						v[v[4530] + (v[82] - 1) * 20 + 13] = v[490] - v[404]
+						v[v[4530] + (v[82] - 1) * 20 + 14] = v[389]
+						v[v[4530] + (v[82] - 1) * 20 + 15] = v[491]
+						@if s[16] .isOff() {
+						    v[v[4530] + (v[82] - 1) * 20 + 4] &= ~4
+						    
+						}
+						
+					    }
+					    
+					}
+					@break
+					
+				    }
+				    
+				}
+				s[205].off
+				@wait 0
+				
+			    }
+			    
+			    v[489].copy v[391], 2
+			    v[202] = 101
+			    // "列数設定"
+			    v[11] = v[427]
+			    v[17] = v[99]
+			    @call .cev 1762
+			    v[400] = v[21]
+			    // "一列の長さを決定"
+			    // "仮置き、そのうちなおす"
+			    v[399] = v[99]
+			    v[399] /= v[400]
+			    v[341] = v[399] % 2
+			    v[399] = v[99]
+			    v[399] += v[99] > 6 ? 1 : 0
+			    v[399] /= v[400]
+			    // ""
+			    v[393..394] = muldiv(v[399], v[1148] + max(v[491] - 12, 0), 2)
+			    v[393] *= sin(v[389], 1000, -1000)
+			    v[394] *= cos(v[389], 1000, 1000)
+			    v[393].copy v[395], 2
+			    v[393..394] /= 1000
+			    v[391] .sub v[393], 2
+			    v[395..396] /= v[399] / 2
+			    v[395..396] /= 1000
+			    v[397] = cos(90, 1, 1000) * v[395] - sin(90, 1, 1000) * v[396]
+			    v[398] = sin(90, 1, 1000) * v[395] + cos(90, 1, 1000) * v[396]
+			    v[397..398] /= 1000
+			    // "仮置き、そのうちなおす"
+			    // "中心をあわせるため1単位ずらす"
+			    @if v[341] == 0 {
+				v[395..396] /= 2
+				v[391] .add v[395], 2
+				v[395..396] *= 2
+				
+			    } .else bl {
+				v[395..396] /= 4
+				v[391] .add v[395], 2
+				v[395..396] *= 4
+				
+			    }
+			    v[391].copy v[393], 2
+			    // "###########################Get Lv Median"
+			    @loop v[99] .dst v[343] {
+				v[301] = 101 + v[343]
+				v[302] = v[v[301]] * 300
+				v[302] += 4804
+				v[303] = v[v[302]] * 100
+				v[302] -= 2
+				// "Infs tends to go frontal side *100"
+				v[303] *= v[v[302]] == 0 ? 5 : 1
+				// "Cavs"
+				v[303] *= v[v[302]] == 2 ? 3 : 1
+				// "Shieldwall"
+				v[303] *= v[v[302] + 146] & 6 ? 10 : 1
+				// "Pikewall"
+				v[303] *= v[v[302] + 146] & 1 ? 5 : 1
+				v[601 + v[343]] = v[303]
+				
+			    }
+			    
+			    v[601].sort v[99]
+			    v[304] = v[601 + v[99] / 2 - v[399] / 2]
+			    v[304] = v[601 + v[99] / (v[99] / v[399]) / 2]
+			    // "###########################descending sort"
+			    v[305] = 0
+			    @loop v[99] .dst v[343] {
+				v[301] = 101 + v[343]
+				v[302] = v[v[301]] * 300
+				// "Save ordered direction"
+				v[v[302] + 4756] = v[389]
+				@if `v[v[302] + 4974] & 1048576 {
+				    // "Give median to Bannerman"
+				    v[303] = v[304]
+				    v[303] += v[99] / 2 / (v[99] / v[399]) - v[99] % v[399]
+				    v[303] *= 1000
+				    v[v[301]] += v[303]
+				    // "Save bannerman"
+				    v[305] = v[v[301]]
+				    
+				} .else bl {
+				    v[302] += 4804
+				    v[303] = v[v[302]] * 100
+				    v[302] -= 2
+				    // "Infs tends to go frontal side *100"
+				    v[303] *= v[v[302]] == 0 ? 5 : 1
+				    // "Cavs"
+				    v[303] *= v[v[302]] == 2 ? 3 : 1
+				    // "Shieldwall"
+				    v[303] *= v[v[302] + 146] & 6 ? 10 : 1
+				    // "Pikewall"
+				    v[303] *= v[v[302] + 146] & 1 ? 5 : 1
+				    v[303] += v[v[301]]
+				    v[303] *= 1000
+				    v[v[301]] += v[303]
+				    
+				}
+				
+			    }
+			    
+			    v[101].sortDescending v[99]
+			    @if v[305] > 0 {
+				@loop v[99] .dst v[343] {
+				    v[301] = 101 + v[343]
+				    @if v[v[301]] == v[305] {
+					v[306] = 100 + v[99] - (v[99] / (v[99] / v[399]) - v[399] / 2 + v[99] % v[399] / 2 - v[399] % 2)
+					v[v[301]].swap v[v[306]], 1
+					@break
+					
+				    }
+				    
+				}
+				
+				
+			    }
+			    v[101..140] %= 1000
+			    @call .cev 1897
+			    
+			} .else bl {
+			    v[301] = v[v[202]] * v[1117]
+			    v[301] += 4700
+			    v[299] = v[301] + 1
+			    // "＃生きてる？"
+			    @if v[v[299]] > 0 {
+				v[315] += 1
+				v[300] = v[301] + 7
+				v[v[300]].copy v[313], 2
+				v[341] = v[391]
+				v[342] = v[392]
+				v[341] .sub v[313], 2
+				v[v[301] + 56] = atan2(v[342], v[341], 1000)
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		}
+		@if v[275] >= 1 {
+		    // "WPをとおる"
+		    v[263].copy v[261], 2
+		    v[265].copy v[263], 2
+		    v[267].copy v[265], 2
+		    v[269].copy v[267], 2
+		    v[271].copy v[269], 2
+		    v[273].copy v[271], 2
+		    // "#Set 移動するX"
+		    // "#Set 移動するY"
+		    v[391].copy v[273], 2
+		    s[15].on
+		    
+		}
+		@if s[201] .isOn() {
+		    // "攻撃指示"
+		    @if v[82] >= 1 {
+			@if v[82] <= 10 {
+			    v[v[4530] + (v[82] - 1) * 20 + 20] = 2
+			    
+			}
+			
+		    }
+		    @loop .inf() {
+			@if v[v[202]] == 0 {
+			    // "とぎれた"
+			    @break
+			    
+			}
+			@if v[202] >= v[1007] {
+			    // "とりあえず40体までしか選択できない"
+			    @break
+			    
+			}
+			// "配列ゲット"
+			v[301] = v[v[202]] * 300
+			v[301] += 4700
+			@if `v[v[301] + 102] != 104 {
+			    v[300] = v[301] + 242
+			    v[299] = v[301] + 19
+			    v[298] = v[301] + 20
+			    v[297] = v[301] + 18
+			    v[296] = v[301] + 241
+			    v[294] = v[301] + 55
+			    v[v[301] + 34] &= ~4096
+			    // "処理開始"
+			    v[v[296]] = 2
+			    @if v[v[300]] != 4 {
+				v[v[300]] = s[16] == 1 ? 2 : 3
+				
+			    }
+			    // "#ForceMoveFlag"
+			    v[v[301] + 34] &= ~16809984
+			    v[v[301] + 34] &= ~(8388608 + 8192)
+			    @if `v[v[301] + 1] != 11 {
+				v[v[301] + 3] &= ~384
+				
+			    }
+			    @if s[16] .isOn() {
+				v[v[301] + 3] &= ~4194304
+				
+			    } .else bl {
+				v[v[301] + 3] |= 4194304
+				
+			    }
+			    v[v[301] + 3] &= ~1048576
+			    // "#########"
+			    @if v[275] >= 1 {
+				v[293] = 273
+				v[293] -= v[275] * 2
+				v[299] = v[301] + 41
+				@loop v[275] {
+				    v[v[293]].copy v[v[299]], 2
+				    v[293] += 2
+				    v[299] += 2
+				    
+				}
+				
+				v[v[293]].copy v[v[299]], 2
+				// "#Set 現在目指してるWPと総WP数"
+				v[v[294]] = v[275]
+				v[v[301] + 242] = 3
+				v[v[301] + 242] = 2
+				
+			    } .else bl {
+				v[v[294]] = -1
+				// "#Set 移動するX"
+				v[v[299]] = v[391]
+				// "#Set 移動するY"
+				v[v[298]] = v[392]
+				// "#Set 現在目指してるWPと総WP数"
+				v[v[301] + 242] = 2
+				
+			    }
+			    @if s[13] .isOff() {
+				@if v[v[297]] != v[100] {
+				    v[v[301] + 243] = v[v[301] + 243] == 1 ? 0 : v[v[301] + 243]
+				    v[v[301] + 29] = 0
+				    
+				}
+				
+			    }
+			    // "#Set Target"
+			    v[v[297]] = v[100]
+			    // "#Set Direｃ"
+			    v[293] = v[301] + 245
+			    v[v[293]] = 0
+			    
+			}
+			// "処理終わり"
+			v[202] += 1
+			
+		    }
+		    
+		    
+		} .else bl {
+		    // "移動指示Center(x.y)=(wheretox,wheretoy)"
+		    v[390] = 0
+		    @loop v[1004] .dst v[340] {
+			@if v[v[202]] == 0 {
+			    // "とぎれた"
+			    @break
+			    
+			}
+			@if v[202] > v[1007] {
+			    // "とりあえず40体までしか選択できない"
+			    @break
+			    
+			}
+			// "skip foundation "
+			// "配列ゲット"
+			v[301] = v[v[202]] * 300
+			v[301] += 4700
+			@if `v[v[301] + 102] != 104 {
+			    v[300] = v[301] + 242
+			    v[299] = v[301] + 41
+			    v[298] = v[301] + 42
+			    v[297] = v[301] + 18
+			    v[295] = v[301] + 241
+			    v[294] = v[301] + 55
+			    v[293] = v[301] + 35
+			    v[629] = v[301] + 29
+			    v[v[301] + 34] &= ~4096
+			    // "処理開始"
+			    @if v[v[300]] != 4 {
+				v[v[300]] = s[16] == 1 ? 2 : 3
+				
+			    }
+			    @if `v[v[301] + 1] != 11 {
+				v[v[301] + 3] &= ~384
+				// "#ForceMoveFlag"
+				@if s[16] .isOn() {
+				    v[v[301] + 3] &= ~4194304
+				    @if `v[v[301] + 80] <= -10000 {
+					v[v[301] + 80] = v[1178]
+					
+				    }
+				    
+				} .else bl {
+				    v[v[301] + 3] |= 4194304
+				    
+				}
+				// "#アタックムーブじゃなければActionチェック"
+				v[843] = v[301] + 243
+				v[341] = s[16] != 1 ? v[v[843]] : -999
+				// "#if Action==Attack, Set Action 0"
+				v[v[843]] = v[341] == 1 ? 0 : v[v[843]]
+				// "#if Forcemove, AA MotionTimer Reset"
+				v[v[629]] = v[341] == 1 ? 0 : v[v[629]]
+				// "#if Attack Stance, set stance alert"
+				v[v[295]] = v[v[295]] == 2 ? 0 : v[v[295]]
+				// "#Manual"
+				v[v[295]] = v[v[301] + 34] & 131072 ? 4 : v[v[295]]
+				
+			    }
+			    @if v[275] >= 1 {
+				v[293] = 273
+				v[293] -= v[275] * 2
+				@loop v[275] {
+				    v[v[293]].copy v[v[299]], 2
+				    v[293] += 2
+				    v[299] += 2
+				    
+				}
+				
+				v[v[293]].copy v[v[299]], 2
+				// "#Set 現在目指してるWPと総WP数"
+				v[v[294]] = v[275]
+				v[273].copy v[361], 2
+				v[273] .add v[395], 2
+				
+			    } .else bl {
+				v[v[301] + 34] &= ~(8388608 + 8192)
+				@if s[40] .isOn() {
+				    v[v[301] + 34] |= 16384
+				    @if `between(v[v[293]], 1, 10) {
+					v[v[301] + 34] |= 16793600
+					
+				    }
+				    
+				} .else bl {
+				    v[v[301] + 34] &= ~16809984
+				    @if s[112] .isOn() {
+					v[v[301] + 34] |= 16384
+					@if `between(v[v[293]], 1, 10) {
+					    v[v[301] + 34] |= 16793600
+					    
+					}
+					
+				    }
+				    
+				}
+				// "#Set 移動するX"
+				v[v[299]] = v[391]
+				// "#Set 移動するY"
+				v[v[298]] = v[392]
+				// "#Set 現在目指してるWPと総WP数"
+				v[v[294]] = -1
+				v[391].copy v[361], 2
+				v[391] .add v[395], 2
+				
+			    }
+			    // "Formation Indicator"
+			    @if s[40] .isOn() {
+				@if v[99] > 1 {
+				    v[341] = v[1165] + v[340]
+				    @pic[v[341]].show {
+					"ui\direction_indicator"
+					.pos v[361], v[362] .center
+					.scrollWithMap
+					.chromakey 1
+					.scale 100
+					.trans 35
+					.rgbs 100, 100, 100, 100
+					.angle v[389], 1000
+					.mapLayer 3
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+				    }
+				    
+				}
+				
+			    }
+			    // "#Set 目標なし"
+			    v[v[297]] = 0
+			    v[293] = v[301] + 245
+			    v[v[293]] = 0
+			    // "Make 2nd line"
+			    v[390] += 1
+			    v[390] %= v[399]
+			    @if v[390] == 0 {
+				@if v[275] >= 1 {
+				    v[393].copy v[273], 2
+				    v[273] .add v[397], 2
+				    v[273].copy v[393], 2
+				    
+				} .else bl {
+				    v[393].copy v[391], 2
+				    v[391] .add v[397], 2
+				    v[391].copy v[393], 2
+				    
+				}
+				
+			    }
+			    @if `v[v[301] + 1] <= 8 {
+				v[v[301] + 3] = v[v[301] + 241] <= 4 ? [v[v[301] + 3] | 1048576, v[v[301] + 3] | 1048576, v[v[301] + 3] & ~1048576, v[v[301] + 3] | 1048576, v[v[301] + 3] & ~1048576][v[v[301] + 241]] : v[v[301] + 3]
+				
+			    }
+			    // "処理終わり"
+			    s[21].on
+			    
+			}
+			v[202] += 1
+			
+		    }
+		    
+		    s[163].on
+		    
+		}
+		@if s[201] .isOn() {
+		    @if s[13] .isOff() {
+			// "#########################"
+			v[472] = divmul(80, 100, v[2216])
+			v[473] = 100
+			v[474] = 50
+			@cmd 11550, "ui\weapon01", .args v[472], 3
+			// "#########################"
+			
+		    }
+		    @call .cev 48
+		    v[405].copy v[302], 2
+		    v[303] -= 6
+		    v[302] += 5
+		    @pic[999].show {
+			"pointer_sword"
+			.pos v[302], v[303] .center
+			.scrollWithMap
+			.chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.grid 3, 1 .anim 5 .repeat
+			.mapLayer 10
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+		    }
+		    v[303] += 10
+		    @pic[999].move {
+			.pos v[302], v[303] .center
+			.scale 100
+			.trans 100
+			.time 5
+			.rgbs 100, 100, 100, 100
+		    }
+		    
+		}
+		@if s[21] .isOn() {
+		    @if s[13] .isOff() {
+			// "#########################"
+			v[472] = divmul(95, 100, v[2216])
+			@se.play "ui\tap" .opt v[472], 100, 50
+			// "#########################"
+			
+		    }
+		    v[405].copy v[302], 2
+		    v[303] -= 6
+		    v[302] += s[40] == 0 ? 5 : 1
+		    v[304] = s[40] == 0 ? 100 : 75
+		    @if s[40] .isOff() {
+			@if s[16] .isOn() {
+			    @pic[999].show {
+				"pointer_attackmove"
+				.pos v[302], v[303] .center
+				.scrollWithMap
+				.chromakey 1
+				.scale v[304]
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.grid 3, 1 .anim 5 .repeat
+				.mapLayer 10
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    
+			} .else bl {
+			    @pic[999].show {
+				"pointer_flag"
+				.pos v[302], v[303] .center
+				.scrollWithMap
+				.chromakey 1
+				.scale v[304]
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.grid 3, 1 .anim 5 .repeat
+				.mapLayer 10
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    
+			}
+			
+		    } .else bl {
+			@if s[16] .isOn() {
+			    @pic[999].show {
+				"pointer_attackmove"
+				.pos v[302], v[303] .center
+				.chromakey 1
+				.scale v[304]
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.grid 3, 1 .anim 5 .repeat
+				.mapLayer 10
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    
+			} .else bl {
+			    @pic[999].show {
+				"pointer_flag"
+				.pos v[302], v[303] .center
+				.chromakey 1
+				.scale v[304]
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.grid 3, 1 .anim 5 .repeat
+				.mapLayer 10
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    
+			}
+			
+		    }
+		    v[303] += s[40] == 0 ? 10 : 0
+		    @pic[999].move {
+			.pos v[302], v[303] .center
+			.scale v[304]
+			.trans 100
+			.time 5
+			.rgbs 100, 100, 100, 100
+		    }
+		    
+		}
+		
+	    }
+	    
+	}
+	v[261..280] = 0
+	s[112].off
+	s[201].off
+	s[16].off
+	s[36].on
+
+}
