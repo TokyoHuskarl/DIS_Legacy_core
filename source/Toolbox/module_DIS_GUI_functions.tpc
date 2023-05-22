@@ -1,3 +1,9 @@
+def {
+DIS_gui_Layer = 9
+DIS_simple_switch_skin = "SystemSwitch"
+
+}
+
 defv {
 DIS_gui_mouse_click = 43
 DIS_gui_mouse_pointer_X = 51
@@ -36,6 +42,77 @@ DIS_GUI_TARGET_TYPE_STR = 3
 //DIS GUI systems will directly use picture id as UI overlay id to control gui, just for simplification
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+def{
+
+PRESENTATION_FLAG_Load_Picture = 0x1
+PRESENTATION_FLAG_Use_Already_Loaded_Picture = 0x2
+
+PRESENTATION_FLAG_Make_Window = 0x4
+	//these flags must used with PRESENTATION_FLAG_Make_Window  
+	//PRESENTATION_FLAG_Window_Type_Simple - if you don't turn on any WindowType flag, then Just make it simple
+
+}
+
+//
+__fn ON_LOAD $block {
+	$block
+}
+
+__fn ON_RUN $block {
+	$block
+}
+
+__fn ON_CLOSE $block {
+	$block
+}
+
+
+__fn ui_start_presentation $presen_name $flags $bg_picid $bg_pic_name $bg_pic_array $on_load $on_run $on_close {
+	@comment __str($presen_name)
+	__if $flags & PRESENTATION_FLAG_Load_Picture {
+		//load $bg_pic_name
+		//$bg_pic_detail_array must be [X,Y]
+		v[__id(DIS_gui_misc_var1)..__id(DIS_gui_misc_var2)] = $bg_pic_array
+
+		@pic[$bg_picid].show {
+		    $bg_pic_name
+		    .pos DIS_gui_misc_var1, DIS_gui_misc_var2 .topLeft
+		    .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .mapLayer DIS_gui_Layer
+		    .affectedByShake
+		}
+
+	}.elif $flags & PRESENTATION_FLAG_Use_Already_Loaded_Picture {
+
+	}.elif $flags & PRESENTATION_FLAG_Make_Window {
+
+	}.else bl {//if no flag was on - use nothing, The entire screen will become standard of Presentation coordinates 
+
+	}
+
+	$on_load
+
+	@loop bl {
+
+		$on_run
+
+	}
+
+	$on_close
+
+}
+
+__fn ui_create_window $picid $X $Y $SizeX $SizeY $flags $SystemPictureFile {
+
+
+
+}
+
+
 //#######################
 //simple button functions
 //#######################
@@ -58,8 +135,8 @@ __fn ui_create_simple_button $picid $text $X $Y $SizeX $SizeY {
 	    .rgbs 100, 100, 100, 100
 	    .font t[530], 11
 	    .spacing 0, 4
-	    .skin "SystemSwitch" .nobg
-	    .mapLayer 9
+	    .skin DIS_simple_switch_skin .nobg
+	    .mapLayer DIS_gui_Layer
 	    .eraseWhenTransfer
 	    .affectedByFlash
 	    .affectedByShake

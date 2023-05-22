@@ -14,25 +14,27 @@ mev .map(TitleSceneID), .name("Main"), .id(113), .pos (8,7)
 
 	mep[11] {
 		.ev {
-			ui_create_simple_button(1,"ur retard lol",122, 34,424,42)
-			@loop bl {
-				ui_simple_button_process(1, 
+			ui_start_presentation("Test Presentation",PRESENTATION_FLAG_Load_Picture,114, "aaa",[22,22421],
+				ON_LOAD({
+					ui_create_simple_button(1,"ur retard lol",122, 34,424,42)
+				}),
 
+				ON_RUN({
+					@comment "plplplp"
+					ui_simple_button_process(1, 
+						PROC({//L
+							v[11]+=1
+						}),
+						PROC({
+							v[12]+=1
+						})
+					)
+				}),
 
+				ON_CLOSE({
 
-					{//L
-						v[11]+=1
+				}),
+			)
 
-					},
-
-					{
-						v[12]+=1
-					}
-
-
-
-				)
-
-			}
 		}
 	}

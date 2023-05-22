@@ -26,8 +26,17 @@ __if MAKE_TYPE == 0{
 def DEBUG_BUILD = 0 //0 = release, 1 = debug
 def DIS_DEBUG_BUILD = DEBUG_BUILD
 
-def DIS_EXPERIMENTAL = 1 //0=nah 1=compile experimental features
 
+
+__if DEBUG_BUILD ==1 {
+#optimize 0
+}.else bl {
+#optimize 1 //eggsperimental, can cause some problems
+}
+
+
+
+def DIS_EXPERIMENTAL = 1 //0=nah 1=compile experimental features
 
 //Set basic FPS - 60 in Maniacs patch default setting, 45 in DIS:Classic, 48 in DIS:Legacy.  
 def {
@@ -413,6 +422,10 @@ __fn func_export_deblog_array $name $ptr $amount {
 #include "./header_common_items.tpc"
 #include "./header_common_DIS_systemfuncs.tpc"
 
+
+__fn PROC $block {
+	$block
+}
 
 
 $DIS_h_common_included = 1
