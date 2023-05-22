@@ -1,6 +1,222 @@
 
 
 
+__fn func_open_y_or_n_menu $picid_begin $str_main $str_y $str_n {
+
+__if DIS_EXPERIMENTAL == 0{
+	v[347] = 2186
+	@pic[v[347]].strpic {
+	    ""
+	    .pos v[1115], v[1116] .center
+	    .size 240, 120    .chromakey 1
+	    .scale 100
+	    .trans 0
+	    .rgbs 100, 100, 100, 100
+	    .font "", 12 .noShadow
+	    .spacing 0, 4
+	    .skin "SystemWindow" .stretch .noGradation .noPadding
+	    .mapLayer 9
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
+	v[347] += 1
+	v[341] = v[1115]
+	v[342] = v[1116] - 24
+	@pic[v[347]].strpic {
+	    "\t[3000]"
+	    .pos v[341], v[342] .center
+	    .size 0, 0    .chromakey 1
+	    .scale 100
+	    .trans 0
+	    .rgbs 100, 100, 100, 100
+	    .font t[530], 11
+	    .spacing 0, 4
+	    .skin "SystemSwitch" .nobg .noframe .noGradation .noPadding
+	    .mapLayer 9
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
+	v[347] += 1
+	v[341] = v[1115] - 74
+	v[342] = v[1116] + 40
+	@pic[v[347]].strpic {
+	    "Yes"
+	    .pos v[341], v[342] .center
+	    .size 0, 0    .chromakey 1
+	    .scale 100
+	    .trans 0
+	    .rgbs 100, 100, 100, 100
+	    .font t[530], 11
+	    .spacing 0, 4
+	    .skin "SystemSwitch" .nobg
+	    .mapLayer 9
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
+	v[347] += 1
+	v[341] = v[1115] + 74
+	@pic[v[347]].strpic {
+	    "No"
+	    .pos v[341], v[342] .center
+	    .size 0, 0    .chromakey 1
+	    .scale 100
+	    .trans 0
+	    .rgbs 100, 100, 100, 100
+	    .font t[530], 11
+	    .spacing 0, 4
+	    .skin "SystemSwitch" .nobg
+	    .mapLayer 9
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
+	@loop .inf() {
+	    @if s[39] .isOff() {
+		@mouse.getPos v[49], v[50]
+		
+	    }
+	    v[49].copy v[51], 2
+	    v[51..52] -= 3
+	    v[52..52] += 1
+	    @key.input .dst v[43] {
+		.decision
+		.number
+		.lclick
+		.rclick
+		.wheelDown
+		.wheelUp
+	    }
+	    @comment "#Y"
+	    v[347] = 2188
+	    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
+	    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
+		@pic[v[347]].move {
+		    .pos v[1952], v[1953] .center
+		    .scale 100
+		    .trans 0
+		    .time -2
+		    .rgbs 0, 200, 0, 100
+		}
+		@if v[43] == 1005 {
+		    @if s[11] .isOff() {
+			v[2381] = 1
+			@break
+			
+		    }
+		    
+		}
+		
+	    } .else bl {
+		@pic[v[347]].move {
+		    .pos v[1952], v[1953] .center
+		    .scale 100
+		    .trans 0
+		    .time -2
+		    .rgbs 100, 100, 100, 100
+		}
+		
+	    }
+	    @comment "#N"
+	    v[347] += 1
+	    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
+	    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
+		@pic[v[347]].move {
+		    .pos v[1952], v[1953] .center
+		    .scale 100
+		    .trans 0
+		    .time -2
+		    .rgbs 0, 200, 0, 100
+		}
+		@if v[43] == 1005 {
+		    @if s[11] .isOff() {
+			v[2381] = 0
+			@break
+			
+		    }
+		    
+		}
+		
+	    } .else bl {
+		@pic[v[347]].move {
+		    .pos v[1952], v[1953] .center
+		    .scale 100
+		    .trans 0
+		    .time -2
+		    .rgbs 100, 100, 100, 100
+		}
+		
+	    }
+	    @wait 0
+	    @if v[43] != 1005 {
+		s[11].off
+		
+	    }
+	    
+	}
+
+	@pic[2186..2189].erase
+	s[11].on
+
+}.else bl {
+
+//exactly the same function but with new GUI building support
+	def {
+	PicID_START = 2186
+	PicID_Y = 2188
+	PicID_N = 2189
+	}
+
+	ui_start_presentation("Yes or No",0,0,0,0,
+		ON_LOAD({
+			$PicID = 2186
+			ui_create_window($PicID,v[1115],v[1116],240,120,0)
+			$PicID += 1
+			TT1 = v[1115]
+			TT2 = v[1116] - 24
+			ui_create_textbox($PicID,t[3000], TT1, TT2,0,0)
+			$PicID += 1
+			$UI_Yes_PicID = $PicID
+			TT1 = v[1115] - 74
+			TT2 = v[1116] + 40
+			ui_create_simple_button($PicID, "Yes",TT1, TT2,0,0)
+			$PicID += 1
+			$UI_No_PicID = $PicID
+			TT1 = v[1115] + 74
+			ui_create_simple_button($PicID, "No",TT1, TT2,0,0)
+		}),
+
+		ON_RUN({
+			func_ui_DIS_basic_mouse_control()
+		    	//YES
+			ui_simple_button_process(PicID_Y, 
+				PROC({//L
+					v[2381] = 1
+					@break
+				})
+			) 
+			//No
+			ui_simple_button_process(PicID_N, 
+				PROC({//L
+					v[2381] = 0
+					@break
+				})
+			)
+
+		}),
+
+		ON_CLOSE({
+			@pic[2186..2189].erase
+			s[11].on
+		}),
+	)
+
+}
+
+}
+
 //picking faction window
 __fn func_ui_start_pick_faction_window {
 	@comment "Inventry mode switches end"

@@ -8,33 +8,63 @@
 //scene experiment - not available
 def TitleSceneID = 9
 
+__fn test {
+def {
+PicID_START = 2186
+PicID_Y = 2188
+PicID_N = 2189
+}
+	ui_start_presentation("Yes or No",0,0,0,0,
+		ON_LOAD({
+			$PicID = 2186
+			ui_create_window($PicID,v[1115],v[1116],240,120,0)
+			$PicID += 1
+			TT1 = v[1115]
+			TT2 = v[1116] - 24
+			ui_create_simple_button($PicID,t[3000],TT1, TT2,0,0)
+			$PicID += 1
+			$UI_Yes_PicID = $PicID
+			TT1 = v[1115] - 74
+			TT2 = v[1116] - 40
+			ui_create_simple_button($PicID, "Yes",TT1, TT2,0,0)
+			$PicID += 1
+			$UI_No_PicID = $PicID
+			TT1 = v[1115] + 74
+			ui_create_simple_button($PicID, "Yes",TT1, TT2,0,0)
+		}),
+
+		ON_RUN({
+			func_ui_DIS_basic_mouse_control()
+		    	//YES
+			ui_simple_button_process(PicID_Y, 
+				PROC({//L
+					v[2381] = 1
+					@break
+				})
+			) 
+			//No
+			ui_simple_button_process(PicID_N, 
+				PROC({//L
+					v[2381] = 0
+					@break
+				})
+			)
+
+		}),
+
+		ON_CLOSE({
+			@pic[2186..2189].erase
+			s[11].on
+		}),
+	)
+}
 
 
 mev .map(TitleSceneID), .name("Main"), .id(113), .pos (8,7)
 
 	mep[11] {
 		.ev {
-			ui_start_presentation("Test Presentation",PRESENTATION_FLAG_Load_Picture,114, "aaa",[22,22421],
-				ON_LOAD({
-					ui_create_simple_button(1,"ur retard lol",122, 34,424,42)
-				}),
-
-				ON_RUN({
-					@comment "plplplp"
-					ui_simple_button_process(1, 
-						PROC({//L
-							v[11]+=1
-						}),
-						PROC({
-							v[12]+=1
-						})
-					)
-				}),
-
-				ON_CLOSE({
-
-				}),
-			)
-
+			test()
 		}
 	}
+

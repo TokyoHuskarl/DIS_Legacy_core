@@ -2,6 +2,7 @@
 //このファイルをコンパイルすると基幹部分のUIシステムが更新されます
 
 #include "./../headers/header_common.tpc"
+#include "./../headers/header_ui.tpc"
 
 def moduletitle="module_core_Game_ui_general.tpc"
 
@@ -15,4 +16,8 @@ def moduletitle="module_core_Game_ui_general.tpc"
 
 cev[2131] .name("UI:Pick_faction") {
 	func_ui_start_pick_faction_window()
+}
+
+cev[2056] .name("UI:Y_or_N_? t[3000]") {
+	func_open_y_or_n_menu(2186,t[3000],"Yes","No")
 }
