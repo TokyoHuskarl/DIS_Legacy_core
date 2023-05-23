@@ -21,49 +21,70 @@ cev .id(36), .name("AgentAct:RangedAA_Shot"), {
 		    @if v[243] < v[1017] {
 			// "射撃成功！"
 			// "#Auto Attack SP Cost"
-			v[0] = v[v[210] + 108] = max(v[v[210] + 108] - v[v[210] + 121], 0)
+			Ptr1 = v[210] + 1
+			v[Ptr1].copy agent_ObjectType, 300 //deploy atk agent para
+			//v[0] = v[v[210] + 108] = max(v[v[210] + 108] - v[v[210] + 121], 0)
+			var1 = agent_SP - agent_AACost
+			agent_SP = max(var1,0)
+			agent_ObjectType.copy v[Ptr1], 300//save, never change atker agent parameters after this
+			
 			// "#親Objと対象Objをセット"
-			v[609] = v[299]
-			v[623] = v[300]
+			//v[609] = v[299]
+			//v[623] = v[300]
 			// "#始点を設定"
-			v[607] = v[210] + 7
-			v[v[607]].copy v[607], 2
+			//v[607] = v[210] + 7
+			//v[v[607]].copy v[607], 2
 			// "#終点を設定"
 			v[624] = v[298] + 6
 			v[v[624]].copy v[624], 2
+
+
 			// "#diffusionf: y=x (x)/(-240)+30"
-			v[350] = max(pow(v[v[210] + 265], 2) / -240 + 30, 0)
-			v[0] = v[624..625] += [rnd(-v[350], v[350]), rnd(-v[350], v[350])]
+			//v[350] = max(pow(v[v[210] + 265], 2) / -240 + 30, 0)
+			v[350] = max(pow(agent_ProcessHIT, 2) / -225 + 32, 0)
+
+			//v[0] = v[624..625] += [rnd(-v[350], v[350]), rnd(-v[350], v[350])]
+			v[624] += rnd(-v[350], v[350])
+			v[625] += rnd(-v[350], v[350])
 			// "#フレーム数を設定"
-			v[700] = v[v[210] + 128]
-			v[603] = v[700] - 1
-			/*9.3.23
-			v[700] = v[210] + 128
-			v[603] = v[v[700]] - 1
-			v[700] = v[v[700]]*/
-			v[729] = v[210] + 129
-			v[729] = v[v[729]] > 90 ? v[v[729]] : 91
-			v[637] = v[v[210] + 244]
+			//v[700] = v[v[210] + 128]
+			//v[603] = v[700] - 1
+	
+			//v[729] = v[210] + 129
+			agent_AASfx = agent_AASfx > 90 ? agent_AASfx : 91
+			//v[637] = v[v[210] + 244]
 			s[141].on
-			v[607].copy v[361], 2
+			effect_RelativeX.copy v[361], 2
 			__if DIS_EXPERIMENTAL == 1{
-				agent_AAvelocity = v[v[210] + 127]
+				//agent_AAvelocity = 
+				//agent_BaseRange_max = v[v[210] + 117] 
 			}
-			@call .cev v[729]
-			v[842] = v[210] + 242
-			v[v[842]] = 0
-			v[843] = v[210] + 243
+			@call .cev agent_AASfx
+			//after this...
+			//Restore Ptr
+			Ptr1 = v[210] + 1
+			v[Ptr1].copy agent_ObjectType, 300 //deploy atk agent para
+			//v[842] = v[210] + 242
+			//v[v[842]] = 0
+			agent_MovementOrder = 0
+			//v[843] = v[210] + 243
 			// "AAクールタイムモーション"
-			v[726] = v[210] + 126
+			//v[726] = v[210] + 126
 			// "ビット見る"
-			v[341] = v[v[726]] & 1
-			v[v[843]] = v[341] == 1 ? 2 : 0
+			//v[341] = v[v[726]] & 1
+			//v[v[843]] = v[341] == 1 ? 2 : 0
+			agent_ActionState = agent_ExMotionFlags & 1 ? 2 : 0
 			// "AAモーション初期化"
-			v[629] = v[210] + 29
-			v[v[629]] = 0
+			//v[629] = v[210] + 29
+			//v[v[629]] = 0
+			agent_AttackFrame = 0
 			// "Initialize AI Timer"
-			v[v[210] + 84] = v[v[210] + 300] % v[1195]
-			v[v[210] + 80] = v[1240] * v[4571] / 2
+			//v[v[210] + 84] = v[v[210] + 300] % v[1195]
+			agent_ActionTimer = agent_generated_ID % v[1195]
+			//v[v[210] + 80] = v[1240] * v[4571] / 2
+			agent_InCombatTimer = v[1240] * v[4571]
+			agent_InCombatTimer /= 2
+			agent_ObjectType.copy v[Ptr1], 300//save
 			
 		    } .else bl {
 			s[202].on
@@ -92,7 +113,7 @@ cev .id(36), .name("AgentAct:RangedAA_Shot"), {
 		v[v[210] + 242] = 0
 		
 	    }
-	    v[v[843]] = 0 // ACHTUNG given from Action
+	    v[v[210] + 243] = 0 
 	    // "#AAタイマー初期化"
 	    v[v[210] + 28] = 0
 	    

@@ -56,7 +56,7 @@ DIS_GUI_TARGET_TYPE_STR = 3
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//DIS GUI systems will directly use picture id as UI overlay id to control gui, just for simplification
+//DIS GUI system basically uses picture id directly as UI overlay id to control gui, just for simplification
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -353,16 +353,16 @@ __fn ui_create_check_box $picid $X $Y $targ_type $target $flags $picstr {
 //should I explain how those args work? it's bretty simple so I don't think so...
 	
 	//get target state
-	__if $targ_type == DIS_GUI_TARGET_TYPE_VAR||$targ_type == DIS_GUI_TARGET_TYPE_SWITCH {
+	__if $targ_type == DIS_GUI_TARGET_TYPE_VAR ||$targ_type == DIS_GUI_TARGET_TYPE_SWITCH {
 		//simply set $target to var1
 		DIS_gui_misc_var1 = $target
 	}.elif $targ_type == DIS_GUI_TARGET_TYPE_BIT {
-		//if check bit, then set $target = [var,flag]
+		//if you check bit, then you need to set $target = [var,flag]
 
 		DIS_gui_misc_var2 = $target[0]
 		DIS_gui_misc_var3 = $target[1]
-		DIS_gui_misc_var1 = DIS_gui_misc_var2 & DIS_gui_misc_var3//return AND 
-	}
+		DIS_gui_misc_var1 = DIS_gui_misc_var2 & DIS_gui_misc_var3
+	}//Return DISgmiscv1
 
 	func_strpic_init_check
 
@@ -395,17 +395,15 @@ __fn ui_simple_checkbox_process $picid  $targ_type $target $button_L $mp_on_butt
 	@if DIS_gui_mouse_click == 1005 { // Only
 		__if PROJECT_NAME == "DIS_LEGACY"{
 				@if s[11] .isOff() {
-				    macro_GUI_checkbox_flag_management($picid  $targ_type $target)
-				    macro_check_GUI_position_flag
+				    macro_GUI_simple_checkbox_flag_management($picid  $targ_type $target)
 				    $button_L
 				    
 				    s[11].on
 				    
 				}
 			} .else bl {
+				macro_GUI_simple_checkbox_flag_management($picid  $targ_type $target)
 				$button_L
-				macro_GUI_checkbox_flag_management
-				macro_check_GUI_position_flag
 			}
 		}
 	    
@@ -413,6 +411,31 @@ __fn ui_simple_checkbox_process $picid  $targ_type $target $button_L $mp_on_butt
 		$mp_off_button
 	}
 
+}
+
+__fn macro_GUI_simple_checkbox_flag_management $picid $targ_type $target {
+	__if $targ_type == DIS_GUI_TARGET_TYPE_VAR {//if target is Var
+		//simply set $target to var1
+		__if $target == "" {macro_GUI_checkbox_flag_management_ERROR_Target_object_is_not_set}//ERROR
+		v[__id($target)] ^= 0x1 //?
+		DIS_gui_misc_var1 = v[__id($target)] & 0x1
+	}.elif $targ_type == DIS_GUI_TARGET_TYPE_SWITCH{ //if target is Switch
+		s[__id($target)].toggle
+		DIS_gui_misc_var1 = s[__id($target)]
+
+	}.elif $targ_type == DIS_GUI_TARGET_TYPE_BIT {//if target is Var Bits
+		//you need to set $target = [&var,flag] when you set target as TYPE_BIT, this makes you confused more or less
+		DIS_gui_misc_var2 = $target[0] 
+		v[DIS_gui_misc_var2] ^= $target[1] //return AND 
+		DIS_gui_misc_var1 = v[DIS_gui_misc_var2] & $target[1]
+	}
+	//Return DIS_gui_misc_var1 to check if flag is on or not in anycase
+
+	@pic[$picid].getInfo .cewh .currentRect DIS_gui_misc_var2, DIS_gui_misc_var3, DIS_gui_misc_var4, DIS_gui_misc_var4//restore current position of pic
+	//refresh simple
+	func_GUI_draw_simple_checkbox($picid,DIS_gui_misc_var2,DIS_gui_misc_var3,DIS_gui_misc_var1)
+	//click sound - if you turned off, just ignore this and set up your own process 
+	func_DIS_gui_auto_sound_checkbox
 }
 
 __fn func_GUI_draw_simple_checkbox $picid $X $Y $CHECK {
@@ -450,28 +473,3 @@ __fn func_GUI_draw_simple_checkbox $picid $X $Y $CHECK {
 			}
 		}
 }
-
-
-__fn macro_GUI_checkbox_flag_management $picid $targ_type $target {
-	__if $targ_type == DIS_GUI_TARGET_TYPE_VAR {
-		//simply set $target to var1
-		__if $target == "" {macro_GUI_checkbox_flag_management_ERROR_Target_object_is_not_set}//ERROR
-		v[__id($target)] ^= 0x1 //?
-		DIS_gui_misc_var1 = v[__id($target)] & 0x1
-	}.elif $targ_type == DIS_GUI_TARGET_TYPE_SWITCH{
-		//__if $target == "" {macro_GUI_checkbox_flag_management_ERROR_Target_object_is_not_set}//ERROR
-		s[__id($target)].toggle
-		DIS_gui_misc_var1 = s[__id($target)]
-
-	}.elif $targ_type == DIS_GUI_TARGET_TYPE_BIT {
-		//if check bit, then set $target = [&var,flag]
-		DIS_gui_misc_var2 = $target[0] //maybe this won't work...
-		v[DIS_gui_misc_var2] ^= $target[1] //return AND 
-		DIS_gui_misc_var1 = v[DIS_gui_misc_var2] & $target[1]
-	}
-	@pic[$picid].getInfo .cewh .currentRect DIS_gui_misc_var2, DIS_gui_misc_var3, DIS_gui_misc_var4, DIS_gui_misc_var4
-	func_GUI_draw_simple_checkbox($picid,DIS_gui_misc_var2,DIS_gui_misc_var3,DIS_gui_misc_var1)
-	//sound
-	func_DIS_gui_auto_sound_checkbox
-}
-
