@@ -1,11 +1,11 @@
 
     
 #include "./../headers/header_common.tpc"
-//}
 
-#include "./module_core_RTS_misc_functions.tpc"
+
+#include "./module_core_RTS_ui_misc_functions.tpc"
 #include "./../headers/header_drawing.tpc"
-
+#include "./../preset_databases/header_preset_particles.tpc"
 
 
 def Ptr_worker_on_job_start =2940 
@@ -106,7 +106,8 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    
 	}
 	//v[181..184] = 0
-	v[181..184] = 0
+	//v[181..184] = 0
+	v[ptr_null].copy v[181],4
 	v[191] -= 1
 
 	//v[v[1071]..v[1079]] = 0 
@@ -2330,7 +2331,20 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    @if `s[v[401] + 501] ==1 {
 		// "Hero Particle"
 		@if `agent_ProcessObjBit & 4194304 { //is hero
-		    @loop v[1017] .dst v[320] {
+
+		    func_set_preset_particle_emitter(v[331],
+			    PROC({
+				    emitter_ParticleType = 1
+				    emitter_Timer = 6
+				    emitter_CallPartFunc = cevid_hero_particle
+				    emitter_ParentObject = v[401] + 1
+				    // "普通にアニメ"
+				    agent_RelativeX.copy emitter_RelativeX, 2
+				    emitter_RelativeY += 8
+			    })
+		    )
+
+		    /*@loop v[1017] .dst v[320] {
 			v[244] %= v[1199]
 			v[331] = v[244] * 50 
 			v[331] += v[1198]
@@ -2358,7 +2372,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			}
 			v[244] += 1
 			
-		    }
+		    }*/
 		    
 		    
 		}
@@ -2412,7 +2426,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[301] = v[v[536]] * v[1117] 
 	    v[301] += 4700
 	    TT1 = v[301] + 1
-	    @if TT1 > 0 { //if only the unit isn't choked to death
+	    @if v[TT1] > 0 { //if only the unit isn't choked to death
 		    v[694] = v[301] + 94
 		    @if `v[v[694]] <= 0 {
 			v[401] = v[v[536]] - 1
@@ -2746,8 +2760,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						//v[680] = v[301] + 77
 
 						//Dragon voice, outdated 
-						/*@if `v[v[301] + 61] == 3 {
-						    @if s[1] .isOn() {
+						@if agent_Race == 3 {
+						    /*@if s[1] .isOn() {
 							@if v[182] <= 4 {
 							    v[182] += 1
 							    // "#########################"
@@ -2763,10 +2777,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							    
 							}
 							
-						    }
-						    v[341] += v[v[301] + 98] == 10 ? 1 : 2
+						    }*/
+						    v[341] += agent_UnitID == 10 ? 1 : 2
 						    
-						}*/
+						}
 
 						t[501] .asg t[v[341]] //text that says "I'm idle"
 						//Set new particle emitter
@@ -2853,7 +2867,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	}
 
 	@if `v[2941] != v[2945] || v[2942] != v[2946] || v[2943] != v[2947] || v[2944] != v[2948] {
-	    @call .cev 84
+	    //@call .cev 84
+	    func_refresh_resource_window()
+
 	    
 	}
 	@wait 0
@@ -2877,7 +2893,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    //Search and remove from body list"
 		    Temp2 = v[4531]
 		    @doWhile v[Temp2] > 0 {
-			@if `v[Temp2] == v[v[536]] {
+			@if v[Temp2] == v[v[536]] {
 			    v[Temp2] = 0
 			    v[v[4531] + v[1004]] -= 1
 			    v[v[4531]].sortDescending v[1004]

@@ -191,6 +191,27 @@ cev .id(19), .name("Agent:Unit Action") , .parallel , .cond(Const_Is_RTS_Mode), 
 	    v[207] = v[v[536]] - 1
 	    v[210] = v[207] * v[1117] 
 	    v[210] += 5001
+	    Ptr1 = v[210]
+	    v[Ptr1].copy agent_ObjectType, 300
+	    @if agent_ActionTimer == 1 {
+		v[210] -= 1
+		//v[843] = v[210] + 243
+		//@comment "Auto Attack"
+		@if agent_ActionState == 1 {
+		    //@comment "Set Timer"
+		    agent_ActionTimer = 3
+		    //@comment "Auto Attack"
+		    //v[703] = v[210] + 103
+		    agent_ObjectType.copy v[Ptr1], 300
+		    v[300] = v[210] + 18
+		    v[340] = 34 + v[703]
+		    @call .cev v[340]
+		    
+		}
+		
+	    }
+
+	    /*
 	    //@comment "AITimer==1 "
 	    @if `v[v[210] + 83] == 1 {
 		v[210] -= 1
@@ -207,7 +228,7 @@ cev .id(19), .name("Agent:Unit Action") , .parallel , .cond(Const_Is_RTS_Mode), 
 		    
 		}
 		
-	    }
+	    }*/
 	    //@comment "++"
 	    v[536] += 1
 	    
