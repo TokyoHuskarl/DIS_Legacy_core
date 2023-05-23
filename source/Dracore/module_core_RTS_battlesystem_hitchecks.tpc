@@ -2,6 +2,8 @@
 //9.3.23
 //cev 42
 
+def ranged_base_hit = 24//38 
+
 __fn macro_extract_units_parameters {
 	//TEMPORARY
 	reg1 = Ptr9+4701
@@ -68,9 +70,18 @@ __fn func_bs_melee_hit_check $attacker $victim {
 
 }
 
-__fn func_bs_ranged_hit_check $attacker $victim $dir{
+def{
+bs_hitcheck_FLAG_ArrowMode = 0x1
+
+}
+
+__fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	Ptr9 = $attacker *300
 	Ptr10 = $victim *300
+	__if $flags & bs_hitcheck_FLAG_ArrowMode {
+		defv var_funcbs_rhc_arrow_hitbonus = __id(var6)
+		var_funcbs_rhc_arrow_hitbonus = $aux_var //secure - if it's arrow type, load saved arrow hit bonus
+	}
 	macro_extract_units_parameters()
 	//var5 = perk1
 	var5 = v[Ptr10 + 4765]
@@ -111,8 +122,12 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir{
 
 	v[303] = rnd(0, 99)
 	v[22] = v[303] >= 100 - v[302] ? 1 : 0
-	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per...38%min1% max99%＃＃＃＃＃＃＃＃＃＃"
-	v[301] += 38 - v[21]
+	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per... once 38% but now far lower than that"
+	__if $flags & bs_hitcheck_FLAG_ArrowMode {
+		v[301] += var_funcbs_rhc_arrow_hitbonus - v[21]
+	}.else bl{
+		v[301] += ranged_base_hit - v[21]
+	}
 	v[301] = max(1, min(99, v[301]))
 	//against ambushed unit, accuracy is halved
 	v[301] >>= (victim_ProcessObjBit & 1) //fixed BETA2

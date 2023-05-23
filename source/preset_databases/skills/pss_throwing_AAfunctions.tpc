@@ -1,10 +1,10 @@
-//Lance  charge!
 
 //def skill_self_cev_id = 1222
 __fn func_check_ammo_throwing{
 	// "#Check Ammo Amount"
 	v[299] = v[609]
-	v[341] = v[299] * 300 + 4932
+	v[341] = v[299] * 300 
+	v[341] += 4932
 	v[v[341]] -= 1
 	@if v[v[341]] <= 0 {
 	    // "#Force QuickHand"
@@ -157,8 +157,8 @@ cev .id(1223), .name("AA:Pilum"),{
 			    // "#Hit Limit"
 			    v[630] = 1
 			    // "#あたり判定"
-			    v[610] = 5
-			    v[611] = 5
+			    v[610] = 6
+			    v[611] = 6
 			    // "#威力"
 			    v[621] = v[v[301] + 98]
 			    // "#ARMRと属性"
@@ -214,7 +214,7 @@ cev .id(1223), .name("AA:Pilum"),{
 		macro_get_agent_slot_to_r1(v[299] SLOT_CURRENT_AD)
 		//Speed Bonus
 		@if `v[v[341] + 274] & 134217728 {
-		    v[21] += muldiv(v[v[341] + 268], 8, 100)
+		    v[21] += muldiv(v[v[341] + 268], 10, 100)
 		    
 		}
 		v[699] = v[21]
@@ -386,8 +386,8 @@ cev .id(1224), .name("AA:Javelin"),{
 			    // "#Hit Limit"
 			    v[630] = 1
 			    // "#あたり判定"
-			    v[610] = 5
-			    v[611] = 5
+			    v[610] = 6
+			    v[611] = 6
 			    // "#威力"
 			    v[621] = v[v[301] + 98]
 			    // "#ARMRと属性"
@@ -442,7 +442,7 @@ cev .id(1224), .name("AA:Javelin"),{
 		macro_get_agent_slot_to_r1(v[299] SLOT_CURRENT_AD)
 		//speed bonus
 		@if `v[v[341] + 274] & 134217728 {
-		    v[21] += muldiv(v[v[341] + 268], 8, 100)
+		    v[21] += muldiv(v[v[341] + 268], 10, 100)
 		    
 		}
 		v[699] = v[21]
@@ -496,7 +496,7 @@ cev .id(1300), .name("AA:Plumbata"),{
 	macro_get_agent_slot_to_r1(v[299] SLOT_CURRENT_AD)
 	//speed bonus
 	@if `v[v[341] + 274] & 134217728 {
-	    v[21] += muldiv(v[v[341] + 268], 8, 100)
+	    v[21] += muldiv(v[v[341] + 268], 10, 100)
 	    
 	}
 	v[699] = v[21]
