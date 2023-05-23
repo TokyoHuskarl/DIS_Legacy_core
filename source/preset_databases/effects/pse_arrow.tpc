@@ -1,7 +1,7 @@
 def Const_cos10 = 984  //0.9848077
 def Const_Arrow_Check_Height = 17000 //start hit check if Z <17000
 def Zero_Angle = 8000000
-def arrow_base_hit = 18
+def arrow_base_hit = 20
 
 __fn macro_parabolic_projectile_cal_angle $v $l {
 	/*TT1 = $l //pix
@@ -67,8 +67,8 @@ __fn func_effect_arrow_init $selfid {
 	    
 	    effect_Timer = 400 //Arrows can exist only for 400 frames... just in case if the gravity won't work well
 	    //Set base Positions... 
-	    effect_RelativeX = agent_RelativeX
-	    effect_RelativeY = agent_RelativeY
+	    agent_RelativeX.copy effect_RelativeX,2
+	    effect_RelativeX.add v[53], 2
 	    effect_RelativeX.copy effect_SavedPositionX,2
 	    effect_RelativeX.copy effect_milX,2
 	    v[__id(effect_milX)..__id(effect_milY)] *= 1000
@@ -136,6 +136,7 @@ __fn func_effect_arrow_proc $arrowPictString {
 
 	    effect_RelativeX.copy TT1,2
 	    TT1.sub effect_SavedPositionX,2
+	    TT1.sub v[53],2 //angle  cal without cam diff 
 	    effect_Angle = atan2(v[342], v[341], 1000) +360000
 
 

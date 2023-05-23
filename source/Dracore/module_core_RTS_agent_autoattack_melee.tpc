@@ -572,7 +572,8 @@ Access18 = ObjTypeチェックPtr"*/
             
         }
         // "################"
-        v[295] = 300 * v[299] + 4700
+        v[295] = 300 * v[299] 
+	v[295] += 4700
         // "#試作#Functionを呼ぶ"
         v[730] = v[295] + 130
         @if v[v[730]] >= 1 {
@@ -620,12 +621,7 @@ Access18 = ObjTypeチェックPtr"*/
                     // "#バフ番号指定"
                     v[11] = 1258
                     v[12] = v[300]
-                    /*@call .cev 1911
-                    @if v[22] >= 0 {
-                        // "#Duration24sec"
-                        v[v[22]] = 1344
-                        
-                    }*/
+                    
 	    	    func_bs_register_buff_with_time(1258 v[300] shieldcrack_time)
                     
                 }
@@ -802,24 +798,10 @@ Access18 = ObjTypeチェックPtr"*/
                     // "#"
                     @if `v[Ptr10 + 4974] & 131072 {
                         // "#バフ番号指定"
-                        /*v[11] = 1243
-                        v[12] = v[300]
-                        @call .cev 1911
-                        @if v[22] >= 0 {
-                            v[v[22]] = 48
-                            
-                        }*/
 	    	    	func_bs_register_buff_with_time(1243 v[300] bladedance_time)
                         
                     }
                     // "#バフ番号指定"
-                    /*v[11] = 1171
-                    v[12] = v[300]
-                    @call .cev 1911
-                    @if v[22] >= 0 {
-                        v[v[22]] = 5
-                        
-                    }*/
 	    	    func_bs_register_buff_with_time(1171 v[300] parry_time)
                     
                 }
@@ -894,7 +876,7 @@ Access18 = ObjTypeチェックPtr"*/
     s[202..203].off
     
 } .else bl {
-    v[v[210] + 274] &= ~1
+    v[v[210] + 274] &= -2//~1
     // "アクションに2F分余韻を…"
     @if `v[v[629]] > v[v[720]] + 1 {
         v[843] = v[210] + 243

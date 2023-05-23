@@ -25,7 +25,7 @@ cev .id(cevid_eff_bolt), .name("effects:bolt"), {
 	    // "発射音"
 	    // "仕上げに登録消す"
 	    v[242..243] += 1
-	    @if `s[v[609] + 500] {
+	    @if `s[Ptr19 + 500] {
 		@if v[182] < 3 {
 		    v[182] += 1
 		    v[329] = rnd(1, 3)

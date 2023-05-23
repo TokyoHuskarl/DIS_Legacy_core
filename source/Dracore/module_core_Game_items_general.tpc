@@ -14,9 +14,7 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    Weapon Mastery
 #######################"
 	    @call .cev 1928
-	    @comment "#######################
-	    Weapon MasteryEnd
-#######################"
+	    @comment "#######################	    Weapon MasteryEnd#######################"
 	    @comment "##Duelist"
 	    s[154].off
 	    v[725] &= ~8
@@ -46,19 +44,24 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 		
 	    }
 	    v[0] = v[736..737] = v[1903..1904]
-	    @comment "##Head Hunter
-###[Crit]*2"
+	    @comment "##Head Hunter###[Crit]*2"
 	    v[1941] = v[666] & 8
 	    v[1906] *= v[1941] == 8 ? 2 : 1
 	    v[715] += v[1906]
 	    @comment "##Head Hunter End"
-	    v[703] = v[1907]
+	    agent_AAType = v[1907]
+
+
 	    v[0] = v[717..718] = v[1908..1909]
 	    @comment "#AS"
 	    v[719] += v[1910]
 	    v[0] = v[720..721] = v[1911..1912]
 	    v[724] = v[1913]
 	    v[0] = v[727..730] = v[1914..1917]
+	    @if agent_AAType == 2 {
+		func_get_ranged_weapon_velocity(v[1908],v[1914])
+		agent_AAvelocity = reg1
+	    }
 	    v[741] = v[1918] > 0 ? v[1918] : 0
 	    v[858] = v[1930]
 	    @comment "If the weapon is bow, can skirmishing"

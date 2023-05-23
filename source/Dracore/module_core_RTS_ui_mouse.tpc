@@ -1,3 +1,19 @@
+def macro_extract_selecting_unit_param = {
+
+	    Ptr1 = v[101] * 300
+	    Ptr1 += 4701
+	    v[Ptr1].copy agent_ObjectType,300
+
+}
+
+__fn macro_strcat_adjustment $str1 $var $colour {
+	t[3000].cat $str1
+	var1 = $colour
+	t[3000].cat ":\c[\v[11]]" .extract
+	t[3000].cat $var
+}
+
+
 
 @if s[18] .isOn() {
     @if s[5] .isOff() {
@@ -199,7 +215,9 @@
                         v[85] = v[84]
                         v[341] = v[1115]
                         v[342] = v[1286]
+		        macro_extract_selecting_unit_param
                         @call .cev 1890
+                        macro_strcat_adjustment(t[20475],v[872],2)
                         @pic[996].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
@@ -215,7 +233,6 @@
                             .affectedByFlash
                             .affectedByShake
                         }
-                        
                     }
                     s[201].on
                     
@@ -229,7 +246,9 @@
                         v[11] = 462 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
+		        macro_extract_selecting_unit_param
                         @call .cev 1890
+                        macro_strcat_adjustment(t[20476],v[863],3)
                         @pic[996].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
@@ -259,7 +278,9 @@
                         v[11] = 462 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
+		        macro_extract_selecting_unit_param
                         @call .cev 1890
+                        macro_strcat_adjustment(t[20475],v[873],10)
                         @pic[996].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
@@ -292,7 +313,9 @@
                         v[11] = 456 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
+		        macro_extract_selecting_unit_param
                         @call .cev 1890
+                        macro_strcat_adjustment(t[20476],v[861],17)
                         @pic[996].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
@@ -322,7 +345,9 @@
                         v[11] = 456 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
+		        macro_extract_selecting_unit_param
                         @call .cev 1890
+                        macro_strcat_adjustment(t[20476],v[862],16)
                         @pic[996].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
@@ -352,7 +377,9 @@
                         v[11] = 456 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
+		        macro_extract_selecting_unit_param
                         @call .cev 1890
+                        macro_strcat_adjustment(t[20476],v[864],6)
                         @pic[996].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
@@ -382,7 +409,9 @@
                         v[11] = 456 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
+		        macro_extract_selecting_unit_param
                         @call .cev 1890
+                        macro_strcat_adjustment(t[20476],v[865],5)
                         @pic[996].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
@@ -413,6 +442,8 @@
                         v[341] = v[1115]
                         v[342] = v[1286]
                         @call .cev 1890
+		        macro_extract_selecting_unit_param
+                        macro_strcat_adjustment(t[20476],v[866],3)
                         @pic[996].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
@@ -442,7 +473,9 @@
                         v[11] = 456 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
+		        macro_extract_selecting_unit_param
                         @call .cev 1890
+                        macro_strcat_adjustment(t[20476],v[875],0)
                         @pic[996].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom

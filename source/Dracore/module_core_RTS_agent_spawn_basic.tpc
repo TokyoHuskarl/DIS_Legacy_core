@@ -335,7 +335,7 @@ cev .id(300), .name("Agent:Spawn Basic"), {
                         t[3054] .toNum v[1941]
                         v[717] = v[1941] != 0 ? v[1941] : v[717]
                         t[3055] .toNum v[1941]
-                        v[718] = v[1941] != 0 ? v[1941] : v[718]
+                        agent_BaseRange_min = v[1941] != 0 ? v[1941] : agent_BaseRange_min
                         // "#AS set"
                         t[3052] .toNum v[1941]
                         v[719] = v[1941] != 0 ? v[1941] : v[719]
@@ -347,8 +347,8 @@ cev .id(300), .name("Agent:Spawn Basic"), {
                             
                         }
                         // "##AA Reserve"
-                        t[3059] .toNum v[1941]
-                        v[727] = v[1941] != 0 ? v[1941] : v[727]
+			t[3059] .toNum v[1941]
+			v[727] = v[1941] != 0 ? v[1941] : v[727]
                         // "##Attack Time"
                         t[3060] .toNum v[1941]
                         v[728] = v[1941] != 0 ? v[1941] : v[728]
@@ -753,16 +753,18 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 
 
 	//Cal arrow shoot velocity 
-	__if DIS_EXPERIMENTAL == 1 {
+	/*__if DIS_EXPERIMENTAL == 1 {
 		@if agent_AAType == 2 { //IF only AA type is ranged...
 			//v=sqr(g*l/2sinXcosX)
 			//in DIS, we consider the best anglee to shoot projectile is 42 degree - since this suits more to the game environment
 			agent_AAvelocity = sqrt(muldiv(g_perFPS * agent_BaseRange_max,5000,sin(42,1,100)*cos(42,1,100)),1) //...?  1000/10^4*2
+			func_get_ranged_weapon_velocity(agent_BaseRange_max,agent_AAvelocity)
+			agent_AAvelocity = reg1			
 			func_devlog("\t[501]: velocity caluculated - \v[727]milpix/f")
 			
 		}
 	 
-	}
+	}*/
 
 
 	@comment "###################Set New Picture System###################"
@@ -774,6 +776,12 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	v[899] = 7
 	@comment "#STATIC"
 	@if v[601] == 11 {
+
+	    @if agent_AAType == 2 {
+		func_get_ranged_weapon_velocity(agent_BaseRange_max,1)
+		agent_AAvelocity = reg1
+	    }
+
 	    Bool_Refresh_Static_Minimap.on //request refresh minimap static
 	    v[834..835] = 0
 	    //MapXY/5 for minimap

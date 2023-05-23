@@ -9,7 +9,6 @@ cev .id(36), .name("AgentAct:RangedAA_Shot"), {
 	    v[298] = 300 * v[300] 
 	    v[298] += 4701
 	    // "攻撃モーション処理"
-	    v[720] = v[210] + 120
 	    v[629] = v[210] + 29
 	    v[726] = v[210] + 126
 	    v[v[726]] |= (v[v[726]] & 50331648) == 50331648 ? 67108864 : 0
@@ -17,6 +16,7 @@ cev .id(36), .name("AgentAct:RangedAA_Shot"), {
 	    // "ObjTypeチェック"
 	    s[202..203].off
 	    @if v[v[298]] > 0 {
+	    	v[720] = v[210] + 120
 		@if v[v[629]] >= v[v[720]] {
 		    @if v[243] < v[1017] {
 			// "射撃成功！"
@@ -46,6 +46,7 @@ cev .id(36), .name("AgentAct:RangedAA_Shot"), {
 			//v[0] = v[624..625] += [rnd(-v[350], v[350]), rnd(-v[350], v[350])]
 			v[624] += rnd(-v[350], v[350])
 			v[625] += rnd(-v[350], v[350])
+			v[624].add v[53], 2
 			// "#フレーム数を設定"
 			//v[700] = v[v[210] + 128]
 			//v[603] = v[700] - 1
@@ -54,11 +55,8 @@ cev .id(36), .name("AgentAct:RangedAA_Shot"), {
 			agent_AASfx = agent_AASfx > 90 ? agent_AASfx : 91
 			//v[637] = v[v[210] + 244]
 			s[141].on
-			effect_RelativeX.copy v[361], 2
-			__if DIS_EXPERIMENTAL == 1{
-				//agent_AAvelocity = 
-				//agent_BaseRange_max = v[v[210] + 117] 
-			}
+			v[624].copy v[361], 2
+
 			@call .cev agent_AASfx
 			//after this...
 			//Restore Ptr
@@ -120,7 +118,7 @@ cev .id(36), .name("AgentAct:RangedAA_Shot"), {
 	}
 }
 
-//This will be obsolete... 18.5.23
+//This is obsolete and unused... 18.5.23
 cev .id(31), .name("AgentAct:RangedAA_Check"), {
 
 
