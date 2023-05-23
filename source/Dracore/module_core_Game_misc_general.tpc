@@ -29,6 +29,10 @@ cev[2140] .name("func_export_bonus_text") {
 	}
 }
 
+cev[2091], .name("Game:Global Counter"), .parallel,   {
+	v[2219] += 1
+}
+
 
 //Achievement get effect
 cev .id(83), .name("Game:Achievement Check"), .parallel ,   {

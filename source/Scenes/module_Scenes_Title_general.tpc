@@ -16,6 +16,7 @@ PicID_N = 2189
 }
 	ui_start_presentation("Yes or No",0,0,0,0,
 		ON_LOAD({
+			ui_create_canvas(2,24,51,414,124,0,0)
 			$PicID = 2186
 			ui_create_window($PicID,v[1115],v[1116],240,120,0)
 			$PicID += 1
@@ -31,6 +32,7 @@ PicID_N = 2189
 			$UI_No_PicID = $PicID
 			TT1 = v[1115] + 74
 			ui_create_simple_button($PicID, "Yes",TT1, TT2,0,0)
+			ui_create_check_box(414,24,425,DIS_GUI_TARGET_TYPE_SWITCH,s[424],0)
 		}),
 
 		ON_RUN({
@@ -49,6 +51,7 @@ PicID_N = 2189
 					@break
 				})
 			)
+			ui_simple_checkbox_process(414,DIS_GUI_TARGET_TYPE_SWITCH,s[424])
 
 		}),
 
@@ -63,8 +66,15 @@ PicID_N = 2189
 mev .map(TitleSceneID), .name("Main"), .id(113), .pos (8,7)
 
 	mep[11] {
-		.ev {
+		.auto,
+		.ev bl {
+			v[2216] = 100
+			t[522].asg "map_pointer"
+			@sys.gameOpt .picLimit 10001
+			s[6].on
+			s[38].on
+
 			test()
-		}
+		},
 	}
 

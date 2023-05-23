@@ -1,278 +1,279 @@
 // I actually wanted to define those defvs like "agent.brabrabra = n" but in TPC syntax it's invalid, sadly.
+struct("agent",{
+	defv {
 
-defv {
+	Address_str_agent_name_array_head = 4562
 
-Address_str_agent_name_array_head = 4562
-
-Address_agent_array_head = 600
-agent_ObjectType = 601
-agent_PicID = 602
-agent_AgentBits = 603
-agent_Luck = 604
-
-
-
-agent_MilPixX = 605
-agent_MilPixY = 606
-agent_RelativeX = 607
-agent_RelativeY = 608
-agent_Morton = 609
-agent_Width = 610
-agent_Height = 611
-agent_MilPixVx = 612
-agent_MilPixVy = 613
-agent_MilPixVab = 614
-
-agent_BaseCamoValue = 617 
-agent_TargetAgentID = 618
-agent_MovePointX = 619 
-agent_MovePointY = 620 
-agent_MilPixMoveOrderedPointDist = 623
-
-agent_ObjectCollideSkipFrame = 625
-agent_MapX = 626
-agent_MapY = 627
-agent_AATimer=628
-
-agent_LastTarget = 631
-agent_TileLink = 632
-agent_AI_routine_bits=634
-agent_Cohort_ID=635
+	Address_agent_array_head = 600
+	agent_ObjectType = 601
+	agent_PicID = 602
+	agent_AgentBits = 603
+	agent_Luck = 604
 
 
-agent_SpriteX = 636
-agent_SpriteY = 637
-agent_MoveTypeBIts = 638
-agent_TerrainIDstanding = 640
-agent_HoldPointX = 641
 
-agent_LeftWPtoChase = 655
-agent_MarchingDirection = 656
+	agent_MilPixX = 605
+	agent_MilPixY = 606
+	agent_RelativeX = 607
+	agent_RelativeY = 608
+	agent_Morton = 609
+	agent_Width = 610
+	agent_Height = 611
+	agent_MilPixVx = 612
+	agent_MilPixVy = 613
+	agent_MilPixVab = 614
 
-agent_getTerrainElevation = 657
-agent_SaveActualTeamID= 658
-agent_killXP = 659
-agent_gotXP = 660
-agent_UniqueCharIndex=661//if <0, refer PartyCompanions
-agent_Skin=663// 0=Rtpian, 1=Nord, 2= Azghazi, 6= female ...This parameter is for UserCharactors
-agent_Race=664// 0=Human,1=Goblin,2=Orc,3=Dragons,
-agent_PerkFlagBits1 = 665 // 1=ShieldMaster,2=Brawny,4=BattleForged,8=Nimble,16=Stalwart,32=Dodge,64=Anticipation,128=Pathfinder,256=Fearsome
-agent_PerkFlagBits2 = 666 // 1=KillingFrenzy,2=BattleFlow,4=Berserk,8=HeadHunter, ////MASTERIES 16=M_Sword,32=M_Spear,64=M_Axe,128=M_Hammer,256=M_Mace,512=M_Cleaver,1024=M_Dagger,2048=M_Throwing,4096=M_res1,8192=M_res2,16384=M_bow,32768=M_crossbow,65536=M_res3 131072=spellcaster
+	agent_BaseCamoValue = 617 
+	agent_TargetAgentID = 618
+	agent_MovePointX = 619 
+	agent_MovePointY = 620 
+	agent_MilPixMoveOrderedPointDist = 623
 
-agent_HeadID = 669 //999999=fullcovered
-agent_Hair = 670
-agent_Buff1 = 671
-agent_Buff2 = 672
-agent_Buff3 = 673
-agent_Buff4 = 674
-agent_Buff5 = 675
-agent_Buff6 = 676
-agent_Buff7 = 677
-agent_Buff8 = 678
-agent_BuffAmount = 679
+	agent_ObjectCollideSkipFrame = 625
+	agent_MapX = 626
+	agent_MapY = 627
+	agent_AATimer=628
+
+	agent_LastTarget = 631
+	agent_TileLink = 632
+	agent_AI_routine_bits=634
+	agent_Cohort_ID=635
 
 
-agent_InCombatTimer = 680
-agent_MeleeFightTimer = 681 
+	agent_SpriteX = 636
+	agent_SpriteY = 637
+	agent_MoveTypeBIts = 638
+	agent_TerrainIDstanding = 640
+	agent_HoldPointX = 641
 
-agent_TeamID = 700
-agent_UnitID = 701
-agent_UnitType = 702
-agent_AAType = 703
-agent_Level = 704
-agent_MaxHP = 705
-agent_HP = 706
-agent_MaxSP = 707
-agent_SP = 708
-agent_BaseAD = 709
-agent_BaseAP = 710
-agent_MaxAR = 738
-agent_BaseAR = 711
-agent_BaseMR = 712
-agent_BaseHIT = 713
-agent_BaseEVA = 714
-agent_BaseCrit = 715
-agent_BaseMS = 716
-agent_BaseRange_max = 717
-agent_BaseRange_min = 718
-agent_BaseAS = 719 // (4800 - [AS])
+	agent_LeftWPtoChase = 655
+	agent_MarchingDirection = 656
 
-agent_AAMotion = 720
-agent_AACost = 721
-agent_AA_ARorMR=722
-agent_AAElement=723
-agent_AABits=724
-agent_AddMotionBits=725
-agent_ExMotionFlags=726
+	agent_getTerrainElevation = 657
+	agent_SaveActualTeamID= 658
+	agent_killXP = 659
+	agent_gotXP = 660
+	agent_UniqueCharIndex=661//if <0, refer PartyCompanions
+	agent_Skin=663// 0=Rtpian, 1=Nord, 2= Azghazi, 6= female ...This parameter is for UserCharactors
+	agent_Race=664// 0=Human,1=Goblin,2=Orc,3=Dragons,
+	agent_PerkFlagBits1 = 665 // 1=ShieldMaster,2=Brawny,4=BattleForged,8=Nimble,16=Stalwart,32=Dodge,64=Anticipation,128=Pathfinder,256=Fearsome
+	agent_PerkFlagBits2 = 666 // 1=KillingFrenzy,2=BattleFlow,4=Berserk,8=HeadHunter, ////MASTERIES 16=M_Sword,32=M_Spear,64=M_Axe,128=M_Hammer,256=M_Mace,512=M_Cleaver,1024=M_Dagger,2048=M_Throwing,4096=M_res1,8192=M_res2,16384=M_bow,32768=M_crossbow,65536=M_res3 131072=spellcaster
 
-agent_AAamount = 727
-agent_AAvelocity = 727
-agent_AAtime = 728
+	agent_HeadID = 669 //999999=fullcovered
+	agent_Hair = 670
+	agent_Buff1 = 671
+	agent_Buff2 = 672
+	agent_Buff3 = 673
+	agent_Buff4 = 674
+	agent_Buff5 = 675
+	agent_Buff6 = 676
+	agent_Buff7 = 677
+	agent_Buff8 = 678
+	agent_BuffAmount = 679
 
 
-agent_AASfx = 729
-agent_AAFunction = 730
-agent_BaseRegHP = 731
-agent_Shield_Value = 735
-agent_AA_AR_effectiveness = 736
-agent_AA_AR_penetration = 737
-//agent_MaxAR = 738
-agent_BaseWill = 739
-agent_BaseObjBit = 740
+	agent_InCombatTimer = 680
+	agent_MeleeFightTimer = 681 
+
+	agent_TeamID = 700
+	agent_UnitID = 701
+	agent_UnitType = 702
+	agent_AAType = 703
+	agent_Level = 704
+	agent_MaxHP = 705
+	agent_HP = 706
+	agent_MaxSP = 707
+	agent_SP = 708
+	agent_BaseAD = 709
+	agent_BaseAP = 710
+	agent_MaxAR = 738
+	agent_BaseAR = 711
+	agent_BaseMR = 712
+	agent_BaseHIT = 713
+	agent_BaseEVA = 714
+	agent_BaseCrit = 715
+	agent_BaseMS = 716
+	agent_BaseRange_max = 717
+	agent_BaseRange_min = 718
+	agent_BaseAS = 719 // (4800 - [AS])
+
+	agent_AAMotion = 720
+	agent_AACost = 721
+	agent_AA_ARorMR=722
+	agent_AAElement=723
+	agent_AABits=724
+	agent_AddMotionBits=725
+	agent_ExMotionFlags=726
+
+	agent_AAamount = 727
+	agent_AAvelocity = 727
+	agent_AAtime = 728
 
 
-agent_ChokeTimer = 827
+	agent_AASfx = 729
+	agent_AAFunction = 730
+	agent_BaseRegHP = 731
+	agent_Shield_Value = 735
+	agent_AA_AR_effectiveness = 736
+	agent_AA_AR_penetration = 737
+	//agent_MaxAR = 738
+	agent_BaseWill = 739
+	agent_BaseObjBit = 740
 
 
-agent_HeadSPregPenalty = 828
-agent_TakenDamageMultiplier = 829
+	agent_ChokeTimer = 827
 
 
-agent_Ammo = 832
-agent_ShieldType = 833
-agent_ShieldBreakResistance = 834
-
-agent_CritChanceReduction = 839
-agent_CritDamageReduction = 840
-
-agent_StanceOrder = 841
-agent_MovementOrder = 842
-agent_ActionState = 843
-
-agent_Direction = 844
-agent_worker_JobType = 847
-agent_TacticsOrderFlag = 848
-agent_ForceSprite = 850
-
-agent_Morale = 860
-agent_ProcessAD = 861
-agent_ProcessAP = 862
-agent_ProcessAR = 863
-agent_ProcessMR = 864
-agent_ProcessHIT = 865
-agent_ProcessEVA = 866
-agent_ProcessCrit = 867
-agent_ProcessMS = 868
-agent_ProcessRange_max = 869
-agent_ProcessRange_min = 870
-agent_ProcessAS = 871
-agent_ProcessHPreg = 872
-agent_ProcessSPReg = 873
-
-agent_ProcessObjBit = 874
-agent_ProcessWill = 875
-agent_ProcessCamoValue = 876
-agent_ProcessInstantState = 877
-
-agent_2hweapon_stain = 885
-agent_PictArray = 899
-agent_generated_ID = 900
-}
-//FLAGS
-def{
-//Perks1
+	agent_HeadSPregPenalty = 828
+	agent_TakenDamageMultiplier = 829
 
 
-agent_PerkFlagBits1_FLAG_Pathfinder=128
+	agent_Ammo = 832
+	agent_ShieldType = 833
+	agent_ShieldBreakResistance = 834
 
-AgentBits_FLAG_EnableBasicAI = 1048576
-AgentBits_FLAG_EnableCivAI = 2097152
-AgentBits_FLAG_ForcemoveFlag = 4194304
-AgentBits_FLAG_walldetected = 8388608
-AgentBits_FLAG_NeedWpToReachObj = 16777216
+	agent_CritChanceReduction = 839
+	agent_CritDamageReduction = 840
 
-AgentBits_FLAG_1fprocessed = 67108864
+	agent_StanceOrder = 841
+	agent_MovementOrder = 842
+	agent_ActionState = 843
 
-AgentBits_FLAG_DirChange_skip = 134217728
-//AI routine bits
-AI_routine_bits_FLAG_siegeweapon_flag = 1
-AI_routine_bits_FLAG_skirmisher=2
-AI_routine_bits_FLAG_assassin=4
-AI_routine_bits_FLAG_ranged=8
-AI_routine_bits_FLAG_targetting_ally=16
-AI_routine_bits_FLAG_target_switched_by_AI=32
-AI_routine_bits_FLAG_IdleAfterEnemySearch=64
-AI_routine_bits_FLAG_AICohortGatheringAttack=128
-AI_routine_bits_FLAG_tracing_flag=4096
-AI_routine_bits_FLAG_tracing_wp=8192
-AI_routine_bits_FLAG_PATHFINDING=16384
-AI_routine_bits_FLAG_PFcontinue=32768
-AI_routine_bits_FLAG_Manual_Ordered = 131072
+	agent_Direction = 844
+	agent_worker_JobType = 847
+	agent_TacticsOrderFlag = 848
+	agent_ForceSprite = 850
 
-AI_routine_bits_FLAG_AIskip = 2097152
-AI_routine_bits_FLAG_ForcemoveFlag = 4194304
+	agent_Morale = 860
+	agent_ProcessAD = 861
+	agent_ProcessAP = 862
+	agent_ProcessAR = 863
+	agent_ProcessMR = 864
+	agent_ProcessHIT = 865
+	agent_ProcessEVA = 866
+	agent_ProcessCrit = 867
+	agent_ProcessMS = 868
+	agent_ProcessRange_max = 869
+	agent_ProcessRange_min = 870
+	agent_ProcessAS = 871
+	agent_ProcessHPreg = 872
+	agent_ProcessSPReg = 873
 
-//ObjBits
-agent_BaseObjBit_FLAG_big_unit=524288
-agent_BaseObjBit_FLAG_SpeedBonus = 134217728
+	agent_ProcessObjBit = 874
+	agent_ProcessWill = 875
+	agent_ProcessCamoValue = 876
+	agent_ProcessInstantState = 877
 
-//ExMotions
-agent_ExMotionFlags_FLAG_horseback = 16777216
-
-
-//Tactical Orders
-
-//InstantStates
-agent_ProcessInstantState_FLAG_overheal = 1
-agent_ProcessInstantState_FLAG_blind = 2
-agent_ProcessInstantState_FLAG_magic_nullfying = 4
-agent_ProcessInstantState_FLAG_bladedance = 8
-agent_ProcessInstantState_FLAG_shield_covered = 16
-agent_ProcessInstantState_FLAG_shield_covered_double_check = 32
-agent_ProcessInstantState_FLAG_climb_hill = 64
+	agent_2hweapon_stain = 885
+	agent_PictArray = 899
+	agent_generated_ID = 900
+	}
+	//FLAGS
+	def{
+	//Perks1
 
 
-//MovementOrder
-//#-3 = WP_chasing_end -2 = returned -1 = do_not_move, 0 = free, 1 = moving, 2 = move_ordered, 3= force_moving, 4 = dashorknockback 5=mounting, 6=garrison 11= fleeing
+	agent_PerkFlagBits1_FLAG_Pathfinder=128
 
-MovementOrder_TYPE_returned = -2
-MovementOrder_TYPE_do_not_move = -1
-MovementOrder_TYPE_moving = 1
-MovementOrder_TYPE_move_ordered = 2
-MovementOrder_TYPE_prioritize_moving = 3
-MovementOrder_TYPE_force_moving = 4
+	AgentBits_FLAG_EnableBasicAI = 1048576
+	AgentBits_FLAG_EnableCivAI = 2097152
+	AgentBits_FLAG_ForcemoveFlag = 4194304
+	AgentBits_FLAG_walldetected = 8388608
+	AgentBits_FLAG_NeedWpToReachObj = 16777216
 
-MovementOrder_TYPE_fleeing = 11
+	AgentBits_FLAG_1fprocessed = 67108864
 
-//Stances
-DIR_RIGHT=1
-DIR_LEFT=0
-ORD_AGG=0
-ORD_DEF=3
-ORD_STD=1
-ORD_ATK=2
-ORD_MANU=4
+	AgentBits_FLAG_DirChange_skip = 134217728
+	//AI routine bits
+	AI_routine_bits_FLAG_siegeweapon_flag = 1
+	AI_routine_bits_FLAG_skirmisher=2
+	AI_routine_bits_FLAG_assassin=4
+	AI_routine_bits_FLAG_ranged=8
+	AI_routine_bits_FLAG_targetting_ally=16
+	AI_routine_bits_FLAG_target_switched_by_AI=32
+	AI_routine_bits_FLAG_IdleAfterEnemySearch=64
+	AI_routine_bits_FLAG_AICohortGatheringAttack=128
+	AI_routine_bits_FLAG_tracing_flag=4096
+	AI_routine_bits_FLAG_tracing_wp=8192
+	AI_routine_bits_FLAG_PATHFINDING=16384
+	AI_routine_bits_FLAG_PFcontinue=32768
+	AI_routine_bits_FLAG_Manual_Ordered = 131072
 
-}
+	AI_routine_bits_FLAG_AIskip = 2097152
+	AI_routine_bits_FLAG_ForcemoveFlag = 4194304
 
-//STATICS
-defv{
+	//ObjBits
+	agent_BaseObjBit_FLAG_big_unit=524288
+	agent_BaseObjBit_FLAG_SpeedBonus = 134217728
 
-agent_static_Attribution_flag = 811
-agent_static_Obj_flag = 820
-
-}
+	//ExMotions
+	agent_ExMotionFlags_FLAG_horseback = 16777216
 
 
-//Victims var for attack check
-defv{
-victim_Morale = 580
-victim_ProcessAD = 581
-victim_ProcessAP = 582
-victim_ProcessAR = 583
-victim_ProcessMR = 584
-victim_ProcessHIT = 585
-victim_ProcessEVA = 586
-victim_ProcessCrit = 587
-victim_ProcessMS = 588
-victim_ProcessRange_max = 589
-victim_ProcessRange_min = 590
-victim_ProcessAS = 591
-victim_ProcessHPreg = 592
-victim_ProcessSPReg = 593
-victim_ProcessObjBit = 594
-victim_ProcessWill = 595
-victim_ProcessCamoValue = 596
-victim_ProcessInstantState = 597
+	//Tactical Orders
 
-}
+	//InstantStates
+	agent_ProcessInstantState_FLAG_overheal = 1
+	agent_ProcessInstantState_FLAG_blind = 2
+	agent_ProcessInstantState_FLAG_magic_nullfying = 4
+	agent_ProcessInstantState_FLAG_bladedance = 8
+	agent_ProcessInstantState_FLAG_shield_covered = 16
+	agent_ProcessInstantState_FLAG_shield_covered_double_check = 32
+	agent_ProcessInstantState_FLAG_climb_hill = 64
+
+
+	//MovementOrder
+	//#-3 = WP_chasing_end -2 = returned -1 = do_not_move, 0 = free, 1 = moving, 2 = move_ordered, 3= force_moving, 4 = dashorknockback 5=mounting, 6=garrison 11= fleeing
+
+	MovementOrder_TYPE_returned = -2
+	MovementOrder_TYPE_do_not_move = -1
+	MovementOrder_TYPE_moving = 1
+	MovementOrder_TYPE_move_ordered = 2
+	MovementOrder_TYPE_prioritize_moving = 3
+	MovementOrder_TYPE_force_moving = 4
+
+	MovementOrder_TYPE_fleeing = 11
+
+	//Stances
+	DIR_RIGHT=1
+	DIR_LEFT=0
+	ORD_AGG=0
+	ORD_DEF=3
+	ORD_STD=1
+	ORD_ATK=2
+	ORD_MANU=4
+
+	}
+
+	//STATICS
+	defv{
+
+	agent_static_Attribution_flag = 811
+	agent_static_Obj_flag = 820
+
+	}
+
+
+	//Victims var for attack check
+	defv{
+	victim_Morale = 580
+	victim_ProcessAD = 581
+	victim_ProcessAP = 582
+	victim_ProcessAR = 583
+	victim_ProcessMR = 584
+	victim_ProcessHIT = 585
+	victim_ProcessEVA = 586
+	victim_ProcessCrit = 587
+	victim_ProcessMS = 588
+	victim_ProcessRange_max = 589
+	victim_ProcessRange_min = 590
+	victim_ProcessAS = 591
+	victim_ProcessHPreg = 592
+	victim_ProcessSPReg = 593
+	victim_ProcessObjBit = 594
+	victim_ProcessWill = 595
+	victim_ProcessCamoValue = 596
+	victim_ProcessInstantState = 597
+
+	}
+})

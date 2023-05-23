@@ -37,3 +37,58 @@ cev .id(47) ,.name("UI:Mouse Observer"), .parallel , .cond(Const_Is_RTS_Mode), {
 #include "./module_core_RTS_ui_mouse.tpc"
 }
 
+#include  "./module_core_RTS_ui_log.tpc"
+
+//Resource Window
+cev[84] "Resource Window", {
+	s[117].on
+	@if v[2403] == 3 {
+	    v[240] = v[496] * v[1129]
+	    v[240] += v[1130]
+	    v[240] = max(v[v[4575] + min(v[v[881]] + 1, 4) + 40 * (0 % 3)], v[240])
+	    @pic[986].strpic {
+		" \C[5]FOOD:\v[300001] (\v[2941]) \c[1]WOOD:\v[300002] (\v[2942])
+	 \C[3]STONE:\v[300003] (\v[2943]) \C[8]GOLD:\v[300004] (\v[2944])
+	 \c[0]WAVE:\v[2520] LIMIT:\v[240]"
+		.pos 0, 0 .topLeft
+		.size 162, 33        .chromakey 1
+		.scale 100
+		.trans 10
+		.rgbs 100, 100, 100, 100
+		.font t[530], v[4511] .noShadow
+		.spacing 0, 0
+		.skin "" .stretch .noGradation .noPadding
+		.mapLayer 8
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+	    }
+	    
+	} .else bl {
+	    v[18] = v[205]
+	    @if s[205] .isOn() {
+		v[18] -= 1
+		
+	    }
+	    v[16] = min(v[v[4580]], v[1080])
+	    v[17] = v[205] >= v[16] ? 17 : 0
+	    @pic[986].strpic {
+		" \C[5]FOOD:\v[300001] (\v[2941]) \c[1]WOOD:\v[300002] (\v[2942])
+	 \C[3]STONE:\v[300003] (\v[2943]) \C[8]GOLD:\v[300004] (\v[2944])
+	 \c[0]WAVE:\v[2520] UNITS:\c[\v[17]]\v[18]/\v[16]"
+		.pos 0, 0 .topLeft
+		.size 162, 33        .chromakey 1
+		.scale 100
+		.trans 10
+		.rgbs 100, 100, 100, 100
+		.font t[530], v[4511] .noShadow
+		.spacing 0, 0
+		.skin "" .stretch .noGradation .noPadding
+		.mapLayer 8
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+	    }
+	    
+	}
+}

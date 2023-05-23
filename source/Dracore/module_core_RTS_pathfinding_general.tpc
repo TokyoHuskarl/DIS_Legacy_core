@@ -115,3 +115,8 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 
 
 }
+
+cev .id(1770), .name("Pathfinding:AStar"), {   
+	func_pathfinding_Astar()
+}
+
