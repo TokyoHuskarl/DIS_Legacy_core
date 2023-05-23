@@ -236,11 +236,18 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	    agent_AgentBits |= AgentBits_FLAG_1fprocessed // wait, how the hell this flag works?
 	    //@comment "Temp4 = 次に動く場所x
 	    //Temp6 = 次に動く場所y"
-	    v[304] = pow(v[309] = agent_MovePointX - (agent_RelativeX + v[53]), 2)
+	    //v[304] = pow(v[309] = agent_MovePointX - (agent_RelativeX + v[53]), 2)
 	    //@comment "#######"
 	    //optimizing 25.4.23
 	    //v[304] += v[306] = pow(v[310] = v[v[620]] - (v[v[301] + 8] + v[54]), 2)
-	    v[306] = pow(v[310] = v[620] - (agent_RelativeY + v[54]), 2)
+		v[607].copy v[341], 2
+		v[341] .add v[53], 2
+		v[619].copy v[309], 2
+		v[309] .sub v[341], 2
+		v[304] = pow(v[309], 2)
+		v[306] = pow(v[310], 2)
+
+	    //v[306] = pow(v[310] = v[620] - (agent_RelativeY + v[54]), 2)
 	    v[304] += v[306]
 	    //@comment "Set Object[23]"
 	    //v[300] = v[301] + 23
@@ -253,9 +260,17 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 
  	    
 	    //v[300] = v[301] + 22
-	    v[622] = (v[622] * v[342] + v[310] * 100000 / v[318]) / (v[342] + 1)
+	    //v[622] = (v[622] * v[342] + v[310] * 100000 / v[318]) / (v[342] + 1)
 	    //v[300] = v[301] + 21
-	    v[621] = (v[621] * v[342] + v[309] * 100000 / v[318]) / (v[342] + 1)
+	    //v[621] = (v[621] * v[342] + v[309] * 100000 / v[318]) / (v[342] + 1)
+
+		v[621..622] *= v[342]
+		v[309].copy v[351], 2
+		v[351..352] *= 100000 
+		v[351..352] /= v[318]
+		v[621] .add v[351], 2
+		v[621..622] /= v[342] + 1
+
 	    v[621].copy v[319], 2
 
 	    @if agent_MovementOrder != MovementOrder_TYPE_force_moving {

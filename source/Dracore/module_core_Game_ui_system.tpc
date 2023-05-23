@@ -217,6 +217,14 @@ __if DIS_EXPERIMENTAL == 0{
 
 }
 
+
+def macro_set_faction_default = {
+
+	    v[2223] = 3
+	    v[2224] = 1
+
+}
+
 //picking faction window
 __fn func_ui_start_pick_faction_window {
 	@comment "Inventry mode switches end"
@@ -237,9 +245,9 @@ __fn func_ui_start_pick_faction_window {
 	v[1243] = v[157] + v[1248]
 	@pic[1231].getInfo .ltrb .baseRect v[359], v[360], v[343], v[34]
 	@if `v[2223] <= 0 || v[2223] == 3 && v[2224] <= 0 {
-	    v[2223] = 3
-	    v[2224] = 1
-	    
+	    macro_set_faction_default
+	}.elif `v[2223]!=3&&v[2224]>0 { //No hero currently
+	    macro_set_faction_default
 	}
 	@loop 16 .dst v[343] {
 	    v[11] = v[173]
