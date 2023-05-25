@@ -898,7 +898,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 		// "#Footstep Sound"
 		@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[401] + 501] == 1 {
-		    @if `agent_ActionFlag & ActionFlag_FLAG_Walking { // DIS_EXPERIMENTAL s[v[401] + v[4558]] == 1 {
+		    @if `agent_ActionFlag & ActionFlag_FLAG_Walking // DIS_EXPERIMENTAL s[v[401] + v[4558]] == 1 {
 			// "#Sub timer"
 			v[886] -= 2
 			@if v[886] <= 0 {

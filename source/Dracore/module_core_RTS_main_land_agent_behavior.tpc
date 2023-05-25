@@ -199,7 +199,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 					@if agent_StanceOrder == ORD_AGG {
 					    //@comment "#防御モードor have Waypoint であれば、HoldPointへ戻る#"
 					    agent_HoldPointX.copy agent_MovePointX, 2
-					    agent_ActionFlag |= 1
+					    agent_ActionFlag =| 1
 					    agent_MovementOrder = MovementOrder_TYPE_move_ordered
 					    
 					}
