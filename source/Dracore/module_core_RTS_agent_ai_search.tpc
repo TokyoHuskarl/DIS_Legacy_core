@@ -452,6 +452,7 @@ v[4035..4036] = v[205]
 			@if `agent_AgentBits & 1048576 { //mil units
 				@if agent_TargetAgentID == 0 { // have no target
 					//try to pick from own list 
+					v[211] = v[v[536]] - 1
 					v[534] = v[4579] + (v[1012] + 2) * v[211]
 					//pointer offset
 					v[297] = v[534] + v[1012]
