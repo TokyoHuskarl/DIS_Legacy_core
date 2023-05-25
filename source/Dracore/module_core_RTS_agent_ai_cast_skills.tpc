@@ -1,6 +1,5 @@
 __fn func_ai_skill_usage_check{
-	/*// "TT1=vecX,TT2=vecY
-
+	/* "TT1=vecX,TT2=vecY
 	 Skill1_ID = 141
 	 Skill1_func = 142
 	 Skill1_type = 143#0 = passive, 1 = liner, 2 = Point, 3 = Target, 4 = AoE ,5=self, 6=passive
@@ -15,6 +14,41 @@ __fn func_ai_skill_usage_check{
 	 Skill1_range_max = 152
 	 Skill1_range_min = 153
 	 Skill1_stack1 = 154"*/
+
+	//REFACTORING - inherit skill parameters extracted in func_CkIfSklCall
+	
+	@loop 1 {
+	    // "Only when the unit is moving"
+	    @if `skill_AutoCastFlags & 2 {
+		@if `agent_MovementOrder < 1 {
+		    v[21] = 1
+		    @break
+		    
+		}
+		
+	    }
+	    @if `skill_AutoCastFlags & 4 {
+		@if agent_MeleeFightTimer > 0 {
+		    // "Only when the unit is not in melee combat"
+		    v[21] = 1
+		    @break
+		    
+		}
+		@break
+		
+	    }
+	    // "Dash"
+	    @if skill_Usage == 4 {
+		// "Archers and Mages Try Kiting with Dash skill"
+		v[345..346] *= agent_AAType >= 1 ? -1 : 1
+		
+	    }
+	    // "##AI casts dash/blink skills only when they are in aggressive stance "
+	    v[21] = between(skill_Usage, 4, 5) && agent_StanceOrder != 0 ? 1 : 0
+	    
+	}
+
+/*
 	v[350] = v[341] - 6
 	@loop 1 {
 	    // "Only when the unit is moving"
@@ -45,7 +79,8 @@ __fn func_ai_skill_usage_check{
 	    // "##AI casts dash/blink skills only when they are in aggressive stance "
 	    v[21] = between(v[v[350]], 4, 5) && v[v[212] + 241] != 0 ? 1 : 0
 	    
-}
+	}
+*/
 
 }
 
@@ -68,8 +103,8 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    @if `!(v[634] & 131072) {
 				@if `v[842] < 3 {
 				    @loop 1 {
-					v[309] = v[212] + 7
-					v[v[309]].copy v[304], 2
+					//v[309] = v[212] + 7
+					v[607].copy v[304], 2
 					v[301] = v[v[300]] * 300 
 					v[301] += 4707
 					v[304] .sub v[v[301]], 2
@@ -81,11 +116,14 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 					    //@call .cev 2008
 					    func_CkIfSklCall(v[291] 1)
 					    @if v[21] <= 0 {
-						v[342] = v[v[300]] * 300 
-						v[342] += 4707
-						v[v[342]].copy v[345], 2
-						v[342] = v[212] + 7
-						v[345] .sub v[v[342]], 2
+						def macro_if_it_can_cast_then_do = {
+							v[342] = v[v[300]] * 300 
+							v[342] += 4707
+							v[v[342]].copy v[345], 2
+							//Inherit what was extracted in func_CkIfSklCall()
+							v[345] .sub agent_RelativeX, 2
+						}
+						macro_if_it_can_cast_then_do
 						v[341] = v[212] + 150
 						//@call .cev 1929
 						func_ai_skill_usage_check()
@@ -105,11 +143,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 					    //@call .cev 2008 //9.3.23 found forgetting to comment out - this can be the root of weapon picture collapsing bug.
 					    func_CkIfSklCall(v[291] 2)
 					    @if v[21] <= 0 {
-						v[342] = v[v[300]] * 300 
-						v[342] += 4707
-						v[v[342]].copy v[345], 2
-						v[342] = v[212] + 7
-						v[345] .sub v[v[342]], 2
+						macro_if_it_can_cast_then_do
 						v[341] = v[212] + 170
 						//@call .cev 1929
 						func_ai_skill_usage_check()
@@ -129,11 +163,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 					    //@call .cev 2008
 					    func_CkIfSklCall(v[291] 3)
 					    @if v[21] <= 0 {
-						v[342] = v[v[300]] * 300
-						v[342] += 4707
-						v[v[342]].copy v[345], 2
-						v[342] = v[212] + 7
-						v[345] .sub v[v[342]], 2
+						macro_if_it_can_cast_then_do
 						v[341] = v[212] + 190
 						//@call .cev 1929
 						func_ai_skill_usage_check()
@@ -153,11 +183,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 					    //@call .cev 2008
 					    func_CkIfSklCall(v[291] 4)
 					    @if v[21] <= 0 {
-						v[342] = v[v[300]] * 300 
-						v[342] += 4707
-						v[v[342]].copy v[345], 2
-						v[342] = v[212] + 7
-						v[345] .sub v[v[342]], 2
+						macro_if_it_can_cast_then_do
 						v[341] = v[212] + 210
 						//@call .cev 1929
 						func_ai_skill_usage_check()
@@ -191,142 +217,4 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    
 	}
 
-/*
-	@if s[2] .isOff() {
-	    v[536] = v[4532]
-	    @while v[v[536]] != 0 {
-		v[683] = v[v[536]] * 300 
-		v[683] += 4784
-		@if v[v[683]] == 2 {
-		    @if `v[v[v[536]] * 300 + 4703] & 524288 {
-			v[212] = v[v[536]] * 300 
-			v[212] += 4700
-			v[300] = v[212] + 18
-			@if v[v[300]] > 0 {
-			    v[291] = v[v[536]]
-			    @if `!(v[v[212] + 34] & 131072) {
-				@if `v[v[212] + 242] < 3 {
-				    @loop 1 {
-					v[309] = v[212] + 7
-					v[v[309]].copy v[304], 2
-					v[301] = v[v[300]] * 300 
-					v[301] += 4707
-					v[304] .sub v[v[301]], 2
-					v[304] .mul v[304], 2
-					v[3401] = v[304] + v[305]
-					@if `!(v[v[212] + 160] & 1) && v[v[212] + 152] >= v[3401] {
-					    //v[11] = v[291]
-					    //v[12] = 1
-					    //@call .cev 2008
-					    func_CkIfSklCall(v[291] 1)
-					    @if v[21] <= 0 {
-						v[342] = v[v[300]] * 300 
-						v[342] += 4707
-						v[v[342]].copy v[345], 2
-						v[342] = v[212] + 7
-						v[345] .sub v[v[342]], 2
-						v[341] = v[212] + 150
-						//@call .cev 1929
-						func_ai_skill_usage_check()
-						@if v[21] == 0 {
-						    v[345].copy v[v[341]], 2
-						    v[v[212] + 246] = 1
-						    @break
-						    
-						}
-						
-					    }
-					    
-					}
-					@if `!(v[v[212] + 180] & 1) && v[v[212] + 172] >= v[3401] {
-					    //v[11] = v[291]
-					    //v[12] = 2
-					    //@call .cev 2008 //9.3.23 found forgetting to comment out - this can be the root of weapon picture collapsing bug.
-					    func_CkIfSklCall(v[291] 2)
-					    @if v[21] <= 0 {
-						v[342] = v[v[300]] * 300 
-						v[342] += 4707
-						v[v[342]].copy v[345], 2
-						v[342] = v[212] + 7
-						v[345] .sub v[v[342]], 2
-						v[341] = v[212] + 170
-						//@call .cev 1929
-						func_ai_skill_usage_check()
-						@if v[21] == 0 {
-						    v[345].copy v[v[341]], 2
-						    v[v[212] + 246] = 2
-						    @break
-						    
-						}
-						
-					    }
-					    
-					}
-					@if `!(v[v[212] + 200] & 1) && v[v[212] + 192] >= v[3401] {
-					    //v[11] = v[291]
-					    //v[12] = 3
-					    //@call .cev 2008
-					    func_CkIfSklCall(v[291] 3)
-					    @if v[21] <= 0 {
-						v[342] = v[v[300]] * 300
-						v[342] += 4707
-						v[v[342]].copy v[345], 2
-						v[342] = v[212] + 7
-						v[345] .sub v[v[342]], 2
-						v[341] = v[212] + 190
-						//@call .cev 1929
-						func_ai_skill_usage_check()
-						@if v[21] == 0 {
-						    v[345].copy v[v[341]], 2
-						    v[v[212] + 246] = 3
-						    @break
-						    
-						}
-						
-					    }
-					    
-					}
-					@if `!(v[v[212] + 220] & 1) && v[v[212] + 212] >= v[3401] {
-					    //v[11] = v[291]
-					    //v[12] = 4
-					    //@call .cev 2008
-					    func_CkIfSklCall(v[291] 4)
-					    @if v[21] <= 0 {
-						v[342] = v[v[300]] * 300 
-						v[342] += 4707
-						v[v[342]].copy v[345], 2
-						v[342] = v[212] + 7
-						v[345] .sub v[v[342]], 2
-						v[341] = v[212] + 210
-						//@call .cev 1929
-						func_ai_skill_usage_check()
-						@if v[21] == 0 {
-						    v[345].copy v[v[341]], 2
-						    v[v[212] + 246] = 4
-						    @break
-						    
-						}
-						
-					    }
-					    
-					}
-					
-				    }
-				    
-				    
-				}
-				
-			    }
-			    
-			}
-			
-		    }
-		    
-		}
-		v[536] += 1
-		
-	    }
-	    
-	    
-	}*/
 }

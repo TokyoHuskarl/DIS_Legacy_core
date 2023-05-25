@@ -336,4 +336,31 @@ struct("agent",{
 	victim_ProcessInstantState = 597
 
 	}
+	//Skill var for attack check
+	defv{
+	skill_ID = 581
+	skill_Type = 583
+	skill_Usage = 584
+	skill_Cost = 587 
+	skill_Cooldown_Time = 588 
+	skill_Targx = 590
+	skill_Range_max = 592
+	skill_Range_min = 593
+
+	skill_AutoCastFlags = 600
+
+	}
+	def{
+	Type_PassiveSkl = 0
+	Type_LinerSkl = 1
+	Type_PointSkl = 2
+	Type_TargetSkl = 3
+	Type_AoESkl = 4
+
+	Usage_Extra = -1
+	Usage_Damage = 0
+	Usage_Heal = 1
+	Usage_Buff = 2
+
+	}
 })
