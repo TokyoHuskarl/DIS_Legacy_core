@@ -120,7 +120,9 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	v[76] = ev[3].scrx
 	v[77] = ev[3].scry
 	// "#WalkingSwitchOff"
-	s[3001..4000].off
+	__if DIS_EXPERIMENTAL == 0 {
+		s[3001..4000].off
+	}
 
 	// "Normal Units"
 	v[536] = v[4532]
@@ -138,7 +140,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[301] = v[401] * v[1117] 
 	    v[301] += 5001
 	    v[v[301]].copy v[601], 300
-	    @if `!(v[603] & 2097152) {
+	    @if `!(agent_AgentBits & 2097152) {
 		@if `v[811] & 2 { // there's moving static (vikang ship
 
 		    Bool_Refresh_Static_Minimap.on//request refresh static minimap
@@ -261,11 +263,14 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //v[345] = v[301] + 7
 	    v[348] = v[401] + 501
 	    s[v[348]].off
+	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
 	    //opt
-	    @if `s[2001 + v[401]] != 0 {
+	    TT10 = Address_agent_inSight_switch_array_head+v[401]
+	    @if s[TT10] .isOn() {
+	    //@if `s[2001 + v[401]] != 0 {
 			// "Walls "
 			v[1008].copy v[354], 4
-			@if `v[603] & 16 {
+			@if `agent_AgentBits & 16 {
 			    v[354] -= 240
 			    v[355] += 240
 			    v[356] -= 240
@@ -287,6 +292,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						// "#Set OffsetY"
 						v[637] = v[608] + v[882]
 						// "Will_be_depicted"
+						agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
 						s[v[348]].on
 						// "#"
 						// "#描画範囲内であれば保存"
@@ -426,8 +432,11 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[345] = v[301] + 7
 	    v[348] = v[401] + 501
 	    s[v[348]].off
+	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
 	    //opt
-	    @if `s[2001 + v[401]] != 0 {
+	    TT10 = Address_agent_inSight_switch_array_head+v[401]
+	    @if s[TT10] .isOn() {
+	    //@if `s[2001 + v[401]] != 0 {
 			// "Walls "
 			v[1008].copy v[354], 4
 			@if `v[v[301] + 3] & 16 {
@@ -454,6 +463,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						// "#Set OffsetY"
 						v[v[301] + 37] = v[v[346]] + v[882]
 						// "Will_be_depicted"
+						agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
 						s[v[348]].on
 						// "#"
 						// "#描画範囲内であれば保存"
@@ -605,7 +615,10 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //Set Obj into Drawing List
 	    v[348] = v[401] + 501
 	    s[v[348]].off
-	    @if `s[2001+v[401]] != 0 {
+	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
+	    TT10 = Address_agent_inSight_switch_array_head+v[401]
+	    @if s[TT10] .isOn() {
+	    //@if `s[2001+v[401]] != 0 {
 	    	//v[345] = v[301] + 7
 		@if v[607] >= v[1008] {
 			@if v[607] <= v[1009]{
@@ -614,6 +627,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					@if v[608] <= v[1011]{
 					    	// "#描画範囲内であれば保存"
 					    	// "Will_be_depicted"
+						agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
 					    	s[v[348]].on
 					    	// "#"
 					    	v[v[1112] + v[184]] = (v[601] != -9 ? (v[608] + v[611] / 2 + v[1011] + 500) * 1000 : 9999000) + v[401]
@@ -729,7 +743,10 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //Set Obj into Drawing List
 	    v[348] = v[401] + 501
 	    s[v[348]].off
-	    @if `s[2001+v[401]] != 0 {
+	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
+	    TT10 = Address_agent_inSight_switch_array_head+v[401]
+	    @if s[TT10] .isOn() {
+	    //@if `s[2001+v[401]] != 0 {
 	    	v[345] = v[301] + 7
 		@if v[v[345]] >= v[1008] {
 			@if v[v[345]] <= v[1009]{
@@ -738,6 +755,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					@if v[v[346]] <= v[1011]{
 					    	// "#描画範囲内であれば保存"
 					    	// "Will_be_depicted"
+						agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
 					    	s[v[348]].on
 					    	// "#"
 					    	v[v[1112] + v[184]] = (v[v[301] + 1] != -9 ? (v[v[346]] + v[v[301] + 11] / 2 + v[1011] + 500) * 1000 : 9999000) + v[401]
@@ -879,8 +897,8 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    
 		}
 		// "#Footstep Sound"
-		@if `s[v[401] + 501] == 1 {
-		    @if `s[v[401] + v[4558]] == 1 {
+		@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[401] + 501] == 1 {
+		    @if `agent_ActionFlag & ActionFlag_FLAG_Walking // DIS_EXPERIMENTAL s[v[401] + v[4558]] == 1 {
 			// "#Sub timer"
 			v[886] -= 2
 			@if v[886] <= 0 {
@@ -930,7 +948,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				v[886] = v[868] / 4 
 				v[886] += rnd(7, 11)
 				// "Is_in_water"
-				@if `v[603] & 4 {
+				@if `agent_AgentBits & 4 {
 				    // "Bubble Particle"
 				    @loop v[1017] .dst v[320] {
 					v[244] %= v[1199]
@@ -987,7 +1005,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				    } .else bl {
 					// "Is_horse"
 					@if v[341] >= 551 {
-					    @if `v[603] & 8 {
+					    @if `agent_AgentBits & 8 {
 						// "Leaf Particle"
 						@loop v[1017] .dst v[320] {
 						    v[244] %= v[1199]
@@ -1056,228 +1074,6 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    
 		}
 
-/*
-
-		v[607] = v[301] + 7
-		v[v[607]].copy v[607], 2
-		v[726] = v[301] + 126
-		// "#Check if AI timer is <=2"
-		@if `v[v[301] + 84] <= 2 {
-		    // "#Unit Behavior Start"
-		    // "#Out of Breath"
-		    // "#Hit Timer ==0&&current SP is below 35%&&the unit has fatigue"
-		    @if `divmul(v[v[301] + 107], 100, 35) > v[v[301] + 108] && v[v[301] + 82] <= 0 && !(v[v[726]] & 2048) {
-			v[v[301] + 82] = 48
-			// "Sweat Particle"
-			@loop v[1017] .dst v[320] {
-			    v[244] %= v[1199]
-			    v[331] = v[244] * 50 
-			    v[331] += v[1198]
-			    @if v[v[331]] <= 1 {
-				// "まず清掃"
-				v[1301].copy v[v[331]], 50
-				// "ポインタセット開始"
-				// "設定"
-				v[v[331]] = 1
-				// "500F"
-				v[v[331] + 49] = v[v[301] + 82]
-				// "Set itself"
-				v[v[331] + 3] = 124
-				// "Set Parent Obj"
-				v[v[331] + 9] = v[401] + 1
-				// "普通にアニメ"
-				v[341] = v[331] + 6
-				v[607].copy v[v[341]], 2
-				// "仕上げに登録消す"
-				v[244] += 1
-				@break
-				
-			    }
-			    v[244] += 1
-			    
-			}
-			
-			
-		    }
-		    // "#Unit Behavior End"
-		    
-		}
-		// "#Footstep Sound"
-		@if `s[v[401] + 501] == 1 {
-		    @if `s[v[401] + v[4558]] == 1 {
-			// "#Sub timer"
-			v[v[301] + 286] -= 2
-			@if `v[v[301] + 286] <= 0 {
-			    v[341] = v[1179] + v[v[301] + 40] + 20 * v[v[301] + 287]
-			    v[v[301] + 85] = 13
-			    @if `v[v[301] + 38] & 1 {
-				@if v[182] < 1 {
-				    @if v[522] < 32 {
-					v[182] += 1
-					// "#########################"
-					v[472] = divmul(18, 100, v[2216])
-					v[473] = rnd(95, 105)
-					v[474] = divmul(v[607] + v[1001], v[1281], 50)
-					v[329] = rnd(0, 2)
-					t[510] .asg "footsteps\fly"
-					t[510] .cat v[329]
-					v[342] = 510
-					// "Strings = t[v[342]]"
-					@cmd 11550, t[v[342]], .args v[472], 3
-					// "#########################"
-					
-				    }
-				    
-				}
-				v[v[301] + 286] = v[v[301] + 268] / 4 + rnd(7, 11)
-				
-			    } .else bl {
-				@if v[182] < 1 {
-				    @if v[522] < 80 {
-					v[182] += 1
-					// "#########################"
-					v[472] = divmul(20, 100, v[2216])
-					v[473] = rnd(95, 105)
-					v[474] = divmul(v[607] + v[1001], v[1281], 50)
-					v[329] = rnd(0, 6)
-					t[510] .asg t[v[341]]
-					t[510] .cat v[329]
-					v[342] = 510
-					// "Strings = t[v[342]]"
-					@cmd 11550, t[v[342]], .args v[472], 3
-					// "#########################"
-					
-				    }
-				    
-				}
-				v[v[301] + 286] = v[v[301] + 268] / 4 + rnd(7, 11)
-				// "Is_in_water"
-				@if `v[v[301] + 3] & 4 {
-				    // "Bubble Particle"
-				    @loop v[1017] .dst v[320] {
-					v[244] %= v[1199]
-					v[351] = v[244] * 50 
-					v[351] += v[1198]
-					@if v[v[351]] <= 1 {
-					    // "init"
-					    v[1301].copy v[v[351]], 50
-					    v[v[351]] = 1
-					    // "timer"
-					    v[v[351] + 49] = 3
-					    // "Set itself"
-					    v[v[351] + 3] = 133
-					    // "set pos"
-					    v[341] = v[351] + 6
-					    v[607].copy v[v[341]], 2
-					    v[244] += 1
-					    @break
-					    
-					}
-					v[244] += 1
-					
-				    }
-				    
-				    
-				} .else bl {
-				    @if `v[v[301] + 274] & 512 {
-					@loop v[1017] .dst v[320] {
-					    v[244] %= v[1199]
-					    v[351] = v[244] * 50 
-					    v[351] += v[1198]
-					    @if v[v[351]] <= 1 {
-						// "init"
-						v[1301].copy v[v[351]], 50
-						v[v[351]] = 1
-						// "timer"
-						v[v[351] + 49] = 1
-						// "Set itself"
-						v[v[351] + 3] = 155
-						// "Set Dire"
-						v[v[351] + 27] = v[v[301] + 244]
-						// "set pos"
-						v[341] = v[351] + 6
-						v[607].copy v[v[341]], 2
-						v[244] += 1
-						@break
-						
-					    }
-					    v[244] += 1
-					    
-					}
-					
-					
-				    } .else bl {
-					// "Is_horse"
-					@if v[341] >= 551 {
-					    @if `v[v[301] + 3] & 8 {
-						// "Leaf Particle"
-						@loop v[1017] .dst v[320] {
-						    v[244] %= v[1199]
-						    v[351] = v[244] * 50 
-						    v[351] += v[1198]
-						    @if v[v[351]] <= 1 {
-							// "init"
-							v[1301].copy v[v[351]], 50
-							v[v[351]] = 1
-							// "timer"
-							v[v[351] + 49] = 3
-							// "Set itself"
-							v[v[351] + 3] = 134
-							// "set pos"
-							v[341] = v[351] + 6
-							v[607].copy v[v[341]], 2
-							v[244] += 1
-							@break
-							
-						    }
-						    v[244] += 1
-						    
-						}
-						
-						
-					    } .else bl {
-						@loop v[1017] .dst v[320] {
-						    v[244] %= v[1199]
-						    v[351] = v[244] * 50 
-						    v[351] += v[1198]
-						    @if v[v[351]] <= 1 {
-							// "init"
-							v[1301].copy v[v[351]], 50
-							v[v[351]] = 1
-							// "timer"
-							v[v[351] + 49] = 3
-							// "Set itself"
-							v[v[351] + 3] = 130
-							// "set pos"
-							v[341] = v[351] + 6
-							v[607].copy v[v[341]], 2
-							v[244] += 1
-							@break
-							
-						    }
-						    v[244] += 1
-						    
-						}
-						
-						
-					    }
-					    
-					} .else bl {
-					    
-					}
-					
-				    }
-				    
-				}
-				
-			    }
-			    
-			}
-			
-		    }
-		    
-		}
-*/
 		// "++"
 		func_main_save_agent_vars()
 		v[536] += 1
@@ -1300,9 +1096,9 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    func_main_extract_agent_vars()
 	    // "Set Dir"
 	    @if s[2] .isOff() {
-		@if `v[603] & AgentBits_FLAG_DirChange_skip {
+		@if `agent_AgentBits & AgentBits_FLAG_DirChange_skip {
 		    @if `v[726] & 8388608 {
-			v[603] &= -134217729 //~134217728
+			agent_AgentBits &= -134217729 //~134217728
 			
 		    }
 		    
@@ -1584,11 +1380,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //v[841] = v[301] + 241 needless
 	    v[843] = v[301] + 243
 	    // "ＳＴＡＴＩＣタイマー"
-	    //v[603] = v[301] + 3
+	    //agent_AgentBits = v[301] + 3
 	    //v[702] = v[301] + 102
-	    v[370] = (s[2] == 0 ? 1 : -1) + (v[603] & 1024 ? -1 : 1)
+	    v[370] = (s[2] == 0 ? 1 : -1) + (agent_AgentBits & AgentBits_STATIC_FLAG_No_function ? -1 : 1)
 	    // "have function? "
-	    //v[370] += v[v[603]] & 1024 ? -1 : 1
+	    //v[370] += v[agent_AgentBits] & 1024 ? -1 : 1
 	    @if v[370] >= 2 {
 		// "AAタイマー"
 		@if v[702] == 106 {
@@ -1618,7 +1414,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    //v[707] = v[301] + 107
 		    //v[740] = v[301] + 140
 		    //v[700] = v[v[301] + 100]
-		    @if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || v[603] & 1 {
+		    @if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
 			//v[342] = v[2409 + v[251] % 3]
 			v[342] = v[Const_AgentMetaTeam_begin+v[401]]
 			v[v[341]] += v[740] * 6
@@ -1692,7 +1488,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			
 		    }
 		    // "research particle"
-		    @if `v[603] & 1 {
+		    @if `agent_AgentBits & 1 {
 			@loop v[1017] .dst v[320] {
 			    v[244] %= v[1199]
 			    //v[331] = v[244] * 50
@@ -1783,8 +1579,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    // "init farm owner"
 		    v[v[301] + 255] = 0
 		    // "#Flammable"
-		    @if `s[v[401] + 501] {
-			@if `!(v[603] & 2048) {
+		    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//s[v[401] + 501] {
+			@if `!(agent_AgentBits & 2048) {
 			    // "#Hp 66%"
 			    @if `divmul(v[v[301] + 105], 100, 66) > v[v[301] + 106] {
 				@if v[182] <= 0 {
@@ -1888,9 +1684,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		
 	    }
 	    // "########################Particles"
-	    @if `s[v[401] + 501] {
+	    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//`s[v[401] + 501] {
 		// "#Flammable"
-		@if `!(v[603] & 2048) {
+		@if `!(agent_AgentBits & 2048) {
 		    // "#Hp 66%"
 		    @if `divmul(v[v[301] + 105], 100, 66) > v[v[301] + 106] {
 			// "Fire Particle"
@@ -2043,9 +1839,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		
 	    }
 	    @if v[370] >= 2 {
-		/* "#########################
-	PAssive
-#########################"*/
+		/* "########################	PAssive#########################"*/
 		@if `v[v[301] + 223] & 1 {
 		    @if `v[v[301] + 94] <= 0 {
 			v[824] = v[v[301] + 224] > v[1186] ? v[v[301] + 224] : 1899
@@ -2055,7 +1849,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    
 		}
 		// "gate flag"
-		@if `v[603] & 256 {
+		@if `agent_AgentBits & 256 {
 		    // "##############"
 		    v[300] = v[301] + 5
 		    v[299] = v[301] + 15
@@ -2194,8 +1988,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    
 		    // "Locked?"
 		    @if v[371] == 1 {
-			@if `!(v[603] & 4) {
-			    @if `!(v[603] & 8) {
+			@if `!(agent_AgentBits & 4) {
+			    @if `!(agent_AgentBits & 8) {
 				v[v[301] + 243] = 1
 				v[v[301] + 3] |= 4
 				v[803] = v[301] + 203
@@ -2219,7 +2013,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				}
 				
 				@if v[182] < 2 {
-				    @if `s[v[401] + 501] == 1 {
+				    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen{ //`s[v[401] + 501] == 1 {
 					v[607] = v[301] + 7
 					v[v[607]].copy v[607], 2
 					v[182] += 1
@@ -2239,7 +2033,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			}
 			
 		    } .else bl {
-			@if `v[603] & 4 {
+			@if `agent_AgentBits & 4 {
 			    v[v[301] + 243] = 0
 			    v[v[301] + 3] &= -5//~4
 			    v[803] = v[301] + 203
@@ -2263,7 +2057,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    }
 			    
 			    @if v[182] < 2 {
-				@if `s[v[401] + 501] == 1 {
+				@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//s[v[401] + 501] == 1 {
 				    v[607] = v[301] + 7
 				    v[v[607]].copy v[607], 2
 				    v[182] += 1
@@ -2328,7 +2122,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    // "Agent Effect"
 	    v[401] = v[v[536]] - 1
-	    @if `s[v[401] + 501] ==1 {
+	    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//`s[v[401] + 501] ==1 {
 		// "Hero Particle"
 		@if `agent_ProcessObjBit & 4194304 { //is hero
 
@@ -2630,30 +2424,30 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[340] = v[4505] + v[640]
 	    v[340] = v[v[340]]
 	    // "#Reset Terrain Flags"
-	    v[603] &= -1072//~1071 //15 + 32 + 1024
+	    agent_AgentBits &= -1072//~1071 //15 + 32 + 1024
 	    //v[638] = v[301] + 38
 	    // "##Not Flying"
 	    @if `!(v[638] & 1) {
 		// "#Water"
 		@if `v[340] & 1 {
-		    v[603] |= 4 + (v[638] & 64 ? 0 : 1)
+		    agent_AgentBits |= 4 + (v[638] & 64 ? 0 : 1)
 		    
 		}
 		// "#Ice"
 		@if `v[340] & 16 {
-		    v[603] |= 32
+		    agent_AgentBits |= 32
 		    
 		}
 		// "#Stone Road"
 		@if `v[340] & 64 {
-		    v[603] |= 2
+		    agent_AgentBits |= 2
 		    
 		}
 		// "#Forest"
 		@if `v[340] & 8 {
 		    // "##Horse or roller"
 		    @if `v[638] & 34 {
-			v[603] |= 8
+			agent_AgentBits |= 8
 			
 		    }
 		    
@@ -2662,25 +2456,25 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		@if `v[340] & 32 {
 		    // "##movetype ice"
 		    @if `v[638] & 16 {
-			v[603] |= 2
+			agent_AgentBits |= 2
 			
 		    }
 		    // "##skating"
 		    @if `v[638] & 8 {
-			v[603] |= 34//32+2
+			agent_AgentBits |= 34//32+2
 			
 		    }
 		    
 		}
 		@if `v[638] & 32 {
-		    v[603] |= 48//32+16
+		    agent_AgentBits |= 48//32+16
 		    
 		}
 		
 	    } .else bl {
 		// "#Water"
 		@if `v[340] & 1 {
-		    v[603] |= 1056//32 + 1024
+		    agent_AgentBits |= 1056//32 + 1024
 		    
 		}
 		
@@ -2733,7 +2527,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    Ptr1 = v[301] + 1 
 	    v[Ptr1].copy v[601], 300
 
-	    @if `agent_AgentBits & 2097152 { //Worker AI flag is on
+	    @if `agent_AgentBits & AgentBits_FLAG_EnableCivAI { //Worker AI flag is on
 		// "Escaping time"
 		//v[680] = v[301] + 77
 		//v[v[680]] -= 4
@@ -2750,7 +2544,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    @if agent_worker_JobType == 0 {
 				s[187].on//there's at least one idle worker unit 
 				@if s[2] .isOff() {// not pause
-				    @if `s[500 + v[v[536]]]==1 {//somehow with == 1 it's faster 
+				    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen{ //s[500 + v[v[536]]]==1 { 
 					@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { //124 = magic number but maybe 48*3
 					    @if `!(agent_ProcessObjBit & 4096) {
 						//v[607] = v[301] + 4
@@ -2911,36 +2705,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 		
 	    }
-	    /*
-	    // "combtimer"
-	    v[680] = v[301] + 80
-	    v[v[680]] -= 1
-	    @if v[v[680]] <= 0 {
-		v[898] = v[301] + 298
-		v[v[898]] += 5
-		@if v[v[898]] >= 100 {
-		    // "#############
-		    //Search and remove from body list"
-		    Temp2 = v[4531]
-		    @doWhile v[Temp2] > 0 {
-			@if `v[Temp2] == v[v[536]] {
-			    v[Temp2] = 0
-			    v[v[4531] + v[1004]] -= 1
-			    v[v[4531]].sortDescending v[1004]
-			    v[v[301] + 1] = 0
-			    @break
-			    
-			}
-			Temp2 += 1
-			
-		    }
-		    
-		    var1 = v[401] + 1
-		    func_remove_dead_agent_picture(var1)
-		    
-		}
-		
-	    }*/
+	  
 	    // "++"
 	    func_main_save_agent_vars()
 	    v[536] += 1

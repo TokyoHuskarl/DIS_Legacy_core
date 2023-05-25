@@ -177,7 +177,7 @@ struct("agent",{
 
 	agent_Direction = 844
 
-	agent_ActionFlag = 845
+	agent_ActionFlag = 845 
 	agent_CastSkillOrder = 846
 	agent_worker_JobType = 847
 	agent_TacticsOrderFlag = 848
@@ -204,6 +204,8 @@ struct("agent",{
 	agent_ProcessInstantState = 877
 
 	agent_2hweapon_stain = 885
+	agent_OneTimeOffsetX= 896
+	agent_OneTimeOffsetY = 897
 	agent_PictArray = 899
 	agent_generated_ID = 900
 	}
@@ -223,6 +225,8 @@ struct("agent",{
 	AgentBits_FLAG_1fprocessed = 67108864
 
 	AgentBits_FLAG_DirChange_skip = 134217728
+
+	AgentBits_FLAG_Drawn_in_screen = 1073741824//31bit
 	//AI routine bits
 	AI_routine_bits_FLAG_siegeweapon_flag = 1
 	AI_routine_bits_FLAG_skirmisher=2
@@ -273,6 +277,14 @@ struct("agent",{
 
 	MovementOrder_TYPE_fleeing = 11
 
+
+	//Beware, ActionFlag can easily be initialized by some skill functions since at the beginning the slot won't be expected bit variable
+	ActionFLag_FLAG_Hold_direction = 1
+	ActionFlag_FLAG_Walking = 2 //s[v[4558] + :agent_id ]
+	ActionFlag_FLAG_Heading_other_agent = 4 //s[103]
+	ActionFlag_FLAG_Trying_to_stop = 8 //s[104]
+
+
 	//Stances
 	DIR_RIGHT=1
 	DIR_LEFT=0
@@ -282,13 +294,22 @@ struct("agent",{
 	ORD_ATK=2
 	ORD_MANU=4
 
+
+
+	//Other
+	Address_agent_inSight_switch_array_head = 2001
 	}
 
 	//STATICS
 	defv{
-
+	
 	agent_static_Attribution_flag = 811
 	agent_static_Obj_flag = 820
+
+	}
+
+	def{
+	AgentBits_STATIC_FLAG_No_function = 1024
 
 	}
 

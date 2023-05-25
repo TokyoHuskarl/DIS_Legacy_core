@@ -132,7 +132,7 @@ T21=アクションステート取得*/
     @if `v[726] & 524288 {
 	v[460] = 0
         //@comment "#描画範囲内か？T3 T4 Constx Consty"
-        @if `s[v[340] + 501] {
+        @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[340] + 501] {
 	    //11.5.23
 
             v[303] = v[301] + 36
@@ -268,14 +268,7 @@ T21=アクションステート取得*/
             v[4061..4070] = v[447] //Transparency
             v[4101..4110] = v[463] //grid X
             v[4121..4130] = v[464] //grid Y
-            /*@if `v[v[726]] & 512 {
-
-                v[4101] = 7
-                v[4107] = 7
-                v[4121] = [1, 2][(v[v[725]] & 1)]
-                
-            }*/
-	    fuction_drawing_set_grid()
+ 	    fuction_drawing_set_grid()
 	    //opt 11.5.23
 	    //v[868] = v[301] + 268
             //v[868] = v[v[868]]
@@ -756,7 +749,7 @@ T21=アクションステート取得*/
         //v[310] = v[301] + 1
         //@comment "STATIC"
         @if v[601] == 11 {
-            @if `s[v[340] + 501] {
+            @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//`s[v[340] + 501] {
                 v[311] = v[301] + 2
                 //@comment "Failsafe"
                 //v[303] = v[301] + 7
@@ -914,7 +907,7 @@ T21=アクションステート取得*/
             //@comment "DEAD BODY"
             @if v[601] <= 0 {
                 //@comment "#描画範囲内か？"
-                @if `s[v[340] + 501] {
+                @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//`s[v[340] + 501] {
                     v[461] = 0
                     v[446] = 100
                     //@comment ""
