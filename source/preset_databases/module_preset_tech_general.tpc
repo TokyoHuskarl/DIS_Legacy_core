@@ -3,8 +3,12 @@
 
 
 defv{
-tech_flag = 12
+tech_ptr_Techbits=11
+tech_available_ck = 12 
 slot_cost_time=13
+
+tech_Techbits_number = 
+tech_Bit_number = 18
 
 slot_cost_food=31
 slot_cost_wood=32
@@ -12,16 +16,55 @@ slot_cost_stone=33
 slot_cost_gold=34
 }
 
-__fn register_DIS_technology $cevid $name {
+__fn register_DIS_technology $cevid $name $Techbits_number $tech_Bit_number $PROC_COND_SET $PROC_CONDS $PROC_COMPLETED {
+	cev[$cevid] .name($name), {
+		v[40] = 0
+		tech_ptr_Techbits = 2412 + $Techbits_number 
+		tech_ptr_Techbits += v[251] % 3
+		tech_available_ck = 0
+		tech_Bit_number = $tech_Bit_number
+		v[31..34] = 0
+		$PROC_COND_SET
+		@call .cev 435
+		tech_available_ck += v[tech_ptr_Techbits] & pow(2, tech_ptr_Techbits) ? 1 : 0
+		@if `v[tech_ptr_Techbits] & pow(2, tech_ptr_Techbits) {//already researched
+		    v[40] = -2
+		    
+		}
 
+		@if s[115] .isOn() {//refund
+		    
+		}.else bl{
+			@if v[40] <= -1 {
+			    v[31..34] = 999999999
+			    v[13] = cost_tech_time
+			    
+			}
+			$PROC_CONDS
+		}
+
+		@if s[115] .isOn() {
+	    		v[tech_ptr_Techbits] |= pow(2, tech_Bit_number)
+			func_tech_announce(32141)//SET LATER
+		 	$PROC_COMPLETED
+			@call .cev 436
+		}
+		
+	}
 }
 
 
 
 
-__fn func_set_cost {
+__fn func_tech_set_costs_simple $food $wood $stone $gold $time {
+	slot_cost_food = $food
+	slot_cost_wood = $wood
+	slot_cost_stone = $stone
+	slot_cost_gold = $gold
+	slot_cost_time = $time
 
 }
+
 __fn func_tech_announce $tech_string_id {
 
 	    @if v[251] == 0 {

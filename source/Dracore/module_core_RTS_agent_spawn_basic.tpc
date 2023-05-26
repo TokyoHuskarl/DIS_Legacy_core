@@ -1,6 +1,13 @@
 //get drawing functions
 #include "./../headers/header_drawing.tpc"
+#include "./module_core_Game_items_functions.tpc"
 
+//temp
+struct("weapon",{
+	defv  {
+		weapon_Ammo = 1920
+	}
+})
 
 cev .id(300), .name("Agent:Spawn Basic"), {
 @if `s[152] == 0 && v[254] < 80 {
@@ -51,32 +58,26 @@ cev .id(300), .name("Agent:Spawn Basic"), {
                         // "ORDER SET"
                         v[841] = v[277]
                         // "チームセット"
-                        v[700] = v[251]
-                        v[624] = between(v[700], 0, 2) ? v[700] + 1 : 3
+                        agent_TeamID = v[251]
+                        v[624] = between(agent_TeamID, 0, 2) ? agent_TeamID + 1 : 3
                         // "WP消しておく"
                         v[655] = -1
                         // "出る場所セット"
                         v[252].copy v[605], 2
-                        /*@if s[1] .isOn() {
-                            // "Experimental"
-                            @if s[44] .isOn() {
-                                v[605] .add v[53], 2
-                                
-                            }
-                            
-                        }*/
                         // "生成場所の数値を入れる"
                         v[605].copy v[607], 2
                         v[605].copy v[641], 2
                         v[310..311] = 10000
                         v[605] .mul v[310], 2
                         // "Init end##################"
-                        v[701] = v[254]
-                        v[701] -= s[152] == 0 ? 200 : 0
+                        agent_UnitID = v[254]
+                        agent_UnitID -= s[152] == 0 ? 200 : 0
                         // "ObjTyp"
                         t[3001] .toNum v[601]
                         // "#SpriteSet"
-                        v[v[1216]..v[1216] + 100] = 0
+                        //v[v[1216]..v[1216] + 100] = 0
+			v[1301].copy v[v[1216]], 100
+
                         t[3200..3300] .asg ""
                         t[3002] .split "|", t[3200], v[1941]
                         @loop v[1941] .dst v[1945] {
@@ -300,10 +301,30 @@ cev .id(300), .name("Agent:Spawn Basic"), {
                         t[3029] .toNum v[4004]
                         t[3031] .toNum v[4005]
                         // "#Set Equipments Parameter"
+			//Check reserve ammo first
+			@if v[856]>0 {
+				v[11] = v[856]
+				v[12] = 0
+				@call .cev v[1150]
+				func_convert_weapon_ammo_into_four_byte_ammo_data(weapon_Ammo)
+				agent_Ammo = reg1 << 16
+    				macro_set_agent_AI_decision_Sub_WEP_Type(v[1907])//set subset
+				//also...
+				agent_AI_decision_bits |= AI_decision_bits_FLAG_Have_reserve_set
+			}.else bl{
+				agent_Ammo = 0
+			}
+			//Set Weapon
                         v[11] = v[851]
                         v[12] = v[4001]
                         @call .cev v[1150]
                         @call .cev 1923
+			//Main weapon ammo Set!
+			//if v[1920] == 0, just ignored.
+			func_convert_weapon_ammo_into_four_byte_ammo_data(weapon_Ammo)
+			agent_Ammo += reg1
+
+
                         @if v[1901] < 100 {
                             v[11] = v[852]
                             v[12] = v[4002]
@@ -474,20 +495,20 @@ cev .id(300), .name("Agent:Spawn Basic"), {
                         // "dir"
                         v[844] = v[280]
                         // "DEBUG"
-                        @if v[700] == 0 {
+                        @if agent_TeamID == 0 {
                             @if s[19] .isOff() {
                                 @if s[319] .isOn() {
                                     @if s[477] .isOff() {
-                                        @if v[700] == 0 {
+                                        @if agent_TeamID == 0 {
                                             // "Elf"
-                                            @if v[701] == 23 {
+                                            @if agent_UnitID == 23 {
                                                 // "＃＃＃＃＃＃＃＃＃＃＃＃"
                                                 v[229] = 34
                                                 s[240].on
                                                 // "＃＃＃＃＃＃＃＃＃＃＃＃"
                                                 
                                             }
-                                            @if v[701] == 159 {
+                                            @if agent_UnitID == 159 {
                                                 // "＃＃＃＃＃＃＃＃＃＃＃＃"
                                                 v[229] = 35
                                                 s[240].on
@@ -553,7 +574,7 @@ cev .id(300), .name("Agent:Spawn Basic"), {
         
     } .else bl {
         t[503] .asg "UNDEFINED"
-        
+        func_errlog("ERROR:The troop attempted to be spawned is UNDEFINED.")
     }
     
 }
@@ -568,11 +589,11 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	v[656] = v[280] * 180000
 	@comment "Stop Morale System below hard mode"
 	@if `(s[7] == 1 || s[474] == 1) && v[2401] < 3 || s[470] == 1 {
-	    agent_BaseObjBit |= 256
+	    agent_BaseObjBit |= BaseObjBit_FLAG_No_mind
 	    
 	} .else bl {
 	    @if s[7] .isOn() {
-		@if v[700] == 1 {
+		@if agent_TeamID == 1 {
 		    v[739] += 8
 		    
 		}
@@ -616,21 +637,31 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    t[503] .asg ""
 	    t[505] .asg t[20034]
 	    @comment "Load"
-	    v[1942] = v[701]
+	    v[1942] = agent_UnitID
 	    v[1941] = v[4576] + v[1942] - 1
 	    t[2998] .asg t[v[1941]]
 	    t[2998] .split "|", t[2999], v[1941]
 	    t[503] .asg t[2999]
 	    t[2999..3000] .asg ""
 	    t[501] .asg t[503]
-	    
+
+
+
+	    //save map tile infomation where the Static built
+	    v[605].copy v[311], 2
+	    v[311] .add v[1061], 2
+	    v[311].copy v[303], 2
+	    macro_cord_diff(v[311] v[312])
+	    v[313] = v[v[1182] + v[311] - v[69] + (v[312] - v[70]) * v[2061]]
+	    v[657] = v[313] / 100000000
+	    v[640] = v[313] % 100
+
 	}
 	@comment "Enabling Skill AI"
 	@if v[601] <= 8 {
 	    @comment "standard bearer"
-	    v[823] |= agent_BaseObjBit & 1048576 ? 4 : 0
-	    @comment "Access19 = Obj's Behavior
-	Access20 = Obj's target ID"
+	    v[823] |= agent_BaseObjBit & BaseObjBit_FLAG_Standard_Bearer ? 4 : 0
+	    @comment "Access19 = Obj's Behavior Access20 = Obj's target ID"
 	    @if agent_UnitType <= 7 {
 		v[603] |= [1048576, 1048576, 0, 1048576, 0][v[841]]
 		@if `v[752] > -1 || v[772] > -1 || v[792] > -1 || v[812] > -1 {
@@ -697,7 +728,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    @comment "Arcane Composite Armor"
 	    @if `v[2412 + v[251] % 3] & 0x8 {
 		@comment "Cataphract"
-		@if v[701] == 21 {
+		@if agent_UnitID == 21 {
 		    agent_BaseObjBit |= 32
 		    
 		}
@@ -724,9 +755,9 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 		@if `between(agent_UnitType, 0, 4) {
 		    @if `between(v[664], 1, 2) {
 			@comment "KAMIKAZE"
-			agent_BaseObjBit |= 2097152
+			agent_BaseObjBit |= BaseObjBit_FLAG_Explosive
 			v[710] += 60
-			v[716] += 8
+			agent_BaseMS += 8
 			@comment "Will"
 			v[739] += 15
 			
@@ -738,7 +769,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    @comment "Tengger Cavalry"
 	    @if `v[2412 + v[251] % 3] & 1 {
 		@if agent_UnitType == 2 {
-		    v[716] = muldiv(v[716], 108, 100)
+		    agent_BaseMS = muldiv(agent_BaseMS, 108, 100)
 		    
 		}
 		
@@ -771,7 +802,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	v[302] = v[201] * 6 + v[1185] //ACHTUNG you need to remove this system eventually - it's obsolete legacy system, almost no meaning now
 	@comment "#init"
 	v[v[302]..v[302] + 5] = 0
-	v[v[302]] = v[602] > 0 ? v[602] : v[701]
+	v[v[302]] = v[602] > 0 ? v[602] : agent_UnitID
 	@comment "v[899]=Layers"
 	v[899] = 7
 	@comment "#STATIC"
@@ -958,7 +989,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    v[834] += v[610] / 7 / v[413] + 1
 	    v[835] += v[611] / 7 / v[416] + 1
 	    @comment "####"
-	    v[602] |= v[602] == 0 ? v[701] : v[602]
+	    v[602] |= v[602] == 0 ? agent_UnitID : v[602]
 	    v[841] = 1
 	    v[603] |= 1048576
 	    v[899] = 8
@@ -975,11 +1006,11 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    @comment "Big flag"
 	    agent_BaseObjBit |= 524288
 	    @comment "No mind"
-	    agent_BaseObjBit |= 256
+	    agent_BaseObjBit |= BaseObjBit_FLAG_No_mind
 	    @comment "Halve Ranged"
 	    agent_BaseObjBit |= 32
 	    @comment "do not bleed"
-	    agent_BaseObjBit |= 4096
+	    agent_BaseObjBit |= BaseObjBit_FLAG_Immune_to_bleed
 	    v[844] = 3
 	    @comment "Design Flaw, temp fix"
 	    v[820] = agent_BaseObjBit
@@ -1400,24 +1431,24 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 		@comment "no_fatigue"
 		v[726] |= 2048
 		@comment "immune to stun"
-		agent_BaseObjBit |= 65536
+		agent_BaseObjBit |= BaseObjBit_FLAG_Immune_to_stun
 		@comment "Big flag"
 		agent_BaseObjBit |= 524288
 		@comment "No mind"
-		agent_BaseObjBit |= 256
+		agent_BaseObjBit |= BaseObjBit_FLAG_No_mind
 		agent_BaseObjBit |= 32
 		@comment "do not bleed"
-		agent_BaseObjBit |= 4096
+		agent_BaseObjBit |= BaseObjBit_FLAG_Immune_to_bleed
 		v[709] += v[2409 + v[251] % 3] & 0x10000 ? muldiv(v[709], 10, 100) : 0
 		@comment "##Sushi"
 		@if v[822] == 12 {
-		    v[716] = muldiv(v[716], 150, 100)
+		    agent_BaseMS = muldiv(agent_BaseMS, 150, 100)
 		    
 		}
 		
 	    }
 	    @comment "set Ammo"
-	    v[832] = v[831]
+	    //v[832] = v[831]
 	    @comment "#AS Bonus#[Lv]"
 	    v[719] += agent_UnitType < 3 ? v[704] : 0
 	    @comment "Crit"
@@ -1513,7 +1544,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    
 	}
 	@comment "##Stalwart ###Knockback immunity"
-	agent_BaseObjBit |= (v[665] & 16) == 16 ? 8 : 0
+	agent_BaseObjBit |= v[665] & 16 ? 8 : 0
 	@comment "#Aggressive perks"
 	@comment "############	Perks Check End############"
 	@comment "Set Common Exp [Lv]*50"
@@ -1546,12 +1577,12 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 	    
 	}
 	@comment "#Set Actual Team #underdev, just save in reg1"
-	v[658] = v[700]
+	v[658] = agent_TeamID
 
 	@comment "#PassiveTimer"
 	v[694] = v[154] % v[1139]
 	@comment "#FootStepTimer"
-	v[886] = (v[726] & 1024) == 0 ? v[716] / 4 + v[684] : 999999999
+	v[886] = (v[726] & 1024) == 0 ? agent_BaseMS / 4 + v[684] : 999999999
 	//Get Luck(rand)
 	v[604]=rnd(0,999)
 
@@ -1607,7 +1638,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 			v[v[4532] + v[1004] - 1] = v[201] + 1
 			v[v[4532] + v[1004]] += 1
 			v[v[4532]].sortDescending v[1004]
-			v[v[4804] + v[201]] = [(v[700] == 0 ? 0xFF0A3AFF : 0xFFC926C9) - 14671872, -65536 + 8224, 0xFFFBF236][(v[700] % 3)]
+			v[v[4804] + v[201]] = [(agent_TeamID == 0 ? 0xFF0A3AFF : 0xFFC926C9) - 14671872, -65536 + 8224, 0xFFFBF236][(agent_TeamID % 3)]
 			
 		    } .else bl {
 			v[v[4533] + v[1004] - 1] = v[201] + 1
@@ -1621,27 +1652,27 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 			    v[v[4561]].sortDescending v[1012]
 			    
 			}
-			v[v[4804] + v[201]] = [v[700] == 0 ? 0xFF0A3AFF : 0xFFC926C9, -65536, 0xFFD6CD20][(v[700] % 3)]
+			v[v[4804] + v[201]] = [agent_TeamID == 0 ? 0xFF0A3AFF : 0xFFC926C9, -65536, 0xFFD6CD20][(agent_TeamID % 3)]
 			
 		    }
 		    //Set MetaTeamMemory
-		    v[Const_AgentMetaTeam_begin + v[201]] = v[700] % 3
+		    v[Const_AgentMetaTeam_begin + v[201]] = agent_TeamID % 3
 
 		    @comment "敵味方峻別リストに登録"
 		    @if s[157] .isOff() {
 			@if v[601] == 11 {
 			    @if agent_UnitType != 105 {
 				@if agent_UnitType != 104 {
-				    v[v[4580] + v[700] % 3] += 1
+				    v[v[4580] + agent_TeamID % 3] += 1
 				    
 				}
 				
 			    }
 			    @if `v[603] & 64 {
-				v[v[4580] + v[700] % 3] += 6
+				v[v[4580] + agent_TeamID % 3] += 6
 				@comment "#Potetons"
-				@if `v[2403 + v[700] % 3] == 8 {
-				    v[v[4580] + v[700] % 3] += 2
+				@if `v[2403 + agent_TeamID % 3] == 8 {
+				    v[v[4580] + agent_TeamID % 3] += 2
 				    
 				}
 				
@@ -1649,10 +1680,10 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 			    
 			}
 			@comment "##生産Staticはリスト処理しない"
-			v[700] = agent_UnitType == 104 ? -1 : v[700]
-			v[700] = agent_UnitType == 105 ? -2 : v[700]
-			v[700] %= 3
-			@if v[700] == 0 {
+			agent_TeamID = agent_UnitType == 104 ? -1 : agent_TeamID
+			agent_TeamID = agent_UnitType == 105 ? -2 : agent_TeamID
+			agent_TeamID %= 3
+			@if agent_TeamID == 0 {
 			    @comment "Register Battle ally units list"
 			    @comment "Safety"
 			    @if v[205] < v[1012] {
@@ -1673,7 +1704,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 			    }
 			    
 			} .else bl {
-			    @if v[700] == 1 {
+			    @if agent_TeamID == 1 {
 				@if v[206] < v[1012] {
 				    @comment "敵リストに登録"
 				    v[v[1146] + v[1012] - 1] = v[201] + 1
@@ -1694,7 +1725,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 			}
 			@comment "Register UnitsID joining battle List"
 			@if `between(v[658], 0, 1) && agent_UnitType < 7 {
-			    v[21] = v[1259] + 4 * (v[701] - 1) + v[658] * v[1260] * 4
+			    v[21] = v[1259] + 4 * (agent_UnitID - 1) + v[658] * v[1260] * 4
 			    v[v[21]] += 1
 			    
 			}
@@ -1707,7 +1738,7 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 			}
 			
 		    }
-		    v[0] = s[2001 + v[201]] = v[700] % 3 == 2 ? 1 : 0
+		    v[0] = s[2001 + v[201]] = agent_TeamID % 3 == 2 ? 1 : 0
 		    @if s[300] .isOff() {
 			v[0] = s[2001 + v[201]] = 1
 			
@@ -1718,10 +1749,10 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 		    }
 		    v[201] += 1
 		    v[21] = v[201]
-		    v[22] = v[701]
+		    v[22] = agent_UnitID
 		    v[23] = agent_UnitType
 		    @if s[19] .isOff() {
-			@if v[700] == 0 {
+			@if agent_TeamID == 0 {
 			    @if v[601] < 11 {
 				@if v[2218] <= 2 {
 				    @call .cev 1924
@@ -1750,9 +1781,9 @@ cev .id(1903), .name("Agent:Spawn Finish"), {
 					@call .cev 1924
 					v[341] = 2
 					v[601] = 1
-					v[701] = v[v[700] + 1]
+					agent_UnitID = v[agent_TeamID + 1]
 					t[501] .asg t[v[300]]
-					v[342] = v[v[700]] == 1 ? 5 : 10
+					v[342] = v[agent_TeamID] == 1 ? 5 : 10
 					@pic[v[1155]].strpic {
 					    "\c[17]\t[20195]"
 					    .pos v[341], v[1126] .bottomLeft
