@@ -5,10 +5,15 @@
 
 #include "./../headers/header_battlesystem.tpc"
 #include "./../headers/header_skills.tpc"
+#include "./../headers/header_agent.tpc"
+
+#include "./../Dracore/module_core_RTS_agent_skill_functions.tpc"
+
 #include "./particles/module_psp_particle_register.tpc"
 def moduletitle="module_preset_skills_general.tpc"
 
 
+//obsolete definitions
 defv{
 
 slot_id=581
@@ -23,12 +28,16 @@ slot_skillflag=600
 
 }
 
+//Basically you can consider when preset skill function called as a skill casted by an agent the caster agent data is already extracted in v[601]~
+
 //Preset Skill Common Events 
 
 
 //Quickhands
 #include "./skills/pss_quickhands.tpc"
 
+//Throwing AAs
+#include "./skills/pss_throwing_AAfunctions.tpc"
 
 //1222 lancecharge
 def skill_cev_id_lancecharge = 1222
@@ -36,8 +45,6 @@ def skill_cev_id_lancecharge = 1222
 
 def skill_cev_devastating_charge = 1238
 #include "./skills/pss_devastating_charge.tpc"
-//Throwing AAs
-#include "./skills/pss_throwing_AAfunctions.tpc"
 
 //ScorpionBolt
 #include "./skills/pss_scorpion_bolt.tpc"

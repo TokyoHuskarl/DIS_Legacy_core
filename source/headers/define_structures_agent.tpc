@@ -1,5 +1,7 @@
 // I actually wanted to define those defvs like "agent.brabrabra = n" but in TPC syntax it's invalid, sadly.
 struct("agent",{
+	def agent_Basic_Array_size = 300
+	def agent_Basic_Array_size_PLUSONE = agent_Basic_Array_size + 1
 	defv {
 
 	Address_str_agent_name_array_head = 4562
@@ -37,6 +39,7 @@ struct("agent",{
 	agent_AttackDelay = 630
 	agent_LastTarget = 631
 	agent_TileLink = 632
+	agent_AI_decision_bits=633
 	agent_AI_routine_bits=634
 	agent_Cohort_ID=635
 
@@ -101,6 +104,7 @@ struct("agent",{
 	agent_BuffTimer7 = 692	
 	agent_BuffTimer8 = 693
 	agent_PassiveTimer = 694
+
 	agent_Skill1CDtimer = 695
 	agent_Skill2CDtimer = 696
 	agent_Skill3CDtimer = 697
@@ -110,7 +114,7 @@ struct("agent",{
 	agent_TeamID = 700
 	agent_UnitID = 701
 	agent_UnitType = 702
-	agent_AAType = 703
+	agent_AAType = 703 //0 = melee, 1 = ranged, 2 = point, 3 = shoot, 4 = function
 	agent_Level = 704
 	agent_MaxHP = 705
 	agent_HP = 706
@@ -164,7 +168,7 @@ struct("agent",{
 	agent_TakenDamageMultiplier = 829
 
 
-	agent_Ammo = 832
+	agent_Ammo = 832 //0x00(Max Ammo of Sub Weapon)0x00(CurrentAmmo of Sub Weapon)0x00(Max Ammo of Current Weapon)0x00(current Ammo of Sub Weapon) 
 	agent_ShieldType = 833
 	agent_ShieldBreakResistance = 834
 
@@ -182,6 +186,14 @@ struct("agent",{
 	agent_worker_JobType = 847
 	agent_TacticsOrderFlag = 848
 	agent_ForceSprite = 850
+
+	agent_MainWeaponID = 851 
+	agent_MainShieldID = 852
+	agent_ArmorID = 853
+	agent_HelmID = 854
+	agent_AccID = 855
+	agent_ReserveWeaponID = 856
+	agent_ReserveShieldID = 857
 
 	agent_Morale = 860
 	agent_ProcessAD = 861
@@ -227,6 +239,30 @@ struct("agent",{
 	AgentBits_FLAG_DirChange_skip = 134217728
 
 	AgentBits_FLAG_Drawn_in_screen = 1073741824//31bit
+
+	
+	//AI decision bits for combat units
+	//swap series
+	AI_decision_bits_FLAG_Have_reserve_set = 1
+	AI_decision_bits_FLAG_Try_swapping_weapon = 2
+	AI_decision_bits_FLAG_Sub_WEP_is_Melee = 4
+	AI_decision_bits_FLAG_Sub_WEP_is_Ranged = 8
+	AI_decision_bits_FLAG_Sub_WEP_is_Magic = 16
+	AI_decision_bits_FLAG_Sub_WEP_is_Charge = 32
+	AI_decision_bits_FLAG_Sub_WEP_is_Buff = 64
+	AI_decision_bits_FLAG_Sub_WEP_is_Heal = 128
+	AI_decision_bits_FLAG_Out_of_Current_WEP_Ammo = 256
+	AI_decision_bits_FLAG_Out_of_Sub_WEP_Ammo = 512
+		AI_decision_bits_KILL_FLAGs_Out_of_Ammo= -769
+	AI_decision_bits_FLAG_Sub_WEP_needs_Ammo = 2048
+	AI_decision_bits_FLAG_Currently_Melee = 4096
+	AI_decision_bits_FLAG_Currently_Ranged = 8192 
+	AI_routine_bits_FLAG_Forbid_AI_WeaponChange = 67108864
+		AI_decision_bits_FLAGs_can_change_flags_all = 4+8+16+32+64+128
+		AI_decision_bits_KILL_ALL_WEAPONCHANGE_FLAG = ~(1+2+4+8+16+32+64+128+256+512+4096+8192)
+	
+	
+	AI_decision_bits_FLAG_Forbid_AI_decision = 1073741824//31bit
 	//AI routine bits
 	AI_routine_bits_FLAG_siegeweapon_flag = 1
 	AI_routine_bits_FLAG_skirmisher=2
@@ -246,14 +282,27 @@ struct("agent",{
 	AI_routine_bits_FLAG_ForcemoveFlag = 4194304
 
 	//ObjBits
+	BaseObjBit_FLAG_No_mind = 256
+	BaseObjBit_FLAG_Immune_to_bleed = 4096
+
+
+	BaseObjBit_FLAG_Immune_to_stun = 65536
 	agent_BaseObjBit_FLAG_big_unit=524288
+	BaseObjBit_FLAG_Standard_Bearer = 1048576
+	BaseObjBit_FLAG_Explosive = 2097152
 	agent_BaseObjBit_FLAG_SpeedBonus = 134217728
+	BaseObjBit_FLAG_Invincible = 1073741824
 
 	//ExMotions
 	agent_ExMotionFlags_FLAG_horseback = 16777216
 
 
 	//Tactical Orders
+	
+	TacticsOrder_FLAG_garrison = 134217728
+
+	TacticsOrder_KILL_FLAG_Equipment_Tactics = ~(1 + 8 + 16)
+
 
 	//InstantStates
 	agent_ProcessInstantState_FLAG_overheal = 1
@@ -293,7 +342,8 @@ struct("agent",{
 	ORD_STD=1
 	ORD_ATK=2
 	ORD_MANU=4
-
+	
+	ORD_SCOUT=6
 
 
 	//Other
@@ -336,11 +386,16 @@ struct("agent",{
 	victim_ProcessInstantState = 597
 
 	}
+
 	//Skill var for attack check
 	defv{
+	skill_Slot_in_agent = 580
 	skill_ID = 581
+	skill_MainFunction = 582
 	skill_Type = 583
 	skill_Usage = 584
+	skill_MotionFrame = 585
+	skill_Extramotion_ID = 586 //1 = no motion at all
 	skill_Cost = 587 
 	skill_Cooldown_Time = 588 
 	skill_Targx = 590
@@ -351,6 +406,7 @@ struct("agent",{
 
 	}
 	def{
+	skill_Array_size = 20
 	Type_PassiveSkl = 0
 	Type_LinerSkl = 1
 	Type_PointSkl = 2
@@ -362,5 +418,6 @@ struct("agent",{
 	Usage_Heal = 1
 	Usage_Buff = 2
 
+	Const_Function_do_nothing = 1899
 	}
 })

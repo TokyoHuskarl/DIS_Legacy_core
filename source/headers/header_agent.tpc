@@ -1,5 +1,7 @@
 
 //cev 2007 Skill Cooldown check macro.
+//reg1 Current CD Timer Ptr
+//reg2 Skill CoolDown
 __fn macro_SkillCDck $agent $skillno {
 	/*comment "Var1 = agent 1~
 	Var2 = SkillNo
@@ -7,7 +9,48 @@ __fn macro_SkillCDck $agent $skillno {
 	r2 = SkillCD"*/
 	//TT1 = $agent * 300 + 4794
 	//TT2 = TT1 + 34
-	reg1 = ($agent * 300 + 4794) +$skillno
-	reg2 = v[($agent * 300 + 4828)+($skillno * 20)]
+	reg1 = $agent * 300
+	reg2 = v[reg1 + 4828 + $skillno * 20]
+	reg1 += 4794 + $skillno
+	//reg1 = ($agent * 300 + 4794) +$skillno
+	//reg2 = v[($agent * 300 + 4828)+($skillno * 20)]
+
+}
+
+
+__fn func_extract_skill_data_from_agent_slot $agent $skillno $flags {
+	__if $flags & EXTRACT_FLAG_Data_extracted {
+		reg1 = $skillno * skill_Array_size
+		reg1 += __id(agent_AACost)	
+		v[reg1].copy skill_ID,skill_Array_size
+	}.else bl{
+		reg1 = $agent * 300
+		reg1 += $skillno * skill_Array_size
+		reg1 += 4821
+		v[reg1].copy skill_ID,skill_Array_size
+	}
+
+}
+
+//reg1 = 0:melee 1:ranged 2:magic... idk 
+__fn func_get_AA_usage $agent $flags {
+	__if $flags & EXTRACT_FLAG_Data_extracted {
+		@if agent_AAType == 0 {//melee
+			reg1 = 0
+		}.elif agent_AAType == 2{
+			reg1 = 1
+		}.elif agent_AAType == 4{
+			reg1 = agent_AA_ARorMR==0?1:2 
+		}
+		
+	}.else bl{
+		func_errlog("the function func_get_AA_usage not defined...")
+	}
+}
+
+__fn macro_set_agent_AI_decision_Sub_WEP_Type $AAusage  {
+	var1 = $AAusage
+	var1 = [AI_decision_bits_FLAG_Sub_WEP_is_Melee,AI_decision_bits_FLAG_Sub_WEP_is_Ranged,AI_decision_bits_FLAG_Sub_WEP_is_Magic][var1]
+	agent_AI_decision_bits |= var1//temporary
 
 }

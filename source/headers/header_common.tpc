@@ -23,7 +23,7 @@ __if MAKE_TYPE == 0{
 //Backup is for faggots
 #copyMode .force
 
-def DEBUG_BUILD = 0 //0 = release, 1 = debug
+def DEBUG_BUILD = 1 //0 = release, 1 = debug
 def DIS_DEBUG_BUILD = DEBUG_BUILD
 
 
@@ -117,14 +117,13 @@ def {
 
 	Const_var_bit_maniacs = 32
 	Const_AgentMetaTeam_begin = 460318
-    	Const_Map_Allocate_Limit = 160000
 	
+	Memory_MapInfo=300317
+
 	UNIT_CLASS_INF=0
 	UNIT_CLASS_ARCHER=1
 	UNIT_CLASS_CAV=2
 
-
-	Memory_MapInfo=300317
 	UNIT_CLASS_STATIC=11
 
 
@@ -361,11 +360,25 @@ deft{
 
 }
 
+
+def EXTRACT_FLAG_Data_extracted = 0x1
 __fn func_extract_agent_vars $agent {
 	    Ptr1 = $agent*300
 	    Ptr1 += 4701
-	    v[Ptr1].copy v[601], 300
+	    v[Ptr1].copy v[601], agent_Basic_Array_size
+	    __if AGENT_DATA_EXTRACTED == 0 {
+	    	def AGENT_DATA_EXTRACTED = 1
+	    }
 }
+
+__fn func_save_extracted_agent_vars {
+	    __if AGENT_DATA_EXTRACTED == 0 {
+		ERROR_AGENT_DATA_EXTRACTED_not_defined
+	    }.else bl{
+		agent_ObjectType.copy v[Ptr1], agent_Basic_Array_size
+	    }
+}
+
 
 __fn macro_check_agent_is_killed $agentid{
 	//v[341] = 300 * v[11] + 4701
@@ -419,6 +432,20 @@ __fn func_export_deblog_array $name $ptr $amount {
 	}
 
 }
+
+
+__fn macro_cord_diff $x $y {
+	    
+	    //v[__id($x)] = ($x / 10000 + v[53] - v[403])/16
+	    //v[__id($y)] = ($y / 10000 + v[54] - v[404])/16
+	    
+	    //this one was far faster
+	    v[__id($x)..__id($y)]/=10000
+	    v[__id($x)] .sub v[403], 2
+	    v[__id($x)] .add v[53], 2
+	    v[__id($x)..__id($y)]/=16
+}
+
 #include "./header_common_items.tpc"
 #include "./header_common_DIS_systemfuncs.tpc"
 
