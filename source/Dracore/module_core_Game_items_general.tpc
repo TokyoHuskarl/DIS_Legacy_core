@@ -51,12 +51,12 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    @comment "##Head Hunter End"
 	    agent_AAType = v[1907]
 
-
-	    v[0] = v[717..718] = v[1908..1909]
+	    v[1908].copy agent_BaseRange_max,2
+	    //v[0] = v[717..718] = v[1908..1909]
 	    @comment "#AS"
 	    v[719] += v[1910]
 	    v[0] = v[720..721] = v[1911..1912]
-	    v[724] = v[1913]
+	    agent_AABits |= v[1913]
 	    v[0] = v[727..730] = v[1914..1917]
 	    @if agent_AAType == 2 {
 		func_get_ranged_weapon_velocity(v[1908],v[1914])
@@ -96,13 +96,13 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    v[0] = v[717..718] = [18000, 0]
 	    v[719] -= v[1910]
 	    v[0] = v[720..721] = [1, 5]
-	    v[724] = 0
+	    agent_AABits &= ~v[1913]
 	    v[0] = v[727..730] = 0
 	    v[741] = 0
 	    v[858] = 0
-	    v[740] ^= v[1901] == 211 ? 16 : 0
-	    v[740] ^= v[1901] == 121 ? 8388608 : 0
-	    v[740] ^= v[1921]
+	    v[740] &= v[1901] == 211 ? ~16 : 0
+	    v[740] &= v[1901] == 121 ? ~8388608 : 0
+	    v[740] &= ~v[1921]
 	    @if `!v[726] & 8388608 {
 		@if s[1] .isOn() {
 		    v[726] &= ~pow(2, v[1927] - 1)
@@ -265,9 +265,7 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    v[889] = v[1930]
 	    
 	}
-	@comment "############
-#Weight Proc#
-############"
+	@comment "#############Weight Proc#############"
 	v[1941] = v[1919]
 	@comment "#Set ArmorWeight"
 	v[838] += v[1929] >= 3 ? v[1941] : 0
@@ -287,8 +285,7 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 //
 cev .id(395), .name("!Weapon DataLoad") , {
 	@comment "module_core_Game_items_general.tpc"
-	@comment "V1 = EquipmentID
-	v2 = variation"
+	@comment "V1 = EquipmentIDv2 = variation"
 	@comment "Init"
 
 	v[0] = v[1901..1940] = 0

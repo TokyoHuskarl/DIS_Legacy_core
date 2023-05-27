@@ -23,7 +23,7 @@ __if MAKE_TYPE == 0{
 //Backup is for faggots
 #copyMode .force
 
-def DEBUG_BUILD = 1 //0 = release, 1 = debug
+def DEBUG_BUILD = 0 //0 = release, 1 = debug
 def DIS_DEBUG_BUILD = DEBUG_BUILD
 
 
@@ -51,7 +51,8 @@ def {
 
 //Entity General Const Setting
 def {
-	
+	Const_Massive_Battle_Amount = 250
+
 	//ObjLimit = 845
 	Agents_Limit = 845
 	Effects_Limit = 120

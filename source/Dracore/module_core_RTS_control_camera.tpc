@@ -293,8 +293,9 @@ cev[9] .name("Camera:WatchDiff1"), .parallel , .cond(Const_Is_RTS_Mode),{
 	v[55] = ev[1].scrx
 	v[56] = ev[1].scry
 	@wait 0
-	v[53] = ev[1].scrx - v[55]
-	v[54] = ev[1].scry - v[56]
+	v[53] = ev[1].scrx //- v[55]
+	v[54] = ev[1].scry //- v[56]
+	v[53].sub v[55],2
 	v[92] = v[53] * 1000 
 	v[92] += v[54]
 	// "#そのうちループで置き換える"
@@ -315,8 +316,9 @@ cev[10] .name("Camera:WatchDiff2"), .parallel , .cond(49),{
 	v[63] = ev[1].scrx
 	v[64] = ev[1].scry
 	@wait 0
-	v[53] = ev[1].scrx - v[63]
-	v[54] = ev[1].scry - v[64]
+	v[53] = ev[1].scrx// - v[63]
+	v[54] = ev[1].scry// - v[64]
+	v[53].sub v[63],2
 	// "#そのうちループで置き換える"
 	v[341] = 1021
 	@loop 8 {
