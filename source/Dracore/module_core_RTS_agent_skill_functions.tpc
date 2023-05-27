@@ -137,6 +137,7 @@ __fn func_agent_swap_weapon_set $agent {
 //ammo series
 
 //reg1 left ammo amount
+//reg2 no Data_extracted, then return Ptr to agent_Ammo
 __fn func_agent_spends_ammo $agent $amount $flags {
 	__if $flags & EXTRACT_FLAG_Data_extracted {
 		reg1 = agent_Ammo & 0xFF00
@@ -150,7 +151,18 @@ __fn func_agent_spends_ammo $agent $amount $flags {
 			reg1 = 0xFF//just return 255
 		}
 	}.else bl{
-		func_errlog("func_agent_spends_ammo non defined")
+		reg2 = $agent * 300
+		reg2 += 4932
+		reg1 = v[reg2] & 0xFF00
+		@if reg1 > 0 {
+			reg1 = v[reg2] & 0xFF
+			reg1 -= $amount
+			reg1 = max(0,reg1)//safety
+			v[reg2] &= 0xFFFFFF00
+			v[reg2] |= reg1
+		}.else bl{
+			reg1 = 0xFF
+		}
 	}
 
 

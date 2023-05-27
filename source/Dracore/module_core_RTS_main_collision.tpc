@@ -1,5 +1,8 @@
 //Collision check
 
+def Const_AgentMetaTeam_beginMINUSONE = Const_AgentMetaTeam_begin-1
+def Address_Agent_HitCollisionArrayStartMinus2 = Address_Agent_HitCollisionArrayStart -2 
+
 def Const_ColPushA=-980 //-950
 def Const_ColPushB=-1400 //-1350
 
@@ -11,17 +14,18 @@ def Const_ColPushB3=-2800 //-2700
 
 
 __fn macro_ColCheck_distance {
-
+    v[320] = v[v[203]] * 300
+    v[320] += 4707
     //v[320] = v[v[320]] - v[607]
     //v[321] = v[v[321]] - v[608]
-    v[320].deref v[320],2
+    v[v[320]].copy v[320],2
     v[320].sub v[607],2
 
-    v[322] = v[4523] 
-    v[322] += v[203] *2
-    //v[v[322]].copy v[322], 2
-    //v[321] = v[203] * 300
-    v[320] = v[(v[203] * 300)+v[1607]] - v[607]
+    v[322] = Address_Agent_HitCollisionArrayStartMinus2 
+    v[322] += v[v[203]] * 2
+    v[v[322]].copy v[322],2
+    //func_devlog("\v[\v[203]]: \v[322] \v[323] \v[320] \v[321]")
+    //v[320] = v[(v[203] * 300)+v[1607]] - v[607]
     //v[321] = v[(v[203] * 300)+v[1608]] - v[v[334]]
 }
 
@@ -39,10 +43,6 @@ __fn macro_ColCheck_push {
     //TT1 = Const_save_var_TileFlags+v[632]//check Tile flag
     v[320..321] *= (v[527 + ((v[Temp32] | (v[638] & 2 && v[680] > 0 ? 256 : 0)) & 256) / 256]) + (v[Ptr5]&FLAG_Maptile_Crowded?1:0)//if it's Crowded, push more
     v[v[299]] .add v[320], 2
-    	//DEBUG
-    	/*@if v[700]==0{
-	 func_show_msg("pushed by \v[203] - mort \v[609] - amount \v[327] - shift \v[345]")
-	}*/
 
     v[Temp32] |= 64
     @break
@@ -94,19 +94,10 @@ v[294] = v[301] + 25
 
 
         v[319] = v[401]
-        //v[333] = v[301] + 7
-        //v[334] = v[301] + 8
-        //v[335] = v[301] + 10
-        //v[336] = v[301] + 11
-        //v[842] = v[301] + 242
-        //v[337] = v[301] + 80
         
         //######################
         //Check Morton Start
         //######################
-        //v[607] = v[333]
-        //v[610] = v[335]
-        //v[v[607]].copy v[11], 2
 	v[607].copy v[341], 2
         v[341] .sub v[610], 2
         //#########################
@@ -195,48 +186,37 @@ v[294] = v[301] + 25
 		TT1 = min(v[327],16) // shuffling too much size array causes lag so set limitation on the max num
 		v[v[339]].shuffle TT1
 	}
-
+	
+	//v[203] = Ptr
+	v[203] = v[339] //set &array[0]
+	TT2 = v[319] + 1
         @if `v[Temp32] & 512 { //has discipline 
-	    //v[700] = v[301] + 100
-            //v[700] = v[v[700]]
-            @loop v[327] .dst v[342] {
-                v[203] = v[v[339] + v[342]] - 1
-                @if `v[700] != v[v[203]+ Const_AgentMetaTeam_begin ] { //v[v[203] * 300 + 5100] {
+            @loop v[327] {
+                @if `v[700] != v[v[v[203]]+ Const_AgentMetaTeam_beginMINUSONE ] {
 
 		    macro_ColCheck_distance()
 
-                    //@if `v[322] + v[337] >= abs(v[320]) {
-                        //@if `v[323] + v[338] >= abs(v[321]) {
-		      @if `v[v[322]] + v[337] >= abs(v[320]) {
-			  //25.4.23
-			  //v[321] = v[(v[203] * 300)+v[1608]] - v[v[334]]
-			  v[321] = v[(v[203] * 300)+v[1608]] - v[608]
-                          @if `v[v[322]+1] + v[338] >= abs(v[321]) {
+		      @if `v[322] + v[337] >= abs(v[320]) {
+                          @if `v[323] + v[338] >= abs(v[321]) {
 			    macro_ColCheck_push()
                         }
                         
                     }
                     
                 }
+                v[203] +=1//++
                 
             }
             
             
         } .else bl {
-            @loop v[327] .dst v[342] {
-                v[203] = v[v[339] + v[342]] - 1
-                @if v[319] != v[203] { //not unit itself
+            @loop v[327] {
+                @if TT2 != v[v[203]] { //not unit itself
 
 		    macro_ColCheck_distance()
 
-                    //@if `v[322] + v[337] >= abs(v[320]) {
-                    //    @if `v[323] + v[338] >= abs(v[321]) {
-                    @if `v[v[322]] + v[337] >= abs(v[320]) {
-			//25.4.23
-			//v[321] = v[(v[203] * 300)+v[1608]] - v[v[334]]
-			v[321] = v[(v[203] * 300)+v[1608]] - v[608]
-                        @if `v[v[322]+1] + v[338] >= abs(v[321]) {
-
+                    @if `v[322] + v[337] >= abs(v[320]) {
+                        @if `v[323] + v[338] >= abs(v[321]) {
 			    macro_ColCheck_push()
                             
                         }
@@ -244,7 +224,7 @@ v[294] = v[301] + 25
                     }
                     
                 }
-                
+            	v[203] +=1//++
             }
             
             

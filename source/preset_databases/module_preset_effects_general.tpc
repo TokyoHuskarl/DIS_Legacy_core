@@ -4,12 +4,16 @@
 #include "./../headers/header_battlesystem.tpc"
 //macro_SkillCDck($agent $skillno)
 #include "./../headers/header_agent.tpc"
+
+//Readin so fugging many functions from here and there, what a spaghetti!
+
 //Hit check functions
 #include "./../Dracore/module_core_RTS_battlesystem_hitchecks.tpc"
 //damage calculation funcition
 #include "./../Dracore/module_core_RTS_battlesystem_morale.tpc"
 #include "./../Dracore/module_core_RTS_battlesystem_damage_calculation.tpc"
 #include "./../Dracore/module_core_RTS_main_effects_gib_functions.tpc"
+#include "./../Dracore/module_core_RTS_agent_skill_functions.tpc"
 
 
 #include "./../DISLib/DISLib_math_functions.tpc"
@@ -42,3 +46,4 @@ __fn func_erase_effect $id {
 
 #include "./effects/pse_arrow.tpc"
 #include "./effects/pse_bolt.tpc"
+#include "./effects/pse_chukonu.tpc"
