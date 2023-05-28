@@ -59,6 +59,6 @@ echo;
 
 
 
-echo All compile process finished - IT'S OVER. >> %log%"_MAIN.txt"
+echo All compile process finished - IT'S OVER. 
 pause
 
