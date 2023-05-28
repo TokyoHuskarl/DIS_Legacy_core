@@ -277,8 +277,8 @@ __fn func_convert_str_into_map_script $ptr_target_str {
 
 
 	//Check if DIS shebang is Head of the str
-	func_check_if_str_is_DIS_script($ptr_target_str)
-	__if DIS_EXPERIMENTAL == 1 {
+	func_check_if_str_is_DIS_script(t[$ptr_target_str])
+	__if DEBUG_BUILD == 1 {
 		@if reg1 == 0{
 			func_errlog("Loaded string has no DIS shebang. Is it really written in DIS Script?")
 		}
@@ -454,7 +454,7 @@ __fn func_execute_script_instantly $ptr2scriptstr $var_count {
 
 
 __fn func_check_if_str_is_DIS_script $checkstr {
-	t[__id($checkstr)].popLine(str1)
+	t[ __id($checkstr) ].popLine(str1)
 	@if str1.eq DIS_Script_Shebang{
 		reg1 = 1
 	}.else bl{
