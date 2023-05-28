@@ -454,7 +454,7 @@ __fn func_execute_script_instantly $ptr2scriptstr $var_count {
 
 
 __fn func_check_if_str_is_DIS_script $checkstr {
-	s[__id($checkstr)].popLine(str1)
+	t[__id($checkstr)].popLine(str1)
 	@if str1.eq DIS_Script_Shebang{
 		reg1 = 1
 	}.else bl{

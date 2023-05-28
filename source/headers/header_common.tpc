@@ -1,9 +1,14 @@
 def PROJECT_NAME = "DIS_LEGACY"
+#include "./../PSEUDO_ARG" 
 //You have to put Append directory in the game directory to compile DraCore and etc into .ldb
 //And you need to put tpc.exe and its blueprint txt files in Append directory.
 
 //YOU HAVE TO CHANGE HERE TO BUILD ALL LDB AT ONCE
-def MAKE_TYPE = 0
+__if PSEUDO_ARG_SET == 0{
+	//def MAKE_TYPE = 0
+}
+
+def DEBUG_BUILD = 0 //0 = release, 1 = debug
 
 __if MAKE_TYPE == 0{
 #apply
@@ -23,7 +28,6 @@ __if MAKE_TYPE == 0{
 //Backup is for faggots
 #copyMode .force
 
-def DEBUG_BUILD = 0 //0 = release, 1 = debug
 def DIS_DEBUG_BUILD = DEBUG_BUILD
 
 
@@ -53,6 +57,7 @@ def {
 def {
 	Const_Massive_Battle_Amount = 250
 
+    	Const_Map_Allocate_Limit = 160000
 	//ObjLimit = 845
 	Agents_Limit = 845
 	Effects_Limit = 120

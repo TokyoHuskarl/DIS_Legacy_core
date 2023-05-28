@@ -1,5 +1,14 @@
 @echo off
 
+
+
+IF NOT DEFINED argfile (set argfile="./../PSEUDO_ARG")
+IF NOT DEFINED build ( 
+	rem set arg
+	echo def PSEUDO_ARG_SET = 1 > %argfile%
+	echo def MAKE_TYPE  = 0 >> %argfile%
+)
+
 rem // TPC exe
 IF NOT DEFINED tpc (set tpc="./../../tpc.exe")
 
