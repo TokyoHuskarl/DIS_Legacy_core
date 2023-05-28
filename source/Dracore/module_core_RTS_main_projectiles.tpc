@@ -186,11 +186,12 @@ TT2=MortY
                                         v[471] = [44, 43, 42][v[v[292] + 26]]
                                         v[13] = -1
                                         @call .cev v[471]
+            				v[v[292]].copy v[601], 100//restore projectile data
                                         //@comment "reg10= 0:miss 1:hit 2:blocked"
                                         @if v[21] == 1 {
                                            // @comment "Hit!"
                                             //@comment "#Buff"
-                                            v[11] = v[v[292] + 40]
+                                            v[11] = v[640] //v[v[292] + 40]
                                             @if v[11] >= v[1186] {
 						//9.3.23
                                                 //v[12] = v[300]
@@ -200,7 +201,7 @@ TT2=MortY
                                                     v[v[22]] = v[v[292] + 41]
                                                     
                                                 }*/
-						v[13] = (v[v[292] + 41])
+						v[13] = v[641] //(v[v[292] + 41])
 						func_bs_register_buff_with_time(v[11] v[300] v[13])
                                                 
                                             }
@@ -291,10 +292,12 @@ TT2=MortY
                                                         
                                                     }
                                                     //@comment "Call Shield"
-                                                    v[342] = v[300] * 300 + 4952
+                                                    v[342] = v[300] * 300 
+						    v[342] += 4952
                                                     v[v[342] + 32] = v[v[342]] > 0 ? 4 : 0
                                                     //@comment "#Shield Motion"
-                                                    v[342] = v[300] * 300 + 4943
+                                                    v[342] = v[300] * 300 
+						    v[342] += 4943
                                                     @if v[v[342]] != 1 {
                                                         v[v[342]] = 2
                                                         v[342] -= 215

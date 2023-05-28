@@ -1,4 +1,115 @@
-cev .id(101), .name("effects:bolt"), {
+cev .id(cevid_eff_bolt), .name("effects:bolt"), {
+
+@if s[141] .isOn() {
+    @loop v[1017] .dst v[320] {
+	macro_effect_array_increment_ptr()
+	@if v[effect_set_ptr] <= 1 {
+	    func_effect_arrow_init(cevid_eff_bolt)
+	    // "ポインタセット開始"
+	    // "画像"
+	    v[310] = v[242] + v[1220]
+	    @pic[v[310]].show {
+		"arrows\arrow"
+		.pos v[361], v[362] .center
+		.scrollWithMap
+		.chromakey 1
+		.scale 100
+		.trans 100
+		.rgbs 100, 100, 100, 100
+		.mapLayer 7
+		.eraseWhenTransfer
+		.affectedByTint
+		.affectedByFlash
+		.affectedByShake
+	    }
+	    // "発射音"
+	    // "仕上げに登録消す"
+	    v[242..243] += 1
+	    @if `s[Ptr19 + 500] {
+		@if v[182] < 3 {
+		    v[182] += 1
+		    v[329] = rnd(1, 3)
+		    v[472] = divmul(40, 100, v[2216])
+		    v[473] = rnd(95, 105)
+		    v[474] = divmul(v[361] + v[1001], v[1281], 50)
+		    t[510] .asg "weapons\crossbow_shoot_0"
+		    t[510] .cat v[329]
+		    v[341] = 510
+		    // "Strings = t[v[341]]"
+		    @cmd 11550, t[v[341]], .args v[472], 3
+		    
+		}
+		v[13] = v[v[295]]
+		v[330] = v[301] + 17
+		v[334] = v[301] + 23
+		v[v[330]].copy v[14], 2
+		v[v[334]].copy v[16], 2
+		//v[18] = v[242]
+
+
+		//Arrow Particle SET
+		// "###################"
+		// "v1=amount"
+		// "v2=direction -1=right 0=cent 1=left"
+		// "v3=timer"
+		// "v4=parent"
+		@loop v[1017] .dst v[320] {
+		    v[244] %= v[1199]
+		    v[351] = v[244] * 50 
+		    v[351] += v[1198]
+		    @if v[v[351]] <= 1 {
+			// "まず清掃"
+			v[1301].copy v[v[351]], ParticleArraySize
+			v[1301].copy emitter_ParticleType, ParticleArraySize
+			// "ポインタセット開始"
+			// "設定"
+			emitter_ParticleType = 2
+			// "Timer"
+			emitter_Timer = v[13]
+			// "Set itself"
+			emitter_CallPartFunc = 171 //new arrow shade!
+			// "Set Amount"
+			//emitter_ParticleAmount = v[11]
+			// "Set Dire"
+			emitter_Angle = effect_2DAngle
+			// "Set Pare"
+			emitter_ParentEffect = v[242]
+			// "XY set"
+			effect_milX.copy emitter_MilX, 4
+			effect_milPixVx.copy emitter_milMilPixVx,6
+			// ""
+			emitter_ParticleType.copy v[v[351]], ParticleArraySize
+
+			v[244] += 1
+			@break
+			
+		    }
+		    v[244] += 1
+		    
+		}
+		
+		
+	    }
+	    @break
+	    
+	}
+	v[242] += 1
+	
+    }
+    
+    s[141].off
+    
+} .else bl {
+
+	func_effect_arrow_proc("arrows\bolt")
+	// "タイマー切れのときの処理	
+	func_effect_arrow_on_ground("arrows\bolt_g" WeaponType_Bolt)
+		    
+
+}
+
+
+__if DIS_EXPERIMENTAL == 0 {
 	/* "https://dixq.net/g/s_01.html
 	Ox = 330
 	Oy = 331
@@ -315,4 +426,6 @@ cev .id(101), .name("effects:bolt"), {
 	    }
 	    
 	}
+
+}
 }

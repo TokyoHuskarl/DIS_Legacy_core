@@ -1,0 +1,21 @@
+__fn func_math_pseud_arctan $x {
+	//arctanx = ((75x^2+285)/3x^2+5))*x
+
+	var1 = $x //(10^8)
+	var2 = muldiv(var1,var1,10000000000)// x^2(10^6)
+	var2 = 75 * var1 + 285000000//(10^6)
+	var3 = var2 * 3
+	var3 += 5000000
+	reg1 = divmul(var2, var3, var1)//(10^8)
+}
+/*
+__fn func_math_pseud_arctan $x {
+	//arctanx = ((75x^2+285)/3x^2+5))*x
+
+	var1 = $x //(10^8)
+	var2 = muldiv(var1,var1,10000000000)// x^2(10^6)
+	var2 = 75 * var1 + 285000000//(10^6)
+	var3 = var2 * 3
+	var3 += 5000000
+	reg1 = divmul(var2, var3, var1)//(10^8)
+}*/

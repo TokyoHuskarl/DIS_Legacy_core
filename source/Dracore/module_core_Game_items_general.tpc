@@ -1,4 +1,6 @@
 #include "./../headers/header_common.tpc"
+#include "./module_core_Game_items_functions.tpc"
+
 
 
 
@@ -10,13 +12,9 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    v[709] += v[1902]
 	    v[713] += v[1905]
 	    @comment "#Aggressive perks"
-	    @comment "#######################
-	    Weapon Mastery
-#######################"
+	    @comment "#######################Weapone Mastery"
 	    @call .cev 1928
-	    @comment "#######################
-	    Weapon MasteryEnd
-#######################"
+	    @comment "#######################	    Weapon MasteryEnd#######################"
 	    @comment "##Duelist"
 	    s[154].off
 	    v[725] &= ~8
@@ -46,19 +44,24 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 		
 	    }
 	    v[0] = v[736..737] = v[1903..1904]
-	    @comment "##Head Hunter
-###[Crit]*2"
+	    @comment "##Head Hunter###[Crit]*2"
 	    v[1941] = v[666] & 8
 	    v[1906] *= v[1941] == 8 ? 2 : 1
 	    v[715] += v[1906]
 	    @comment "##Head Hunter End"
-	    v[703] = v[1907]
-	    v[0] = v[717..718] = v[1908..1909]
+	    agent_AAType = v[1907]
+
+	    v[1908].copy agent_BaseRange_max,2
+	    //v[0] = v[717..718] = v[1908..1909]
 	    @comment "#AS"
 	    v[719] += v[1910]
 	    v[0] = v[720..721] = v[1911..1912]
-	    v[724] = v[1913]
+	    agent_AABits |= v[1913]
 	    v[0] = v[727..730] = v[1914..1917]
+	    @if agent_AAType == 2 {
+		func_get_ranged_weapon_velocity(v[1908],v[1914])
+		agent_AAvelocity = reg1
+	    }
 	    v[741] = v[1918] > 0 ? v[1918] : 0
 	    v[858] = v[1930]
 	    @comment "If the weapon is bow, can skirmishing"
@@ -66,7 +69,8 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    @comment "If the weapon is wand, can support"
 	    v[740] |= v[1901] == 121 ? 8388608 : 0
 	    @comment "Max Ammo"
-	    v[831] += v[1920]
+	    //v[831] += v[1920]
+	    //v[1920]
 	    @comment "Elements"
 	    v[0] = v[722..723] = v[1922..1923]
 	    @comment "Or?"
@@ -92,13 +96,13 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    v[0] = v[717..718] = [18000, 0]
 	    v[719] -= v[1910]
 	    v[0] = v[720..721] = [1, 5]
-	    v[724] = 0
+	    agent_AABits &= ~v[1913]
 	    v[0] = v[727..730] = 0
 	    v[741] = 0
 	    v[858] = 0
-	    v[740] ^= v[1901] == 211 ? 16 : 0
-	    v[740] ^= v[1901] == 121 ? 8388608 : 0
-	    v[740] ^= v[1921]
+	    v[740] &= v[1901] == 211 ? ~16 : 0
+	    v[740] &= v[1901] == 121 ? ~8388608 : 0
+	    v[740] &= ~v[1921]
 	    @if `!v[726] & 8388608 {
 		@if s[1] .isOn() {
 		    v[726] &= ~pow(2, v[1927] - 1)
@@ -261,9 +265,7 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    v[889] = v[1930]
 	    
 	}
-	@comment "############
-#Weight Proc#
-############"
+	@comment "#############Weight Proc#############"
 	v[1941] = v[1919]
 	@comment "#Set ArmorWeight"
 	v[838] += v[1929] >= 3 ? v[1941] : 0
@@ -282,172 +284,171 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	}
 //
 cev .id(395), .name("!Weapon DataLoad") , {
-@comment "module_core_Game_items_general.tpc"
-@comment "V1 = EquipmentID
-v2 = variation"
-@comment "Init"
+	@comment "module_core_Game_items_general.tpc"
+	@comment "V1 = EquipmentIDv2 = variation"
+	@comment "Init"
 
-v[0] = v[1901..1940] = 0
-v[1941] = 0
-v[1941] += 1
-@actor[4].name ""
-t[503] .asg ""
-t[505] .asg t[20034]
-@comment "Load"
-v[1941] = v[1206] + v[11]
-t[2998] .asg t[v[1941]]
-t[2998] .split ",", t[2998], v[1941]
-t[503] .asg t[2999]
-t[505] .asg t[3000]
-t[2999..3000] .asg ""
-@loop 40 .dst v[1941] {
-    v[1942] = 3001 + v[1941]
-    v[1943] = 1901 + v[1941]
-    t[v[1942]] .toNum v[1944]
-    v[v[1943]] = v[1944]
-    
-}
+	v[0] = v[1901..1940] = 0
+	v[1941] = 0
+	v[1941] += 1
+	@actor[4].name ""
+	t[503] .asg ""
+	t[505] .asg t[20034]
+	@comment "Load"
+	v[1941] = v[1206] + v[11]
+	t[2998] .asg t[v[1941]]
+	t[2998] .split ",", t[2998], v[1941]
+	t[503] .asg t[2999]
+	t[505] .asg t[3000]
+	t[2999..3000] .asg ""
+	@loop 40 .dst v[1941] {
+	    v[1942] = 3001 + v[1941]
+	    v[1943] = 1901 + v[1941]
+	    t[v[1942]] .toNum v[1944]
+	    v[v[1943]] = v[1944]
+	    
+	}
 
-@comment "####Objflag"
-@if v[1907] == 0 {
-    @comment "Melee"
-    @if v[1923] != 1 {
-        @comment "Not Pierce weapon"
-        @comment "Then can parry"
-        v[1921] |= 16777216
-        
-    }
-    
-}
-@comment "####Exmotion"
-v[1926] = 0
-t[3026] .split "|", t[3200], v[1941]
-@loop v[1941] .dst v[1945] {
-    v[1942] = 3200 + v[1945]
-    t[v[1942]] .toNum v[1944]
-    v[1926] |= pow(2, v[1944] - 1)
-    
-}
+	@comment "####Objflag"
+	@if v[1907] == 0 {
+	    @comment "Melee"
+	    @if v[1923] != 1 {
+		@comment "Not Pierce weapon"
+		@comment "Then can parry"
+		v[1921] |= 16777216
+		
+	    }
+	    
+	}
+	@comment "####Exmotion"
+	v[1926] = 0
+	t[3026] .split "|", t[3200], v[1941]
+	@loop v[1941] .dst v[1945] {
+	    v[1942] = 3200 + v[1945]
+	    t[v[1942]] .toNum v[1944]
+	    v[1926] |= pow(2, v[1944] - 1)
+	    
+	}
 
-@comment "####Exmotion"
-v[1927] = 0
-t[3027] .split "|", t[3200], v[1941]
-@loop v[1941] .dst v[1945] {
-    v[1942] = 3200 + v[1945]
-    t[v[1942]] .toNum v[1944]
-    v[1927] |= pow(2, v[1944] - 1)
-    
-}
+	@comment "####Exmotion"
+	v[1927] = 0
+	t[3027] .split "|", t[3200], v[1941]
+	@loop v[1941] .dst v[1945] {
+	    v[1942] = 3200 + v[1945]
+	    t[v[1942]] .toNum v[1944]
+	    v[1927] |= pow(2, v[1944] - 1)
+	    
+	}
 
-t[3001..3040] .asg ""
-@comment "###################
-Set Variation"
-//safety for ID collapse crash
-var2 = max(var2,-1)
-v[1930] += v[12] == -1 ? rnd(0, v[1928]) * 100000 : min(v[12], v[1928]) * 100000
-@comment "###################"
-@comment "###################
-Adjustment
+	t[3001..3040] .asg ""
+	@comment "###################
+	Set Variation"
+	//safety for ID collapse crash
+	var2 = max(var2,-1)
+	v[1930] += v[12] == -1 ? rnd(0, v[1928]) * 100000 : min(v[12], v[1928]) * 100000
+	@comment "###################"
+	@comment "###################
+	Adjustment
 ###################"
-@if v[1901] >= 1 {
-    @comment "1H"
-    @if v[1901] < 100 {
-        v[1902] += 3
-        v[1902] = muldiv(v[1902], 11, 10)
-        v[1910] -= 2
-        
-    } .else bl {
-        @comment "2H Melee"
-        @if v[1901] < 200 {
-            v[1902] += 6
-            v[1902] = muldiv(v[1902], 117, 100)
-            v[1910] -= 4
-            
-        } .else bl {
-            @comment "2H Ranged"
-            @if v[1901] < 300 {
-                v[1902] += 2
-                v[1910] -= 6
-                
-            }
-            
-        }
-        
-    }
-    @comment "Overall
-AS-5"
-    v[1910] -= 5
-    @comment "min range"
-    v[1909] = v[1909] <= 0 ? -999999 : v[1909]
-    
-}
-@comment "###################
-Explain Str
+	@if v[1901] >= 1 {
+	    @comment "1H"
+	    @if v[1901] < 100 {
+		v[1902] += 3
+		v[1902] = muldiv(v[1902], 11, 10)
+		v[1910] -= 2
+		
+	    } .else bl {
+		@comment "2H Melee"
+		@if v[1901] < 200 {
+		    v[1902] += 6
+		    v[1902] = muldiv(v[1902], 117, 100)
+		    v[1910] -= 4
+		    
+		} .else bl {
+		    @comment "2H Ranged"
+		    @if v[1901] < 300 {
+			v[1902] += 2
+			v[1910] -= 6
+			
+		    }
+		    
+		}
+		
+	    }
+	    @comment "Overall
+	AS-5"
+	    v[1910] -= 5
+	    @comment "min range"
+	    v[1909] = v[1909] <= 0 ? -999999 : v[1909]
+	    
+	}
+	@comment "###################
+	Explain Str
 ###################"
-t[504] .asg ""
-@if v[1901] >= 200 {
-    
-} .else bl {
-    @if v[1901] >= 100 {
-        t[504] .asg t[20022]
-        
-    } .else bl {
-        t[504] .asg t[20023]
-        
-    }
-    
-}
-v[1942] = v[1901] % 100
-@if v[1942] == 1 {
-    t[504] .cat t[20024]
-    
-}
-@if v[1942] == 2 {
-    t[504] .cat t[20025]
-    
-}
-@if v[1942] == 3 {
-    t[504] .cat t[20026]
-    
-}
-@if v[1942] == 4 {
-    t[504] .cat t[20027]
-    
-}
-@if v[1942] == 5 {
-    t[504] .cat t[20028]
-    
-}
-@if v[1942] == 6 {
-    t[504] .cat t[20029]
-    
-}
-@if v[1942] == 8 {
-    t[504] .cat t[20030]
-    
-}
-@if v[1942] == 11 {
-    t[504] .cat t[20031]
-    
-}
-@if v[1942] == 12 {
-    t[504] .cat t[20032]
-    
-}
-@if v[1942] == 13 {
-    t[504] .cat t[20233]
-    
-}
-@if v[1942] == 21 {
-    t[504] .cat t[20241]
-    
-}
-@comment "###################
-Set ID
+	t[504] .asg ""
+	@if v[1901] >= 200 {
+	    
+	} .else bl {
+	    @if v[1901] >= 100 {
+		t[504] .asg t[20022]
+		
+	    } .else bl {
+		t[504] .asg t[20023]
+		
+	    }
+	    
+	}
+	v[1942] = v[1901] % 100
+	@if v[1942] == 1 {
+	    t[504] .cat t[20024]
+	    
+	}
+	@if v[1942] == 2 {
+	    t[504] .cat t[20025]
+	    
+	}
+	@if v[1942] == 3 {
+	    t[504] .cat t[20026]
+	    
+	}
+	@if v[1942] == 4 {
+	    t[504] .cat t[20027]
+	    
+	}
+	@if v[1942] == 5 {
+	    t[504] .cat t[20028]
+	    
+	}
+	@if v[1942] == 6 {
+	    t[504] .cat t[20029]
+	    
+	}
+	@if v[1942] == 8 {
+	    t[504] .cat t[20030]
+	    
+	}
+	@if v[1942] == 11 {
+	    t[504] .cat t[20031]
+	    
+	}
+	@if v[1942] == 12 {
+	    t[504] .cat t[20032]
+	    
+	}
+	@if v[1942] == 13 {
+	    t[504] .cat t[20233]
+	    
+	}
+	@if v[1942] == 21 {
+	    t[504] .cat t[20241]
+	    
+	}
+	@comment "###################
+	Set ID
 ###################"
-v[1940] = v[11]
-@comment "If v:1901==0, consider called item undefined"
-v[1940] = v[1901] == 0 ? 0 : v[1940]
+	v[1940] = v[11]
+	@comment "If v:1901==0, consider called item undefined"
+	v[1940] = v[1901] == 0 ? 0 : v[1940]
 }
 
 cev .id(396), .name("!Shield DataLoad") , {

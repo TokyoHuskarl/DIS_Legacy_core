@@ -2,11 +2,186 @@
 //このファイルをコンパイルすると基幹部分のUIシステムが更新されます
 
 #include "./../headers/header_common.tpc"
+#include "./../headers/header_ui.tpc"
 
 def moduletitle="module_core_Game_ui_general.tpc"
+
+#include "./module_core_Game_ui_system.tpc"
 
 //Escape Menu
 #include "./module_core_Game_ui_escape_menu.tpc"
 
 //Inv
 #include "./module_core_Game_ui_inventory.tpc"
+
+
+cev[7], "Base Mouse Lock", .parallel, .cond(6),{
+	@if s[38] .isOff() {
+	    @if s[239] .isOn() {
+		s[239].off
+		@mouse.setPos v[1115], v[1116]
+		
+	    }
+	    v[93] += 1
+	    @if s[2] .isOff() {
+		@mouse.getPos v[341], v[342]
+		v[93] = v[341] == v[1115] && v[342] == v[1116] ? v[93] : 0
+		v[49] -= muldiv(v[1115] - v[341], v[2221], 50)
+		v[49] = max(0, v[49])
+		v[49] = min(v[1001], v[49])
+		v[50] -= muldiv(v[1116] - v[342], v[2221], 50)
+		v[50] = max(0, v[50])
+		v[50] = min(v[1002], v[50])
+		@mouse.setPos v[1115], v[1116]
+		@wait 0
+		s[51].on
+		
+	    } .else bl {
+		@if s[4] .isOff() {
+		    @mouse.getPos v[341], v[342]
+		    v[93] = v[341] == v[1115] && v[342] == v[1116] ? v[93] : 0
+		    v[49] -= muldiv(v[1115] - v[341], v[2221], 50)
+		    v[49] = max(0, v[49])
+		    v[49] = min(v[1001], v[49])
+		    v[50] -= muldiv(v[1116] - v[342], v[2221], 50)
+		    v[50] = max(0, v[50])
+		    v[50] = min(v[1002], v[50])
+		    @mouse.setPos v[1115], v[1116]
+		    @wait 0
+		    s[51].on
+		    
+		}
+		
+	    }
+	    
+	} .else bl {
+	    @if s[239] .isOff() {
+		@mouse.setPos v[49], v[50]
+		s[239].on
+		s[51].off
+		
+	    }
+	    @if s[39] .isOff() {
+		@mouse.getPos v[49], v[50]
+		
+	    }
+	    v[49].copy v[51], 2
+	    v[51..52] -= 3
+	    v[52..52] += 1
+	    @if v[47] > 0 {
+		v[41] = v[49] - 1
+		v[48] = v[50] - 1
+		v[47] -= 1
+		
+	    } .else bl {
+		v[41] = v[49]
+		v[48] = v[50]
+		
+	    }
+	    @pic[1000].show {
+		t[522]
+		.pos v[41], v[48] .center
+		.chromakey 1
+		.scale 100
+		.trans 0
+		.rgbs 100, 100, 100, 100
+		.mapLayer 10
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+	    }
+	    @if s[2] .isOn() {
+		@if s[4] .isOn() {
+		    @pic[1000].show {
+			t[522]
+			.pos v[41], v[48] .center
+			.chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 200, 60, 60, 50
+			.mapLayer 10
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+		    }
+		    
+		}
+		
+	    }
+	    
+	}
+}
+
+
+cev[8], "Additional Mouse Lock ", .parallel, .cond(51),{
+	v[93] += 1
+	v[49].copy v[409], 2
+	@if s[2] .isOff() {
+	    @mouse.getPos v[341], v[342]
+	    v[93] = v[341] == v[1115] && v[342] == v[1116] ? v[93] : 0
+	    v[49] -= muldiv(v[1115] - v[341], v[2221], 50)
+	    v[49] = max(0, v[49])
+	    v[49] = min(v[1001], v[49])
+	    v[50] -= muldiv(v[1116] - v[342], v[2221], 50)
+	    v[50] = max(0, v[50])
+	    v[50] = min(v[1002], v[50])
+	    @mouse.setPos v[1115], v[1116]
+	    @wait 0
+	    s[51].off
+	    
+	} .else bl {
+	    @if s[4] .isOn() {
+		@mouse.getPos v[341], v[342]
+		v[93] = v[341] == v[1115] && v[342] == v[1116] ? v[93] : 0
+		v[49] -= muldiv(v[1115] - v[341], v[2221], 50)
+		v[49] = max(0, v[49])
+		v[49] = min(v[1001], v[49])
+		v[50] -= muldiv(v[1116] - v[342], v[2221], 50)
+		v[50] = max(0, v[50])
+		v[50] = min(v[1002], v[50])
+		@mouse.setPos v[1115], v[1116]
+		@wait 0
+		s[51].off
+		
+	    }
+	    
+	}
+
+}
+
+//Screenshot Manager
+cev[2093], "ScreenshotManager", .parallel, {
+	@key.inputEx .keyCode 113 .dst v[4506]
+	@if v[4506] == 1 {
+	    @if v[4507] <= 0 {
+		@se.play "system\scrshot" .opt 100, 100, 50
+		v[4507] = 4
+		v[4081] = sys.date
+		v[4082] = sys.time
+		t[3000] .asg "user\screenshots\"
+		t[3000] .cat "\v[4081]_\v[4082]" .extract
+		@img.save .screen .dst t[3000]
+		
+	    }
+	    
+	}
+	v[4507] -= 1
+
+}
+
+
+
+
+//Parallel funcs end
+
+
+
+
+cev[2131] .name("UI:Pick_faction") {
+	func_ui_start_pick_faction_window()
+}
+
+cev[2056] .name("UI:Y_or_N_? t[3000]") {
+	func_open_y_or_n_menu(2186,t[3000],"Yes","No")
+}
+

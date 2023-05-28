@@ -4,120 +4,29 @@
 cev .id(1205), .name("Quickhand"), {
 @if s[118] .isOn() {
     v[1301].copy v[581], 20
-    @comment "#Q_ID and Q_Func"
+    // "#Q_ID and Q_Func"
     v[581] = 5
     v[582] = v[581] + 1200
-    @comment "#Q_Type"
+    // "#Q_Type"
     v[583] = 5
     v[584] = 2
-    @comment "#Q_Motion"
+    // "#Q_Motion"
     v[585] = 1
-    @comment "#Q_ExtraMotion"
+    // "#Q_ExtraMotion"
     v[586] = 1
-    @comment "#Q_Cost"
+    // "#Q_Cost"
     v[587] = 8
-    @comment "#Q_Range"
-    @comment "#Q_Range
-#AutoAttackRange"
+    // "#Q_Range"
+    // "#Q_Range
+    //AutoAttackRange"
     v[592] = v[718] / 1000
     v[592] *= v[592]
     v[592] += 4800
-    @comment "#Q_CD"
+    // "#Q_CD"
     v[588] = 135
     
 } .else bl {
-    v[297] = v[299] * 300
-    v[297] += 4700
-    @comment "出る場所セット"
-    @if `s[500 + v[299]] == 1 {
-        @comment "#########################"
-        v[472] = divmul(30, 100, v[2216])
-        v[473] = 100
-        v[474] = divmul(v[361] + v[1001], v[1281], 50)
-        @comment "#########################"
-        @cmd 11550, "chari16", .args v[472], 3
-        
-    }
-    @comment "Access19 = AttackerObjectID
-Access20 = TargetObjectIDAccess18 = TargetObjTypeチェックPtr"
-    @comment "Access17 = AttackerObjチェックPtr"
-    v[1301].copy v[601], 300
-    @comment "Stats"
-    v[341] = v[297] + 101
-    v[v[341]].copy v[701], 100
-    @comment "Equipments"
-    v[341] = v[297] + 251
-    v[v[341]].copy v[851], 9
-    @comment "Perks"
-    v[341] = v[297] + 65
-    v[v[341]].copy v[665], 2
-    v[601] = v[v[297] + 1]
-    @comment "#Equiqment Ck"
-    v[11] = v[851]
-    @call .cev v[1150]
-    v[1929] *= -1
-    @call .cev 1923
-    @comment "Swap"
-    v[851].swap v[856], 1
-    @comment "ReEquip"
-    v[11] = v[851]
-    @call .cev v[1150]
-    @call .cev 1923
-    @comment "If Swapped into 2handed weapon and Holding Shield, Unequip the shield"
-    v[350] = v[1950]
-    @if v[1901] >= 100 {
-        @comment "#Shield Ck"
-        v[11] = v[852]
-        @call .cev v[1151]
-        v[1929] *= -1
-        @call .cev 1923
-        v[852].swap v[857], 1
-        
-    } .else bl {
-        @comment "2h to 1h&shield"
-        @if v[852] == 0 {
-            v[852].swap v[857], 1
-            v[11] = v[852]
-            @call .cev v[1151]
-            @call .cev 1923
-            
-        } .else bl {
-            
-        }
-        
-    }
-    @comment "#################
-Change Graphic
-#################"
-    //NEED TO MODIFY THIS PROC WHEN YOU USE SHIELD SWAP
-    //->header_drawing
-    func_get_weapon_picture_id(v[851])
-    t[501].asg Const_str_weapon
-    t[501].cat "\v[21]" .extract
-    function_set_agent_picture(v[299] t[501] 4)
-   
-    //v[(v[299] - 1) * 6 + v[1185] + 3] = v[858]
-
-    
-    @comment "Reset Flag"
-    v[v[297] + 248] &= ~(1 + 8 + 16)
-    @comment "#Rest Q_ID and Q_Func"
-    s[118].on
-    @if v[741] >= 1 {
-        @call .cev v[741]
-        v[581].copy v[741], 20
-        
-    }
-    s[118].off
-    @comment "Swap actual equipments"
-    v[341] = v[297] + 251
-    v[851].copy v[v[341]], 9
-    @comment "Set changed stats "
-    v[341] = v[297] + 102
-    v[702].copy v[v[341]], 59
-    @comment "#############################
-Remove ShieldWall & Skirmishing
-#############################"
-    
-}
+	func_agent_swap_weapon_set(v[299])
+  
+	}
 }

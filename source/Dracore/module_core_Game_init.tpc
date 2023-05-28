@@ -1,7 +1,6 @@
 #include "./../headers/header_common.tpc"
 #include "./../headers/header_drawing.tpc"
 def DraCore_version="v1.0pre"
-def ObjLimit = 845
 
 #include "./../headers/header_config_files.tpc"
 
@@ -36,7 +35,7 @@ cev .id(1), .name("@Game Init") , {
 	v[1167] = 1799
 	v[1168] = v[1166] + v[1167]
 	v[1201] = v[1168]+1
-	v[2299] = v[1201] + ObjLimit * Const_layer_amount
+	v[2299] = v[1201] + Agents_Limit * Const_layer_amount
 	v[1202] = v[1201] - Const_layer_amount
 	@sys.gameOpt .picLimit v[2299]
 
@@ -162,7 +161,7 @@ cev .id(1), .name("@Game Init") , {
 	@comment "####################"
 	v[2222] = 270
 	@comment "Set Const"
-	v[4559] = 180
+	v[4559] = Projectiles_Limit
 	v[4570] = 10
 	v[4529] = 572947
 	v[1182] = 300317
@@ -171,8 +170,7 @@ cev .id(1), .name("@Game Init") , {
 	v[4525] = 2441
 	v[4530] = 159528
 	v[4530] = 463759
-	v[4523] = 561446
-	v[4523] = 746949
+	v[4523] = Address_Agent_HitCollisionArrayStart
 	v[4518] = 461318
 	v[1186] = 90
 	v[1204] = 42
@@ -184,7 +182,7 @@ cev .id(1), .name("@Game Init") , {
 	v[1185] = 740948
 	v[1145] = 462319
 	v[1146] = 462821
-	v[1004] = ObjLimit
+	Const_save_var_Agents_Limit = Agents_Limit
 	v[1012] = 350
 	@comment "this one is dynamic"
 	v[1080] = 350
@@ -286,19 +284,19 @@ cev .id(1), .name("@Game Init") , {
 	v[1138] = 25
 	//v[1018] = 243001
 	@comment "#otamesi"
-	v[1017] = 120
-	v[1124] = 65
-	v[1220] = 801
+	Const_save_var_Effects_Limit = Effects_Limit
+	v[1124] = Effects_Additional_Cap
+	Const_save_var_Effects_PicID_Begin = PicID_Effects_Begin
 	@comment "#Projectile"
-	v[1075] = 225001
-	@comment "#otamesi"
-	v[1076] = v[1075] - 1
+	//v[1075] = 225001
+	//@comment "#otamesi"
+	//v[1076] = v[1075] - 1
 	v[4560] = 1001
 	@comment "#AI Group"
 	v[1131] = 300221
 	v[1212] = 3801
 	@comment "#OTHERS"
-	v[1128] = 120
+	v[1128] = Const_Massive_Battle_Amount
 	@comment "##OBJ"
 	v[1112] = 4200
 	v[1112] = 280001
@@ -452,7 +450,8 @@ cev .id(1), .name("@Game Init") , {
 	v[1075] = Const_save_var_TileFlags +400*400
 	v[1076] = v[1075] - 1
 	//Effects begin
-	v[1018] = v[1075] + v[4559] * 100 
+	v[1018] = v[1075] + v[4559] * 100//!?
+	v[4840] = v[1018] + 1 
 	@comment "##OBJ数拡張する場合ここもいじる必要あり"
 	@comment "#Pathfinding"
 	v[4569] = v[1018] + v[1017] * 100 //

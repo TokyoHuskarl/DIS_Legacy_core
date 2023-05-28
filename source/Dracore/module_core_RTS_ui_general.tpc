@@ -5,6 +5,8 @@
 #include "./../headers/header_ui.tpc"
 #include "./../headers/header_control.tpc"
 
+#include  "./module_core_RTS_ui_misc_functions.tpc"
+
 def moduletitle="module_core_RTS_ui_general"
 
 //Map Common UI
@@ -37,3 +39,9 @@ cev .id(47) ,.name("UI:Mouse Observer"), .parallel , .cond(Const_Is_RTS_Mode), {
 #include "./module_core_RTS_ui_mouse.tpc"
 }
 
+#include  "./module_core_RTS_ui_log.tpc"
+
+//Resource Window
+cev[84] "Resource Window", {
+	func_refresh_resource_window()
+}

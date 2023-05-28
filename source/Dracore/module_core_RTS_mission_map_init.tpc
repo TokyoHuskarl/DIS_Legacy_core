@@ -675,7 +675,10 @@ cev .id(1800), .name("Mission:MapInit"), {
 		v[342] -= 10
 		v[343] = ev[4].scrx - ev[3].scrx
 		v[344] = ev[4].scry - ev[3].scry
-		@pic[PicID_Map_base].strpic {
+
+
+		// This shouldn't be implemented yet
+		/*@pic[PicID_Map_base].strpic {
 		    ""
 		    .pos v[341], v[342] .topLeft
 		    .size v[343], v[344]    .scrollWithMap
@@ -691,7 +694,8 @@ cev .id(1800), .name("Mission:MapInit"), {
 		    .affectedByTint
 		    .affectedByFlash
 		    .affectedByShake
-		}
+		}*/
+
 		@pic[PicID_elevation_add].strpic {
 		    ""
 		    .pos v[341], v[342] .topLeft

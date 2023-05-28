@@ -1,11 +1,26 @@
 
 //9.3.23
 //cev 42
+
+def ranged_base_hit = 26//38 
+
+__fn macro_extract_units_parameters {
+	//TEMPORARY
+	reg1 = Ptr9+4701
+	v[reg1].copy agent_ObjectType, 300
+	reg1 = Ptr10+4960
+	v[reg1].copy victim_Morale, 20//only 20
+
+}
+
+
 __fn func_bs_melee_hit_check $attacker $victim {
 	Ptr9 = $attacker *300
 	Ptr10 = $victim *300
 
-	@if `v[Ptr9 + 4944] == v[Ptr10 + 4944] {
+	macro_extract_units_parameters()
+
+	@if `agent_Direction == v[Ptr10 + 4944] {//back attack!
 	    s[164].on
 	    
 	} .else bl {
@@ -13,16 +28,14 @@ __fn func_bs_melee_hit_check $attacker $victim {
 	    
 	}
 	//@comment "HITを取得"
-	v[301] = Ptr9 + 4965
-	v[301] = v[v[301]]
-	//@comment "AVDを取得"
-	v[21] = Ptr10 + 4966
-	v[21] = v[v[21]]
+	v[301] = agent_ProcessHIT
+	//get evasion
+	v[21] = victim_ProcessEVA
 	//@comment "#################GetParaNow v1v2r1 END#################"
 	//@comment "#DodgeMS*12%"
-	v[21] += v[Ptr10 + 4765] & 32 ? muldiv(v[Ptr10 + 4968], 12, 100) : 0
+	v[21] += v[Ptr10 + 4765] & 32 ? victim_ProcessMS>>3:0//muldiv(victim_ProcessMS, 12, 100) : 0
 	//@comment "＃＃＃＃＃＃＃＃＃＃Elevation Bonus＃＃＃＃＃＃＃＃＃＃"
-	v[320] = v[Ptr9 + 4757] - v[Ptr10 + 4757]
+	v[320] = agent_getTerrainElevation - v[Ptr10 + 4757]
 	//@comment "＃＃＃＃＃＃＃＃＃＃BackAttack Bonus＃＃＃＃＃＃＃＃＃＃"
 	v[301] += s[164] == 1 ? 15 : 0
 	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per...10% min5% max95%＃＃＃＃＃＃＃＃＃＃"
@@ -32,18 +45,18 @@ __fn func_bs_melee_hit_check $attacker $victim {
 	v[303] = rnd(0, 99)
 	v[21] = v[303] <= v[301] ? 1 : 0
 	@if v[21] == 0 {
-	    v[843] = Ptr10 + 4965
+	    v[843] = Ptr10 + 4803
 	    //@comment "＃＃＃＃＃＃＃＃＃＃Check Shield?	＃＃＃＃＃＃＃＃＃＃"
 	    //@comment "Shieldを取得 302	...ADVに先行で算入されている"
-	    v[302] = 100 - v[Ptr10 + 4835]
+	    v[302] = 100 - v[Ptr10 + 4835]//shield value..
 	    v[22] = v[303] >= v[302] ? 1 : 0
 	    @if v[22] == 0 {
 		@if s[164] .isOff() {
 		    //@comment "Parry chance"
-		    v[874] = Ptr10 + 4974
-		    @if `v[v[874]] & 16777216 {
-			@if `v[v[843]] != 1 {
-			    v[22] = rnd(0, 99) <= v[Ptr10 + 4965] / (v[v[874]] & 131072 ? 2 : 3) + 16 ? 2 : 0
+		    //v[874] = Ptr10 + 4974
+		    @if `victim_ProcessObjBit & 16777216 {
+			@if `v[v[843]] == 0 {//not ranged type?
+			    v[22] = rnd(0, 99) <= victim_ProcessHIT / (victim_ProcessObjBit & 131072 ? 2 : 3) + 16 ? 2 : 0
 			    
 			}
 			
@@ -57,36 +70,67 @@ __fn func_bs_melee_hit_check $attacker $victim {
 
 }
 
-__fn func_bs_ranged_hit_check $attacker $victim $dir{
+def{
+bs_hitcheck_FLAG_ArrowMode = 0x1
+
+}
+
+__fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	Ptr9 = $attacker *300
 	Ptr10 = $victim *300
+	__if $flags & bs_hitcheck_FLAG_ArrowMode {
+		defv var_funcbs_rhc_arrow_hitbonus = __id(var6)
+		var_funcbs_rhc_arrow_hitbonus = $aux_var //secure - if it's arrow type, load saved arrow hit bonus
+	}
+	macro_extract_units_parameters()
+	//var5 = perk1
+	var5 = v[Ptr10 + 4765]
 	//@comment "HITを取得"
-	v[301] = Ptr9 + 4965
-	v[301] = v[v[301]]
+	//v[301] = Ptr9 + 4965
+	v[301] = agent_ProcessHIT//v[v[301]]
 	//@comment "AVD/4を取得"
-	v[21] = Ptr10 + 4966
-	v[21] = v[v[21]]
+	//v[21] = Ptr10 + 4966
+	v[21] = victim_ProcessEVA//v[v[21]]
 	//@comment "#DodgeMS*12%"
-	v[21] += v[Ptr10 + 4765] & 32 ? muldiv(v[Ptr10 + 4968], 12, 100) : 0
+	v[21] += var5 & 32 ? victim_ProcessMS>>3 : 0// muldiv(victim_ProcessMS, 12, 100)
 	v[21] /= 4
 	//@comment "##########Perk##########"
 	//@comment "Anticipation"
-	v[21] += v[Ptr10 + 4765] & 64 ? 18 + v[21] : 0
+	v[21] += var5 & 64 ? 18 + v[21] : 0
 	//@comment "＃＃＃＃＃＃＃＃＃＃Elevation Bonus＃＃＃＃＃＃＃＃＃＃"
-	v[320] = v[Ptr9 + 4757] - v[Ptr10 + 4757]
+	v[320] = min(agent_getTerrainElevation - v[Ptr10 + 4757],3)//3 at highest
 	v[301] += 7 * v[320]
 	//@comment "＃＃＃＃＃＃＃＃＃＃Check Shield?＃＃＃＃＃＃＃＃＃＃"
 	//@comment "Shieldを取得 302...ADV/4+302*2"
-	v[302] = v[Ptr10 + 4974] & 67108864 ? 0 : v[Ptr10 + 4948] & 6 ? muldiv(v[Ptr10 + 4835], 250, 100) : v[Ptr10 + 4835] * 2
-	//@comment "BackAttack one-thirds shield bonus "
+	v[302] = Ptr10 + 4835
+	@if v[v[302]] > 0{//if victim has shield
+		@if `victim_ProcessObjBit & 67108864{//check if blken
+			v[302] = 0
+ 
+		}.else bl{
+			v[302] =  v[Ptr10 + 4948] & 6 ?muldiv(v[v[302]], 250, 100) : v[v[302]] * 2
+			//if you're covered with shield wall brother	
+		}
+	}.else bl{
+		v[302] = 0
+	}
+	//If you covered by ally's shield, you will gain+8 shield value, even if you don't have any shield
+	v[302] += victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check?6:0
+	//@comment "BackAttack one-thirds evasion chance"
 	v[21] = (v[21] + v[302]) / ($dir == v[Ptr10 + 4944] ? 3 : 1)
+	v[21] += victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check?7:0
+
 	v[303] = rnd(0, 99)
 	v[22] = v[303] >= 100 - v[302] ? 1 : 0
-	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per...38%min1% max99%＃＃＃＃＃＃＃＃＃＃"
-	v[301] += 38 - v[21]
+	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per... once 38% but now far lower than that"
+	__if $flags & bs_hitcheck_FLAG_ArrowMode {
+		v[301] += var_funcbs_rhc_arrow_hitbonus - v[21]
+	}.else bl{
+		v[301] += ranged_base_hit - v[21]
+	}
 	v[301] = max(1, min(99, v[301]))
-	//@comment "Ambush"
-	v[21] /= (v[Ptr10 + 4976] & 1) > 0 ? 2 : 1
+	//against ambushed unit, accuracy is halved
+	v[301] >>= (victim_ProcessObjBit & 1) //fixed BETA2
 	//@comment "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"
 	v[21] = v[303] <= v[301] ? 1 : 0
 }
@@ -97,18 +141,21 @@ __fn func_bs_dummy_hit_check {
 
 __fn func_bs_mind_hit_check $attacker $victim{
 	Ptr10 = $victim *300
+	reg1 = Ptr10+4960
+	reg1.copy victim_Morale, 20
 	//@comment "＃＃＃＃＃＃＃＃＃＃memo	＃＃＃＃＃＃＃＃＃＃"
 	//@comment "V1=spell power"
 	//@comment "#そのうち処理作る"
 	//@comment "#################GetParaNow v1v2r1 END#################"
 	v[301] = v[11]
 	//@comment "#################	GetWillPower#################"
-	v[21] = v[v[300] * 300 + 4975]
+	v[21] = victim_ProcessWill//v[v[300] * 300 + 4975]
 	//@comment "＃＃＃＃＃＃＃＃＃＃	Base Hit Per...10%	min5% max95%	＃＃＃＃＃＃＃＃＃＃"
 	v[301] -= v[21]
-	v[12] = v[v[300] * 300 + 4974]
+	v[12] = victim_ProcessObjBit//v[v[300] * 300 + 4974]
 	@if s[319] .isOn() {
-	    v[301] -= v[21] >= 150 || v[12] & 4096 || v[12] & 4194304 ? 9999 : 0
+	    v[301] -= v[21] >= 150 || v[12] & 4198400 ? 9999 : 0 //v[12] & 4096 || v[12] & 4194304
+	    //Too much will or mindless makes unit immune to mind attack 
 	    
 	}
 	//@comment "＃＃＃＃＃＃＃＃＃＃	Roll!	＃＃＃＃＃＃＃＃＃＃"

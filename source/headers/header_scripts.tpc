@@ -11,6 +11,9 @@ __fn macro_script_split{
 
 //#############################
 //DIS script tokens
+
+def DIS_Script_Shebang = "#!DIS_SCRIPT"
+
 def EOF = "EOF"
 def NEST_START = "[N:"
 def NEST_START_SIZE = 3
@@ -34,6 +37,7 @@ def ROOT_INDEX_ADDRESS = Const_NEST_VAR_ADDRESS_BEGIN
 TODO:
 	スイッチのデバッグ画像表示を消す
 */
+
 __fn macro_split_function_str $ptr_str {
         t[$ptr_str] .split "(", t[3000], v[341]
         //t[3001] .split ")", t[3000], v[341]
@@ -48,6 +52,7 @@ __fn msg_script_debug{
 	    	func_show_msg("\c[17]READING - \t[510] now:\v[\v[281]] long:\v[343] targ:\v[305]")
 	    }
 }
+
 
 
 //RETURN t[502]
@@ -269,6 +274,33 @@ __fn func_script_interpreter_recursion $PARENT_INDEX_ADDRESS $LoopAmount {
 
 //Need your lovely developement <3 lel
 __fn func_convert_str_into_map_script $ptr_target_str {
+
+
+	//Check if DIS shebang is Head of the str
+	func_check_if_str_is_DIS_script($ptr_target_str)
+	__if DIS_EXPERIMENTAL == 1 {
+		@if reg1 == 0{
+			func_errlog("Loaded string has no DIS shebang. Is it really written in DIS Script?")
+		}
+	}
+
+	TT1 = 0
+	@loop .inf() {
+		t[$ptr_target_str] .inStr "//" TT2 .beg(TT1) 
+		@if TT2==-1 {
+			@break
+		} .else bl {
+			t[$ptr_target_str] .inStr (StrConst_LF,TT3,.beg(TT2))
+			@if TT3==-1 {//underconstruction, the last line
+			} .else bl {//erase coment out
+				TT3-=TT2
+				t[$ptr_target_str] .asg .remove(t[$ptr_target_str],TT2,TT3)
+			}
+		}
+	}
+
+
+
 	// TT1=index
 	//Check //Comment Out
 	TT1 = 0
@@ -310,6 +342,9 @@ __fn func_convert_str_into_map_script $ptr_target_str {
 	t[2999] .asg"^\t[525]" .extract
 	t[$ptr_target_str] .asg .exrep(t[$ptr_target_str], t[2999],"")
 	
+
+	//GLOBAL VARIABLES
+
 	//replace MAPVAR_*
 	TT1 = 0
 	@loop .inf() {
@@ -382,6 +417,7 @@ __fn func_execute_script $ptr2scriptstr $var_count {
 
 //use this function when you have to execute script without script compile function
 //like when you open console and exec "hoge"
+//Attention: This seems unstable, maybe need converting proc anyway
 __fn func_execute_script_instantly $ptr2scriptstr $var_count {
 
 		func_compile_map_script($ptr2scriptstr)
@@ -413,4 +449,15 @@ __fn func_execute_script_instantly $ptr2scriptstr $var_count {
 
                 s[291].off
 
+}
+
+
+
+__fn func_check_if_str_is_DIS_script $checkstr {
+	t[__id($checkstr)].popLine(str1)
+	@if str1.eq DIS_Script_Shebang{
+		reg1 = 1
+	}.else bl{
+		reg1 = 0
+	}
 }

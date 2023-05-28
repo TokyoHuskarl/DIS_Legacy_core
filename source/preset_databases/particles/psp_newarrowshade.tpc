@@ -1,0 +1,98 @@
+//@comment Particle Effecter
+//Camera Diff set
+v[v[301]] .copy emitter_ParticleType, ParticleArraySize
+v[343..344] = 1000
+v[53].copy v[345],2
+v[345].mul v[343]
+emitter_MilX.add v[345], 2
+
+v[341] = emitter_ParentEffect-1 
+v[341] *= EffectArraySize
+v[341] += v[1018]
+v[v[341]].copy effect_EffectType, EffectArraySize //Temp, will change
+
+//check if the parent arrow is still flying
+@if effect_EffectType<=1{ // wow, it's already on ground
+	//then
+	zeroArray100.copy emitter_ParticleType,ParticleArraySize//clear the particle emitter
+}.elif emitter_is_out_screen_flag == 0 {
+	v[245] %= v[2215]
+	v[345] = v[245] + v[1200]
+
+	@pic[v[345]].show {
+	    Const_str_basic_particle_sheet
+	    .pos emitter_RelativeX, emitter_RelativeY .top
+	    .scrollWithMap
+	    .chromakey 1
+	    .scale 145
+	    .trans 50
+	    .rgbs 0, 0, 0, 100
+	    .angle emitter_Angle, 1000
+	    .multi
+	    .grid 12, 12 .cell 18
+	    .mapLayer 6
+	    .affectedByTint
+	    .affectedByFlash
+	    .affectedByShake
+	}
+	@pic[v[345]].move {
+	    .pos emitter_RelativeX, emitter_RelativeY .top
+	    .scale 145
+	    .trans 100
+	    .time -2
+	    .rgbs 0, 0, 0, 100
+	    .angle emitter_Angle, 1000
+	    .multi
+	}
+
+	@if Is_Paused.isOff() {// if time is passing
+		emitter_MilX.add emitter_milMilPixVx, 2 //add V  
+
+		//show arrow Trail
+		v[245] += 1
+		//Have arrow check height
+		@if effect_ArrowCheckHeight > 0 {
+		    v[245] %= v[2215]
+		    v[345] = v[245] + v[1200]
+		    @pic[v[345]].show {
+			Const_str_basic_particle_sheet
+			.pos effect_RelativeX,effect_RelativeY .center
+			.scrollWithMap
+			.chromakey 1
+			.scale 170
+			.trans 45
+			.rgbs 100, 100, 100, 100
+			.angle effect_Angle, 1000
+			.add
+			.grid 12, 12 .cell 14
+			.mapLayer 5
+			.affectedByTint
+			.affectedByFlash
+			.affectedByShake
+		    }
+		    @pic[v[345]].move {
+			.pos effect_RelativeX,effect_RelativeY .center
+			.scale 170
+			.trans 100
+			.time -5
+			.rgbs 100, 100, 100, 100
+			.angle effect_Angle, 1000
+			.add
+		    }
+		    v[245] += 1
+		    
+		}
+	}
+	//set new RelXY
+	emitter_MilX.copy emitter_RelativeX, 2
+	emitter_RelativeX.div v[343], 2
+
+}.else bl{// emitter is out of screen 
+	//then just add cam diff
+	emitter_MilX.copy emitter_RelativeX, 2
+	v[343..344] = 1000
+	emitter_RelativeX.div v[343], 2
+
+}
+//save all parameter changers into memory
+emitter_ParticleType.copy v[v[301]], ParticleArraySize

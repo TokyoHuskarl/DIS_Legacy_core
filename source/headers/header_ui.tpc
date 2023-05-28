@@ -1,3 +1,36 @@
+//UI system Design is very mountain blade WB-ish
+
+#include "./../Toolbox/module_DIS_GUI_functions.tpc"
+
+
+__fn func_ui_DIS_basic_mouse_control {
+		    @wait 0
+		    //Check LMB 
+		    @if v[43] != 1005 {
+			s[11].off
+			
+		    }.else bl {
+			s[11].on
+		    }
+
+		    @if s[39] .isOff() {
+			@mouse.getPos v[49], v[50]
+			
+		    }
+		    v[49].copy v[51], 2
+		    v[51..52] -= 3
+		    v[52..52] += 1
+		    @key.input .dst v[43] {
+			.decision
+			.number
+			.lclick
+			.rclick
+			.wheelDown
+			.wheelUp
+		    }
+
+}
+
 
 //Simple Gauge Series
 __fn ui_simple_gauge_draw $picid $targetptr $X $Y {
@@ -79,4 +112,6 @@ __fn ui_simple_gauge_draw $picid $targetptr $X $Y {
 	    
 	}
 }
+
+
 

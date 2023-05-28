@@ -137,37 +137,7 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 		v[319] = v[626] - v[350]
 		
 
-		/*
-		v[351] = (v[319]+v[351])>=v[2927]?(v[2927]-v[319]):v[351]
-		//v[352] = 
-		v[341] = max(v[341],v[4527])
-
-
-		TT2 = (v[341]-v[4527])/v[2927]
-		v[352]=TT2+v[352]>=v[2928]?v[2928]-TT2:v[352]
-
-		//@comment "hori"
-		@loop v[351] .dst v[343] {
-			//@comment "vert"
-			@loop v[352] .dst v[342] {
-			    v[360] = v[341] 
-			    v[360] += v[342] * v[2927]
-			    @if `!(v[v[360]] & 2) {
-				s[236].on
-				
-			    }
-			    @if `!(v[v[360]] & 4) {
-				s[237].on
-				
-			    }
-			    v[v[360]] |= 7
-			    
-			}
-			
-			
-		    v[341] += 1
-		    
-		}*/
+		
 		@loop v[351] .dst v[343] {
 		    @if `between(v[319] + v[343], 0, v[2927]) {
 			//@comment "vert"

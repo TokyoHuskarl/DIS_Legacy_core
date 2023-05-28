@@ -1,96 +1,324 @@
-//cev 2006 
+def debug_ammochecker ={
+	__if DEBUG_BUILD == 1{
+		@if agent_Ammo > 0{
+			reg2 = agent_Ammo >> 24
+			reg3 = (agent_Ammo >> 16) & 0xFF
+			reg4 = (agent_Ammo >> 8) & 0xFF
+			reg5 = agent_Ammo & 0xFF
+			func_devlog("Ammo - \v[832] - Sub Max \v[22] Sub Ammo \v[23] Cur Max \v[24] Cur Ammo \v[25]")
+		}
+	}
+
+}
+
+//change weapon!
+__fn func_agent_swap_weapon_set $agent {
+    //this function needs extraction of target agent data before called
+
+    Ptr17 = $agent * 300
+    Ptr17 += 4701
+    // 出る場所セット
+    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
+        // "#########################"
+        v[472] = divmul(30, 100, v[2216])
+        v[473] = 100
+        v[474] = divmul(agent_RelativeX + v[1001], v[1281], 50)
+        // "#########################"
+        @cmd 11550, "chari16", .args v[472], 3
+        
+    }
+    // "Access19 = AttackerObjectIDAccess20 = TargetObjectIDAccess18 = TargetObjTypeチェックPtr"
+    // "Access17 = AttackerObjチェックPtr"
+
+    //Kill trying flag
+    agent_AI_decision_bits &= AI_decision_bits_KILL_ALL_WEAPONCHANGE_FLAG
+    //Check old AA
+    func_get_AA_usage(v[299],EXTRACT_FLAG_Data_extracted)
+    //set what type the old weapon AA is 
+    macro_set_agent_AI_decision_Sub_WEP_Type(reg1)
+
+
+    // "#Equiqment Ck"
+    var1 = agent_MainWeaponID
+    //get Weapon Data
+    @call .cev v[1150]
+    //Then Unequip it
+    v[1929] *= -1
+    @call .cev 1923
+
+    // "ReEquip sub set weapon"
+    var1 = agent_ReserveWeaponID
+    @call .cev v[1150]
+    // "Swap inner set"
+    agent_MainWeaponID.swap agent_ReserveWeaponID, 1
+    @call .cev 1923
+    // "If Swapped into 2handed weapon and Holding Shield, Unequip the shield"
+    v[350] = v[1950]
+    @if v[1901] >= 100 {
+        // "#Shield Ck"
+        var1 = v[852]
+        @call .cev v[1151]
+        v[1929] *= -1
+        @call .cev 1923
+        v[852].swap v[857], 1
+        
+    } .else bl {
+        // "2h to 1h&shield"
+        @if v[852] == 0 {
+            v[852].swap v[857], 1
+            var1 = v[852]
+            @call .cev v[1151]
+            @call .cev 1923
+            
+        } .else bl {
+            
+        }
+        
+    }
+    //// "#################Change Graphic#################"
+    //NEED TO MODIFY THIS PROC WHEN YOU USE SHIELD SWAP
+    //->header_drawing
+    func_get_weapon_picture_id(v[851])
+    t[501].asg Const_str_weapon
+    //t[501].cat "\v[21]" .extract
+    t[501].cat v[21]
+    function_set_agent_picture(v[299] t[501] 4)
+   
+
+    
+    // "Reset Flag"
+    agent_TacticsOrderFlag &= TacticsOrder_KILL_FLAG_Equipment_Tactics//~(1 + 8 + 16)
+
+    //Check If agent has old weapon Ammo
+    func_check_if_agent_has_ammo(t[299],EXTRACT_FLAG_Data_extracted)
+    reg2 = reg1
+    //Swap Ammo
+    v[__id(TT1)..__id(TT2)] = agent_Ammo
+    TT1 &= 0x0000FFFF
+    TT2 &= 0xFFFF0000
+    TT1 <<= 16
+    TT2 >>= 16
+    agent_Ammo = TT1 + TT2
+
+    //check new AA type
+    func_get_AA_usage(v[299],EXTRACT_FLAG_Data_extracted)
+    reg3 = reg1
+    //Check If agent has new weapon Ammo
+    func_check_if_agent_has_ammo(t[299],EXTRACT_FLAG_Data_extracted)
+    
+    //Old weapon out of ammo
+    @if reg2 == 0 {
+	    agent_AI_decision_bits |= AI_decision_bits_FLAG_Out_of_Sub_WEP_Ammo
+    }
+
+
+
+    // "#Reset Q_ID and Q_Func"
+    s[118].on
+    @if v[741] >= 1 {
+        @call .cev v[741]
+        v[581].copy v[741], 20
+        func_devlog("attention, Weapon Change Q func registoration can cause data collapse - so beware")
+    }
+    s[118].off
+    //Then reset cooldown
+    agent_Skill1CDtimer = skill_Cooldown_Time
+
+    //SAVE changed data
+    macro_check_if_agentdata_extracted
+    @if Ptr1 != -1 {
+    	agent_ObjectType.copy v[Ptr1],300
+	debug_ammochecker
+    }
+
+}
+
+
+//ammo series
+
+//reg1 left ammo amount
+//reg2 no Data_extracted, then return Ptr to agent_Ammo
+__fn func_agent_spends_ammo $agent $amount $flags {
+	__if $flags & EXTRACT_FLAG_Data_extracted {
+		reg1 = agent_Ammo & 0xFF00
+		@if reg1 > 0 { //ammo limitation check
+			reg1 = agent_Ammo & 0xFF
+			reg1 -= $amount
+			reg1 = max(0,reg1)//safety
+			agent_Ammo &= 0xFFFFFF00
+			agent_Ammo |= reg1
+		}.else bl{ //if there's no limit
+			reg1 = 0xFF//just return 255
+		}
+	}.else bl{
+		reg2 = $agent * 300
+		reg2 += 4932
+		reg1 = v[reg2] & 0xFF00
+		@if reg1 > 0 {
+			reg1 = v[reg2] & 0xFF
+			reg1 -= $amount
+			reg1 = max(0,reg1)//safety
+			v[reg2] &= 0xFFFFFF00
+			v[reg2] |= reg1
+		}.else bl{
+			reg1 = 0xFF
+		}
+	}
+
+
+
+	debug_ammochecker
+
+}
+
+//reg1:1=has ammo 0=no ammo -1=No Max Ammo
+//return 0 if agent has no ammo
+__fn func_check_if_agent_has_ammo $agent $flags {
+	__if $flags & EXTRACT_FLAG_Data_extracted {
+		reg1 = agent_Ammo & 0xFFFF
+	}.else bl{
+		reg1 = $agent *300
+		reg1 += 4932
+		reg1 = v[reg1] & 0xFFFF
+		
+	}
+	reg2 = reg1 >> 2
+	@if reg2 > 0{
+		reg1 &= 0xFF
+		reg1 = reg1 == 0 ?0:1
+	}.else bl {
+		reg1 = -1
+	}
+}
+
+
+//reg1.. ptr to ammo if not extracted
+//reg2.. restored ammo var
+__fn func_reload_agent_ammo_full $agent $flags {
+	var1 = agent_Ammo & 0xFF00FF00
+	var2 = var1 >> 8
+	reg2 = var1 | var2
+	__if $flags & EXTRACT_FLAG_Data_extracted {
+		agent_Ammo = var1 | var2
+		agent_AI_decision_bits &= AI_decision_bits_KILL_FLAGs_Out_of_Ammo
+	}.else bl{
+		reg1 = $agent *300
+		reg1 += 4733
+		v[reg1] &= AI_decision_bits_KILL_FLAGs_Out_of_Ammo
+		reg1 += 199
+		v[reg1] = var1 | var2
+		
+	}
+}
+
+
+
 
 
 //cev 2008 CkIfSklCall v1v2 r1
+//reg1 0=can cast 1=cannot
 __fn func_CkIfSklCall $agent $skillno {
 	/*@comment "Var1 = Obj 1~
 	Var2 = SkillNo
-
 	r1 = Cant_call_skill
-	"*/
-	v[21] = 0
+	"*/	
+
+	reg1 = 0
 	v[341] = $agent * 300
+	Ptr1 = v[341] + 4701
+	v[Ptr1].copy v[601],300
 	//@comment "#Is the ordered skill registered to the obj?"
-	v[342] = v[341] + 4821 
+	
+	//v[342] = v[341] + 4821 
+	//v[342] += ($skillno * 20)
+	v[342] = 721
 	v[342] += ($skillno * 20)
+
+	//EXTRACT SKILL PARAMETER
+	v[v[342]].copy skill_ID,20
+
 	/*9.3.23 kick out needless var v[343]
 	v[343] = $skillno * 20
 	v[342] += v[343]*/
-	v[21] += v[v[342]] > 0 ? 0 : 1
+	reg1 += skill_ID >= 1 ? 0 : 1
 	//@comment "#If Pointed Type, Ck range"
-	v[342] += 2
-	@if v[v[342]] == 2 {
-	    v[344] = v[342] + 9
-	    v[352] = v[341] + 4707
+	//v[342] += 2
+	@if skill_Type == Type_PointSkl {
+	    //v[344] = v[342] + 9
+	    //v[352] = v[341] + 4707
 	    //v[351] = v[344] - 2
 	    //camera difference
 	    v[351] = 51
 	    v[v[351]].copy v[353], 2
-	    v[353] .sub v[v[352]], 2
+	    v[353] .sub agent_RelativeX, 2
 	    v[353] .mul v[353], 2
 	    v[351] = v[353] + v[354]
-	    v[352] = v[v[344]]
+	    v[352] = skill_Range_max //v[v[344]]
 	    //if out of range 
-	    @if v[351] > v[v[344]] {
-		v[21] += 1
+	    @if v[351] > skill_Range_max {
+		reg1 += 1
 		//call ranged indicator
 		@call .cev 81
 		
 	    }
 	    
-	}
-	//@comment "#If Target Type, Ck range and ID"
-	@if v[v[342]] == 3 {
-	    v[344] = v[342] + 9
-	    v[352] = v[341] + 4707
-	    v[351] = v[341] + 4718
+	}.elif skill_Type == Type_TargetSkl {//@comment "#If Target Type, Ck range and ID"
+	    //v[344] = v[342] + 9
+	    //v[352] = v[341] + 4707
+	    //v[351] = v[341] + 4718
 	    //@comment "If target exists"
-	    @if v[v[351]] >= 1 {
-		v[353] = v[v[351]] * 300 
+	    @if agent_TargetAgentID >= 1 {
+		v[353] = agent_TargetAgentID * 300 
 		v[353] += 4707
 		v[v[353]].copy v[353], 2
-		v[353] .sub v[v[352]], 2
+		v[353] .sub agent_RelativeX, 2
 		v[353] .mul v[353], 2
 		v[351] = v[353] + v[354]
-		v[352] = v[v[344]]
+		v[352] = skill_Range_max
 	        //if out of range 
-		@if v[351] > v[v[344]] {
-		    v[21] += 1
+		@if v[351] > skill_Range_max {
+		    reg1 += 1
 		    //call ranged indicator
 		    @call .cev 81
 		    
 		}
 		
 	    } .else bl {
-		v[21] += 1
+		reg1 += 1
 		
 	    }
 	    
 	}
+
 	//@comment "#Check usage"
-	v[342] += 1
+	//v[342] += 1
+
 	//@comment "If DamageSkill"
-	@if v[v[342]] == 0 {
+	@if skill_Usage == Usage_Damage {
 	    //@comment "You cannot use damage skill with shieldwall/pikewall/Scout" 9.3.23 you should check what is going on with Scout tactics flag.
-	    v[21] += v[v[341] + 4948] & 135 ? 1 : 0
+	    reg1 += agent_TacticsOrderFlag & 135 ? 1 : 0
 	    
 	}
+
 	//@comment "#Check CD"
-	v[342] = v[341] + 4794 
-	v[342] += $skillno
-	v[21] += v[v[342]] <= 0 ? 0 : 1
+	//v[342] = v[341] + 4794 
+	//v[342] += $skillno
+	//get the CD timer of the agent 
+	v[342] = 694 + $skillno
+	reg1 += v[v[342]] <= 0 ? 0 : 1
+
+
 	//@comment "#Check Cost"
-	v[342] = v[341] + 4827 
-	v[342] += ($skillno * 20)
-	/*9.3.23 kick out needless var v[343]
-	//v[343] = $skillno * 20
-	//v[342] += v[343]*/
-	v[344] = v[341] + 4808
-	v[21] += v[v[342]] <= v[v[344]] ? 0 : 1
+	//v[342] = v[341] + 4827 
+	//v[342] += ($skillno * 20)
+	//v[344] = v[341] + 4808
+	reg1 += skill_Cost <= agent_SP ? 0 : 1
+
 	//@comment "#Check Casting Motion"
-	v[21] += v[v[341] + 4943] < 4 ? 0 : 1
+	reg1 += agent_ActionState < 4 ? 0 : 1
+
 	//@comment "#Check silence"
-	v[21] += v[v[341] + 4974] & 262144 ? 1 : 0
+	reg1 += agent_ProcessObjBit & 262144 ? 1 : 0
 }
 
 

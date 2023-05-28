@@ -1,0 +1,476 @@
+__if PROJECT_NAME == "DIS_LEGACY"{
+	def{
+		DIS_GUI_SETTING_AUTO_SOUND = 1 //0=off,1=on
+	} 
+}
+
+
+
+def {
+DIS_gui_Layer = 9
+DIS_simple_switch_skin = "SystemSwitch"
+DIS_simple_window_skin = "SystemWindow"
+
+
+}
+//AUTO SOUND SYSTEM
+__if DIS_GUI_SETTING_AUTO_SOUND ==1 {
+	
+	def func_DIS_gui_auto_sound_checkbox = {
+		func_play_system_se("ui\clock01",70,100)
+	}
+}
+
+defv {
+DIS_gui_mouse_click = 43
+DIS_gui_mouse_pointer_X = 51
+DIS_gui_mouse_pointer_Y = 52
+
+DIS_gui_misc_var1 =1952
+DIS_gui_misc_var2 =1953
+DIS_gui_misc_var3 =1954
+DIS_gui_misc_var4 =1955
+}
+
+deft {
+DIS_gui_UI_font = 530 
+
+}
+
+defs {
+//DIS_gui_mouse_L_drag_switch = 11
+}
+
+
+//No need to touch here
+def{
+DIS_GUI_TYPE_OVERRAY = 1
+DIS_GUI_TYPE_BUTTON = 2
+
+
+DIS_GUI_TARGET_TYPE_VAR = 0
+DIS_GUI_TARGET_TYPE_SWITCH = 1
+DIS_GUI_TARGET_TYPE_BIT = 2
+DIS_GUI_TARGET_TYPE_STR = 3
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//DIS GUI system basically uses picture id directly as UI overlay id to control gui, just for simplification
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+def{
+
+PRESENTATION_FLAG_Load_Picture = 0x1
+PRESENTATION_FLAG_Use_Already_Loaded_Picture = 0x2
+
+PRESENTATION_FLAG_Make_Window = 0x4
+	//these flags must used with PRESENTATION_FLAG_Make_Window  
+	//PRESENTATION_FLAG_Window_Type_Simple - if you don't turn on any WindowType flag, then Just make it simple
+
+
+GUI_OBJ_FLAG_Relative = 0x1
+
+GUI_OBJ_FLAG_topLeft = 0x10
+}
+
+def func_strpic_init_check = {
+
+	__if $SystemPictureFile == "" {
+		$SystemPictureFile = DIS_simple_window_skin // try to use default window skin set in TPC 
+	}
+
+	__if $SizeX == "" {
+		$SizeX = 0
+	}
+	__if $SizeY == "" {
+		$SizeY = 0
+	}
+
+
+}
+
+def macro_check_GUI_position_flag = {
+	__if $flags & GUI_OBJ_FLAG_topLeft  {
+		@pic[$picid].move {
+		    .relative
+		    .pos 0, 0 .topLeft
+		    .scale 0
+		    .trans -100
+		    .time 0
+		    .keepRgbs
+		    .keepBlend
+		    .keepFlip
+		}
+
+	}.else bl {
+		@pic[$picid].move {
+		    .relative
+		    .pos 0, 0 .center
+		    .scale 0
+		    .trans -100
+		    .time 0
+		    .keepRgbs
+		    .keepBlend
+		    .keepFlip
+		}
+	}
+}
+
+//Dummy functions for readability
+__fn ON_LOAD $block {
+	$block
+}
+
+__fn ON_RUN $block {
+	$block
+}
+
+__fn ON_CLOSE $block {
+	$block
+}
+
+
+
+////////////////////////
+//ACTUAL FUNCTIONS START
+////////////////////////
+
+__fn ui_start_presentation $presen_name $flags $bg_picid $bg_pic_name $bg_pic_array $on_load $on_run $on_close {
+	@comment __str($presen_name)
+	__if $flags & PRESENTATION_FLAG_Load_Picture {
+		//load $bg_pic_name
+		//$bg_pic_detail_array must be [X,Y]
+		v[__id(DIS_gui_misc_var1)..__id(DIS_gui_misc_var2)] = $bg_pic_array
+
+		@pic[$bg_picid].show {
+		    $bg_pic_name
+		    .pos DIS_gui_misc_var1, DIS_gui_misc_var2 .topLeft
+		    .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .mapLayer DIS_gui_Layer
+		    .affectedByShake
+		}
+
+	}.elif $flags & PRESENTATION_FLAG_Use_Already_Loaded_Picture {
+
+	}.elif $flags & PRESENTATION_FLAG_Make_Window {
+		//$bg_pic_detail_array must be [X,Y,sizeX,sizeY]
+		ui_create_window($bg_picid,$bg_pic_array[0],$bg_pic_array[1],$bg_pic_array[2],$bg_pic_array[3])
+
+	}.else bl {//if no flag was on - use nothing, The entire screen will become standard of Presentation coordinates 
+
+	}
+
+	$on_load
+
+	@wait 0
+
+	@loop bl {
+
+		$on_run
+
+	}
+
+	$on_close
+
+}
+
+__fn ui_create_canvas $picid $X $Y $SizeX $SizeY $flags $SystemPictureFile {
+	
+	func_strpic_init_check
+
+	@pic[$picid].strpic {
+	    ""
+	    .pos $X, $Y .center
+	    .size $SizeX, $SizeY    .chromakey 1
+	    .scale 100
+	    .trans 100
+	    .rgbs 100, 100, 100, 100
+	    .font "", 12 
+	    .spacing 0, 4
+	    .skin $SystemPictureFile .nobg .noframe .noGradation .noPadding
+	    .mapLayer DIS_gui_Layer
+	    .eraseWhenTransfer
+	    .affectedByShake
+	}
+
+	macro_check_GUI_position_flag
+
+}
+__fn ui_create_window $picid $X $Y $SizeX $SizeY $flags $SystemPictureFile {
+
+	func_strpic_init_check
+
+	@pic[$picid].strpic {
+	    ""
+	    .pos $X, $Y .center
+	    .size $SizeX, $SizeY    .chromakey 1
+	    .scale 100
+	    .trans 100
+	    .rgbs 100, 100, 100, 100
+	    .font "", 12 .noShadow
+	    .spacing 0, 4
+	    .skin $SystemPictureFile .stretch .noGradation .noPadding
+	    .mapLayer DIS_gui_Layer
+	    .eraseWhenTransfer
+	    .affectedByShake
+	}
+	macro_check_GUI_position_flag
+}
+
+__fn ui_create_textbox $picid $Str $X $Y $SizeX $SizeY $flags $SystemPictureFile $font $fontsize { // adjust later
+	func_strpic_init_check
+
+	@pic[$picid].strpic {
+	    $Str
+	    .pos $X, $Y .center
+	    .size $SizeX, $SizeY    .chromakey 1
+	    .scale 100
+	    .trans 100
+	    .rgbs 100, 100, 100, 100
+	    .font DIS_gui_UI_font, 11
+	    .spacing 0, 4
+	    .skin $SystemPictureFile .nobg .noframe .noGradation .noPadding
+	    .mapLayer DIS_gui_Layer
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
+	macro_check_GUI_position_flag
+
+}
+
+//#######################
+//simple button functions
+//#######################
+
+//create simple button - nothing but just a mere strpic process.
+//simple button has only single function.
+__fn ui_create_simple_button $picid $text $X $Y $SizeX $SizeY {
+//should I explain how those args work? it's bretty simple so I don't think so...
+
+	func_strpic_init_check
+
+	@pic[$picid].strpic {
+	    __str($text)
+	    .pos $X, $Y .center
+	    .size $SizeX, $SizeY    .chromakey 1
+	    .scale 100
+	    .trans 100
+	    .rgbs 100, 100, 100, 100
+	    .font DIS_gui_UI_font, 11
+	    .spacing 0, 4
+	    .skin DIS_simple_switch_skin .nobg
+	    .mapLayer DIS_gui_Layer
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
+	macro_check_GUI_position_flag
+}
+
+//put this function in ui loop process 
+__fn ui_simple_button_process $picid $button_L $button_R $mp_on_button $mp_off_button {
+//ARGS
+//var $picid - Selected button picid
+//block $buttonL - Process Block for LMB (if you use only RMB, just put bl)
+//block $buttonR - Process Block for RMB (ignorable)
+//block $mp_on_button - Process Block that triggered by Mouse Pointer on button (ignorable)
+//block $mp_off_button -  Process Block that triggered by Mouse Pointer off button (ignorable)
+
+
+	__if $button_L == "" && $button_R == "" {
+		ui_simple_button_process_ERROR_No_functions_set_for_button
+	}
+
+	//Save picture infomation into miscvars
+	@pic[$picid].getInfo .cewh .currentRect DIS_gui_misc_var1, DIS_gui_misc_var2, DIS_gui_misc_var3, DIS_gui_misc_var4
+	@if `between(DIS_gui_mouse_pointer_X, DIS_gui_misc_var1 - DIS_gui_misc_var3 / 2, DIS_gui_misc_var1 + DIS_gui_misc_var3 / 2) && between(DIS_gui_mouse_pointer_Y, DIS_gui_misc_var2 - DIS_gui_misc_var4 / 2, DIS_gui_misc_var2 + DIS_gui_misc_var4 / 2) {
+
+		__if $mp_on_button == "" {
+		    @pic[$picid].move {
+			.pos DIS_gui_misc_var1, DIS_gui_misc_var2 .center
+			.scale 100
+			.trans 0
+			.time -2
+			.rgbs 0, 200, 0, 100
+		    }
+		} .else bl {
+			$mp_on_button
+		}
+
+
+	    @if DIS_gui_mouse_click == 1005 { // Only
+
+		    __if PROJECT_NAME == "DIS_LEGACY"{
+				@if s[11] .isOff() {
+
+				    $button_L
+				    
+				    s[11].on
+				    
+				}
+			} .else bl {
+				$button_L
+			}
+	    }.elif DIS_gui_mouse_click == 1006{
+
+		    $button_R
+	    }
+	    
+	} .else bl {
+
+	    __if $mp_off_button == "" {
+		    @pic[$picid].move {
+			.pos DIS_gui_misc_var1, DIS_gui_misc_var2 .center
+			.scale 100
+			.trans 0
+			.time -2
+			.rgbs 100, 100, 100, 100
+		    }
+	    } .else bl {
+		$mp_off_button
+	    }
+	}
+
+}
+
+
+//#######################
+//CHECK BOX functions
+//#######################
+
+def {
+
+GUI_OBJ_CHECKBOX_FLAG_load_picture = 0x10000000
+
+}
+
+__fn ui_create_check_box $picid $X $Y $targ_type $target $flags $picstr {
+//should I explain how those args work? it's bretty simple so I don't think so...
+	
+	//get target state
+	__if $targ_type == DIS_GUI_TARGET_TYPE_VAR ||$targ_type == DIS_GUI_TARGET_TYPE_SWITCH {
+		//simply set $target to var1
+		DIS_gui_misc_var1 = $target
+	}.elif $targ_type == DIS_GUI_TARGET_TYPE_BIT {
+		//if you check bit, then you need to set $target = [var,flag]
+
+		DIS_gui_misc_var2 = $target[0]
+		DIS_gui_misc_var3 = $target[1]
+		DIS_gui_misc_var1 = DIS_gui_misc_var2 & DIS_gui_misc_var3
+	}//Return DISgmiscv1
+
+	func_strpic_init_check
+
+	__if $flags & GUI_OBJ_CHECKBOX_FLAG_load_picture {
+		__if $picstr == "" {ui_create_check_box_ERROR_Picture_to_load_is_not_set}
+		ui_create_check_box_ERROR_incomplete_process
+	}.else bl {
+		//target == 1
+		func_GUI_draw_simple_checkbox($picid,$X,$Y,DIS_gui_misc_var1)
+	}
+	macro_check_GUI_position_flag
+}
+
+//put this function in ui loop process 
+__fn ui_simple_checkbox_process $picid  $targ_type $target $button_L $mp_on_button $mp_off_button $flags {
+//ARGS
+//var $picid - Selected button picid
+//DIS_GUI_TARGET_TYPE $targ_type
+//$target - If your target is FLAG, then set array [var,target_flag] otherwise just set target number 
+//block $buttonL - Process Block for LMB (if you use only RMB, just put bl)
+//block $mp_on_button - Process Block that triggered by Mouse Pointer on button (ignorable)
+//block $mp_off_button -  Process Block that triggered by Mouse Pointer off button (ignorable)
+
+	//Save picture infomation into miscvars
+	@pic[$picid].getInfo .cewh .currentRect DIS_gui_misc_var1, DIS_gui_misc_var2, DIS_gui_misc_var3, DIS_gui_misc_var4
+	@if `between(DIS_gui_mouse_pointer_X, DIS_gui_misc_var1 - DIS_gui_misc_var3 / 2, DIS_gui_misc_var1 + DIS_gui_misc_var3 / 2) && between(DIS_gui_mouse_pointer_Y, DIS_gui_misc_var2 - DIS_gui_misc_var4 / 2, DIS_gui_misc_var2 + DIS_gui_misc_var4 / 2) {
+
+	    $mp_on_button
+
+	@if DIS_gui_mouse_click == 1005 { // Only
+		__if PROJECT_NAME == "DIS_LEGACY"{
+				@if s[11] .isOff() {
+				    macro_GUI_simple_checkbox_flag_management($picid  $targ_type $target)
+				    $button_L
+				    
+				    s[11].on
+				    
+				}
+			} .else bl {
+				macro_GUI_simple_checkbox_flag_management($picid  $targ_type $target)
+				$button_L
+			}
+		}
+	    
+	} .else bl {
+		$mp_off_button
+	}
+
+}
+
+__fn macro_GUI_simple_checkbox_flag_management $picid $targ_type $target {
+	__if $targ_type == DIS_GUI_TARGET_TYPE_VAR {//if target is Var
+		//simply set $target to var1
+		__if $target == "" {macro_GUI_checkbox_flag_management_ERROR_Target_object_is_not_set}//ERROR
+		v[__id($target)] ^= 0x1 //?
+		DIS_gui_misc_var1 = v[__id($target)] & 0x1
+	}.elif $targ_type == DIS_GUI_TARGET_TYPE_SWITCH{ //if target is Switch
+		s[__id($target)].toggle
+		DIS_gui_misc_var1 = s[__id($target)]
+
+	}.elif $targ_type == DIS_GUI_TARGET_TYPE_BIT {//if target is Var Bits
+		//you need to set $target = [&var,flag] when you set target as TYPE_BIT, this makes you confused more or less
+		DIS_gui_misc_var2 = $target[0] 
+		v[DIS_gui_misc_var2] ^= $target[1] //return AND 
+		DIS_gui_misc_var1 = v[DIS_gui_misc_var2] & $target[1]
+	}
+	//Return DIS_gui_misc_var1 to check if flag is on or not in anycase
+
+	@pic[$picid].getInfo .cewh .currentRect DIS_gui_misc_var2, DIS_gui_misc_var3, DIS_gui_misc_var4, DIS_gui_misc_var4//restore current position of pic
+	//refresh simple
+	func_GUI_draw_simple_checkbox($picid,DIS_gui_misc_var2,DIS_gui_misc_var3,DIS_gui_misc_var1)
+	//click sound - if you turned off, just ignore this and set up your own process 
+	func_DIS_gui_auto_sound_checkbox
+}
+
+__fn func_GUI_draw_simple_checkbox $picid $X $Y $CHECK {
+		@if $CHECK >= 1 {
+			@pic[$picid].strpic {
+			    " x"
+			    .pos $X, $Y .center
+			    .size 16, 15    .chromakey 1
+			    .scale 100
+			    .trans 0
+			    .rgbs 100, 100, 100, 100
+			    .font DIS_gui_UI_font, 12
+			    .spacing 0, 0
+			    .skin DIS_simple_switch_skin .nobg .noPadding
+			    .mapLayer DIS_gui_Layer
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+		}.else bl{//target == 0
+			@pic[$picid].strpic {
+			    ""
+			    .pos $X, $Y .center
+			    .size 16, 15    .chromakey 1
+			    .scale 100
+			    .trans 0
+			    .rgbs 100, 100, 100, 100
+			    .font DIS_gui_UI_font, 11
+			    .spacing 0, 0
+			    .skin DIS_simple_switch_skin .nobg .noPadding
+			    .mapLayer DIS_gui_Layer
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+		}
+}

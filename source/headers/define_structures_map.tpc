@@ -1,0 +1,37 @@
+// I actually wanted to define those defvs like "agent.brabrabra = n" but in TPC syntax it's invalid, sadly.
+
+def{
+}
+
+struct("DISmap",{
+
+	defs {
+		DISmap_MapDirectory = 750
+		DISmap_MapID = 751
+		DISmap_MapName = 752
+		DISmap_AIscriptfile = 753
+		DISmap_TileName = 754
+
+	}
+	
+	struct("maptile",{
+		defv{
+			//#ElevationLevel[1]+UpperLayer[3]+DownLayer[3]+TerrainID[2]
+		}
+
+		def{
+			maptile_Address_TileInfoArray_Start = Memory_MapInfo //defined in header_common.tpc
+
+		}
+
+	})
+
+	struct("mapnode",{
+		def mapnode_ArraySize = 20
+		defv {
+			mapnode_RefMapX = 581
+			mapnode_RefMapY = mapnode_RefMapX + 1 
+			mapnode_MovementCost = mapnode_RefMapX + 2 
+		}
+	})
+})

@@ -1,20 +1,16 @@
 
     
 #include "./../headers/header_common.tpc"
-//}
 
-#include "./module_core_RTS_misc_functions.tpc"
+
+#include "./module_core_RTS_ui_misc_functions.tpc"
 #include "./../headers/header_drawing.tpc"
+#include "./../preset_databases/header_preset_particles.tpc"
 
 
-def AA_WAIT_FPSx1= 4800
-def AA_WAIT_FPSx2= 10000
+def Ptr_worker_on_job_start =2940 
 
-def g_perFPS = 2041 //98000 / 48
 
-//shield wall
-def ShieldWall_Cover_SquareSide = 5
-def ShieldWall_Cover_Diff = 2
 
 
 //cev 2006
@@ -64,28 +60,17 @@ __fn func_blink_progress {
 
 //this is obsolete shite
 __fn macro_HPSPreg $agent $HP_or_SP $amount{
-	/*@comment "Var1 = Obj 1~
+	/* "Var1 = Obj 1~
 	Var2 = 0/1# HP/MP
 	Var3 = Amount"*/
 	//v[341] = $HP_or_SP * 2
 	v[342] = $agent * 300 + 4806 + ($HP_or_SP * 2)
 	//v[343] = v[342] - 1
 	//v[v[342]] += $amount
-	//@comment "Min(HealedHP,MaxHP)"
+	// "Min(HealedHP,MaxHP)"
 	v[v[342]] = min(v[v[342]]+$amount, v[v[342] - 1])
 }
 
-__fn macro_cord_diff $x $y {
-	    
-	    //v[__id($x)] = ($x / 10000 + v[53] - v[403])/16
-	    //v[__id($y)] = ($y / 10000 + v[54] - v[404])/16
-	    
-	    //this one was far faster
-	    v[__id($x)..__id($y)]/=10000
-	    v[__id($x)] .sub v[403], 2
-	    v[__id($x)] .add v[53], 2
-	    v[__id($x)..__id($y)]/=16
-}
 
 
 
@@ -102,56 +87,60 @@ __fn macro_cord_diff $x $y {
 cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {   
 	@comment "module_core_RTS_main.tpc"
 
-	@if v[2501] == 0 {
+	/*@if v[2501] == 0 {
 	    v[522] = 0
 	    
 	} .else bl {
 	    v[522] += v[182]
 	    
-	}
+	}*/
+	v[522] = v[2501]==0?0:v[522]+v[182]
 	//v[181..184] = 0
-	v[181..184] = 0
+	//v[181..184] = 0
+	v[ptr_null].copy v[181],4
 	v[191] -= 1
 
 	//v[v[1071]..v[1079]] = 0 
 	//v[v[1071]..v[1079]] >>= Const_var_bit_maniacs
 	v[ptr_null].copy v[v[1071]], Const_var_save_all_morton_memories
 
-	//@comment "Minimap"
+	// "Minimap"
 	v[403] = ev[1].scrx
 	v[404] = ev[1].scry
 	v[76] = ev[3].scrx
 	v[77] = ev[3].scry
-	//@comment "#WalkingSwitchOff"
-	s[3001..4000].off
+	// "#WalkingSwitchOff"
+	__if DIS_EXPERIMENTAL == 0 {
+		s[3001..4000].off
+	}
 
-	//@comment "Normal Units"
+	// "Normal Units"
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
-	    //@comment "++"
 #include "./module_core_RTS_main_land_agent_behavior.tpc"
+	    //"++"
 	    v[536] += 1
 	    
 	}
 
-	//@comment "STATICS"
+	// "STATICS"
 	v[536] = v[4533]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
 	    v[301] = v[401] * v[1117] 
 	    v[301] += 5001
 	    v[v[301]].copy v[601], 300
-	    @if `!(v[603] & 2097152) {
+	    @if `!(agent_AgentBits & 2097152) {
 		@if `v[811] & 2 { // there's moving static (vikang ship
 
 		    Bool_Refresh_Static_Minimap.on//request refresh static minimap
-		    //@comment "Get [1-100]"
-		    //@comment "モートン座標を記録するよ"
+		    // "Get [1-100]"
+		    // "モートン座標を記録するよ"
 		    v[607].copy v[341], 2
 		    v[341] .add v[53], 2
 		    v[341] .sub v[76], 2
 		    v[341] .div v[74], 2
-		    //@comment "TT1=MortX
+		    // "TT1=MortX
 		    //TT2=MortY
 		    //ビット演算して処理するよ"
 		    v[341] = (v[341] | v[341] << 8) & 0xFF00FF
@@ -162,113 +151,118 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    v[342] = (v[342] | v[342] << 4) & 0xF0F0F0F
 		    v[342] = (v[342] | v[342] << 2) & 0x33333333
 		    v[342] = ((v[342] | v[342] << 1) & 0x55555555)<<1
-		    //@comment "yは1bitシフトで終わり"
+		    // "yは1bitシフトで終わり"
 		    //v[342] <<= 1
-		    //@comment "最後にTT1 OR TT2"
+		    // "最後にTT1 OR TT2"
 		    v[609] = v[341] | v[342]
 		    
 		}
-		//@comment "モートン座標を記録しおえたよ 次はリストに登録するよ TT3=カウンター TT2=ポインター"
+		// "モートン座標を記録しおえたよ 次はリストに登録するよ TT3=カウンター TT2=ポインター"
 		v[341] = v[609]
-		//@comment "#ルート空間だよ"
+		// "#ルート空間だよ"
 		v[342] = v[1067] + v[v[1071]]
 		v[v[342]] = v[401] + 1
 		v[v[1071]] += 1
-		//@comment "#第5空間だよ0~1023"
+		// "#第5空間だよ0~1023"
 		v[343] = v[4538] + v[341]
 		v[v[341] * v[1004] + v[4535] + v[v[343]]] = v[401] + 1
 		v[v[343]] += 1
-		//@comment "#第四空間だよ 0~255"
+		// "#第四空間だよ 0~255"
 		v[341] >>= 2
 		v[343] = v[4537] + v[341]
 		v[v[341] * v[1004] + v[4534] + v[v[343]]] = v[401] + 1
 		v[v[343]] += 1
-		//@comment "#第三空間だよ 0~63"
+		// "#第三空間だよ 0~63"
 		v[341] >>= 2
 		v[343] = v[1074] + v[341]
 		v[v[341] * v[1004] + v[1070] + v[v[343]]] = v[401] + 1
 		v[v[343]] += 1
-		//@comment "#第二空間だよ 0~15"
+		// "#第二空間だよ 0~15"
 		v[341] >>= 2
 		v[343] = v[1073] + v[341]
 		v[v[341] * v[1004] + v[1069] + v[v[343]]] = v[401] + 1
 		v[v[343]] += 1
-		//@comment "#第一空間だよ 0~3"
+		// "#第一空間だよ 0~3"
 		v[341] >>= 2
 		v[343] = v[1072] + v[341]
 		v[v[341] * v[1004] + v[1068] + v[v[343]]] = v[401] + 1
 		v[v[343]] += 1
-		//@comment "モートン座標関係はこれで終わり"
+		// "モートン座標関係はこれで終わり"
 		
 	    }
-	    //@comment "STATIC OBJECT"
+	    // "STATIC OBJECT"
 	    v[301] -= 1
-	    //@comment "Sub Timer"
+	    // "Sub Timer"
 	    v[680] .sub v[1089], v[1060]
-	    //@comment "#"
-	    //@comment "WPのずれを一括で修正"
+	    // "#"
+	    // "WPのずれを一括で修正"
 	    v[641] .add v[1021], 2
-	    //@comment "座標ずらし"
+	    // "座標ずらし"
 	    //v[300] = v[301] + 5
 	    //v[299] = v[301] + 12 
 	    //v[298] = v[301] + 7
 	    //v[297] = 53
-	    //@comment "#壁衝突チェックパート
+	    // "#壁衝突チェックパート
 	    //#自己x 311
 	    //#自己y 312
 	    //#保存x*10000 303
 	    //#保存y*10000 304"
+	    //This part seems needless after once you save the height I guess?
 	    v[605].copy v[311], 2
 	    v[311] .add v[1061], 2
 	    v[311].copy v[303], 2
+		    
+	    // "######################Get Terrain and Elevation info"
+	    @if `v[811] & 2 { // unless it's moving static, skip getting tile info...
+
+		    //v[311..312] /= 10000
+		    // "ずれ計算"
+		    //24.4.23
+		    macro_cord_diff(v[311] v[312])
+		    //macro_diff_var311to312()
 	    
-	    //v[311..312] /= 10000
-	    //@comment "ずれ計算"
-	    //24.4.23
-	    macro_cord_diff(v[311] v[312])
-	    //macro_diff_var311to312()
-	    
-	    //This part seems needless after once you save the height I guess?
-	    //@comment "<Once, this place used to have the minimap registration process>"
-	    //@comment "######################Get Terrain and Elevation info"
-	    v[313] = v[v[1182] + v[311] - v[69] + (v[312] - v[70]) * v[2061]]
-	    v[657] = v[313] / 100000000
-	    v[640] = v[313] % 100
-	    //@comment "######################"
+		    v[313] = v[v[1182] + v[311] - v[69] + (v[312] - v[70]) * v[2061]]
+		    v[657] = v[313] / 100000000
+		    v[640] = v[313] % 100
+	    }
+	    // "######################"
 	    v[303] .add v[612], 2
 
 	    //v[303..304] /= 10000
-	    //@comment "ずれ計算"
+	    // "ずれ計算"
 	    //24.4.23
 	    macro_cord_diff(v[303] v[304])
 	    //macro_diff_var303to304_ev()
 
-	    //@comment "set mapXY"
+	    // "set mapXY"
 	    //v[293] = v[301] + 26
 	    v[303].copy v[626], 2
-	    //@comment "X座標"
-	    //@comment "#カメラずらして"
+	    // "X座標"
+	    // "#カメラずらして"
 	    v[605] += v[53] * 10000
-	    //@comment "#座標を反映"
+	    // "#座標を反映"
 	    v[607] = v[605] / 10000
-	    //@comment "Y座標"
-	    //@comment "#カメラずらして"
+	    // "Y座標"
+	    // "#カメラずらして"
 	    v[606] += v[54] * 10000
-	    //@comment "#座標を反映"
+	    // "#座標を反映"
 	    v[608] = v[606] / 10000
-	    //@comment "###################"
-	    /*@comment "#############
+	    // "###################"
+	    /* "#############
 	    #Set Y Position EV
 	    #############"*/
 	    //v[344] = v[301] + 1
 	    //v[345] = v[301] + 7
 	    v[348] = v[401] + 501
 	    s[v[348]].off
+	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
 	    //opt
-	    @if `s[2001 + v[401]] != 0 {
-			//@comment "Walls "
+	    TT10 = Address_agent_inSight_switch_array_head+v[401]
+	    @if s[TT10] .isOn() {
+	    //@if `s[2001 + v[401]] != 0 {
+			// "Walls "
 			v[1008].copy v[354], 4
-			@if `v[603] & 16 {
+			@if `agent_AgentBits & 16 {
 			    v[354] -= 240
 			    v[355] += 240
 			    v[356] -= 240
@@ -287,12 +281,13 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				    v[357] += v[611] - v[882]
 				    @if v[608]>=v[356] {
 					    @if v[608]<=v[357]{
-						//@comment "#Set OffsetY"
+						// "#Set OffsetY"
 						v[637] = v[608] + v[882]
-						//@comment "Will_be_depicted"
+						// "Will_be_depicted"
+						agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
 						s[v[348]].on
-						//@comment "#"
-						//@comment "#描画範囲内であれば保存"
+						// "#"
+						// "#描画範囲内であれば保存"
 						v[v[1112] + v[184]] = (v[608] + v[611] + v[1011]) * 1000 + v[401]
 						v[v[1113] + v[184]]=v[401]
 						v[184] += 1
@@ -305,188 +300,23 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    TT1 = v[301] + 1
 	    v[601].copy v[TT1], 300
 
-
-	    /*v[609] = v[301] + 8
-	    @if `!(v[v[301] + 2] & 2097152) {
-		@if `v[v[301] + 210] & 2 {
-		    //@comment "Get [1-100]"
-		    v[607] = v[301] + 6
-		    v[v[607]].copy v[607], 2
-		    //@comment "モートン座標を記録するよ"
-		    v[607].copy v[341], 2
-		    v[341] .add v[53], 2
-		    v[341] .sub v[76], 2
-		    v[341] .div v[74], 2
-		    //@comment "TT1=MortX
-		    //TT2=MortY
-		    //ビット演算して処理するよ"
-		    v[341] = (v[341] | v[341] << 8) & 0xFF00FF
-		    v[341] = (v[341] | v[341] << 4) & 0xF0F0F0F
-		    v[341] = (v[341] | v[341] << 2) & 0x33333333
-		    v[341] = (v[341] | v[341] << 1) & 0x55555555
-		    v[342] = (v[342] | v[342] << 8) & 0xFF00FF
-		    v[342] = (v[342] | v[342] << 4) & 0xF0F0F0F
-		    v[342] = (v[342] | v[342] << 2) & 0x33333333
-		    v[342] = ((v[342] | v[342] << 1) & 0x55555555)<<1
-		    //@comment "yは1bitシフトで終わり"
-		    //v[342] <<= 1
-		    //@comment "最後にTT1 OR TT2"
-		    v[v[609]] = v[341] | v[342]
-		    
-		}
-		//@comment "モートン座標を記録しおえたよ 次はリストに登録するよ TT3=カウンター TT2=ポインター"
-		v[341] = v[v[609]]
-		//@comment "#ルート空間だよ"
-		v[342] = v[1067] + v[v[1071]]
-		v[v[342]] = v[401] + 1
-		v[v[1071]] += 1
-		//@comment "#第5空間だよ0~1023"
-		v[343] = v[4538] + v[341]
-		v[v[341] * v[1004] + v[4535] + v[v[343]]] = v[401] + 1
-		v[v[343]] += 1
-		//@comment "#第四空間だよ 0~255"
-		v[341] >>= 2
-		v[343] = v[4537] + v[341]
-		v[v[341] * v[1004] + v[4534] + v[v[343]]] = v[401] + 1
-		v[v[343]] += 1
-		//@comment "#第三空間だよ 0~63"
-		v[341] >>= 2
-		v[343] = v[1074] + v[341]
-		v[v[341] * v[1004] + v[1070] + v[v[343]]] = v[401] + 1
-		v[v[343]] += 1
-		//@comment "#第二空間だよ 0~15"
-		v[341] >>= 2
-		v[343] = v[1073] + v[341]
-		v[v[341] * v[1004] + v[1069] + v[v[343]]] = v[401] + 1
-		v[v[343]] += 1
-		//@comment "#第一空間だよ 0~3"
-		v[341] >>= 2
-		v[343] = v[1072] + v[341]
-		v[v[341] * v[1004] + v[1068] + v[v[343]]] = v[401] + 1
-		v[v[343]] += 1
-		//@comment "モートン座標関係はこれで終わり"
-		
-	    }
-	    //@comment "STATIC OBJECT"
-	    v[301] -= 1
-	    //@comment "Sub Timer"
-	    v[341] = v[301] + v[1059]
-	    v[v[341]] .sub v[1089], v[1060]
-	    //@comment "#"
-	    v[641] = v[301] + 41
-	    //@comment "WPのずれを一括で修正"
-	    v[v[641]] .add v[1021], 2
-	    //@comment "座標ずらし"
-	    v[300] = v[301] + 5
-	    v[299] = v[301] + 12
-	    v[298] = v[301] + 7
-	    v[297] = 53
-	    //@comment "#壁衝突チェックパート
-	    //#自己x 311
-	    //#自己y 312
-	    //#保存x*10000 303
-	    //#保存y*10000 304"
-	    v[v[300]].copy v[311], 2
-	    v[311] .add v[1061], 2
-	    v[311].copy v[303], 2
-	    
-	    //v[311..312] /= 10000
-	    //@comment "ずれ計算"
-	    //24.4.23
-	    macro_cord_diff(v[311] v[312])
-	    //macro_diff_var311to312()
-	    //@comment "<Once, this place used to have the minimap registration process>"
-	    //@comment "######################Get Terrain and Elevation info"
-	    v[313] = v[v[1182] + v[311] - v[69] + (v[312] - v[70]) * v[2061]]
-	    v[v[301] + 57] = v[313] / 100000000
-	    v[v[301] + 40] = v[313] % 100
-	    //@comment "######################"
-	    v[303] .add v[v[299]], 2
-
-	    //v[303..304] /= 10000
-	    //@comment "ずれ計算"
-	    //24.4.23
-	    macro_cord_diff(v[303] v[304])
-	    //macro_diff_var303to304_ev()
-
-	    //@comment "set mapXY"
-	    v[293] = v[301] + 26
-	    v[303].copy v[v[293]], 2
-	    //@comment "X座標"
-	    //@comment "#カメラずらして"
-	    v[v[300]] += v[v[297]] * 10000
-	    //@comment "#座標を反映"
-	    v[v[298]] = v[v[300]] / 10000
-	    //@comment "Y座標"
-	    v[296..300] += 1
-	    //@comment "#カメラずらして"
-	    v[v[300]] += v[v[297]] * 10000
-	    //@comment "#座標を反映"
-	    v[v[298]] = v[v[300]] / 10000
-	    //@comment "###################"
-	    //@comment "##############Set Y Position EV	    #############"
-	    v[344] = v[301] + 1
-	    v[345] = v[301] + 7
-	    v[348] = v[401] + 501
-	    s[v[348]].off
-	    //opt
-	    @if `s[2001 + v[401]] != 0 {
-			//@comment "Walls "
-			v[1008].copy v[354], 4
-			@if `v[v[301] + 3] & 16 {
-			    v[354] -= 240
-			    v[355] += 240
-			    v[356] -= 240
-			    v[357] += 240
-			    
-			}
-			//Set Obj into Drawing List
-			v[349] = v[301] + 10
-			v[354] -= v[v[349]]
-			v[355] += v[v[349]]
-			@if v[v[345]]>=v[354] {
-				@if v[v[345]]<=v[355] {
-	    			    v[346] = v[301] + 8
-				    v[882] = v[301] + 282
-				    v[882] = v[v[882]]
-	    			    v[347] = v[301] + 11
-				    v[356] -= v[v[347]] + v[882]
-				    v[357] += v[v[347]] - v[882]
-				    @if v[v[346]]>=v[356] {
-					    @if v[v[346]]<=v[357]{
-						//@comment "#Set OffsetY"
-						v[v[301] + 37] = v[v[346]] + v[882]
-						//@comment "Will_be_depicted"
-						s[v[348]].on
-						//@comment "#"
-						//@comment "#描画範囲内であれば保存"
-						v[v[1112] + v[184]] = (v[v[346]] + v[v[347]] + v[1011]) * 1000 + v[401]
-						v[v[1113] + v[184]]=v[401]
-						v[184] += 1
-						
-					    }
-				   }
-				}
-	    		}
-	    }*/
-
 	
-	    //@comment "++"
+	    // "++"
 	    v[536] += 1
 	    
 	}
 
-	//@comment "DEAD BODIES"
+	// "DEAD BODIES"
 	v[536] = v[4531]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
-	    //@comment "死体"
+	    // "死体"
 	    v[301] = v[401] * v[1117] 
 	    v[301] += 5000
 	    func_main_extract_agent_vars()
 
-	    //@comment "慣性"
-	    //@comment "座標ずらし"
+	    // "慣性"
+	    // "座標ずらし"
 	    //v[300] = v[301] + 5
 	    //v[299] = v[301] + 12
 	    //v[298] = v[301] + 7
@@ -536,7 +366,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		v[1301].copy v[885], 2
 		
 	    }
-	    //@comment "#壁衝突チェックパート
+	    // "#壁衝突チェックパート
 	    //#自己x 311
 	    //#自己y 312
 	    //#保存x*10000 303
@@ -546,31 +376,31 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[311].copy v[303], 2
 
 	    //v[311..312] /= 10000
-	    //@comment "ずれ計算"
+	    // "ずれ計算"
 	    //24.4.23
 	    macro_cord_diff(v[311] v[312])
 	    //macro_diff_var311to312()
 	    /*v[311] .sub v[403], 2
 	    v[311] .add v[53], 2
-	    //@comment "ずれおわり"
+	    // "ずれおわり"
 	    v[311..312] /= 16*/
 
 	    @map.getTerrain .pos v[311], v[312] .dst v[313]
-	    //@comment "#移動先壁チェック"
+	    // "#移動先壁チェック"
 
 	    v[303] .add v[612], 2
 	    //v[303..304] /= 10000
-	    //@comment "ずれ計算"
+	    // "ずれ計算"
 	    //24.4.23
 	    macro_cord_diff(v[303] v[304])
 	    /*v[303] .sub v[403], 2
 	    v[303] .add v[53], 2
-	    //@comment "ずれおわり"
+	    // "ずれおわり"
 	    v[303..304] /= 16*/
 
-	    //@comment "X座標"
+	    // "X座標"
 	    @map.getTerrain .pos v[303], v[312] .dst v[313]
-	    //@comment "##20以上で壁がある
+	    // "##20以上で壁がある
 	    //##壁がなければ速度を足す"
 	    
 	    //v[300] = v[301] + 5
@@ -580,45 +410,49 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //v[295] = v[301] + 266
 	    //v[294] = v[301] + 265
 
-	    //@comment "#減衰"
+	    // "#減衰"
 	    v[612] = muldiv(v[612], 4, 5)
 	    v[612] = 500 >= abs(v[612]) ? 0 : v[612]
 	    v[605] += v[313] < 20 ? v[612] : 0
-	    //@comment "#カメラずらして"
+	    // "#カメラずらして"
 	    v[605] += v[53] * 10000
-	    //@comment "#座標を反映"
+	    // "#座標を反映"
 	    v[607] = v[605] / 10000
-	    //@comment "Y座標"
+	    // "Y座標"
 	    @map.getTerrain .pos v[311], v[304] .dst v[313]
 	    //v[297..300] += 1
-	    //@comment "##20以上で壁がある
+	    // "##20以上で壁がある
 	    //##壁がなければ速度を足す"
-	    //@comment "#減衰"
+	    // "#減衰"
 	    v[613] = muldiv(v[613], 4, 5)
 	    v[613] = 500 >= abs(v[613]) ? 0 : v[613]
 	    v[606] += v[313] < 20 ? v[613] : 0
-	    //@comment "#カメラずらして"
+	    // "#カメラずらして"
 	    v[606] += v[54] * 10000
-	    //@comment "#座標を反映"
+	    // "#座標を反映"
 	    v[608] = v[606] / 10000
-	    //@comment "慣性終わり"
-	    //@comment "#############
+	    // "慣性終わり"
+	    // "#############
 	    //#Set Y Position EV
 	    //#############"
 	    //Set Obj into Drawing List
 	    v[348] = v[401] + 501
 	    s[v[348]].off
-	    @if `s[2001+v[401]] != 0 {
+	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
+	    TT10 = Address_agent_inSight_switch_array_head+v[401]
+	    @if s[TT10] .isOn() {
+	    //@if `s[2001+v[401]] != 0 {
 	    	//v[345] = v[301] + 7
 		@if v[607] >= v[1008] {
 			@if v[607] <= v[1009]{
 				//v[346] = v[301] + 8
 				@if v[608] >= v[1010]{
 					@if v[608] <= v[1011]{
-					    	//@comment "#描画範囲内であれば保存"
-					    	//@comment "Will_be_depicted"
+					    	// "#描画範囲内であれば保存"
+					    	// "Will_be_depicted"
+						agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
 					    	s[v[348]].on
-					    	//@comment "#"
+					    	// "#"
 					    	v[v[1112] + v[184]] = (v[601] != -9 ? (v[608] + v[611] / 2 + v[1011] + 500) * 1000 : 9999000) + v[401]
 					    	v[v[1113] + v[184]]=v[401]
 					    	v[184] += 1
@@ -630,8 +464,8 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    }
 	    func_main_save_agent_vars()
 /*
-	    //@comment "慣性"
-	    //@comment "座標ずらし"
+	    // "慣性"
+	    // "座標ずらし"
 	    v[300] = v[301] + 5
 	    v[299] = v[301] + 12
 	    v[298] = v[301] + 7
@@ -677,7 +511,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		v[1301].copy v[v[296]], 2
 		
 	    }
-	    //@comment "#壁衝突チェックパート
+	    // "#壁衝突チェックパート
 	    //#自己x 311
 	    //#自己y 312
 	    //#保存x*10000 303
@@ -687,62 +521,66 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[311].copy v[303], 2
 
 	    //v[311..312] /= 10000
-	    //@comment "ずれ計算"
+	    // "ずれ計算"
 	    //24.4.23
 	    macro_cord_diff(v[311] v[312])
 	    //macro_diff_var311to312()
 	    @map.getTerrain .pos v[311], v[312] .dst v[313]
-	    //@comment "#移動先壁チェック"
+	    // "#移動先壁チェック"
 
 	    v[303] .add v[v[299]], 2
 	    //v[303..304] /= 10000
-	    //@comment "ずれ計算"
+	    // "ずれ計算"
 	    //24.4.23
 	    macro_cord_diff(v[303] v[304])
 
-	    //@comment "X座標"
+	    // "X座標"
 	    @map.getTerrain .pos v[303], v[312] .dst v[313]
-	    //@comment "##20以上で壁がある
+	    // "##20以上で壁がある
 	    //##壁がなければ速度を足す"
-	    //@comment "#減衰"
+	    // "#減衰"
 	    v[v[299]] = muldiv(v[v[299]], 4, 5)
 	    v[v[299]] = 500 >= abs(v[v[299]]) ? 0 : v[v[299]]
 	    v[v[300]] += v[313] < 20 ? v[v[299]] : 0
-	    //@comment "#カメラずらして"
+	    // "#カメラずらして"
 	    v[v[300]] += v[v[297]] * 10000
-	    //@comment "#座標を反映"
+	    // "#座標を反映"
 	    v[v[298]] = v[v[300]] / 10000
-	    //@comment "Y座標"
+	    // "Y座標"
 	    @map.getTerrain .pos v[311], v[304] .dst v[313]
 	    v[297..300] += 1
-	    //@comment "##20以上で壁がある
+	    // "##20以上で壁がある
 	    //##壁がなければ速度を足す"
-	    //@comment "#減衰"
+	    // "#減衰"
 	    v[v[299]] = muldiv(v[v[299]], 4, 5)
 	    v[v[299]] = 500 >= abs(v[v[299]]) ? 0 : v[v[299]]
 	    v[v[300]] += v[313] < 20 ? v[v[299]] : 0
-	    //@comment "#カメラずらして"
+	    // "#カメラずらして"
 	    v[v[300]] += v[v[297]] * 10000
-	    //@comment "#座標を反映"
+	    // "#座標を反映"
 	    v[v[298]] = v[v[300]] / 10000
-	    //@comment "慣性終わり"
-	    //@comment "#############
+	    // "慣性終わり"
+	    // "#############
 	    //#Set Y Position EV
 	    //#############"
 	    //Set Obj into Drawing List
 	    v[348] = v[401] + 501
 	    s[v[348]].off
-	    @if `s[2001+v[401]] != 0 {
+	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
+	    TT10 = Address_agent_inSight_switch_array_head+v[401]
+	    @if s[TT10] .isOn() {
+	    //@if `s[2001+v[401]] != 0 {
 	    	v[345] = v[301] + 7
 		@if v[v[345]] >= v[1008] {
 			@if v[v[345]] <= v[1009]{
 				v[346] = v[301] + 8
 				@if v[v[346]] >= v[1010]{
 					@if v[v[346]] <= v[1011]{
-					    	//@comment "#描画範囲内であれば保存"
-					    	//@comment "Will_be_depicted"
+					    	// "#描画範囲内であれば保存"
+					    	// "Will_be_depicted"
+						agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
 					    	s[v[348]].on
-					    	//@comment "#"
+					    	// "#"
 					    	v[v[1112] + v[184]] = (v[v[301] + 1] != -9 ? (v[v[346]] + v[v[301] + 11] / 2 + v[1011] + 500) * 1000 : 9999000) + v[401]
 					    	v[v[1113] + v[184]]=v[401]
 					    	v[184] += 1
@@ -753,8 +591,8 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 	    }*/
 	    
-	    //@comment ""
-	    //@comment "++"
+	    // ""
+	    // "++"
 	    v[536] += 1
 	    
 	}
@@ -765,7 +603,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {   
 	@comment "module_core_RTS_main.tpc"
-	//@comment "Normal Units"
+	// "Normal Units"
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
@@ -774,56 +612,56 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    func_main_extract_agent_vars()
 
-	    //@comment "Minions"
-	    //@comment "#########################
+	    // "Minions"
+	    // "#########################
 	    //Shield Flash
 	    //#########################"
 	    //opt 26.4.23
 	    //v[v[301] + 284] -= v[v[301] + 284] > 0 ? 1 : 0
 	    v[884] -= v[884] > 0
-	    //@comment "Flash Effect"
+	    // "Flash Effect"
 	    @if v[895] >= 4 {
 		v[358..360] = 20
 		
 	    } .else bl {
-		//@comment "Can be improved"
+		// "Can be improved"
 		v[358..360] = 0
 		v[357 + v[895]] = 20
 		
 	    }
 	    v[891] .sub v[358], 3
-	    //@comment "Temp... only check R"
+	    // "Temp... only check R"
 	    v[895] = v[891] <= 0 ? 0 : v[895]
-	    //@comment "++"
+	    // "++"
 	    func_main_save_agent_vars()
 	    v[536] += 1
 
 
 	    /*
-	    //@comment "Minions"
-	    //@comment "#########################
+	    // "Minions"
+	    // "#########################
 	    //Shield Flash
 	    //#########################"
 	    //opt 26.4.23
 	    //v[v[301] + 284] -= v[v[301] + 284] > 0 ? 1 : 0
 	    v[884] = v[301] + 284
 	    v[v[884]] -= v[v[884]] > 0
-	    //@comment "Flash Effect"
+	    // "Flash Effect"
 	    v[297] = v[301] + 291
 	    v[296] = v[301] + 295
 	    @if v[v[296]] >= 4 {
 		v[358..360] = 20
 		
 	    } .else bl {
-		//@comment "Can be improved"
+		// "Can be improved"
 		v[358..360] = 0
 		v[357 + v[v[296]]] = 20
 		
 	    }
 	    v[v[297]] .sub v[358], 3
-	    //@comment "Temp... only check R"
+	    // "Temp... only check R"
 	    v[v[296]] = v[v[297]] <= 0 ? 0 : v[v[296]]
-	    //@comment "++"
+	    // "++"
 	    v[536] += 1
 	    */
 
@@ -839,35 +677,35 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    	func_main_extract_agent_vars()
 
-		/*@comment "###############Timers Check###############"*/
-		//@comment "#Check if AI timer is <=2"
+		/* "###############Timers Check###############"*/
+		// "#Check if AI timer is <=2"
 		@if v[684] <= 2 {
-		    //@comment "#Unit Behavior Start"
-		    //@comment "#Out of Breath"
-		    //@comment "#Hit Timer ==0&&current SP is below 35%&&the unit has fatigue"
+		    // "#Unit Behavior Start"
+		    // "#Out of Breath"
+		    // "#Hit Timer ==0&&current SP is below 35%&&the unit has fatigue"
 		    @if `divmul(v[707], 100, 35) > v[708] && v[682] <= 0 && !(v[726] & 2048) {
 			v[682] = 48
-			//@comment "Sweat Particle"
+			// "Sweat Particle"
 			@loop v[1017] .dst v[320] {
 			    v[244] %= v[1199]
 			    v[331] = v[244] * 50 
 			    v[331] += v[1198]
 			    @if v[v[331]] <= 1 {
-				//@comment "まず清掃"
+				// "まず清掃"
 				v[1301].copy v[v[331]], 50
-				//@comment "ポインタセット開始"
-				//@comment "設定"
+				// "ポインタセット開始"
+				// "設定"
 				v[v[331]] = 1
-				//@comment "500F"
+				// "500F"
 				v[v[331] + 49] = v[682]
-				//@comment "Set itself"
+				// "Set itself"
 				v[v[331] + 3] = 124
-				//@comment "Set Parent Obj"
+				// "Set Parent Obj"
 				v[v[331] + 9] = v[401] + 1
-				//@comment "普通にアニメ"
+				// "普通にアニメ"
 				v[341] = v[331] + 6
 				v[607].copy v[v[341]], 2
-				//@comment "仕上げに登録消す"
+				// "仕上げに登録消す"
 				v[244] += 1
 				@break
 				
@@ -878,13 +716,13 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			
 			
 		    }
-		    //@comment "#Unit Behavior End"
+		    // "#Unit Behavior End"
 		    
 		}
-		//@comment "#Footstep Sound"
-		@if `s[v[401] + 501] == 1 {
-		    @if `s[v[401] + v[4558]] == 1 {
-			//@comment "#Sub timer"
+		// "#Footstep Sound"
+		@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[401] + 501] == 1 {
+		    @if `agent_ActionFlag & ActionFlag_FLAG_Walking { // DIS_EXPERIMENTAL s[v[401] + v[4558]] == 1 {
+			// "#Sub timer"
 			v[886] -= 2
 			@if v[886] <= 0 {
 			    v[341] = v[1179] + v[640] + 20 * v[887]
@@ -893,7 +731,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				@if v[182] < 1 {
 				    @if v[522] < 32 {
 					v[182] += 1
-					//@comment "#########################"
+					// "#########################"
 					v[472] = divmul(18, 100, v[2216])
 					v[473] = rnd(95, 105)
 					v[474] = divmul(v[607] + v[1001], v[1281], 50)
@@ -901,9 +739,9 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					t[510] .asg "footsteps\fly"
 					t[510] .cat v[329]
 					v[342] = 510
-					//@comment "Strings = t[v[342]]"
+					// "Strings = t[v[342]]"
 					@cmd 11550, t[v[342]], .args v[472], 3
-					//@comment "#########################"
+					// "#########################"
 					
 				    }
 				    
@@ -915,7 +753,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				@if v[182] < 1 {
 				    @if v[522] < 80 {
 					v[182] += 1
-					//@comment "#########################"
+					// "#########################"
 					v[472] = divmul(20, 100, v[2216])
 					v[473] = rnd(95, 105)
 					v[474] = divmul(v[607] + v[1001], v[1281], 50)
@@ -923,31 +761,31 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					t[510] .asg t[v[341]]
 					t[510] .cat v[329]
 					v[342] = 510
-					//@comment "Strings = t[v[342]]"
+					// "Strings = t[v[342]]"
 					@cmd 11550, t[v[342]], .args v[472], 3
-					//@comment "#########################"
+					// "#########################"
 					
 				    }
 				    
 				}
 				v[886] = v[868] / 4 
 				v[886] += rnd(7, 11)
-				//@comment "Is_in_water"
-				@if `v[603] & 4 {
-				    //@comment "Bubble Particle"
+				// "Is_in_water"
+				@if `agent_AgentBits & 4 {
+				    // "Bubble Particle"
 				    @loop v[1017] .dst v[320] {
 					v[244] %= v[1199]
 					v[351] = v[244] * 50 
 					v[351] += v[1198]
 					@if v[v[351]] <= 1 {
-					    //@comment "init"
+					    // "init"
 					    v[1301].copy v[v[351]], 50
 					    v[v[351]] = 1
-					    //@comment "timer"
+					    // "timer"
 					    v[v[351] + 49] = 3
-					    //@comment "Set itself"
+					    // "Set itself"
 					    v[v[351] + 3] = 133
-					    //@comment "set pos"
+					    // "set pos"
 					    v[341] = v[351] + 6
 					    v[607].copy v[v[341]], 2
 					    v[244] += 1
@@ -966,16 +804,16 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					    v[351] = v[244] * 50 
 					    v[351] += v[1198]
 					    @if v[v[351]] <= 1 {
-						//@comment "init"
+						// "init"
 						v[1301].copy v[v[351]], 50
 						v[v[351]] = 1
-						//@comment "timer"
+						// "timer"
 						v[v[351] + 49] = 1
-						//@comment "Set itself"
+						// "Set itself"
 						v[v[351] + 3] = 155
-						//@comment "Set Dire"
+						// "Set Dire"
 						v[v[351] + 27] = v[v[301] + 244]
-						//@comment "set pos"
+						// "set pos"
 						v[341] = v[351] + 6
 						v[607].copy v[v[341]], 2
 						v[244] += 1
@@ -988,23 +826,23 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					
 					
 				    } .else bl {
-					//@comment "Is_horse"
+					// "Is_horse"
 					@if v[341] >= 551 {
-					    @if `v[603] & 8 {
-						//@comment "Leaf Particle"
+					    @if `agent_AgentBits & 8 {
+						// "Leaf Particle"
 						@loop v[1017] .dst v[320] {
 						    v[244] %= v[1199]
 						    v[351] = v[244] * 50 
 						    v[351] += v[1198]
 						    @if v[v[351]] <= 1 {
-							//@comment "init"
+							// "init"
 							v[1301].copy v[v[351]], 50
 							v[v[351]] = 1
-							//@comment "timer"
+							// "timer"
 							v[v[351] + 49] = 3
-							//@comment "Set itself"
+							// "Set itself"
 							v[v[351] + 3] = 134
-							//@comment "set pos"
+							// "set pos"
 							v[341] = v[351] + 6
 							v[607].copy v[v[341]], 2
 							v[244] += 1
@@ -1022,14 +860,14 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						    v[351] = v[244] * 50 
 						    v[351] += v[1198]
 						    @if v[v[351]] <= 1 {
-							//@comment "init"
+							// "init"
 							v[1301].copy v[v[351]], 50
 							v[v[351]] = 1
-							//@comment "timer"
+							// "timer"
 							v[v[351] + 49] = 3
-							//@comment "Set itself"
+							// "Set itself"
 							v[v[351] + 3] = 130
-							//@comment "set pos"
+							// "set pos"
 							v[341] = v[351] + 6
 							v[607].copy v[v[341]], 2
 							v[244] += 1
@@ -1059,229 +897,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    
 		}
 
-/*
-
-		v[607] = v[301] + 7
-		v[v[607]].copy v[607], 2
-		v[726] = v[301] + 126
-		//@comment "#Check if AI timer is <=2"
-		@if `v[v[301] + 84] <= 2 {
-		    //@comment "#Unit Behavior Start"
-		    //@comment "#Out of Breath"
-		    //@comment "#Hit Timer ==0&&current SP is below 35%&&the unit has fatigue"
-		    @if `divmul(v[v[301] + 107], 100, 35) > v[v[301] + 108] && v[v[301] + 82] <= 0 && !(v[v[726]] & 2048) {
-			v[v[301] + 82] = 48
-			//@comment "Sweat Particle"
-			@loop v[1017] .dst v[320] {
-			    v[244] %= v[1199]
-			    v[331] = v[244] * 50 
-			    v[331] += v[1198]
-			    @if v[v[331]] <= 1 {
-				//@comment "まず清掃"
-				v[1301].copy v[v[331]], 50
-				//@comment "ポインタセット開始"
-				//@comment "設定"
-				v[v[331]] = 1
-				//@comment "500F"
-				v[v[331] + 49] = v[v[301] + 82]
-				//@comment "Set itself"
-				v[v[331] + 3] = 124
-				//@comment "Set Parent Obj"
-				v[v[331] + 9] = v[401] + 1
-				//@comment "普通にアニメ"
-				v[341] = v[331] + 6
-				v[607].copy v[v[341]], 2
-				//@comment "仕上げに登録消す"
-				v[244] += 1
-				@break
-				
-			    }
-			    v[244] += 1
-			    
-			}
-			
-			
-		    }
-		    //@comment "#Unit Behavior End"
-		    
-		}
-		//@comment "#Footstep Sound"
-		@if `s[v[401] + 501] == 1 {
-		    @if `s[v[401] + v[4558]] == 1 {
-			//@comment "#Sub timer"
-			v[v[301] + 286] -= 2
-			@if `v[v[301] + 286] <= 0 {
-			    v[341] = v[1179] + v[v[301] + 40] + 20 * v[v[301] + 287]
-			    v[v[301] + 85] = 13
-			    @if `v[v[301] + 38] & 1 {
-				@if v[182] < 1 {
-				    @if v[522] < 32 {
-					v[182] += 1
-					//@comment "#########################"
-					v[472] = divmul(18, 100, v[2216])
-					v[473] = rnd(95, 105)
-					v[474] = divmul(v[607] + v[1001], v[1281], 50)
-					v[329] = rnd(0, 2)
-					t[510] .asg "footsteps\fly"
-					t[510] .cat v[329]
-					v[342] = 510
-					//@comment "Strings = t[v[342]]"
-					@cmd 11550, t[v[342]], .args v[472], 3
-					//@comment "#########################"
-					
-				    }
-				    
-				}
-				v[v[301] + 286] = v[v[301] + 268] / 4 + rnd(7, 11)
-				
-			    } .else bl {
-				@if v[182] < 1 {
-				    @if v[522] < 80 {
-					v[182] += 1
-					//@comment "#########################"
-					v[472] = divmul(20, 100, v[2216])
-					v[473] = rnd(95, 105)
-					v[474] = divmul(v[607] + v[1001], v[1281], 50)
-					v[329] = rnd(0, 6)
-					t[510] .asg t[v[341]]
-					t[510] .cat v[329]
-					v[342] = 510
-					//@comment "Strings = t[v[342]]"
-					@cmd 11550, t[v[342]], .args v[472], 3
-					//@comment "#########################"
-					
-				    }
-				    
-				}
-				v[v[301] + 286] = v[v[301] + 268] / 4 + rnd(7, 11)
-				//@comment "Is_in_water"
-				@if `v[v[301] + 3] & 4 {
-				    //@comment "Bubble Particle"
-				    @loop v[1017] .dst v[320] {
-					v[244] %= v[1199]
-					v[351] = v[244] * 50 
-					v[351] += v[1198]
-					@if v[v[351]] <= 1 {
-					    //@comment "init"
-					    v[1301].copy v[v[351]], 50
-					    v[v[351]] = 1
-					    //@comment "timer"
-					    v[v[351] + 49] = 3
-					    //@comment "Set itself"
-					    v[v[351] + 3] = 133
-					    //@comment "set pos"
-					    v[341] = v[351] + 6
-					    v[607].copy v[v[341]], 2
-					    v[244] += 1
-					    @break
-					    
-					}
-					v[244] += 1
-					
-				    }
-				    
-				    
-				} .else bl {
-				    @if `v[v[301] + 274] & 512 {
-					@loop v[1017] .dst v[320] {
-					    v[244] %= v[1199]
-					    v[351] = v[244] * 50 
-					    v[351] += v[1198]
-					    @if v[v[351]] <= 1 {
-						//@comment "init"
-						v[1301].copy v[v[351]], 50
-						v[v[351]] = 1
-						//@comment "timer"
-						v[v[351] + 49] = 1
-						//@comment "Set itself"
-						v[v[351] + 3] = 155
-						//@comment "Set Dire"
-						v[v[351] + 27] = v[v[301] + 244]
-						//@comment "set pos"
-						v[341] = v[351] + 6
-						v[607].copy v[v[341]], 2
-						v[244] += 1
-						@break
-						
-					    }
-					    v[244] += 1
-					    
-					}
-					
-					
-				    } .else bl {
-					//@comment "Is_horse"
-					@if v[341] >= 551 {
-					    @if `v[v[301] + 3] & 8 {
-						//@comment "Leaf Particle"
-						@loop v[1017] .dst v[320] {
-						    v[244] %= v[1199]
-						    v[351] = v[244] * 50 
-						    v[351] += v[1198]
-						    @if v[v[351]] <= 1 {
-							//@comment "init"
-							v[1301].copy v[v[351]], 50
-							v[v[351]] = 1
-							//@comment "timer"
-							v[v[351] + 49] = 3
-							//@comment "Set itself"
-							v[v[351] + 3] = 134
-							//@comment "set pos"
-							v[341] = v[351] + 6
-							v[607].copy v[v[341]], 2
-							v[244] += 1
-							@break
-							
-						    }
-						    v[244] += 1
-						    
-						}
-						
-						
-					    } .else bl {
-						@loop v[1017] .dst v[320] {
-						    v[244] %= v[1199]
-						    v[351] = v[244] * 50 
-						    v[351] += v[1198]
-						    @if v[v[351]] <= 1 {
-							//@comment "init"
-							v[1301].copy v[v[351]], 50
-							v[v[351]] = 1
-							//@comment "timer"
-							v[v[351] + 49] = 3
-							//@comment "Set itself"
-							v[v[351] + 3] = 130
-							//@comment "set pos"
-							v[341] = v[351] + 6
-							v[607].copy v[v[341]], 2
-							v[244] += 1
-							@break
-							
-						    }
-						    v[244] += 1
-						    
-						}
-						
-						
-					    }
-					    
-					} .else bl {
-					    
-					}
-					
-				    }
-				    
-				}
-				
-			    }
-			    
-			}
-			
-		    }
-		    
-		}
-*/
-		//@comment "++"
+		// "++"
 		func_main_save_agent_vars()
 		v[536] += 1
 		
@@ -1294,18 +910,18 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	@comment "module_core_RTS_main.tpc"
-	//@comment "Normal Units"
+	// "Normal Units"
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
 	    v[301] = v[401] * v[1117] 
 	    v[301] += 5000
 	    func_main_extract_agent_vars()
-	    //@comment "Set Dir"
+	    // "Set Dir"
 	    @if s[2] .isOff() {
-		@if `v[603] & 134217728 {
+		@if `agent_AgentBits & AgentBits_FLAG_DirChange_skip {
 		    @if `v[726] & 8388608 {
-			v[603] &= -134217729 //~134217728
+			agent_AgentBits &= -134217729 //~134217728
 			
 		    }
 		    
@@ -1315,16 +931,17 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 		
 	    }
-	    //@comment "Get terrain's bit where the unit stands on"
-	    v[640] = v[v[4505] + v[640]]
-	    /*@comment "###############Camo Check###############"*/
+	    // "Get terrain's bit where the unit stands on"
+	    v[340] = v[4505] + v[640]
+	    v[340] = v[v[340]]
+	    /* "###############Camo Check###############"*/
 	    v[876] = v[617]
-	    //@comment "#Ambush"
-	    //@comment "#Bush"
-	    v[874] = v[640] & 4 && v[680] <= 0 ? v[874] | 1 : v[874]
-	    //@comment "##big units cannot ambush"
+	    // "#Ambush"
+	    // "#Bush"
+	    v[874] = v[340] & 4 && v[680] <= 0 ? v[874] | 1 : v[874]
+	    // "##big units cannot ambush"
 	    v[874] = v[874] & 524288 || v[843] > 3 ? v[874] & ~1 : v[874]
-	    //@comment "##in melee combat"
+	    // "##in melee combat"
 	    v[874] = v[681] >= 1 ? v[874] & ~1 : v[874]
 	    v[898] = v[880]
 	    @if `v[874] & 1 {
@@ -1333,10 +950,10 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		v[v[4518] + v[401]] = 0
 		
 	    }
-	    //@comment "##is fleeing?"
+	    // "##is fleeing?"
 	    v[876] += v[860] >= 3 ? 40000 : 0
-	    //@comment "###############Camo Check end##############"
-	    //@comment "++"
+	    // "###############Camo Check end##############"
+	    // "++"
 	    func_main_save_agent_vars()
 	    v[536] += 1
 
@@ -1345,7 +962,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[401] = v[v[536]] - 1
 	    v[301] = v[401] * v[1117] 
 	    v[301] += 5000
-	    //@comment "Set Dir"
+	    // "Set Dir"
 	    @if s[2] .isOff() {
 		@if `v[v[301] + 3] & 134217728 {
 		    @if `v[v[301] + 126] & 8388608 {
@@ -1359,21 +976,21 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 		
 	    }
-	    //@comment "Get terrain's bit where the unit stands on"
+	    // "Get terrain's bit where the unit stands on"
 	    v[640] = v[v[4505] + v[v[301] + 40]]
 	    v[680] = v[301] + 80
 	    v[680] = v[v[680]]
-	    //@comment "###############Camo Check###############"
+	    // "###############Camo Check###############"
 	    v[876] = v[301] + 17
 	    v[876] = v[v[876]]
 	    v[874] = v[301] + 274
 	    v[874] = v[v[874]]
-	    //@comment "#Ambush"
-	    //@comment "#Bush"
+	    // "#Ambush"
+	    // "#Bush"
 	    v[874] = v[640] & 4 && v[680] <= 0 ? v[874] | 1 : v[874]
-	    //@comment "##big units cannot ambush"
+	    // "##big units cannot ambush"
 	    v[874] = v[874] & 524288 || v[v[301] + 243] > 3 ? v[874] & ~1 : v[874]
-	    //@comment "##in melee combat"
+	    // "##in melee combat"
 	    v[874] = v[v[301] + 81] >= 1 ? v[874] & ~1 : v[874]
 	    v[v[301] + 298] = v[v[301] + 280]
 	    @if `v[874] & 1 {
@@ -1382,19 +999,19 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		v[v[4518] + v[401]] = 0
 		
 	    }
-	    //@comment "##is fleeing?"
+	    // "##is fleeing?"
 	    v[876] += v[v[301] + 260] >= 3 ? 40000 : 0
 	    v[v[301] + 274] = v[874]
 	    v[v[301] + 276] = v[876]
-	    //@comment "###############Camo Check end##############"
-	    //@comment "++"
+	    // "###############Camo Check end##############"
+	    // "++"
 	    v[536] += 1
 
 	    */
 	}
 
 	@wait 0
-	//@comment "Even Units"
+	// "Even Units"
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
@@ -1407,13 +1024,13 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		func_blink_progress()
 	    //@call .cev 2020
 	    v[601].copy v[v[299]], 300    
-	    //@comment "++"
+	    // "++"
 	    v[536] += 2
 	    
 	}
 
 	@wait 0
-	//@comment "Odd Units"
+	// "Odd Units"
 	v[536] = v[4532] + 1
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
@@ -1427,7 +1044,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		func_blink_progress()
 	    //@call .cev 2020
 	    v[601].copy v[v[299]], 300    
-	    //@comment "++"
+	    // "++"
 	    v[536] += 2
 	    
 	}
@@ -1440,49 +1057,49 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		v[301] = v[401] * v[1117] 
 		v[301] += 5000
 	        func_main_extract_agent_vars()
-		//@comment "#Reg Timer"
+		// "#Reg Timer"
 		@if v[699] <= 0 {
 		    //opt 25.4.23
 		    //v[0] = v[11..13] = [v[401] + 1, 0, v[v[301] + 272]]
 		    //var2=0
-		    //@comment "#EV RecoverH/M"
-		    /*@comment "Var1 = Obj 1~	Var2 = 0/1# HP/MP	Var3 = Amount"*/
+		    // "#EV RecoverH/M"
+		    /* "Var1 = Obj 1~	Var2 = 0/1# HP/MP	Var3 = Amount"*/
 		    //v[342] = v[301]+106
 		    //v[343] = v[342] - 1
 		    //var3=v[301]+272
-		    //@comment "#そのうち処理作る"
+		    // "#そのうち処理作る"
 		    v[706] += v[872]
-		    //@comment "Min(HealedHP,MaxHP)"
+		    // "Min(HealedHP,MaxHP)"
 		    v[706] = min(v[706], v[705])
-		    //@comment "#EV RecoverH/M end"
+		    // "#EV RecoverH/M end"
 		    var1 = v[401] + 1
 		    var2 = 1
-		    //@comment "#Derp Breathing :DDDDDDD"
+		    // "#Derp Breathing :DDDDDDD"
 		    var3 = divmul(v[707], 100, 35) > v[708] && v[665] & 1024 ? 15 : 10
 		    @if var3 == 15 {
-			//@comment "Breath Particle"
+			// "Breath Particle"
 			@loop v[1017] .dst v[320] {
 			    v[244] %= v[1199]
 			    v[331] = v[244] * 50 
 			    v[331] += v[1198]
 			    @if v[v[331]] <= 1 {
-				//@comment "まず清掃"
+				// "まず清掃"
 				v[1301].copy v[v[331]], 50
-				//@comment "ポインタセット開始"
-				//@comment "設定"
+				// "ポインタセット開始"
+				// "設定"
 				v[v[331]] = 1
-				//@comment "500F"
+				// "500F"
 				v[v[331] + 49] = v[95]
-				//@comment "Set itself"
+				// "Set itself"
 				v[v[331] + 3] = 126
-				//@comment "Set Parent Obj"
+				// "Set Parent Obj"
 				v[v[331] + 9] = v[401] + 1
-				//@comment "普通にアニメ"
+				// "普通にアニメ"
 				v[341] = v[331] + 6
 				v[607].copy v[v[341]], 2
-				//@comment "Colour"
+				// "Colour"
 				v[0] = v[v[331] + 31..v[331] + 38] = [0, 40, 150, 90, 0, 40, 150, 60]
-				//@comment "仕上げに登録消す"
+				// "仕上げに登録消す"
 				v[244] += 1
 				@break
 				
@@ -1494,20 +1111,20 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			
 		    }
 		    var3 = muldiv(var3, v[873], 10)
-		    //@comment "#EV RecoverH/M"
-		    /*@comment "Var1 = Obj 1~
+		    // "#EV RecoverH/M"
+		    /* "Var1 = Obj 1~
 	Var2 = 0/1# HP/MP
 	Var3 = Amount"*/
 		    //v[342] = v[301]+108
 		    //v[343] = v[342] - 1
-		    //@comment "#そのうち処理作る"
+		    // "#そのうち処理作る"
 		    v[708] += var3
-		    //@comment "Min(HealedHP,MaxHP)"
+		    // "Min(HealedHP,MaxHP)"
 		    v[708] = min(v[707], v[708])
-		    //@comment "#EV RecoverH/M end"
+		    // "#EV RecoverH/M end"
 		    v[699] = v[95] + 2
-		    //@comment "kill parthian flag here"
-		    //@comment "kill kiting flag"
+		    // "kill parthian flag here"
+		    // "kill kiting flag"
 		    @if v[628] <= 0 {
 			//v[726] &= ~33554432
 			//v[726] &= ~67108864
@@ -1518,7 +1135,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 
 		    @if `s[7] == 1 || s[474] == 1 {
-			//@comment "##If Fleeing"
+			// "##If Fleeing"
 			//v[860] = v[301] + 260
 			@if v[680] < -480 {
 			    v[860] = 0
@@ -1526,7 +1143,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			} .else bl {
 			    @if `v[860] == 3 {
 				@if v[680] < -100 {
-				    //@comment "roll recovering from flee"
+				    // "roll recovering from flee"
 				    v[860] -= rnd(0, 99) <= var2 + v[875] / 5 && v[860] > -1 ? 1 : 0
 				    
 				}
@@ -1541,7 +1158,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    	func_main_save_agent_vars()
 
-		//@comment "++"
+		// "++"
 		v[536] += 1
 		
 	    }
@@ -1554,14 +1171,15 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {   
 	@comment "module_core_RTS_main.tpc"
-	//@comment "STATIC"
+	// "STATIC"
 	v[536] = v[4533]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
 	    v[301] = v[401] * v[1117] 
 	    v[301] += 5000
+	    func_main_extract_agent_vars()
 	    //If Move Type STATIC
-	    @if `!(v[v[301] + 211] & 2) {
+	    @if `!(agent_static_Attribution_flag & 2) {
 		//Set MapXY/5 for minimap
 		v[341]=v[301]+26
 		v[v[341]] .copy v[AGENT_STATIC_SLOT_MINIMAP_X], 2
@@ -1569,34 +1187,33 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		v[341]=v[301]+AGENT_STATIC_SLOT_MINIMAP_X
 		v[AGENT_STATIC_SLOT_MINIMAP_X].copy v[v[341]], 2
 	    }
-	    //@comment "########################Process Parameters Setting BEGIN########################"
-	    //@comment "#Base Parameters Get"
-	    v[861] = v[301] + 109
-	    v[v[861]].copy v[861], 11
-	    v[872] = v[301] + 131
-	    v[v[872]].copy v[872], 2
-	    v[874] = v[v[301] + 220] | 256
-	    //@comment "#Never get Morale Effect"
-	    //v[874] |= 256
-	    v[876] = v[v[301] + 17]
-	    //@comment "#Set Process Parameters"
+	    // "########################Process Parameters Setting BEGIN########################"
+	    // "#Base Parameters Get"
+	    //v[861] = v[301] + 109
+	    agent_BaseAD.copy agent_ProcessAD, 11
+	    //v[872] = v[301] + 131
+	    agent_BaseRegHP.copy agent_ProcessHPreg, 2
+	    // "#Never get Morale Effect"
+	    agent_ProcessObjBit = agent_static_Obj_flag | 256
+	    agent_ProcessCamoValue = agent_BaseCamoValue
+	    // "#Set Process Parameters"
 	    v[341] = v[301] + 261
-	    v[861].copy v[v[341]], 16
-	    //@comment "########################Process Parameters Setting END########################"
-	    v[841] = v[301] + 241
+	    v[861].copy v[v[341]], 16 //set.
+	    // "########################Process Parameters Setting END########################"
+	    //v[841] = v[301] + 241 needless
 	    v[843] = v[301] + 243
-	    //@comment "ＳＴＡＴＩＣタイマー"
-	    v[603] = v[301] + 3
-	    v[702] = v[301] + 102
-	    v[370] = (s[2] == 0 ? 1 : -1) + (v[v[603]] & 1024 ? -1 : 1)
-	    //@comment "have function? "
-	    //v[370] += v[v[603]] & 1024 ? -1 : 1
+	    // "ＳＴＡＴＩＣタイマー"
+	    //agent_AgentBits = v[301] + 3
+	    //v[702] = v[301] + 102
+	    v[370] = (s[2] == 0 ? 1 : -1) + (agent_AgentBits & AgentBits_STATIC_FLAG_No_function ? -1 : 1)
+	    // "have function? "
+	    //v[370] += v[agent_AgentBits] & 1024 ? -1 : 1
 	    @if v[370] >= 2 {
-		//@comment "AAタイマー"
-		@if v[v[702]] == 106 {
+		// "AAタイマー"
+		@if v[702] == 106 {
 		    v[628] = v[301] + 28
 		    @if v[v[628]] > 0 {
-			//@comment "まだAAできない"
+			// "まだAAできない"
 			@if v[v[843]] != 1 {
 			    v[719] = v[301] + 119
 			    v[v[628]] -= v[v[719]]
@@ -1604,80 +1221,86 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			}
 			
 		    } .else bl {
-			//@comment "AA可能"
-			//@comment "AAクールタイムモーションつきなら解消しておく"
+			// "AA可能"
+			// "AAクールタイムモーションつきなら解消しておく"
 			//v[726] = v[301] + 126
 			v[v[843]] = v[v[301] + 126] == 1 ? 0 : v[v[843]]
 			
 		    }
 		    
 		}
-		//@comment "#予約がある"
-		v[770] = v[301] + 170
-		@if v[v[770]] >= 1 {
-		    //@comment "MP(生産力)をためようね"
+		// "#予約がある"
+		//v[770] = v[301] + 170
+		@if v[770] >= 1 {
+		    // "MP(生産力)をためようね"
 		    v[341] = v[301] + 108
-		    v[707] = v[301] + 107
-		    v[740] = v[301] + 140
-		    v[700] = v[v[301] + 100]
-		    @if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || v[v[301] + 3] & 1 {
+		    //v[707] = v[301] + 107
+		    //v[740] = v[301] + 140
+		    //v[700] = v[v[301] + 100]
+		    @if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
 			//v[342] = v[2409 + v[251] % 3]
 			v[342] = v[Const_AgentMetaTeam_begin+v[401]]
-			v[v[341]] += v[v[740]] * 6
-			//@comment "徴用スイッチ"
-			v[v[341]] += v[342] & 134217728 && !(v[v[301] + 3] & 1) ? muldiv(v[v[740]], 198, 100) : 0
-			//@comment "MP(生産力)がたまった"
-			@if v[v[341]] >= v[v[707]] {
+			v[v[341]] += v[740] * 6
+			// "徴用スイッチ"
+			v[v[341]] += v[342] & 134217728 && !(v[v[301] + 3] & 1) ? muldiv(v[740], 198, 100) : 0
+			// "MP(生産力)がたまった"
+			@if v[v[341]] >= v[707] {
 			    v[v[341]] = 0
-			   // @comment "生産完了"
-			    //@comment "#Tech Flag"
-			    v[251] = v[v[301] + 100]
+			   // "生産完了"
+			    // "#Tech Flag"
+
+			    //ACHTUNG - save all dealed parameters here once, since it will conflict in spawning functions 
+			    
+			    v[251] = v[700]
 			    v[255] = v[401] + 1
-			    v[252] = v[v[301] + 7] + rnd(-6, 6)
-			    v[253] = v[v[301] + 8] + v[v[301] + 11] + rnd(-3, 3)
+			    v[252] = v[607] + rnd(-6, 6)
+			    v[253] = v[608] + v[611] + rnd(-3, 3)
 			    @call .cev 46 //spawn ev
 			    v[301] = v[401] * 300 
 			    v[301] += 5000
-			    @if `v[v[301] + 222] != 3 {
-				v[v[21] * 300 + 4922] = v[v[21] * 300 + 4922] == 0 ? v[v[301] + 222] : v[v[21] * 300 + 4922]
+	    		    func_main_extract_agent_vars()//extract STATIC datas again
+			    defv Spawned_Agent_Id_Shift = __id(Temp2) 
+			    Spawned_Agent_Id_Shift = v[21] * 300 //use Temp2 as 
+			    @if v[822] != 3 {
+				v[Spawned_Agent_Id_Shift + 4922] = v[Spawned_Agent_Id_Shift + 4922] == 0 ? v[v[301] + 222] : v[Spawned_Agent_Id_Shift + 4922]
 				
 			    }
 			    v[v[301] + 3] &= -2//~1
 			    @if v[21] >= 1 {
-				//@comment "指定地点まで歩かせる"
-				v[341] = v[21] * 300 + 4741
-				//@comment "set reserved target "
+				// "指定地点まで歩かせる"
+				v[341] = Spawned_Agent_Id_Shift + 4741
+				// "set reserved target "
 				v[371]=0//Flag for trained troop
-				@if `v[v[301] + 18] >= 1 {
-				    //@comment "Worker"
-				    @if `v[v[21] * 300 + 4802] == 9 {
-					v[371] |= 1//IT'S WORKER!
-				        v[v[21] * 300 + 4718] = v[v[301] + 18]
-					v[v[21] * 300 + 4942] = 1
-					v[v[21] * 300 + 4941] = v[v[21] * 300 + 4941] != 4 ? 2 : 4
+				@if v[618] >= 1 {
+				    // "Worker"
+				    @if `v[Spawned_Agent_Id_Shift + 4802] == 9 {
+					v[371] |= 1//IT'S WORKER! - flag switch on
+				        v[Spawned_Agent_Id_Shift + 4718] = v[618]
+					v[Spawned_Agent_Id_Shift + 4942] = 1
+					v[Spawned_Agent_Id_Shift + 4941] = v[Spawned_Agent_Id_Shift + 4941] != 4 ? 2 : 4
 					}.else bl{
 					//Combat troops - check if the reserved target is enemy
-				    v[v[21] * 300 + 4718] =(v[v[21] * 300 + 4800]%3)==(v[v[v[301] + 18]*300+4800]%3) ?0:v[v[301] + 18]
+				    v[Spawned_Agent_Id_Shift + 4718] =(v[Spawned_Agent_Id_Shift + 4800]%3)==(v[v[618]*300 +4800]%3) ?0:v[618]
 				    }
 				    
 				}
-				v[607] = v[301] + 7
-				v[v[607]].copy v[607], 2
-				v[641] = v[301] + 41
-				v[v[641]].copy v[641], 2
+				//v[607] = v[301] + 7
+				//v[v[607]].copy v[607], 2
+				//v[641] = v[301] + 41
+				//v[v[641]].copy v[641], 2
 				@if `v[607] == v[641] && v[608] == v[642] {
-				    //@comment "指定されてない"
-				    v[252] = v[v[301] + 7] + rnd(-3, 3)
-				    v[253] = v[v[301] + 8] + v[v[301] + 11] + rnd(-3, 3)
+				    // "指定されてない"
+				    v[252] = v[607] + rnd(-3, 3)
+				    v[253] = v[608] + v[611] + rnd(-3, 3)
 				    v[252] .add v[53], 2
 				    v[252].copy v[v[341]], 2
-				    v[v[21] * 300 + 4942] = 2
+				    v[Spawned_Agent_Id_Shift + 4942] = 2
 				    
 				} .else bl {
-				    v[v[21] * 300 + 4942] = v[371]&1 ? 2 : 3 //if the unit is worker, then give them loose move order 
-				    //@comment "指定されてる"
+				    v[Spawned_Agent_Id_Shift + 4942] = v[371]&1 ? 2 : 3 //if the unit is worker, then give them loose move order 
+				    // "指定されてる"
 				    v[641].copy v[v[341]], 2
-				    v[v[21] * 300 + 4734] |= 16384 + 524288
+				    v[Spawned_Agent_Id_Shift + 4734] |= 16384 + 524288
 				    //v[v[21] * 300 + 4734] |= 524288
 				    
 				}
@@ -1687,32 +1310,33 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			}
 			
 		    }
-		    //@comment "research particle"
-		    @if `v[v[301] + 3] & 1 {
+		    // "research particle"
+		    @if `agent_AgentBits & 1 {
 			@loop v[1017] .dst v[320] {
 			    v[244] %= v[1199]
 			    //v[331] = v[244] * 50
-			    v[331] = v[244] * 50 + v[1198]
+			    v[331] = v[244] * 50 
+			    v[331] += v[1198]
 			    @if v[v[331]] <= 1 {
-				//@comment "まず清掃"
+				// "まず清掃"
 				v[1301].copy v[v[331]], 50
-				//@comment "ポインタセット開始"
-				//@comment "設定"
+				// "ポインタセット開始"
+				// "設定"
 				v[v[331]] = 1
-				//@comment "500F"
+				// "500F"
 				v[v[331] + 49] = 6
-				//@comment "Set itself"
+				// "Set itself"
 				v[v[331] + 3] = 126
-				//@comment "Set Parent Obj"
+				// "Set Parent Obj"
 				v[v[331] + 9] = v[401] + 1
-				//@comment "普通にアニメ"
-				v[607] = v[301] + 7
-				v[v[607]].copy v[607], 2
+				// "普通にアニメ"
+				//v[607] = v[301] + 7
+				v[607].copy var1, 2
 				v[341] = v[331] + 6
-				v[607].copy v[v[341]], 2
-				//@comment "Colour"
+				var1.copy v[v[341]], 2
+				// "Colour"
 				v[0] = v[v[331] + 31..v[331] + 38] = [180, 129, 0, 90, 180, 129, 0, 60]
-				//@comment "仕上げに登録消す"
+				// "仕上げに登録消す"
 				v[244] += 1
 				@break
 				
@@ -1725,9 +1349,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    }
 		    
 		}
-		//@comment "#Reg Timer"
-		@if `v[v[301] + 99] <= 0 {
-		    //@comment "HP"
+		// "#Reg Timer"
+		@if v[699] <= 0 {
+		    // "HP"
 		    var1 = v[401] + 1
 		    //var2 = 0
 		    var3 = v[301] + 131
@@ -1735,39 +1359,39 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    //@call .cev 2006
 		    macro_HPSPreg(var1 0 var3)
 		    @if v[v[342]] <= 0 {
-			//@comment "Check if it can be rebuilded"
-			v[290] = 300001 + v[v[301] + 100] * 4
-			@if `v[v[290]] >= v[v[301] + 251] && v[v[290] + 1] >= v[v[301] + 252] && v[v[290] + 2] >= v[v[301] + 253] && v[v[290] + 3] >= v[v[301] + 254] && v[v[301] + 255] > 0 {
-			    v[341] = v[301] + 251
+			// "Check if it can be rebuilded"
+			v[290] = 300001 + v[700] * 4 //300001 magic number refers to factional resource
+			@if `v[v[290]] >= v[851] && v[v[290] + 1] >= v[852] && v[v[290] + 2] >= v[853] && v[v[290] + 3] >= v[854] && v[855] > 0 {
+			    v[341] = v[301] + 251//reconstructed!
 			    v[v[290]] .sub v[v[341]], 4
 			    @call .cev 84
 			    v[v[342]] = v[v[342] - 1]
 			    
 			} .else bl {
-			    //@comment "Decay"
-			    v[300] = v[299] = v[401] + 1
+			    // "Decay"
+			    v[299..300] = v[401] + 1
 			    v[298] = v[300] * 300 + 4701
 			    @if v[v[298]] >= 1 {
-				v[305..312] = v[300] * 300
+				v[305..312] = v[300] * 300 //killed.
 				@call .cev 41
 				
 			    } .else bl {
-				//@comment "Dead Static is not removed from List!?"
-				@if s[1] .isOn() {
+				// "Dead Static is not removed from List!?"
+				/*@if s[1] .isOn() { DEBUG feature, needless now
 				    var1 = v[300]
 				    @call .cev 2150
 				    var1 = 734947
 				    var2 = 1000
 				    @call .cev 2149
 				    
-				}
+				}*/
 				
 			    }
 			    
 			}
 			
 		    }
-		    //@comment "SP reg"
+		    // "SP reg"
 		    var1 = v[401] + 1
 		    //var2 = 1
 		    var3 = v[v[301] + 132]
@@ -1775,24 +1399,24 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    macro_HPSPreg(var1 1 var3)
 		    v[699] = v[301] + 99
 		    v[v[699]] = v[v[301] + 255] >= 1 ? 88 : 48
-		    //@comment "init farm owner"
+		    // "init farm owner"
 		    v[v[301] + 255] = 0
-		    //@comment "#Flammable"
-		    @if `s[v[401] + 501] {
-			@if `!(v[v[603]] & 2048) {
-			    //@comment "#Hp 66%"
+		    // "#Flammable"
+		    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//s[v[401] + 501] {
+			@if `!(agent_AgentBits & 2048) {
+			    // "#Hp 66%"
 			    @if `divmul(v[v[301] + 105], 100, 66) > v[v[301] + 106] {
 				@if v[182] <= 0 {
 				    @if v[522] <= 24 {
 					v[182] += 1
-					//@comment "#########################"
+					// "#########################"
 					v[471] = 11550
 					v[472] = divmul(45, 100, v[2216])
 					v[473] = rnd(90, 115)
 					v[607] = v[301] + 7
 					v[v[607]].copy v[361], 2
 					v[474] = divmul(v[361] + v[1001], v[1281], 50)
-					//@comment "#########################"
+					// "#########################"
 					t[510] .asg "misc\blazing"
 					@cmd v[471], t[510], .args v[472], 3
 					
@@ -1809,49 +1433,49 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 		v[699] = v[301] + 99
 		v[341] = v[v[699]]
-		//@comment "########################"
+		// "########################"
 		
 	    }
-	    //@comment "目標位置"
+	    // "目標位置"
 	    v[619] = v[301] + 19
 	    v[620] = v[301] + 20
-	    //@comment "################"
-	    /*@comment "Obj指定分岐
+	    // "################"
+	    /* "Obj指定分岐
 	Get18 = 目標ObjID"*/
 	    @if `v[v[301] + 18] >= 1 {
-		/*@comment "Obj指定があり、そちらに行きたいとき
+		/* "Obj指定があり、そちらに行きたいとき
 	Get18 = 目標ObjID"*/
 		v[304] = v[v[301] + 18] * 300 + 4701
 		@if v[v[304]] >= 1 {
-		    //@comment "#指定Objが存在する"
+		    // "#指定Objが存在する"
 		    v[304] += 6
 		    v[v[304]].copy v[v[619]], 2
-		    //@comment "#攻撃"
+		    // "#攻撃"
 		    @if v[370] >= 2 {
-			//@comment "目標地点にカメラのずれを加算"
+			// "目標地点にカメラのずれを加算"
 			v[v[619]] .add v[53], 2
-			/*@comment "Temp4 = 次に動く場所x
+			/* "Temp4 = 次に動く場所x
 	Temp6 = 次に動く場所y"*/
 			v[304] = v[v[619]]
 			v[300] = v[301] + 7
 			v[304] -= v[v[300]]
 			v[309] = v[304]
 			v[304] = pow(v[304], 2)
-			//@comment "#######"
+			// "#######"
 			v[306] = v[v[620]]
 			v[300] = v[301] + 8
 			v[306] -= v[v[300]]
 			v[310] = v[306]
 			v[306] = pow(v[306], 2)
 			v[304] += v[306]
-			//@comment "Set Object[23]"
+			// "Set Object[23]"
 			v[300] = v[301] + 23
 			v[v[300]] = sqrt(v[304], 1000)
 			v[318] = v[v[300]]
-			//@comment "AAレンジ内か否かを見る"
+			// "AAレンジ内か否かを見る"
 			v[295] = v[301] + 117
 			v[v[295]].copy v[341], 2
-			//@comment "自分がMeleeなら([相手の幅]*1000)を引いて考える"
+			// "自分がMeleeなら([相手の幅]*1000)を引いて考える"
 			v[340] = v[318]
 			v[340] -= v[v[703]] == 0 ? v[335] : 0
 			@if v[340] <= v[341] {
@@ -1859,9 +1483,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				v[842] = v[301] + 242
 				v[v[842]] = -1
 				v[628] = v[301] + 28
-				//@comment "AAタイマー見る"
+				// "AAタイマー見る"
 				v[v[843]] = v[v[628]] <= 0 ? 1 : v[v[843]]
-				/*@comment "#＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+				/* "#＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
 	ここの調節でゲームスピードが決定する
 #＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"*/
 				v[v[628]] = v[v[628]] <= 0 ? 4800 / 6 : v[v[628]]
@@ -1873,43 +1497,43 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    }
 		    
 		} .else bl {
-		    //@comment "#指定Objが存在しない"
+		    // "#指定Objが存在しない"
 		    v[618] = v[301] + 18
-		    //@comment "#Obj目標を消す"
+		    // "#Obj目標を消す"
 		    v[v[618]] = 0
 		    v[607].copy v[v[619]], 2
 		    
 		}
 		
 	    }
-	    //@comment "########################Particles"
-	    @if `s[v[401] + 501] {
-		//@comment "#Flammable"
-		@if `!(v[v[603]] & 2048) {
-		    //@comment "#Hp 66%"
+	    // "########################Particles"
+	    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//`s[v[401] + 501] {
+		// "#Flammable"
+		@if `!(agent_AgentBits & 2048) {
+		    // "#Hp 66%"
 		    @if `divmul(v[v[301] + 105], 100, 66) > v[v[301] + 106] {
-			//@comment "Fire Particle"
+			// "Fire Particle"
 			@loop v[1017] .dst v[320] {
 			    v[244] %= v[1199]
 			    v[331] = v[244] * 50 + v[1198]
 			    @if v[v[331]] <= 1 {
-				//@comment "まず清掃"
+				// "まず清掃"
 				v[1301].copy v[v[331]], 50
-				//@comment "ポインタセット開始"
-				//@comment "設定"
+				// "ポインタセット開始"
+				// "設定"
 				v[v[331]] = 1
-				//@comment "500F"
+				// "500F"
 				v[v[331] + 49] = 6
-				//@comment "Set itself"
+				// "Set itself"
 				v[v[331] + 3] = 138
-				//@comment "Set Parent Obj"
+				// "Set Parent Obj"
 				v[v[331] + 9] = v[401] + 1
-				//@comment "普通にアニメ"
+				// "普通にアニメ"
 				v[607] = v[301] + 7
 				v[v[607]].copy v[607], 2
 				v[341] = v[331] + 6
 				v[607].copy v[v[341]], 2
-				//@comment "仕上げに登録消す"
+				// "仕上げに登録消す"
 				v[244] += 1
 				@break
 				
@@ -1923,31 +1547,31 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    
 		}
 		v[701] = v[301] + 101
-		//@comment "#Blacksmith"
+		// "#Blacksmith"
 		@if v[v[701]] == 15 {
 		    @loop v[1017] .dst v[320] {
 			v[244] %= v[1199]
 			v[331] = v[244] * 50 
 			v[331] += v[1198]
 			@if v[v[331]] <= 1 {
-			    //@comment "まず清掃"
+			    // "まず清掃"
 			    v[1301].copy v[v[331]], 50
-			    //@comment "ポインタセット開始"
-			    //@comment "設定"
+			    // "ポインタセット開始"
+			    // "設定"
 			    v[v[331]] = 1
-			    //@comment "500F"
+			    // "500F"
 			    v[v[331] + 49] = 6
-			    //@comment "Set itself"
+			    // "Set itself"
 			    v[v[331] + 3] = 161
-			    //@comment "Set Parent Obj"
+			    // "Set Parent Obj"
 			    v[v[331] + 9] = v[401] + 1
-			    //@comment "普通にアニメ"
+			    // "普通にアニメ"
 			    v[607] = v[301] + 7
 			    v[v[607]].copy v[607], 2
 			    v[608] -= 20
 			    v[341] = v[331] + 6
 			    v[607].copy v[v[341]], 2
-			    //@comment "仕上げに登録消す"
+			    // "仕上げに登録消す"
 			    v[244] += 1
 			    @break
 			    
@@ -1958,7 +1582,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    
 		    
 		}
-		//@comment "#MageAltar"
+		// "#MageAltar"
 		@if v[v[701]] == 27 {
 		    v[628] = v[301] + 28
 		    @if v[v[628]] >= 48 {
@@ -1968,24 +1592,24 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				v[331] = v[244] * 50 
 				v[331] += v[1198]
 				@if v[v[331]] <= 1 {
-				    //@comment "まず清掃"
+				    // "まず清掃"
 				    v[1301].copy v[v[331]], 50
-				    //@comment "ポインタセット開始"
-				    //@comment "設定"
+				    // "ポインタセット開始"
+				    // "設定"
 				    v[v[331]] = 1
-				    //@comment "500F"
+				    // "500F"
 				    v[v[331] + 49] = 6
-				    //@comment "Set itself"
+				    // "Set itself"
 				    v[v[331] + 3] = 139
-				    //@comment "Set Parent Obj"
+				    // "Set Parent Obj"
 				    v[v[331] + 9] = v[401] + 1
-				    //@comment "普通にアニメ"
+				    // "普通にアニメ"
 				    v[607] = v[301] + 7
 				    v[v[607]].copy v[607], 2
 				    v[608] -= 12
 				    v[341] = v[331] + 6
 				    v[607].copy v[v[341]], 2
-				    //@comment "仕上げに登録消す"
+				    // "仕上げに登録消す"
 				    v[244] += 1
 				    @break
 				    
@@ -2000,31 +1624,31 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    }
 		    
 		}
-		//@comment "#mana light"
+		// "#mana light"
 		@if v[v[701]] == 37 {
 		    @loop v[1017] .dst v[320] {
 			v[244] %= v[1199]
 			v[331] = v[244] * 50 
 			v[331] += v[1198]
 			@if v[v[331]] <= 1 {
-			    //@comment "まず清掃"
+			    // "まず清掃"
 			    v[1301].copy v[v[331]], 50
-			    //@comment "ポインタセット開始"
-			    //@comment "設定"
+			    // "ポインタセット開始"
+			    // "設定"
 			    v[v[331]] = 1
-			    //@comment "500F"
+			    // "500F"
 			    v[v[331] + 49] = 6
-			    //@comment "Set itself"
+			    // "Set itself"
 			    v[v[331] + 3] = 164
-			    //@comment "Set Parent Obj"
+			    // "Set Parent Obj"
 			    v[v[331] + 9] = v[401] + 1
-			    //@comment "普通にアニメ"
+			    // "普通にアニメ"
 			    v[607] = v[301] + 7
 			    v[v[607]].copy v[607], 2
 			    v[608] -= 20
 			    v[341] = v[331] + 6
 			    v[607].copy v[v[341]], 2
-			    //@comment "仕上げに登録消す"
+			    // "仕上げに登録消す"
 			    v[244] += 1
 			    @break
 			    
@@ -2038,9 +1662,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		
 	    }
 	    @if v[370] >= 2 {
-		/*@comment "#########################
-	PAssive
-#########################"*/
+		/* "########################	PAssive#########################"*/
 		@if `v[v[301] + 223] & 1 {
 		    @if `v[v[301] + 94] <= 0 {
 			v[824] = v[v[301] + 224] > v[1186] ? v[v[301] + 224] : 1899
@@ -2049,41 +1671,41 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    }
 		    
 		}
-		//@comment "gate flag"
-		@if `v[v[603]] & 256 {
-		    //@comment "##############"
+		// "gate flag"
+		@if `agent_AgentBits & 256 {
+		    // "##############"
 		    v[300] = v[301] + 5
 		    v[299] = v[301] + 15
 		    v[298] = v[301] + 7
 		    v[297] = 53
 		    v[296] = v[301] + 36
 		    v[295] = v[301] + 296
-		    //@comment "Get mapXY"
+		    // "Get mapXY"
 		    v[293] = v[301] + 26
 		    v[v[293]].copy v[311], 2
-		    //@comment "#Obj衝突チェック試作begin"
+		    // "#Obj衝突チェック試作begin"
 		    v[319] = v[401]
-		    //@comment "##"
+		    // "##"
 		    v[333] = v[301] + 7
 		    v[334] = v[301] + 8
 		    v[335] = v[301] + 10
 		    v[336] = v[301] + 11
-		    /*@comment "Maybe this is faster
+		    /* "Maybe this is faster
 	...Yes, this is far faster, it's confirmed."*/
-		    //@comment "Morton"
-		    //@comment "##############"
+		    // "Morton"
+		    // "##############"
 		    v[607] = v[301] + 7
 		    v[610] = v[301] + 10
 		    v[v[607]].copy var1, 2
 		    v[11..12] -= 20
 		    var1 .sub v[v[610]], 2
-		    /*@comment "#########################
+		    /* "#########################
 #2002 Crd->Mort V1V2 reg1
 ##########################"*/
 		    var1.copy v[341], 2
 		    v[341] .sub v[76], 2
 		    v[341] .div v[74], 2
-		    /*@comment "TT1=MortX
+		    /* "TT1=MortX
 	TT2=MortY
 	ビット演算して処理するよ"*/
 		    v[341] = (v[341] | v[341] << 8) & 0xFF00FF
@@ -2094,24 +1716,24 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    v[342] = (v[342] | v[342] << 4) & 0xF0F0F0F
 		    v[342] = (v[342] | v[342] << 2) & 0x33333333
 		    v[342] = ((v[342] | v[342] << 1) & 0x55555555)<<1
-		    //@comment "yは1bitシフトで終わり"
+		    // "yは1bitシフトで終わり"
 		    //v[342] <<= 1
-		    //@comment "最後にTT1 OR TT2"
+		    // "最後にTT1 OR TT2"
 		    v[21] = v[341] | v[342]
-		    /*@comment "#########################
+		    /* "#########################
 #2002 Crd->Mort V1V2 reg1 end
 ##########################"*/
 		    v[351] = v[21]
 		    v[v[607]].copy var1, 2
 		    v[11..12] += 20
 		    var1 .add v[v[610]], 2
-		    /*@comment "#########################
+		    /* "#########################
 #2002 Crd->Mort V1V2 reg1
 ##########################"*/
 		    var1.copy v[341], 2
 		    v[341] .sub v[76], 2
 		    v[341] .div v[74], 2
-		    /*@comment "TT1=MortX
+		    /* "TT1=MortX
 	TT2=MortY
 	ビット演算して処理するよ"*/
 		    v[341] = (v[341] | v[341] << 8) & 0xFF00FF
@@ -2122,30 +1744,28 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    v[342] = (v[342] | v[342] << 4) & 0xF0F0F0F
 		    v[342] = (v[342] | v[342] << 2) & 0x33333333
 		    v[342] = ((v[342] | v[342] << 1) & 0x55555555)<<1
-		    //@comment "yは1bitシフトで終わり"
+		    // "yは1bitシフトで終わり"
 		    //v[342] <<= 1
-		    //@comment "最後にTT1 OR TT2"
+		    // "最後にTT1 OR TT2"
 		    v[21] = v[341] | v[342]
-		    /*@comment "#########################
-#2002 Crd->Mort V1V2 reg1 end
-##########################"*/
+		    /* "##########################2002 Crd->Mort V1V2 reg1 end##########################"*/
 		    v[341] = v[351]
 		    v[342] = v[21]
-		    /*@comment "TT1 = upper left morton
+		    /* "TT1 = upper left morton
 	TT2 = bottom right morton
 	TT5 = shift num"*/
 		    v[343] = v[341] ^ v[342]
-		    //@comment "#mask with 11000000"
-		    //@comment "#mask with 110000"
-		    //@comment "#mask with 001100"
-		    //@comment "#mask with 000011"
+		    // "#mask with 11000000"
+		    // "#mask with 110000"
+		    // "#mask with 001100"
+		    // "#mask with 000011"
 		    v[345] = v[343] & 768 ? 10 : v[343] & 192 ? 8 : v[343] & 48 ? 6 : v[343] & 12 ? 4 : v[343] & 3 ? 2 : 0
 		    v[609] = v[342] >> v[345]
-		    //@comment "#mask end"
+		    // "#mask end"
 		    v[340] = v[4546 - v[345] / 2]
 		    v[327] = v[v[4552 - v[345] / 2] + v[609]]
-		    //@comment "##############"
-		    //@comment "DisciplineCheck"
+		    // "##############"
+		    // "DisciplineCheck"
 		    v[337] = v[401] * 300 
 		    v[337] += 5010
 		    v[v[337]].copy v[337], 2
@@ -2160,19 +1780,19 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			v[601] += 5001
 			@if v[v[601]] <= 9 {
 			    v[324] = v[Const_AgentMetaTeam_begin+v[203]] //v[v[203] * 300 + 5100] % 3
-			    //@comment "対象のColを見る"
-			    //@comment "#UnitID==NoColならとめる"
-			    //@comment "対象のObjIDが自分ならとめる"
+			    // "対象のColを見る"
+			    // "#UnitID==NoColならとめる"
+			    // "対象のObjIDが自分ならとめる"
 			    @if v[324] == v[700] {
-				//@comment "衝突チェック開始"
+				// "衝突チェック開始"
 				v[320..322] = v[203] * 300
-				//@comment "T30=modifier for collision, Statics have bigger col"
+				// "T30=modifier for collision, Statics have bigger col"
 				v[320] .add v[1607], 2
 				v[322] += v[1610]
 				v[v[322]].copy v[322], 2
 				//v[0] = v[320..321] = [v[v[320]] - v[v[333]], v[v[321]] - v[v[334]]]
 				v[320] = v[v[320]] - v[v[333]]
-				//@comment "TT1でチェック"
+				// "TT1でチェック"
 				@if `v[322] + v[337] >= abs(v[320]) {
 				    v[321] = v[v[321]] - v[v[334]]
 				    @if `v[323] + v[338] >= abs(v[321]) {
@@ -2189,12 +1809,12 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			
 		    }
 		    
-		    @comment "Locked?"
+		    // "Locked?"
 		    @if v[371] == 1 {
-			@if `!(v[v[603]] & 4) {
-			    @if `!(v[v[603]] & 8) {
+			@if `!(agent_AgentBits & 4) {
+			    @if `!(agent_AgentBits & 8) {
 				v[v[301] + 243] = 1
-				v[v[603]] |= 4
+				v[v[301] + 3] |= 4
 				v[803] = v[301] + 203
 				v[v[803]].copy v[803], 4
 				@loop v[806] .dst v[2064] {
@@ -2206,7 +1826,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					v[v[287]] /= 100
 					v[v[287]] *= 100
 					v[v[287]] += 1
-					//@comment "#TileFuncPushFlag"
+					// "#TileFuncPushFlag"
 					v[v[286]] &= -2//~1
 					v[286..287] += 1
 					
@@ -2216,16 +1836,16 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				}
 				
 				@if v[182] < 2 {
-				    @if `s[v[401] + 501] == 1 {
+				    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen{ //`s[v[401] + 501] == 1 {
 					v[607] = v[301] + 7
 					v[v[607]].copy v[607], 2
 					v[182] += 1
-					//@comment "#########################"
+					// "#########################"
 					v[472] = divmul(70, 100, v[2216])
 					v[473] = 100
 					v[474] = divmul(v[607] + v[1001], v[1281], 50)
 					@cmd 11550, "misc\gate_open", .args v[472], 3
-					//@comment "#########################"
+					// "#########################"
 					
 				    }
 				    
@@ -2236,9 +1856,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			}
 			
 		    } .else bl {
-			@if `v[v[603]] & 4 {
+			@if `agent_AgentBits & 4 {
 			    v[v[301] + 243] = 0
-			    v[v[603]] &= -5//~4
+			    v[v[301] + 3] &= -5//~4
 			    v[803] = v[301] + 203
 			    v[v[803]].copy v[803], 4
 			    @loop v[806] .dst v[2064] {
@@ -2250,7 +1870,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				    v[v[287]] /= 100
 				    v[v[287]] *= 100
 				    v[v[287]] += 21
-				    //@comment "#TileFuncPushFlag"
+				    // "#TileFuncPushFlag"
 				    v[v[286]] |= 1
 				    v[286..287] += 1
 				    
@@ -2260,16 +1880,16 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    }
 			    
 			    @if v[182] < 2 {
-				@if `s[v[401] + 501] == 1 {
+				@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//s[v[401] + 501] == 1 {
 				    v[607] = v[301] + 7
 				    v[v[607]].copy v[607], 2
 				    v[182] += 1
-				    //@comment "#########################"
+				    // "#########################"
 				    v[472] = divmul(70, 100, v[2216])
 				    v[473] = 100
 				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
 				    @cmd 11550, "misc\gate_close", .args v[472], 3
-				    //@comment "#########################"
+				    // "#########################"
 				    
 				}
 				
@@ -2282,404 +1902,491 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 		
 	    }
-	    //@comment "++"
+	    // "++"
 	    v[536] += 1
 	    
 	}
 
 	@wait 0
-	//@comment "############"
+	// "############"
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
 	    v[301] = v[v[536]] * v[1117] 
-	    v[301] += 4703
-	    //@comment "colck"
-	    @if `v[v[301]] & 256 {
-		@if `v[v[301]] & 128 {
-		    v[842] = v[301] + 239
-		    v[v[842]] = -1
-		    v[v[301] + 241] = (cos(v[v[301] + 53], 1000, -100) + 200) / 200
-		    v[v[301]] &= -129//~128
+	    v[301] += 4700
+	    func_main_extract_agent_vars()
+	    // "colck"
+	    @if `agent_AgentBits & 256 {
+		@if `agent_AgentBits & 128 {
+		    //v[842] = v[301] + 239
+		    //v[v[842]] = -1
+		    agent_MovementOrder = -1
+		    agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
+		    agent_AgentBits &= -129//~128
 		    
 		}
 		
 	    } .else bl {
-		@if `v[v[301]] & 128 {
-		    v[294] = v[301] + 22
-		    @if `v[2501] / 6 % (v[v[294]] * 16) == 0 {
-			v[v[301]] |= 256
+		@if `agent_AgentBits & 128 {
+		    //v[294] = v[301] + 22
+		    @if `v[2501] / 6 % (agent_ObjectCollideSkipFrame * 16) == 0 {
+			agent_AgentBits |= 256
 			
 		    }
 		    
 		}
-		@if `v[v[301] + 271] & 16384 {
-		    v[v[301]] &= -513//~512
-		    v[v[301]] |= v[v[301] + 77] <= 0 && v[v[301] + 239] <= 0 ? 512 : 0
+		@if `agent_ProcessObjBit & 16384 {
+		    agent_AgentBits &= -513//~512
+		    agent_AgentBits |= (agent_InCombatTimer <= 0 && agent_MovementOrder <= 0) ? 512 : 0
 		    
 		}
 		
 	    }
-	    //@comment "#########################PAssive#########################"
-	    v[301] -= 3
-	    //@comment "Passive"
-	    v[694] = v[301] + 94
-	    @if `v[v[694]] <= 0 {
-		v[401] = v[v[536]] - 1
-		v[v[694]] = 100
-		@if `v[v[301] + 223] & 1 {
-		    v[824] = v[v[301] + 224] > v[1186] ? v[v[301] + 224] : 1899
-		    @call .cev v[824]
-		    
-		}
-		v[874] = v[301] + 274
-		@if `v[v[874]] & 1048576 {
-		    //@comment "standard_bearer"
-		    v[299] = v[401] + 1
-		    @if v[217] < v[4559] {
-			v[217] += 1
-			@loop v[4559] .dst v[320] {
-			    v[216] %= v[4559]
-			    v[301] = v[216] * 100
-			    v[301] += v[1076]
-			    v[295] = v[301] + 1
-			    @if v[v[295]] == 0 {
-				//@comment "Access17 = AttackerObjチェックPtr"
-				v[297] = v[299] * 300
-				v[297] += 4700
-				//@comment "まず清掃"
-				v[1301].copy v[601], 100
-				v[1301].copy v[v[295]], 100
-				//@comment "ParentObjセット"
-				v[609] = v[299]
-				//@comment "出る場所セット"
-				v[341] = v[297] + 7
-				v[v[341]].copy v[605], 2
-				v[605..606] *= 10000
-				v[v[341]].copy v[607], 2
-				//@comment "Projectile team"
-				v[341] = v[297] + 100
-				v[618] = v[v[341]] == 0 ? 1 : 0
-				//@comment "パラメータ等入力begin"
-				//@comment "#Pic"
-				v[602] = 1
-				//@comment "#ProjectileType"
-				v[601] = 2
-				//@comment "#あたり判定"
-				v[610..611] = muldiv(v[v[297] + 275], 12, 10)
-				//@comment "#威力"
-				v[621] = 0
-				//@comment "#Timer"
-				v[700] = 1
-				//@comment "#Effect"
-				v[604] = 1231
-				//@comment "#ARMRと属性"
-				v[622] = -1
-				v[623] = 1
-				v[628] |= 8
-				//@comment "パラメータ等入力end"
-				v[601].copy v[v[295]], 100
-				//@comment "Having no timer passive conflict"
-				@if `!(v[v[297] + 223] & 1) {
-				    //@comment "Timer Reset"
-				    v[v[297] + 94] = v[1240] * 5
-				    
-				}
-				//@comment "Eff"
-				v[341] = v[v[299] * 300 + 4922]
-				@if v[341] >= 1 {
-				    v[342] = v[299] * 300 
-				    v[342] += 4925
-				    v[v[342]] = (v[v[342]] + 1) % 2
-				    @if v[v[342]] == 0 {
-					@if `s[500 + v[299]] == 1 {
-					    v[607].copy v[361], 2
-					    @loop v[1017] .dst v[320] {
-						v[242] %= v[1017]
-						v[301] = v[242] * 100
-						v[301] = v[301] + v[1018]
-						@if v[v[301]] <= 1 {
-						    v[243] -= v[v[301]] == 1 ? 1 : 0
-						    v[242] %= v[1017]
-						    v[281] = v[242] * 100
-						    v[281] = v[281] + v[1018]
-						    //@comment "まず清掃"
-						    v[1301].copy v[v[301]], 100
-						    //@comment "ポインタセット開始"
-						    v[310] = v[242] + v[1220]
-						    v[295] = v[301] + 99
-						    //@comment "設定"
-						    v[v[301]] = 1
-						    v[v[295]] = 0
-						    //@comment "普通にアニメ"
-						    @pic[v[310]].show {
-							"passive_icon\picon_0" .repl 1 v[341]
-							.pos v[361], v[362] .center
-							.scrollWithMap
-							.chromakey 1
-							.scale 100
-							.trans 40
-							.rgbs 100, 100, 100, 100
-							.mapLayer 5
-							.eraseWhenTransfer
-							.affectedByFlash
-							.affectedByShake
-						    }
-						    v[362] -= 36
-						    @pic[v[310]].move {
-							.pos v[361], v[362] .center
-							.scale 250
-							.trans 100
-							.time 21
-							.rgbs 100, 100, 100, 100
-						    }
-						    //@comment "仕上げに登録消す"
-						    v[242..243] += 1
-						    @break
-						    
-						}
-						v[242] += 1
-						
-					    }
-					    
-					    
-					}
-					
-				    }
-				    
-				}
-				@break
-				
-			    }
-			    
-			}
-			
-			v[216] += 1
-			
-		    }
-		    
-		}
-		
-	    }
-	    //@comment "Agent Effect"
+
+
+	    // "Agent Effect"
 	    v[401] = v[v[536]] - 1
-	    v[301] = v[v[536]] * v[1117] 
-	    v[301] += 4700
-	    @if `s[v[401] + 501] {
-		//@comment "Hero Particle"
-		@if `v[v[301] + 274] & 4194304 {
-		    @loop v[1017] .dst v[320] {
+	    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//`s[v[401] + 501] ==1 {
+		// "Hero Particle"
+		@if `agent_ProcessObjBit & 4194304 { //is hero
+
+		    func_set_preset_particle_emitter(v[331],
+			    PROC({
+				    emitter_ParticleType = 1
+				    emitter_Timer = 6
+				    emitter_CallPartFunc = cevid_hero_particle
+				    emitter_ParentObject = v[401] + 1
+				    // "普通にアニメ"
+				    agent_RelativeX.copy emitter_RelativeX, 2
+				    emitter_RelativeY += 8
+			    })
+		    )
+
+		    /*@loop v[1017] .dst v[320] {
 			v[244] %= v[1199]
 			v[331] = v[244] * 50 
 			v[331] += v[1198]
 			@if v[v[331]] <= 1 {
-			    //@comment "まず清掃"
+			    // "まず清掃"
 			    v[1301].copy v[v[331]], 50
-			    //@comment "ポインタセット開始"
-			    //@comment "設定"
+			    // "ポインタセット開始"
+			    // "設定"
 			    v[v[331]] = 1
-			    //@comment "500F"
+			    // "500F"
 			    v[v[331] + 49] = 6
-			    //@comment "Set itself"
+			    // "Set itself"
 			    v[v[331] + 3] = 167
-			    //@comment "Set Parent Obj"
+			    // "Set Parent Obj"
 			    v[v[331] + 9] = v[401] + 1
-			    //@comment "普通にアニメ"
-			    v[607] = v[301] + 7
-			    v[v[607]].copy v[607], 2
-			    v[608] += 8
-			    v[341] = v[331] + 6
-			    v[607].copy v[v[341]], 2
-			    //@comment "仕上げに登録消す"
+			    // "普通にアニメ"
+			    agent_RelativeX.copy var1, 2
+			    var2 += 8
+			    TT1 = v[331] + 6
+			    var1.copy v[TT1], 2
+			    // "仕上げに登録消す"
 			    v[244] += 1
 			    @break
 			    
 			}
 			v[244] += 1
 			
-		    }
+		    }*/
 		    
 		    
 		}
 		
 	    }
-	    //@comment "Check flee end "
-	    @if `v[v[301] + 242] == 11 {
-		@if `!(v[v[301] + 274] & 512) {
-		    v[v[301] + 242] = 0
+	    // "Check flee end "
+	    @if agent_MovementOrder == 11 {
+		@if `!(agent_ProcessObjBit & 512) {
+		    agent_MovementOrder = 0
 		    
 		}
 		
 	    }
-	    v[827] = v[301] + 227
-	    v[640] = v[301] + 40
-	    v[640] = v[v[640]]
-	    @if v[640] == 22 {
-		v[v[827]] += 5
-		//@comment "Choke "
-		@if v[v[827]] >= 200 {
-		    v[300] = v[299] = v[v[536]]
+	    //v[827] = v[301] + 227
+	    //v[640] = v[301] + 40
+	    //v[640] = v[v[640]]
+	    @if agent_InCombatTimer < v[1178] {
+		agent_2hweapon_stain -= agent_2hweapon_stain > 0 ? 1 : 0
+		
+	    }
+	    @if agent_Morale <= -1 {
+		@if agent_InCombatTimer <= -1800 { 
+		    agent_Morale = 0
+		    
+		}
+		
+	    }
+
+	    @if agent_TerrainIDstanding == 22 { // On DeepWater tile..
+		agent_ChokeTimer += 5
+		// "Choked to death"
+		@if agent_ChokeTimer >= 200 {
+		    //v[300] = v[299] = v[v[536]]
+		    v[299..300] = v[v[536]]
 		    v[298] = v[300] * 300 
 		    v[298] += 4701
 		    v[305..312] = v[300] * 300
-		    @call .cev 41
+		    func_main_save_agent_vars()//save anything before die - is this really necessary?
+		    @call .cev 41 // call choked to death event
 		    
 		}
 		
 	    } .else bl {
-		v[v[827]] = 0
-		
+		agent_ChokeTimer = 0 //reset choke timer
+		func_main_save_agent_vars()//save
 	    }
-	    @if `v[v[301] + 80] < v[1178] {
-		v[v[301] + 285] -= v[v[301] + 285] > 0 ? 1 : 0
-		
-	    }
-	    @if `v[v[301] + 260] <= -1 {
-		@if `v[v[301] + 80] <= -1800 {
-		    v[v[301] + 260] = 0
-		    
+
+	    // "#########################PAssive#########################"
+	    // "Passive"
+	    
+	    v[301] = v[v[536]] * v[1117] 
+	    v[301] += 4700
+	    TT1 = v[301] + 1
+	    @if v[TT1] > 0 { //if only the unit isn't choked to death
+		    v[694] = v[301] + 94
+		    @if `v[v[694]] <= 0 {
+			v[401] = v[v[536]] - 1
+			v[v[694]] = 100
+			@if `v[v[301] + 223] & 1 {
+			    v[824] = v[v[301] + 224] > v[1186] ? v[v[301] + 224] : 1899
+			    @call .cev v[824]
+			    
+			}
+			v[874] = v[301] + 274
+			@if `v[v[874]] & 1048576 {
+			    // "standard_bearer"
+			    v[299] = v[401] + 1
+			    @if v[217] < v[4559] {
+				v[217] += 1
+				@loop v[4559] .dst v[320] {
+				    v[216] %= v[4559]
+				    v[301] = v[216] * 100
+				    v[301] += v[1076]
+				    v[295] = v[301] + 1
+				    @if v[v[295]] == 0 {
+					// "Access17 = AttackerObjチェックPtr"
+					v[297] = v[299] * 300
+					v[297] += 4700
+					// "まず清掃"
+					v[1301].copy v[601], 100
+					v[1301].copy v[v[295]], 100
+					// "ParentObjセット"
+					v[609] = v[299]
+					// "出る場所セット"
+					v[341] = v[297] + 7
+					v[v[341]].copy v[605], 2
+					v[605..606] *= 10000
+					v[v[341]].copy v[607], 2
+					// "Projectile team"
+					v[341] = v[297] + 100
+					v[618] = v[v[341]] == 0 ? 1 : 0
+					// "パラメータ等入力begin"
+					// "#Pic"
+					v[602] = 1
+					// "#ProjectileType"
+					v[601] = 2
+					// "#あたり判定"
+					v[610..611] = muldiv(v[v[297] + 275], 12, 10)
+					// "#威力"
+					v[621] = 0
+					// "#Timer"
+					v[700] = 1
+					// "#Effect"
+					v[604] = 1231
+					// "#ARMRと属性"
+					v[622] = -1
+					v[623] = 1
+					v[628] |= 8
+					// "パラメータ等入力end"
+					v[601].copy v[v[295]], 100
+					// "Having no timer passive conflict"
+					@if `!(v[v[297] + 223] & 1) {
+					    // "Timer Reset"
+					    v[v[297] + 94] = v[1240] * 5
+					    
+					}
+					// "Eff"
+					v[341] = v[v[299] * 300 + 4922]
+					@if v[341] >= 1 {
+					    v[342] = v[299] * 300 
+					    v[342] += 4925
+					    v[v[342]] = (v[v[342]] + 1) % 2
+					    @if v[v[342]] == 0 {
+						@if `s[500 + v[299]] == 1 {
+						    v[607].copy v[361], 2
+						    @loop v[1017] .dst v[320] {
+							v[242] %= v[1017]
+							v[301] = v[242] * 100
+							v[301] = v[301] + v[1018]
+							@if v[v[301]] <= 1 {
+							    v[243] -= v[v[301]] == 1 ? 1 : 0
+							    v[242] %= v[1017]
+							    v[281] = v[242] * 100
+							    v[281] = v[281] + v[1018]
+							    // "まず清掃"
+							    v[1301].copy v[v[301]], 100
+							    // "ポインタセット開始"
+							    v[310] = v[242] + v[1220]
+							    v[295] = v[301] + 99
+							    // "設定"
+							    v[v[301]] = 1
+							    v[v[295]] = 0
+							    // "普通にアニメ"
+							    @pic[v[310]].show {
+								"passive_icon\picon_0" .repl 1 v[341]
+								.pos v[361], v[362] .center
+								.scrollWithMap
+								.chromakey 1
+								.scale 100
+								.trans 40
+								.rgbs 100, 100, 100, 100
+								.mapLayer 5
+								.eraseWhenTransfer
+								.affectedByFlash
+								.affectedByShake
+							    }
+							    v[362] -= 36
+							    @pic[v[310]].move {
+								.pos v[361], v[362] .center
+								.scale 250
+								.trans 100
+								.time 21
+								.rgbs 100, 100, 100, 100
+							    }
+							    // "仕上げに登録消す"
+							    v[242..243] += 1
+							    @break
+							    
+							}
+							v[242] += 1
+							
+						    }
+						    
+						    
+						}
+						
+					    }
+					    
+					}
+					@break
+					
+				    }
+				    
+				}
+				
+				v[216] += 1
+				
+			    }
+			    
+			}
+			
+		    }
 		}
-		
-	    }
-	    //@comment "++"
+
+	    // "++"
 	    v[536] += 1
 	    
 	}
 
 	@wait 0
+
+	//TILE INSTANT FLAG CHECK START
+
+	//shield wall
+	def ShieldWall_Cover_SquareSide = 5
+	def ShieldWall_Cover_Diff = 2
+	//Pike Wall
+	def PikeWall_Cover_SquareSide = 5 
+	def PikeWall_Cover_Diff = 2
+
+	__fn func_set_tileflag_in_square_range $flag $length $diff $var_rangestart $var_rangeend {
+		v[__id($var_rangestart)..__id($var_rangeend)] = $flag //set array for flag
+		//Start settting shield covered flag on
+		defv STARTPOINTx = __id(TT1)
+		defv STARTPOINTy = __id(TT2)
+		defv Length_x = __id(TT3)
+		defv Length_y = __id(TT4)
+
+		//Try not to be over from map range
+		agent_MapX.copy STARTPOINTx,2
+		STARTPOINTx.sub v[69],2 
+		v[__id(STARTPOINTx)..__id(STARTPOINTy)] -= $diff
+		STARTPOINTx = max(STARTPOINTx,0)
+		STARTPOINTy = max(STARTPOINTy,0)
+		var_Map_Width.copy Length_x,2
+
+		Length_x.sub STARTPOINTx,2
+		Length_x = min(Length_x,$length)
+		Length_y = min(Length_y,$length)
+		//func_devlog("Shield Wall aura STARTs from \v[341],\v[342] - Length \v[343],\v[344] ")
+		STARTPOINTx += STARTPOINTy * var_Map_Width
+		STARTPOINTx += Const_save_var_TileFlags
+		//DEBUG
+		@loop Length_y {
+			//func_devlog("Shield Wall aura set to memory adress[\v[341]] + \v[343] ")
+			v[STARTPOINTx].or $var_rangestart, Length_x //set flag
+			STARTPOINTx += var_Map_Width
+		}
+	}
+
 	//initialize Tile Flags
 	//v[Const_save_var_TileFlags..Const_save_var_TileFlags+var_allocatedmapsize] >>=32 
 	v[ptr_null].copy v[Const_save_var_TileFlags], var_allocatedmapsize //Kill first 2 flags - it might be changed later. Idk
 
-	
+	//Land units
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
 	    v[301] = v[v[536]] * v[1117] 
 	    v[301] += 4700
 	    func_extract_agent_vars(v[v[536]])
 
-	    //@comment "##############
+	    // "##############
 	    //#Terrain Check#
 	    //##############"
-	    v[340] = v[v[4505] + v[640]]
-	    //@comment "#Reset Terrain Flags"
-	    v[603] &= -1072//~1071 //15 + 32 + 1024
+	    v[340] = v[4505] + v[640]
+	    v[340] = v[v[340]]
+	    // "#Reset Terrain Flags"
+	    agent_AgentBits &= -1072//~1071 //15 + 32 + 1024
 	    //v[638] = v[301] + 38
-	    //@comment "##Not Flying"
+	    // "##Not Flying"
 	    @if `!(v[638] & 1) {
-		@comment "#Water"
+		// "#Water"
 		@if `v[340] & 1 {
-		    v[603] |= 4 + (v[638] & 64 ? 0 : 1)
+		    agent_AgentBits |= 4 + (v[638] & 64 ? 0 : 1)
 		    
 		}
-		@comment "#Ice"
+		// "#Ice"
 		@if `v[340] & 16 {
-		    v[603] |= 32
+		    agent_AgentBits |= 32
 		    
 		}
-		//@comment "#Stone Road"
+		// "#Stone Road"
 		@if `v[340] & 64 {
-		    v[603] |= 2
+		    agent_AgentBits |= 2
 		    
 		}
-		//@comment "#Forest"
+		// "#Forest"
 		@if `v[340] & 8 {
-		    //@comment "##Horse or roller"
+		    // "##Horse or roller"
 		    @if `v[638] & 34 {
-			v[603] |= 8
+			agent_AgentBits |= 8
 			
 		    }
 		    
 		}
-		//@comment "#snow"
+		// "#snow"
 		@if `v[340] & 32 {
-		    //@comment "##movetype ice"
+		    // "##movetype ice"
 		    @if `v[638] & 16 {
-			v[603] |= 2
+			agent_AgentBits |= 2
 			
 		    }
-		    //@comment "##skating"
+		    // "##skating"
 		    @if `v[638] & 8 {
-			v[603] |= 34//32+2
+			agent_AgentBits |= 34//32+2
 			
 		    }
 		    
 		}
 		@if `v[638] & 32 {
-		    v[603] |= 48//32+16
+		    agent_AgentBits |= 48//32+16
 		    
 		}
 		
 	    } .else bl {
-		//@comment "#Water"
+		// "#Water"
 		@if `v[340] & 1 {
-		    v[603] |= 1056//32 + 1024
+		    agent_AgentBits |= 1056//32 + 1024
 		    
 		}
 		
 	    }
-	    //@comment "###################Terrain Check End###################"
+	    // "###################Terrain Check End###################"
+	
 
 	    //Set tile instants begin
 		//Use Temp2 as ptr to maptile
 		Temp2 = Const_save_var_TileFlags + v[632]
 		v[Temp2] |= v[Temp2]&FLAG_Maptile_Occupied ?FLAG_Maptile_Crowded:FLAG_Maptile_Occupied //set occupied flag
- 		/*@if v[874] & 67108864 {
-			TT1 = Const_AgentMetaTeam_begin+v[v[536]]
-			v[Temp2] |=
-		}*/
+		@if agent_TacticsOrderFlag > 0 {
+			@if `agent_TacticsOrderFlag & 6  {//using shieldwall
+				@if `!(agent_ProcessObjBit & 67108864){ //can use shield
+					defv flag_shieldcovered = __id(TT10)
+					defv bool_if_my_tile_is_covered = __id(TempFlag1)
+					TT1 = Const_AgentMetaTeam_begin + v[v[536]]//get meta team
+
+					flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << v[TT1] //shift Meta Team
+					bool_if_my_tile_is_covered = v[Temp2]&flag_shieldcovered?1:0//Check if agent tile is already covered
+					func_set_tileflag_in_square_range(flag_shieldcovered ShieldWall_Cover_SquareSide ShieldWall_Cover_Diff Temp11 Temp15)
+					v[Temp2]&= bool_if_my_tile_is_covered&1?v[Temp2]:~flag_shieldcovered//you must be covered by other unit to get shield covered bonus.
+				}
+
+			}.elif `agent_TacticsOrderFlag & 1{//spear wall 
+				defv flag_pikecovered = __id(TT10)
+				TT1 = Const_AgentMetaTeam_begin + v[v[536]]//get meta team
+				flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << v[TT1] //shift Meta Team
+				func_set_tileflag_in_square_range(flag_pikecovered ShieldWall_Cover_SquareSide ShieldWall_Cover_Diff Temp11 Temp13)
+			}
+		}
 
 	    //Set tile instants end
 
-	    //@comment "++"
+	    // "++"
 	    func_main_save_agent_vars()
 	    v[536] += 1
 	    
 	}
 
 	@wait 0
-	//@comment "Workers?"
+	// "Workers?"
 	v[2941].copy v[2945], 4
 	v[2941..2944] = 0
 	v[536] = v[4532]
 	s[187].off
 	@while v[v[536]] != 0 {
 	    v[301] = v[v[536]] * v[1117] 
-	    v[301] += 4703
-	    @if `v[v[301]] & 2097152 {
-		//@comment "Escaping time"
-		v[680] = v[301] + 77
-		v[v[680]] -= 4
-		@if `v[v[301] + 97] == 0 {
-		    //@comment "Count up worker assignment"
-		    v[v[v[301] + 244] + 2940] += between(v[v[301] + 244], 1, 4) ? 1 : 0
-		    //@comment "idle"
-		    v[842] = v[301] + 239
-		    v[v[842]].copy v[842], 6
-		    @if v[842] <= 0 {
-			@if v[843] == 0 {
-			    @if v[847] == 0 {
-				s[187].on
-				@if s[2] .isOff() {
-				    @if `s[500 + v[v[536]]] {
-					@if `(v[v[680]] + v[v[301] + 297]) / 4 % 124 == 0 {
-					    @if `!(v[v[301] + 271] & 4096) {
-						v[607] = v[301] + 4
-						v[v[607]].copy v[607], 2
-						v[v[607]].copy v[361], 2
-						v[341] = 20422
-						v[680] = v[301] + 77
+	    v[301] += 4700
+	    Ptr1 = v[301] + 1 
+	    v[Ptr1].copy v[601], 300
 
-						//
-						/*@if `v[v[301] + 61] == 3 {
-						    @if s[1] .isOn() {
+	    @if `agent_AgentBits & AgentBits_FLAG_EnableCivAI { //Worker AI flag is on
+		// "Escaping time"
+		//v[680] = v[301] + 77
+		//v[v[680]] -= 4
+		agent_InCombatTimer -= 4
+		@if agent_TeamID == 0 { //`v[v[301] + 97] == 0 {
+		    // "Count up worker assignment"
+		    //v[v[v[301] + 244] + 2940] += between(v[v[301] + 244], 1, 4) ? 1 : 0
+		    v[agent_worker_JobType + 2940] += between(agent_worker_JobType, 1, 4) ? 1 : 0
+		    // "idle"
+		    //v[842] = v[301] + 239
+		    //v[v[842]].copy v[842], 6
+		    @if agent_StanceOrder <= 0 {
+			@if agent_ActionState == 0 {
+			    @if agent_worker_JobType == 0 {
+				s[187].on//there's at least one idle worker unit 
+				@if s[2] .isOff() {// not pause
+				    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen{ //s[500 + v[v[536]]]==1 { 
+					@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { //124 = magic number but maybe 48*3
+					    @if `!(agent_ProcessObjBit & 4096) {
+						//v[607] = v[301] + 4
+						//v[v[607]].copy v[607], 2
+						agent_RelativeX.copy v[361], 2
+						v[341] = 20422
+						//v[680] = v[301] + 77
+
+						//Dragon voice, outdated 
+						@if agent_Race == 3 {
+						    /*@if s[1] .isOn() {
 							@if v[182] <= 4 {
 							    v[182] += 1
-							    //@comment "#########################"
+							    // "#########################"
 							    v[471] = 11550
 							    v[472] = divmul(25, 100, v[2216])
 							    v[473] = rnd(90, 115)
 							    v[474] = divmul(v[361] + v[1001], v[1281], 50)
-							    //@comment "#########################"
+							    // "#########################"
 							    v[329] = rnd(1, 3)
 							    t[510] .asg "vo\dragon_gyaogyao"
 							    t[510] .cat v[329]
@@ -2687,12 +2394,12 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							    
 							}
 							
-						    }
-						    v[341] += v[v[301] + 98] == 10 ? 1 : 2
+						    }*/
+						    v[341] += agent_UnitID == 10 ? 1 : 2
 						    
-						}*/
+						}
 
-						t[501] .asg t[v[341]]
+						t[501] .asg t[v[341]] //text that says "I'm idle"
 						//Set new particle emitter
 						@loop v[1017] .dst v[320] {
 						    v[242] %= v[1017]
@@ -2703,15 +2410,15 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							v[242] %= v[1017]
 							v[281] = v[242] * 100
 							v[281] = v[281] + v[1018]
-							//@comment "まず清掃"
+							// "まず清掃"
 							v[1331].copy v[v[331]], 100
-							//@comment "ポインタセット開始"
+							// "ポインタセット開始"
 							v[310] = v[242] + v[1220]
 							v[295] = v[331] + 99
-							//@comment "設定"
+							// "設定"
 							v[v[331]] = 1
 							v[v[295]] = 0
-							//@comment "普通にアニメ"
+							// "普通にアニメ"
 							v[607].copy v[361], 2
 							@pic[v[310]].strpic {
 							    t[501]
@@ -2721,7 +2428,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							    .scale 100
 							    .trans v[1066]
 							    .rgbs 100, 100, 100, 100
-							    .font "misaki_gothic_2nd", 10
+							    .font Font_UI, 10
 							    .spacing 0, 0
 							    .skin "" .nobg .noframe .noGradation .noPadding
 							    .mapLayer 7
@@ -2737,7 +2444,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							    .time 45
 							    .rgbs 100, 100, 100, 100
 							}
-							//@comment "仕上げに登録消す"
+							// "仕上げに登録消す"
 							v[242..243] += 1
 							@break
 							
@@ -2764,18 +2471,22 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 		
 	    }
-	    //@comment "PF reset"
-	    @if `(v[v[301] + 297] + v[2501]) % 420 == 0 {
-		v[v[301] + 31] &= -4097//~4096
+	    // "PF reset"
+	    @if `(agent_generated_ID + v[2501]) % 420 == 0 {
+		agent_AI_routine_bits &= -4097//~4096
 		
 	    }
-	    //@comment "++"
+
+	    func_main_save_agent_vars()	
+	    // "++"
 	    v[536] += 1
 	    
 	}
 
 	@if `v[2941] != v[2945] || v[2942] != v[2946] || v[2943] != v[2947] || v[2944] != v[2948] {
-	    @call .cev 84
+	    //@call .cev 84
+	    func_refresh_resource_window()
+
 	    
 	}
 	@wait 0
@@ -2783,11 +2494,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	//
 	//##############
 	@wait 0
-	//@comment "DEAD BODIES"
+	// "DEAD BODIES"
 	v[536] = v[4531]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
-	    //@comment "死体"
+	    // "死体"
 	    v[301] = v[401] * v[1117] 
 	    v[301] += 5000
 	    func_main_extract_agent_vars()
@@ -2795,19 +2506,19 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    @if v[680] <= 0 {
 		v[898] += 5
 		@if v[898] >= 100 {
-		    //@comment "#############
+		    // "#############
 		    //Search and remove from body list"
-		    v[302] = v[4531]
-		    @doWhile v[v[302]] > 0 {
-			@if `v[v[302]] == v[v[536]] {
-			    v[v[302]] = 0
+		    Temp2 = v[4531]
+		    @doWhile v[Temp2] > 0 {
+			@if v[Temp2] == v[v[536]] {
+			    v[Temp2] = 0
 			    v[v[4531] + v[1004]] -= 1
 			    v[v[4531]].sortDescending v[1004]
 			    v[601] = 0
 			    @break
 			    
 			}
-			v[302] += 1
+			Temp2 += 1
 			
 		    }
 		    
@@ -2817,37 +2528,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 		
 	    }
-	    /*
-	    //@comment "combtimer"
-	    v[680] = v[301] + 80
-	    v[v[680]] -= 1
-	    @if v[v[680]] <= 0 {
-		v[898] = v[301] + 298
-		v[v[898]] += 5
-		@if v[v[898]] >= 100 {
-		    //@comment "#############
-		    //Search and remove from body list"
-		    v[302] = v[4531]
-		    @doWhile v[v[302]] > 0 {
-			@if `v[v[302]] == v[v[536]] {
-			    v[v[302]] = 0
-			    v[v[4531] + v[1004]] -= 1
-			    v[v[4531]].sortDescending v[1004]
-			    v[v[301] + 1] = 0
-			    @break
-			    
-			}
-			v[302] += 1
-			
-		    }
-		    
-		    var1 = v[401] + 1
-		    func_remove_dead_agent_picture(var1)
-		    
-		}
-		
-	    }*/
-	    //@comment "++"
+	  
+	    // "++"
 	    func_main_save_agent_vars()
 	    v[536] += 1
 	    

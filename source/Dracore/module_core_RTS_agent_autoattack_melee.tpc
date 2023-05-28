@@ -5,6 +5,7 @@ shieldbash_time=16
 bladedance_time=48
 shieldcrack_time=1344
 parry_time=5
+least_crit_melee = 2
 }
 
 // "Access19 = AttackerObjectID Access20 = TargetObjectID"
@@ -15,6 +16,8 @@ v[300] = v[v[300]]
 //Ptr9 = Ptr19 * 300
 Ptr10 = Ptr20*300
 Ptr9 = Ptr19*300
+
+
 // "攻撃モーション処理"
 v[720] = v[210] + 120
 v[629] = v[210] + 29
@@ -30,14 +33,18 @@ v[298] = 300 * v[300]
 v[298] += 4701
 // "Melee "
 @if `v[v[629]] == 1 && v[v[298]] > 0 {
+
+	//extract Attacker's parameters
+    v[v[210]].copy Address_agent_array_head, 301
+
     s[167].off
-    @if `v[Ptr10 + 4701] == 11 {
+    @if `v[Ptr10 + 4701] == 11 { // the enemy is STATIC Type
         s[167].on
         
     }
     // "#################交戦デバフを付与################"
     // "#Combat Penalty Resist"
-    v[Ptr10 + 4781] = v[Ptr10 + 4974] & 128 ? 0 : 170
+    v[Ptr10 + 4781] = v[Ptr10 + 4974] & 128 ? 0 : Const_Melee_Fight_Time_by_Melee_Attack//defined in header_common.tpc
     v[Ptr10 + 4780] = v[1240] * v[4571]
     // "############↓?"
     v[720] = v[210] + 120
@@ -46,7 +53,8 @@ v[298] += 4701
     // "############Melee Auto Attack################"
     // "Log"
     // "Auto Attack SP Cost"
-    v[v[210] + 108] = max(v[v[210] + 108] - v[v[210] + 121], 0)
+    v[708] = v[708] - v[721]
+    v[v[210] + 108] = max(v[708], 0)
     /* "Access19 = AttackerObjectID 0~
 Access20 = TargetObjectID 1~
 Access18 = ObjTypeチェックPtr"*/
@@ -78,9 +86,9 @@ Access18 = ObjTypeチェックPtr"*/
                     v[v[345]] = 8
                     // "Set itself"
                     v[345] = v[351] + 3
-                    v[v[345]] = 121 + v[Ptr9 + 4823]
+                    v[v[345]] = 121 + agent_AAElement //v[Ptr9 + 4823]
                     // "Set size"
-                    v[v[351] + 26] = max(100, 75 + v[Ptr9 + 4809] / 4)
+                    v[v[351] + 26] = max(100, 75 + agent_ProcessAD>>2) //v[Ptr9 + 4809] / 4)
                     // "Set Dire"
                     v[345] = v[351] + 27
                     v[v[345]] = 13 + v[v[844]] * 6
@@ -125,23 +133,19 @@ Access18 = ObjTypeチェックPtr"*/
         
     }
     @if s[167] .isOff() {
-	//what is the reason of this formula? idk
-        v[11] = v[299]
-	func_bs_melee_hit_check(v[299] v[300])
         //v[11] = v[299]
-        //@call .cev 42
-        
+	func_bs_melee_hit_check(v[299] v[300])
+        v[607] = Ptr10 + 4707
+    	v[v[607]].copy v[607], 2
     } .else bl {
-        v[21] = 1
-        
+        v[21] = 1 //if target is STATIC, won't miss
     }
+    // At least in Melee AA, agent parameters remain via hitcheck
     @if v[21] == 1 {
         // "Hit!"
         @if s[167] .isOff() {
-            /*// "###########
-Shield Bash
-###########"*/
-            @if `v[Ptr9 + 4974] & 8192 {
+            /*// "###########Shield Bash###########"*/
+            @if `agent_ProcessObjBit & 8192 {//v[Ptr9 + 4974] & 8192 {
                 // "#発動処理"
                 // "#バフ番号指定"
                 //v[11] = 1196
@@ -191,21 +195,19 @@ Shield Bash
                 }
                 
             }
-            /* "###########
-Shield Bash End
-###########"*/
+            /* "###########Shield Bash End###########"*/
             // "#SP damage#A hit causes 4 SP loss"
             v[Ptr10 + 4808] = max(v[Ptr10 + 4808] - 4, 0)
             // "#CheckCrit"
             // "Var1 = Obj 1~V[421] = ダメージ倍率"
             v[11] = v[299]
-            v[15] = Ptr10 
-	    v[15] += 4700
-            // "#Crit率ゲット+3-CritReduction"
-            v[342] = v[v[11] * 300 + 4815] + 2 - v[v[15] + 239]
+            //v[15] = Ptr10 
+	    //v[15] += 4700
+            // "#Crit率ゲット+least_crit_melee-CritReduction"
+            v[342] = agent_ProcessCrit + least_crit_melee - v[Ptr10 + 4939]
             v[341] = rnd(0, 99)
             // "#CritDamageReduction#(450-[Reduction])%"
-            v[343] = 450 - v[v[15] + 240]
+            v[343] = 450 - v[Ptr10 + 4940]
             // "#[Crit]%でフラグ"
             @if v[342] >= v[341] {
                 // "Set jump Timer"
@@ -213,7 +215,7 @@ Shield Bash End
                 v[421] = v[343]
                 
             } .else bl {
-                v[421] = 100 + (v[Ptr9 + 4765] & 4096 && v[Ptr9 + 4944] == v[Ptr10 + 4944] ? 40 : 0) + (v[Ptr9 + 4765] & 32768 && v[Ptr9 + 4974] & 1 ? 70 : 0)
+                v[421] = 100 + (agent_PerkFlagBits1 & 4096 && agent_Direction == v[Ptr10 + 4944] ? 40 : 0) + (agent_PerkFlagBits1 & 32768 && agent_ProcessObjBit & 1 ? 70 : 0)//BackStabber and Ambush
                 
             }
             
@@ -226,23 +228,26 @@ Shield Bash End
         /*v[11] = v[299]
         v[12] = 1
         @call .cev 2004*/
-	macro_get_agent_slot_to_r1(v[299] SLOT_CURRENT_AD)
-        v[301] = v[21]
+	//macro_get_agent_slot_to_r1(v[299] SLOT_CURRENT_AD)
+        v[301] = agent_ProcessAD
 	//opt 25.4.23
         // "ARかMRか取得"
         //v[302] = v[v[843] - 121]
-	v[302]=Ptr9+4822
-	v[302]=v[v[302]]
+	//v[302]=Ptr9+4822
+	//v[302]=v[v[302]]
         // "Element"
         //v[303] = v[v[843] - 120]
-	v[303]=Ptr9+4823
-	v[303]=v[v[303]]
+	//v[303]=Ptr9+4823
+	//v[303]=v[v[303]]
+	v[302]= agent_AA_ARorMR
+	v[303]= agent_AAElement
         // "AABits"
-        v[19] = v[Ptr9 + 4824] & ~v[4812]
+        v[19] = agent_AABits & ~v[4812]
         v[422] = 0
 	//9.3.23
         //@call .cev 40
 	func_damage_calculation()
+	//You need to re-extract agent parameters!
         // "############"
         // "Effect"
         @if s[166] .isOn() {
@@ -354,7 +359,6 @@ Shield Bash End
                     v[182] += 1
                     // "#Get melee weapon effect"
                     v[829] = v[Ptr9 + 4829] % 10000
-                    @loop 1 {
                         // "Common"
                         @if v[829] == 0 {
                             // "#########################"
@@ -365,9 +369,9 @@ Shield Bash End
                             // "#########################"
                             @break
                             
-                        }
+                        
                         // "Swords"
-                        @if v[829] == 1 {
+                        }.elif v[829] == 1 {
                             // "#########################"
                             v[472] = divmul(70, 100, v[2216])
                             v[473] = rnd(90, 110)
@@ -376,9 +380,9 @@ Shield Bash End
                             // "#########################"
                             @break
                             
-                        }
+                        
                         // "Axe/Cleavers"
-                        @if v[829] == 2 {
+                        }.elif v[829] == 2 {
                             // "i don't like this, maybe change later"
                             // "#########################"
                             v[472] = divmul(70, 100, v[2216])
@@ -388,9 +392,9 @@ Shield Bash End
                             // "#########################"
                             @break
                             
-                        }
+                        
                         // "Spear/Piercing"
-                        @if v[829] == 3 {
+                        }.elif v[829] == 3 {
                             // "#########################"
                             v[472] = divmul(70, 100, v[2216])
                             v[473] = rnd(90, 110)
@@ -399,9 +403,9 @@ Shield Bash End
                             // "#########################"
                             @break
                             
-                        }
+                        
                         // "Pike"
-                        @if v[829] == 4 {
+                        }.elif v[829] == 4 {
                             // "#########################"
                             v[472] = divmul(70, 100, v[2216])
                             v[473] = rnd(90, 100)
@@ -410,9 +414,9 @@ Shield Bash End
                             // "#########################"
                             @break
                             
-                        }
+                        
                         // "Siege Ram"
-                        @if v[829] == 100 {
+                        }.elif v[829] == 100 {
                             // "#########################"
                             v[472] = divmul(70, 100, v[2216])
                             v[473] = rnd(83, 100)
@@ -423,7 +427,6 @@ Shield Bash End
                             
                         }
                         
-                    }
                     
                     
                 }
@@ -569,7 +572,8 @@ Shield Bash End
             
         }
         // "################"
-        v[295] = 300 * v[299] + 4700
+        v[295] = 300 * v[299] 
+	v[295] += 4700
         // "#試作#Functionを呼ぶ"
         v[730] = v[295] + 130
         @if v[v[730]] >= 1 {
@@ -617,12 +621,7 @@ Shield Bash End
                     // "#バフ番号指定"
                     v[11] = 1258
                     v[12] = v[300]
-                    /*@call .cev 1911
-                    @if v[22] >= 0 {
-                        // "#Duration24sec"
-                        v[v[22]] = 1344
-                        
-                    }*/
+                    
 	    	    func_bs_register_buff_with_time(1258 v[300] shieldcrack_time)
                     
                 }
@@ -799,24 +798,10 @@ Shield Bash End
                     // "#"
                     @if `v[Ptr10 + 4974] & 131072 {
                         // "#バフ番号指定"
-                        /*v[11] = 1243
-                        v[12] = v[300]
-                        @call .cev 1911
-                        @if v[22] >= 0 {
-                            v[v[22]] = 48
-                            
-                        }*/
 	    	    	func_bs_register_buff_with_time(1243 v[300] bladedance_time)
                         
                     }
                     // "#バフ番号指定"
-                    /*v[11] = 1171
-                    v[12] = v[300]
-                    @call .cev 1911
-                    @if v[22] >= 0 {
-                        v[v[22]] = 5
-                        
-                    }*/
 	    	    func_bs_register_buff_with_time(1171 v[300] parry_time)
                     
                 }
@@ -891,7 +876,7 @@ Shield Bash End
     s[202..203].off
     
 } .else bl {
-    v[v[210] + 274] &= ~1
+    v[v[210] + 274] &= -2//~1
     // "アクションに2F分余韻を…"
     @if `v[v[629]] > v[v[720]] + 1 {
         v[843] = v[210] + 243
