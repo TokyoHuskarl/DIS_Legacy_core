@@ -24,7 +24,7 @@ RPG Maker 2003 EULA等のツクール本家の規定を遵守した上で，最�
 ***
 ## 具体的なコンパイル方法
 
- ### 1. このレポジトリを丸ごとダウンロードし何らかの形で自環境ののDIS_Legacyディレクトリの中へ投入  
+ ### 1. このリポジトリを丸ごとダウンロードし何らかの形で自環境ののDIS_Legacyディレクトリの中へ投入  
   gitが入っている場合はDIS_Legacyディレクトリへcdした上で  
    `git clone https://github.com/TokyoHuskarl/DIS_Legacy_core.git`  
   を実行すればよいだけです。  
