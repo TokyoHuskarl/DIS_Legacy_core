@@ -31,7 +31,7 @@ syn region tpcComment start=+\/\*+ end=+\*\/+ fold
 syn match tpcComment /\/\/.*/
 syn match tpcComment /@comment\s".*"/ contained
 
-syn keyword tpcFunctions cev mev __fn break
+syn keyword tpcFunctions cev mev __fn break mep ev
  
 syntax keyword tpcOperator copy sub add mul div muldiv divmul max min asg split cat rem ins exrep rep subs file join extract ToFile inStr
 
