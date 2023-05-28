@@ -4,14 +4,9 @@ v[1276]とv[1278]が取り違えられている事例に注意
 マップ描画もズレる
 
 
-	どこかでバグって弩兵生産や初期化などのおかしなイベントを参照することがあるので原因を突き止める
-
-	撤退の処理がおかしいときがある
-	
 	AI回りの再考
 遠距離武器システム再考(RAtkの設定)
 	魔法攻撃システム再考
-隊列指定で壁に引っかかると悲惨
 
 
 戦闘終了時のコンパニオンの処理
@@ -29,56 +24,12 @@ Perk
 
 ***********************
 
-mapheight決めた後文字列クリア
 
-
-UI回りの文字列頻度…STATICは？
-
-801->ConstPic変数への置き換え
-
-
-
-スコラエ魔導兵は作り直す
-
-
-詠唱モーションにバグあり？
-
-スキル文字書き換え
 
 Inv　v[145]にユニット番号挿入<-v[340]が同じ機能果たしてるので抜く　類型3のユニットに対応させよ　尚ゲーム外での動作等に難があると思われる　
 
-
-	まとめて自殺させると表示位置がずれることあり？
-
-
-視界外から攻撃食らった時の動きがおかしい
-
-
-
 バックショットチェック必要？
 
-帝国投石器の判定が残る？
-			
-		
-
-
-士気周り再チェック
-
-604と602の変換
-
-
-避難状態を作る
-
-
-
-もしかするとノックバック壊れてるかも←敗走中壊れてる
-
-
-
-
-
-たまにチラついて兜が外れる？
-インベントリ欄の性能表記をちゃんとインベントリ内の性能から見る
 
 ブレイク作る
 画像用意する
@@ -436,11 +387,11 @@ FactionResources[4]+[36]
 
 #300120~300220 TerrainBits
 300221~300316 MinimapProc
-300317~460317 CurrentMapInfo [400][400] #HeightLevel[1]+UpperLayer[3]+DownLayer[3]+MapID[2]
+300317~460317 CurrentMapInfo [400][400] #ElevationLevel[1]+UpperLayer[3]+DownLayer[3]+TerrainID[2]
 #460318~460817 DrawnList [500]
 #460818~461317 DrawnListLayers
 
-460318~461317 AgentTeam%3[1000]
+460318~461317 AgentTeam%3[1000] METATEAM
 
 461318-462319 InSightTimer [1000] 
 
@@ -464,7 +415,7 @@ FactionResources[4]+[36]
 		ranktype = 10
 		rankdent = 11
 		rank_average_size
-		
+	
 		StanceOrder = 20	#0 = alert(search enemies), 1 =  standby, 2 = attack, 3= deffend, 4= player
 
 #463718~466022 NewMiniMaps 56*36
@@ -496,7 +447,8 @@ FactionResources[4]+[36]
 739348~740000 MapScriptNestChecker
 
 
-740948~746948 ObjectPictureIDs 1000*[6] Body/Head/Helm/Weapon/Shield/Misc
+	//740948~746948 ObjectPictureIDs 1000*[6] Body/Head/Helm/Weapon/Shield/Misc // this will be needless I guess?
+So instead..740001~750000 AgentLink 0x00(possible flags?)+0x000(Link2)+0x000(Link1) - basically use only first 3 digits
 746949~748948 ObjColSizeXY [2]*1000
 +64000..NewObjWPs[2]*32*1000
 748949~764741 FINALMinimap upto 168*94
@@ -717,7 +669,7 @@ Object:
 				   11:1024 =hovering,12:2048=best_terrain
 				   19:262144=invisible_from_enemy, 20:524288=EnableSkillcastingAI,　21:1048576=EnablebasicAI, 22:2097152=EnableCivAI, 23:4194304=ForcemoveFlag, 24:8388608=walldetected 
 				   25:16777216=NeedWpToReachObj,26:33554432=PFwalldetectionSwitchLeg, 27:67108864=1fprocessed 28:134217728=dirchange_skip
-				   268435456=HERO
+				   268435456=HERO 31:1073741824=Drawn in screen
 	UnitLuck = 4
 	//DamagedSpriteVarArray=4 #[Armor,Head,Helm]　4~ User it's
 	x*10000 = 5
@@ -760,11 +712,12 @@ Object:
 		#AttackObject = 31
 		#AttackPointx = 32	
 		#AttackPointx = 33
+	AI_decision_bits = 33
 
 	#AI_behavior_flag=34 #0 = standard,1=siege_ram,2=skirmisher,4=assassin,8=ranged
 	AI_routine_bit=34 #1=siegeweapon_flag,2:2=skirmisher,3:4=assassin,4:8=ranged,5:16=targetting_ally,6:32=target_switched_by_AI,7:64=IdleAfterEnemySearch,8:128=AICohortGatheringAttack 12:4096=tracing_flag,13:8192=tracing_wp/*tracing_lefthand*/,
- 											14:16384=PATHFINDING 15:32768=PFcontinue 16:65536=PFskip 17:131072=manual　18:262144=wannastop 19:524288=towardobj 
-											20:524288=waypoint_priority,21:1048576=hit_and_run_tactics,22:2097152=AIskip,23:8388608=pathblocked,24:16777216=group_path
+ 											14:16384=PATHFINDING 15:32768=PFcontinue 16:65536=PFskip 17:131072=manual　/*18:262144=wannastop 19:524288=towardobj*/ 
+											20:524288=waypoint_priority,/*21:1048576=hit_and_run_tactics*/,22:2097152=AIskip,23:8388608=pathblocked,24:16777216=group_path  
 
 
 	Cohort_ID= 35 //31=Comitatenses			
@@ -793,11 +746,11 @@ Object:
 	MarchingDirection=56
 	getTerrainElevation = 57 #
 
-    SaveActualTeamID=58
+    	SaveActualTeamID=58
 	#interactEV = 58 #
 	#deathtrigger = 58　#-=mapevent
 	killXP = 59
-	gotXP = 60
+	XPgain = 60
 	
 	UniqueCharIndex=61#if <0, refer PartyCompanions
 	Skin=63# 0=Rtpian, 1=Nord, 2= Azghazi, 6= female ...This parameter is for UserCharactors
@@ -883,8 +836,8 @@ Object:
 	AAfunction = 130
 	BaseRegHP = 131
 	BaseRegMP = 132
-	RegHP_type = 133#0= per_second
-	RegMP_type = 134#0= per_second
+	//RegHP_type = 133#0= per_second
+	//RegMP_type = 134#0= per_second
 	Shield_Value = 135#check this value when the unit gets hit.  if ranged attack -> *2 else ->*1. if roll<shieldvalue, show shield motion 
 	AReff = 136#100%+this
 	ARpen = 137#n% to target HP
@@ -893,7 +846,7 @@ Object:
 
 	ObjBits = 140#1:1b = ambushflag, 2:10b = canspearwall, 3:100b = canshieldwall,4:1000b = wontgetKnockback,5:10000b = canSkirmish, 6:100000b = HalveRangedDamage 7:1000000b = HalveAll 8:10000000b = wontgetCombatDebuff
 				 #9:100000000b = has_no_mind 10:1000000000b = flee!,11:1024 = flip_sprite, 12:2048 = fearsome , 13:4096 = wontbleed, 14:8192 = shieldbash, 15:16384 = Discipline, 16:32768 = Relentless
-				 #17:65536=ImmuneToStun,18:131072=DuelistActivated,19:262144=silence,20: =bigflag,21:1048576=standard_bearer, 22:2097152=explosive 23:4194304 = HERO UNIT　24:8388608=canMagicSupport　25:16777216=can_parry 26:33554432=lancecharge_flag,27:67108864=Brokenshield,28:134217728=SpeedBonus
+				 #17:65536=ImmuneToStun,18:131072=DuelistActivated,19:262144=silence,20: =bigflag,21:1048576=standard_bearer, 22:2097152=explosive 23:4194304 = HERO UNIT　24:8388608=canMagicSupport　25:16777216=can_parry 26:33554432=lancecharge_flag,27:67108864=Brokenshield,28:134217728=SpeedBonus	31:1073741824= Invincible
 	Skill1_ID = 141
 	Skill1_func = 142
 	Skill1_type = 143#0 = passive, 1 = liner, 2 = Point, 3 = Target, 4 = AoE ,5=self, 6=passive
@@ -919,21 +872,20 @@ Object:
 	Passive_Type_Flag = 223 # 1:1=timer,2:2=aura effect, 3:4=bannerman_effect
 	Passive_Function = 224
 	Passive_stack = 225
-	/aura_range = 226
+	aura_range = 226
 	ChokeTimer =227
 	
 	HeadSPregPenalty = 228
 	TakenDamageMultiplier = 229
 	UnitEyesight? = 230
 
-	AmmoMax = 231
+	//AmmoMax = 231
 	CurrentAmmo = 232
 	
 	ShieldType = 233
 	ShieldBreakResistance = 234
     
-    MHit = 236
-    RHit = 237
+    RHit/MHit = 236
 
 	#Head?
 	ArmorWeightSum = 238
@@ -945,14 +897,14 @@ Object:
 		
 	#
 	#241~Behavior
-	StanceOrder = 241	#0 = alert(search enemies), 1 =  standby, 2 = attack, 3= deffend, 4= player,5=worker
+	StanceOrder = 241	#0 = alert(search enemies), 1 =  standby, 2 = attack, 3= deffend, 4= player,5=worker, 6=scout
 	MovementOrder = 242 #-3 = WP_chasing_end -2 = returned -1 = do_not_move, 0 = free, 1 = moving, 2 = move_ordered, 3= force_moving, 4 = dashorknockback 5=mounting, 6=garrison 11= fleeing
 	ActionState = 243 #-1 = dead, 0 = free , 1 = attack, 2 = cooldown, 3 = reloading, 4 = Skill1, 5 = Skill2, 6 = Skill3, 7 = Skill4, 14 = Skill1_motion
 	Direction = 244 # 0=right, 1=left
-	ActionFlag = 245 //Hold==1
+	ActionFlag = 245 //Hold==1 
 	CastSkillOrder = 246 # 0 = free, 1 = Skill1, 2 = Skill2, 3 = Skill3, 4 = Skill4
 	CastReserved2 = 247 #Assign Farmer jobs. 0 = free, 1 = harvest, 2=woodcutting, 3=stonemining, 4=goldmining,5=building, 6=repairing
-	ExtraFightingOrderFlag = 248 # 1= Pikewall, 2 = weakShieldwall,4 = Shieldwall, 8 = Skirmish, 16=MagicSupport, 32=Testudo, 64=Rallying, 128=Observation
+	ExtraFightingOrderFlag = 248 # 1= Pikewall, 2 = weakShieldwall,4 = Shieldwall, 8 = Skirmish, 16=MagicSupport, 32=Testudo, 64=Rallying, 128=Observation, 31:1073741824=garrison
 	KnockBackTimer = 249 #
 	ForceSprite = 250 # 101:Sweep
 
@@ -988,8 +940,9 @@ Object:
 		ProcessRegMP = 273
 		ProcessObjBit = 274
 		ProcessWill = 275
-		ProcessAttackValue = 276 //<-? Camo
+		ProcessCamoValue = 276 //<-? Camo
 		ProcExstate = 277 //1:1=overheal 2:2=Blind 3:4=MagicNullfying, 4:8=Bladedance
+
 		//ProcessEyeSight = 277
 	Dead Body:
 		261 = WpX*10000
@@ -1278,7 +1231,7 @@ Effect:
 
 Static:
 	Agent_bit = 3# 1=producing_tech, /*2:2=gateflag*/ 3:4=gate_open,4:8=gate_lock,5:16=wallflag,6:32=building_basement,7:64=houseflag,8:128=have_generated_picture 9:256=gateflag 10:1024=have_no_function 11:2048=inflammable 12:4096=farmflag 13:8192=marketflag, 14:16384=Newly Generated Static,15:32768:auto_que 19:262144=invisible_from_enemy, 21:1048576=EnablebasicAI
-				22:2097152=do_not_register_morton
+				22:2097152=do_not_register_morton 30:sameasagent 31:not on screen
 
 	Producing_Unit = 138
 	Producing_Cost = 139
