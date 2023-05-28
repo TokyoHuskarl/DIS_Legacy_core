@@ -133,9 +133,6 @@ T21=アクションステート取得*/
         @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[340] + 501] {
 	    //11.5.23
 
-            //v[303] = v[301] + 36
-            //v[304] = v[301] + 37
-
             //@comment "#描画範囲内"
             v[311] = v[301] + 2
             //@comment "#################"
@@ -158,8 +155,10 @@ T21=アクションステート取得*/
 		agent_SpriteY += sin(TT1, 2, 2)
 	    }
 	    @if `agent_AgentBits & 4 { //In water
-		TT1 = agent_Luck + v[2500] 
-		agent_SpriteY += sin(TT1, 18, 2)
+		TT1 = agent_Luck + v[2500]
+		TT1 *= 5
+		TT1 = sin(TT1, 3, 2999)
+		agent_SpriteY += TT1 / 1000
 	    }
             //@comment "#################"
             //v[v[303]].copy v[305], 2

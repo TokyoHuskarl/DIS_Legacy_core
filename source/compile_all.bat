@@ -1,4 +1,7 @@
 @echo off
+cd /d %~dp0
+
+set argfile="./PSEUDO_ARG"
 
 rem // TPC exe
 set tpc="./../tpc.exe"
@@ -10,6 +13,11 @@ set build=1
 
 rem ==================================================================================
 
+rem set arg
+echo def PSEUDO_ARG_SET = 1 > %argfile%
+echo def MAKE_TYPE  = 1 >> %argfile%
+
+
 rem 日付取得
 echo %date% > %log%"_MAIN.txt"
 
@@ -18,6 +26,7 @@ echo %time% >> %log%"_MAIN.txt"
 
 
 echo *Compile DIS LDB* >> %log%"_MAIN.txt"
+
 
 echo Making Backup.
 call %tpc% "./headers/MAKE_BACKUP_ALLE.tpc" -en >> %log%"_MAIN.txt"

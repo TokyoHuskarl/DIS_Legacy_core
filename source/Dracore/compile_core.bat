@@ -1,5 +1,6 @@
 @echo off
-cd /d %~dp0
+
+
 
 rem // TPC exe
 IF NOT DEFINED tpc (set tpc="./../../tpc.exe")
@@ -10,6 +11,9 @@ IF NOT DEFINED log (set log="./../../logs/log_compile_core")
 rem //Current Directory
 IF NOT DEFINED current (set current="./")
 rem ==================================================================================
+IF NOT DEFINED argfile (set argfile="./../PSEUDO_ARG")
+
+
 
 rem not alle
 IF NOT DEFINED build ( 
@@ -17,7 +21,14 @@ IF NOT DEFINED build (
 	echo Making Backup.
 	call %tpc% "./../headers/MAKE_BACKUP.tpc" -en
 	echo; >> %log%".txt" 
+	
+
+	rem set arg
+	echo def PSEUDO_ARG_SET = 1 > %argfile%
+	echo def MAKE_TYPE  = 0 >> %argfile%
 )
+
+
 
 set target=module_core_Game_init
 echo Compiling Init Process. - %target% >> %log%".txt"
