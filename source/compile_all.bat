@@ -33,7 +33,7 @@ call %tpc% "./headers/MAKE_BACKUP_ALLE.tpc" -en >> %log%"_MAIN.txt"
 echo;
 
 
-echo *Compile Start - Attention, if you have bug you have to check by trying compiling each of them*  >> %log%"_MAIN.txt"
+echo *Compile Start - Attention, if you have bug you have to check by trying compiling each of them* 
 
 rem //current directory set 
 set current="./Dracore/"

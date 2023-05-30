@@ -275,22 +275,25 @@ struct("agent",{
 	AI_routine_bits_FLAG_tracing_flag=4096
 	AI_routine_bits_FLAG_tracing_wp=8192
 	AI_routine_bits_FLAG_PATHFINDING=16384
+		AI_routine_bits_KILL_FLAG_PATHFINDING=-16385
 	AI_routine_bits_FLAG_PFcontinue=32768
+		AI_routine_bits_KILL_FLAG_PFcontinue=-32769
 	AI_routine_bits_FLAG_Manual_Ordered = 131072
 
 	AI_routine_bits_FLAG_AIskip = 2097152
 	AI_routine_bits_FLAG_ForcemoveFlag = 4194304
 
 	//ObjBits
+	BaseObjBit_FLAG_Immune_to_Knock_back = 8
 	BaseObjBit_FLAG_No_mind = 256
 	BaseObjBit_FLAG_Immune_to_bleed = 4096
 
 
 	BaseObjBit_FLAG_Immune_to_stun = 65536
-	agent_BaseObjBit_FLAG_big_unit=524288
+	BaseObjBit_FLAG_big_unit=524288
 	BaseObjBit_FLAG_Standard_Bearer = 1048576
 	BaseObjBit_FLAG_Explosive = 2097152
-	agent_BaseObjBit_FLAG_SpeedBonus = 134217728
+	BaseObjBit_FLAG_SpeedBonus = 134217728
 	BaseObjBit_FLAG_Invincible = 1073741824
 
 	//ExMotions

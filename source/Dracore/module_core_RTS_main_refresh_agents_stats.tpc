@@ -10,10 +10,10 @@ __fn agent_ref_stats(){
         
     }
     //@comment "#Base Parameters Get"
-    v[709].copy agent_ProcessAD, 11
-    v[731].copy v[872], 2
-    agent_ProcessObjBit = v[740]
-    v[875] = v[739]
+    agent_BaseAD.copy agent_ProcessAD, 11
+    agent_BaseRegHP.copy v[872], 2
+    agent_ProcessObjBit = agent_BaseObjBit
+    v[875] = agent_BaseWill
     //@comment "#SP fatigue penalty"
     v[868] -= !(agent_ExMotionFlags & 2048) ? muldiv(v[868], v[707] - v[708], v[707]) / 2 / (!(agent_PerkFlagBits1 & 32768) ? 1 : 2) : 0
     //@comment "#ProcessCamo dealed in per3f"
@@ -94,11 +94,14 @@ __fn agent_ref_stats(){
 	}*/
 
     __if DIS_EXPERIMENTAL == 1 {
-	TT10 = Const_AgentMetaTeam_begin + v[v[536]]//get Meta team
 
 	//check aura effect only per 20f
 	TT1 = AllFrameCount % 5
 	@if TT1 == 0{
+		//get Meta team into TT10
+		TT10 = Const_AgentMetaTeam_begin + v[v[536]]
+
+		//SHIELD WALL COVER
 		@if `v[Ptr5] & (FLAG_Maptile_ShieldCoverTeam0 << v[TT10]) {//covered by other guy's shield wall
 			//EXPERIMENTAL - just check if it's working
 			agent_ProcessInstantState |= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered ? agent_ProcessInstantState_FLAG_shield_covered_double_check : agent_ProcessInstantState_FLAG_shield_covered //needs double check
@@ -108,7 +111,7 @@ __fn agent_ref_stats(){
 			agent_ProcessInstantState &= -49 //~(agent_ProcessInstantState_FLAG_shield_covered + agent_ProcessInstantState_FLAG_shield_covered_double_check)
 		}
 		//Big units like cavalries cannot be covered by infantry shieldwall
-		agent_ProcessInstantState &= agent_BaseObjBit&agent_BaseObjBit_FLAG_big_unit? -49:agent_ProcessInstantState
+		agent_ProcessInstantState &= agent_BaseObjBit & BaseObjBit_FLAG_big_unit ? -49:agent_ProcessInstantState
 
 		//FLAG_Maptile_PikeWallTeam0 = 256
 		//FLAG_Maptile_PikeWallTeam1 = 512
@@ -149,8 +152,8 @@ __fn agent_ref_stats(){
     }
 
     @if v[371] == 1 {
-        v[235] = 671
-        v[234] = 686
+        v[235] = __id(agent_Buff1) //671
+        v[234] = __id(agent_BuffTimer1) //686
         v[v[235]].sortDescending 8 .sync v[v[234]]
         
     }
@@ -239,7 +242,7 @@ __fn agent_ref_stats(){
 				}
 				//single shield wall give you 33% bonus so you have 133% base 
 				//And team shield wall will additinally give unit ([Current EVA]*8%) 
-				//so bacially mass weaker shield wall gives you 141% boost at least  - Eva effect is bit stronger than before.
+				//so bacially mass weaker shield wall gives you 141% boost at least  - Eva effect is bit stronger than before1.162.
 				v[871] /= 2
 				v[868] = muldiv(v[868], 8, 10)
 				//@comment "#Force Spr"
@@ -258,7 +261,7 @@ __fn agent_ref_stats(){
 				}
 				//single strong shield wall gives you 40% bonus so you have 140% base
 				//then team shield wall gives you ([Current EVA]*12%)
-				//so basically mass shield wall gives you 148% base - it seems bit weaker than before - still you have +3 assured eva bonus + anti ranged bonus.
+				//so basically mass shield wall gives you 148% base - it seems bit weaker than before 1.162 - but still you have +3 assured eva bonus + anti ranged bonus.
 				
 				v[871] /= 2
 				v[868] = muldiv(v[868], 8, 10)
@@ -274,7 +277,7 @@ __fn agent_ref_stats(){
                     v[869] += 5000
                     v[868] /= 2
                     //@comment "##knock back immunity"
-                    agent_ProcessObjBit |= 8
+                    agent_ProcessObjBit |= BaseObjBit_FLAG_Immune_to_Knock_back
                     //@comment "#ForceSpr"
                     v[850] = 2
                     
@@ -325,12 +328,12 @@ __fn agent_ref_stats(){
 	    agent_ProcessMS -= agent_ProcessMS>>2 //= divmul(v[868], 100, 75)
 	    agent_ProcessAS -= agent_ProcessAS>>3
 	    agent_ProcessSPReg -= agent_ProcessSPReg>>2 //= muldiv(agent_ProcessSPReg,5,4) //-25%
-	    agent_ProcessObjBit &= -134234114//~134234113(agent_BaseObjBit_FLAG_SpeedBonus)//~16384 & ~1 & ~134217728
+	    agent_ProcessObjBit &= -134234114//~134234113(BaseObjBit_FLAG_SpeedBonus)//~16384 & ~1 & ~134217728
 
 	    //Crowded?
 	    agent_ProcessMS -= v[Temp2]&FLAG_Maptile_Crowded?agent_ProcessMS>>3:0 //-12.5%
 
-    }.elif `agent_ProcessObjBit & agent_BaseObjBit_FLAG_SpeedBonus {
+    }.elif `agent_ProcessObjBit & BaseObjBit_FLAG_SpeedBonus {
 
 	agent_ProcessAD += agent_AAType != 1 ? agent_ProcessMS/10:0//if not ranged troop, gain 10% of MS now 8%->10%
         

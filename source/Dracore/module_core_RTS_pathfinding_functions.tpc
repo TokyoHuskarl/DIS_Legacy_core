@@ -1,3 +1,6 @@
+
+
+
 __fn func_pathfinding_move(){
 	// "移動指示	Center(x.y)=(wheretox,wheretoy)"
 	v[2878] = v[1212]
@@ -221,6 +224,7 @@ __fn func_pathfinding_remove_OpenNode(){
 	    v[311] = (v[309] + v[310]) 
 	    v[311] /= 2
 	    @if v[v[311]] == v[19] {
+		//ugh this one seem brutal
 		v[0] = v[v[311]..v[4568] + v[4582]] = v[v[311] + 1..v[4568] + v[4582] + 1]
 		v[0] = v[v[311] + 200..v[4555] + v[4582]] = v[v[311] + 201..v[4555] + v[4582] + 1]
 		v[4582] -= 1
@@ -240,13 +244,3 @@ __fn func_pathfinding_remove_OpenNode(){
 	}
 }
 
-//LEGACY cev setting
-cev .id(1771), .name("PathfindingFunc:Move") , {   
-	func_pathfinding_move()
-}
-cev .id(1772), .name("PathfindingFunc:Open Node") , {   
-	func_pathfinding_open_Node()
-}
-cev .id(1773), .name("PathfindingFunc:Remove Opened Node") , {   
-	func_pathfinding_remove_OpenNode()
-}

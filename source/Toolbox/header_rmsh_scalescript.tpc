@@ -1,0 +1,51 @@
+//#include "./../ScaleScript/header_scalescript.tpc"
+/*
+	SScmd_Mode_Construct_Link = 1 //Create Link string 
+	SScmd_Mode_Exec = 2 //simply execute function in interpreter process 
+	SScmd_Mode_Call = 3 //execute function from raw string command - slower than Mode_Exec
+	SScmd_Mode_Convert = 4 //when you convert script for interpreter
+	SScmd_Mode_Help = 5 //help helper
+*/
+
+
+__fn ShellCommandPackage $LINKstr $md $counter $given_v_or_str $flags {
+		SScmdPackage_Build ("ShellCommandPackage",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+
+			//DIS LEGACY
+			__if PROJECT_NAME == "DIS_LEGACY"{
+				DISConsoleLib($LINKstr $md $counter $given_v_or_str $flags)
+			}
+
+
+		
+
+		})
+}
+
+/*
+__fn ShellCommandLib $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("RMShellLib" $LINKstr, $md, $i, $given_v_or_str,$flags, [ 
+		{SScommand($LINKstr, $md, $i, void,"rmmsg",nargs_nolimit,[str],{@msg.show SSargs0})},
+	])
+}*/
+__if PROJECT_NAME == "DIS_LEGACY"{
+	__fn DISConsoleLib $LINKstr $md $i $given_v_or_str $flags {
+		SScmdLib_Build("DIS Console Commands" $LINKstr, $md, $i, $given_v_or_str, $flags, [ 
+			{SScommand($LINKstr, $md, $i,
+				void, "genheightmap",0,[0],[
+				MAIN({@call .cev 1854}),
+				HELP({SSreturn_string("Generate Heightmap and save as png file in the Map Directory")})
+				]
+			)},
+			{SScommand($LINKstr, $md, $i,
+				void, "genheigap",0,[0],[
+				MAIN({@call .cev 1854}),
+				HELP({SSreturn_string("")})
+				]
+			)},
+
+
+
+		])
+	}
+}

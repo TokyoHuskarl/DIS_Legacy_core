@@ -6,11 +6,22 @@ def cevid_ConsoleMain=1848
 def cevid_ConsoleControlManager=1849
 def cevid_ConsoleCmd=1850
 
+#include "./../ScaleScript/header_scalescript.tpc"
+#include "./header_rmsh_scalescript.tpc"
+defs SHELL_CMD_PACK = 789
+
+
 #include "./module_console_functions_DIS.tpc"
 #include "./module_console_commands.tpc"
 
 
 cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_call_console)),{
+	
+	__if DIS_EXPERIMENTAL == 1 {
+		//Deploy the package!
+		ShellCommandPackage(SHELL_CMD_PACK,SScmd_Mode_Construct_Link,SScmdDynCounter,var2,SScmd_Flag_Cmdline)
+		func_devlog(__str("EXPERIMENTAL - Scale Script Loaded - to t:"__id(SHELL_CMD_PACK)))
+	}
 	//@comment "2byte chars are shite"
 	//@comment "#################"
 	v[523] = 511
