@@ -1,0 +1,439 @@
+//#############################
+//Scale script tokens
+
+//SS process uses picture as a temporary buffer so you must give one picID to SS
+def SS_buffer_picID = 300
+
+//
+defv SScmdDynCounter = 508
+vname[__id(SScmdDynCounter)],"SScmdDynCounter" 
+
+
+
+
+defv {
+
+	SSvar1 = 11
+	SSvar2
+	SSvar3
+	SSvar4
+	SSvar5
+	SSvar6
+	SSvar7
+	SSvar8
+	SSvar9
+
+	SSreg1 = 21
+	SSreg2 = 22
+
+
+	SScmdnum = 30
+}
+
+deft {
+	SScmdStrList = 790
+
+
+	str_SSreg1 = 502
+
+
+	SScmd = 2999
+	SSargs0
+	SSargs1
+	SSargs2
+	SSargs3
+	SSargs4
+	SSargs5
+	SSargs6
+	SSargs7
+	SSargs8
+
+	parsSScmd = 3099
+	parsSSargs0
+	parsSSargs1
+	parsSSargs2
+	parsSSargs3
+	parsSSargs4
+	parsSSargs5
+	parsSSargs6
+	parsSSargs7
+	parsSSargs8
+}
+
+
+
+defv ROOT_INDEX = 739348
+defv Var_NEST_DEPTH = 510
+defv NEST_COUNTER = 509
+defs BREAK_SWITCH = 291
+def NEST_HEADER_LENGTHS =12
+
+defv Var_save_offset =282
+
+defv DEBUG_NESTCOUNT=4750
+
+def Const_NEST_VAR_ADDRESS_BEGIN = 739348
+def ROOT_INDEX_ADDRESS = Const_NEST_VAR_ADDRESS_BEGIN
+
+
+
+	def SS_LF ="
+"
+
+
+
+
+
+
+
+//#############################
+
+
+__fn SS_LET_TPC_READ $do {$do}
+
+def Scale_Script_Shebang = "#!SCALE_SCRIPT"
+
+def EOF = "EOF"
+def NEST_START = "[N:"
+def NEST_START_SIZE = 3
+def NEST_INNER_HEAD="*nH"
+def NEST_FOOTER = "*nE"
+def NEST_FOOTER_SIZE_sub1 = 2
+
+//variable types
+def void = 0
+def var = 1
+def refvar = 2
+def str = 3
+def refstr = 4
+def bool = 5
+def refbool = 6
+def pic = 7
+def refpic = 8
+
+
+
+//SScmd Modes!
+def {
+
+	SScmd_Mode_Construct_Link = 1 //Create Link string 
+	SScmd_Mode_Exec = 2 //simply execute function in interpreter process 
+	SScmd_Mode_Call = 3 //execute function from raw string command - slower than Mode_Exec
+	SScmd_Mode_Convert = 4 //when you convert script for interpreter
+	SScmd_Mode_Help = 5 //help helper
+}
+
+//find (), then-> search cmdList -> get 
+
+
+
+//SScmd_Flag
+def {
+	SScmd_Flag_Init_Link = 0x1 
+	SScmd_Flag_Cmdline = 0x2
+}
+
+#include "./header_scalescript_str_funcs.tpc"
+
+
+//To learn how to build script command Library or Command Package, check SSLib_sample.tpc 
+
+//パッケージ用コンストラクタ
+__fn SScmdPackage_Build $pkName $LINKstr $md $counter $given_v_or_str $flags $block {
+
+	__if __id(SScmdnum) == __id($counter) {
+		ERROR_SScmdPackage_DO_NOT_USE_SScmdnum_as_Package_counter
+	}
+
+	v[__id($counter)] = 0 
+	__if $md == SScmd_Mode_Construct_Link {
+		SScomments_for_RMEditer(__str("t[" __id($LINKstr) "] will be initialized to construct Link for SS Command Package named[" $pkName "]"))
+		//init link
+		v[__id($given_v_or_str)]=0
+		t[__id($LINKstr)].asg ""
+		v[__id($counter)] = 0
+
+
+	}.elif $md == SScmd_Mode_Exec {
+		macro_demiliterset
+		t[__id($given_v_or_str)] .split($delimiter, SScmd, SSvar1)//nargs?
+		SScmd.toNum(SScmdnum)
+
+
+	}.elif $md == SScmd_Mode_Call {
+		macro_demiliterset
+		t[__id($given_v_or_str)] .split($delimiter, SScmd, SSvar1)//nargs?
+		SSLink_search_cmd(parsSScmd,SScmd,$LINKstr,0)
+		@if parsSScmd.neq "NULL"{
+			parsSScmd.split($delimiter, parsSScmd, SSvar2)
+			parsSScmd.toNum(SScmdnum)
+		}.else bl{//NULL
+			SScmdnum = -1
+		}
+
+	}
+
+	@if SScmdnum != -1 {
+		@loop 1 {
+			$block
+		}
+		__if $md == SScmd_Mode_Construct_Link {
+			str_SSreg1.asg v[__id($given_v_or_str)]
+			t[__id($LINKstr)].asg .cat(__str("<" $pkName ":" ), str_SSreg1, t[__id($LINKstr)]) // set package name in the first line
+		}
+	}.else bl{//Failed
+
+
+	}
+
+
+}
+
+//ライブラリ用コンストラクタ
+__fn SScmdLib_Build $LibName $LINKstr $md $i $given_v_or_str $flags $cmdList { //str,str,SScmd_Mode,var,var,SScmd_Flag,[SScommand]
+
+	SScomments_for_RMEditer(__str("Link String t[" __id($LINKstr) "] loads Command Library:[" $LibName "]"))
+
+	//$i = SScommand list size counter var
+
+
+	//Link Construct Mode
+	__if $md == SScmd_Mode_Construct_Link {//SS command library construction mode - in this Mode $given_v_or_str work as just temp var to count down and save command amount 
+		__loop $cmdList $block {//just let them create link
+			v[__id($i)] += 1
+			$block
+			v[__id($given_v_or_str)]+=1
+		}
+
+		//Save amount of commands registered to the link str
+		//in the first line of the link str
+		str_SSreg1.asg v[__id($given_v_or_str)]
+		t[__id($LINKstr)].asg .cat(str_SSreg1, ">", t[__id($LINKstr)]) // use < as a header token - temporary 
+
+
+
+
+
+	//Execute Mode
+	}.elif $md == SScmd_Mode_Exec {//$given_v_or_str work as converted str id:argv[0],argv[1]...
+
+
+		//can this really faster than the old DIS script?
+		__loop $cmdList $block {
+			v[__id($i)] += 1
+			@if SSvar1 == v[__id($i)] {
+				$block
+				@break
+			}
+		}
+
+
+
+	//Script convert mode
+	//cmdname(var arg0,v:mapev1...etc) -> cmdname=cmdid,arg0,arg1
+	}.elif $md == SScmd_Mode_Convert {
+		__loop $cmdList $block {
+			v[__id($i)] += 1
+			//Get command ID type name argc and so on
+			$block
+		}
+
+
+
+	//Execute Mode
+	}.elif $md == SScmd_Mode_Call {//$given_v_or_str work as converted str id:argv[0],argv[1]...
+
+		//can this really faster than the old DIS script?
+		__loop $cmdList $block {
+			v[__id($i)] += 1
+			@if SScmdnum == v[__id($i)] {
+				$block
+				@break
+			}
+		}
+
+	}
+
+}
+
+
+
+//コマンド関数
+def nargs_nolimit = -1
+__fn SScommand $LINKstr $mode $ID $type $NAME $nargv $argv_type_list $funclist {
+
+	SScomments_for_RMEditer(__str("COMMAND - " $NAME ":"))
+	
+	//Construct Link
+	__if $mode == SScmd_Mode_Construct_Link {
+		t[__id($LINKstr)].cat $NAME
+		t[__id($LINKstr)].cat "="
+		t[__id($LINKstr)].cat $ID
+		t[__id($LINKstr)].cat ","
+		__loop $argv_type_list $el {
+			t[__id($LINKstr)].cat $el
+		}
+		t[__id($LINKstr)].cat ";"
+		//end
+
+
+	//Execute Mode / Help Mode
+	}.elif $mode == SScmd_Mode_Exec {//Just execute functions from list
+		SScmdfunc($funclist, $mode)
+
+
+	//Script Convert Mode
+	}.elif $mode == SScmd_Mode_Convert{
+		//Return ID type name argc and alle
+		SSreg1 = $type
+		str_SSreg1.asg $NAME
+		SScmd.asg $ID
+		__loop $argv_type_list $elm $i {
+			$ptr = __id(SSargs0) + $i
+			t[$ptr].asg $elm	
+		}
+		
+	}.elif $mode == SScmd_Mode_Call{
+		//Str
+		SScmdfunc($funclist, $mode)
+
+
+	}
+}
+
+
+__fn SScmdfunc $functionlist $callwhat {
+
+	__loop $functionlist $block $i {
+		__if $i == 0 {
+			__if $callwhat != SScmd_Mode_Help { $block }
+
+		}.elif $i == 1 {
+			__if $callwhat == SScmd_Mode_Help { $block }
+		}
+	
+	}
+
+}
+
+//return $string to reg1 
+__fn SSreturn_string $string {
+	str_SSreg1.asg $string
+}
+
+__fn SSreturn $type $var {
+
+}
+
+
+__fn proc_SS_argv_var $str $mode{
+	//$ global
+	//v: local
+	//v[n] RMvar
+	//b[n][m] picture buffer 
+	//p[id][n][m] 
+	str_get_char(str_SSreg1,$str,0)
+
+	//Check first char
+	@if str_SSreg1.eq "$" {
+		//GLOBAL
+
+	}.else{
+		//NOT GLOBAL
+		//Then get index[1]
+		str_get_char(str_SSreg2,$str,1)
+		@if str_SSreg2.eq ":"{
+			//Looks like local var
+
+		}.elif str_SSreg2.eq "["{
+			//Looks like RM var or picture
+
+
+		}else bl{
+			//Loos like just a Number,
+		}
+	}
+
+
+}
+
+
+def SS_picbuffer_Mode_Read = 0
+def SS_picbuffer_Mode_Write = 1
+
+def SS_buffer_FLAG_use_SS_buffer = 0x1
+//When you find p:n,x,y or b:x,y
+__fn proc_SS_picture_buffer $str $mode $flags {
+	__if $flags & SS_buffer_FLAG_use_SS_buffer {
+		@pic.getInfo[]
+	}
+}
+
+
+
+
+
+
+__fn SScomments_for_RMEditer $comment {
+	__if __defined(DEBUG_BUILD) {
+		__if DEBUG_BUILD == 1{ // to optimise your game, you can set build infomation
+			@comment __str("ScaleScript:" $comment)
+		}
+	}.else bl{
+		@comment __str("ScaleScript:" $comment)
+	}
+}
+
+
+
+
+def macro_demiliterset = {
+	__if $flags & SScmd_Flag_Cmdline {
+		$delimiter = " "
+	}.else bl{
+		$delimiter = ","
+	}
+}
+
+
+
+
+//dummy
+__fn MAIN $do {$do}
+__fn SETcmd $do {$do}
+__fn HELP $do {$do}
+
+
+//garbage
+/*
+//prototype commands declaration
+__fn protoSScommand $idset $type $name $argv {
+	$idset
+}
+
+
+
+
+
+
+
+
+
+
+
+__fn pARG $type $name {}
+
+SS_LET_TPC_READ({
+
+	$i = 1
+	protoSScommand({def rmmsg = $i}, void, "rmmsg", [pARG(str "message")])
+	$i += 1
+
+	protoSScommand({def spawn_agent = $i}, var, "spawn_agent", pARG(var "troop_id"), pARG(var "tile_x"), pARG(var "tile_y"),pARG(var "TeamID"),pARG(var "CohortID"),pARG(bool "direction"),pARG(var "stance"))
+	$i += 1
+	protoSScommand({def play_music = $i}, var, "play_music", pARG(str "music_name"),pARG(var volume),pARG(var tempo),pARG(var position))
+
+	def SS_NATIVE_CMD_AMOUNT = $i
+})
+*/
+

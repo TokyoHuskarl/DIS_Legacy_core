@@ -120,3 +120,15 @@ cev .id(1770), .name("Pathfinding:AStar"), {
 	func_pathfinding_Astar()
 }
 
+//LEGACY cev setting
+cev .id(1771), .name("PathfindingFunc:Move") , {   
+	func_pathfinding_move()
+}
+cev .id(1772), .name("PathfindingFunc:Open Node") , {   
+	func_pathfinding_open_Node()
+}
+cev .id(1773), .name("PathfindingFunc:Remove Opened Node") , {   
+	func_pathfinding_remove_OpenNode()
+}
+
+
