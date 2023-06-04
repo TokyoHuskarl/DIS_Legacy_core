@@ -1,4 +1,6 @@
-//#include "./../ScaleScript/header_scalescript.tpc"
+#include "./../ScaleScript/module_scalescript_main.tpc"
+
+#include "./../Dracore/module_core_Game_scripts_functions.tpc"
 /*
 	SScmd_Mode_Construct_Link = 1 //Create Link string 
 	SScmd_Mode_Exec = 2 //simply execute function in interpreter process 
@@ -10,6 +12,7 @@
 
 __fn ShellCommandPackage $LINKstr $md $counter $given_v_or_str $flags {
 		SScmdPackage_Build ("ShellCommandPackage",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+			ScaleScriptBasicLib($LINKstr $md $counter $given_v_or_str $flags)
 
 			//DIS LEGACY
 			__if PROJECT_NAME == "DIS_LEGACY"{
@@ -22,27 +25,110 @@ __fn ShellCommandPackage $LINKstr $md $counter $given_v_or_str $flags {
 		})
 }
 
-/*
+
 __fn ShellCommandLib $LINKstr $md $i $given_v_or_str $flags {
-	SScmdLib_Build("RMShellLib" $LINKstr, $md, $i, $given_v_or_str,$flags, [ 
-		{SScommand($LINKstr, $md, $i, void,"rmmsg",nargs_nolimit,[str],{@msg.show SSargs0})},
+	SScmdLib_Build("YishLib" $LINKstr, $md, $i, $given_v_or_str,$flags, [
+		{SScommand($LINKstr, $md, $i,
+			void, "echo",1,[str],[
+			MAIN({@call .cev 1854}),
+			HELP({SSreturn_string("Write arguments to the standard output.")})
+			]
+		)},
 	])
-}*/
+}
 __if PROJECT_NAME == "DIS_LEGACY"{
 	__fn DISConsoleLib $LINKstr $md $i $given_v_or_str $flags {
-		SScmdLib_Build("DIS Console Commands" $LINKstr, $md, $i, $given_v_or_str, $flags, [ 
+		SScmdLib_Build("DIS Console Commands" $LINKstr, $md, $i, $given_v_or_str, $flags, [
+
+			//play_global_music(soundfilename,volume,tempo,balance)
+			// DIS
+
+			{SScommand($LINKstr, $md, $i,
+				void, "play_global_music",4,[str,var,var,var],[
+				MAIN({
+					//SSargs0 is str
+					SSargs1.toNum SSvar1
+					SSargs2.toNum SSvar2
+					SSargs3.toNum SSvar3
+					cmd_play_global_music(SSargs0,SSvar1,SSvar2,SSvar3)}),
+				HELP({SSreturn_string("Play Global Music.")})
+				]
+			)},
+
+			//genheightmap()
+			//generate height map of current map and save them into its map directory.
+
 			{SScommand($LINKstr, $md, $i,
 				void, "genheightmap",0,[0],[
-				MAIN({@call .cev 1854}),
+				MAIN({@call .cev 1854}),//oh shit
 				HELP({SSreturn_string("Generate Heightmap and save as png file in the Map Directory")})
 				]
 			)},
+
+			//DIS Map Scripts Start - will be parted to DIS_MissionLib
+			
+			//spawnagent(var UnitID,var MapX,var MapY,var TeamID,var CohortID,bool Direction,var Stance)
 			{SScommand($LINKstr, $md, $i,
-				void, "genheigap",0,[0],[
-				MAIN({@call .cev 1854}),
-				HELP({SSreturn_string("")})
+				var, "spawn_agent",7,[var,var,var,var,var,bool,var],[
+				MAIN({
+					SScommand_convert_args_into_argv(SSargs0,7)
+					cmd_spawn_agent(SSvar1,SSvar2,SSvar3,SSvar4,SSvar5,SSvar6,SSvar7)
+				}),
+				HELP({SSreturn_string("spawn an troop agent at given tile coordinate")})
 				]
 			)},
+
+			//same function as one above, just for inheriting legacy script command name
+			//spawn_Unit(var UnitID,var MapX,var MapY,var TeamID,var CohortID,bool Direction,var Stance)
+			{SScommand($LINKstr, $md, $i,
+				var, "spawn_Unit",7,[var,var,var,var,var,bool,var],[
+				MAIN({
+					SScommand_convert_args_into_argv(SSargs0,7)
+					cmd_spawn_agent(SSvar1,SSvar2,SSvar3,SSvar4,SSvar5,SSvar6,SSvar7)
+				}),
+				HELP({SSreturn_string("spawn an troop agent at given tile coordinate")})
+				]
+			)},
+
+			//Map and sights
+
+			//reveal_map()
+			//
+			{SScommand($LINKstr, $md, $i,
+				void, "reveal_map",0,[0],[
+				MAIN({cmd_reveal_map()}),
+				HELP({SSreturn_string("Clear all fog of war")})
+				]
+			)},
+
+
+			// Mission and player
+
+			//player_victory
+			{SScommand($LINKstr, $md, $i,
+				void, "player_victory",0,[0],[
+				MAIN({cmd_player_prepare_endgame(DIS_playerid_singleplay,1)}),
+				HELP({SSreturn_string("Show Victory string in the center of the screen, still you need to execute player_end_flag to end the mission actually")})
+				]
+			)},
+
+			//player_defeat
+			{SScommand($LINKstr, $md, $i,
+				void, "player_defeat",0,[0],[
+				MAIN({cmd_player_prepare_endgame(DIS_playerid_singleplay,2)}),
+				HELP({SSreturn_string("Show Defeat string in the center of the screen, still you need to execute player_end_flag to end the mission actually")})
+				]
+			)},
+
+			//player_end_flag
+			{SScommand($LINKstr, $md, $i,
+				void, "player_end_flag",0,[0],[
+				MAIN({cmd_mission_set_end_flag()}),
+				HELP({SSreturn_string("You can quit mission by pressing [TAB] after this function executed")})
+				]
+			)},
+
+
 
 
 

@@ -1,0 +1,10 @@
+//included in header_common.tpc
+
+
+//cev 2001
+__fn macro_convert_maptileXY_into_relativeXY $TileX $TileY $regX $regY {
+	@map[v[501]].setVehiclePos .airship .pos $TileX, $TileY .retain
+	v[__id($regX)] = airship.scrx
+	v[__id($regY)] = airship.scry
+	v[__id($regY)] -= 8
+}

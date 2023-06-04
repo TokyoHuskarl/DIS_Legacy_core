@@ -1,0 +1,275 @@
+//
+// actual functions for scale script commands of DIS:Legacy here - it's bit weird since header/header_rmsh_scalescript.tpc refers this meanwhile this is in /module/ Directory
+//all args of functions below are string type since this called via SS command
+
+
+//##########################
+//fundamental system commands
+//##########################
+
+// "cmd_play_global_sound(soundfilename,v1,v2,v3)"
+// no reg
+__fn cmd_play_global_sound $filename $volume $tempo $balance {
+    var1 = $volume
+    var2 = $tempo
+    var3 = $balance
+    @cmd 11550, $filename, .args var1, 3
+    
+}
+
+// "#play_global_music(soundfilename,v1,v2,v3)"
+// no reg
+__fn cmd_play_global_music $filename $volume $tempo $balance {
+    var1 = divmul($volume, 100, LEGV_Global_BGM_Volume)
+    @bgm.play $filename .opt 0, var1, $tempo, $balance
+    Current_BGMFile .asg $filename
+}
+
+
+
+//##########################
+//spawn commands
+//##########################
+
+//import agent generate commands
+#include "./module_core_RTS_agent_generate_basic.tpc"
+
+//
+
+
+// spawn_Unit(var TroopID,var TileX,var TileY,var TeamID,var CohortID,bool Direction,var Stance)
+__fn cmd_spawn_agent $troop_id $TileX $TileY $TeamID $CohortID $Dir $Stance {
+	t[__id($troop_id)] .toNum v[254]
+	t[__id($TileX)] .toNum TT1
+	t[__id($TileY)] .toNum TT2
+	t[__id($TeamID)] .toNum v[251]
+	t[__id($CohortID)] .toNum v[258]
+	//lmao retarded
+	s[156].off
+	@if v[258] >= 1 {
+	s[156].on
+	}
+	t[__id($Dir)] .toNum v[280]
+	t[__id($Stance)] .toNum v[277]
+	//@call .cev 2001
+	macro_convert_maptileXY_into_relativeXY(TT1,TT2,v[252],v[253])
+	//v[22].copy v[252], 2
+
+	s[152].on
+	//call fn
+	@call .cev 300
+	//func_generate_agent()
+
+	@if v[251] == 0 {
+		//Was?
+		@if s[156] .isOn() {
+		    @call .cev 1906
+		    
+		}
+
+	}
+
+}
+
+
+//##########################
+//map and sight system functions
+//##########################
+
+
+//cmd_reveal_map()
+// just reveal map, no reg 
+__fn cmd_reveal_map {
+	//v[562447..572446] ^= 2
+	v[LEGV_Ptr2FoW_FlagsArray..LEGV_Ptr2FoW_FlagsArray+999] ^= 2 //?
+	LEGS_MapPreRevealed.on //?
+}
+
+//cmd_map_randomise_height_legacy(int xmin,int ymin,int xmax,int ymax,int Tryamount)
+// shitty pseudo randomising of map elevaion
+__fn cmd_map_randomise_height_legacy $tileXmin $tileYmin $tileXmax $tileYmax $amount {
+	@loop $amount {
+	    var1 = $tileXmin
+	    var2 = $tileYmin
+	    var3 = $tileXmax
+	    var4 = $tileYmax
+	    var1 = rnd(var1, var3)
+	    var2 = rnd(var2, var4)
+	    var3 = var1 + rnd(12, 18)
+	    var4 = var2 + rnd(10, 16)
+	    @call .cev 1802
+	}
+}
+
+
+
+
+//##########################
+//Dialogs and messages
+//##########################
+__fn cmd_show_radio_dialog {
+
+}
+
+//##########################
+// AI commands
+//##########################
+
+
+
+
+//##########################
+// Team commands
+//##########################
+
+
+// ACHTUNG!
+// You obviously have to clean up this function
+// reg1 = schwerepunktX reg2 = schwerepunktY
+__fn cmd_team_get_schwerepunkt $teamID {
+
+	v[2881] = $teamID
+	v[2806..2808] = 0
+	v[23] = 0
+	@loop v[1012] .dst v[301] {
+	    //@comment "Check Player Team List"
+	    //@comment "Check AllyTeam List"
+	    v[2821] = v[301] + v[1145 + v[2881] % 3]
+	    @if v[v[2821]] >= 1 {
+		v[2822] = v[v[2821]] * 300
+		v[2822] += 4701
+		@if v[v[2822]] <= 9 {
+		    @if `v[v[2822] + 99] == v[2881] {
+			v[11] = v[v[2821]]
+			@call .cev 2009
+			@if v[21] >= 1 {
+			    v[23] += 1
+			    
+			}
+			v[2808] += v[21]
+			v[v[2822]].copy v[601], 9
+			v[607..608] *= v[21]
+			v[2806] .add v[607], 2
+			
+		    }
+		    
+		}
+		
+	    } .else bl {
+		@break
+		
+	    }
+	}
+	
+	v[2812 + v[2881] % 3] = v[2808]
+	v[2806..2807] /= v[2808]
+	v[2806].copy v[2853], 2
+	v[2806].copy reg1, 2
+
+}
+
+__fn cmd_team_set_pop_limit $teamID $limit {
+	v[LEGV_Ptr2PopLimitArray + $teamID] = $limit
+
+}
+
+//cmd_team_set_faction
+__fn cmd_team_set_faction $teamID $factionID {
+	v[Const_Team_Address_FactionID_Array_Head + $teamID] = $factionID
+
+}
+
+
+//cmd_team_give_resource
+// reg1 = resource amount after this cmd
+// reg2 = ptr to the resource indicated in this cmd
+__fn cmd_team_give_resource $teamID $resourceID $amount {
+
+	v[__id($teamID)] = max($teamID, 0)
+	v[__id($teamID)] = min($teamID, 4)
+	// ?
+
+	reg2 = LEGV_Team_Address_Resource_Array_Start + min($resourceID, 4) + Team_Variables_Array_Size * $teamID
+	reg1 = max(v[reg2] + $amount, 0)
+	v[reg2] = reg1
+
+}
+
+//cmd
+def {
+	cmd_FLAG_Use_hex_argv = 0x10
+
+}
+
+__fn cmd_team_give_tech_flag $teamID $tech_group $tech_flag $cmdflags {
+
+	// this might seem retarded kek
+	var1 = $teamID
+	var2 = $tech_group
+	var1 = max($teamID, 0)
+	var1 = min($teamID, 3)
+	var2 = max(var2, 1)
+	var2 = min(var2, 3)
+	var2 -= 1
+
+	__if $cmdflags & cmd_FLAG_Use_hex_argv { // if given the hex parameter, just use it straightly
+		v[Const_Team_Address_Tech_Array_Head + var1 + Team_Tech_Array_Size * var2] |= $tech_flag
+
+	}.else bl { //otherwise use pow()
+		v[Const_Team_Address_Tech_Array_Head + var1 + Team_Tech_Array_Size * var2] |= pow(2, $tech_flag - 1)
+	}
+
+}
+
+
+
+//##########################
+// Player commands
+//##########################
+
+//$playerid is for future possible multiplayer expantion - 0 = singleplay
+
+def {
+	DIS_playerid_singleplay = 0
+
+}
+
+__fn cmd_player_change_view $playerid $tileX $tileY {
+	@map[LEGV_MAPID].setVehiclePos .boat .pos $tileX, $tileY .retain
+	LEGV_CamWarpx = boat.x
+	LEGV_CamWarpy = boat.y
+	LEGS_Call_CameraWarp.on
+}
+
+//$vic_or_def 1 = def, 2 = vic 
+__fn cmd_player_prepare_endgame $playerid $vic_or_def {
+	var1 = $vic_or_def
+	@if var1 == 1 { // victory
+		v[2820] = var1
+		@call .cev 2135 //wut?
+	}.elif var1 == 2 { // defeat
+		v[2820] = var1
+		@call .cev 2135 
+	}.else bl {
+		func_errlog("player_prepare_endgame: End game condition seems illegal or undefined")
+		
+	}
+
+}
+
+// you can quit mission by pressing [TAB] after this function executed
+__fn cmd_mission_set_end_flag {
+	@pic[PicID_VicDef].move {
+	    .pos LEGV_ConstScreenCenterY, LEGV_ConstScreenCenterY .center
+	    .scale 100
+	    .trans 100
+	    .time 15
+	    .rgbs 100, 100, 100, 100
+	}
+	LEGS_SkipBriefing.on //?
+
+}
+
+
+
+

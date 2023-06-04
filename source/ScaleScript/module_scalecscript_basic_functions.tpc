@@ -1,0 +1,38 @@
+// these functions are basically for ScaleScriptBasicLib(SSBLib)
+//but you can use these functions into your own commands as far as your Package contains SSBLib.
+
+
+
+SS_funcgroup("SScmdPackage functions",{
+
+	__fn get_SScmdPackage_info $targstr $LINKstr {
+		targstr.asg "" //init targstr
+		GIVE_METAVAR2BLOCK
+		
+		
+	}
+
+
+})
+
+
+
+
+
+__fn func_SS_cmd_help $cmd {
+	
+}
+
+
+__fn func_SS_echo $string {
+	
+}
+
+__fn func_eval $formula {
+	//just give formula to Maniacs eval() function
+	@raw 10220 $formula
+}
+
+
+
+

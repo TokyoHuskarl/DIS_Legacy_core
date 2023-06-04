@@ -1,0 +1,20 @@
+//this file included in module_scalescript_main.tpc
+
+
+
+
+__fn ScaleScriptBasicLib $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("ScaleScript Basic Commands" $LINKstr, $md, $i, $given_v_or_str,$flags, [ 
+		//Command set start
+
+		//Calculation
+		{SScommand($LINKstr, $md, $i, var,"calc",nargs_nolimit,[str],[{func_eval(SSargs0)},{SSreturn_string("Calculate given formula")}])},
+		//Return Date
+		{SScommand($LINKstr, $md, $i, var,"date",0,[0],[{SSreg1=sys.date},{SSreturn_string("Return current date")}])},
+
+		//Call common event 
+		{SScommand($LINKstr, $md, $i, void,"call_cev",1,[var],[{SSargs0.toNum(SSvar1) @call.cev[SSvar1] },{SSreturn_string("Call common event")}])},
+		//Call map event
+		{SScommand($LINKstr, $md, $i, void,"call_mev",1,[var,var],[{SSargs0.toNum(SSvar1) SSargs1.toNum(SSvar2) @call .mev SSvar1, SSvar2 },{SSreturn_string("Call map event")}])},
+	])
+}

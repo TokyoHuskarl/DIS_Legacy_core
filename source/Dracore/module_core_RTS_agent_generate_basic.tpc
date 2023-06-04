@@ -57,7 +57,7 @@ __fn func_generate_agent {
 			    @if v[v[300]] <= 0 {
 				// "##################Init start"
 				// "まず清掃"
-				v[1301].copy agent_AgentType, 300
+				v[1301].copy v[601], 300
 				v[1301].copy v[v[300]], 300
 				// "ORDER SET"
 				v[841] = v[277]
@@ -77,7 +77,7 @@ __fn func_generate_agent {
 				agent_UnitID = v[254]
 				agent_UnitID -= s[152] == 0 ? 200 : 0
 				// "ObjTyp"
-				t[3001] .toNum agent_AgentType
+				t[3001] .toNum v[601]
 				// "#SpriteSet"
 				//v[v[1216]..v[1216] + 100] = 0
 				v[1301].copy v[v[1216]], 100
@@ -588,8 +588,7 @@ __fn func_generate_agent {
 
 
 //cev .id(1903), .name("Agent:Spawn Finish"), {
-
-__fn func_spawn_agent_lastproc {
+__fn func_generate_agent_finish_set {
 
 	@comment "#reg1 = ObjID #reg2 = UnitID #reg3 = UnitType"
 	@comment "Set Dir"
@@ -608,7 +607,7 @@ __fn func_spawn_agent_lastproc {
 	    }
 	    
 	}
-	@if agent_AgentType < 11 {
+	@if v[601] < 11 {
 	    v[752] = v[752] == 0 ? -1 : v[752]
 	    v[772] = v[772] == 0 ? -1 : v[772]
 	    v[792] = v[792] == 0 ? -1 : v[792]
@@ -665,7 +664,7 @@ __fn func_spawn_agent_lastproc {
 
 	}
 	@comment "Enabling Skill AI"
-	@if agent_AgentType <= 8 {
+	@if v[601] <= 8 {
 	    @comment "standard bearer"
 	    v[823] |= agent_BaseObjBit & BaseObjBit_FLAG_Standard_Bearer ? 4 : 0
 	    @comment "Access19 = Obj's Behavior Access20 = Obj's target ID"
@@ -790,18 +789,7 @@ __fn func_spawn_agent_lastproc {
 	t[v[899]] .asg t[501]
 
 
-	//Cal arrow shoot velocity 
-	/*__if DIS_EXPERIMENTAL == 1 {
-		@if agent_AAType == 2 { //IF only AA type is ranged...
-			//v=sqr(g*l/2sinXcosX)
-			//in DIS, we consider the best anglee to shoot projectile is 42 degree - since this suits more to the game environment
-			agent_AAvelocity = sqrt(muldiv(g_perFPS * agent_BaseRange_max,5000,sin(42,1,100)*cos(42,1,100)),1) //...?  1000/10^4*2
-			func_get_ranged_weapon_velocity(agent_BaseRange_max,agent_AAvelocity)
-			agent_AAvelocity = reg1			
-			func_devlog("\t[501]: velocity caluculated - \v[727]milpix/f")
-			
-		}
-	}*/
+
 
 
 	@comment "###################Set New Picture System###################"
@@ -812,7 +800,7 @@ __fn func_spawn_agent_lastproc {
 	@comment "v[899]=Layers"
 	v[899] = 7
 	@comment "#STATIC"
-	@if agent_AgentType == 11 {
+	@if v[601] == 11 {
 
 	    @if agent_AAType == 2 {
 		func_get_ranged_weapon_velocity(agent_BaseRange_max,1)
@@ -1047,12 +1035,12 @@ __fn func_spawn_agent_lastproc {
 	    
 	}
 	@comment "#classic minions"
-	@if agent_AgentType == 1 {
+	@if v[601] == 1 {
 	    v[726] |= 2097152
 	    
 	}
 	@comment "#Weapon Switchable Units"
-	@if agent_AgentType == 4 {
+	@if v[601] == 4 {
 	    v[0] = v[v[302]..v[302] + 5] = [v[602], 0, 0, v[858], v[859], 0]
 	    @if v[851] >= 1 {
 		@comment "#Have Weapon"
@@ -1073,7 +1061,7 @@ __fn func_spawn_agent_lastproc {
 	    
 	}
 	@comment "#User Units"
-	@if agent_AgentType == 3 {
+	@if v[601] == 3 {
 	    @comment "Human"
 	    @if v[664] == 0 {
 		@comment "NOT female"
@@ -1360,7 +1348,7 @@ __fn func_spawn_agent_lastproc {
 	    @comment "##Human"
 	    @if v[664] == 0 {
 		@comment "###Custom Unit"
-		@if agent_AgentType == 3 {
+		@if v[601] == 3 {
 		    @comment "#Crushable head"
 		    v[726] |= 64
 		    @comment "Crushable"
@@ -1384,7 +1372,7 @@ __fn func_spawn_agent_lastproc {
 	    @comment "#Obj Bits"
 	    @comment "##If this is SiegeUnit, then flag bleed immunity"
 	    agent_BaseObjBit |= agent_UnitType == 5 ? 4096 : 0
-	    agent_BaseObjBit |= agent_AgentType == 11 ? 4096 : 0
+	    agent_BaseObjBit |= v[601] == 11 ? 4096 : 0
 	    @comment "#Cavalry Penalty"
 	    @comment "##Init FootStepSound"
 	    v[887] = 0
@@ -1462,7 +1450,7 @@ __fn func_spawn_agent_lastproc {
 	    @comment "set least parameter"
 	    v[739] = v[739] <= 0 ? v[1164] : v[739]
 	    @comment "#Skill AutoCast Lock Check"
-	    @if agent_AgentType < 9 {
+	    @if v[601] < 9 {
 		@loop 4 .dst v[1941] {
 		    v[760 + v[1941] * 20] |= v[744 + v[1941] * 20] == -1 ? 33 : 0
 		    
@@ -1471,10 +1459,10 @@ __fn func_spawn_agent_lastproc {
 		
 	    }
 	    @comment "############	Camo"
-	    @if agent_AgentType < 11 {
+	    @if v[601] < 11 {
 		v[617] = 4000
 		v[617] -= (agent_BaseObjBit & 524288) > 1 ? 2000 : 0
-		@if agent_AgentType == 9 {
+		@if v[601] == 9 {
 		    v[617] += 8000
 		    
 		}
@@ -1565,7 +1553,7 @@ __fn func_spawn_agent_lastproc {
 	@comment "Set SkipFrame"
 	v[625] = 2
 	@comment "#AITimer"
-	@if agent_AgentType < 10 {
+	@if v[601] < 10 {
 	    @comment "Have minion troop AI"
 	    v[684] = v[154] % v[1195]
 	    
@@ -1611,7 +1599,7 @@ __fn func_spawn_agent_lastproc {
             v[21] = v[4579] + (v[1012] + 2) * v[201]
 			v[v[21]..v[21]+(v[1012] + 1)] = 0
 			//Then set basic parameter to agent slots
-		    agent_AgentType.copy v[v[300]], 300
+		    v[601].copy v[v[300]], 300
 		    @comment "Collision Counter"
 		    v[196] += v[639] != -1 ? 1 : 0
 		    @comment "Save ColBox"
@@ -1640,7 +1628,7 @@ __fn func_spawn_agent_lastproc {
 		    }
 		    
 		    @comment "Set into UnitTypeList"
-		    @if agent_AgentType <= 10 {
+		    @if v[601] <= 10 {
 			v[v[4532] + v[1004] - 1] = v[201] + 1
 			v[v[4532] + v[1004]] += 1
 			v[v[4532]].sortDescending v[1004]
@@ -1666,7 +1654,7 @@ __fn func_spawn_agent_lastproc {
 
 		    @comment "敵味方峻別リストに登録"
 		    @if s[157] .isOff() {
-			@if agent_AgentType == 11 {
+			@if v[601] == 11 {
 			    @if agent_UnitType != 105 {
 				@if agent_UnitType != 104 {
 				    v[v[4580] + agent_TeamID % 3] += 1
@@ -1759,11 +1747,11 @@ __fn func_spawn_agent_lastproc {
 		    v[23] = agent_UnitType
 		    @if s[19] .isOff() {
 			@if agent_TeamID == 0 {
-			    @if agent_AgentType < 11 {
+			    @if v[601] < 11 {
 				@if v[2218] <= 2 {
 				    @call .cev 1924
 				    v[341] = 2
-				    agent_AgentType = 1
+				    v[601] = 1
 				    @pic[v[1155]].strpic {
 					t[20243]
 					.pos v[341], v[1126] .bottomLeft
@@ -1786,7 +1774,7 @@ __fn func_spawn_agent_lastproc {
 				    @if agent_UnitType < 100 {
 					@call .cev 1924
 					v[341] = 2
-					agent_AgentType = 1
+					v[601] = 1
 					agent_UnitID = v[agent_TeamID + 1]
 					t[501] .asg t[v[300]]
 					v[342] = v[agent_TeamID] == 1 ? 5 : 10
@@ -1818,7 +1806,7 @@ __fn func_spawn_agent_lastproc {
 				    @if v[602] != 104 {
 					@call .cev 1924
 					v[341] = 2
-					agent_AgentType = 1
+					v[601] = 1
 					@pic[v[1155]].strpic {
 					    t[20244]
 					    .pos v[341], v[1126] .bottomLeft

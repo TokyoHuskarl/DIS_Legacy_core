@@ -55,6 +55,19 @@ def {
 
 //Entity General Const Setting
 def {
+
+	//Array_Head = Array[0] has element, Array_Start = Array[0] doesn't have actual element (design flaw!)
+
+	Team_Variables_Array_Size = 40
+	Const_Team_Address_FactionID_Array_Head = 2403
+
+
+	Team_Tech_Array_Size = 3
+	Const_Team_Address_Tech_Array_Head = 2406
+
+	Const_Team_Address_CombatPower_Array_Head = 2812
+
+
 	Const_Massive_Battle_Amount = 250
 
     	Const_Map_Allocate_Limit = 160000
@@ -79,6 +92,11 @@ defv {
 
 
 }
+
+//load old switches and variables name as defv or defs 
+#include "./id_project_defs.tpc"
+#include "./id_project_defv.tpc"
+
 
 #include "./header_log.tpc"
 
@@ -128,12 +146,14 @@ def {
 	
 	Memory_MapInfo=300317
 
+	//0 = inf, 1 = archer, 2 = cav, 3 = magician, 4 = healer, 5 = siege, 7 = animals, 8=decayable, 9 = civilians, 11 = flying, 21 = ship, 101 = barrack, 102 = no_col_static, 103 = decoy, 104 = basement, 105 = resource, 106 = turret, 107 = terrainchange
 	UNIT_CLASS_INF=0
 	UNIT_CLASS_ARCHER=1
 	UNIT_CLASS_CAV=2
 
 	UNIT_CLASS_STATIC=11
-
+	
+	UNIT_CLASS_STATIC_TURRET = 106
 
     //Maptile Flags 
     	FLAG_Maptile_Occupied = 1
@@ -213,6 +233,8 @@ deft Font_UI = 530
 defv Font_UI_size = 4511
 //deft Font_Imperial =
 
+
+deft Current_BGMFile = 760
 
 deft StrConst_LF = 525
 deft LF = 525
@@ -467,5 +489,6 @@ __fn struct $name $block {
 	$block
 }
 
+#include "./header_macros.tpc"
 
 $DIS_h_common_included = 1

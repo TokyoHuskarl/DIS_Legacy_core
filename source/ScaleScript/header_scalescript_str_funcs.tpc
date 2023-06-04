@@ -1,6 +1,8 @@
-//is this even possible?
+
+/* -> Moved to header_scalescript
 def regstr = t[__id($regstr)]
 def targstr = t[__id($targstr)]
+*/
 
 __fn str_get_char $regstr $targstr $index {
 	regstr.asg  .subs(targstr, $index, 1)
@@ -18,8 +20,8 @@ __fn SSLink_search_cmd $regstr $cmd $targstr $index {
 	targstr.inStr(str_SSreg1, SSreg1, .beg($index))
 
 	@if SSreg1 != -1 {//found
-		targstr.inStr("=", SSreg1, .beg($index) )//SSreg1 = start
-		targstr.inStr(";", SSreg2, .beg($SSreg1) )//SSreg2 = end
+		targstr.inStr("=", SSreg1, .beg(SSreg1) )//SSreg1 = start
+		targstr.inStr(";", SSreg2, .beg(SSreg1) )//SSreg2 = end
 		SSreg1 += 1
 		regstr.asg .subs(targstr,SSreg1,SSreg2)//Return cmd and args
 	}.else bl{//not found

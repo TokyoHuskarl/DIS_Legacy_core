@@ -693,7 +693,7 @@ cev .id(2) ,.name("@Mission Init") ,{
 		.extract
 	}
 	@if t[501] .neq "" {
-		t[501] .split "@", t[501], v[341]
+		t[501] .split "=", t[501], v[341]
 		t[750] .asg t[501]
 		
 	}
@@ -919,7 +919,7 @@ cev .id(2) ,.name("@Mission Init") ,{
 			.beg 0
 			.extract
 		}
-		t[501] .split "@", t[501], v[341]
+		t[501] .split "=", t[501], v[341]
 		t[750] .asg t[501]
 		t[510] .asg "..\Maps\"
 		t[510] .cat t[750]
@@ -1018,7 +1018,7 @@ cev .id(2) ,.name("@Mission Init") ,{
 			.beg 0
 			.extract
 		}
-		t[501] .split "@", t[501], v[341]
+		t[501] .split "=", t[501], v[341]
 		t[750] .asg t[501]
 		
 	} .else bl {
@@ -1031,7 +1031,7 @@ cev .id(2) ,.name("@Mission Init") ,{
 			.beg 0
 			.extract
 		}
-		t[501] .split "@", t[501], v[341]
+		t[501] .split "=", t[501], v[341]
 		t[502] .toNum v[341]
 		@comment "need to load tilegen.txt"
 		@if v[341] == 0 {

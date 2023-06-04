@@ -911,7 +911,7 @@ t[801] .asg ""
             t[801] .cat "WEP_"
             t[3001] .asg  .rep t[3001], " ", "_"
             t[801] .cat t[3001]
-            t[801] .cat "@"
+            t[801] .cat "="
             t[801] .cat t[3000]
             t[801] .cat t[525]
             
@@ -986,7 +986,7 @@ t[801] .asg ""
             t[801] .cat "SHD_"
             t[3001] .asg  .rep t[3001], " ", "_"
             t[801] .cat t[3001]
-            t[801] .cat "@"
+            t[801] .cat "="
             t[801] .cat t[3000]
             t[801] .cat t[525]
             
@@ -1061,7 +1061,7 @@ t[801] .asg ""
             t[801] .cat "AMR_"
             t[3001] .asg  .rep t[3001], " ", "_"
             t[801] .cat t[3001]
-            t[801] .cat "@"
+            t[801] .cat "="
             t[801] .cat t[3000]
             t[801] .cat t[525]
             
@@ -1136,7 +1136,7 @@ t[801] .asg ""
             t[801] .cat "HEL_"
             t[3001] .asg  .rep t[3001], " ", "_"
             t[801] .cat t[3001]
-            t[801] .cat "@"
+            t[801] .cat "="
             t[801] .cat t[3000]
             t[801] .cat t[525]
             
@@ -1211,7 +1211,7 @@ t[801] .asg ""
             t[801] .cat "ACC_"
             t[3001] .asg  .rep t[3001], " ", "_"
             t[801] .cat t[3001]
-            t[801] .cat "@"
+            t[801] .cat "="
             t[801] .cat t[3000]
             t[801] .cat t[525]
             
@@ -1274,7 +1274,7 @@ t[511] .asg  .file t[511], .sjis, .extract
     
 }
 v[1215] = 10000
-t[510] .asg  .file "..\data\data_minions", .sjis, .extract
+t[510] .asg  .file "..\data\data_minions", .utf8, .extract //this was once sjis so this might cause some trouble
 t[510] .split "*/", t[509], v[341]
 t[803] .asg  .file "..\scripts\const_factions_id", .utf8
 t[804] .asg  .file "..\scripts\const_weapons_id", .utf8
@@ -1285,7 +1285,7 @@ t[808] .asg  .file "..\scripts\const_accessories_id", .utf8
 t[803] .split t[525], t[v[1219]], v[505]
 @loop v[505] .dst v[506] {
     v[11] = v[1219] + v[506]
-    t[v[11]] .split "@", t[3000], v[341]
+    t[v[11]] .split "=", t[3000], v[341]
     @if v[341] == 2 {
         @if t[3000] .neq "" {
             t[510] .asg  .rep t[510], t[3000], t[3001]
@@ -1299,7 +1299,7 @@ t[803] .split t[525], t[v[1219]], v[505]
 t[804] .split t[525], t[v[1219]], v[505]
 @loop v[505] .dst v[506] {
     v[11] = v[1219] + v[506]
-    t[v[11]] .split "@", t[3000], v[341]
+    t[v[11]] .split "=", t[3000], v[341]
     @if v[341] == 2 {
         @if t[3000] .neq "" {
             t[510] .asg  .rep t[510], t[3000], t[3001]
@@ -1313,7 +1313,7 @@ t[804] .split t[525], t[v[1219]], v[505]
 t[805] .split t[525], t[v[1219]], v[505]
 @loop v[505] .dst v[506] {
     v[11] = v[1219] + v[506]
-    t[v[11]] .split "@", t[3000], v[341]
+    t[v[11]] .split "=", t[3000], v[341]
     @if v[341] == 2 {
         @if t[3000] .neq "" {
             t[510] .asg  .rep t[510], t[3000], t[3001]
@@ -1327,7 +1327,7 @@ t[805] .split t[525], t[v[1219]], v[505]
 t[806] .split t[525], t[v[1219]], v[505]
 @loop v[505] .dst v[506] {
     v[11] = v[1219] + v[506]
-    t[v[11]] .split "@", t[3000], v[341]
+    t[v[11]] .split "=", t[3000], v[341]
     @if v[341] == 2 {
         @if t[3000] .neq "" {
             t[510] .asg  .rep t[510], t[3000], t[3001]
@@ -1341,7 +1341,7 @@ t[806] .split t[525], t[v[1219]], v[505]
 t[807] .split t[525], t[v[1219]], v[505]
 @loop v[505] .dst v[506] {
     v[11] = v[1219] + v[506]
-    t[v[11]] .split "@", t[3000], v[341]
+    t[v[11]] .split "=", t[3000], v[341]
     @if v[341] == 2 {
         @if t[3000] .neq "" {
             t[510] .asg  .rep t[510], t[3000], t[3001]
@@ -1355,7 +1355,7 @@ t[807] .split t[525], t[v[1219]], v[505]
 t[808] .split t[525], t[v[1219]], v[505]
 @loop v[505] .dst v[506] {
     v[11] = v[1219] + v[506]
-    t[v[11]] .split "@", t[3000], v[341]
+    t[v[11]] .split "=", t[3000], v[341]
     @if v[341] == 2 {
         @if t[3000] .neq "" {
             t[510] .asg  .rep t[510], t[3000], t[3001]
@@ -1421,7 +1421,7 @@ t[801] .asg ""
     v[12] = v[1215] + v[11]
     v[20] = v[12]
     t[v[12]] .split ",", t[3000], v[342]
-    @if t[3000] .contains "@" {
+    @if t[3000] .contains "=" {
         t[801] .cat "TRP_"
         t[801] .cat t[3000]
         t[801] .cat t[525]
@@ -1508,7 +1508,7 @@ t[510] .split "*/", t[509], v[341]
     @loop v[343] .dst v[11] {
         v[12] = 3000 + v[11]
         t[v[12]] .split ",", t[3301], v[342]
-        @if t[3301] .contains "@" {
+        @if t[3301] .contains "=" {
             t[803] .cat "FAC_"
             t[803] .cat t[3301]
             t[803] .cat t[525]

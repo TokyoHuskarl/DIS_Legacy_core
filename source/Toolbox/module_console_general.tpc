@@ -4,9 +4,10 @@ defs Bool_call_console = 182
 
 def cevid_ConsoleMain=1848
 def cevid_ConsoleControlManager=1849
-def cevid_ConsoleCmd=1850
 
-#include "./../ScaleScript/header_scalescript.tpc"
+//#include "./../ScaleScript/header_scalescript.tpc"
+//#include "./../ScaleScript/SSLib_basic.tpc"
+
 #include "./header_rmsh_scalescript.tpc"
 defs SHELL_CMD_PACK = 789
 
@@ -15,6 +16,8 @@ defs SHELL_CMD_PACK = 789
 #include "./module_console_commands.tpc"
 
 
+
+//
 cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_call_console)),{
 	
 	__if DIS_EXPERIMENTAL == 1 {
@@ -1167,6 +1170,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		v[525] = 0
 		
 	    }
+
+
+	    //key pressed
 	    @if s[201] .isOn() {
 		@if s[203] .isOff() {
 		    v[341] = 521
@@ -1221,6 +1227,7 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 cev .id(cevid_ConsoleControlManager), .name("Console:Manager"), .parallel, {
 
 	@if .testPlay() {
+		//F10
 	    @key.inputEx .keyCode 121 .dst v[1223]
 	    @if v[1223] == 1 {
 		v[472] = divmul(90, 100, v[2216])
@@ -1254,7 +1261,11 @@ cev .id(cevid_ConsoleControlManager), .name("Console:Manager"), .parallel, {
 		    
 		}
 		func_show_msg(t[v[523]])
-		@call .cev cevid_ConsoleCmd //call Cmd
+
+
+		console_cmd_call()
+
+		//@call .cev cevid_ConsoleCmd //call Cmd
 		
 	    }
 	    

@@ -7,7 +7,12 @@ struct("agent",{
 	Address_str_agent_name_array_head = 4562
 
 	Address_agent_array_head = 600
+
+	//This should have been named AgentType but inheriting old name 
 	agent_ObjectType = 601
+	//you need to replace it with this new naming to show more precise element name
+	agent_AgentType = 601
+
 	agent_PicID = 602
 	agent_AgentBits = 603
 	agent_Luck = 604
@@ -336,6 +341,11 @@ struct("agent",{
 	ActionFlag_FLAG_Heading_other_agent = 4 //s[103]
 	ActionFlag_FLAG_Trying_to_stop = 8 //s[104]
 
+	
+	//ObjectType
+	AgentType_Simple_Agent = 1
+	AgentType_Layered_Agent = 3
+	AgentType_Static_Agent = 11
 
 	//Stances
 	DIR_RIGHT=1
@@ -353,9 +363,50 @@ struct("agent",{
 	Address_agent_inSight_switch_array_head = 2001
 	}
 
+
+
+	//
+	__fn set_new_agent_base_parameter $Lv $HP $SP $AD $AP $AR $MR $HIT $EVA $Crit $MS $WILL {
+		agent_Level = $Lv
+		//set HP
+		agent_MaxHP = $HP
+		agent_HP = $HP
+		//set SP
+		agent_MaxSP = $SP
+		agent_SP = $SP
+		//
+		agent_BaseAD = $AD
+		agent_BaseAP = $AP
+		agent_BaseAR = $AR
+		agent_BaseMR = $MR
+		agent_BaseHIT = $HIT
+		agent_BaseEVA = $EVA
+		agent_BaseCrit = $Crit
+		agent_BaseMS = $MS
+		agent_BaseWill = $WILL
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	//STATICS
 	defv{
 	
+
+	agent_static_unit_slot_1 = 741
+
+
 	agent_static_Attribution_flag = 811
 	agent_static_Obj_flag = 820
 

@@ -2,6 +2,240 @@
 
 #include "./../headers/header_drawing.tpc"
 
+//you can use TRP_ consts
+#include "./../headers/id_project_troops.tpc"
+
+def factionid_dragon = 3
+
+
+//PSS STATIC FUNCTIONS BEGIN
+def Static_Database_Start_in_cev = 1200
+
+def {
+	STATIC_FLAG_Walltype = 16
+	STATIC_FLAG_House = 64
+	//6:32=building_basement,7:64=houseflag
+}
+
+__fn construct_static_cev $StaticID $StaticName $size_array $time_to_build $base_cost_array $pre_proc_bl $main_proc_bl $proc_after_finish_bl $pic_name_base $construct_sound_filename $flags {
+
+	//register in cev - be careful
+	$cevid = Static_Database_Start_in_cev + $StaticID
+
+	//cev[$cevid], .name($StaticName), {
+			//"NonWallType"
+			__if $flags & STATIC_FLAG_Walltype{
+				//?
+			}.else bl {
+				v[35] = 0
+			}
+			reg1 = 0
+			t[501] .asg $StaticName
+
+			
+			//set [SizeX,SizeY] in $size_array 
+			//set size
+			__loop $size_array $el $i {
+				$i += 11
+				v[$i] = $el
+
+			}
+			
+			v[13] = $time_to_build
+			//set [Food,Wood,Stone,Gold]
+			__loop $base_cost_array $el $i {
+				$i += 31
+				v[$i] = $el
+			}
+
+			PROC({$pre_proc})
+
+			v[91] = 0
+			@if s[151] .isOff() {
+			    @if v[204] < v[1004] {
+				v[204] += 1
+				@loop v[1004] .dst v[320] {
+				    v[201] %= v[1004]
+				    v[301] = v[201] * 300
+				    v[301] += 5000
+				    v[300] = v[301] + 1
+				    @if v[v[300]] <= 0 {
+					
+					// clear memories
+					v[1301].copy v[601], 300
+					v[1301].copy v[v[300]], 300
+					
+					//set position
+					v[252].copy v[605], 2
+
+					//set team
+					v[700] = v[251]
+					v[624] = v[700] + 1
+
+					//set faction
+					v[822] = v[2403 + v[700] % 3]
+
+
+					//// "ObjTyp"
+					v[601] = AgentType_Static_Agent
+					//// "生成場所の数値を入れる"
+					v[605].copy v[607], 2
+					v[605].copy v[641], 2
+					v[310..311] = 10000
+					v[605] .mul v[310], 2
+					//// "あたり判定"
+					__loop $size_array $el $i {
+						$i += __id(agent_Width)
+						v[$i] = $el
+					}
+					// "Staticなので生産目標地点をセット"
+					v[252].copy v[641], 2
+					v[642] += v[611]
+					// "パラメータ等入力begin"
+					// "#Unit ID"
+					v[701] = $cevid
+					
+					PROC({$main_proc_bl})
+					
+					/*
+					// "##TimerPassive"
+					v[821] = 30
+					v[823] = 1
+					// "###Deffending Effect"
+					v[824] = 1235
+					*/
+
+					// "描画"
+					// "Terrain"
+					@call .cev 791
+					// "DEBUG"
+					// "敵味方峻別リストに登録"
+					@if v[700] == 0 {
+					    // "味方リストに登録"
+					    @if s[19] .isOff() {
+						v[472] = divmul(80, 100, v[2216])
+						@se.play $construct_sound_filename .opt v[472], 70, 50
+						
+					    }
+					    v[496] += 1
+					    
+					} .else bl {
+					    
+					}
+					agent_AgentBits |= STATIC_FLAG_House
+					@call .cev 1903
+					@break
+					
+				    }
+				    @if v[320] >= v[1004] {
+					// "Obj多すぎ"
+					@break
+					
+				    }
+				    v[201] += 1
+				    
+				}
+				
+				
+			    }
+			    
+			}
+
+
+
+
+
+
+	//}
+}
+
+
+
+
+
+
+//Simple function to set STATIC base parameter
+__fn set_static_base_parameter $static_type $Lv $HP $Production_Slowness $AD $AP $AR $MR $HIT {
+	agent_UnitType = $static_type
+	__if $static_type != UNIT_CLASS_STATIC_TURRET {
+		$HIT = 0
+	}
+
+	set_new_agent_base_parameter($Lv,$Production_Slowness,$AD,$AP,$AR,$MR,$HIT,0,0,0,0)
+	agent_SP = -1
+}
+
+__fn set_static_attack_parameters $AAtype $RangeArray $AS $AtkMotion $AtkFunction {
+
+	__if $static_type != UNIT_CLASS_STATIC_TURRET {
+		func_errlog("Called STATIC unit has attack parameter even though it's not Turret Type")
+	}
+
+	agent_AAType = $AAtype
+	__loop $RangeArray $el $i {
+		$i += __id(agent_BaseRange_max)
+		v[$i] = $el
+	}
+	agent_BaseAS = $AS
+	agent_AAMotion = $AtkMotion
+	agent_AAFunction = $AtkFunction
+
+}
+
+//Table
+def {
+	Static_Table_FLAG_for_Human = 0x1
+	//Static_Table_FLAG_for_All = 0x2 -> factionID = 0
+
+}
+
+
+__fn simple_initial_troop_table $factionID $Array $flags {
+
+	def macro_set_TroopArray_into_Static_Slot = {
+		__loop $Array $el $i {
+			$setv += __id(agent_static_unit_slot_1) + $i *2
+			v[$setv] = $el
+			//how should I solve the icon setting problem? -> maybe you can set it in troop_data.csv and set icon slot
+		}
+	}
+
+	__if $flags & Static_Table_FLAG_for_Human {
+		//completely ignore $factionID
+		@if agent_Culture_Icon != factionid_dragon {
+			macro_set_TroopArray_into_Static_Slot
+		}
+
+	}.elif $factionID == 0 {
+		macro_set_TroopArray_into_Static_Slot
+
+	}.else bl{
+
+		@if agent_Culture_Icon != factionid_dragon {
+			macro_set_TroopArray_into_Static_Slot
+		}
+
+	}
+}
+
+
+
+//FUNCTIONS END
+
+//PSS including start
+/*construct_static_cev(55,"experimental static", [23,34], 114514, [4545,721,1919.0], 
+	bl,
+	bl,
+	//{
+		//setting!
+		//set_static_base_parameter(101, 11, 1111, 31414, 0, 9, 333, 10, 0)
+		//simple_initial_troop_table(1,[TRP_dra_depressgon,TRP_dra_knight,0,TRP_dra_naskarl])
+	//},
+
+	bl, "mitei", "earth1", STATIC_FLAG_House
+)*/
+
+
 #include "./static_objects/pssta_construction_site.tpc"
 
 #include "./static_objects/pssta_wall.tpc"
@@ -9,3 +243,4 @@
 
 #include "./static_objects/pssta_big_gate.tpc"
 #include "./static_objects/pssta_mini_gate.tpc"
+
