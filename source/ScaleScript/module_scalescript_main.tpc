@@ -1,6 +1,8 @@
 //SS
 #include "./header_scalescript.tpc"
+#include "./module_scalecscript_basic_functions.tpc"
 
+def SS_maintpc_loaded = 1 
 
 __fn macro_scalescript_split_args $targetstr $exportstradd $velemcount {
 	$addincrement = $exportstradd + 1
@@ -9,6 +11,7 @@ __fn macro_scalescript_split_args $targetstr $exportstradd $velemcount {
 }
 
 
+#include "./SSLib_basic.tpc"
 
 
 
@@ -409,8 +412,8 @@ __fn func_execute_script_instantly $ptr2scriptstr $var_count {
 		//######################
 		//map script interpreter
 		//######################
-		ROOT_INDEX=0
-		Var_NEST_DEPTH=0
+		ROOT_INDEX = 0
+		Var_NEST_DEPTH = 0
 
 		//call function
 		func_script_interpreter_recursion(ROOT_INDEX_ADDRESS v[505])
@@ -422,7 +425,7 @@ __fn func_execute_script_instantly $ptr2scriptstr $var_count {
 
 
 __fn func_check_if_str_is_scale_script $checkstr {
-	t[ __id($checkstr) ].popLine(str1)
+	t[__id($checkstr)].popLine(str1)
 	@if str1.eq Scale_Script_Shebang{
 		reg1 = 1
 	}.else bl{

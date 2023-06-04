@@ -149,7 +149,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 		    .beg 0
 		    .extract
 		}
-		t[501] .split "@", t[501], v[341]
+		t[501] .split "=", t[501], v[341]
 		t[750] .asg t[501]
 		
 	    } .else bl {
@@ -162,7 +162,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 		    .beg 0
 		    .extract
 		}
-		t[501] .split "@", t[501], v[341]
+		t[501] .split "=", t[501], v[341]
 		t[502] .toNum v[341]
 		@comment "need to load mapgen.txt"
 		@if v[341] == 0 {

@@ -37,8 +37,9 @@ SScmdLib_Build("Sample Lib",$LINKstr, $md, $i, $given_v_or_str, $flags, [
 	//データベース文字列変数，モード，パッケージ汎用変数，返り値の型（現在定義できるだけで機能していない），コマンド名（これを入力/記述すればコマンドが呼び出される），
 	//引数の型（仕様上無限だが文字列変数に展開するのでheaderの最初の部分で最大数を調節できるようにするつもり），[メインブロック,ヘルプ時のブロック]<-たぶんフラグとか使えば拡張できる
 	//各ブロック内には自由にTPCイベントコマンドが記述でき，headerに定義されているSSargs0~から引数を取得して処理できる（ただし文字列変数なので数字にするにはtoNum等が必要）
+
 	//If you want to make lib look less messy, you can define your command even in just one line like this:
-	{SScommand($LINKstr, $md,$i,void, "rmmsg", nargs_nolimit,[str],[{@msg.show SSargs0},{SSreturn_string("help helper")}])},
+	{SScommand($LINKstr, $md,$i, void, "rmmsg", nargs_nolimit,[str],[{@msg.show SSargs0},{SSreturn_string("help helper")}])},
 
 	//or you can use dummy functons (MAIN,HELP) to make it look more fancy  
 	//headerの下のほうに置いてるMAIN() HELP()といった，渡されたブロックを実行するだけのダミー関数を使ってこんな感じで定義することもできる

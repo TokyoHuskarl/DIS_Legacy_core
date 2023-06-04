@@ -1,3 +1,6 @@
+def DISLib_math_included = 1
+
+
 __fn func_math_pseud_arctan $x {
 	//arctanx = ((75x^2+285)/3x^2+5))*x
 
@@ -8,14 +11,48 @@ __fn func_math_pseud_arctan $x {
 	var3 += 5000000
 	reg1 = divmul(var2, var3, var1)//(10^8)
 }
-/*
-__fn func_math_pseud_arctan $x {
-	//arctanx = ((75x^2+285)/3x^2+5))*x
 
-	var1 = $x //(10^8)
-	var2 = muldiv(var1,var1,10000000000)// x^2(10^6)
-	var2 = 75 * var1 + 285000000//(10^6)
-	var3 = var2 * 3
-	var3 += 5000000
-	reg1 = divmul(var2, var3, var1)//(10^8)
-}*/
+
+//reg1 = V0x, reg2 = V0y, reg3 = angle
+__fn func_make_unit_vector_from_two_points_atan2 $startX $startY $targetX $targetY $mul {
+	reg1 = $targetX - $startX
+	reg2 = $targetY - $startY
+	reg3 = atan2(reg2,reg1,1000)
+	reg1 = sin(reg3,1000,$mul)
+	reg2 = cos(reg3,1000,$mul)
+
+
+}
+
+//this one returns distance as well
+__fn func_make_unit_vector_from_two_points_sqrt $startX $startY $targetX $targetY {
+	//// "V1 = Baseｘ
+	//V2 = Basey
+	//V3 = Targetx
+	//V4 = Targety
+	//Output:
+	//Reg1=V0x
+	//Reg2=V0y
+	//Reg3=Distance"
+
+
+	v[__id($targetX)] -= $startX
+	// "T9 = TT5 = 差を保存x"
+	v[345] = $targetX
+	v[__id($targetX)] = pow($targetX, 2)
+	// "#######"
+	v[__id($targetY)] -= $startY
+	// "T10 = TT6 = 差を保存x"
+	v[346] = $targetY
+	v[__id($targetY)] = pow($targetY, 2)
+	v[__id($targetX)] += $targetY
+	// "Set Object[23]"
+	reg3 = sqrt($targetX, 1000)
+	v[348] = reg3
+	// "Set V0x"
+	reg1 = v[345] * 100000
+	reg1 /= v[348]
+	// "Set V0y"
+	reg2 = v[346] * 100000
+	reg2 /= v[348]
+}

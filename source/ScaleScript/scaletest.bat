@@ -15,6 +15,11 @@ set target=test
 echo test. 
 call %tpc% %current%%target%".tpc" -en
 
+set target=header_scalescript
+echo test. 
+call %tpc% %current%%target%".tpc" -en
+
+
 
 IF NOT DEFINED build ( 
 	echo All compile process finished. Es ist vorbei.

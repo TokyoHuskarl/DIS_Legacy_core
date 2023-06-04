@@ -10,7 +10,7 @@ cev .id(2050), .name("GameRestarter"), .auto .cond(459){
 	v[501] = 0
 	t[501] .asg  .file "../Maps/define_maps", .utf8
 	t[502] .asg t[511]
-	t[503] .asg "\t[502]@.*" .extract
+	t[503] .asg "\t[502]@.*" .extract//"@" remains here!
 	t[501].exMatch {
 		t[503]
 		t[501]

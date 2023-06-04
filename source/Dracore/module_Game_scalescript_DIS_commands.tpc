@@ -773,6 +773,7 @@ __fn scripts_AI{
 		    @break
 		    
 		}
+
 		// "AI_select_idle_units(team,amount,[cohort],[civflag],[alert stance flag])"
 		@if t[510] .contains "_idle_units(" {
 		    t[510] .split "(", t[3000], v[341]
@@ -1051,7 +1052,7 @@ __fn scripts_team{
 	@loop 1 {
 	    //@comment "unco(team,[seen_or_not],[cohort])"
 	    //@comment "team_get_SP(team,[seen_or_not],[cohort]) reg3 = amount"
-	    @if t[510] .contains "team_get_SP(" {
+	    @if t[510] .contains "team_get_SP(" { //d
 		macro_script_split()
 		t[3000] .toNum v[11]
 		t[3001] .toNum v[12]
@@ -1113,7 +1114,7 @@ __fn scripts_team{
 		
 	    }
 	    @comment "team_set_pop_limit(team,amount)"
-	    @if t[510] .contains "team_set_pop_limit(" {
+	    @if t[510] .contains "team_set_pop_limit(" {//d
 		macro_script_split()
 		t[3000] .toNum v[11]
 		t[3001] .toNum v[12]
@@ -1122,7 +1123,7 @@ __fn scripts_team{
 		
 	    }
 	    @comment "team_set_faction(team,faction)"
-	    @if t[510] .contains "team_set_faction(" {
+	    @if t[510] .contains "team_set_faction(" { //d
 		macro_script_split()
 		t[3000] .toNum v[11]
 		t[3001] .toNum v[12]
@@ -1131,7 +1132,7 @@ __fn scripts_team{
 		
 	    }
 	    @comment "team_give_resource(team,resource,amount)"
-	    @if t[510] .contains "team_give_resource(" {
+	    @if t[510] .contains "team_give_resource(" { //d
 		macro_script_split()
 		t[3000] .toNum v[11]
 		t[3001] .toNum v[12]
@@ -1145,7 +1146,7 @@ __fn scripts_team{
 		
 	    }
 	    @comment "team_give_tech_flag(team,techgroup,flag)"
-	    @if t[510] .contains "_give_tech_flag(" {
+	    @if t[510] .contains "_give_tech_flag(" { //d
 		macro_script_split()
 		t[3000] .toNum v[11]
 		t[3001] .toNum v[12]
@@ -1166,10 +1167,10 @@ __fn scripts_team{
 
 }
 
-__fn scripts_player{
+__fn scripts_player { //all done
 	@loop 1 {
 	    @comment "player_change_view(x,y)"
-	    @if t[510] .contains "_change_view(" {
+	    @if t[510] .contains "_change_view(" { //d
 		macro_script_split()
 		t[3000] .toNum v[11]
 		t[3001] .toNum v[12]
@@ -1180,19 +1181,19 @@ __fn scripts_player{
 		@break
 		
 	    }
-	    @if t[510] .contains "_victory(" {
+	    @if t[510] .contains "_victory(" { //d
 		v[2820] = 1
 		@call .cev 2135
 		@break
 		
 	    }
-	    @if t[510] .contains "_defeat(" {
+	    @if t[510] .contains "_defeat(" { //d
 		v[2820] = 2
 		@call .cev 2135
 		@break
 		
 	    }
-	    @if t[510] .contains "_end_flag(" {
+	    @if t[510] .contains "_end_flag(" { //d
 		@pic[1760].move {
 		    .pos v[1115], v[1116] .center
 		    .scale 100
