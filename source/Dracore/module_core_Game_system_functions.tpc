@@ -1,0 +1,25 @@
+
+//###########################
+//String Funcitons
+//###########################
+
+
+// this function works correctly only when the dictionary doesn't have multiple string IDs that share the same number ID
+
+//var $numid str $DISdict
+//
+
+// reg1 = stringid
+__fn func_get_stringid_from_numid $numid $DISdict {
+
+	strreg1.asg .cat("\w*=",$numid,"$")
+	t[__id($DISdict)].exMatch(strreg1, strreg1, var1)
+	@if var1 == -1{
+		strreg1.split("=",strreg1,var1) 
+	}.else bl{
+		reg1 = $numid
+		func_errlog( __str("Couldn't get string ID match with \v[21] from the dictionary t[" __id($DISdict) "].") )
+		strreg1.asg "NULL"
+	}
+
+}

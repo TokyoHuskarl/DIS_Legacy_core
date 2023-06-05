@@ -10,9 +10,35 @@ __fn macro_scalescript_split_args $targetstr $exportstradd $velemcount {
 	t[$addincrement] .split ",", t[$addincrement], $velemcount
 }
 
+//USER MACROS
+def SS_func_popup_USER = 0
+__fn SS_system_popup $givenstring {
+
+	// Check SS_func_popup_USER 
+	// ATTENTION! if you want to use your own log/dialog system in your project,
+	// just set SS_func_popup_USER = 1
+	__if SS_func_popup_USER == 0 { // DEFAULT 
+			__if __defined(PROJECT_NAME) {
+				__if PROJECT_NAME == "DIS_LEGACY" { // The project is DIS:Legacy
+					//then let DIS log system deal with the given string
+					func_show_msg($givenstring)
+				}.else bl{ // Default but not with DIS
+					@msg $givenstring //just use message window
+				}
+			}
+		
+	}.else bl { // USER OWN STRING SYSTEM
+
+		// If you set SS_func_popup_USER = 1,
+		// then insert your own message system here, and let it deal $givenstring 
+
+	}
+
+}
+
+
 
 #include "./SSLib_basic.tpc"
-
 
 
 

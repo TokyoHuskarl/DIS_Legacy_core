@@ -3,8 +3,7 @@
 __fn console_cmd_call {
 
 	__if DIS_EXPERIMENTAL == 1 {
-		t[2998].asg t[v[523]]
-		ShellCommandPackage(SHELL_CMD_PACK,SScmd_Mode_Call,SScmdDynCounter,t[2998],SScmd_Flag_Cmdline)
+		ShellCommandPackage(SHELL_CMD_PACK,SScmd_Mode_Call,SScmdDynCounter,SHELL_INPUT_STRING,SScmd_Flag_Cmdline)
 		func_devlog( __str("EXPERIMENTAL - Scale Script Called! " SScmdnum) )
 
 	}.elif DIS_EXPERIMENTAL == 0 {

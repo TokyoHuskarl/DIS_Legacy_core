@@ -38,7 +38,7 @@ cev .id(1853), .name("-gentilemap"), {
 		t[510] .cat "\"
 		t[510] .cat "tilegen"
 		t[501] .toFile t[510], .utf8
-		func_play_system_se ("decide1" 100 100)
+		play_system_se ("decide1",100,100)
 		func_show_msg("Tile Map Data Exported. - \t[510]")
 	}.elif DIS_EXPERIMENTAL == 1 { 
 		//Deploy Tile Layer data into TileMapFlagvars
@@ -94,7 +94,7 @@ cev .id(1853), .name("-gentilemap"), {
 		t[510] .cat "mapdata"
 		@img.save .pic EDITPIC .static .dst t[510]
 
-		func_play_system_se ("decide1" 100 100)
+		play_system_se ("decide1",100,100)
 		func_show_msg("Tile Map Data Exported. - \t[510]")
 	}
 
@@ -110,7 +110,7 @@ cev .id(1854), .name("-genmappicture"), {
 	t[501] .asg t[510]
 	t[501] .cat "mappic"
 	@img.save .pic PicID_Map_base .static .dst t[501]
-	func_play_system_se ("decide1" 100 100)
+	play_system_se ("decide1" 100 100)
 	func_show_msg("Tile Map Picture Exported. - \t[501]")
 }
 

@@ -1,6 +1,38 @@
+//This library is rather garbage
 
-//v[2216] = global_volume
-__fn play_system_se $name $volume $tempo{
-	var1 = divmul($volume, 100, v[2216])
-	@se.play $name .opt var1, $tempo, 50
+
+// ATTENTION! Whenever you use this tpc library, you need to set TWO essential vars:
+// DISLib_SYSTEM_SE_VOLUME and DISLib_SYSTEM_BGM_VOLUME.
+// you can set these two this before #include this file with defv, 
+// or erase these comment out and set them fit your project in your local environment.
+
+// IF YOU DON'T DEFINE THEM, YOU CANNOT LOAD THIS LIBRARY!!
+
+defv {
+	//DISLib_SYSTEM_SE_VOLUME = 1
+	//DISLib_SYSTEM_BGM_VOLUME = 2
+}
+
+
+
+
+
+//
+__fn play_system_se $name $volume $tempo $balance {
+	var1 = divmul($volume, 100, DISLib_SYSTEM_SE_VOLUME)
+	__if $tempo == "" {$tempo = 100}
+	__if $balance == "" {$balance = 50}
+	@se.play $name .opt var1, $tempo, $balance
+}
+
+
+
+
+//Pop compile Error when you don't set essential var addresses 
+__if __defined(DISLib_SYSTEM_SE_VOLUME) { 
+	__if __defined(DISLib_SYSTEM_BGM_VOLUME) {}.else bl { //If DISLib_SYSTEM_BGM_VOLUME is undefined
+		ERROR_You_need_to_define_which_RMvar_is_SYSTEM_BGM_VOLUME_with_defv // you see dis
+	} 
+}.else bl { //If DISLib_SYSTEM_SE_VOLUME is undefined
+	ERROR_You_need_to_define_which_RMvar_is_SYSTEM_BGM_VOLUME_with_defv // le error log
 }

@@ -25,7 +25,7 @@ defv {
 
 	SSreg1 = 21
 	SSreg2 = 22
-
+	
 	SSnargs = 29
 	SScmdnum = 30
 }
@@ -37,11 +37,17 @@ deft {
 	SScmdStrList = 790
 	str_SS_partsave = 508
 
+	
 
 	str_SSreg1 = 502
 	str_SSreg2
 	str_SSreg3
+	str_SSreg4
+	str_SSreg5
+	str_SSreg6
+	str_SSreg7
 
+	str_SSsystem
 
 
 	SScmd = 2999
@@ -198,6 +204,7 @@ def {
 	SScmd_Mode_Call = 3 //execute function from raw string command - slower than Mode_Exec
 	SScmd_Mode_Convert = 4 //when you convert script for interpreter
 	SScmd_Mode_Help = 5 //help helper
+	SScmd_Mode_Dictionary = 6 //[TAB] on shell
 }
 
 //find (), then-> search cmdList -> get 
@@ -715,9 +722,19 @@ SS_funcgroup("SScommand functions",{
 
 	}
 
+
+	__fn SS_errlog $str {
+		SSreturn_system_string($str)
+		SS_system_popup(str_SSsystem)
+	}
+
 	//return $string to reg1 
 	__fn SSreturn_string $string {
 		str_SSreg1.asg $string
+	}
+
+	__fn SSreturn_system_string $string {
+		str_SSsystem.asg $string
 	}
 
 	__fn SSreturn $type $var {

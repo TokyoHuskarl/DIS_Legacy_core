@@ -34,5 +34,83 @@ __fn func_eval $formula {
 }
 
 
+__fn cmd_systemctl $order $argv1 {
+	str_SSreg1.asg $order
+	@if str_SSreg1.eq "shutdown" {
+		//shutdown the game
+		@sys.shutdown
+
+	}.elif str_SSreg1.eq "poweroff" {
+		//shutdown the game
+		@sys.shutdown
+
+	}.elif str_SSreg1.eq "reset" {
+		//reset the game
+		@sys.reset
+
+	}.elif str_SSreg1.eq "gameover" {
+		//call gameover scene
+		@sys.gameover
+
+	}.elif str_SSreg1.eq "save" {
+		//save slot
+		@if $argv1 > 0 {
+			@save.save[$argv1] .res(SSreg1)
+			
+		}.else bl {
+			SS_errlog("Error:systemctl save - invalit save slot selected.")
+		}
+
+	}.elif str_SSreg1.eq "load" {
+		//load slot
+		@if $argv1 > 0 {
+			@save.load[$argv1]
+			
+		}.else bl {
+			SS_errlog("Error:systemctl load - invalit save slot selected.")
+		}
+
+	}.elif str_SSreg1.eq "partymenu" {
+		@sys.partyMenu
+
+	}.else bl { // undefined
+		str_SSreg1.asg .cat("Error:systemctl - undefined command verb ",str_SSreg1,"")
+		SSreturn_system_string(str_SSreg1)
+		SS_system_popup(str_SSsystem)
+	}
+
+def SScmd_systemctl_args0_dict = "shutdown;poweroff;reset;gameover;save;load;partymenu;"
+
+}
+
+__fn cmd_RMget $order $argv1 $argv2 {
+	str_SSreg1.asg $order
+	@if str_SSreg1.eq "item" {
+		@if $argv2 >= 0 {
+			@party.item[$argv1].add($argv2)
+		}.else bl{
+			SSreg1 = $argv2 * -1
+			@party.item[$argv1].sub(SSreg1)
+		}
+
+
+	}.elif str_SSreg1.eq "money" {
+		@if $argv2 >= 0 {
+			@party.money .add($argv1)
+		}.else bl{
+			SSreg1 = $argv1 * -1
+			@party.money .sub(SSreg1)
+		}
+
+
+	}.else bl { // undefined
+		str_SSreg1.asg .cat("Error:RMget - undefined command verb ",str_SSreg1,"")
+		SSreturn_system_string(str_SSreg1)
+		SS_system_popup(str_SSsystem)
+	}
+
+def SScmd_RMget_args0_dict = "item;money;"
+
+}
 
 

@@ -386,7 +386,8 @@ deft{
 	str7=507
 	str8=508
 	str9=509
-
+	
+	strreg1=1 // are you serious?
 
 }
 
@@ -477,7 +478,11 @@ __fn macro_cord_diff $x $y {
 }
 
 #include "./header_common_items.tpc"
-#include "./header_common_DIS_systemfuncs.tpc"
+
+
+defv DISLib_SYSTEM_BGM_VOLUME = 2217
+defv DISLib_SYSTEM_SE_VOLUME = 2216
+#include "./../DISLib/DISLib_sound_functions.tpc"
 
 
 __fn PROC $block {
