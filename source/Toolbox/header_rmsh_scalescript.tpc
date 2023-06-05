@@ -1,6 +1,5 @@
 #include "./../ScaleScript/module_scalescript_main.tpc"
 
-#include "./../Dracore/module_core_Game_scripts_functions.tpc"
 /*
 	SScmd_Mode_Construct_Link = 1 //Create Link string 
 	SScmd_Mode_Exec = 2 //simply execute function in interpreter process 
@@ -34,15 +33,28 @@ __fn ShellCommandLib $LINKstr $md $i $given_v_or_str $flags {
 			HELP({SSreturn_string("Write arguments to the standard output.")})
 			]
 		)},
+
+		//Turn on Node shell mode (experimental)
+		{SScommand($LINKstr, $md, $i, void,"node",nargs_nolimit,[0],[{/*coming soon*/},{SSreturn_string("Start running Virtual (and incomplete) Node.js shell")}])},
 	])
 }
+
+
+//DIS
 __if PROJECT_NAME == "DIS_LEGACY"{
+
+//In DIS project, Dra Core shares the same address of the RM variables around varN and regN with Scale Script, so you don't need to let reg1 = SSreg1
+//ACHTUNG but you have to decide where should str_SSregN be set in DIS I guess?
+#include "./../Dracore/module_core_Game_scripts_functions.tpc"
 	__fn DISConsoleLib $LINKstr $md $i $given_v_or_str $flags {
 		SScmdLib_Build("DIS Console Commands" $LINKstr, $md, $i, $given_v_or_str, $flags, [
 
-			//play_global_music(soundfilename,volume,tempo,balance)
-			// DIS
 
+
+
+
+			//play_global_music(soundfilename,volume,tempo,balance)
+			// DIS music system
 			{SScommand($LINKstr, $md, $i,
 				void, "play_global_music",4,[str,var,var,var],[
 				MAIN({
@@ -61,9 +73,20 @@ __if PROJECT_NAME == "DIS_LEGACY"{
 			{SScommand($LINKstr, $md, $i,
 				void, "genheightmap",0,[0],[
 				MAIN({@call .cev 1854}),//oh shit
-				HELP({SSreturn_string("Generate Heightmap and save as png file in the Map Directory")})
+				HELP({SSreturn_string("Generate Heightmap and save as png files in the Map Directory")})
 				]
 			)},
+
+			//gentilemap()
+			//generate tile map picture of current map and save them into its map directory.
+
+			{SScommand($LINKstr, $md, $i,
+				void, "gentilemap",0,[0],[
+				MAIN({@call .cev 1853}),//oh shit
+				HELP({SSreturn_string("Generate tilemap picture and save as a png file in the Map Directory")})
+				]
+			)},
+
 
 			//DIS Map Scripts Start - will be parted to DIS_MissionLib
 			

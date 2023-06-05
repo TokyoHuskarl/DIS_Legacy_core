@@ -7,14 +7,39 @@ __fn ScaleScriptBasicLib $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("ScaleScript Basic Commands" $LINKstr, $md, $i, $given_v_or_str,$flags, [ 
 		//Command set start
 
+		//let javascript interpreter execute what is written in file
+		{SScommand($LINKstr, $md, $i, var,"js",nargs_nolimit,[str],[{/*coming soon*/},{SSreturn_string("let javascript interpreter execute what is written in file")}])},
+
 		//Calculation
 		{SScommand($LINKstr, $md, $i, var,"calc",nargs_nolimit,[str],[{func_eval(SSargs0)},{SSreturn_string("Calculate given formula")}])},
+
 		//Return Date
 		{SScommand($LINKstr, $md, $i, var,"date",0,[0],[{SSreg1=sys.date},{SSreturn_string("Return current date")}])},
 
 		//Call common event 
-		{SScommand($LINKstr, $md, $i, void,"call_cev",1,[var],[{SSargs0.toNum(SSvar1) @call.cev[SSvar1] },{SSreturn_string("Call common event")}])},
+		{SScommand($LINKstr, $md, $i, void,"callcev",1,[var],[{SSargs0.toNum(SSvar1) @call.cev[SSvar1] },{SSreturn_string("Call common event")}])},
+
 		//Call map event
-		{SScommand($LINKstr, $md, $i, void,"call_mev",1,[var,var],[{SSargs0.toNum(SSvar1) SSargs1.toNum(SSvar2) @call .mev SSvar1, SSvar2 },{SSreturn_string("Call map event")}])},
+		{SScommand($LINKstr, $md, $i, void,"callmev",2,[var,var],[{SSargs0.toNum(SSvar1) SSargs1.toNum(SSvar2) @call .mev SSvar1, SSvar2 },{SSreturn_string("Call map event")}])},
+
+		//System Ctl series
+		{SScommand($LINKstr, $md, $i, void,"systemctl",nargs_nolimit,[str,var,var],[{SSargs1.toNum(SSvar1) cmd_systemctl(SSargs0,SSvar1) },{SSreturn_string("systemctl")}])},
+
+		//Get RPGMaker native party features 
+		{SScommand($LINKstr, $md, $i, void,"RMget",nargs_nolimit,[str,var,var],[{SSargs1.toNum(SSvar1) SSargs2.toNum(SSvar2) cmd_RMget(SSargs0,SSvar1,SSvar2) },{SSreturn_string("RMget")}])},
+
+
+		//wait
+		{SScommand($LINKstr, $md, $i,
+			void, "wait",1,[var],[
+			MAIN({
+				//SSargs0 is str
+				SSargs0.toNum SSvar1
+				@wait SSvar1}),
+			HELP({SSreturn_string("wait for {argv0} sec/frame. if you input minus number as an argv1, SS interpreter waits for |argv0| frame")})
+			]
+		)},
+
+
 	])
 }

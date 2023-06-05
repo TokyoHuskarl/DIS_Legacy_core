@@ -1,20 +1,48 @@
 #include "./../headers/header_common.tpc"
 
+
+__if __defined(PROJECT_NAME) {}.else bl{
+
+	//def PROJECT_NAME "YOUR PROJECT" // name your project freely, or just let this be
+					// this const usually doesn't have any meaning unless you have TPC knowledge
+}
+
+def {
+YISH_INST_MINIMUM = 0
+YISH_INST_MEDIUM = 1
+YISH_INST_FULL = 2
+}
+
+def YISH_INSTALL_TYPE = YISH_INST_FULL
+
+
 defs Bool_call_console = 182
 
 def cevid_ConsoleMain=1848
 def cevid_ConsoleControlManager=1849
 
+
+
 //#include "./../ScaleScript/header_scalescript.tpc"
 //#include "./../ScaleScript/SSLib_basic.tpc"
 
 #include "./header_rmsh_scalescript.tpc"
-defs SHELL_CMD_PACK = 789
 
+deft SHELL_CMD_LOG = 781
+deft SHELL_CMD_PACK = 789
+deft SHELL_INPUT_STRING = 511
 
+__if YISH_INSTALL_TYPE >= YISH_INST_MEDIUM {
+	deft SHELL_SCREEN_STRING = 782
+
+}
+
+__if PROJECT_NAME == "DIS_LEGACY"{
 #include "./module_console_functions_DIS.tpc"
-#include "./module_console_commands.tpc"
 
+}
+
+#include "./module_console_commands.tpc"
 
 
 //
@@ -25,13 +53,12 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		ShellCommandPackage(SHELL_CMD_PACK,SScmd_Mode_Construct_Link,SScmdDynCounter,var2,SScmd_Flag_Cmdline)
 		func_devlog(__str("EXPERIMENTAL - Scale Script Loaded - to t:"__id(SHELL_CMD_PACK)))
 	}
-	//@comment "2byte chars are shite"
-	//@comment "#################"
-	v[523] = 511
-	t[v[523]].asg ""
-	@if s[20] .isOn() {
-	    s[39].off
-	    s[51].off
+	//// "2byte chars are shite"
+	//// "#################"
+	SHELL_INPUT_STRING.asg ""
+	@if LEGS_RTS_MODE .isOn() {
+	    LEGS_Mouse_Clip.off
+	    LEGS_MousePointer_synch.off
 	    
 	}
 	s[201].on
@@ -40,12 +67,12 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 	    @key.inputEx .keybdWithBind .dst v[901]
 	    @key.inputEx .keyCode 8 .dst v[1224]
 	    @if v[942] >= 1 {
-		@comment "TEMP	unco"
+		// "TEMP	unco"
 		@key.inputEx .keyCode 189 .dst v[341]
 		@if v[341] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[3401] == 0 {
-			t[v[523]] .cat "_"
+			SHELL_INPUT_STRING .cat "_"
 			s[201].on
 			
 		    }
@@ -56,9 +83,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[901] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[951] == 0 {
-			t[v[523]] .cat "A"
+			SHELL_INPUT_STRING .cat "A"
 			s[201].on
 			
 		    }
@@ -69,9 +96,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[902] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[952] == 0 {
-			t[v[523]] .cat "B"
+			SHELL_INPUT_STRING .cat "B"
 			s[201].on
 			
 		    }
@@ -82,9 +109,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[903] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[953] == 0 {
-			t[v[523]] .cat "C"
+			SHELL_INPUT_STRING .cat "C"
 			s[201].on
 			
 		    }
@@ -95,9 +122,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[904] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[954] == 0 {
-			t[v[523]] .cat "D"
+			SHELL_INPUT_STRING .cat "D"
 			s[201].on
 			
 		    }
@@ -108,9 +135,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[905] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[955] == 0 {
-			t[v[523]] .cat "E"
+			SHELL_INPUT_STRING .cat "E"
 			s[201].on
 			
 		    }
@@ -121,9 +148,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[906] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[956] == 0 {
-			t[v[523]] .cat "F"
+			SHELL_INPUT_STRING .cat "F"
 			s[201].on
 			
 		    }
@@ -134,9 +161,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[907] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[957] == 0 {
-			t[v[523]] .cat "G"
+			SHELL_INPUT_STRING .cat "G"
 			s[201].on
 			
 		    }
@@ -147,9 +174,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[908] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[958] == 0 {
-			t[v[523]] .cat "H"
+			SHELL_INPUT_STRING .cat "H"
 			s[201].on
 			
 		    }
@@ -160,9 +187,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[909] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[959] == 0 {
-			t[v[523]] .cat "I"
+			SHELL_INPUT_STRING .cat "I"
 			s[201].on
 			
 		    }
@@ -173,9 +200,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[910] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[960] == 0 {
-			t[v[523]] .cat "J"
+			SHELL_INPUT_STRING .cat "J"
 			s[201].on
 			
 		    }
@@ -186,9 +213,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[911] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[961] == 0 {
-			t[v[523]] .cat "K"
+			SHELL_INPUT_STRING .cat "K"
 			s[201].on
 			
 		    }
@@ -199,9 +226,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[912] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[962] == 0 {
-			t[v[523]] .cat "L"
+			SHELL_INPUT_STRING .cat "L"
 			s[201].on
 			
 		    }
@@ -212,9 +239,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[913] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[963] == 0 {
-			t[v[523]] .cat "M"
+			SHELL_INPUT_STRING .cat "M"
 			s[201].on
 			
 		    }
@@ -225,9 +252,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[914] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[964] == 0 {
-			t[v[523]] .cat "N"
+			SHELL_INPUT_STRING .cat "N"
 			s[201].on
 			
 		    }
@@ -238,9 +265,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[915] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[965] == 0 {
-			t[v[523]] .cat "O"
+			SHELL_INPUT_STRING .cat "O"
 			s[201].on
 			
 		    }
@@ -251,9 +278,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[916] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[966] == 0 {
-			t[v[523]] .cat "P"
+			SHELL_INPUT_STRING .cat "P"
 			s[201].on
 			
 		    }
@@ -264,9 +291,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[917] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[967] == 0 {
-			t[v[523]] .cat "Q"
+			SHELL_INPUT_STRING .cat "Q"
 			s[201].on
 			
 		    }
@@ -277,9 +304,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[918] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[968] == 0 {
-			t[v[523]] .cat "R"
+			SHELL_INPUT_STRING .cat "R"
 			s[201].on
 			
 		    }
@@ -290,9 +317,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[919] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[969] == 0 {
-			t[v[523]] .cat "S"
+			SHELL_INPUT_STRING .cat "S"
 			s[201].on
 			
 		    }
@@ -303,9 +330,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[920] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[970] == 0 {
-			t[v[523]] .cat "T"
+			SHELL_INPUT_STRING .cat "T"
 			s[201].on
 			
 		    }
@@ -316,9 +343,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[921] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[971] == 0 {
-			t[v[523]] .cat "U"
+			SHELL_INPUT_STRING .cat "U"
 			s[201].on
 			
 		    }
@@ -329,9 +356,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[922] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[972] == 0 {
-			t[v[523]] .cat "V"
+			SHELL_INPUT_STRING .cat "V"
 			s[201].on
 			
 		    }
@@ -342,9 +369,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[923] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[973] == 0 {
-			t[v[523]] .cat "W"
+			SHELL_INPUT_STRING .cat "W"
 			s[201].on
 			
 		    }
@@ -355,9 +382,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[924] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[974] == 0 {
-			t[v[523]] .cat "X"
+			SHELL_INPUT_STRING .cat "X"
 			s[201].on
 			
 		    }
@@ -368,9 +395,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[925] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[975] == 0 {
-			t[v[523]] .cat "Y"
+			SHELL_INPUT_STRING .cat "Y"
 			s[201].on
 			
 		    }
@@ -381,9 +408,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[926] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[976] == 0 {
-			t[v[523]] .cat "Z"
+			SHELL_INPUT_STRING .cat "Z"
 			s[201].on
 			
 		    }
@@ -394,7 +421,7 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[927] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[977] == 0 {
 			s[201].on
 			
@@ -406,7 +433,7 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[928] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[978] == 0 {
 			s[201].on
 			
@@ -418,7 +445,7 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[929] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[979] == 0 {
 			s[201].on
 			
@@ -430,7 +457,7 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[930] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[980] == 0 {
 			s[201].on
 			
@@ -442,7 +469,7 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[931] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[981] == 0 {
 			s[201].on
 			
@@ -454,7 +481,7 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[932] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[982] == 0 {
 			s[201].on
 			
@@ -466,7 +493,7 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[933] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[983] == 0 {
 			s[201].on
 			
@@ -478,7 +505,7 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[934] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[984] == 0 {
 			s[201].on
 			
@@ -490,7 +517,7 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[935] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[985] == 0 {
 			s[201].on
 			
@@ -504,9 +531,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		
 	    } .else bl {
 		@if v[901] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[951] == 0 {
-			t[v[523]] .cat "a"
+			SHELL_INPUT_STRING .cat "a"
 			s[201].on
 			
 		    }
@@ -517,9 +544,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[902] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[952] == 0 {
-			t[v[523]] .cat "b"
+			SHELL_INPUT_STRING .cat "b"
 			s[201].on
 			
 		    }
@@ -530,9 +557,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[903] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[953] == 0 {
-			t[v[523]] .cat "c"
+			SHELL_INPUT_STRING .cat "c"
 			s[201].on
 			
 		    }
@@ -543,9 +570,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[904] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[954] == 0 {
-			t[v[523]] .cat "d"
+			SHELL_INPUT_STRING .cat "d"
 			s[201].on
 			
 		    }
@@ -556,9 +583,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[905] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[955] == 0 {
-			t[v[523]] .cat "e"
+			SHELL_INPUT_STRING .cat "e"
 			s[201].on
 			
 		    }
@@ -569,9 +596,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[906] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[956] == 0 {
-			t[v[523]] .cat "f"
+			SHELL_INPUT_STRING .cat "f"
 			s[201].on
 			
 		    }
@@ -582,9 +609,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[907] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[957] == 0 {
-			t[v[523]] .cat "g"
+			SHELL_INPUT_STRING .cat "g"
 			s[201].on
 			
 		    }
@@ -595,9 +622,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[908] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[958] == 0 {
-			t[v[523]] .cat "h"
+			SHELL_INPUT_STRING .cat "h"
 			s[201].on
 			
 		    }
@@ -608,9 +635,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[909] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[959] == 0 {
-			t[v[523]] .cat "i"
+			SHELL_INPUT_STRING .cat "i"
 			s[201].on
 			
 		    }
@@ -621,9 +648,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[910] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[960] == 0 {
-			t[v[523]] .cat "j"
+			SHELL_INPUT_STRING .cat "j"
 			s[201].on
 			
 		    }
@@ -634,9 +661,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[911] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[961] == 0 {
-			t[v[523]] .cat "k"
+			SHELL_INPUT_STRING .cat "k"
 			s[201].on
 			
 		    }
@@ -647,9 +674,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[912] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[962] == 0 {
-			t[v[523]] .cat "l"
+			SHELL_INPUT_STRING .cat "l"
 			s[201].on
 			
 		    }
@@ -660,9 +687,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[913] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[963] == 0 {
-			t[v[523]] .cat "m"
+			SHELL_INPUT_STRING .cat "m"
 			s[201].on
 			
 		    }
@@ -673,9 +700,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[914] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[964] == 0 {
-			t[v[523]] .cat "n"
+			SHELL_INPUT_STRING .cat "n"
 			s[201].on
 			
 		    }
@@ -686,9 +713,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[915] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[965] == 0 {
-			t[v[523]] .cat "o"
+			SHELL_INPUT_STRING .cat "o"
 			s[201].on
 			
 		    }
@@ -699,9 +726,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[916] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[966] == 0 {
-			t[v[523]] .cat "p"
+			SHELL_INPUT_STRING .cat "p"
 			s[201].on
 			
 		    }
@@ -712,9 +739,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[917] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[967] == 0 {
-			t[v[523]] .cat "q"
+			SHELL_INPUT_STRING .cat "q"
 			s[201].on
 			
 		    }
@@ -725,9 +752,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[918] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[968] == 0 {
-			t[v[523]] .cat "r"
+			SHELL_INPUT_STRING .cat "r"
 			s[201].on
 			
 		    }
@@ -738,9 +765,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[919] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[969] == 0 {
-			t[v[523]] .cat "s"
+			SHELL_INPUT_STRING .cat "s"
 			s[201].on
 			
 		    }
@@ -751,9 +778,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[920] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[970] == 0 {
-			t[v[523]] .cat "t"
+			SHELL_INPUT_STRING .cat "t"
 			s[201].on
 			
 		    }
@@ -764,9 +791,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[921] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[971] == 0 {
-			t[v[523]] .cat "u"
+			SHELL_INPUT_STRING .cat "u"
 			s[201].on
 			
 		    }
@@ -777,9 +804,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[922] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[972] == 0 {
-			t[v[523]] .cat "v"
+			SHELL_INPUT_STRING .cat "v"
 			s[201].on
 			
 		    }
@@ -790,9 +817,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[923] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[973] == 0 {
-			t[v[523]] .cat "w"
+			SHELL_INPUT_STRING .cat "w"
 			s[201].on
 			
 		    }
@@ -803,9 +830,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[924] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[974] == 0 {
-			t[v[523]] .cat "x"
+			SHELL_INPUT_STRING .cat "x"
 			s[201].on
 			
 		    }
@@ -816,9 +843,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[925] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[975] == 0 {
-			t[v[523]] .cat "y"
+			SHELL_INPUT_STRING .cat "y"
 			s[201].on
 			
 		    }
@@ -829,9 +856,9 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[926] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[976] == 0 {
-			t[v[523]] .cat "z"
+			SHELL_INPUT_STRING .cat "z"
 			s[201].on
 			
 		    }
@@ -842,10 +869,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[927] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[977] == 0 {
 			s[201].on
-			t[v[523]] .cat "0"
+			SHELL_INPUT_STRING .cat "0"
 			
 		    }
 		    v[977] += 1
@@ -855,10 +882,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[928] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[978] == 0 {
 			s[201].on
-			t[v[523]] .cat "1"
+			SHELL_INPUT_STRING .cat "1"
 			
 		    }
 		    v[978] += 1
@@ -868,10 +895,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[929] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[979] == 0 {
 			s[201].on
-			t[v[523]] .cat "2"
+			SHELL_INPUT_STRING .cat "2"
 			
 		    }
 		    v[979] += 1
@@ -881,10 +908,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[930] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[980] == 0 {
 			s[201].on
-			t[v[523]] .cat "3"
+			SHELL_INPUT_STRING .cat "3"
 			
 		    }
 		    v[980] += 1
@@ -894,10 +921,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[931] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[981] == 0 {
 			s[201].on
-			t[v[523]] .cat "4"
+			SHELL_INPUT_STRING .cat "4"
 			
 		    }
 		    v[981] += 1
@@ -907,10 +934,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[932] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[982] == 0 {
 			s[201].on
-			t[v[523]] .cat "5"
+			SHELL_INPUT_STRING .cat "5"
 			
 		    }
 		    v[982] += 1
@@ -920,10 +947,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[933] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[983] == 0 {
 			s[201].on
-			t[v[523]] .cat "6"
+			SHELL_INPUT_STRING .cat "6"
 			
 		    }
 		    v[983] += 1
@@ -933,10 +960,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[934] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[984] == 0 {
 			s[201].on
-			t[v[523]] .cat "7"
+			SHELL_INPUT_STRING .cat "7"
 			
 		    }
 		    v[984] += 1
@@ -946,10 +973,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[935] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[985] == 0 {
 			s[201].on
-			t[v[523]] .cat "8"
+			SHELL_INPUT_STRING .cat "8"
 			
 		    }
 		    v[985] += 1
@@ -959,10 +986,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		    
 		}
 		@if v[936] >= 1 {
-		    s[205].on
+		    LEGS_Common_Switch5.on
 		    @if v[986] == 0 {
 			s[201].on
-			t[v[523]] .cat "9"
+			SHELL_INPUT_STRING .cat "9"
 			
 		    }
 		    v[986] += 1
@@ -974,10 +1001,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		
 	    }
 	    @if v[945] >= 1 {
-		s[205].on
+		LEGS_Common_Switch5.on
 		@if v[995] == 0 {
 		    s[201].on
-		    t[v[523]] .cat " "
+		    SHELL_INPUT_STRING .cat " "
 		    
 		}
 		v[995] += 1
@@ -1032,9 +1059,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 	    }
 	    @if v[941] >= 1 {
 		@if v[991] == 0 {
-		    s[202].on
-		    @se.play "Decision2" .opt 90, 100, 50
-		    s[183].on
+		    LEGS_Common_Switch2.on
+		    //@se.play "Decision2" .opt 90, 100, 50
+		    play_system_se("Decision2",90,100,50)
+		    LEGS_ClosingConsole.on
 		    
 		}
 		v[991] += 1
@@ -1135,18 +1163,18 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		@if v[1225] == 0 {
 		    s[201].on
 		    s[203].on
-		    t[v[523]] .getLen v[341]
+		    SHELL_INPUT_STRING .getLen v[341]
 		    v[341] -= 1
-		    t[v[523]] .asg  .subs t[v[523]], 0, v[341]
+		    SHELL_INPUT_STRING .asg  .subs SHELL_INPUT_STRING, 0, v[341]
 		    
 		}
 		@if v[1225] >= 32 {
 		    s[201].on
 		    s[203].on
 		    s[204].on
-		    t[v[523]] .getLen v[341]
+		    SHELL_INPUT_STRING .getLen v[341]
 		    v[341] -= 1
-		    t[v[523]] .asg  .subs t[v[523]], 0, v[341]
+		    SHELL_INPUT_STRING .asg  .subs SHELL_INPUT_STRING, 0, v[341]
 		    
 		}
 		v[1225] += 1
@@ -1155,11 +1183,11 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 		v[1225] = 0
 		
 	    }
-	    @if s[183] .isOn() {
+	    @if LEGS_ClosingConsole .isOn() {
 		@break
 		
 	    }
-	    @if s[205] .isOn() {
+	    @if LEGS_Common_Switch5 .isOn() {
 		v[525] += 1
 		@if v[525] >= v[526] {
 		    s[204].on
@@ -1176,19 +1204,21 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 	    @if s[201] .isOn() {
 		@if s[203] .isOff() {
 		    v[341] = 521
-		    @comment "#########################"
+		    // "#########################"
 		    v[472] = divmul(80, 100, v[2216])
 		    v[473] = 100
 		    v[474] = 50
 		    t[510] .asg t[v[341]]
 		    v[342] = 510
-		    @comment "Strings = t[v[342]]"
+		    // "Strings = t[v[342]]"
 		    @cmd 11550, t[v[342]], .args v[472], 3
-		    @comment "#########################"
+		    // "#########################"
 		    
 		}
+
+		//RETARD
 		@pic[2136].strpic {
-		    "\t[\v[523]]"
+		    SHELL_INPUT_STRING
 		    .pos 0, 0 .topLeft
 		    .size 640, 320            .chromakey 1
 		    .scale 100
@@ -1215,10 +1245,10 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 	}
 
 	@pic[2136].erase
-	s[182].off
-	@if s[20] .isOn() {
-	    s[39].on
-	    s[51].on
+	LEGS_OpenConsole.off
+	@if LEGS_RTS_MODE .isOn() {
+	    LEGS_Mouse_Clip.on
+	    LEGS_MousePointer_synch.on
 	    
 	}
 
@@ -1232,16 +1262,16 @@ cev .id(cevid_ConsoleControlManager), .name("Console:Manager"), .parallel, {
 	    @if v[1223] == 1 {
 		v[472] = divmul(90, 100, v[2216])
 		@se.play "cursor19" .opt v[472], 100, 50
-		@if s[20] .isOn() {
-		    s[2].on
-		    s[43].on
-		    s[18].off
-		    s[38].on
+		@if LEGS_RTS_MODE .isOn() {
+		    LEGS_PAUSE.on
+		    LEGS_Fix_Camera_position.on
+		    LEGS_Player_can_control.off
+		    LEGS_Run_NonLocked_Mouse_Pointer.on
 		    
 		}
-		s[182].on
+		LEGS_OpenConsole.on
 		@loop .inf() {
-		    @if s[183] .isOn() {
+		    @if LEGS_ClosingConsole .isOn() {
 			@break
 			
 		    }
@@ -1250,17 +1280,23 @@ cev .id(cevid_ConsoleControlManager), .name("Console:Manager"), .parallel, {
 		}
 		
 		@pic[996].erase
-		s[183].off
-		s[182].off
-		@if s[20] .isOn() {
-		    s[38].off
-		    s[43].off
-		    s[18].on
+		LEGS_ClosingConsole.off
+		LEGS_OpenConsole.off
+		@if LEGS_RTS_MODE .isOn() {
+		    LEGS_Run_NonLocked_Mouse_Pointer.off
+		    LEGS_Fix_Camera_position.off
+		    LEGS_Player_can_control.on
 		    
 		} .else bl {
 		    
 		}
-		func_show_msg(t[v[523]])
+
+		SHELL_CMD_LOG.cat SHELL_INPUT_STRING
+		SHELL_CMD_LOG.cat LF
+
+
+		//DIS
+		func_show_msg(SHELL_INPUT_STRING)
 
 
 		console_cmd_call()
