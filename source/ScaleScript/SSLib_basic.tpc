@@ -28,6 +28,10 @@ __fn ScaleScriptBasicLib $LINKstr $md $i $given_v_or_str $flags {
 		//Get RPGMaker native party features 
 		{SScommand($LINKstr, $md, $i, void,"RMget",nargs_nolimit,[str,var,var],[{SSargs1.toNum(SSvar1) SSargs2.toNum(SSvar2) cmd_RMget(SSargs0,SSvar1,SSvar2) },{SSreturn_string("RMget")}])},
 
+		//tpc replace support
+		{SScommand($LINKstr, $md, $i, void,"tpcrep",3,[str,str,str],[{cmd_tpc_support_replace(SSargs0,SSargs1,SSargs2) },{SSreturn_string("tpc rep :D")}])},
+
+
 
 		//wait
 		{SScommand($LINKstr, $md, $i,

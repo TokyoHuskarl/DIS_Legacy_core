@@ -1,8 +1,7 @@
 #include "./../headers/header_common.tpc"
 #include "./../headers/header_scripts.tpc"
 #include "./../headers/header_control.tpc"
-
-#include "./module_Game_scalescript_DIS_commands.tpc"
+#include "./../headers/header_scripts_functions.tpc"
 
 #include "./../Toolbox/module_console_functions_DIS.tpc"
 cev .id(1815), .name("script intepreter"),{func_script_interpreter_recursion(Ptr1,var2)}
@@ -1040,6 +1039,11 @@ cev .id(2) ,.name("@Mission Init") ,{
 		}
 		
 	}
+
+	// generate Agent Extra Array Buffer as a picture
+	construct_picture_buffer(PicID_AgentExBuffer,AgentExtraBuffer_ArraySize,AgentExtraBuffer_ArrayAmount)
+	
+
 }
 
 cev .id(4) ,.name("@Mission Start") ,{

@@ -591,6 +591,10 @@ __fn func_generate_agent {
 
 __fn func_spawn_agent_lastproc {
 
+	reg1 = v[201] + 1
+	// init its own AEAB array
+	init_AEAB_array(reg1)
+
 	@comment "#reg1 = ObjID #reg2 = UnitID #reg3 = UnitType"
 	@comment "Set Dir"
 	v[656] = v[280] * 180000
@@ -1661,8 +1665,16 @@ __fn func_spawn_agent_lastproc {
 			v[v[4804] + v[201]] = [agent_TeamID == 0 ? 0xFF0A3AFF : 0xFFC926C9, -65536, 0xFFD6CD20][(agent_TeamID % 3)]
 			
 		    }
-		    //Set MetaTeamMemory
-		    v[Const_AgentMetaTeam_begin + v[201]] = agent_TeamID % 3
+
+		   __id DIS_EXPERIMENTAL == 1 {
+			    // set MetaTeam in AEAB
+			    reg1 = v[201] + 1
+			    reg2 = agent_TeamID % 3
+			    set_AEAB_element(reg1,reg2,AgentExBuffer_SLOT_MetaTeam)
+		   }
+		   // ACHTUNG this will be removed after replace every MetaTeam reference
+		   v[Const_AgentMetaTeam_begin + v[201]] = agent_TeamID % 3
+
 
 		    @comment "敵味方峻別リストに登録"
 		    @if s[157] .isOff() {

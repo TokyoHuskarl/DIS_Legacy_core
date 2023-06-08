@@ -112,21 +112,4 @@
 */
 
 
-__fn set_picture_pixel $setadd $picid $x $y{
-	@pic.setPixel[$picid] .src(v[setaddress]) .xywh($x, $y, 1, 1)
 
-} 
-
-__fn set_picture_line $setadd $picid $x $y $amount {
-	@pic[$picid].getInfo  .src(v[setaddress]) .pixel($x, $y, $amount, 1) 
-}
-
-
-
-__fn get_picture_pixel $getadd $picid $x $y {
-	@pic[$picid].getInfo .pixel($x, $y, 1, 1) .dst(v[getaddress])
-}
-
-__fn get_picture_horizontal_line $getadd $picid $x $y $amount {
-	@pic[$picid].getInfo .pixel($x, $y, $amount, 1) .dst(v[getaddress])
-}

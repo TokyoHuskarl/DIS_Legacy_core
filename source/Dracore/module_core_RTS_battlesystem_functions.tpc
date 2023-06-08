@@ -110,3 +110,75 @@ __fn func_bs_change_agent_team $agentID $team{
 	    
 	}
 }
+
+
+
+//this one is straightly set into cev 1911
+__fn func_bs_register_buff_old $buff_id $agent{
+	/*// "V1 = Buff ID
+	V2 = Target ObjID
+	R1 = Buff Ptr
+	R2 = Buff Timer Ptr"*/
+	v[341] = $agent * 300
+	v[341] += 4771
+	v[22] = -1
+	@loop 16 .dst v[350] {
+	    v[343] = v[350] >= 8 ? 0 : $buff_id
+	    v[350] %= 8
+	    v[342] = v[341] + v[350]
+	    @if v[v[342]] == v[343] {
+		v[21] = v[342]
+		v[v[21]] = $buff_id
+		v[22] = v[342] + 15
+		@if s[140] .isOff() {
+		    //// "Knockback Resist"
+		    v[22] = between($buff_id, 1196, 1197) && v[$agent * 300 + 4974] & 8 ? (v[v[21]] = 0) : v[22]
+		    //// "#If buff memories are full, return reg2 -1"
+		    //// "Unstoppable"
+		    v[22] = v[$agent * 300 + 4974] & 65536 && between($buff_id, 1169, 1170) ? (v[v[21]] = 0) : v[22]
+		    
+		}
+		@break
+		
+	    }
+	    
+	}
+
+	s[140].off
+}
+
+//one with time 
+__fn func_bs_register_buff_with_time $buff_id $agent $time{
+	func_bs_register_buff_old($buff_id $agent)
+	v[v[22]] = v[22] >= 0 ? $time : v[v[22]]
+}
+
+//remove buff
+__fn func_bs_remove_buff $buff_id $agent{
+	/*// "V1 = Buff ID
+	V2 = Target ObjID
+	R1 = Buff Ptr
+	R2 = Buff Timer Ptr"*/
+	v[341] = $agent * 300 
+	v[341] += 4771
+	v[22] = -1
+	@loop 8 .dst v[350] {
+	    v[343] = $buff_id
+	    v[342] = v[341] + v[350]
+	    @if v[v[342]] == v[343] {
+		v[21] = v[342]
+		v[v[21]] = 0
+		v[22] = v[342] + 15
+		v[v[22]] = 0
+		@break
+		
+	    }
+	    
+	}
+}
+
+
+
+
+
+
