@@ -480,9 +480,10 @@ __fn macro_cord_diff $x $y {
 #include "./header_common_items.tpc"
 
 
-defv DISLib_SYSTEM_BGM_VOLUME = 2217
-defv DISLib_SYSTEM_SE_VOLUME = 2216
-#include "./../DISLib/DISLib_sound_functions.tpc"
+//INCLUDE NsLib
+defv NsLib_SYSTEM_BGM_VOLUME = 2217
+defv NsLib_SYSTEM_SE_VOLUME = 2216
+#include "./../NsLib/header_NsLib.tpc"
 
 
 __fn PROC $block {

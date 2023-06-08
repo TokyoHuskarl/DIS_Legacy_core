@@ -169,7 +169,7 @@ __if DIS_EXPERIMENTAL == 0{
 	PicID_N = 2189
 	}
 
-	ui_start_presentation("Yes or No",0,0,0,0,
+	ui_start_simple_presentation("Yes or No",0,0,0,0,
 		ON_LOAD({
 			$PicID = 2186
 			ui_create_window($PicID,v[1115],v[1116],240,120,0)

@@ -5,6 +5,7 @@
 
 #include "./module_core_RTS_ui_misc_functions.tpc"
 #include "./../headers/header_drawing.tpc"
+#include "./../headers/header_agent.tpc"
 #include "./../preset_databases/header_preset_particles.tpc"
 
 
@@ -1069,7 +1070,13 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    //v[700] = v[v[301] + 100]
 		    @if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
 			//v[342] = v[2409 + v[251] % 3]
-			v[342] = v[Const_AgentMetaTeam_begin+v[401]]
+			
+			__if DIS_EXPERIMENTAL == 1 { 
+				macro_get_agent_MetaTeam_into_var(v[v[536]],TT2)
+			}.else bl {
+				TT2 = v[Const_AgentMetaTeam_begin+v[401]]
+			}
+
 			v[v[341]] += v[740] * 6
 			// "徴用スイッチ"
 			v[v[341]] += v[342] & 134217728 && !(v[v[301] + 3] & 1) ? muldiv(v[740], 198, 100) : 0
@@ -2144,9 +2151,16 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				@if `!(agent_ProcessObjBit & 67108864){ //can use shield
 					defv flag_shieldcovered = __id(TT10)
 					defv bool_if_my_tile_is_covered = __id(TempFlag1)
-					TT1 = Const_AgentMetaTeam_begin + v[v[536]]//get meta team
 
-					flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << v[TT1] //shift Meta Team
+					// get agent MetaTeam
+					__if DIS_EXPERIMENTAL == 1 {
+						macro_get_agent_MetaTeam_into_var(v[v[536]],TT1)
+						flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << TT1 //shift Meta Team
+					}.else bl {
+						TT1 = Const_AgentMetaTeam_begin + v[v[536]]//get meta team - isn't this wrong since MetaTeamArray has element in [0]?
+						flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << v[TT1] //shift Meta Team
+					}
+
 					bool_if_my_tile_is_covered = v[Temp2]&flag_shieldcovered?1:0//Check if agent tile is already covered
 					func_set_tileflag_in_square_range(flag_shieldcovered ShieldWall_Cover_SquareSide ShieldWall_Cover_Diff Temp11 Temp15)
 					v[Temp2]&= bool_if_my_tile_is_covered&1?v[Temp2]:~flag_shieldcovered//you must be covered by other unit to get shield covered bonus.
@@ -2154,8 +2168,16 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 			}.elif `agent_TacticsOrderFlag & 1{//spear wall 
 				defv flag_pikecovered = __id(TT10)
-				TT1 = Const_AgentMetaTeam_begin + v[v[536]]//get meta team
-				flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << v[TT1] //shift Meta Team
+				
+				// get agent MetaTeam
+				__if DIS_EXPERIMENTAL == 1 {
+					macro_get_agent_MetaTeam_into_var(v[v[536]],TT1)
+					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << TT1 //shift Meta Team
+				}.else bl {
+					TT1 = Const_AgentMetaTeam_begin + v[v[536]] //get meta team - isn't this wrong?
+					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << v[TT1] //shift Meta Team
+				}
+
 				func_set_tileflag_in_square_range(flag_pikecovered ShieldWall_Cover_SquareSide ShieldWall_Cover_Diff Temp11 Temp13)
 			}
 		}

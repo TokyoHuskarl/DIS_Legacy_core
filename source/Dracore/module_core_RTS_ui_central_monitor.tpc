@@ -1,17 +1,19 @@
 __fn func_ui_show_terrain_info {
        @if s[18] .isOn() {
             @if s[5] .isOff() {
-                //@comment "#Check Terrain"
-                v[51].copy v[11], 2
-                v[12] -= 8
-                @call .cev 2000
-                @if `v[1974] != v[21] || v[1975] != v[22] {
-                    //@comment "######################Get Terrain and Elevation info"
-                    v[313] = v[v[1182] + v[21] - v[69] + (v[22] - v[70]) * v[2061]]
+                //// "#Check Terrain"
+                v[51].copy var1, 2
+                var2 -= 8
+                //@call .cev 2000
+		macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
+                @if `v[1974] != reg1 || v[1975] != reg2 {
+                    //// "######################Get Terrain and Elevation info"
+                    v[313] = v[v[1182] + reg1 - v[69] + (reg2 - v[70]) * v[2061]]
                     v[341] = v[313] / 100000000
                     v[350] = v[51]
                     v[351] = v[52] - 16
                     v[342] = v[1239] +v[313] % 100
+
                     @if .testPlay() {
                         t[501] .asg "
 
@@ -22,10 +24,11 @@ __fn func_ui_show_terrain_info {
     \t[20110] \t[\v[342]] \t[20111]\v[341]" .extract
                         
                     }
-                    @comment "######################"
-                    v[1974] = v[21]
-                    v[1975] = v[22]
-                    @pic[979].strpic {
+
+                    //// "######################"
+                    v[1974] = reg1
+                    v[1975] = reg2
+                    @pic[PicID_Unit_SP].strpic {
                         t[501]
                         .pos v[1296], v[1297] .topLeft
                         .size 0, 0                        .chromakey 1
@@ -44,23 +47,24 @@ __fn func_ui_show_terrain_info {
                 }
                 
             } .else bl {
-                @pic[979].erase
+                @pic[PicID_Unit_SP].erase
                 
             }
             
         }
 }
-@comment "module_core_RTS_ui_central_monitor.tpc"
-//@comment "表示なし"
-@if s[57] .isOff() {
-    @if v[81] == 0 {
-        s[30].off
-        //@comment "Disable Formation Info"
-        //v[0] = v[341..342] = [v[1165], v[1165] + 39]
-	v[341] = v[1165]
-	v[342] = v[1165] + 39
+
+
+// "module_core_RTS_ui_central_monitor.tpc"
+//// "表示なし"
+@if LEGS_RUN_MAPEDITMODE .isOff() {
+    @if LEGV_State_of_Central_Monitor == 0 {
+        LEGS_StatusPage2.off
+        //// "Disable Formation Info"
+	v[341] = LEGV_ConstUnitsFormationIndicatorPicStart
+	v[342] = LEGV_ConstUnitsFormationIndicatorPicStart + 39
         @pic[v[341]..v[342]].erase
-        //@comment "Disable Buff icons"
+        //// "Disable Buff icons"
         @pic[1799..1800].erase
         @pic[975..977].erase
         @pic[980..985].erase
@@ -71,7 +75,8 @@ __fn func_ui_show_terrain_info {
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        //@comment "#Static"
+
+        //// "#Static"
         @pic[v[1226]].move {
             .pos v[1041], v[1042] .center
             .scale 100
@@ -92,42 +97,42 @@ __fn func_ui_show_terrain_info {
             
         }
         
-        @pic[1795].move {
+        @pic[PicID_Terrain].move {
             .pos v[1041], v[1042] .center
             .scale 100
             .trans 100
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        //@comment "#Tactical Order"
-        @pic[1796].move {
+        //// "#Tactical Order"
+        @pic[PicID_Tactical_Order].move {
             .pos v[1041], v[1042] .center
             .scale 100
             .trans 100
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        //@comment "#Morale"
-        @pic[1797].move {
+        //// "#Morale"
+        @pic[PicID_Morale].move {
             .pos v[1041], v[1042] .center
             .scale 100
             .trans 100
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        //@comment "#Melee Penalty"
-        @pic[1798].move {
+        //// "#Melee Penalty"
+        @pic[PicID_MeleePenalty].move {
             .pos v[1041], v[1042] .center
             .scale 100
             .trans 100
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        @loop 8 .dst v[235] {
-            v[341] = v[1127] * v[235] 
-	    v[341] += v[1125]
-            v[235] += 987
-            @pic[v[235]].show {
+        @loop 8 .dst LEGV_BuffcheckLoop2 {
+            v[341] = LEGV_ConstBuffIconsDif * LEGV_BuffcheckLoop2 
+	    v[341] += LEGV_ConstBuffIconsStartX
+            LEGV_BuffcheckLoop2 += 987 // ?
+            @pic[LEGV_BuffcheckLoop2].show {
                 "ui\bufficon"
                 .pos v[341], v[1126] .bottom
                 .chromakey 1
@@ -141,8 +146,8 @@ __fn func_ui_show_terrain_info {
             
         }
         
-        //@comment "Operation Panel"
-        @pic[981].move {
+        //// "Operation Panel"
+        @pic[PicID_Operation_Panel].move {
             .pos 16, 232 .center
             .scale 100
             .trans 100
@@ -155,7 +160,7 @@ __fn func_ui_show_terrain_info {
             v[342] = min(v[v[4580]], v[1080])
             v[343] = v[205] >= v[342] ? 17 : 0
             @if .testPlay() {
-                @pic[978].strpic {
+                @pic[PicID_Central_Monitor_Text].strpic {
                     " Player Units:\c[\v[343]]\v[205]/\v[342]\c[0]  Enemy Units:\v[206]
     \t[750] \t[751] \t[752]"
                     .pos v[1296], v[1297] .topLeft
@@ -173,7 +178,7 @@ __fn func_ui_show_terrain_info {
                 }
                 
             } .else bl {
-                @pic[978].strpic {
+                @pic[PicID_Central_Monitor_Text].strpic {
                     " Player Units:\c[\v[343]]\v[205]/\v[342]\c[0]"
                     .pos v[1296], v[1297] .topLeft
                     .size 0, 0                    .chromakey 1
@@ -200,26 +205,27 @@ __fn func_ui_show_terrain_info {
         @wait 0
         
     }
-    //@comment "単体ステータス"
-    @if v[81] == 1 {
-        //@comment ""
+    //// "単体ステータス"
+    @if LEGV_State_of_Central_Monitor == 1 {
+        //// ""
         v[325] = v[101] * 300 
 	v[325] += 4802
         v[v[325]].copy v[702], 38
         v[325] += 3
         @if v[706] > 0 {
-            //@comment "HPバーびよ～ん"
-            //@comment "処理開始"
+            //// "HPバーびよ～ん"
+            //// "処理開始"
             v[306] = v[706] * 100
-            //@comment "#0除算防止"
+            //// "#0除算防止"
             v[305] = max(v[705], 1)
             v[306] /= v[305] * 2
             v[306] = max(v[306], 2)
             v[306] = min(v[306], 50)
             v[341] = v[1296] + 3
             v[342] = v[1297] + 11
+
             @if v[706] != v[1971] {
-                @pic[978].strpic {
+                @pic[PicID_Central_Monitor_Text].strpic {
                     "HP:\v[706]/\v[705]"
                     .pos v[341], v[342] .topLeft
                     .size 0, 0                    .chromakey 1
@@ -239,7 +245,7 @@ __fn func_ui_show_terrain_info {
             }
             v[341] += 72
             @if v[711] != v[1972] {
-                @pic[1799].strpic {
+                @pic[PicID_AR].strpic {
                     "AR:\v[711]/\v[738]"
                     .pos v[341], v[342] .topLeft
                     .size 0, 0                    .chromakey 1
@@ -259,7 +265,7 @@ __fn func_ui_show_terrain_info {
             }
             v[341] += 75
             @if v[708] != v[1973] {
-                @pic[979].strpic {
+                @pic[PicID_Unit_SP].strpic {
                     "SP:\v[708]/\v[707]"
                     .pos v[341], v[342] .topLeft
                     .size 0, 0                    .chromakey 1
@@ -292,11 +298,11 @@ __fn func_ui_show_terrain_info {
                 .affectedByFlash
                 .affectedByShake
             }
-            @comment "処理終わり"
-            @comment "ARバーびよ～ん"
-            @comment "処理開始"
+            // "処理終わり"
+            // "ARバーびよ～ん"
+            // "処理開始"
             v[306] = v[711] * 100
-            @comment "#0除算防止"
+            // "#0除算防止"
             v[305] = max(v[738], 1)
             v[306] /= v[305] * 2
             v[306] = max(v[306], 1)
@@ -314,17 +320,17 @@ __fn func_ui_show_terrain_info {
                 .affectedByFlash
                 .affectedByShake
             }
-            @comment "MPある？"
+            // "MPある？"
             @if v[707] > 0 {
-                @comment "MPバーびよ～ん"
-                @comment "処理開始"
+                // "MPバーびよ～ん"
+                // "処理開始"
                 v[306] = v[708] * 100
-                @comment "#0除算防止"
+                // "#0除算防止"
                 v[305] = max(v[707], 1)
                 v[306] /= v[305] * 2
                 v[306] = max(v[306], 1)
                 v[341] += 72
-                @pic[976].show {
+                @pic[PicID_SP_gauge].show {
                     "MP_bar_main"
                     .pos v[341], v[342] .left
                     .chromakey 0
@@ -337,10 +343,10 @@ __fn func_ui_show_terrain_info {
                     .affectedByFlash
                     .affectedByShake
                 }
-                @comment "処理終わり"
+                // "処理終わり"
                 
             } .else bl {
-                @pic[976].move {
+                @pic[PicID_SP_gauge].move {
                     .pos 179, 226 .center
                     .scale 100
                     .trans 100
@@ -351,19 +357,19 @@ __fn func_ui_show_terrain_info {
             }
             
         } .else bl {
-            @comment "選択中のObjが撃破されている"
-            v[81] = 0
+            // "選択中のObjが撃破されている"
+            LEGV_State_of_Central_Monitor = 0
             
         }
-        v[81] = v[v[101] * 300 + 4701] <= 0 ? 0 : v[81]
-        @if v[81] != 0 {
-            @comment "SkillCheck"
+        LEGV_State_of_Central_Monitor = v[v[101] * 300 + 4701] <= 0 ? 0 : LEGV_State_of_Central_Monitor
+        @if LEGV_State_of_Central_Monitor != 0 {
+            // "SkillCheck"
             v[325] += 36
             v[v[325]].copy v[741], 100
             v[325] -= 46
             v[v[325]].copy v[695], 4
             @if s[29] .isOff() {
-                @comment "Q"
+                // "Q"
                 v[349] = v[695] * 110
                 v[349] /= v[748]
                 v[349] /= 11
@@ -438,7 +444,7 @@ __fn func_ui_show_terrain_info {
                     }
                     
                 }
-                @comment "W"
+                // "W"
                 v[349] = v[696] * 110
                 v[349] /= v[768]
                 v[349] /= 11
@@ -513,7 +519,7 @@ __fn func_ui_show_terrain_info {
                     }
                     
                 }
-                @comment "E"
+                // "E"
                 v[349] = v[697] * 110
                 v[349] /= v[788]
                 v[349] /= 11
@@ -588,7 +594,7 @@ __fn func_ui_show_terrain_info {
                     }
                     
                 }
-                @comment "R"
+                // "R"
                 v[349] = v[698] * 110
                 v[349] /= v[808]
                 v[349] /= 11
@@ -663,17 +669,17 @@ __fn func_ui_show_terrain_info {
                     }
                     
                 }
-                @comment "Terrain"
-                v[350] = v[1127] * -4
-                v[350] += v[1125]
+                // "Terrain"
+                v[350] = LEGV_ConstBuffIconsDif * -4
+                v[350] += LEGV_ConstBuffIconsStartX
                 v[13] = v[v[101] * 300 + 4703]
                 @if `v[13] & 9 {
-                    v[21] = 2
+                    reg1 = 2
                     v[325] = 10
                     
                 } .else bl {
                     @if `v[13] & 2 {
-                        v[21] = 1
+                        reg1 = 1
                         v[325] = 10
                         
                     } .else bl {
@@ -682,42 +688,42 @@ __fn func_ui_show_terrain_info {
                     }
                     
                 }
-                @pic[1795].show {
+                @pic[PicID_Terrain].show {
                     "ui\terrainicon"
                     .pos v[350], v[1126] .bottom
                     .chromakey 1
                     .scale 100
                     .trans v[325]
                     .rgbs 100, 100, 100, 100
-                    .grid 8, 5 .cell v[21]
+                    .grid 8, 5 .cell reg1
                     .mapLayer 8
                     .affectedByShake
                 }
-                @comment "Tactical Order"
-                v[350] = v[1127] * -3
-                v[350] += v[1125]
+                // "Tactical Order"
+                v[350] = LEGV_ConstBuffIconsDif * -3
+                v[350] += LEGV_ConstBuffIconsStartX
                 v[13] = v[v[101] * 300 + 4948]
                 v[325] = v[13] != 0 ? 10 : 100
-                @while v[13] >= 1 .dst v[12] {
+                @while v[13] >= 1 .dst var2 {
                     v[13] /= 2
                     
                 }
                 
-                v[21] = [18, 17, 17, 22, 23, 17, 33][v[12]]
-                @pic[1796].show {
+                reg1 = [18, 17, 17, 22, 23, 17, 33][var2]
+                @pic[PicID_Tactical_Order].show {
                     "ui\bufficon"
                     .pos v[350], v[1126] .bottom
                     .chromakey 1
                     .scale 100
                     .trans v[325]
                     .rgbs 100, 100, 100, 100
-                    .grid 8, 5 .cell v[21]
+                    .grid 8, 5 .cell reg1
                     .mapLayer 8
                     .affectedByShake
                 }
                 
             }
-            @comment "Passive"
+            // "Passive"
             @if v[822] >= 0 {
                 v[341] = v[1287] + v[1289] / 2 + 1
                 v[342] = v[1288] + v[1290] / 2
@@ -744,27 +750,27 @@ __fn func_ui_show_terrain_info {
                 }
                 
             }
-            //@comment "Morale"
-            v[350] = v[1127] * -2
-            v[350] += v[1125]
+            //// "Morale"
+            v[350] = LEGV_ConstBuffIconsDif * -2
+            v[350] += LEGV_ConstBuffIconsStartX
             v[325] = v[v[101] * 300 + 4960] != 0 ? 10 : 100
-            v[21] = v[v[101] * 300 + 4960] < 0 ? 29 : 24 + v[v[101] * 300 + 4960]
-            @pic[1797].show {
+            reg1 = v[v[101] * 300 + 4960] < 0 ? 29 : 24 + v[v[101] * 300 + 4960]
+            @pic[PicID_Morale].show {
                 "ui\bufficon"
                 .pos v[350], v[1126] .bottom
                 .chromakey 1
                 .scale 100
                 .trans v[325]
                 .rgbs 100, 100, 100, 100
-                .grid 8, 5 .cell v[21]
+                .grid 8, 5 .cell reg1
                 .mapLayer 8
                 .affectedByShake
             }
-            @comment "Melee Penalty"
-            v[350] = v[1127] * -1
-            v[350] += v[1125]
+            // "Melee Penalty"
+            v[350] = LEGV_ConstBuffIconsDif * -1
+            v[350] += LEGV_ConstBuffIconsStartX
             v[325] = v[v[101] * 300 + 4781] > 0 ? 10 : 100
-            @pic[1798].show {
+            @pic[PicID_MeleePenalty].show {
                 "ui\bufficon"
                 .pos v[350], v[1126] .bottom
                 .chromakey 1
@@ -775,38 +781,38 @@ __fn func_ui_show_terrain_info {
                 .mapLayer 8
                 .affectedByShake
             }
-            @comment "Buffs"
-            @loop 8 .dst v[235] {
+            // "Buffs"
+            @loop 8 .dst LEGV_BuffcheckLoop2 {
                 v[325] = v[101] * 300
-                v[325] += 4771 + v[235]
-                v[350] = v[1127] * v[235]
-                v[350] += v[1125]
-                v[235] += 987
+                v[325] += 4771 + LEGV_BuffcheckLoop2
+                v[350] = LEGV_ConstBuffIconsDif * LEGV_BuffcheckLoop2
+                v[350] += LEGV_ConstBuffIconsStartX
+                LEGV_BuffcheckLoop2 += 987
                 @if v[v[325]] > 0 {
-                    v[21] = 40
-                    @comment "###############"
-                    @comment "Init"
+                    reg1 = 40
+                    // "###############"
+                    // "Init"
                     t[3000..3300] .asg ""
-                    @comment "Load"
+                    // "Load"
                     v[1961] = v[4573] + v[v[325]] - 1111
                     t[3000] .asg t[v[1961]] .extract
                     t[3000] .split "@", t[3000], v[1961]
-                    @comment "###############"
-                    t[3001] .toNum v[21]
-                    @pic[v[235]].show {
+                    // "###############"
+                    t[3001] .toNum reg1
+                    @pic[LEGV_BuffcheckLoop2].show {
                         "ui\bufficon"
                         .pos v[350], v[1126] .bottom
                         .chromakey 1
                         .scale 100
                         .trans 10
                         .rgbs 100, 100, 100, 100
-                        .grid 8, 5 .cell v[21]
+                        .grid 8, 5 .cell reg1
                         .mapLayer 8
                         .affectedByShake
                     }
                     
                 } .else bl {
-                    @pic[v[235]].show {
+                    @pic[LEGV_BuffcheckLoop2].show {
                         "ui\bufficon"
                         .pos v[350], v[1126] .bottom
                         .chromakey 1
@@ -837,29 +843,33 @@ __fn func_ui_show_terrain_info {
         @wait 0
         
     }
-    @if v[81] == 2 {
+
+
+
+
+    @if LEGV_State_of_Central_Monitor == 2 {
         v[202] = 101
         v[302..303] = 0
         @loop .inf() {
             @if v[v[202]] == 0 {
-                //@comment "とぎれた"
+                //// "とぎれた"
                 @break
                 
             }
             @if v[202] > v[1007] {
-                //@comment "とりあえず40体までしか選択できない"
+                //// "とりあえず40体までしか選択できない"
                 @break
                 
             }
-            //@comment "配列ゲット"
+            //// "配列ゲット"
             v[301] = v[v[202]] * 300
             v[301] += 4700
             v[300] = v[301] + 1
             @if v[v[300]] >= 1 {
-                //@comment "生存してる数をゲット"
+                //// "生存してる数をゲット"
                 v[302] += 1
                 v[299] = v[301] + 106
-                //@comment "ＨＰゲット"
+                //// "ＨＰゲット"
                 v[303] += v[v[299]]
                 
             }
@@ -867,15 +877,15 @@ __fn func_ui_show_terrain_info {
             
         }
         
-        //@comment "損耗率計算"
+        //// "損耗率計算"
         v[306] = v[303] * 100
-        //@comment "#0除算防止"
+        //// "#0除算防止"
         v[305] = max(v[98], 1)
         v[306] /= v[305]
         v[307] = v[306]
         v[306] /= 2
         v[306] = max(v[306], 1)
-        //@comment "Set pos"
+        //// "Set pos"
         v[341] = v[1296] + 116
         v[342] = v[1297] + 12
         @pic[975].show {
@@ -892,13 +902,13 @@ __fn func_ui_show_terrain_info {
             .affectedByShake
         }
         @if v[302] <= 0 {
-            @comment "全滅！"
-            v[81] = 0
+            // "全滅！"
+            LEGV_State_of_Central_Monitor = 0
             @ev.abort
             
         }
         @if `v[1971] != v[302] || v[1972] != v[307] {
-            @pic[979].strpic {
+            @pic[PicID_Unit_SP].strpic {
                 " \t[20141]:\v[302]/\v[99] \t[20144]::\v[307]%"
                 .pos v[1296], v[1297] .topLeft
                 .size 200, 24                .chromakey 1
@@ -924,7 +934,7 @@ __fn func_ui_show_terrain_info {
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        @comment "SkillCheck"
+        // "SkillCheck"
         v[325] = v[101] * 300
         v[325] += 4841
         v[v[325]].copy v[741], 100
@@ -933,7 +943,7 @@ __fn func_ui_show_terrain_info {
                 v[325] -= 46
                 v[v[325]].copy v[695], 4
                 @if `v[v[101] * 300 + 4701] > 0 {
-                    @comment "Q"
+                    // "Q"
                     v[349] = 1
                     v[350] = v[4556]
                     v[1037].copy v[351], 2
@@ -1004,7 +1014,7 @@ __fn func_ui_show_terrain_info {
                         }
                         
                     }
-                    @comment "W"
+                    // "W"
                     v[349] = 1
                     v[350] += 1
                     v[1039].copy v[351], 2
@@ -1075,7 +1085,7 @@ __fn func_ui_show_terrain_info {
                         }
                         
                     }
-                    @comment "E"
+                    // "E"
                     v[349] = 1
                     v[350] += 1
                     v[1041].copy v[351], 2
@@ -1146,7 +1156,7 @@ __fn func_ui_show_terrain_info {
                         }
                         
                     }
-                    @comment "R"
+                    // "R"
                     v[349] = 1
                     v[350] += 1
                     v[1043].copy v[351], 2
@@ -1219,17 +1229,17 @@ __fn func_ui_show_terrain_info {
                     }
                     
                 }
-                @comment "Terrain"
-                v[350] = v[1127] * -4
-                v[350] += v[1125]
+                // "Terrain"
+                v[350] = LEGV_ConstBuffIconsDif * -4
+                v[350] += LEGV_ConstBuffIconsStartX
                 v[13] = v[v[101] * 300 + 4703]
                 @if `v[13] & 9 {
-                    v[21] = 2
+                    reg1 = 2
                     v[325] = 10
                     
                 } .else bl {
                     @if `v[13] & 2 {
-                        v[21] = 1
+                        reg1 = 1
                         v[325] = 10
                         
                     } .else bl {
@@ -1238,36 +1248,36 @@ __fn func_ui_show_terrain_info {
                     }
                     
                 }
-                @pic[1795].show {
+                @pic[PicID_Terrain].show {
                     "ui\terrainicon"
                     .pos v[350], v[1126] .bottom
                     .chromakey 1
                     .scale 100
                     .trans v[325]
                     .rgbs 100, 100, 100, 100
-                    .grid 8, 5 .cell v[21]
+                    .grid 8, 5 .cell reg1
                     .mapLayer 8
                     .affectedByShake
                 }
-                @comment "Tactical Order"
-                v[350] = v[1127] * -3
-                v[350] += v[1125]
+                // "Tactical Order"
+                v[350] = LEGV_ConstBuffIconsDif * -3
+                v[350] += LEGV_ConstBuffIconsStartX
                 v[13] = v[v[101] * 300 + 4948]
                 v[325] = v[13] != 0 ? 10 : 100
-                @while v[13] >= 1 .dst v[12] {
+                @while v[13] >= 1 .dst var2 {
                     v[13] /= 2
                     
                 }
                 
-                v[21] = [18, 17, 17, 22, 23, 17, 33][v[12]]
-                @pic[1796].show {
+                reg1 = [18, 17, 17, 22, 23, 17, 33][var2]
+                @pic[PicID_Tactical_Order].show {
                     "ui\bufficon"
                     .pos v[350], v[1126] .bottom
                     .chromakey 1
                     .scale 100
                     .trans v[325]
                     .rgbs 100, 100, 100, 100
-                    .grid 8, 5 .cell v[21]
+                    .grid 8, 5 .cell reg1
                     .mapLayer 8
                     .affectedByShake
                 }
@@ -1275,7 +1285,7 @@ __fn func_ui_show_terrain_info {
             } .else bl {
                 v[325] -= 46
                 v[v[325]].copy v[695], 4
-                @comment "Q"
+                // "Q"
                 v[350] = v[4556]
                 v[1037].copy v[351], 2
                 v[353] = 760 + (v[350] - v[4556]) * 20
@@ -1325,7 +1335,7 @@ __fn func_ui_show_terrain_info {
                     }
                     
                 }
-                @comment "W"
+                // "W"
                 v[350] += 1
                 v[1039].copy v[351], 2
                 v[353] = 760 + (v[350] - v[4556]) * 20
@@ -1375,7 +1385,7 @@ __fn func_ui_show_terrain_info {
                     }
                     
                 }
-                @comment "E"
+                // "E"
                 v[350] += 1
                 v[1041].copy v[351], 2
                 v[353] = 760 + (v[350] - v[4556]) * 20
@@ -1425,7 +1435,7 @@ __fn func_ui_show_terrain_info {
                     }
                     
                 }
-                @comment "R"
+                // "R"
                 v[350] += 1
                 v[1043].copy v[351], 2
                 v[353] = 760 + (v[350] - v[4556]) * 20
@@ -1475,14 +1485,14 @@ __fn func_ui_show_terrain_info {
                     }
                     
                 }
-                @pic[1796].show {
+                @pic[PicID_Tactical_Order].show {
                     "ui\bufficon"
                     .pos v[350], v[1126] .bottom
                     .chromakey 1
                     .scale 100
                     .trans 100
                     .rgbs 100, 100, 100, 100
-                    .grid 8, 5 .cell v[21]
+                    .grid 8, 5 .cell reg1
                     .mapLayer 8
                     .affectedByShake
                 }
@@ -1490,7 +1500,7 @@ __fn func_ui_show_terrain_info {
             }
             
         }
-        @comment "Passive"
+        // "Passive"
         @if s[31] .isOn() {
             v[341] = v[1287] + v[1289] / 2 + 1
             v[342] = v[1288] + v[1290] / 2
@@ -1524,12 +1534,12 @@ __fn func_ui_show_terrain_info {
             }
             
         }
-        @comment "Disable Buff icons"
-        @loop 8 .dst v[235] {
-            v[341] = v[1127] * v[235]
-            v[341] += v[1125]
-            v[235] += 987
-            @pic[v[235]].show {
+        // "Disable Buff icons"
+        @loop 8 .dst LEGV_BuffcheckLoop2 {
+            v[341] = LEGV_ConstBuffIconsDif * LEGV_BuffcheckLoop2
+            v[341] += LEGV_ConstBuffIconsStartX
+            LEGV_BuffcheckLoop2 += 987
+            @pic[LEGV_BuffcheckLoop2].show {
                 "ui\bufficon"
                 .pos v[341], v[1126] .bottom
                 .chromakey 1
@@ -1557,8 +1567,8 @@ __fn func_ui_show_terrain_info {
         @wait 0
         
     }
-    @comment "単体ステータス敵"
-    @if v[81] == 3 {
+    // "単体ステータス敵"
+    @if LEGV_State_of_Central_Monitor == 3 {
         v[341] = v[4556]
         @loop 4 {
             @pic[v[341]].move {
@@ -1579,9 +1589,9 @@ __fn func_ui_show_terrain_info {
         v[v[325]].copy v[702], 38
         v[325] += 3
         @if v[706] > 0 {
-            @comment "処理開始"
+            // "処理開始"
             v[306] = v[706] * 100
-            @comment "#0除算防止"
+            // "#0除算防止"
             v[305] = max(v[705], 1)
             v[306] /= v[305] * 2
             v[306] = max(v[306], 2)
@@ -1589,7 +1599,7 @@ __fn func_ui_show_terrain_info {
             v[341] = v[1296] + 3
             v[342] = v[1297] + 11
             @if v[706] != v[1971] {
-                @pic[978].strpic {
+                @pic[PicID_Central_Monitor_Text].strpic {
                     "HP:\v[706]/\v[705]"
                     .pos v[341], v[342] .topLeft
                     .size 0, 0                    .chromakey 1
@@ -1609,7 +1619,7 @@ __fn func_ui_show_terrain_info {
             }
             v[341] += 72
             @if v[711] != v[1972] {
-                @pic[1799].strpic {
+                @pic[PicID_AR].strpic {
                     "AR:\v[711]/\v[738]"
                     .pos v[341], v[342] .topLeft
                     .size 0, 0                    .chromakey 1
@@ -1629,7 +1639,7 @@ __fn func_ui_show_terrain_info {
             }
             v[341] += 75
             @if v[708] != v[1973] {
-                @pic[979].strpic {
+                @pic[PicID_Unit_SP].strpic {
                     "SP:\v[708]/\v[707]"
                     .pos v[341], v[342] .topLeft
                     .size 0, 0                    .chromakey 1
@@ -1662,11 +1672,11 @@ __fn func_ui_show_terrain_info {
                 .affectedByFlash
                 .affectedByShake
             }
-            @comment "処理終わり"
-            @comment "ARバーびよ～ん"
-            @comment "処理開始"
+            // "処理終わり"
+            // "ARバーびよ～ん"
+            // "処理開始"
             v[306] = v[711] * 100
-            @comment "#0除算防止"
+            // "#0除算防止"
             v[305] = max(v[738], 1)
             v[306] /= v[305] * 2
             v[306] = max(v[306], 1)
@@ -1684,17 +1694,17 @@ __fn func_ui_show_terrain_info {
                 .affectedByFlash
                 .affectedByShake
             }
-            @comment "MPある？"
+            // "MPある？"
             @if v[707] > 0 {
-                @comment "MPバーびよ～ん"
-                @comment "処理開始"
+                // "MPバーびよ～ん"
+                // "処理開始"
                 v[306] = v[708] * 100
-                @comment "#0除算防止"
+                // "#0除算防止"
                 v[305] = max(v[707], 1)
                 v[306] /= v[305] * 2
                 v[306] = max(v[306], 1)
                 v[341] += 72
-                @pic[976].show {
+                @pic[PicID_SP_gauge].show {
                     "MP_bar_main"
                     .pos v[341], v[342] .left
                     .chromakey 0
@@ -1707,10 +1717,10 @@ __fn func_ui_show_terrain_info {
                     .affectedByFlash
                     .affectedByShake
                 }
-                @comment "処理終わり"
+                // "処理終わり"
                 
             } .else bl {
-                @pic[976].move {
+                @pic[PicID_SP_gauge].move {
                     .pos 179, 226 .center
                     .scale 100
                     .trans 100
@@ -1721,17 +1731,17 @@ __fn func_ui_show_terrain_info {
             }
             
         } .else bl {
-            @comment "選択中のObjが撃破されている"
-            v[81] = 0
+            // "選択中のObjが撃破されている"
+            LEGV_State_of_Central_Monitor = 0
             
         }
         @if `v[v[100] * 300 + 4701] > 0 {
-            @comment "SkillCheck"
+            // "SkillCheck"
             v[325] += 36
             v[v[325]].copy v[741], 100
             v[325] -= 46
             v[v[325]].copy v[695], 4
-            @comment "Q"
+            // "Q"
             v[349] = v[695] * 110
             v[349] /= v[748]
             v[349] /= 11
@@ -1762,7 +1772,7 @@ __fn func_ui_show_terrain_info {
                 }
                 
             }
-            @comment "W"
+            // "W"
             v[349] = v[696] * 110
             v[349] /= v[768]
             v[349] /= 11
@@ -1793,7 +1803,7 @@ __fn func_ui_show_terrain_info {
                 }
                 
             }
-            @comment "E"
+            // "E"
             v[349] = v[697] * 110
             v[349] /= v[788]
             v[349] /= 11
@@ -1824,7 +1834,7 @@ __fn func_ui_show_terrain_info {
                 }
                 
             }
-            @comment "R"
+            // "R"
             v[349] = v[698] * 110
             v[349] /= v[808]
             v[349] /= 11
@@ -1857,7 +1867,7 @@ __fn func_ui_show_terrain_info {
             }
             
         }
-        @comment "Passive"
+        // "Passive"
         @if v[822] > 0 {
             v[341] = v[1287] + v[1289] / 2 + 1
             v[342] = v[1288] + v[1290] / 2
@@ -1884,17 +1894,17 @@ __fn func_ui_show_terrain_info {
             }
             
         }
-        @comment "Terrain"
-        v[350] = v[1127] * -4
-        v[350] += v[1125]
+        // "Terrain"
+        v[350] = LEGV_ConstBuffIconsDif * -4
+        v[350] += LEGV_ConstBuffIconsStartX
         v[13] = v[v[100] * 300 + 4703]
         @if `v[13] & 9 {
-            v[21] = 2
+            reg1 = 2
             v[325] = 10
             
         } .else bl {
             @if `v[13] & 2 {
-                v[21] = 1
+                reg1 = 1
                 v[325] = 10
                 
             } .else bl {
@@ -1903,60 +1913,60 @@ __fn func_ui_show_terrain_info {
             }
             
         }
-        @pic[1795].show {
+        @pic[PicID_Terrain].show {
             "ui\terrainicon"
             .pos v[350], v[1126] .bottom
             .chromakey 1
             .scale 100
             .trans v[325]
             .rgbs 100, 100, 100, 100
-            .grid 8, 5 .cell v[21]
+            .grid 8, 5 .cell reg1
             .mapLayer 8
             .affectedByShake
         }
-        @comment "Tactical Order"
-        v[350] = v[1127] * -3
-        v[350] += v[1125]
+        // "Tactical Order"
+        v[350] = LEGV_ConstBuffIconsDif * -3
+        v[350] += LEGV_ConstBuffIconsStartX
         v[13] = v[v[100] * 300 + 4948]
         v[325] = v[13] != 0 ? 10 : 100
-        @while v[13] >= 1 .dst v[12] {
+        @while v[13] >= 1 .dst var2 {
             v[13] /= 2
             
         }
         
-        v[21] = [18, 17, 17, 22, 23, 17, 33][v[12]]
-        @pic[1796].show {
+        reg1 = [18, 17, 17, 22, 23, 17, 33][var2]
+        @pic[PicID_Tactical_Order].show {
             "ui\bufficon"
             .pos v[350], v[1126] .bottom
             .chromakey 1
             .scale 100
             .trans v[325]
             .rgbs 100, 100, 100, 100
-            .grid 8, 5 .cell v[21]
+            .grid 8, 5 .cell reg1
             .mapLayer 8
             .affectedByShake
         }
-        @comment "Morale"
-        v[350] = v[1127] * -2
-        v[350] += v[1125]
+        // "Morale"
+        v[350] = LEGV_ConstBuffIconsDif * -2
+        v[350] += LEGV_ConstBuffIconsStartX
         v[325] = v[v[100] * 300 + 4960] != 0 ? 10 : 100
-        v[21] = v[v[100] * 300 + 4960] < 0 ? 29 : 24 + v[v[100] * 300 + 4960]
-        @pic[1797].show {
+        reg1 = v[v[100] * 300 + 4960] < 0 ? 29 : 24 + v[v[100] * 300 + 4960]
+        @pic[PicID_Morale].show {
             "ui\bufficon"
             .pos v[350], v[1126] .bottom
             .chromakey 1
             .scale 100
             .trans v[325]
             .rgbs 100, 100, 100, 100
-            .grid 8, 5 .cell v[21]
+            .grid 8, 5 .cell reg1
             .mapLayer 8
             .affectedByShake
         }
-        @comment "Melee Penalty"
-        v[350] = v[1127] * -1
-        v[350] += v[1125]
+        // "Melee Penalty"
+        v[350] = LEGV_ConstBuffIconsDif * -1
+        v[350] += LEGV_ConstBuffIconsStartX
         v[325] = v[v[100] * 300 + 4781] > 0 ? 10 : 100
-        @pic[1798].show {
+        @pic[PicID_MeleePenalty].show {
             "ui\bufficon"
             .pos v[350], v[1126] .bottom
             .chromakey 1
@@ -1967,38 +1977,38 @@ __fn func_ui_show_terrain_info {
             .mapLayer 8
             .affectedByShake
         }
-        @comment "Buffs"
-        @loop 8 .dst v[235] {
+        // "Buffs"
+        @loop 8 .dst LEGV_BuffcheckLoop2 {
             v[325] = v[100] * 300
-            v[325] += 4771 + v[235]
-            v[350] = v[1127] * v[235]
-            v[350] += v[1125]
-            v[235] += 987
+            v[325] += 4771 + LEGV_BuffcheckLoop2
+            v[350] = LEGV_ConstBuffIconsDif * LEGV_BuffcheckLoop2
+            v[350] += LEGV_ConstBuffIconsStartX
+            LEGV_BuffcheckLoop2 += 987
             @if v[v[325]] > 0 {
-                v[21] = 40
-                @comment "###############"
-                @comment "Init"
+                reg1 = 40
+                // "###############"
+                // "Init"
                 t[3000..3300] .asg ""
-                @comment "Load"
+                // "Load"
                 v[1961] = v[4573] + v[v[325]] - 1111
                 t[3000] .asg t[v[1961]] .extract
                 t[3000] .split "@", t[3000], v[1961]
-                @comment "###############"
-                t[3001] .toNum v[21]
-                @pic[v[235]].show {
+                // "###############"
+                t[3001] .toNum reg1
+                @pic[LEGV_BuffcheckLoop2].show {
                     "ui\bufficon"
                     .pos v[350], v[1126] .bottom
                     .chromakey 1
                     .scale 100
                     .trans 10
                     .rgbs 100, 100, 100, 100
-                    .grid 8, 5 .cell v[21]
+                    .grid 8, 5 .cell reg1
                     .mapLayer 8
                     .affectedByShake
                 }
                 
             } .else bl {
-                @pic[v[235]].show {
+                @pic[LEGV_BuffcheckLoop2].show {
                     "ui\bufficon"
                     .pos v[350], v[1126] .bottom
                     .chromakey 1
@@ -2015,31 +2025,31 @@ __fn func_ui_show_terrain_info {
         }
         
         @if s[1] .isOn() {
-            @loop 8 .dst v[235] {
+            @loop 8 .dst LEGV_BuffcheckLoop2 {
                 v[325] = v[100] * 300
-                v[325] += 4771 + v[235]
-                v[350] = v[1127] * v[235]
-                v[350] += v[1125]
-                v[235] += 987
+                v[325] += 4771 + LEGV_BuffcheckLoop2
+                v[350] = LEGV_ConstBuffIconsDif * LEGV_BuffcheckLoop2
+                v[350] += LEGV_ConstBuffIconsStartX
+                LEGV_BuffcheckLoop2 += 987
                 @if v[v[325]] > 0 {
-                    v[21] = 40
+                    reg1 = 40
                     s[119].on
                     @call .cev v[v[325]]
                     s[119].off
-                    @pic[v[235]].show {
+                    @pic[LEGV_BuffcheckLoop2].show {
                         "ui\bufficon"
                         .pos v[350], v[1126] .bottom
                         .chromakey 1
                         .scale 100
                         .trans 10
                         .rgbs 100, 100, 100, 100
-                        .grid 8, 5 .cell v[21]
+                        .grid 8, 5 .cell reg1
                         .mapLayer 8
                         .affectedByShake
                     }
                     
                 } .else bl {
-                    @pic[v[235]].show {
+                    @pic[LEGV_BuffcheckLoop2].show {
                         "ui\bufficon"
                         .pos v[350], v[1126] .bottom
                         .chromakey 1
@@ -2060,7 +2070,7 @@ __fn func_ui_show_terrain_info {
         @wait 0
         
     }
-    @if v[81] == 4 {
+    @if LEGV_State_of_Central_Monitor == 4 {
         v[341] = v[4556]
         @loop 4 {
             @pic[v[341]].move {
@@ -2077,10 +2087,10 @@ __fn func_ui_show_terrain_info {
         v[325] = v[101] * 300 + 4805
         v[v[325]].copy v[705], 8
         @if v[706] > 0 {
-            @comment "HPバーびよ～ん"
-            @comment "処理開始"
+            // "HPバーびよ～ん"
+            // "処理開始"
             v[306] = v[706] * 100
-            @comment "#0除算防止"
+            // "#0除算防止"
             v[305] = max(v[705], 1)
             v[306] /= v[305] * 2
             v[306] = max(v[306], 2)
@@ -2100,7 +2110,7 @@ __fn func_ui_show_terrain_info {
                 .affectedByFlash
                 .affectedByShake
             }
-            @pic[978].strpic {
+            @pic[PicID_Central_Monitor_Text].strpic {
                 " \t[525]HP:\v[706]/\v[705]"
                 .pos v[1296], v[1297] .topLeft
                 .size 200, 24                .chromakey 1
@@ -2115,9 +2125,9 @@ __fn func_ui_show_terrain_info {
                 .affectedByFlash
                 .affectedByShake
             }
-            @comment "処理終わり"
-            @comment "MPある？"
-            @pic[976].move {
+            // "処理終わり"
+            // "MPある？"
+            @pic[PicID_SP_gauge].move {
                 .pos 179, 226 .center
                 .scale 100
                 .trans 100
@@ -2125,13 +2135,13 @@ __fn func_ui_show_terrain_info {
                 .rgbs 100, 100, 100, 100
             }
             @if v[708] >= 0 {
-                @comment "MPバーびよ～ん"
-                @comment "処理開始"
+                // "MPバーびよ～ん"
+                // "処理開始"
                 v[306] = v[708] * 100
-                @comment "#0除算防止"
+                // "#0除算防止"
                 v[305] = max(v[707], 1)
                 v[306] /= v[305] * 1
-                @pic[979].strpic {
+                @pic[PicID_Unit_SP].strpic {
                     "
           　 　　　 　 \v[306]％"
                     .pos v[1296], v[1297] .topLeft
@@ -2150,7 +2160,7 @@ __fn func_ui_show_terrain_info {
                 v[306] /= 2
                 v[306] = max(min(v[306], 50), 2)
                 v[341] += 72
-                @pic[976].show {
+                @pic[PicID_SP_gauge].show {
                     "MP_bar_main"
                     .pos v[341], v[342] .left
                     .chromakey 0
@@ -2163,22 +2173,22 @@ __fn func_ui_show_terrain_info {
                     .affectedByFlash
                     .affectedByShake
                 }
-                @comment "処理終わり"
-                @comment "名前だし処理"
+                // "処理終わり"
+                // "名前だし処理"
                 s[201].off
                 @if s[52] .isOn() {
                     s[201].on
                     s[52].off
                     
                 }
-                @comment "#予約数"
+                // "#予約数"
                 v[305] = v[325] + 65
                 @if v[236] != v[v[305]] {
                     s[201].on
                     
                 }
                 v[236] = v[v[305]]
-                @comment "#予約Unit"
+                // "#予約Unit"
                 v[306] = v[325] + 33
                 @if v[237] != v[v[306]] {
                     s[201].on
@@ -2189,12 +2199,12 @@ __fn func_ui_show_terrain_info {
                     v[701] = v[237]
                     s[27].toggle
                     v[601] = 0
-                    @comment "###############"
-                    @comment "Init"
+                    // "###############"
+                    // "Init"
                     t[3000..3300] .asg ""
                     t[503] .asg ""
                     t[505] .asg t[20034]
-                    @comment "Load"
+                    // "Load"
                     v[1942] = v[84]
                     @if `v[v[101] * 300 + 4703] & 1 {
                         v[1941] = v[4520] - 10201
@@ -2249,20 +2259,20 @@ __fn func_ui_show_terrain_info {
                         }
                         
                     }
-                    @comment "###############"
+                    // "###############"
                     s[27].toggle
                     
                 }
                 
             } .else bl {
-                @pic[976].move {
+                @pic[PicID_SP_gauge].move {
                     .pos 179, 226 .center
                     .scale 100
                     .trans 100
                     .time 0
                     .rgbs 100, 100, 100, 100
                 }
-                @pic[979].move {
+                @pic[PicID_Unit_SP].move {
                     .pos 179, 226 .center
                     .scale 100
                     .trans 100
@@ -2292,7 +2302,7 @@ __fn func_ui_show_terrain_info {
                 }
                 
             }
-            @comment "Passive"
+            // "Passive"
             v[822] = v[v[101] * 300 + 4922]
             @if v[822] >= 0 {
                 v[341] = v[1287] + v[1289] / 2 + 1
@@ -2320,43 +2330,43 @@ __fn func_ui_show_terrain_info {
                 }
                 
             }
-            @pic[1795].move {
+            @pic[PicID_Terrain].move {
                 .pos v[1041], v[1042] .center
                 .scale 100
                 .trans 100
                 .time 0
                 .rgbs 100, 100, 100, 100
             }
-            @comment "#Tactical Order"
-            @pic[1796].move {
+            // "#Tactical Order"
+            @pic[PicID_Tactical_Order].move {
                 .pos v[1041], v[1042] .center
                 .scale 100
                 .trans 100
                 .time 0
                 .rgbs 100, 100, 100, 100
             }
-            @comment "#Morale"
-            @pic[1797].move {
+            // "#Morale"
+            @pic[PicID_Morale].move {
                 .pos v[1041], v[1042] .center
                 .scale 100
                 .trans 100
                 .time 0
                 .rgbs 100, 100, 100, 100
             }
-            @comment "#Melee Penalty"
-            @pic[1798].move {
+            // "#Melee Penalty"
+            @pic[PicID_MeleePenalty].move {
                 .pos v[1041], v[1042] .center
                 .scale 100
                 .trans 100
                 .time 0
                 .rgbs 100, 100, 100, 100
             }
-            @comment "Disable Buff icons"
-            @loop 8 .dst v[235] {
-                v[341] = v[1127] * v[235]
-                v[341] += v[1125]
-                v[235] += 987
-                @pic[v[235]].show {
+            // "Disable Buff icons"
+            @loop 8 .dst LEGV_BuffcheckLoop2 {
+                v[341] = LEGV_ConstBuffIconsDif * LEGV_BuffcheckLoop2
+                v[341] += LEGV_ConstBuffIconsStartX
+                LEGV_BuffcheckLoop2 += 987
+                @pic[LEGV_BuffcheckLoop2].show {
                     "ui\bufficon"
                     .pos v[341], v[1126] .bottom
                     .chromakey 1
@@ -2371,7 +2381,7 @@ __fn func_ui_show_terrain_info {
             }
             
             v[300] = v[101] * 300 + 4700
-            @comment "safety"
+            // "safety"
             @if `v[v[300] + 1] == 11 {
                 v[301] = v[300]
                 v[251] = 0
@@ -2380,9 +2390,9 @@ __fn func_ui_show_terrain_info {
                     v[315] = v[300] + 141
                     v[350] = v[4556]
                     v[353] = v[v[300] + 213]
-                    @comment "###############"
+                    // "###############"
                     @if v[v[315]] > 0 {
-                        @comment "#RS check"
+                        // "#RS check"
                         v[1301].copy v[31], 4
                         s[151].on
                         v[341] = 200 + v[v[315]]
@@ -2392,9 +2402,9 @@ __fn func_ui_show_terrain_info {
                         s[151].off
                         v[31].copy v[15], 4
                         @call .cev 1916
-                        v[22] = 10
-                        @if v[21] != 0 {
-                            v[22] = 60
+                        reg2 = 10
+                        @if reg1 != 0 {
+                            reg2 = 60
                             
                         }
                         v[343] = v[1038] - 2
@@ -2404,7 +2414,7 @@ __fn func_ui_show_terrain_info {
                             .pos v[1037], v[343] .center
                             .chromakey 1
                             .scale 100
-                            .trans v[22]
+                            .trans reg2
                             .rgbs 100, 100, 100, 100
                             .mapLayer 8
                             .eraseWhenTransfer
@@ -2452,8 +2462,8 @@ __fn func_ui_show_terrain_info {
                         }
                         
                     }
-                    @comment "###############"
-                    @comment "W"
+                    // "###############"
+                    // "W"
                     v[350] += 1
                     v[315] += 3
                     @if v[v[315]] > 0 {
@@ -2466,9 +2476,9 @@ __fn func_ui_show_terrain_info {
                         s[151].off
                         v[31].copy v[15], 4
                         @call .cev 1916
-                        v[22] = 10
-                        @if v[21] != 0 {
-                            v[22] = 60
+                        reg2 = 10
+                        @if reg1 != 0 {
+                            reg2 = 60
                             
                         }
                         v[343] = v[1040] - 2
@@ -2478,7 +2488,7 @@ __fn func_ui_show_terrain_info {
                             .pos v[1039], v[343] .center
                             .chromakey 1
                             .scale 100
-                            .trans v[22]
+                            .trans reg2
                             .rgbs 100, 100, 100, 100
                             .mapLayer 8
                             .eraseWhenTransfer
@@ -2526,7 +2536,7 @@ __fn func_ui_show_terrain_info {
                         }
                         
                     }
-                    @comment "E"
+                    // "E"
                     v[350] += 1
                     v[315] += 3
                     @if v[v[315]] > 0 {
@@ -2539,9 +2549,9 @@ __fn func_ui_show_terrain_info {
                         s[151].off
                         v[31].copy v[15], 4
                         @call .cev 1916
-                        v[22] = 10
-                        @if v[21] != 0 {
-                            v[22] = 60
+                        reg2 = 10
+                        @if reg1 != 0 {
+                            reg2 = 60
                             
                         }
                         v[343] = v[1042] - 2
@@ -2551,7 +2561,7 @@ __fn func_ui_show_terrain_info {
                             .pos v[1041], v[343] .center
                             .chromakey 1
                             .scale 100
-                            .trans v[22]
+                            .trans reg2
                             .rgbs 100, 100, 100, 100
                             .mapLayer 8
                             .eraseWhenTransfer
@@ -2599,7 +2609,7 @@ __fn func_ui_show_terrain_info {
                         }
                         
                     }
-                    @comment "R"
+                    // "R"
                     v[350] += 1
                     v[315] += 3
                     @if v[v[315]] > 0 {
@@ -2612,9 +2622,9 @@ __fn func_ui_show_terrain_info {
                         s[151].off
                         v[31].copy v[15], 4
                         @call .cev 1916
-                        v[22] = 10
-                        @if v[21] != 0 {
-                            v[22] = 60
+                        reg2 = 10
+                        @if reg1 != 0 {
+                            reg2 = 60
                             
                         }
                         v[343] = v[1044] - 2
@@ -2624,7 +2634,7 @@ __fn func_ui_show_terrain_info {
                             .pos v[1043], v[343] .center
                             .chromakey 1
                             .scale 100
-                            .trans v[22]
+                            .trans reg2
                             .rgbs 100, 100, 100, 100
                             .mapLayer 8
                             .eraseWhenTransfer
@@ -2685,9 +2695,9 @@ __fn func_ui_show_terrain_info {
                         s[151].off
                         v[31].copy v[15], 4
                         @call .cev 1916
-                        v[22] = 10
-                        @if v[21] != 0 {
-                            v[22] = 60
+                        reg2 = 10
+                        @if reg1 != 0 {
+                            reg2 = 60
                             
                         }
                         
@@ -2700,7 +2710,7 @@ __fn func_ui_show_terrain_info {
                                 .pos v[1045], v[1046] .center
                                 .chromakey 1
                                 .scale 100
-                                .trans v[22]
+                                .trans reg2
                                 .rgbs 100, 100, 100, 100
                                 .grid 8, 1 .cell 2
                                 .mapLayer 8
@@ -2716,7 +2726,7 @@ __fn func_ui_show_terrain_info {
                                 .pos v[1045], v[343] .center
                                 .chromakey 1
                                 .scale 100
-                                .trans v[22]
+                                .trans reg2
                                 .rgbs 100, 100, 100, 100
                                 .mapLayer 8
                                 .eraseWhenTransfer
@@ -2738,8 +2748,7 @@ __fn func_ui_show_terrain_info {
                     }
                     
                 }
-                @comment "#########
-TechSlots"
+                // "#########TechSlots"
                 v[315] = v[300] + 156
                 v[1301].copy v[31], 4
                 @if v[v[315]] >= 10000 {
@@ -2751,9 +2760,9 @@ TechSlots"
                         s[151].off
                         v[31].copy v[15], 4
                         @call .cev 1916
-                        v[22] = 10
-                        @if v[21] != 0 {
-                            v[22] = 60
+                        reg2 = 10
+                        @if reg1 != 0 {
+                            reg2 = 60
                             
                         }
                         
@@ -2767,7 +2776,7 @@ TechSlots"
                                 .pos v[1047], v[1048] .center
                                 .chromakey 1
                                 .scale 100
-                                .trans v[22]
+                                .trans reg2
                                 .rgbs 100, 100, 100, 100
                                 .grid 8, 1 .cell 2
                                 .mapLayer 8
@@ -2783,7 +2792,7 @@ TechSlots"
                                 .pos v[1047], v[343] .center
                                 .chromakey 1
                                 .scale 100
-                                .trans v[22]
+                                .trans reg2
                                 .rgbs 100, 100, 100, 100
                                 .mapLayer 8
                                 .eraseWhenTransfer
@@ -2805,7 +2814,7 @@ TechSlots"
                     }
                     
                 }
-                //@comment "#########TechSlots"
+                //// "#########TechSlots"
                 v[315] = v[300] + 159
                 v[1301].copy v[31], 4
                 @if v[v[315]] >= 10000 {
@@ -2817,9 +2826,9 @@ TechSlots"
                         s[151].off
                         v[31].copy v[15], 4
                         @call .cev 1916
-                        v[22] = 10
-                        @if v[21] != 0 {
-                            v[22] = 60
+                        reg2 = 10
+                        @if reg1 != 0 {
+                            reg2 = 60
                             
                         }
                         
@@ -2833,7 +2842,7 @@ TechSlots"
                                 .pos v[1049], v[1050] .center
                                 .chromakey 1
                                 .scale 100
-                                .trans v[22]
+                                .trans reg2
                                 .rgbs 100, 100, 100, 100
                                 .grid 8, 1 .cell 2
                                 .mapLayer 8
@@ -2849,7 +2858,7 @@ TechSlots"
                                 .pos v[1049], v[343] .center
                                 .chromakey 1
                                 .scale 100
-                                .trans v[22]
+                                .trans reg2
                                 .rgbs 100, 100, 100, 100
                                 .mapLayer 8
                                 .eraseWhenTransfer
@@ -2875,14 +2884,14 @@ TechSlots"
             }
             
         } .else bl {
-            //@comment "選択中のObjが撃破されている"
-            v[81] = 0
+            //// "選択中のObjが撃破されている"
+            LEGV_State_of_Central_Monitor = 0
             
         }
         @wait 0
         
     }
-    @if v[81] == 5 {
+    @if LEGV_State_of_Central_Monitor == 5 {
         v[341] = v[4556]
         @loop 4 {
             @pic[v[341]].move {
@@ -2900,10 +2909,10 @@ TechSlots"
         v[325] += 4805
         v[v[325]].copy v[705], 4
         @if v[706] > 0 {
-            //@comment "HPバーびよ～ん"
-            //@comment "処理開始"
+            //// "HPバーびよ～ん"
+            //// "処理開始"
             v[306] = v[706] * 100
-            //@comment "#0除算防止"
+            //// "#0除算防止"
             v[305] = max(v[705], 1)
             v[306] /= v[305] * 2
             v[306] = max(v[306], 2)
@@ -2923,7 +2932,7 @@ TechSlots"
                 .affectedByFlash
                 .affectedByShake
             }
-            @pic[978].strpic {
+            @pic[PicID_Central_Monitor_Text].strpic {
                 " \t[525]HP:\v[706]/\v[705]"
                 .pos v[1296], v[1297] .topLeft
                 .size 200, 24                .chromakey 1
@@ -2938,16 +2947,16 @@ TechSlots"
                 .affectedByFlash
                 .affectedByShake
             }
-            //@comment "処理終わり"
-            //@comment "MPある？"
-            @pic[976].move {
+            //// "処理終わり"
+            //// "MPある？"
+            @pic[PicID_SP_gauge].move {
                 .pos 179, 226 .center
                 .scale 100
                 .trans 100
                 .time 0
                 .rgbs 100, 100, 100, 100
             }
-            //@comment "Passive"
+            //// "Passive"
             v[822] = v[v[100] * 300 + 4922]
             @if v[822] >= 0 {
                 v[341] = v[1287] + v[1289] / 2 + 1
@@ -2975,43 +2984,43 @@ TechSlots"
                 }
                 
             }
-            //@comment "Disable Buff icons"
-            @pic[1795].move {
+            //// "Disable Buff icons"
+            @pic[PicID_Terrain].move {
                 .pos v[1041], v[1042] .center
                 .scale 100
                 .trans 100
                 .time 0
                 .rgbs 100, 100, 100, 100
             }
-            //@comment "#Tactical Order"
-            @pic[1796].move {
+            //// "#Tactical Order"
+            @pic[PicID_Tactical_Order].move {
                 .pos v[1041], v[1042] .center
                 .scale 100
                 .trans 100
                 .time 0
                 .rgbs 100, 100, 100, 100
             }
-            @comment "#Morale"
-            @pic[1797].move {
+            // "#Morale"
+            @pic[PicID_Morale].move {
                 .pos v[1041], v[1042] .center
                 .scale 100
                 .trans 100
                 .time 0
                 .rgbs 100, 100, 100, 100
             }
-            @comment "#Melee Penalty"
-            @pic[1798].move {
+            // "#Melee Penalty"
+            @pic[PicID_MeleePenalty].move {
                 .pos v[1041], v[1042] .center
                 .scale 100
                 .trans 100
                 .time 0
                 .rgbs 100, 100, 100, 100
             }
-            @loop 8 .dst v[235] {
-                v[341] = v[1127] * v[235]
-                v[341] += v[1125]
-                v[235] += 987
-                @pic[v[235]].show {
+            @loop 8 .dst LEGV_BuffcheckLoop2 {
+                v[341] = LEGV_ConstBuffIconsDif * LEGV_BuffcheckLoop2
+                v[341] += LEGV_ConstBuffIconsStartX
+                LEGV_BuffcheckLoop2 += 987
+                @pic[LEGV_BuffcheckLoop2].show {
                     "ui\bufficon"
                     .pos v[341], v[1126] .bottom
                     .chromakey 1
@@ -3027,14 +3036,14 @@ TechSlots"
             
             
         } .else bl {
-            v[81] = 0
-            //@comment "選択中のObjが撃破されている"
+            LEGV_State_of_Central_Monitor = 0
+            //// "選択中のObjが撃破されている"
             
         }
         @wait 0
         
     }
-    @if v[81] == 6 {
+    @if LEGV_State_of_Central_Monitor == 6 {
         v[341] = v[4556]
         @loop 4 {
             v[341] += 1
@@ -3048,29 +3057,29 @@ TechSlots"
             
         }
         
-        @pic[978].erase
+        @pic[PicID_Central_Monitor_Text].erase
         v[202] = 101
         v[302..303] = 0
         @loop .inf() {
             @if v[v[202]] == 0 {
-                //@comment "とぎれた"
+                //// "とぎれた"
                 @break
                 
             }
             @if v[202] > v[1007] {
-                //@comment "とりあえず40体までしか選択できない"
+                //// "とりあえず40体までしか選択できない"
                 @break
                 
             }
-            //@comment "配列ゲット"
+            //// "配列ゲット"
             v[301] = v[v[202]] * 300
             v[301] += 4700
             v[300] = v[301] + 1
             @if v[v[300]] >= 1 {
-                //@comment "生存してる数をゲット"
+                //// "生存してる数をゲット"
                 v[302] += 1
                 v[299] = v[301] + 106
-                //@comment "ＨＰゲット"
+                //// "ＨＰゲット"
                 v[303] += v[v[299]]
                 
             }
@@ -3078,20 +3087,20 @@ TechSlots"
             
         }
         
-        //@comment "損耗率計算"
+        //// "損耗率計算"
         v[306] = v[303] * 100
-        //@comment "#0除算防止"
+        //// "#0除算防止"
         v[305] = max(v[98], 1)
         v[306] /= v[305]
         v[307] = v[306]
         v[306] /= 2
         v[306] = max(v[306], 1)
-        //@comment "Set pos"
+        //// "Set pos"
         v[341] = v[1296] + 116
         v[342] = v[1297] + 12
         @if v[302] <= 0 {
-            //@comment "全滅！"
-            v[81] = 0
+            //// "全滅！"
+            LEGV_State_of_Central_Monitor = 0
             @ev.abort
             
         }
@@ -3104,7 +3113,7 @@ TechSlots"
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        //@comment "Passive"
+        //// "Passive"
         v[822] = v[v[101] * 300 + 4922]
         @if v[822] >= 0 {
             v[341] = v[1287] + v[1289] / 2 + 1
@@ -3132,36 +3141,36 @@ TechSlots"
             }
             
         }
-        //@comment "#Tactical Order"
-        @pic[1796].move {
+        //// "#Tactical Order"
+        @pic[PicID_Tactical_Order].move {
             .pos v[1041], v[1042] .center
             .scale 100
             .trans 100
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        //@comment "#Morale"
-        @pic[1797].move {
+        //// "#Morale"
+        @pic[PicID_Morale].move {
             .pos v[1041], v[1042] .center
             .scale 100
             .trans 100
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        //@comment "#Melee Penalty"
-        @pic[1798].move {
+        //// "#Melee Penalty"
+        @pic[PicID_MeleePenalty].move {
             .pos v[1041], v[1042] .center
             .scale 100
             .trans 100
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        //@comment "Disable Buff icons"
-        @loop 8 .dst v[235] {
-            v[341] = v[1127] * v[235]
-            v[341] += v[1125]
-            v[235] += 987
-            @pic[v[235]].show {
+        //// "Disable Buff icons"
+        @loop 8 .dst LEGV_BuffcheckLoop2 {
+            v[341] = LEGV_ConstBuffIconsDif * LEGV_BuffcheckLoop2
+            v[341] += LEGV_ConstBuffIconsStartX
+            LEGV_BuffcheckLoop2 += 987
+            @pic[LEGV_BuffcheckLoop2].show {
                 "ui\bufficon"
                 .pos v[341], v[1126] .bottom
                 .chromakey 1
@@ -3184,9 +3193,9 @@ TechSlots"
                 v[315] = v[300] + 141
                 v[350] = v[4556]
                 v[353] = v[v[300] + 213]
-                //@comment "###############"
+                //// "###############"
                 @if v[v[315]] > 0 {
-                    //@comment "#RS check"
+                    //// "#RS check"
                     v[1301].copy v[31], 4
                     s[151].on
                     v[341] = 200 + v[v[315]]
@@ -3196,9 +3205,9 @@ TechSlots"
                     s[151].off
                     v[31].copy v[15], 4
                     @call .cev 1916
-                    v[22] = 10
-                    @if v[21] != 0 {
-                        v[22] = 60
+                    reg2 = 10
+                    @if reg1 != 0 {
+                        reg2 = 60
                         
                     }
                     v[343] = v[1038] - 2
@@ -3208,7 +3217,7 @@ TechSlots"
                         .pos v[1037], v[343] .center
                         .chromakey 1
                         .scale 100
-                        .trans v[22]
+                        .trans reg2
                         .rgbs 100, 100, 100, 100
                         .mapLayer 8
                         .eraseWhenTransfer
@@ -3256,8 +3265,8 @@ TechSlots"
                     }
                     
                 }
-                //@comment "###############"
-                //@comment "W"
+                //// "###############"
+                //// "W"
                 v[315] = v[300] + 144
                 v[350] += 1
                 @if v[v[315]] > 0 {
@@ -3270,9 +3279,9 @@ TechSlots"
                     s[151].off
                     v[31].copy v[15], 4
                     @call .cev 1916
-                    v[22] = 10
-                    @if v[21] != 0 {
-                        v[22] = 60
+                    reg2 = 10
+                    @if reg1 != 0 {
+                        reg2 = 60
                         
                     }
                     v[343] = v[1040] - 2
@@ -3282,7 +3291,7 @@ TechSlots"
                         .pos v[1039], v[343] .center
                         .chromakey 1
                         .scale 100
-                        .trans v[22]
+                        .trans reg2
                         .rgbs 100, 100, 100, 100
                         .mapLayer 8
                         .eraseWhenTransfer
@@ -3330,7 +3339,7 @@ TechSlots"
                     }
                     
                 }
-                //@comment "E"
+                //// "E"
                 v[315] = v[300] + 147
                 v[350] += 1
                 @if v[v[315]] > 0 {
@@ -3343,9 +3352,9 @@ TechSlots"
                     s[151].off
                     v[31].copy v[15], 4
                     @call .cev 1916
-                    v[22] = 10
-                    @if v[21] != 0 {
-                        v[22] = 60
+                    reg2 = 10
+                    @if reg1 != 0 {
+                        reg2 = 60
                         
                     }
                     v[343] = v[1042] - 2
@@ -3355,7 +3364,7 @@ TechSlots"
                         .pos v[1041], v[343] .center
                         .chromakey 1
                         .scale 100
-                        .trans v[22]
+                        .trans reg2
                         .rgbs 100, 100, 100, 100
                         .mapLayer 8
                         .eraseWhenTransfer
@@ -3403,7 +3412,7 @@ TechSlots"
                     }
                     
                 }
-                //@comment "R"
+                //// "R"
                 v[315] = v[300] + 150
                 v[350] += 1
                 @if v[v[315]] > 0 {
@@ -3416,9 +3425,9 @@ TechSlots"
                     s[151].off
                     v[31].copy v[15], 4
                     @call .cev 1916
-                    v[22] = 10
-                    @if v[21] != 0 {
-                        v[22] = 60
+                    reg2 = 10
+                    @if reg1 != 0 {
+                        reg2 = 60
                         
                     }
                     v[343] = v[1044] - 2
@@ -3428,7 +3437,7 @@ TechSlots"
                         .pos v[1043], v[343] .center
                         .chromakey 1
                         .scale 100
-                        .trans v[22]
+                        .trans reg2
                         .rgbs 100, 100, 100, 100
                         .mapLayer 8
                         .eraseWhenTransfer
@@ -3489,9 +3498,9 @@ TechSlots"
                     s[151].off
                     v[31].copy v[15], 4
                     @call .cev 1916
-                    v[22] = 10
-                    @if v[21] != 0 {
-                        v[22] = 60
+                    reg2 = 10
+                    @if reg1 != 0 {
+                        reg2 = 60
                         
                     }
                     
@@ -3504,7 +3513,7 @@ TechSlots"
                             .pos v[1045], v[1046] .center
                             .chromakey 1
                             .scale 100
-                            .trans v[22]
+                            .trans reg2
                             .rgbs 100, 100, 100, 100
                             .grid 8, 1 .cell 2
                             .mapLayer 8
@@ -3520,7 +3529,7 @@ TechSlots"
                             .pos v[1045], v[343] .center
                             .chromakey 1
                             .scale 100
-                            .trans v[22]
+                            .trans reg2
                             .rgbs 100, 100, 100, 100
                             .mapLayer 8
                             .eraseWhenTransfer
@@ -3542,7 +3551,7 @@ TechSlots"
                 }
                 
             }
-            //@comment "#########TechSlots"
+            //// "#########TechSlots"
             v[315] = v[300] + 156
             v[1301].copy v[31], 4
             @if v[v[315]] >= 10000 {
@@ -3554,9 +3563,9 @@ TechSlots"
                     s[151].off
                     v[31].copy v[15], 4
                     @call .cev 1916
-                    v[22] = 10
-                    @if v[21] != 0 {
-                        v[22] = 60
+                    reg2 = 10
+                    @if reg1 != 0 {
+                        reg2 = 60
                         
                     }
                     
@@ -3570,7 +3579,7 @@ TechSlots"
                             .pos v[1047], v[1048] .center
                             .chromakey 1
                             .scale 100
-                            .trans v[22]
+                            .trans reg2
                             .rgbs 100, 100, 100, 100
                             .grid 8, 1 .cell 2
                             .mapLayer 8
@@ -3586,7 +3595,7 @@ TechSlots"
                             .pos v[1047], v[343] .center
                             .chromakey 1
                             .scale 100
-                            .trans v[22]
+                            .trans reg2
                             .rgbs 100, 100, 100, 100
                             .mapLayer 8
                             .eraseWhenTransfer
@@ -3608,7 +3617,7 @@ TechSlots"
                 }
                 
             }
-            //@comment "#########TechSlots"
+            //// "#########TechSlots"
             v[315] = v[300] + 159
             v[1301].copy v[31], 4
             @if v[v[315]] >= 10000 {
@@ -3620,9 +3629,9 @@ TechSlots"
                     s[151].off
                     v[31].copy v[15], 4
                     @call .cev 1916
-                    v[22] = 10
-                    @if v[21] != 0 {
-                        v[22] = 60
+                    reg2 = 10
+                    @if reg1 != 0 {
+                        reg2 = 60
                         
                     }
                     
@@ -3636,7 +3645,7 @@ TechSlots"
                             .pos v[1049], v[1050] .center
                             .chromakey 1
                             .scale 100
-                            .trans v[22]
+                            .trans reg2
                             .rgbs 100, 100, 100, 100
                             .grid 8, 1 .cell 2
                             .mapLayer 8
@@ -3652,7 +3661,7 @@ TechSlots"
                             .pos v[1049], v[343] .center
                             .chromakey 1
                             .scale 100
-                            .trans v[22]
+                            .trans reg2
                             .rgbs 100, 100, 100, 100
                             .mapLayer 8
                             .eraseWhenTransfer
@@ -3679,11 +3688,11 @@ TechSlots"
         @wait 0
         
     }
-    @if v[81] != 3 {
-        @if v[81] != 5 {
-            //@comment "敵見てなくて指定してるものがなければ消しておく"
+    @if LEGV_State_of_Central_Monitor != 3 {
+        @if LEGV_State_of_Central_Monitor != 5 {
+            //// "敵見てなくて指定してるものがなければ消しておく"
             @if v[101] == 0 {
-                v[81] = 0
+                LEGV_State_of_Central_Monitor = 0
                 
             }
             
@@ -3692,8 +3701,8 @@ TechSlots"
     }
     
 } .else bl {
-    @if v[81] == 0 {
-        s[30].off
+    @if LEGV_State_of_Central_Monitor == 0 {
+        LEGS_StatusPage2.off
         v[341] = v[4556]
         @loop 4 {
             @pic[v[341]].move {
@@ -3719,42 +3728,42 @@ TechSlots"
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        //@comment "Disable Buff icons"
-        @pic[1795].move {
+        //// "Disable Buff icons"
+        @pic[PicID_Terrain].move {
             .pos v[1041], v[1042] .center
             .scale 100
             .trans 100
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        //@comment "#Tactical Order"
-        @pic[1796].move {
+        //// "#Tactical Order"
+        @pic[PicID_Tactical_Order].move {
             .pos v[1041], v[1042] .center
             .scale 100
             .trans 100
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        //@comment "#Morale"
-        @pic[1797].move {
+        //// "#Morale"
+        @pic[PicID_Morale].move {
             .pos v[1041], v[1042] .center
             .scale 100
             .trans 100
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        //@comment "#Melee Penalty"
-        @pic[1798].move {
+        //// "#Melee Penalty"
+        @pic[PicID_MeleePenalty].move {
             .pos v[1041], v[1042] .center
             .scale 100
             .trans 100
             .time 0
             .rgbs 100, 100, 100, 100
         }
-        @loop 8 .dst v[235] {
-            v[341] = v[1127] * v[235]+ v[1125]
-            v[235] += 987
-            @pic[v[235]].show {
+        @loop 8 .dst LEGV_BuffcheckLoop2 {
+            v[341] = LEGV_ConstBuffIconsDif * LEGV_BuffcheckLoop2+ LEGV_ConstBuffIconsStartX
+            LEGV_BuffcheckLoop2 += 987
+            @pic[LEGV_BuffcheckLoop2].show {
                 "ui\bufficon"
                 .pos v[341], v[1126] .bottom
                 .chromakey 1
@@ -3768,8 +3777,8 @@ TechSlots"
             
         }
         
-        //@comment "Operation Panel"
-        @pic[981].move {
+        //// "Operation Panel"
+        @pic[PicID_Operation_Panel].move {
             .pos 16, 232 .center
             .scale 100
             .trans 100
@@ -3778,7 +3787,7 @@ TechSlots"
         }
         v[341] = v[496] * v[1129]
         v[341] += v[1130]
-        @pic[978].strpic {
+        @pic[PicID_Central_Monitor_Text].strpic {
             " Map edit mode"
             .pos v[1296], v[1297] .topLeft
             .size 0, 0            .chromakey 1
@@ -3800,13 +3809,16 @@ TechSlots"
     }
     
 }
-@if v[204] >= v[1006] {
+
+@if LEGV_AgentsAmount >= LEGV_Const_BIGBATTLE_agent_limit {
     @wait 0
     
 }
+
+
 @pic[1774].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
 @if s[187] .isOn() {
-    @pic[1774].show {
+    @pic[PicID_Idle_Worker_Icon].show {
         "ui\switch_idle_worker"
         .pos v[1952], v[1953] .center
         .chromakey 1
@@ -3819,7 +3831,7 @@ TechSlots"
     }
     
 } .else bl {
-    @pic[1774].show {
+    @pic[PicID_Idle_Worker_Icon].show {
         "ui\switch_idle_worker"
         .pos v[1952], v[1953] .center
         .chromakey 1

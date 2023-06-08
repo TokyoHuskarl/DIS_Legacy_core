@@ -43,7 +43,7 @@ __fn func_load_cache $string {
 }
 
 __fn function_set_agent_picture $agentid $stringvar $slot {
-	TT1 = (v[__id($agentid)] - 1)*10
+	TT1 = (v[__id($agentid)] - 1) * 10
 	TT1 = TT1 + Const_str_agent_pictures_strings_start
 	TT2 = TT1+ $slot 
 	t[TT2].asg t[__id($stringvar)]

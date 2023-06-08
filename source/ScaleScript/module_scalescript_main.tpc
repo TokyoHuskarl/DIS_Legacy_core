@@ -23,7 +23,7 @@ __fn SS_system_popup $givenstring {
 					//then let DIS log system deal with the given string
 					func_show_msg($givenstring)
 				}.else bl{ // Default but not with DIS
-					@msg $givenstring //just use message window
+					@msg.show $givenstring //just use message window
 				}
 			}
 		

@@ -365,7 +365,7 @@ __fn func_mouse_mapedit{
 			    
 				}.elif `v[52] <= v[1286] && !(v[51] <= v[4514] && v[52] >= v[4515]) {
 				    @if s[11] .isOff() {
-					func_play_system_se("Earth7" 70 50)
+					play_system_se("Earth7" 70 50)
 					s[11].on
 					v[42] = -1
 

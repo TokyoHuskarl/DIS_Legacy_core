@@ -1,8 +1,14 @@
 //#############################
 //Scale script tokens
 
+
+
+
 //SS process uses picture as a temporary buffer so you must give one picID to SS
 def SS_buffer_picID = 100
+
+
+def SS_picture_export_path = "export/picture"
 
 //
 defv SScmdDynCounter = 508
@@ -236,30 +242,7 @@ SS_funcgroup("SSBuffer functions", {
 	//just init and generate picture for buffer
 	// init_SSb might be better name for this function
 	__fn construct_SSb {
-		/*
-		@pic.getInfo[SS_buffer_picID]{
-			.currentRect(a, b, c, d)
-		}*/
-
-		@pic[SS_buffer_picID].erase
-
-		@pic.strpic[SS_buffer_picID]{
-			""
-			.pos(-1000000, -1000000) //not in your screen
-			.center
-			.useChromakey
-			.scale(100)
-			.trans(100)
-			.rgbs(100, 100, 100, 100)
-			.size(SS_buffer_array_Size, SS_buffer_array_amount)
-			.font("", 12)
-			.skin("")    
-			.noframe    
-			.noGradation
-			.noShadow 
-			.noPadding
-			.nobg
-		}
+		construct_picture_buffer(SS_buffer_picID,SS_buffer_array_Size,SS_buffer_array_amount)
 	}
 	
 	__fn pop_element_from_SSb_array $targvar $arrayid {
