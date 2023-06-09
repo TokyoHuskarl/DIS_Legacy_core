@@ -25,7 +25,7 @@ __fn get_AEAB_element $agentid $getadd $slot {
 }
 
 __fn get_AEAB_array $agentid $getadd $startslot $range {
-	get_picture_pixel($getadd,PicID_AgentExBuffer,$startslot,$agentid,$range)
+	get_picture_horizontal_line($getadd,PicID_AgentExBuffer,$startslot,$agentid,$range)
 }
 
 __fn init_AEAB_array $agentid {
