@@ -3,13 +3,26 @@
 __if __defined(NsLib_Header_Included) {}.else bl {
 
 #include "./module_NsLib_math_functions.tpc"
-#include "./module_NsLib_sound_functions.tpc"
 #include "./module_NsLib_system_functions.tpc"
 #include "./module_NsLib_picture_functions.tpc"
 #include "./module_NsLib_utility_functions.tpc"
+
+// string functions
 #include "./module_NsLib_string_functions.tpc"
+
+// GUI functions
 #include "./module_NsLib_GUI_functions.tpc"
 
+// Sound system
+defv {
+	//NsLib_SYSTEM_SE_VOLUME = 1
+	//NsLib_SYSTEM_BGM_VOLUME = 2
+}
+__if __defined(NsLib_SYSTEM_SE_VOLUME) {
+	__if __defined(NsLib_SYSTEM_BGM_VOLUME) {
+#include "./module_NsLib_sound_functions.tpc"
+	}
+}
 def NsLib_Header_Included = 1
 
 }

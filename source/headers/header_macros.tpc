@@ -4,11 +4,11 @@
 //cev 2000
 //$regX and $regY must be vars set at address in a row
 __fn macro_convert_relativeXY_into_maptileXY $TileX $TileY $regX $regY {
-	v[__id($tileX)].copy v[__id($regX)], 2
+	$tileX.copy $regX, 2
 	v[__id($regX)] += 8
 	v[__id($regY)] += 24
 	//@comment "ずれ計算"
-	v[__id($regX)] .sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
+	$regX.sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
 	v[__id($regX)] /= 16
 	v[__id($regY)] /= 16
 }

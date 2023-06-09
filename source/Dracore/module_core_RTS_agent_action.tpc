@@ -1,7 +1,7 @@
 
 
 
-cev .id(19), .name("Agent:Unit Action") , .parallel , .cond(Const_Is_RTS_Mode), {   
+cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond(Const_Is_RTS_Mode), {   
 	@comment "Normal Units"
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {

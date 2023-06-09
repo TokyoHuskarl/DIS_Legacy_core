@@ -25,8 +25,8 @@ __fn macro_ColCheck_distance {
 	//get colbox
 	__if DIS_EXPERIMENTAL == 1 {
 		//get from AEAB
-		v[332] = v[v[203]]
-		get_AEAB_array(v[332],__id(v[332]),AgentExBuffer_SLOT_ColBoxWidth,2)
+		v[322] = v[v[203]]
+		get_AEAB_array(v[322],__id(v[322]),AgentExBuffer_SLOT_ColBoxWidth,2)
 	}.else bl {
 		v[322] = Address_Agent_HitCollisionArrayStartMinus2 
 		v[322] += v[v[203]] * 2
