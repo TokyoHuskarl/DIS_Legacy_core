@@ -140,7 +140,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 	@if s[1] .isOn() {
 	    t[501] .asg  .file "../Maps/define_maps", .utf8
 	    @if t[750] .eq "" {
-		t[502] .asg ".*@"
+		t[502] .asg ".*="
 		t[502] .cat t[751]
 		t[501].exMatch {
 		    t[502]
@@ -154,7 +154,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 		
 	    } .else bl {
 		t[502] .asg t[750]
-		t[502] .cat "@.*"
+		t[502] .cat "=.*"
 		t[501].exMatch {
 		    t[502]
 		    t[501]

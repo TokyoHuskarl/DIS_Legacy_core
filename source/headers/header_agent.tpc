@@ -30,6 +30,6 @@ __fn macro_set_agent_AI_decision_Sub_WEP_Type $AAusage  {
 
 __fn macro_get_agent_MetaTeam_into_var $agentid $getvar {
 	var1 = $agentid
-	get_AEAB_array(var1,__id($getvar),AgentExBuffer_SLOT_MetaTeam)
+	get_AEAB_element(var1,__id($getvar),AgentExBuffer_SLOT_MetaTeam)
 }
 

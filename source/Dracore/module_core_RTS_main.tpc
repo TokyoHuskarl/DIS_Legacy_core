@@ -29,10 +29,10 @@ __fn func_main_save_agent_vars {
 __fn func_blink_set {
 
 	@if s[2] .isOff()  {
-		@if `!(v[725]&448){
+		@if `!(v[725] & 448) {
 			//blink flag?
 			TT1 = v[604] + v[2500] 
-			v[725] |= (TT1 % 200) == 0?64:0 //?
+			v[725] |= (TT1 % 200) == 0 ? 64 : 0 //?
 		}
 	}
 
@@ -42,8 +42,8 @@ __fn func_blink_set {
 __fn func_blink_progress {
 	@if s[2] .isOff()  {
 		//v[725]=v[301]+125
-		@if `v[725]&448{
-			v[725]=v[725]&256?v[725]&-449: (v[725]&128?v[725]|256: (v[725]&64?v[725]|128:v[725]) ) //256+128->384 +64 ->448 then ~448 -> -449
+		@if `v[725] & 448 {
+			v[725] = v[725] & 256 ? v[725] & -449 : (v[725] & 128 ? v[725] | 256 : (v[725] & 64 ? v[725] | 128 : v[725])) //256+128->384 +64 ->448 then ~448 -> -449
 		}
 	}
 }
@@ -59,7 +59,7 @@ __fn macro_HPSPreg $agent $HP_or_SP $amount{
 	//v[343] = v[342] - 1
 	//v[v[342]] += $amount
 	// "Min(HealedHP,MaxHP)"
-	v[v[342]] = min(v[v[342]]+$amount, v[v[342] - 1])
+	v[v[342]] = min(v[v[342]] + $amount, v[v[342] - 1])
 }
 
 
@@ -85,7 +85,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[522] += v[182]
 	    
 	}*/
-	v[522] = v[2501]==0?0:v[522]+v[182]
+	v[522] = v[2501] == 0 ? 0 : v[522] + v[182]
 	//v[181..184] = 0
 	//v[181..184] = 0
 	v[ptr_null].copy v[181],4
@@ -1071,7 +1071,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    @if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
 			//v[342] = v[2409 + v[251] % 3]
 			
-			__if DIS_EXPERIMENTAL == 1 { 
+			__if DIS_EXPERIMENTAL == 2 { 
 				macro_get_agent_MetaTeam_into_var(v[v[536]],TT2)
 			}.else bl {
 				TT2 = v[Const_AgentMetaTeam_begin+v[401]]
@@ -2059,7 +2059,6 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		//func_devlog("Shield Wall aura STARTs from \v[341],\v[342] - Length \v[343],\v[344] ")
 		STARTPOINTx += STARTPOINTy * var_Map_Width
 		STARTPOINTx += Const_save_var_TileFlags
-		//DEBUG
 		@loop Length_y {
 			//func_devlog("Shield Wall aura set to memory adress[\v[341]] + \v[343] ")
 			v[STARTPOINTx].or $var_rangestart, Length_x //set flag
@@ -2067,9 +2066,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 	}
 
-	//initialize Tile Flags
-	//v[Const_save_var_TileFlags..Const_save_var_TileFlags+var_allocatedmapsize] >>=32 
-	v[ptr_null].copy v[Const_save_var_TileFlags], var_allocatedmapsize //Kill first 2 flags - it might be changed later. Idk
+	// initialize Tile Flags
+	v[ptr_null].copy v[Const_save_var_TileFlags], var_allocatedmapsize //you should just kill first 2 flags? or not? - it might be changed later. Idk
 
 	//Land units
 	v[536] = v[4532]
@@ -2153,7 +2151,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					defv bool_if_my_tile_is_covered = __id(TempFlag1)
 
 					// get agent MetaTeam
-					__if DIS_EXPERIMENTAL == 1 {
+					__if DIS_EXPERIMENTAL == 2 {
 						macro_get_agent_MetaTeam_into_var(v[v[536]],TT1)
 						flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << TT1 //shift Meta Team
 					}.else bl {
@@ -2170,7 +2168,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				defv flag_pikecovered = __id(TT10)
 				
 				// get agent MetaTeam
-				__if DIS_EXPERIMENTAL == 1 {
+				__if DIS_EXPERIMENTAL == 2 {
 					macro_get_agent_MetaTeam_into_var(v[v[536]],TT1)
 					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << TT1 //shift Meta Team
 				}.else bl {
@@ -2217,7 +2215,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    @if agent_StanceOrder <= 0 {
 			@if agent_ActionState == 0 {
 			    @if agent_worker_JobType == 0 {
-				s[187].on//there's at least one idle worker unit 
+				s[187].on // there's at least one idle worker unit 
 				@if s[2] .isOff() {// not pause
 				    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen{ //s[500 + v[v[536]]]==1 { 
 					@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { //124 = magic number but maybe 48*3
@@ -2233,12 +2231,12 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						    /*@if s[1] .isOn() {
 							@if v[182] <= 4 {
 							    v[182] += 1
-							    // "#########################"
+							    // #########################
 							    v[471] = 11550
 							    v[472] = divmul(25, 100, v[2216])
 							    v[473] = rnd(90, 115)
 							    v[474] = divmul(v[361] + v[1001], v[1281], 50)
-							    // "#########################"
+							    // #########################
 							    v[329] = rnd(1, 3)
 							    t[510] .asg "vo\dragon_gyaogyao"
 							    t[510] .cat v[329]
@@ -2247,12 +2245,13 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							}
 							
 						    }*/
+						    // quotes of dragon workers vary
 						    v[341] += agent_UnitID == 10 ? 1 : 2
 						    
 						}
 
-						t[501] .asg t[v[341]] //text that says "I'm idle"
-						//Set new particle emitter
+						t[501] .asg t[v[341]] // text that says "I'm idle"
+						// Set new particle emitter
 						@loop v[1017] .dst v[320] {
 						    v[242] %= v[1017]
 						    v[331] = v[242] * 100
@@ -2336,14 +2335,13 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	}
 
 	@if `v[2941] != v[2945] || v[2942] != v[2946] || v[2943] != v[2947] || v[2944] != v[2948] {
-	    //@call .cev 84
 	    func_refresh_resource_window()
 
 	    
 	}
 	@wait 0
 	//##############
-	//
+	// blank place - you can add something if you need
 	//##############
 	@wait 0
 	// "DEAD BODIES"

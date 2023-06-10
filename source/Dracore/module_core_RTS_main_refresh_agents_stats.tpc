@@ -98,27 +98,34 @@ __fn agent_ref_stats(){
 	//check aura effect only per 20f
 	TT1 = AllFrameCount % 5
 	@if TT1 == 0{
-		//get Meta team into TT10
-		TT10 = Const_AgentMetaTeam_begin + v[v[536]]
 
-		//SHIELD WALL COVER
-		@if `v[Ptr5] & (FLAG_Maptile_ShieldCoverTeam0 << v[TT10]) {//covered by other guy's shield wall
-			//EXPERIMENTAL - just check if it's working
+		__if DIS_EXPERIMENTAL == 2 {
+			// get Meta team into TT10
+			macro_get_agent_MetaTeam_into_var(v[v[536]],TT10)
+		}.else bl {
+			TT10 = Const_AgentMetaTeam_begin + v[v[536]]
+			TT10 -= 1
+			TT10 = v[TT10]
+		}
+
+		// SHIELD WALL COVER
+		@if `v[Ptr5] & (FLAG_Maptile_ShieldCoverTeam0 << TT10) {//covered by other guy's shield wall
+			// EXPERIMENTAL - just check if it's working
 			agent_ProcessInstantState |= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered ? agent_ProcessInstantState_FLAG_shield_covered_double_check : agent_ProcessInstantState_FLAG_shield_covered //needs double check
-			//andthen
+			// andthen
 
 		}.else bl{
 			agent_ProcessInstantState &= -49 //~(agent_ProcessInstantState_FLAG_shield_covered + agent_ProcessInstantState_FLAG_shield_covered_double_check)
 		}
-		//Big units like cavalries cannot be covered by infantry shieldwall
+		// Big units like cavalries cannot be covered by infantry shieldwall
 		agent_ProcessInstantState &= agent_BaseObjBit & BaseObjBit_FLAG_big_unit ? -49:agent_ProcessInstantState
 
 		//FLAG_Maptile_PikeWallTeam0 = 256
 		//FLAG_Maptile_PikeWallTeam1 = 512
 		//FLAG_Maptile_PikeWallTeam2 = 1024
-		//check if under other team's pike effect or not
+		// check if under other team's pike effect or not
 		@if agent_UnitType == UNIT_CLASS_CAV {
-			agent_MeleeFightTimer = v[Ptr5] & (1792 & ~(FLAG_Maptile_PikeWallTeam0<<v[TT10]))&& !(agent_ProcessObjBit & 128)?Const_Melee_Fight_Time_by_Melee_Attack:agent_MeleeFightTimer //Cavalries near enemy pike wall will automatically get Melee fighting Penalty
+			agent_MeleeFightTimer = v[Ptr5] & (1792 & ~(FLAG_Maptile_PikeWallTeam0<<TT10))&& !(agent_ProcessObjBit & 128)?Const_Melee_Fight_Time_by_Melee_Attack:agent_MeleeFightTimer //Cavalries near enemy pike wall will automatically get Melee fighting Penalty
 		}
 		
 			
