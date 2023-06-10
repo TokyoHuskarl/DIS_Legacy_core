@@ -30,6 +30,33 @@ __fn construct_picture_buffer $picID $array_size $array_amount {
 	}
 }
 
+// ++
+__fn increment_pic_buffer_element $picid $x $y{
+	get_picture_pixel(__id(reg1),$picid,$x,$y)
+	reg1 += 1
+	set_picture_pixel(__id(reg1),$picid,$x,$y)
+}
+
+// --
+__fn decrement_pic_buffer_element $picid $x $y{
+	get_picture_pixel(__id(reg1),$picid,$x,$y)
+	reg1 -= 1
+	set_picture_pixel(__id(reg1),$picid,$x,$y)
+}
+
+//####################
+//Pixel Drawing
+//####################
+
+
+// you cannot use pointer as $setadd
+__fn draw_picture_from_var_array $setadd $picid $width $height {
+	__loop $height $i {
+		@pic.setPixel[$picid] .src(v[$setadd]) .xywh(0, $i, $width, 1)
+		$setadd += $width
+	}
+}
+
 //#####################
 // Picture editing basic functions
 //#####################

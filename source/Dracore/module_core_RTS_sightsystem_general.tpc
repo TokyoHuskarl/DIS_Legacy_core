@@ -1,5 +1,5 @@
 #include "./../headers/header_common.tpc"
-
+#include "./../headers/header_agent.tpc"
 
 //CEV SightSystemPL
 cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSystem_On), {   
@@ -11,10 +11,12 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	v[2923].copy v[2921], 2
 	v[2923..2924] /= 80
 	v[2923] += v[2924] * v[2927]
-	@comment "#0,0"
+	// "#0,0" <- ? 
+
 	v[2921..2922] %= 80
 	v[2931] = v[4527] + v[2923]
 	v[346] = muldiv(12, v[1001], 800)
+
 	v[342] = v[4525]
 	@loop v[4526] .dst v[341] {
 	    v[348] =v[341] % v[346]
@@ -36,25 +38,34 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	    v[342] += 1
 	    
 	}
+
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
-	    v[401] = v[v[536]] - 1
-	    v[341] = 2001 + v[401]
-	    //@if `v[v[301] + 100] % 3 == 0 {
-	    //v[303] = Const_AgentMetaTeam_begin + v[401]
-	    @if `v[Const_AgentMetaTeam_begin + v[401]]==0{ //v[v[303]] == 0 {
-		//v[0] = s[2001 + v[401]] = 1 opt 25.4.23
+
+	    __if DIS_EXPERIMENTAL == 2 {
+		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1)
+	    }.else bl {
+		v[401] = v[v[536]] - 1
+		v[341] = 2001 + v[401]
+	    }
+
+	    @if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
+	    //@if reg1 == 0 { // MetaTeam of the Agent is 0 - player
+		v[341] = 2000 + v[v[536]]
 		s[v[341]].on
 	    } .else bl {
+
+		v[401] = v[v[536]] - 1
+		v[341] = 2001 + v[401]
 	        v[301] = v[401] * v[1117] 
 		v[301] += 5026
 		v[v[301]].copy v[626], 2
 		v[626..627] /= 5
 
 		v[302] = v[4518] + v[401]
-		//opt 28.4.23
-		//v[0] = s[2001 + v[401]] = (v[v[302]] = v[v[4527] + v[v[301] + 26] / 5 + v[v[301] + 27] / 5 * v[2927]] & 1 ? 100 : v[v[302]] - 1) > 0
 		s[v[341]].off
+
+		// uh oh, this looks retarded
 		@if `(v[v[302]] = v[v[4527] + v[626] + v[627] * v[2927]] & 1 ? 100 : v[v[302]] - 1) > 0 {
 		    s[v[341]].on
 		    
@@ -70,15 +81,25 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	//Static
 	v[536] = v[4533]
 	@while v[v[536]] != 0 {
-	    v[401] = v[v[536]] - 1
-	    //@if `v[v[301] + 100] % 3 == 0 {
-	    //v[303] = Const_AgentMetaTeam_begin + v[401]
-	    v[341] = 2001 + v[401]
-	    @if `v[Const_AgentMetaTeam_begin + v[401]]==0{ //v[v[303]] == 0 {
-		//v[0] = s[2001 + v[401]] = 1 opt 25.4.23
+
+	    __if DIS_EXPERIMENTAL == 2 {
+		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1)
+	    }.else bl {
+		v[401] = v[v[536]] - 1
+		v[341] = 2001 + v[401]
+	    }
+
+	    @if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
+	    //@if reg1 == 0 { // MetaTeam of the Agent is 0 - player
+
+		v[341] = 2000 + v[v[536]]
 		s[v[341]].on
 		
 	    } .else bl {
+
+		v[401] = v[v[536]] - 1
+		v[341] = 2001 + v[401]
+
 	        v[301] = v[401] * v[1117] 
 		v[301] += 5258
 		v[v[301]].copy v[858], 2
@@ -108,8 +129,9 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 	    }
 	    v[310] = (v[2409] & 0x1000000 ? 1 : 0) + (v[2409] & 0x2000000 ? 1 : 0)
 	    @loop v[205] .dst v[325] {
-		v[401] = v[325] + v[1145]
-		v[401] = v[v[401]] - 1
+		Ptr19 = v[325] + v[1145] // pointer to agentid
+		v[401] = v[Ptr19] - 1
+
 		v[301] = v[401] * v[1117] 
 		v[301] += 5000
 		
@@ -120,8 +142,18 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 		v[626..627] /= 5
 		v[341] = v[4527] + v[626] 
 		v[341] += v[627] * v[2927]
+
+		
 		//v[350] = unit sight size
-		v[350] = v[877] & 2 ? 0 : v[v[4528] + v[401]] + max(v[657] - v[504], 0) + v[310]
+
+		// idk if this is faster than before
+		__if DIS_EXPERIMENTAL == 2 {
+			var1 = v[Ptr19]
+			get_AEAB_element(var1,__id(TT2),AgentExBuffer_SLOT_BaseEyeSight) // get eyesight to TT2
+			v[350] = v[877] & 2 ? 0 : TT2 + max(v[657] - v[504], 0) + v[310]
+		}.else bl {
+			v[350] = v[877] & 2 ? 0 : v[v[4528] + v[401]] + max(v[657] - v[504], 0) + v[310]
+		}
 		//@comment "1=sight?"
 		v[341] -= v[350] * v[2927] 
 		v[341] -= v[350]

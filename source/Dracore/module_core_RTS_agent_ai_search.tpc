@@ -46,8 +46,12 @@ v[4035..4036] = v[205]
 		    //team ID % 3
 		    //opt 28.4.23
 		    //v[314] = v[Const_AgentMetaTeam_begin+v[211]] //v[v[301]] % 3
-		    v[314] = Const_AgentMetaTeam_begin+v[211]
-		    v[314] = v[v[314]]
+		    __if DIS_EXPERIMENTAL == 2 {
+		    	macro_get_agent_MetaTeam_into_var(v[v[536]],v[314])
+		    }.else bl {
+		    	v[314] = Const_AgentMetaTeam_begin+v[211]
+		    	v[314] = v[v[314]]
+		    }
                     v[309] = v[212] + 7
                     //v[308] = v[4034 + v[314]]
 		    v[308] = 4034 + v[314]
@@ -228,7 +232,14 @@ v[4035..4036] = v[205]
                         v[306] = 3601
                         @loop v[327] .dst v[310] {
                             v[312] = v[340] + v[310]
-			    TT1 = Const_AgentMetaTeam_beginMINUSONE+v[v[312]]
+
+
+			    __if DIS_EXPERIMENTAL == 2 { 
+				    macro_get_agent_MetaTeam_into_var(v[v[312]],TT1)
+			    }.else bl {
+				    TT1 = Const_AgentMetaTeam_beginMINUSONE+v[v[312]]
+			    }
+
                             @if  v[700] == v[TT1] { //`v[700] == v[Const_AgentMetaTeam_beginMINUSONE+v[v[312]]] { v[v[v[312]] * v[1117] + 4800] % 3 {
                                 v[311] = v[v[312]] * v[1117] 
 				v[311] += 4700
@@ -510,7 +521,12 @@ v[4035..4036] = v[205]
                 v[300] = v[212] + 18
                 v[299] = v[212] + 241
                 v[301] = v[212] + 100
-		v[314] = v[Const_AgentMetaTeam_begin+v[211]] //v[v[301]] % 3
+		__if DIS_EXPERIMENTAL == 2 {
+			macro_get_agent_MetaTeam_into_var(v[v[536]],v[314])
+		}.else bl {
+			v[314] = v[Const_AgentMetaTeam_begin+v[211]] //v[v[301]] % 3
+		}
+
                 v[302] = v[4031 + v[314]] //v[v[301]] % 3
                 v[307] = v[302]
                 v[309] = v[212] + 7

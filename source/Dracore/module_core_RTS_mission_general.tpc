@@ -15,8 +15,6 @@ def moduletitle="module_core_RTS_mission_general.tpc"
 //Mission Init
 //#Loading Cache, Map Data Load, faction template load, 
 //#etc etc
-//Somehow F2 copypasta won't work properly <- TPC cannot deal with setVehiclePos bug. it's over 
-//so This part needs to be adjusted manually
 cev .id(2) ,.name("@Mission Init") ,{
 	v[1080] = v[1012]
 	s[18].off
@@ -682,7 +680,7 @@ cev .id(2) ,.name("@Mission Init") ,{
 		
 	}
 	t[501] .asg  .file "../Maps/define_maps", .utf8
-	t[502] .asg ".*@"
+	t[502] .asg ".*="
 	t[502] .cat t[751]
 	t[501].exMatch {
 		t[502]
@@ -909,7 +907,7 @@ cev .id(2) ,.name("@Mission Init") ,{
 			
 		}
 		t[501] .asg  .file "../Maps/define_maps", .utf8
-		t[502] .asg ".*@"
+		t[502] .asg ".*="
 		t[502] .cat t[751]
 		t[501].exMatch {
 			t[502]
@@ -1008,7 +1006,7 @@ cev .id(2) ,.name("@Mission Init") ,{
 	v[438] = 100
 	t[501] .asg  .file "../Maps/define_maps", .utf8
 	@if t[750] .eq "" {
-		t[502] .asg ".*@"
+		t[502] .asg ".*="
 		t[502] .cat t[751]
 		t[501].exMatch {
 			t[502]

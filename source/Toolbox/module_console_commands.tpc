@@ -129,7 +129,7 @@ __fn console_cmd_call {
 		    }
 		    t[750] .asg t[502]
 		    @if t[501] .neq "" {
-			t[501] .split "@", t[501], v[341]
+			t[501] .split "=", t[501], v[341]
 			t[502] .toNum v[501]
 			
 		    }

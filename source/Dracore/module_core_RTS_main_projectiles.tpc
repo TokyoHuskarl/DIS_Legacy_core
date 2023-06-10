@@ -131,10 +131,7 @@ TT2=MortY
                         v[342] = v[21]
                         /*@comment "TT1 = upper left morton TT2 = bottom right morton TT5 = shift num"*/
                         v[343] = v[341] ^ v[342]
-                        /*@comment "#mask with 11000000"
-                        @comment "#mask with 110000"
-                        @comment "#mask with 001100"
-                        @comment "#mask with 000011"*/
+                        /*@comment "#mask with 11000000" "#mask with 110000" @comment "#mask with 001100" @comment "#mask with 000011"*/
                         v[345] = v[343] & 768 ? 10 : v[343] & 192 ? 8 : v[343] & 48 ? 6 : v[343] & 12 ? 4 : v[343] & 3 ? 2 : 0
                         //@comment "#TT6 = morton id"
                         v[346] = v[342] >> v[345]
@@ -147,12 +144,18 @@ TT2=MortY
                         v[424] = v[340]
 			//Projectile Team Save
 			ProjectileTeamSave = v[v[292] + 17] % 3
+
+			// start checking morton space
                         @loop v[327] .dst v[310] {
                             v[312] = v[424] + v[310]
-                            v[311] = v[v[312]] * v[1117] 
-			    v[311] += 4701
-                            //@comment "dead objs never get assigned into mort lists, so immediately check obj's team"
-                            @if `ProjectileTeamSave != v[(Const_AgentMetaTeam_begin+v[v[312]]-1)] {//v[v[311] + 99] % 3 {  //24.4.23
+
+                            //@if `ProjectileTeamSave != v[(Const_AgentMetaTeam_begin+v[v[312]]-1)] { this one was retarded
+
+			    // get meta team!
+			    macro_get_agent_MetaTeam_into_var(v[v[312]],TT10)
+			    @if ProjectileTeamSave != TT10 { // this agent seems target for the projectile...
+				v[311] = v[v[312]] * v[1117] // let's check it out...
+			    	v[311] += 4701
                                 //@comment "当たり判定"
                                 v[311] += 6
                                 v[v[311]].copy v[327], 5
