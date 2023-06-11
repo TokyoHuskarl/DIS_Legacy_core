@@ -99,7 +99,7 @@ __fn agent_ref_stats(){
 	TT1 = AllFrameCount % 5
 	@if TT1 == 0{
 
-		__if DIS_EXPERIMENTAL == 2 {
+		__if DIS_EXPERIMENTAL == 1 {
 			// get Meta team into TT10
 			macro_get_agent_MetaTeam_into_var(v[v[536]],TT10)
 		}.else bl {

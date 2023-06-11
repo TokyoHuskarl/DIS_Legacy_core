@@ -79,9 +79,17 @@ __fn set_picture_line $setadd $picid $x $y $amount {
 
 
 __fn get_picture_pixel $getadd $picid $x $y {
+	macro_prevent_pic_getinfo_pointer_bug
 	@pic.getInfo[$picid] .pixel($x, $y, 1, 1) .dst(v[$getadd])
 }
 
 __fn get_picture_horizontal_line $getadd $picid $x $y $amount {
+	macro_prevent_pic_getinfo_pointer_bug
 	@pic.getInfo[$picid] .pixel($x, $y, $amount, 1) .dst(v[$getadd])
+}
+
+def macro_prevent_pic_getinfo_pointer_bug = {
+	// this looks meaningless but practically necessary to prevent getInfo lag bug caused by reffering pointer before the command
+	//reg1 = reg1 
+	@comment "this comment is for preventing getinfo bug"
 }

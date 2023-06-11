@@ -42,15 +42,15 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
 
-	    __if DIS_EXPERIMENTAL == 2 {
+	    __if DIS_EXPERIMENTAL == 1 {
 		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1)
 	    }.else bl {
 		v[401] = v[v[536]] - 1
 		v[341] = 2001 + v[401]
 	    }
 
-	    @if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
-	    //@if reg1 == 0 { // MetaTeam of the Agent is 0 - player
+	    //@if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
+	    @if reg1 == 0 { // MetaTeam of the Agent is 0 - player
 		v[341] = 2000 + v[v[536]]
 		s[v[341]].on
 	    } .else bl {
@@ -82,15 +82,15 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	v[536] = v[4533]
 	@while v[v[536]] != 0 {
 
-	    __if DIS_EXPERIMENTAL == 2 {
+	    __if DIS_EXPERIMENTAL == 1 {
 		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1)
 	    }.else bl {
 		v[401] = v[v[536]] - 1
 		v[341] = 2001 + v[401]
 	    }
 
-	    @if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
-	    //@if reg1 == 0 { // MetaTeam of the Agent is 0 - player
+	    //@if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
+	    @if reg1 == 0 { // MetaTeam of the Agent is 0 - player
 
 		v[341] = 2000 + v[v[536]]
 		s[v[341]].on
@@ -128,8 +128,9 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 		
 	    }
 	    v[310] = (v[2409] & 0x1000000 ? 1 : 0) + (v[2409] & 0x2000000 ? 1 : 0)
+	    Ptr19 = v[1145]
 	    @loop v[205] .dst v[325] {
-		Ptr19 = v[325] + v[1145] // pointer to agentid
+		//Ptr19 = v[325] + v[1145] // pointer to agentid
 		v[401] = v[Ptr19] - 1
 
 		v[301] = v[401] * v[1117] 
@@ -146,8 +147,8 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 		
 		//v[350] = unit sight size
 
-		// idk if this is faster than before
-		__if DIS_EXPERIMENTAL == 2 {
+		// this one is slower than before
+		__if DIS_EXPERIMENTAL == -1 { //
 			var1 = v[Ptr19]
 			get_AEAB_element(var1,__id(TT2),AgentExBuffer_SLOT_BaseEyeSight) // get eyesight to TT2
 			v[350] = v[877] & 2 ? 0 : TT2 + max(v[657] - v[504], 0) + v[310]
@@ -194,7 +195,7 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 		    
 		}
 		
-		
+		Ptr19 += 1 //++
 	    }
 	    
 	    @wait 0
