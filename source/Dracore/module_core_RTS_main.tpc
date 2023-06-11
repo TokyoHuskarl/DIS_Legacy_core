@@ -788,57 +788,6 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    func_main_save_agent_vars()
 	    v[536] += 1
 
-	    /*
-
-	    v[401] = v[v[536]] - 1
-	    v[301] = v[401] * v[1117] 
-	    v[301] += 5000
-	    // "Set Dir"
-	    @if s[2] .isOff() {
-		@if `v[v[301] + 3] & 134217728 {
-		    @if `v[v[301] + 126] & 8388608 {
-			v[v[301] + 3] &= ~134217728
-			
-		    }
-		    
-		} .else bl {
-		    v[v[301] + 244] = [v[v[301] + 21] >= 0 ? 0 : 1, v[v[301] + 244]][(v[v[301] + 245] & 1)]
-		    
-		}
-		
-	    }
-	    // "Get terrain's bit where the unit stands on"
-	    v[640] = v[v[4505] + v[v[301] + 40]]
-	    v[680] = v[301] + 80
-	    v[680] = v[v[680]]
-	    // "###############Camo Check###############"
-	    v[876] = v[301] + 17
-	    v[876] = v[v[876]]
-	    v[874] = v[301] + 274
-	    v[874] = v[v[874]]
-	    // "#Ambush"
-	    // "#Bush"
-	    v[874] = v[640] & 4 && v[680] <= 0 ? v[874] | 1 : v[874]
-	    // "##big units cannot ambush"
-	    v[874] = v[874] & 524288 || v[v[301] + 243] > 3 ? v[874] & ~1 : v[874]
-	    // "##in melee combat"
-	    v[874] = v[v[301] + 81] >= 1 ? v[874] & ~1 : v[874]
-	    v[v[301] + 298] = v[v[301] + 280]
-	    @if `v[874] & 1 {
-		v[v[301] + 298] = 40 + v[v[301] + 280]
-		v[876] += 38000
-		v[v[4518] + v[401]] = 0
-		
-	    }
-	    // "##is fleeing?"
-	    v[876] += v[v[301] + 260] >= 3 ? 40000 : 0
-	    v[v[301] + 274] = v[874]
-	    v[v[301] + 276] = v[876]
-	    // "###############Camo Check end##############"
-	    // "++"
-	    v[536] += 1
-
-	    */
 	}
 
 	@wait 0
@@ -1011,7 +960,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    func_main_extract_agent_vars()
 	    //If Move Type STATIC
 	    @if `!(agent_static_Attribution_flag & 2) {
-		//Set MapXY/5 for minimap
+		// Save MapXY/5 for static minimap.
 		v[341]=v[301]+26
 		v[v[341]] .copy v[AGENT_STATIC_SLOT_MINIMAP_X], 2
 		v[AGENT_STATIC_SLOT_MINIMAP_X..AGENT_STATIC_SLOT_MINIMAP_Y]/=5
@@ -1025,7 +974,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //v[872] = v[301] + 131
 	    agent_BaseRegHP.copy agent_ProcessHPreg, 2
 	    // "#Never get Morale Effect"
-	    agent_ProcessObjBit = agent_static_Obj_flag | 256
+	    agent_ProcessObjBit = agent_static_Obj_flag | BaseObjBit_FLAG_No_mind //... is this necessary?
 	    agent_ProcessCamoValue = agent_BaseCamoValue
 	    // "#Set Process Parameters"
 	    v[341] = v[301] + 261
@@ -1071,7 +1020,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    @if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
 			//v[342] = v[2409 + v[251] % 3]
 			
-			__if DIS_EXPERIMENTAL == 2 { 
+			__if DIS_EXPERIMENTAL == 1 { 
 				macro_get_agent_MetaTeam_into_var(v[v[536]],TT2)
 			}.else bl {
 				TT2 = v[Const_AgentMetaTeam_begin+v[401]]
@@ -2151,7 +2100,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					defv bool_if_my_tile_is_covered = __id(TempFlag1)
 
 					// get agent MetaTeam
-					__if DIS_EXPERIMENTAL == 2 {
+					__if DIS_EXPERIMENTAL == 1 {
 						macro_get_agent_MetaTeam_into_var(v[v[536]],TT1)
 						flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << TT1 //shift Meta Team
 					}.else bl {
@@ -2168,7 +2117,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				defv flag_pikecovered = __id(TT10)
 				
 				// get agent MetaTeam
-				__if DIS_EXPERIMENTAL == 2 {
+				__if DIS_EXPERIMENTAL == 1 {
 					macro_get_agent_MetaTeam_into_var(v[v[536]],TT1)
 					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << TT1 //shift Meta Team
 				}.else bl {

@@ -58,7 +58,7 @@ __fn func_get_AA_usage $agent $flags {
 		}.elif agent_AAType == 2{
 			reg1 = 1
 		}.elif agent_AAType == 4{
-			reg1 = agent_AA_ARorMR==0?1:2 
+			reg1 = agent_AA_ARorMR == 0 ? 1 : 2 
 		}
 		
 	}.else bl{

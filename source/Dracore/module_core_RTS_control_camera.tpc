@@ -36,11 +36,11 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 			}
 			
 		    } .else bl {
-			v[341] = v[49]
-			v[342] = v[50]
+			TT1 = v[49]
+			TT2 = v[50]
 			// "横"
 			v[320] = v[1001] - 1
-			@if v[341] >= v[320] {
+			@if TT1 >= v[320] {
 			    @if s[45] .isOff() {
 				v[61] = 1
 				
@@ -51,7 +51,7 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 			    
 			} .else bl {
 			    v[320] = v[1003] + 1
-			    @if v[341] <= v[320] {
+			    @if TT1 <= v[320] {
 				@if s[46] .isOff() {
 				    v[61] = -1
 				    
@@ -69,7 +69,7 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 			// "たて"
 			v[320] = v[1002] - 1
 			v[320] = s[11] == 0 ? v[320] : v[1286]
-			@if v[342] >= v[320] {
+			@if TT2 >= v[320] {
 			    @if s[48] .isOff() {
 				v[62] = 1
 				
@@ -80,7 +80,7 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 			    
 			} .else bl {
 			    v[320] = v[1003] + 1
-			    @if v[342] <= v[320] {
+			    @if TT2 <= v[320] {
 				@if s[47] .isOff() {
 				    v[62] = -1
 				    
@@ -212,11 +212,11 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 	    // "################################"
 	    v[1301].copy v[163], 2
 	    // "################################"
-	    v[341] = v[1282] + muldiv(v[165], 100, v[430])
-	    v[342] = v[1283] + muldiv(v[166], 100, v[431]) - 1
+	    TT1 = v[1282] + muldiv(v[165], 100, v[430])
+	    TT2 = v[1283] + muldiv(v[166], 100, v[431]) - 1
 	    // "Picture loaded in MapInit"
-	    @pic[2200].move {
-		.pos v[341], v[342] .center
+	    @pic[PicID_CamIcon].move {
+		.pos TT1, TT2 .center
 		.scale 100
 		.trans 15
 		.time 0
@@ -299,10 +299,10 @@ cev[9] .name("Camera:WatchDiff1"), .parallel , .cond(Const_Is_RTS_Mode),{
 	v[92] = v[53] * 1000 
 	v[92] += v[54]
 	// "#そのうちループで置き換える"
-	v[341] = 1021
+	TT1 = 1021
 	@loop 8 {
-	    v[53].copy v[v[341]], 2
-	    v[341] += 2
+	    v[53].copy v[TT1], 2
+	    TT1 += 2
 	    
 	}
 
@@ -316,14 +316,14 @@ cev[10] .name("Camera:WatchDiff2"), .parallel , .cond(49),{
 	v[63] = ev[1].scrx
 	v[64] = ev[1].scry
 	@wait 0
-	v[53] = ev[1].scrx// - v[63]
-	v[54] = ev[1].scry// - v[64]
+	v[53] = ev[1].scrx // - v[63]
+	v[54] = ev[1].scry // - v[64]
 	v[53].sub v[63],2
 	// "#そのうちループで置き換える"
-	v[341] = 1021
+	TT1 = 1021
 	@loop 8 {
-	    v[53].copy v[v[341]], 2
-	    v[341] += 2
+	    v[53].copy v[TT1], 2
+	    TT1 += 2
 	    
 	}
 
