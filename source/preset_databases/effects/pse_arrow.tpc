@@ -81,6 +81,7 @@ __fn func_effect_arrow_init $selfid {
 	    effect_TargetObjectY += TT1 //= v[625] + TT1
 	    //Cal Distance
 	    effect_TargetObjectX.copy TT1, 2
+	    TT1.add v[53], 2
 	    TT1.sub effect_RelativeX, 2
 	    TT1.copy effect_milPixVx,2
 	    TT1.mul TT1, 2

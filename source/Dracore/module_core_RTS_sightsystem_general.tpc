@@ -154,9 +154,10 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 		//Ptr19 = v[325] + v[1145] // pointer to agentid
 		v[401] = v[Ptr19] - 1
 
-		v[301] = v[401] * v[1117] 
-		v[301] += 5000
-		Ptr1 = v[301] + 1
+		//v[301] = v[401] * v[1117] 
+		//v[301] += 5000
+		Ptr1 = v[401] * v[1117]
+		Ptr1 += 5001
 		v[Ptr1].copy v[601], 300
 
 		//@comment "Minions"
@@ -180,20 +181,37 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 		}
 	
 		v[356..357] -= TT10 
-		v[356] = max(v[356],0)
-		v[357] = max(v[357],0)
-
-		// now TT1 is upper left point of FoW
-		TT1 = v[4527] + v[356] 
-		TT1 += v[357] * v[2927]
 
 		// TT11 and TT12 are loop amount XY basically I guess?
 		v[351..352] = TT10 * 2 
 		v[351..352] += 1
 
-		// also you should adjust loop amount here...
+		// adjustments not to write where is out of the FoW memory range
+		@if v[356] < 0 {
+			v[351] += v[356]
+			v[356] = 0
+		}.else bl {
+			TT20 = v[356] + v[351]
+			@if TT20 > v[2927] {
+				v[351] = TT20 - v[2927]
+			}
+		}
 
-		// 
+		@if v[357] < 0 {
+			v[352] += v[357]
+			v[357] = 0
+		}.else bl {
+			TT20 = v[357] + v[352]
+			@if TT20 > v[2928] {
+				v[352] = TT20 - v[2928] // check height
+			}
+		}
+
+		// ... is this really faster than before...? 
+
+		// now TT1 is upper left point of FoW
+		TT1 = v[4527] + v[356] 
+		TT1 += v[357] * v[2927]
 
 		// now check if the Start point is different from last proc
 		@if agent_saveFoWPoint != TT1 {
