@@ -39,7 +39,7 @@ struct("agent",{
 	agent_ObjectCollideSkipFrame = 625
 	agent_MapX = 626
 	agent_MapY = 627
-	agent_AATimer=628
+	agent_AATimer = 628
 	agent_AttackFrame=629
 	agent_AttackDelay = 630
 	agent_LastTarget = 631
@@ -52,6 +52,7 @@ struct("agent",{
 	agent_SpriteX = 636
 	agent_SpriteY = 637
 	agent_MoveTypeBIts = 638
+	agent_ColDimension = 639 // ? maybe used in collision proc
 	agent_TerrainIDstanding = 640
 	agent_HoldPointX = 641
 
@@ -73,10 +74,12 @@ struct("agent",{
 	agent_MarchingDirection = 656
 
 	agent_getTerrainElevation = 657
-	agent_SaveActualTeamID= 658
-	agent_killXP = 659 // ? 
+	agent_SaveActualTeamID= 658 // ... is this even necessary?
+	agent_saveFoWPoint = 659
+	//agent_killXP = 659 // ported to AEBA
+	
 	agent_gotXP = 660 // ?
-	agent_UniqueCharIndex=661 //if <0, refer PartyCompanions
+	// agent_UniqueCharIndex=661 //if <0, refer PartyCompanions this one also should be ported to AEBA
 	agent_Skin=663 // 0=Rtpian, 1=Nord, 2= Azghazi, 6= female ...This parameter is for UserCharactors
 	agent_Race=664 // 0=Human,1=Goblin,2=Orc,3=Dragons,
 	agent_PerkFlagBits1 = 665 // 1=ShieldMaster,2=Brawny,4=BattleForged,8=Nimble,16=Stalwart,32=Dodge,64=Anticipation,128=Pathfinder,256=Fearsome

@@ -17,25 +17,29 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	v[2931] = v[4527] + v[2923]
 	v[346] = muldiv(12, v[1001], 800)
 
-	v[342] = v[4525]
-	@loop v[4526] .dst v[341] {
-	    v[348] =v[341] % v[346]
-	    v[349] =v[341] / v[346]
+	TT2 = v[4525]
+
+	// set flag const array on expanding temp - if MP manages to apply const with array operand this will be immediately fixed since retarded
+	// ACHTUNG
+	v[4001..4016] = 7
+	@loop v[4526] .dst TT1 {
+	    v[348] =TT1 % v[346]
+	    v[349] =TT1 / v[346]
 
 	    v[345] = v[2931] + v[348]
 	    v[345] += v[349] * v[2927]
-	    v[350] = v[v[345]] & 1 ? 100 : v[v[345]] & 2 ? 50 : 0
-	    v[343] = 80 * v[348]
+	    TT10 = v[v[345]] & 1 ? 100 : v[v[345]] & 2 ? 50 : 0
+	    TT3 = 80 * v[348]
 	    v[344] = 80 * v[349]
-	    v[343] .sub v[2921], 2
-	    @pic[v[342]].move {
-		.pos v[343], v[344] .topLeft
+	    TT3 .sub v[2921], 2
+	    @pic[TT2].move {
+		.pos TT3, v[344] .topLeft
 		.scale 100
-		.trans v[350]
+		.trans TT10
 		.time 0
 		.rgbs 100, 100, 100, 100
 	    }
-	    v[342] += 1
+	    TT2 += 1
 	    
 	}
 
@@ -46,28 +50,28 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1)
 	    }.else bl {
 		v[401] = v[v[536]] - 1
-		v[341] = 2001 + v[401]
+		TT1 = 2001 + v[401]
 	    }
 
 	    //@if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
 	    @if reg1 == 0 { // MetaTeam of the Agent is 0 - player
-		v[341] = 2000 + v[v[536]]
-		s[v[341]].on
+		TT1 = 2000 + v[v[536]]
+		s[TT1].on
 	    } .else bl {
 
 		v[401] = v[v[536]] - 1
-		v[341] = 2001 + v[401]
+		TT1 = 2001 + v[401]
 	        v[301] = v[401] * v[1117] 
 		v[301] += 5026
 		v[v[301]].copy v[626], 2
 		v[626..627] /= 5
 
 		v[302] = v[4518] + v[401]
-		s[v[341]].off
+		s[TT1].off
 
 		// uh oh, this looks retarded
 		@if `(v[v[302]] = v[v[4527] + v[626] + v[627] * v[2927]] & 1 ? 100 : v[v[302]] - 1) > 0 {
-		    s[v[341]].on
+		    s[TT1].on
 		    
 		}
 		
@@ -86,19 +90,19 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1)
 	    }.else bl {
 		v[401] = v[v[536]] - 1
-		v[341] = 2001 + v[401]
+		TT1 = 2001 + v[401]
 	    }
 
 	    //@if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
 	    @if reg1 == 0 { // MetaTeam of the Agent is 0 - player
 
-		v[341] = 2000 + v[v[536]]
-		s[v[341]].on
+		TT1 = 2000 + v[v[536]]
+		s[TT1].on
 		
 	    } .else bl {
 
 		v[401] = v[v[536]] - 1
-		v[341] = 2001 + v[401]
+		TT1 = 2001 + v[401]
 
 	        v[301] = v[401] * v[1117] 
 		v[301] += 5258
@@ -106,9 +110,9 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 		v[302] = v[4518] + v[401]
 		//opt 28.4.23
 		//get from saved slot for optimizing
-		s[v[341]].off
+		s[TT1].off
 		@if `(v[v[302]] = v[v[4527] + v[858]  + v[859]  * v[2927]] & 1 ? 100 : v[v[302]]) > 0 {
-			s[v[341]].on
+			s[TT1].on
 	    		Bool_Refresh_Static_Minimap.on //request refresh minimap static
 		}
 
@@ -119,6 +123,12 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	}
 }
 
+
+
+// Map FoW check
+// Fow refresh
+// Fow refresh
+
 cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem_On), {
 	@comment "module_RTS_sightsystem_general.tpc"
 	@if s[20] .isOn() {
@@ -127,87 +137,196 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 		v[v[4527]..v[4527] + 100 * 100] &= -2//~1
 		
 	    }
+
+	    // sight technologies
 	    v[310] = (v[2409] & 0x1000000 ? 1 : 0) + (v[2409] & 0x2000000 ? 1 : 0)
 	    Ptr19 = v[1145]
-	    @loop v[205] .dst v[325] {
+	    @loop v[205] .dst v[325] { // you have to remake this proc
+
+		// REMAKE PLAN
+		// Check last sight start point (upper left) -> if it's the same as before, skip check process 
+		// Do request-check proc only outline of each sight -> if once you both of request flags are on, then skip all do request check
+		// use Array operand to set |= 7
+		// use max() on start point 
+		// use min() on sight length in order not to let sight over map outline
+		// this will obviously improve map sight system performance
+
 		//Ptr19 = v[325] + v[1145] // pointer to agentid
 		v[401] = v[Ptr19] - 1
 
 		v[301] = v[401] * v[1117] 
 		v[301] += 5000
-		
-		v[v[301]].copy v[600], 300
+		Ptr1 = v[301] + 1
+		v[Ptr1].copy v[601], 300
 
 		//@comment "Minions"
 		//@comment "In sight?"
-		v[626..627] /= 5
-		v[341] = v[4527] + v[626] 
-		v[341] += v[627] * v[2927]
+		// get tile accord
+		v[626].copy v[356], 2
+		// then convert into FoW XY
+		v[356..357] /= 5
 
 		
-		//v[350] = unit sight size
+		// TT10 = actual sight range
+		// if the agent has blind state (v[877] & 2), force its sight 0
+		// agentsight + max((Height - ground0),0) + techbonus
 
-		// this one is slower than before
-		__if DIS_EXPERIMENTAL == -1 { //
+		__if DIS_EXPERIMENTAL == -1 { // won't use this proc since proc speed is slower
 			var1 = v[Ptr19]
 			get_AEAB_element(var1,__id(TT2),AgentExBuffer_SLOT_BaseEyeSight) // get eyesight to TT2
-			v[350] = v[877] & 2 ? 0 : TT2 + max(v[657] - v[504], 0) + v[310]
+			TT10 = v[877] & 2 ? 0 : TT2 + max(v[657] - v[504], 0) + v[310]
 		}.else bl {
-			v[350] = v[877] & 2 ? 0 : v[v[4528] + v[401]] + max(v[657] - v[504], 0) + v[310]
+			TT10 = v[877] & 2 ? 0 : v[v[4528] + v[401]] + max(v[657] - v[504], 0) + v[310]
 		}
-		//@comment "1=sight?"
-		v[341] -= v[350] * v[2927] 
-		v[341] -= v[350]
-		v[351..352] = v[350] * 2 
+	
+		v[356..357] -= TT10 
+		v[356] = max(v[356],0)
+		v[357] = max(v[357],0)
+
+		// now TT1 is upper left point of FoW
+		TT1 = v[4527] + v[356] 
+		TT1 += v[357] * v[2927]
+
+		// TT11 and TT12 are loop amount XY basically I guess?
+		v[351..352] = TT10 * 2 
 		v[351..352] += 1
-		@if v[341] < v[4527] {
-		    v[352] -= 1
-		    v[341] += v[2927]
-		    
-		}
 
+		// also you should adjust loop amount here...
 
-		v[319] = v[626] - v[350]
-		
+		// 
 
-		
-		@loop v[351] .dst v[343] {
-		    @if `between(v[319] + v[343], 0, v[2927]) {
-			//@comment "vert"
-			@loop v[352] .dst v[342] {
-			    v[360] = v[341] 
-			    v[360] += v[342] * v[2927]
-			    @if `!(v[v[360]] & 2) {
-				s[236].on
+		// now check if the Start point is different from last proc
+		@if agent_saveFoWPoint != TT1 {
+			
+			__if DIS_EXPERIMENTAL == 1 {
 				
-			    }
-			    @if `!(v[v[360]] & 4) {
-				s[237].on
+				//Check outline of sight rectangle
+
+				// ACHTUNG check if map is completely revealed or not, if it's revealed already, change the value 6 into 4, you should set some var - since it'd improve performance
+				@if `(LEGV_FoWManagementFlags & 6) != 6 {
+
+					def FoWManagementFlagProc = {LEGV_FoWManagementFlags |= !(v[TT20] & 2) ? 6 : (!(v[TT20] & 4) ? 4 : 0)} // simple as
+					def FoWOutlineBreak = {@if `(LEGV_FoWManagementFlags & 6) == 6 {@break}}
+
+					@if TT10 == 0 { // sight range is 0
+						TT20 = TT1
+						FoWManagementFlagProc
+
+					}.else bl { // otherwise
+						@loop 1 {
+
+							// check upper line
+							TT20 = TT1 
+							@loop v[351] {
+								FoWManagementFlagProc
+								TT20 += 1
+							    //TT20 += v[2927]
+							}
+							FoWOutlineBreak
+
+							// check lower line
+							TT20 = TT10 * 2
+							TT20 *= v[2927]
+							TT20 += TT1 
+							@loop v[351] {
+								FoWManagementFlagProc
+								TT20 += 1
+							}
+							FoWOutlineBreak
+
+							// check left line
+							TT13 = v[352] - 2
+							TT14 = TT1 + v[2927]
+							TT20 = TT14
+							@loop TT13 {
+								FoWManagementFlagProc
+								TT20 += v[2927]
+							}
+							FoWOutlineBreak
+
+							// check right
+							TT20 = TT14
+							TT20 += v[351] - 2
+							@loop TT13 {
+								FoWManagementFlagProc
+								TT20 += v[2927]
+							}
+							FoWOutlineBreak
+
+						}
+					}
+
+				}
 				
-			    }
-			    v[v[360]] |= 7
-			    
+
+			}.else bl { // old proc
+
+
+
+				// lmao wtf is this
+				@if TT1 < v[4527] {
+				    v[352] -= 1
+				    TT1 += v[2927]
+				    
+				}
+
+				v[319] = v[356] - TT10
+				
+
+				
+				@loop v[351] .dst TT3 { // fucking retarded
+				    @if `between(v[319] + TT3, 0, v[2927]) {
+					//@comment "vert"
+					@loop v[352] .dst TT2 {
+					    TT20 = TT1 
+					    TT20 += TT2 * v[2927]
+					    @if `!(v[TT20] & 2) {
+						LEGS_Request_Refresh_Obs.on
+						
+					    }
+					    @if `!(v[TT20] & 4) {
+						LEGS_Request_Refresh_FoW.on //these will be reassigned into var flag
+						
+					    }
+					    v[TT20] |= 7
+					    
+					}
+					
+					
+				    }
+				    TT1 += 1
+				    
+				}
+
 			}
-			
-			
-		    }
-		    v[341] += 1
-		    
 		}
+		
+
+		TT20 = TT1 
+		@loop v[352] { // [sight_range] |= 7
+			v[TT20].or v[4001], v[351] // 7 is set in expanding temp array
+			TT20 += v[2927] 
+		}
+
+		
+
+		agent_saveFoWPoint = TT1 // save FoWpoint
+		v[601].copy v[Ptr1], 300 // beware
+
 		
 		Ptr19 += 1 //++
 	    }
 	    
 	    @wait 0
-	    v[360] = v[4527]
+	    TT20 = v[4527]
 	    @loop v[2928] {
 		@loop v[2927] {
-		    @if `(v[v[360]] & 5) == 4 {
-			s[237].on
-			v[v[360]] &= -5//~4
+		    @if `(v[TT20] & 5) == 4 {
+			LEGS_Request_Refresh_FoW.on
+			v[TT20] &= -5//~4
 			
 		    }
-		    v[360] += 1
+		    TT20 += 1
 		    
 		}
 		
@@ -215,10 +334,11 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 	    }
 	    
 	    @wait 0
-	    @if s[236] .isOn() {
+	    //@if LEGS_Request_Refresh_Obs .isOn() {
+            @if `LEGV_FoWManagementFlags & 2 { //EXPERIMENTAL
 		@if s[78] .isOn() {
 		    @if s[299] .isOff() {
-			@pic[v[2932]].getInfo .cewh .baseRect v[341], v[341], v[342], v[343]
+			@pic[v[2932]].getInfo .cewh .baseRect TT1, TT1, TT2, TT3
 			@pic[v[2932]].show {
 			    "ui\minimapback"
 			    .pos v[1282], v[1283] .topLeft
@@ -229,10 +349,14 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 			    .mapLayer 9
 			    .eraseWhenTransfer
 			}
+
+			// use Array operand!
 			v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
 			@loop v[1276] .dst v[344] {
-			    @loop v[1277] .dst v[343] {
-				v[v[4563] + v[343] + v[344] * v[1277]] = v[v[4527] + v[v[4803] + v[343]] + v[v[4802] + v[344]] * v[2927]] & 2 ? 0x0 : 0xFF111111
+			    // tempA = v[344] * v[1277] 
+			    // tempB = v[4802] + v[344] ...no need to calc these in inner loop
+			    @loop v[1277] .dst TT3 {
+				v[v[4563] + TT3 + v[344] * v[1277]] = v[v[4527] + v[v[4803] + TT3] + v[v[4802] + v[344]] * v[2927]] & 2 ? 0x0 : 0xFF111111
 				
 			    }
 			    
@@ -244,12 +368,14 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 		    }
 		    
 		}
-		s[236].off
+		//LEGS_Request_Refresh_Obs.off
+		LEGV_FoWManagementFlags &= ~2
 		
 	    }
 	    //@comment "##################"
 	    @wait 0
-	    @if s[237] .isOn() {
+	    //@if LEGS_Request_Refresh_FoW .isOn() {
+	    @if `LEGV_FoWManagementFlags & 4 { // EXPERIMENTAL
 		@if s[78] .isOn() {
 		    v[331] = v[2932] + 1
 		    @pic[v[331]].show {
@@ -262,10 +388,13 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 			.mapLayer 9
 			.eraseWhenTransfer
 		    }
+		    // use Array operand!
 		    v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
 		    @loop v[1276] .dst v[344] {
-			@loop v[1277] .dst v[343] {
-			    v[v[4563] + v[343] + v[344] * v[1277]] = v[v[4527] + v[v[4803] + v[343]] + v[v[4802] + v[344]] * v[2927]] & 1 ? 0x0 : 0xFF111111
+			    // tempA = v[344] * v[1277] 
+			    // tempB = v[4802] + v[344] ...no need to calc these in inner loop
+			@loop v[1277] .dst TT3 {
+			    v[v[4563] + TT3 + v[344] * v[1277]] = v[v[4527] + v[v[4803] + TT3] + v[v[4802] + v[344]] * v[2927]] & 1 ? 0x0 : 0xFF111111
 			    
 			}
 			
@@ -275,7 +404,8 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 		    @pic[v[331]].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
 		    
 		}
-		s[237].off
+		//LEGS_Request_Refresh_FoW.off
+		LEGV_FoWManagementFlags &= ~4
 		
 	    }
 	    @if s[314] .isOn() {
