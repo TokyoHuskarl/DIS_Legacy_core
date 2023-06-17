@@ -1268,15 +1268,16 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			    v[4121..4130] = 1
 			    /*v[4121] = [1, 2][(v[v[725]] & 1)]
 			    v[4101] = v[v[726]] & 512 ? 7 : 5*/
-			    
-			    v[4106] = v[v[726]] & 16777216 ? 7 : 5// horse
+			    v[725].deref v[725],2
+
+			    v[4106] = v[726] & 16777216 ? 7 : 5// horse
 			    v[4111..4120] = v[321] 
 			    v[4115] = 2
 
 			    //SEEMS Maniacs Patch itself has bug <- no you just ignored your cache system - which will be obsolete
 	    		    fuction_drawing_set_grid()
 			    //Head damaged check
-			    //v[4112] += (v[v[726]] & 98304) == 32768 ? Const_head_spr_grid_damaged:0
+			    //v[4112] += (v[726] & 98304) == 32768 ? Const_head_spr_grid_damaged:0
 
 
 			    //so temporary head setting - use legacy damaged head sprite 
@@ -1284,7 +1285,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			    v[335] = Const_str_agent_pictures_strings_start+v[335]
 				
 			    //set damaged head
-			    @if `(v[v[726]] & 98304) == 32768{
+			    @if `(v[726] & 98304) == 32768{
 				v[4102]=5
 				v[4122]=1
 				var1 = v[335]+2
@@ -1296,7 +1297,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			    }
 
 			    v[339] = -1
-			    @if `v[v[726]] & 134217728 {
+			    @if `v[726] & 134217728 {
 				v[4034] = 0
 				v[4124] = 2
 				v[4114] += v[455] / 4096 * v[4104]
@@ -1314,7 +1315,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 				v[321] = v[4110 + v[341]]
 				// "#########################Layer own Setting"
 				// "Found Head" 
-				@if `v[341] == 2 || v[v[725]] & 524288 && v[341] == 3 {
+				@if `v[341] == 2 || v[725] & 524288 && v[341] == 3 {
 				    v[378] |= 2
 				    //If damaged head found-> then check the damaged grid
 				    // "Save Head Pic ID"
@@ -1339,7 +1340,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 				@cmd 11110, t[v[286]], .args v[441], 30
 				// "When you found helmet AND already Loaded Head Part, then"
 				@if `(v[341] == 3||v[341] == 9) && v[378] & 2 {
-				    @if `v[v[725]] & 524288 {
+				    @if `v[725] & 524288 {
 					@pic[v[188]].getInfo .cewh .baseRect v[360], v[360], v[355], v[356]
 					@pic[v[188]].getInfo .pixel 0, 0, v[355], v[356] .dst 550445
 					
@@ -1416,7 +1417,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 					}
 					
 				    }
-				    @if `!(v[v[725]] & 524288) {
+				    @if `!(v[725] & 524288) {
 					// "save helm pos"
 					v[339] = v[340]
 					// "don't spend pic cache"

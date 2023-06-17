@@ -14,7 +14,7 @@ v[4035..4036] = v[205]
 //Check ground type troops agents all
 
 // set expanding temp array for copying
-v[4101..4130] = 100000000
+// v[4101..4130] = 100000000
 
 @while v[v[536]] != 0 {
     v[211] = v[v[536]] - 1
@@ -23,6 +23,7 @@ v[4101..4130] = 100000000
     v[v[212]].copy v[600], 301
     //Check agent timer to run search AI
     @if `(v[900] + v[535]) % v[533] == 0 {//9.5.23
+        AgentIDholder = v[v[536]] 
         v[v[212] + 3] &= -134217729//~134217728
 	//If worker AI flag is on
         @if `v[603] & 2097152 {//9.5.23
@@ -51,7 +52,8 @@ v[4101..4130] = 100000000
 		    //opt 28.4.23
 		    //v[314] = v[Const_AgentMetaTeam_begin+v[211]] //v[v[301]] % 3
 		    __if DIS_EXPERIMENTAL == 1 {
-		    	macro_get_agent_MetaTeam_into_var(v[v[536]],v[314])
+		    	//macro_get_agent_MetaTeam_into_var(v[v[536]],v[314])
+                get_AEAB_element_wo_ptr(AgentIDholder,__id(v[314]),AgentExBuffer_SLOT_MetaTeam)
 		    }.else bl {
 		    	v[314] = Const_AgentMetaTeam_begin+v[211]
 		    	v[314] = v[v[314]]
@@ -65,27 +67,34 @@ v[4101..4130] = 100000000
 		    v[302] = v[v[302]]
 
                     //v[4001..4030] = 100000000
-		    v[4101].copy v[4001],30
 
-                    LEGS_Common_Switch5.off
-                    @if `v[307] & 1 {
-                        v[4001..4029] += 700000000
-                        v[4011] -= 750000000
-                        LEGS_Common_Switch5.on
-                        
-                    }
-                    @if `v[307] & 2 {
-                        v[4002] -= 50000000
-                        LEGS_Common_Switch5.on
-                        
-                    }
-                    @if `v[307] & 4 {
-                        v[4005] -= 50000000
-                        LEGS_Common_Switch5.on
-                        
-                    }
-                    v[307] = 0
-                    //v[3401..3600] = 999999999
+            __if DIS_EXPERIMENTAL == 1 { // use AEBA to opt! also @if cond can be changed into other shit.
+                get_AEAB_array(AgentIDholder,4001,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
+               //@if `v[307] & 7 
+                    
+
+            }.else bl{
+		        v[4101].copy v[4001],30
+                LEGS_Common_Switch5.off
+                @if `v[307] & 1 {
+                    v[4001..4029] += 700000000
+                    v[4011] -= 750000000
+                    LEGS_Common_Switch5.on
+                    
+                }
+                @if `v[307] & 2 {
+                    v[4002] -= 50000000
+                    LEGS_Common_Switch5.on
+                    
+                }
+                @if `v[307] & 4 {
+                    v[4005] -= 50000000
+                    LEGS_Common_Switch5.on
+                    
+                }
+            }
+            v[307] = 0
+            //v[3401..3600] = 999999999
 		    v[3401] = 999999999
 		    v[3401].copy v[3402], 199
                     v[534] = v[4579] + (v[1012] + 2) * v[211]
@@ -185,7 +194,8 @@ v[4101..4130] = 100000000
                     @if `v[343] & 768 {
 			//then just check team list - but this seemingly not good design, so maybe change this later
                         v[306] = 3601
-                        @if LEGS_Common_Switch5 .isOn() {
+                        //@if LEGS_Common_Switch5 .isOn() { // NOT EXPERIMENTAL
+                        @if `v[307] & 7 { // EXPERIMENTAL
                             @doWhile v[v[302]] != 0 {
                                 v[v[309]].copy v[304], 2
                                 //optimizing 25.4.23

@@ -21,6 +21,13 @@ __fn macro_SkillCDck $agent $skillno {
 
 }
 
+__fn macro_get_agent_basic_ptr_from_AEBA $agentid $reg {
+
+	// YOU SHOULDN'T USE THIS MACRO WITH POINTER 
+	@pic.getInfo[PicID_AgentExBuffer] .pixel(AgentExBuffer_SLOT_Ptr_To_BasicArray, $agentid, 1, 1) .dst(v[__id($agentid)])
+
+}
+
 __fn macro_set_agent_AI_decision_Sub_WEP_Type $AAusage  {
 	var1 = $AAusage
 	var1 = [AI_decision_bits_FLAG_Sub_WEP_is_Melee,AI_decision_bits_FLAG_Sub_WEP_is_Ranged,AI_decision_bits_FLAG_Sub_WEP_is_Magic][var1]

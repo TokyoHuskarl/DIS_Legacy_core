@@ -592,9 +592,13 @@ __fn func_generate_agent {
 //cev .id(1903), .name("Agent:Spawn Finish"), {
 __fn func_generate_agent_finish_set {
 	SpawnAgentID = v[201] + 1//
-	@if s[150].isOn() {
+	@if s[150].isOff() {
 
 		init_AEAB_array(SpawnAgentID)
+		reg2 = 4701
+		reg2 += SpawnAgentID * 300 
+		set_AEAB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_Ptr_To_BasicArray)
+	
 	}
 	@comment "#reg1 = ObjID #reg2 = UnitID #reg3 = UnitType"
 	@comment "Set Dir"
@@ -1776,13 +1780,15 @@ __fn func_generate_agent_finish_set {
 			    v[v[21]] += 1
 			    
 			}
-			@if v[661] == 0 {
+			
+			// relocated AEBA
+			/*@if v[661] == 0 {
 			    @comment "NOT unique unit"
 			    
 			} .else bl {
 			    v[22] = v[v[21]]
 			    
-			}
+			}*/
 			
 		    }
 		    v[0] = s[2001 + v[201]] = agent_TeamID % 3 == 2 ? 1 : 0
@@ -1794,6 +1800,28 @@ __fn func_generate_agent_finish_set {
 			v[v[4518] + v[201]] = 0
 			
 		    }
+
+
+			// set agent AI target priority
+			def classtypesetend = 4101 + ClassType_Amount  
+			v[4101..classtypesetend] = 100000000
+		
+			@if `agent_AI_routine_bits & 1 {
+				v[4101..classtypesetend] += 700000000
+				v[4111] -= 750000000
+				
+			}
+			@if `agent_AI_routine_bits & 2 {
+				v[4102] -= 50000000
+				
+			}
+			@if `agent_AI_routine_bits & 4 {
+				v[4105] -= 50000000
+			}	
+            set_AEAB_array(SpawnAgentID,4101,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
+
+
+
 		    v[201] += 1
 		    v[21] = v[201]
 		    v[22] = agent_UnitID

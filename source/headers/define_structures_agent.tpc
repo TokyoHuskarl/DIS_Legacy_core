@@ -1,4 +1,7 @@
 // I actually wanted to define those defvs like "agent.brabrabra = n" but in TPC syntax it's invalid, sadly.
+vname[537], "AgentIDHolder"
+defv AgentIDholder = 537
+
 struct("agent",{
 	def agent_Basic_Array_size = 300
 	def agent_Basic_Array_size_PLUSONE = agent_Basic_Array_size + 1
@@ -239,13 +242,18 @@ struct("agent",{
 	AgentExtraBuffer_ArraySize = 256 // experimental
 	AgentExtraBuffer_ArrayAmount = Agents_Limit + 1 //AEBA[0] will be used as configuration for the array work
 
-	AgentExBuffer_SLOT_MetaTeam = 1 // why not use 0? idk
+	AgentExBuffer_SLOT_Ptr_To_BasicArray = 0 
+	AgentExBuffer_SLOT_MetaTeam = 1
 	// ACHTUNG - about MetaTeam, you have to change several function including agent team change
 
 	AgentExBuffer_SLOT_ColBoxWidth = 2
 	AgentExBuffer_SLOT_ColBoxHeight = 3
 	AgentExBuffer_SLOT_BaseEyeSight = 4 // this slot won't be used
 	AgentExBuffer_SLOT_Taken_down_XP = 5
+
+	
+	ClassType_Amount = 20
+	AgentExBuffer_SLOT_Class_Target_Priority_Array = 200 //temp
 
 
 	}
