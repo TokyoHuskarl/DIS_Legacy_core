@@ -1,5 +1,6 @@
 #include "./../headers/header_common.tpc"
 #include "./../headers/header_agent.tpc"
+#include "./../headers/header_mission.tpc"
 
 //CEV SightSystemPL
 cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSystem_On), {   
@@ -221,14 +222,13 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 				//Check outline of sight rectangle
 
 				// ACHTUNG check if map is completely revealed or not, if it's revealed already, change the value 6 into 4, you should set some var - since it'd improve performance
-				@if `(LEGV_FoWManagementFlags & 6) != 6 {
 
-					def FoWManagementFlagProc = {LEGV_FoWManagementFlags |= !(v[TT20] & 2) ? 6 : (!(v[TT20] & 4) ? 4 : 0)} // simple as
-					def FoWOutlineBreak = {@if `(LEGV_FoWManagementFlags & 6) == 6 {@break}}
-
+			__fn FoWManagement_SightOutlineCheck $breakflag {
+				
+				@if `(LEGV_FoWManagementFlags & $breakflag) != $breakflag {
 					@if TT10 == 0 { // sight range is 0
 						TT20 = TT1
-						FoWManagementFlagProc
+						FoWManagementFlagProc($breakflag)
 
 					}.else bl { // otherwise
 						@loop 1 {
@@ -236,45 +236,74 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 							// check upper line
 							TT20 = TT1 
 							@loop v[351] {
-								FoWManagementFlagProc
+								FoWManagementFlagProc($breakflag)
 								TT20 += 1
-							    //TT20 += v[2927]
+								//TT20 += v[2927]
 							}
-							FoWOutlineBreak
+							FoWOutlineBreak($breakflag)
 
 							// check lower line
 							TT20 = TT10 * 2
 							TT20 *= v[2927]
 							TT20 += TT1 
 							@loop v[351] {
-								FoWManagementFlagProc
+								FoWManagementFlagProc($breakflag)
 								TT20 += 1
 							}
-							FoWOutlineBreak
+							FoWOutlineBreak($breakflag)
 
 							// check left line
 							TT13 = v[352] - 2
 							TT14 = TT1 + v[2927]
 							TT20 = TT14
 							@loop TT13 {
-								FoWManagementFlagProc
+								FoWManagementFlagProc($breakflag)
 								TT20 += v[2927]
 							}
-							FoWOutlineBreak
+							FoWOutlineBreak($breakflag)
 
 							// check right
 							TT20 = TT14
 							TT20 += v[351] - 2
 							@loop TT13 {
-								FoWManagementFlagProc
+								FoWManagementFlagProc($breakflag)
 								TT20 += v[2927]
 							}
-							FoWOutlineBreak
+							FoWOutlineBreak($breakflag)
 
 						}
 					}
-
 				}
+
+			}
+
+			__fn FoWManagementFlagProc $flag {
+				__if $flag == 6 {
+					LEGV_FoWManagementFlags |= !(v[TT20] & 2) ? 6 : (!(v[TT20] & 4) ? 4 : 0)
+				}.else bl {
+					LEGV_FoWManagementFlags |= !(v[TT20] & 4) ? $flag : 0
+				}
+			} // simple as
+
+			__fn FoWOutlineBreak $flag {
+					__if $flag == 6{
+						@if `(LEGV_FoWManagementFlags & $flag) == $flag {@break}
+					}.else bl {
+						@if `LEGV_FoWManagementFlags & $flag {@break}
+					}
+			}
+
+
+
+					// These functions expect only 6 or 4 as their argv[0] for now.
+
+
+				@if `LEGV_FoWManagementFlags & FoWFlag_Map_PreRevealed {
+					FoWManagement_SightOutlineCheck(4)
+				}.else bl {
+					FoWManagement_SightOutlineCheck(6)
+				}
+
 				
 
 			}.else bl { // old proc

@@ -1418,9 +1418,12 @@ t[801] .asg ""
     v[12] = v[1215] + v[11]
     v[20] = v[12]
     t[v[12]] .split ",", t[3000], v[342]
-    @if t[3000] .contains "=" {
+    @if t[3000] .neq "" {
         t[801] .cat "TRP_"
         t[801] .cat t[3000]
+        t[801] .cat "="
+	var3 = var1
+        t[801] .cat var3
         t[801] .cat t[525]
         
     }
@@ -1429,7 +1432,7 @@ t[801] .asg ""
 
 t[800] .asg  .file "..\scripts\const_misc", .utf8
 v[341] = v[4575] + 28
-t[800] .cat "UNIT_PL_SCOUT@\v["
+t[800] .cat "UNIT_PL_SCOUT=\v["
 t[800] .cat "\v[341]" .extract
 t[800] .cat "]" .extract
 t[800] .cat t[525]

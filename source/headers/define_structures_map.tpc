@@ -34,4 +34,17 @@ struct("DISmap",{
 			mapnode_MovementCost 
 		}
 	})
+
+	struct("sight system",{
+		defv FoWManagementFlagsVar = 516
+
+		def {
+			FoWFlag_Map_PreRevealed = 1073741824
+
+			macro_set_Map_PreRevealed_flag = {
+				FoWManagementFlagsVar |= FoWFlag_Map_PreRevealed 
+
+			}
+		}
+	})
 })

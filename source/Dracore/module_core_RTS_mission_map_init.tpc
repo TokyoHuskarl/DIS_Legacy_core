@@ -516,8 +516,9 @@ cev .id(1800), .name("Mission:MapInit"), {
 
 	@wait 0
 	@comment "MINIMAPS!"
-	v[550445..560445] = 0
-	@call .cev 1794
+	//@call .cev 1794
+	init_minimap_for_this_mission()
+	
 	@comment "################"
 	@pic[2200].show {
 	    "ui\cameraicon"

@@ -1,4 +1,5 @@
 #include "./../headers/header_common.tpc"
+#include "./../headers/header_mission.tpc"
 #include "./../headers/header_scripts.tpc"
 #include "./../headers/header_control.tpc"
 #include "./../headers/header_scripts_functions.tpc"
@@ -1476,6 +1477,10 @@ cev .id(2121), .name("Game:Battle Result"),{
 	s[38].on
 	@scr.tint .rgbs 0, 0, 0, 100 .time 0
 	@sys.reset
+}
+
+cev .id(1795),.name("*Restore Map Function*"),{
+	restore_map_infomation()
 }
 
 cev .id(1804),.name("mission:gen_elevationmap"),{
