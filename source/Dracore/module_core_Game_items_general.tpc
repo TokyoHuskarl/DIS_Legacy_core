@@ -100,9 +100,9 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    v[0] = v[727..730] = 0
 	    v[741] = 0
 	    v[858] = 0
-	    v[740] &= v[1901] == 211 ? ~16 : 0
-	    v[740] &= v[1901] == 121 ? ~8388608 : 0
-	    v[740] &= ~v[1921]
+	    v[740] &= v[1901] == 211 ? ~16 : ~0
+	    v[740] &= v[1901] == 121 ? ~8388608 : ~0
+	    v[740] &= ~(v[1921])
 	    @if `!v[726] & 8388608 {
 		@if s[1] .isOn() {
 		    v[726] &= ~pow(2, v[1927] - 1)
@@ -110,8 +110,7 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 		} .else bl {
 		    v[726] &= ~v[1927]
 		    @if `v[726] & 512 {
-			v[725] &= ~v[1926]
-			
+			v[725] &= ~(v[1926])
 		    }
 		    
 		}
@@ -173,7 +172,7 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    @comment "Cracking Resistance"
 	    v[834] = 0
 	    @comment "Can ShieldWall?"
-	    v[740] ^= v[1903] == 1 ? 4 : 0
+	    v[740] &= v[1903] == 1 ? ~4 : ~0
 	    @comment "If equip assigning unit is customtroop"
 	    @if v[601] == 4 {
 		@comment "Show Shield Sprite"

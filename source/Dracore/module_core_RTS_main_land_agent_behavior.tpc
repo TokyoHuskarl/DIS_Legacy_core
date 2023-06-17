@@ -366,78 +366,78 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			    //@comment "強制移動指示"
 			    //@comment "またはWPがある"
 			    @if `agent_TargetAgentID == 0 || (agent_StanceOrder == ORD_STD || agent_StanceOrder == ORD_DEF || agent_MovementOrder == MovementOrder_TYPE_prioritize_moving || agent_LeftWPtoChase > 0) {
-				//@comment "WPがあるならWP処理"
-				@if agent_LeftWPtoChase > 0 {
-				    //@comment "#301 = 5000+(300*ID)"
-				    v[299] = 641
-				    v[298] = 643
-				    @loop 6 {
-					v[v[298]].copy v[v[299]], 2
-					v[298..299] += 2
-					
-				    }
-				    
-				    //@comment "後ろに0代入"
-				    v[1301].copy v[v[299]], 2
-
-				    //@comment "#WPへらす"
-				    agent_ActionFlag &= -2//~1
-				    agent_LeftWPtoChase -= 1
-				    s[204].on
-				    @if agent_LeftWPtoChase <= 2 {
-					@if `!(agent_AgentBits & AI_routine_bits_FLAG_ForcemoveFlag) {
-					    @if `agent_AI_routine_bits & 49152 { //
-						agent_MovementOrder = MovementOrder_TYPE_move_ordered
+					//@comment "WPがあるならWP処理"
+					@if agent_LeftWPtoChase > 0 {
+						//@comment "#301 = 5000+(300*ID)"
+						v[299] = 641
+						v[298] = 643
+						@loop 6 {
+						v[v[298]].copy v[v[299]], 2
+						v[298..299] += 2
 						
-					    }
-					    
+						}
+						
+						//@comment "後ろに0代入"
+						v[1301].copy v[v[299]], 2
+
+						//@comment "#WPへらす"
+						agent_ActionFlag &= -2//~1
+						agent_LeftWPtoChase -= 1
+						s[204].on
+						@if agent_LeftWPtoChase <= 2 {
+						@if `!(agent_AgentBits & AI_routine_bits_FLAG_ForcemoveFlag) {
+							@if `agent_AI_routine_bits & 49152 { //
+							agent_MovementOrder = MovementOrder_TYPE_move_ordered
+							
+							}
+							
+						}
+						
+						}
+						
 					}
-					
-				    }
-				    
-				}
-				@if agent_LeftWPtoChase == 0 {
-				    agent_AgentBits &= -16777217//~16777216 ~AgentBits_FLAG_NeedWpToReachObj
-				    @if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFcontinue {
-					agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
-					
-				    }
-				    s[204].on
-				    agent_ActionFlag = 0
-				    agent_LeftWPtoChase -= 1
-				    
-				}
-				agent_AI_routine_bits &= -12289//~12288 
+					@if agent_LeftWPtoChase == 0 {
+						agent_AgentBits &= -16777217//~16777216 ~AgentBits_FLAG_NeedWpToReachObj
+						@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFcontinue {
+						agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+						
+						}
+						s[204].on
+						agent_ActionFlag = 0
+						agent_LeftWPtoChase -= 1
+						
+					}
+					agent_AI_routine_bits &= -12289//~12288 
 				
 			    }
 			    @if s[204] .isOff() {
-				agent_AI_routine_bits &= -49153//~49152
-				agent_AgentBits &= -37748737//~37748736 //(4194304 + 33554432)
-				agent_Direction = (cos(v[656], 1000, -100) + 200) / 200
-				s[104].on
-				@if `!(agent_AgentBits & 64) {
-				    //@comment "防御"
-				    @if agent_StanceOrder == ORD_DEF {
-					//@comment "地点に戻った"
-					agent_ActionFlag &= -2//~1
-					agent_LeftWPtoChase = -2
-					agent_MovementOrder = MovementOrder_TYPE_returned
+					agent_AI_routine_bits &= -49153//~49152
+					agent_AgentBits &= -37748737//~37748736 //(4194304 + 33554432)
+					agent_Direction = (cos(v[656], 1000, -100) + 200) / 200
+					s[104].on
+					@if `!(agent_AgentBits & 64) {
+						//@comment "防御"
+						@if agent_StanceOrder == ORD_DEF {
+						//@comment "地点に戻った"
+						agent_ActionFlag &= -2//~1
+						agent_LeftWPtoChase = -2
+						agent_MovementOrder = MovementOrder_TYPE_returned
+						
+						} .else bl {
+						//@comment "待機"
+						agent_MovementOrder = agent_StanceOrder == 1 ? -2 : -1
+						
+						}
+						
+					} .else bl {
+						//@comment "Got Collision Problem"
+						agent_AgentBits |= 128
+						//@comment "Stop Forcemove"
+						//opt 26.4.23
+						//v[agent_MovementOrder] -= v[agent_MovementOrder] == 3 ? 1 : 0
+						agent_MovementOrder -= agent_MovementOrder == MovementOrder_TYPE_prioritize_moving
+					}
 					
-				    } .else bl {
-					//@comment "待機"
-					agent_MovementOrder = agent_StanceOrder == 1 ? -2 : -1
-					
-				    }
-				    
-				} .else bl {
-				    //@comment "Got Collision Problem"
-				    agent_AgentBits |= 128
-				    //@comment "Stop Forcemove"
-				    //opt 26.4.23
-				    //v[agent_MovementOrder] -= v[agent_MovementOrder] == 3 ? 1 : 0
-				    agent_MovementOrder -= agent_MovementOrder == MovementOrder_TYPE_prioritize_moving
-				}
-				
 			    }
 			    
 			} .else bl {
