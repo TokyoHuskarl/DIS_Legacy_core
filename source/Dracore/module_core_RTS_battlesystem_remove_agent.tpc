@@ -1268,7 +1268,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			    v[4121..4130] = 1
 			    /*v[4121] = [1, 2][(v[v[725]] & 1)]
 			    v[4101] = v[v[726]] & 512 ? 7 : 5*/
-			    v[725].deref v[725],2
+			    v[v[725]].copy v[725],2
 
 			    v[4106] = v[726] & 16777216 ? 7 : 5// horse
 			    v[4111..4120] = v[321] 
@@ -1286,8 +1286,8 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 				
 			    //set damaged head
 			    @if `(v[726] & 98304) == 32768{
-				v[4102]=5
-				v[4122]=1
+				v[4102] = 5
+				v[4122] = 1
 				var1 = v[335]+2
 				t[var1].exMatch ("[0-9]{1,}",t[501],var2)
 				t[var1].asg "parts\bodyset\set\damaged\spr_damaged_head_"

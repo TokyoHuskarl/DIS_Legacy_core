@@ -18,8 +18,8 @@ __fn func_make_unit_vector_from_two_points_atan2 $startX $startY $targetX $targe
 	reg1 = $targetX - $startX
 	reg2 = $targetY - $startY
 	reg3 = atan2(reg2,reg1,1000)
-	reg1 = sin(reg3,1000,$mul)
-	reg2 = cos(reg3,1000,$mul)
+	reg1 = cos(reg3,1000,$mul)
+	reg2 = sin(reg3,1000,$mul)
 
 
 }

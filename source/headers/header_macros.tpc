@@ -7,7 +7,6 @@ __fn macro_convert_relativeXY_into_maptileXY $TileX $TileY $regX $regY {
 	v[__id($TileX)].copy $regX, 2
 	v[__id($regX)] += 8
 	v[__id($regY)] += 24
-	//@comment "ずれ計算"
 	v[__id($regX)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
 	v[__id($regX)] /= 16
 	v[__id($regY)] /= 16
@@ -19,4 +18,13 @@ __fn macro_convert_maptileXY_into_relativeXY $TileX $TileY $regX $regY {
 	v[__id($regX)] = airship.scrx
 	v[__id($regY)] = airship.scry
 	v[__id($regY)] -= 8
+}
+
+
+__fn macro_convert_absolute_cord $RelXstart $regXstart {
+	// ?
+
+	//v[__id($RelXstart)].copy $regXstart, 2
+	//v[__id($regXstart)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
+	
 }

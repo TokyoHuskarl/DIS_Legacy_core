@@ -245,6 +245,10 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    #############"*/
 	    //v[344] = v[301] + 1
 	    //v[345] = v[301] + 7
+
+	    // set absolute cord
+	    macro_convert_absolute_cord(agent_RelativeX,agent_AbsoluteX)
+
 	    v[348] = v[401] + 501
 	    s[v[348]].off
 	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
@@ -423,6 +427,10 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "#############
 	    //#Set Y Position EV
 	    //#############"
+
+	    // set absolute cord
+	    macro_convert_absolute_cord(agent_RelativeX,agent_AbsoluteX)
+
 	    //Set Obj into Drawing List
 	    v[348] = v[401] + 501
 	    s[v[348]].off

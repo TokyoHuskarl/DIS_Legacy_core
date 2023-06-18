@@ -91,13 +91,11 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	    }
 	    
 	    //@comment "目標位置"
-	    //agent_HoldPointX = v[301] + 41
-	    //agent_MovePointX = v[301] + 19
-	    //agent_AATimer = v[301] + 28
-	    //v[620] = v[301] + 20
+
 	    //@comment "WPのずれを一括で修正"
 	    agent_HoldPointX .add v[1021], 14
 	    agent_HoldPointX.copy agent_MovePointX, 2
+
 	    //@comment "Obj指定分岐
 	    //Get18 = 目標ObjID"
 	    //@comment "TEST"
@@ -108,9 +106,9 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	    }
 
 
-	    Ptr8 = agent_TargetAgentID * 300 
 	    //@comment "強制移動指示があればGet18=0"
 	    @if agent_MovementOrder != MovementOrder_TYPE_force_moving {
+		Ptr8 = agent_TargetAgentID * 300
 		agent_TargetAgentID = agent_MovementOrder == MovementOrder_TYPE_prioritize_moving ? 0 : agent_TargetAgentID
 		@if agent_TargetAgentID >= 1 { 
 		    //@comment "Obj指定があり、そちらに行きたいとき
@@ -219,10 +217,12 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			
 		    }
 		    agent_LastTarget = agent_TargetAgentID
-		    @if `!(v[Ptr8 + 4703] & AgentBits_FLAG_1fprocessed) {
-			//@comment "目標地点にカメラのずれを加算"
-			agent_MovePointX .add v[53], 2
-			
+		    @if s[103] .isOn(){
+			    @if `!(v[Ptr8 + 4703] & AgentBits_FLAG_1fprocessed) {
+				//@comment "目標地点にカメラのずれを加算"
+				agent_MovePointX .add v[53], 2
+				
+			    }
 		    }
 		    
 		} .else bl {
@@ -243,10 +243,8 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	    agent_AgentBits |= AgentBits_FLAG_1fprocessed // wait, how the hell this flag works?
 	    //@comment "Temp4 = 次に動く場所x
 	    //Temp6 = 次に動く場所y"
-	    //v[304] = pow(v[309] = agent_MovePointX - (agent_RelativeX + v[53]), 2)
-	    //@comment "#######"
-	    //optimizing 25.4.23
-	    //v[304] += v[306] = pow(v[310] = v[v[620]] - (v[v[301] + 8] + v[54]), 2)
+	    
+
 		v[607].copy v[341], 2
 		v[341] .add v[53], 2
 		v[619].copy v[309], 2
@@ -259,26 +257,22 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	    //@comment "Set Object[23]"
 	    //v[300] = v[301] + 23
 	    agent_MilPixMoveOrderedPointDist = sqrt(v[304], 1000)
-	    v[318] = agent_MilPixMoveOrderedPointDist
+	    //v[318] = agent_MilPixMoveOrderedPointDist
+
 	    /*@comment "#############
 	    ここ配列操作で高速化可能
 	    #############"*/
-	    v[342] = agent_AgentBits & 16 ? 9 : 2
 
  	    
 	    //v[300] = v[301] + 22
 	    //v[622] = (v[622] * v[342] + v[310] * 100000 / v[318]) / (v[342] + 1)
 	    //v[300] = v[301] + 21
 	    //v[621] = (v[621] * v[342] + v[309] * 100000 / v[318]) / (v[342] + 1)
-
-		v[621..622] *= v[342]
-		v[309].copy v[351], 2
-		v[351..352] *= 100000 
-		v[351..352] /= v[318]
-		v[621] .add v[351], 2
-		v[621..622] /= v[342] + 1
-
-	    v[621].copy v[319], 2
+		
+		// -> relocated to walking pro
+		defv relX_sub_TargX_saved = 351
+		v[309].copy relX_sub_TargX_saved, 2
+	    // v[621].copy v[319], 2 // kore iru?
 
 	    @if agent_MovementOrder != MovementOrder_TYPE_force_moving {
 		@if Is_Paused .isOff() {
@@ -291,7 +285,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			//v[295] = v[301] + 269
 			v[869].copy v[341], 2
 			//@comment "自分がMelee or townsman repairingなら([相手の幅]*1000)を引いて考える"
-			v[340] = v[318]
+			v[340] = agent_MilPixMoveOrderedPointDist
 			v[340] -= agent_AAType == 0 || agent_worker_JobType == 6 ? v[335] : 0
 			//@comment "If the target is build basement"
 			v[340] -= v[Ptr8 + 4703] & 32 && v[Ptr8 + 4701] == 11 ? v[Ptr8 + 4938] * 1000 : 0
@@ -357,7 +351,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			//v[340] = v[v[294]] > 0 ? (v[610] / 2 + 2) * 1000 : 6700
 			//this part was bugged since v[294] wasn't defined inititally - 9.5.23
 			v[340] = agent_LeftWPtoChase > 0 ? (agent_Width / 2 + 3) * 1000 : 6700 //more fuzzy
-			@if v[318] <= v[340] {
+			@if agent_MilPixMoveOrderedPointDist <= v[340] {
 			    //v[294] = v[301] + 55
 			    //@comment "候補なし"
 			    s[204].off
@@ -441,7 +435,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			    }
 			    
 			} .else bl {
-			    @if `(agent_AgentBits & 320 ) == 0 { //320 = 64 + 256
+			    @if `(agent_AgentBits & 320 ) == 0 { //copy20 = 64 + 256
 				@if agent_MovementOrder <= MovementOrder_TYPE_do_not_move {
 				    @if `agent_StanceOrder == ORD_DEF || agent_StanceOrder == ORD_STD {
 					s[104].off
@@ -475,14 +469,31 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			
 		    }
 		    
+		}.else bl {
+
+			//@comment "移動"
+			agent_ActionFlag &= agent_MovementOrder >= 2 ? ~ActionFLag_FLAG_Hold_direction : ~0
+
+			// calc Vector 
+			v[342] = agent_AgentBits & 16 ? 9 : 2 // (agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback ? 4 : 2)
+			v[621..622] *= v[342]
+			// Attention - v[351] = relX_sub_TargX_saved
+			defv relY_sub_TargY_saved= __id(relX_sub_TargX_saved)+1
+			// muldiv is slower than lower past proc, but in this case you need to use this in order to avoid var overflow
+			v[351..352] *= 100000 
+			v[351..352] /= agent_MilPixMoveOrderedPointDist
+
+			v[621] .add relX_sub_TargX_saved, 2
+			v[621..622] /= v[342] + 1
+
+
 		}
-		//@comment "移動"
-		agent_ActionFlag = between(agent_MovementOrder, 2, 3) ? 0 : agent_ActionFlag
+
 		//@comment "Attacking"
 		@if agent_ActionState == 1 {
 		    //@comment "#Set ForceSprite Attack"
 		    agent_ForceSprite = 1
-		    agent_ActionFlag = agent_AttackFrame > 0 ? agent_ActionFlag | 1 : agent_ActionFlag & -2
+		    agent_ActionFlag = agent_AttackFrame > 0 ? agent_ActionFlag | ActionFLag_FLAG_Hold_direction : agent_ActionFlag & ~ActionFLag_FLAG_Hold_direction
 		    s[104].on
 		    
 		} .else bl {
@@ -492,6 +503,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 		    }
 		    
 		}
+
 		//@comment "flee check"
 		agent_MovementOrder = v[874] & 512 ? MovementOrder_TYPE_fleeing : agent_MovementOrder
 		@if s[104] .isOn() {
@@ -501,6 +513,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 		    
 		} .else bl {
 		    v[341] = agent_MovementOrder == MovementOrder_TYPE_fleeing ? -1 : 1
+
 		    //v[0] = v[612..613] = [v[621] * agent_ProcessMS * v[341], v[622] * agent_ProcessMS * v[341]]
 		    v[621].copy v[612],2
 		    //v[612] = v[621] * agent_ProcessMS 
@@ -523,7 +536,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 		    v[849] -= 1
 		    @if v[849] < 1 {
 			@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI {
-			    @if `agent_StanceOrder == 2 {
+			    @if agent_StanceOrder == 2 {
 				agent_MovementOrder = 2
 				
 			    } .else bl {
@@ -734,6 +747,9 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 		agent_ActionState = v[846] + 3
 		
 	    }
+	    // set absolute cord
+	    macro_convert_absolute_cord(agent_RelativeX,agent_AbsoluteX)
+
 	    /*@comment "#############	    #Set Y Position EV	    #############"*/
 	    v[348] = v[401] + 501
 	    

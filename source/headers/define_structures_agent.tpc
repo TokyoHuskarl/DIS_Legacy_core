@@ -81,10 +81,13 @@ struct("agent",{
 	agent_saveFoWPoint = 659
 	//agent_killXP = 659 // ported to AEBA
 	
-	agent_gotXP = 660 // ?
+	//agent_gotXP = 660 // ?
+	agent_AbsoluteX  = 661
+	agent_AbsoluteY  = 662
+
 	// agent_UniqueCharIndex=661 //if <0, refer PartyCompanions this one also should be ported to AEBA
-	agent_Skin=663 // 0=Rtpian, 1=Nord, 2= Azghazi, 6= female ...This parameter is for UserCharactors
-	agent_Race=664 // 0=Human,1=Goblin,2=Orc,3=Dragons,
+	agent_Skin = 663 // 0=Rtpian, 1=Nord, 2= Azghazi, 6= female ...This parameter is for UserCharactors
+	agent_Race = 664 // 0=Human,1=Goblin,2=Orc,3=Dragons,
 	agent_PerkFlagBits1 = 665 // 1=ShieldMaster,2=Brawny,4=BattleForged,8=Nimble,16=Stalwart,32=Dodge,64=Anticipation,128=Pathfinder,256=Fearsome
 	agent_PerkFlagBits2 = 666 // 1=KillingFrenzy,2=BattleFlow,4=Berserk,8=HeadHunter, ////MASTERIES 16=M_Sword,32=M_Spear,64=M_Axe,128=M_Hammer,256=M_Mace,512=M_Cleaver,1024=M_Dagger,2048=M_Throwing,4096=M_res1,8192=M_res2,16384=M_bow,32768=M_crossbow,65536=M_res3 131072=spellcaster
 
@@ -192,7 +195,7 @@ struct("agent",{
 
 	agent_Direction = 844
 
-	agent_ActionFlag = 845 
+	agent_ActionFlag = 845 // used to hold dir, but now used as bits
 	agent_CastSkillOrder = 846
 	agent_worker_JobType = 847
 	agent_TacticsOrderFlag = 848

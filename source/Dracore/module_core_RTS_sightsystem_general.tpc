@@ -194,7 +194,8 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 		}.else bl {
 			TT20 = v[356] + v[351]
 			@if TT20 > v[2927] {
-				v[351] = TT20 - v[2927]
+				TT20 = TT20 - v[2927]
+				v[351] -= TT20 // check height
 			}
 		}
 
@@ -204,7 +205,9 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 		}.else bl {
 			TT20 = v[357] + v[352]
 			@if TT20 > v[2928] {
-				v[352] = TT20 - v[2928] // check height
+				TT20 = TT20 - v[2928]
+				v[352] -= TT20 // check height
+
 			}
 		}
 
