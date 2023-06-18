@@ -2,7 +2,7 @@
 def EffectArraySize = 100
 
 defv {
-effect_EffectType = 4001	//1 = lowest priority animation, 2= Call LinkedFunc when the effect disappear, 3=simplesprite
+effect_EffectType = 4001	//1 = lowest priority animation, 2= Call LinkedFunc when the effect disappear, 3=simplesprite 10 =
 
 effect_PicID = 4002
 effect_AllFrame = 4003
@@ -54,8 +54,7 @@ effect_milAz= 4043
 	effect_ArrowHitY=4045
 	effect_ArrowCheckHeight=4046
 
-effect_Flag= 4070 //For arrow 1:1=Check_Hit, 2:2=already checked hit
-
+effect_Flag = 4070 // For arrow 1:1=Check_Hit, 2:2=already checked hit
 effect_HitBonus = 4098 
 effect_Damage = 4099
 effect_Timer = 4100
@@ -68,6 +67,9 @@ def{
 EffectType_LowPriority = 1
 EffectType_Has_LinkedFunc = 2
 EffectType_Simple_Sprite = 2
+
+EffectType_Has_LinkedFunc_Registered = 1002
+
 cevid_func_erase_effect = 89
 cevid_func_LEGACY_arrow_hitcheck = 31
 
@@ -76,6 +78,7 @@ cevid_func_LEGACY_arrow_hitcheck = 31
 Arrow_Flag_Check_Hit = 0x1
 Arrow_Flag_Checked = 0x2
 
+Effect_RegisteredFrame = 0x80000000
 
 }
 

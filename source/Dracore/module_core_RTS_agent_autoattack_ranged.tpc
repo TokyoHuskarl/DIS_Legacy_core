@@ -46,7 +46,10 @@ cev .id(36), .name("AgentAct:RangedAA_Shot"), {
 			//v[0] = v[624..625] += [rnd(-v[350], v[350]), rnd(-v[350], v[350])]
 			v[624] += rnd(-v[350], v[350])
 			v[625] += rnd(-v[350], v[350])
-			v[624].add v[53], 2
+
+			// this seems what had been breaking arrow and camera relation
+			//v[624].add v[53], 2
+
 			// "#フレーム数を設定"
 			//v[700] = v[v[210] + 128]
 			//v[603] = v[700] - 1

@@ -10,66 +10,75 @@ v[243] = 0
         //@comment "タイマーが切れていない"
         @if v[v[301]] >= 1 {
             v[v[301]].copy v[601], 100
-            @if `v[700] >= 1 {
-                s[141].off
-                //@comment "Access15 = タイマー"
-                v[295] = v[301] + 99
-                v[243] += 1
-                //@comment "タイマー減らす"
-                v[v[295]] -= 1
-		    __if DEBUG_BUILD==1{
-			@if v[611] >= 300 {
-			    @if v[611] <= 500 {
-				func_export_deblog_array("illegal_effect_report_1" v[301] 100)
-			    }
-			}
-		    }
-
-
-                //@comment "#あとは個別イベントに丸投げ#V[604]>=1"
-                @if v[604] >= 1 {
-                    @call .cev v[604]
-                }
-                //@comment "時間切れ消滅処理"
-                @if v[v[295]] <= 0 {
-                    //@comment "2番ならLinkedFuncをCallする"
-                    @if v[v[301]] == 2 {
-                        @if v[611] >= 31 {
-                            s[143].on
-			    
-
-			    //DEBUG FUNCTION!
+            @if v[700] >= 1 {
+		@if v[601] == EffectType_Has_LinkedFunc_Registered { // igonore registered frame
+			v[601] = EffectType_Has_LinkedFunc // convert
+            		v[601].copy v[v[301]], 100
+		}.else bl {
+			s[141].off
+			//@comment "Access15 = タイマー"
+			v[295] = v[301] + 99
+			v[243] += 1
+			//@comment "タイマー減らす"
+			v[v[295]] -= 1
 			    __if DEBUG_BUILD==1{
-			    	func_devlog("effect removed, cev called - id:\v[611]")
 				@if v[611] >= 300 {
 				    @if v[611] <= 500 {
-					func_export_deblog_array("illegal_effect_report" v[301] 100)
-					func_force_crash("Illegal cev called in effect erasing")
-					
+					func_export_deblog_array("illegal_effect_report_1" v[301] 100)
 				    }
-			    	}
+				}
 			    }
 
-                            @call .cev v[611]
-                            s[143].off
-                            
-                        }
-                        
-                    }
-                    //@comment "消滅処理"
-                    v[301] = v[241] * 100 
-		    v[301] += v[1018]
-                    v[1301].copy v[v[301]], 100
-                    
-                }
-                
+
+			//@comment "#あとは個別イベントに丸投げ#V[604]>=1"
+			@if v[604] >= 1 {
+			    @call .cev v[604]
+			}
+			//@comment "時間切れ消滅処理"
+			@if v[v[295]] <= 0 {
+			    //@comment "2番ならLinkedFuncをCallする"
+			    @if v[v[301]] == 2 {
+				@if v[611] >= 31 {
+				    s[143].on
+				    
+
+				    //DEBUG FUNCTION!
+				    __if DEBUG_BUILD==1{
+					func_devlog("effect removed, cev called - id:\v[611]")
+					@if v[611] >= 300 {
+					    @if v[611] <= 500 {
+						func_export_deblog_array("illegal_effect_report" v[301] 100)
+						func_force_crash("Illegal cev called in effect erasing")
+						
+					    }
+					}
+				    }
+
+				    @call .cev v[611]
+				    s[143].off
+				    
+				}
+				
+			    }
+			    //@comment "消滅処理"
+			    v[301] = v[241] * 100 
+			    v[301] += v[1018]
+			    v[1301].copy v[v[301]], 100
+			    
+			}
+             	  }
             }
             
         }
         
     } .else bl {
         //@comment "Access15 = x"
-        v[295] = v[301] + 6
+        v[295] = v[301] + 4
+	// add milpix
+        v[53].copy TT1, 2
+	v[341..342] *= 1000
+	v[v[295]].add TT1,2
+        v[295] += 2
         //@comment "ずれセット"
         v[v[295]] .add v[53], 2
         v[295] += 11
@@ -80,7 +89,7 @@ v[243] = 0
         v[v[295]] .add v[53], 2
         v[295] += 3
         v[v[295]] .add v[53], 2
-        
+
     }
     
 }
@@ -113,36 +122,40 @@ cev .id(23), .name("Main:Particle Effect") , .parallel , .cond(Const_Is_RTS_Mode
         //@comment "Access15 = タイマー"
         //@comment "Is there Emitter?"
         @if v[v[301]] >= 1 {
-            @if `v[v[301] + 49] >= 1 {
-                s[141].off
-                //@comment "タイマーが切れていない"
-                v[295] = v[301] + 49
-                v[246] += 1
-                //@comment "タイマー減らす"
-                v[v[295]] -= 1
-                v[v[301]].copy v[601], 11
-                //@comment "#あとは個別イベントに丸投げ#V[604]>=1"
-                @if v[604] >= 1 {
-                    @call .cev v[604]
-                    
-                }
-                //@comment "時間切れ消滅処理"
-                @if v[v[295]] <= 0 {
-                    //@comment "消滅処理"
-                    v[301] = v[241] * 50 
-		    v[301] += v[1198]
-                    v[1301].copy v[v[301]], 50
-                    
-                }
-                
-            } .else bl {
-                //@comment "消滅処理"
-                v[301] = v[241] * 50 
-		v[301] += v[1198]
-                v[1301].copy v[v[301]], 50
-                
-            }
-            
+	    @if v[v[301]] == 1002 {
+		v[v[301]] = 2
+	    }.else bl {
+
+		    @if `v[v[301] + 49] >= 1 {
+			s[141].off
+			//@comment "タイマーが切れていない"
+			v[295] = v[301] + 49
+			v[246] += 1
+			//@comment "タイマー減らす"
+			v[v[295]] -= 1
+			v[v[301]].copy v[601], 11
+			//@comment "#あとは個別イベントに丸投げ#V[604]>=1"
+			@if v[604] >= 1 {
+			    @call .cev v[604]
+			    
+			}
+			//@comment "時間切れ消滅処理"
+			@if v[v[295]] <= 0 {
+			    //@comment "消滅処理"
+			    v[301] = v[241] * 50 
+			    v[301] += v[1198]
+			    v[1301].copy v[v[301]], 50
+			    
+			}
+			
+		    } .else bl {
+			//@comment "消滅処理"
+			v[301] = v[241] * 50 
+			v[301] += v[1198]
+			v[1301].copy v[v[301]], 50
+			
+		    }
+           }
         }
         
     }

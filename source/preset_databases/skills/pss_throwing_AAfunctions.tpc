@@ -746,10 +746,10 @@ cev .id(1201), .name("Throwing Axe"), {
 			    v[14] += rnd(-20, 20)
 			    // "#単位ベクトルできた"
 			    //@call .cev 2003
-			    func_make_unit_vector_from_two_points_atan2(var1,var2,var3,var4,1000)//is this really okay with 1000?
+			    func_make_unit_vector_from_two_points_atan2(var1,var2,var3,var4,1000) // is this really okay with 1000?
 			    // "#速度をかけよう"
 			    // "##*30"
-			    v[21..22] *= 600
+			    v[21..22] *= 60
 			    // "#速度パラメータ入力"
 			    v[21].copy v[612], 2
 			    // "#角度情報保存"

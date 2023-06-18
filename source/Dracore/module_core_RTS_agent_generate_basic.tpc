@@ -1803,18 +1803,25 @@ __fn func_generate_agent_finish_set {
 
 
 			// set agent AI target priority
-			def classtypesetend = 4101 + ClassType_Amount  
+			def classtypesetend = 4101 + ClassType_Amount
+			defv static_target_set = classtypesetend 
+
 			v[4101..classtypesetend] = 100000000
 		
+			// lower value = more priority
+
+			// siege ram type
 			@if `agent_AI_routine_bits & 1 {
 				v[4101..classtypesetend] += 700000000
-				v[4111] -= 750000000
+				static_target_set -= 750000000 
 				
 			}
+
 			@if `agent_AI_routine_bits & 2 {
 				v[4102] -= 50000000
 				
 			}
+
 			@if `agent_AI_routine_bits & 4 {
 				v[4105] -= 50000000
 			}	

@@ -2,8 +2,8 @@
 //Camera Diff set
 v[v[301]] .copy emitter_ParticleType, ParticleArraySize
 v[343..344] = 1000
-v[53].copy v[345],2
-v[345].mul v[343]
+v[53].copy v[345], 2
+v[345].mul v[343], 2
 emitter_MilX.add v[345], 2
 
 v[341] = emitter_ParentEffect-1 
@@ -12,9 +12,9 @@ v[341] += v[1018]
 v[v[341]].copy effect_EffectType, EffectArraySize //Temp, will change
 
 //check if the parent arrow is still flying
-@if effect_EffectType<=1{ // wow, it's already on ground
+@if effect_EffectType <= 1 { // wow, it's already on ground
 	//then
-	zeroArray100.copy emitter_ParticleType,ParticleArraySize//clear the particle emitter
+	zeroArray100.copy emitter_ParticleType, ParticleArraySize // clear the particle emitter
 }.elif emitter_is_out_screen_flag == 0 {
 	v[245] %= v[2215]
 	v[345] = v[245] + v[1200]
@@ -45,11 +45,12 @@ v[v[341]].copy effect_EffectType, EffectArraySize //Temp, will change
 	    .multi
 	}
 
+	v[245] += 1 // ++ 
+
 	@if Is_Paused.isOff() {// if time is passing
 		emitter_MilX.add emitter_milMilPixVx, 2 //add V  
 
 		//show arrow Trail
-		v[245] += 1
 		//Have arrow check height
 		@if effect_ArrowCheckHeight > 0 {
 		    v[245] %= v[2215]
@@ -79,7 +80,7 @@ v[v[341]].copy effect_EffectType, EffectArraySize //Temp, will change
 			.angle effect_Angle, 1000
 			.add
 		    }
-		    v[245] += 1
+		    v[245] += 1 // ++
 		    
 		}
 	}
@@ -87,12 +88,12 @@ v[v[341]].copy effect_EffectType, EffectArraySize //Temp, will change
 	emitter_MilX.copy emitter_RelativeX, 2
 	emitter_RelativeX.div v[343], 2
 
-}.else bl{// emitter is out of screen 
-	//then just add cam diff
+}.else bl { // emitter is out of screen 
+	// then just add cam diff
 	emitter_MilX.copy emitter_RelativeX, 2
 	v[343..344] = 1000
 	emitter_RelativeX.div v[343], 2
 
 }
-//save all parameter changers into memory
+//save all parameter changes into memory
 emitter_ParticleType.copy v[v[301]], ParticleArraySize
