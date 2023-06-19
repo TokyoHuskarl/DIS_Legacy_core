@@ -1,8 +1,8 @@
 
 #include "./../headers/header_common.tpc"
 #include "./../headers/header_drawing.tpc"
+#include "./../headers/header_agent.tpc"
 #include "./module_core_RTS_drawing_animations.tpc"
-
 
 defv expected_action_sprite = 321
 
@@ -128,7 +128,8 @@ T20=ピクチャスプライト指定
 T21=アクションステート取得*/
     //@comment "MINIONS"
     @if `agent_ExMotionFlags & 524288 {
-	v[460] = 0
+        AgentIDholder = v[340] + 1
+        v[460] = 0
         //@comment "#描画範囲内か？T3 T4 Constx Consty"
         @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[340] + 501] {
 	    //11.5.23
@@ -178,8 +179,16 @@ T21=アクションステート取得*/
             //@comment "#Force Sprite"
             //expected_action_sprite = v[850] + 2 > 0 ? v[850] + 2 : [v[883] % 10, v[883] / 10 % 10, v[883] / 100 % 10, v[883] / 1000 % 10, v[883] / 10000][(v[843] == 0 && agent_MovementOrder >= 1 ? 3 : min(v[843], 4))]
             // change!
-            expected_action_sprite = v[850] + 2 > 0 ? v[850] + 2 : [v[883] % 10, v[883] / 10 % 10, v[883] / 100 % 10, v[883] / 1000 % 10, v[883] / 10000][(agent_ActionFlag & ActionFlag_FLAG_Walking ? 3 : min(v[843], 4))]
-
+            // check if Force Sprite is set
+            TT1 = v[850] + 2
+            //expected_action_sprite = TT1 > 0 ? TT1 : [v[883] % 10, v[883] / 10 % 10, v[883] / 100 % 10, v[883] / 1000 % 10, v[883] / 10000][((agent_ActionFlag & ActionFlag_FLAG_Walking) && v[843] == 0 ? 3 : min(v[843], 4))]
+            @if TT1 > 0 { // if forcesprite is set...
+                expected_action_sprite = TT1 
+            }.else bl { // if not, pick from AEBA
+                def AgentExBuffer_SLOT_ActionSprite_0 = AgentExBuffer_SLOT_ActionSprite_1 + 1
+                TT1 = ((agent_ActionFlag & ActionFlag_FLAG_Walking) && v[843] == 0 ? 3 : min(v[843], 4)) + AgentExBuffer_SLOT_ActionSprite_1
+                get_AEAB_element_wo_ptr(AgentIDholder,__id(expected_action_sprite),TT1)
+            }
             //@comment "スプライト管理終わり"
             //v[299] = v[301] + 11
             v[341] = v[306] + agent_Height//v[v[299]]

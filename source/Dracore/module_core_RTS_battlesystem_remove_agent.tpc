@@ -1,30 +1,69 @@
 //Kill Retreat
 
 #include "./../headers/header_drawing.tpc"
+
+sname[213], "Remove some agent", bl
+defs CallDeathManager = 213
+defv DeathPtr = 4841
+cev .id(cevID_Agent_Remove_Manager), .name("AgentDeathManager") ,.parallel, .cond(__id(CallDeathManager)),{
+
+	// "Land Units"
+
+	// maybe you should rather make death list I guess..
+	// MAKE UP DEAD MEN'S INFO!
+	DeathPtr = v[4532] 
+	@while v[DeathPtr] != 0 {
+	    v[301] = v[DeathPtr] * v[1117] 
+	    v[301] += 4701
+	    v[v[301]].copy v[601], 300
+	    @if `v[603] & AgentBits_FLAG_KILLED {
+		//v[603] &= ~AgentBits_FLAG_KILLED
+		// Damage Amount - 
+		//
+		//
+		//
+		v[300] = v[DeathPtr]
+		Kill_Agent()
+		
+	    }
+	    //"++"
+	    DeathPtr += 1
+	    
+	}
+	CallDeathManager.off
+}
+
 //Kill
-cev .id(41) .name("BattleSystemFunc:Kill Agent"){
+cev .id(41), .name("BattleSystemFunc:Kill Agent"),{
+	Kill_Agent()
+}
+
+
+__fn Kill_Agent {
+	vname[4842] "killed agent ptr"
+	defv Kill_pointer = 4842
 	@comment "module_core_RTS_battlesystem_remove_agent_funcs.tpc"
 	/*// "Access19 = AttackerObjectID
 	Access20 = TargetObjectID
 	Access18 = ObjTypeチェックPtr
 	var1=Is_fatality
 	var10=raw_damage 誤作動防止"*/
-	//Ptr10 = v[300]*300
+	//Kill_pointer = v[300]*300
 	s[212].off
 	@if v[300] > 0 {
 	    @if v[300] <= v[1004] {
 		// "safety >0"
 		@if v[v[298]] > 0 {
 		    // "309 = ID 306 = ActionState"
-		    Ptr10 = v[300] * 300 
-		    v[311] = Ptr10+4707
-		    v[826] = Ptr10+ 4826 
+		    Kill_pointer = v[300] * 300 
+		    v[311] = Kill_pointer+4707
+		    v[826] = Kill_pointer+ 4826 
 		    // "Flagset"
 		    v[v[826]] &= ~524288
 		    // "Can be FATALITY?"
 		    v[371] = v[11]
 		    // "Randomise upsidedown"
-		    v[v[826]] |= v[Ptr10 + 4802] != 2 ? [0, 0, 4096][rnd(0, 2)] : 0
+		    v[v[826]] |= v[Kill_pointer + 4802] != 2 ? [0, 0, 4096][rnd(0, 2)] : 0
 		    // "-1を死体とする"
 		    // "ObjIDを死体に変える"
 		    v[331] = v[v[298]]
@@ -33,23 +72,23 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 		    // "ActionStateを死体に変える"
 		    v[306] += 4943
 		    v[v[306]] = -1
-		    v[311] = Ptr10 +4707
+		    v[311] = Kill_pointer +4707
 		    v[305] = v[v[311]]
 		    v[v[311]].copy v[305], 2
 		    // "GEt Morton Space"
 		    v[609] = v[311] + 2
 		    // "Colour"
-		    v[Ptr10 + 4995] = 0
-		    v[341] = v[Ptr10 + 4985]
+		    v[Kill_pointer + 4995] = 0
+		    v[341] = v[Kill_pointer + 4985]
 		    v[0] = v[4013..4016] = [v[341] * 1, v[341] * -2, v[341] * -2, v[341] * -2]
 		    // "#base colour"
 		    v[0] = v[4001..4004] = [-22, -22, -22, -34]
 		    // "#"
 		    // "If victim is explosive"
 		    v[373] = 0
-		    @if `v[Ptr10 + 4974] & 2097152 {
+		    @if `v[Kill_pointer + 4974] & 2097152 {
 			v[190] = 4
-			v[Ptr10 + 4780] = v[Ptr10 + 4780] <= 0 ? 50 : Ptr10 + 4780
+			v[Kill_pointer + 4780] = v[Kill_pointer + 4780] <= 0 ? 50 : Kill_pointer + 4780
 			v[607].copy v[361], 2
 			@loop v[1017] .dst v[320] {
 			    v[242] %= v[1017]
@@ -60,7 +99,8 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 				v[v[351]] = 2
 				v[v[351] + 8] = v[300]
 				v[v[351] + 10] = 1236
-				v[110] = v[v[351] + 98] = v[Ptr10 + 4810]
+				v[v[351] + 98] = v[Kill_pointer + 4810]
+				//v[110] = v[v[351] + 98] = v[Kill_pointer + 4810] !?
 				v[v[351] + 99] = 2
 				v[341] = v[351] + 6
 				v[305].copy v[v[341]], 2
@@ -74,17 +114,17 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			    
 			}
 			
-			@if v[110] > 300 {
+			/*@if v[110] > 300 {
 			    v[373] = 1
 			    
-			}
+			}*/
 			
 		    }
 		    @if s[302] .isOn() {
-			v[Ptr10 + 4780] = 0
+			v[Kill_pointer + 4780] = 0
 			
 		    } .else bl {
-			v[Ptr10 + 4780] *= 2
+			v[Kill_pointer + 4780] *= 2
 			
 		    }
 		    // "#Frozen to death"
@@ -140,32 +180,32 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			
 		    }
 		    v[4001] .add v[4013], 4
-		    v[4005] = Ptr10 
+		    v[4005] = Kill_pointer 
 		    v[4005] += 4991
 		    v[4001].copy v[v[4005]], 4
 		    // "Transparency"
-		    v[Ptr10 + 4998] = 0
+		    v[Kill_pointer + 4998] = 0
 		    v[305].copy v[11], 2
 		    v[12] += 14
 		    @call .cev 2010
 		    // "#WATER"
 		    @if `v[v[4505] + v[23]] & 1 {
-			v[Ptr10 + 4998] = 35
+			v[Kill_pointer + 4998] = 35
 			
 		    }
 		    // "#Forest"
 		    @if `v[v[4505] + v[23]] & 8 {
-			v[Ptr10 + 4998] = 35
+			v[Kill_pointer + 4998] = 35
 			
 		    }
 		    // "Set Head XY"
-		    v[341] = Ptr10 
+		    v[341] = Kill_pointer 
 		    v[341] += 4983
 		    v[0] = v[v[341]..v[341] + 1] = [v[305] * 10000, v[306] * 10000]
 		    v[341] = v[341] + 2
 		    v[1301].copy v[v[341]], 4
 		    // "Dead sprite"
-		    v[Ptr10 + 4988] = 0
+		    v[Kill_pointer + 4988] = 0
 		    v[320] = v[311] + 14
 		    v[321] = v[v[320]]
 		    v[0] = s[101] = v[v[320]] >= 0 ? 0 : 1
@@ -175,13 +215,13 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 		    v[321] = 1
 		    v[700] = 4800 + v[308]
 		    // " Stop AI"
-		    v[Ptr10 + 4703] &= ~1048576
-		    v[Ptr10 + 4981] = 0
-		    v[Ptr10 + 4982] = 0
+		    v[Kill_pointer + 4703] &= ~1048576
+		    v[Kill_pointer + 4981] = 0
+		    v[Kill_pointer + 4982] = 0
 		    @if v[331] <= 10 {
 			// "NOT STATIC"
 			// "#Can Bleed?"
-			v[372] = (v[Ptr10 + 4840] & 4096) == 4096 ? 1 : 0
+			v[372] = (v[Kill_pointer + 4840] & 4096) == 4096 ? 1 : 0
 			@if s[313] .isOn() {
 			    //@call .cev 1924
 				func_logupdate_begin()
@@ -216,7 +256,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			    v[474] = divmul(v[607] + v[1001], v[1281], 50)
 			    // "#########################"
 			    // "If victim has big flag"
-			    @if `(v[Ptr10 + 4974] & 524288) > 0 {
+			    @if `(v[Kill_pointer + 4974] & 524288) > 0 {
 				// "#Sounds more heavier"
 				v[473] -= 18
 				// "#Dust Particle Effect"
@@ -252,12 +292,12 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			    @cmd 11550, "Falldown", .args v[472], 3
 			    @if v[372] == 0 {
 				// "Get Race"
-				v[341] = Ptr10 
+				v[341] = Kill_pointer 
 				v[341] += 4764
 				@loop 1 {
 				    // "#Human"
 				    @if v[v[341]] == 0 {
-					@if `v[Ptr10 + 4738] & 2 {
+					@if `v[Kill_pointer + 4738] & 2 {
 					    v[329] = rnd(1, 1)
 					    // "#########################"
 					    v[472] = divmul(75, 100, v[2216])
@@ -538,7 +578,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			v[341] -= 1
 			v[v[4531]].sortDescending v[1004]
 			// "FATALITY"
-			v[Ptr10 + 4988] = 0
+			v[Kill_pointer + 4988] = 0
 			@if v[371] == 1 {
 			    @if v[372] == 0 {
 				s[212].on
@@ -633,15 +673,15 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 				    // "Element == Blunt,-Smash Head"
 				    @if v[190] == 2 {
 					// "Smashable flag"
-					@if `v[Ptr10 + 4826] & 64 {
-					    v[899] = Ptr10 + 4999
+					@if `v[Kill_pointer + 4826] & 64 {
+					    v[899] = Kill_pointer + 4999
 					    v[899] = v[v[899]]
 					    @while v[899] >= 1 {
 						// "detect head"
 						v[341] = v[899] % 10
 						@if v[341] == 2 {
 						    // "set crushed head sprite"
-						    v[(v[300] - 1) * 6 + 1 + v[1185]] = v[Ptr10 + 4764] * -1 - 1 //ACHTUNG, outdated func
+						    v[(v[300] - 1) * 6 + 1 + v[1185]] = v[Kill_pointer + 4764] * -1 - 1 //ACHTUNG, outdated func
 						    @break
 						    
 						}
@@ -658,8 +698,8 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 					
 				    } .else bl {
 					@if v[190] == 4 {
-					    @if `v[Ptr10 + 4826] & 128 {
-						v[899] = v[Ptr10 + 4999]
+					    @if `v[Kill_pointer + 4826] & 128 {
+						v[899] = v[Kill_pointer + 4999]
 						@while v[899] >= 1 {
 						    // "detect head"
 						    v[341] = v[899] % 10
@@ -683,13 +723,13 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 				}
 				@if v[373] == 1 {
 				    // "Reset Head XY"
-				    v[341] = Ptr10 
+				    v[341] = Kill_pointer 
 				    v[341] += 4983
-				    v[0] = v[v[341]..v[341] + 1] = [rnd(-47000, 47000), v[Ptr10 + 4711] * -12000 + rnd(-15000, 0)]
-				    v[Ptr10 + 4985] = rnd(-4, 4) * 2250
-				    v[Ptr10 + 4986] = rnd(1, 4) * -300
-				    v[Ptr10 + 4988] = rnd(13, 16)
-				    v[Ptr10 + 4989] = rnd(-1800000, 1800000)
+				    v[0] = v[v[341]..v[341] + 1] = [rnd(-47000, 47000), v[Kill_pointer + 4711] * -12000 + rnd(-15000, 0)]
+				    v[Kill_pointer + 4985] = rnd(-4, 4) * 2250
+				    v[Kill_pointer + 4986] = rnd(1, 4) * -300
+				    v[Kill_pointer + 4988] = rnd(13, 16)
+				    v[Kill_pointer + 4989] = rnd(-1800000, 1800000)
 				    
 				}
 				
@@ -705,7 +745,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			v[339] = v[v[1074] + v[341]]
 			v[340] = v[1070] + v[341] * v[1004]
 			// "GEt Lv"
-			v[193] = v[Ptr10 + 4804]
+			v[193] = v[Kill_pointer + 4804]
 			v[338] = 0
 			@loop v[339] .dst v[310] {
 			    v[312] = v[340] + v[310]
@@ -752,15 +792,15 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 		    } .else bl {
 			// "STATIC"
 	    		Bool_Refresh_Static_Minimap.on //request refresh minimap static
-			v[341] = Ptr10 + 4712 
+			v[341] = Kill_pointer + 4712 
 			v[1301].copy v[v[341]], 2
 			// "wrecks remain longer"
 			@if s[302] .isOff() {
-			    v[Ptr10 + 4780] = v[1240] * v[4571] * 5
+			    v[Kill_pointer + 4780] = v[1240] * v[4571] * 5
 			    
 			}
 			@if s[34] .isOn() {
-			    v[Ptr10 + 4780] = 10
+			    v[Kill_pointer + 4780] = 10
 			    
 			}
 			// "##########Foundation##########"
@@ -769,11 +809,11 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			    v[2538] -= 1
 			    @if s[34] .isOn() {
 				// "refund"
-				@if `v[Ptr10 + 4703] & 2097152 {
-				    v[14] = v[Ptr10 + 4980]
+				@if `v[Kill_pointer + 4703] & 2097152 {
+				    v[14] = v[Kill_pointer + 4980]
 				    @if v[14] >= 800 {
 					s[175].on
-					v[11] = Ptr10 + 4710
+					v[11] = Kill_pointer + 4710
 					v[v[11]].copy v[11], 2
 					v[11..12] *= 2
 					s[151].on
@@ -1054,7 +1094,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 		    v[12] = v[331]
 		    @call .cev 1896
 		    // "Team Get	!TEAM LIST!"
-		    v[700] = Ptr10 
+		    v[700] = Kill_pointer 
 		    v[700] += 4800
 		    v[308] = v[v[700]] % 3
 		    // "NOT  neutral"
@@ -1089,7 +1129,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			    
 			}
 			// "Coｌなし施設はカウントされてないので引かない"
-			v[343] = Ptr10 
+			v[343] = Kill_pointer 
 			v[343] += 4802
 			@if v[308] == 0 {
 			    v[205] -= v[v[343]] != 104 && v[v[343]] != 105 && s[174] == 0 ? 1 : 0
@@ -1104,16 +1144,16 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 		    }
 		    s[174].off
 		    // "Collision Counter"
-		    v[196] -= v[Ptr10 + 4739] != -1 ? 1 : 0
+		    v[196] -= v[Kill_pointer + 4739] != -1 ? 1 : 0
 		    // "EXP"
 		    v[2701] += v[v[700]] == 1 ? v[v[700] - 41] : 0
 		    // "Set HP 0"
-		    v[Ptr10 + 4806] = -1
+		    v[Kill_pointer + 4806] = -1
 		    // "ObjA"
 		    v[204] -= 1
 		    // "###############Draw_newPicture"
-		    v[314] = Ptr10 + 4700
-		    @if `v[Ptr10 + 4701] == -3 {
+		    v[314] = Kill_pointer + 4700
+		    @if `v[Kill_pointer + 4701] == -3 {
 			v[441] = 188
 			v[442] = 1
 			v[443] = 305
@@ -1139,65 +1179,65 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			v[321] = 1
 			// "Z "
 			v[455] = 0
-			@if `v[Ptr10 + 4826] & 4096 {
-			    v[315] = !v[Ptr10 + 4844] * 4096 | 8192
+			@if `v[Kill_pointer + 4826] & 4096 {
+			    v[315] = !v[Kill_pointer + 4844] * 4096 | 8192
 			    v[312] = -18
 			    
 			} .else bl {
-			    v[315] = !v[Ptr10 + 4844] * 4096
+			    v[315] = !v[Kill_pointer + 4844] * 4096
 			    v[312] = 0
 			    
 			}
-			v[Ptr10 + 4979] = 0
+			v[Kill_pointer + 4979] = 0
 			@if s[314] .isOff() {
 			    @if s[220] .isOn() {
 				@if v[331] == 3 {
-				    @if `v[Ptr10 + 4950] != -1 {
+				    @if `v[Kill_pointer + 4950] != -1 {
 					@if `(v[315] & 4096) > 0 {
 					    @if `(v[315] & 8192) > 0 {
-						v[Ptr10 + 4982] = -24
-						v[Ptr10 + 4981] = 16
-						v[Ptr10 + 4979] = rnd(-720000, -600000)
+						v[Kill_pointer + 4982] = -24
+						v[Kill_pointer + 4981] = 16
+						v[Kill_pointer + 4979] = rnd(-720000, -600000)
 						
 					    } .else bl {
-						v[Ptr10 + 4982] = -4
-						v[Ptr10 + 4981] = 16
-						v[Ptr10 + 4979] = rnd(600000, 720000)
+						v[Kill_pointer + 4982] = -4
+						v[Kill_pointer + 4981] = 16
+						v[Kill_pointer + 4979] = rnd(600000, 720000)
 						
 					    }
 					    
 					} .else bl {
 					    @if `(v[315] & 8192) > 0 {
-						v[Ptr10 + 4982] = -24
-						v[Ptr10 + 4981] = -16
-						v[Ptr10 + 4979] = rnd(600000, 720000)
+						v[Kill_pointer + 4982] = -24
+						v[Kill_pointer + 4981] = -16
+						v[Kill_pointer + 4979] = rnd(600000, 720000)
 						
 					    } .else bl {
-						v[Ptr10 + 4982] = -4
-						v[Ptr10 + 4981] = -16
-						v[Ptr10 + 4979] = rnd(-720000, -600000)
+						v[Kill_pointer + 4982] = -4
+						v[Kill_pointer + 4981] = -16
+						v[Kill_pointer + 4979] = rnd(-720000, -600000)
 						
 					    }
 					    
 					}
-					@if `v[Ptr10 + 4738] & 2 {
-					    v[Ptr10 + 4982] -= 28
+					@if `v[Kill_pointer + 4738] & 2 {
+					    v[Kill_pointer + 4982] -= 28
 					    
 					}
 					
 				    } .else bl {
-					v[Ptr10 + 4979] = 0
-					v[Ptr10 + 4982] = 0
-					v[Ptr10 + 4981] = 0
+					v[Kill_pointer + 4979] = 0
+					v[Kill_pointer + 4982] = 0
+					v[Kill_pointer + 4981] = 0
 					
 				    }
 				    
 				}
 				
 			    } .else bl {
-				v[Ptr10 + 4979] = 0
-				v[Ptr10 + 4982] = 0
-				v[Ptr10 + 4981] = 0
+				v[Kill_pointer + 4979] = 0
+				v[Kill_pointer + 4982] = 0
+				v[Kill_pointer + 4981] = 0
 				
 			    }
 			    
@@ -1209,7 +1249,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			v[188] = (v[300] - 1) * Const_layer_amount + v[1201]
 			v[341] = v[v[314] + 290]
 			// "Count Picture Layer Array"
-			v[899] = v[Ptr10 + 4999]
+			v[899] = v[Kill_pointer + 4999]
 			v[345] = v[899]
 			@if v[899] != 0 {
 			    @while v[345] > 0 .dst v[346] {
@@ -1252,18 +1292,18 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			@if v[188] >= 1 {
 			    v[178] = v[188]
 			    // "#get damaged variation"
-			    //v[604] = v[Ptr10 + 4704]
+			    //v[604] = v[Kill_pointer + 4704]
 			    //v[0] = v[343..352] = [v[604] % 10, v[604] / 10 % 10, v[604] / 100 % 10]
 			    v[468] = 3
 			    v[187] = 0
 			    v[379] = 0
 			    v[378] = 0
-			    v[669] = v[Ptr10 + 4769]
-			    v[664] = v[Ptr10 + 4764]
+			    v[669] = v[Kill_pointer + 4769]
+			    v[664] = v[Kill_pointer + 4764]
 			    v[4101..4110] = v[463]
-			    v[725] = Ptr10 
+			    v[725] = Kill_pointer 
 			    v[725] += 4825
-			    v[726] = Ptr10 
+			    v[726] = Kill_pointer 
 			    v[726] += 4826
 			    v[4121..4130] = 1
 			    /*v[4121] = [1, 2][(v[v[725]] & 1)]
@@ -1668,7 +1708,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			v[315] = v[314] + 261
 			v[1301].copy v[v[315]], 18
 			// "WP XY"
-			v[0] = v[v[315]..v[315] + 1] = [rnd(-36000, 36000), v[Ptr10 + 4711] * -12000 + rnd(-50000, -20000)]
+			v[0] = v[v[315]..v[315] + 1] = [rnd(-36000, 36000), v[Kill_pointer + 4711] * -12000 + rnd(-50000, -20000)]
 			v[v[315] + 2] = rnd(-4, 4) * 2250
 			v[v[315] + 3] = rnd(2, 5) * -450
 			@if `(v[341] & 4096) > 0 {
@@ -1700,7 +1740,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			}
 			// "Sh XY"
 			v[315] = v[314] + 269
-			v[0] = v[v[315]..v[315] + 1] = [rnd(-28000, 28000), v[Ptr10 + 4711] * -9500 + rnd(-13000, 0)]
+			v[0] = v[v[315]..v[315] + 1] = [rnd(-28000, 28000), v[Kill_pointer + 4711] * -9500 + rnd(-13000, 0)]
 			v[v[315] + 2] = rnd(-3, 3) * rnd(1900, 2250)
 			v[v[315] + 3] = rnd(0, 2) * -250
 			v[v[315] + 5] = rnd(11, 14)
@@ -1719,19 +1759,19 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			v[v[315] + 7] = rnd(-60000, 60000)
 			// "###############Helm found"
 			@if v[339] >= 1 {
-			    v[899] = v[Ptr10 + 4999]
+			    v[899] = v[Kill_pointer + 4999]
 			    v[341] = pow(10, v[339])
-			    v[Ptr10 + 4999] = v[899] / v[341] / 10 * v[341] + v[899] % v[341]
+			    v[Kill_pointer + 4999] = v[899] / v[341] / 10 * v[341] + v[899] % v[341]
 			    
 			}
 			
 		    }
-		    @if `v[Ptr10 + 4701] == -4 {
+		    @if `v[Kill_pointer + 4701] == -4 {
 			// "Weapons fall"
 			v[315] = v[314] + 261
 			v[1301].copy v[v[315]], 19
 			// "WP XY"
-			v[0] = v[v[315]..v[315] + 1] = [rnd(-36000, 36000), v[Ptr10 + 4711] * -12000 + rnd(-15000, 0)]
+			v[0] = v[v[315]..v[315] + 1] = [rnd(-36000, 36000), v[Kill_pointer + 4711] * -12000 + rnd(-15000, 0)]
 			v[v[315] + 2] = rnd(-4, 4) * 2250
 			v[v[315] + 3] = rnd(1, 4) * -300
 			v[v[315] + 6] = rnd(450000, 800000) * [-1, 1][rnd(0, 1)]
@@ -1740,7 +1780,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			v[v[315] + 5] = rnd(14, 19)
 			// "Sh XY"
 			v[315] = v[314] + 269
-			v[0] = v[v[315]..v[315] + 1] = [rnd(-28000, 28000), v[Ptr10 + 4711] * -9500 + rnd(-13000, 0)]
+			v[0] = v[v[315]..v[315] + 1] = [rnd(-28000, 28000), v[Kill_pointer + 4711] * -9500 + rnd(-13000, 0)]
 			v[v[315] + 2] = rnd(-3, 3) * rnd(1900, 2250)
 			v[v[315] + 3] = rnd(0, 2) * 250
 			v[v[315] + 5] = rnd(11, 14)
@@ -1755,7 +1795,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 		    @if s[319] .isOn() {
 			// "Bogatyr"
 			@if `v[v[299] * 300 + 4801] == 130 {
-			    v[822] = v[Ptr10 + 4922]
+			    v[822] = v[Kill_pointer + 4922]
 			    @if v[822] == 12 {
 				// "＃＃＃＃＃＃＃＃＃＃＃＃"
 				v[229] = 29
@@ -1766,7 +1806,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			    
 			}
 			@if `v[v[299] * 300 + 4801] == 142 {
-			    v[822] = v[Ptr10 + 4922]
+			    v[822] = v[Kill_pointer + 4922]
 			    @if v[822] == 12 {
 				// "＃＃＃＃＃＃＃＃＃＃＃＃"
 				v[229] = 30
@@ -1777,7 +1817,7 @@ cev .id(41) .name("BattleSystemFunc:Kill Agent"){
 			    
 			}
 			@if v[190] == 4 {
-			    @if `v[Ptr10 + 4801] == 157 {
+			    @if `v[Kill_pointer + 4801] == 157 {
 				// "＃＃＃＃＃＃＃＃＃＃＃＃"
 				v[229] = 22
 				s[240].on

@@ -5,11 +5,14 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 
 
 	    v[401] = v[v[536]] - 1
-	    v[301] = v[401] * v[1117] 
-	    v[301] += 5001
+	    //v[301] = v[401] * v[1117] 
+	    //v[301] += 5001
+		
+	    Ptr1 = v[401] * v[1117] 
+	    Ptr1 += 5001
 		//macro_get_agent_basic_ptr(v[v[536]],v[301])
 
-	    Ptr1 = v[301]
+	    //Ptr1 = v[301]
 	    v[Ptr1].copy agent_ObjectType, 300
 
 	    //@comment "Get [1-100]"
@@ -31,47 +34,66 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	    v[342] = ((v[342] | v[342] << 1) & 0x55555555) << 1
 	    //@comment "yは1bitシフトで終わり"
 	    //@comment "最後にTT1 OR TT2"
-	    agent_Morton = v[341] | v[342]
-	    //@comment "モートン座標を記録しおえたよ
-	    //次はリストに登録するよ
-	    //TT3=カウンター
-	    //TT2=ポインター"
-	    v[341] = agent_Morton
-	    //@comment "#ルート空間だよ"
-	    v[342] = v[1067] + v[v[1071]]
-	    v[v[342]] = v[401] + 1
-	    v[v[1071]] += 1
-	    //@comment "#第5空間だよ
-	    //0~1023"
-	    v[343] = v[4538] + v[341]
-	    v[v[341] * v[1004] + v[4535] + v[v[343]]] = v[401] + 1
-	    v[v[343]] += 1
-	    //@comment "#第四空間だよ
-	    //0~255"
-	    v[341] >>= 2
-	    v[343] = v[4537] + v[341]
-	    v[v[341] * v[1004] + v[4534] + v[v[343]]] = v[401] + 1
-	    v[v[343]] += 1
-	    //@comment "#第三空間だよ
-	    //0~63"
-	    v[341] >>= 2
-	    v[343] = v[1074] + v[341]
-	    v[v[341] * v[1004] + v[1070] + v[v[343]]] = v[401] + 1
-	    v[v[343]] += 1
-	    //@comment "#第二空間だよ
-	    //0~15"
-	    v[341] >>= 2
-	    v[343] = v[1073] + v[341]
-	    v[v[341] * v[1004] + v[1069] + v[v[343]]] = v[401] + 1
-	    v[v[343]] += 1
-	    //@comment "#第一空間だよ
-	    //0~3"
-	    v[341] >>= 2
-	    v[343] = v[1072] + v[341]
-	    v[v[341] * v[1004] + v[1068] + v[v[343]]] = v[401] + 1
-	    v[v[343]] += 1
-	    //@comment "モートン座標関係はこれで終わり"
-	    v[301] -= 1
+	    v[341] = v[341] | v[342]
+
+		@if v[341] >= 0 {	// safety!
+			@if v[341] <= 1023 {	// safety!
+				//@comment "モートン座標を記録しおえたよ
+				//次はリストに登録するよ
+				//TT3=カウンター
+				//TT2=ポインター"
+				agent_Morton = v[341]
+				//@comment "#ルート空間だよ"
+				v[342] = v[1067] + v[v[1071]]
+				v[v[342]] = v[v[536]]
+				v[v[1071]] += 1
+
+				
+				// forth mort dim ~ fifth mort dim
+				v[4537].copy var4, 2
+				//@comment "#第5空間だよ
+				//0~1023"
+				//v[343] = v[4538] + v[341]
+				var5 += v[341]
+				v[v[341] * v[1004] + v[4535] + v[var5]] = v[v[536]]
+				v[var5] += 1
+				//@comment "#第四空間だよ
+				//0~255"
+				v[341] >>= 2
+				//v[343] = v[4537] + v[341]
+				var4 += v[341]
+				v[v[341] * v[1004] + v[4534] + v[var4]] = v[v[536]]
+				v[var4] += 1
+
+
+				// first mort dim ~ third mort dim
+				v[1072].copy reg1, 3
+				//@comment "#第三空間だよ
+				//0~63"
+				v[341] >>= 2
+				//v[343] = v[1074] + v[341]
+				//v[v[341] * v[1004] + v[1070] + v[v[343]]] = v[v[536]]
+				reg3 += v[341]
+				v[v[341] * v[1004] + v[1070] + v[reg3]] = v[v[536]]
+				v[reg3] += 1
+				//@comment "#第二空間だよ
+				//0~15"
+				v[341] >>= 2
+				//v[343] = v[1073] + v[341]
+				//v[v[341] * v[1004] + v[1069] + v[v[343]]] = v[v[536]]
+				reg2 += v[341]
+				v[v[341] * v[1004] + v[1069] + v[reg2]] = v[v[536]]
+				v[reg2] += 1
+				//@comment "#第一空間だよ
+				//0~3"
+				v[341] >>= 2
+				//v[343] = v[1072] + v[341]
+				reg1 += v[341]
+				v[v[341] * v[1004] + v[1068] + v[reg1]] = v[v[536]]
+				v[reg1] += 1
+				//@comment "モートン座標関係はこれで終わり"
+			}
+		}
 	    @if Is_Paused .isOff() { //optimizing 26.4.23
 		    //@comment "Minions"
 		    agent_AgentBits &= -67108865//~67108864 ~AgentBits_FLAG_1fprocessed
@@ -407,7 +429,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			    @if s[204] .isOff() {
 					agent_AI_routine_bits &= -49153//~49152
 					agent_AgentBits &= -37748737//~37748736 //(4194304 + 33554432)
-					agent_Direction = (cos(v[656], 1000, -100) + 200) / 200
+					agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
 					s[104].on
 					@if `!(agent_AgentBits & 64) {
 						//@comment "防御"
@@ -460,7 +482,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 		//@comment "とまる"
 		@if agent_MovementOrder <= -1 {
 		    s[104].on
-		    agent_ActionFlag = 1
+		    agent_ActionFlag |= 1
 		    //@comment "hovering"
 		    @if `agent_AgentBits & 1024 {
 			agent_ForceSprite = 3
@@ -482,7 +504,6 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			// muldiv is slower than lower past proc, but in this case you need to use this in order to avoid var overflow
 			v[351..352] *= 100000 
 			v[351..352] /= agent_MilPixMoveOrderedPointDist
-
 			v[621] .add relX_sub_TargX_saved, 2
 			v[621..622] /= v[342] + 1
 
@@ -601,64 +622,173 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 
 	    //@comment "######################"
 	    //@comment "#移動先壁チェック"
-	    v[303] .add v[612], 2
-	    
-	    //v[303..304] /= 10000
-	    //24.4.23
-	    //macro_diff_var303to304()
-	    macro_cord_diff(v[303] v[304])
 
-	    Temp16 = v[304] - v[70] 
-	    v[__id(Temp16)..__id(Temp17)] *= v[2061]
-	    
-	    Temp17 += v[303]//Tile Number vertical
-	    Temp18 = Temp16 + v[311]//Tile Number horizontal
+		// this part is kinda terrible...
 
-	    v[313] = v[432] + Temp17 //vertical maptile col
-	    v[313] = v[v[313]] 
-	    v[314] = v[432] + Temp18 //horizontal maptile col
-	    v[314] = v[v[314]]
-	    v[313..314] %=100
-	    
-	    v[315] = v[313] / 20 
-	    v[315] += v[314] / 20
-	    v[315] %= 2
-
-	    Temp16 += v[303] //Tile Number of where unit goes
-
-	    @if Is_Paused .isOff() {
 		v[612] .add v[615], 2
-		v[1301].copy v[615], 2
-		@if v[315] == 0 {
-		    //@comment "nowall"
-		    Temp20 = v[432] + Temp16
-		    v[315] = v[Temp20] % 100
-		    //@comment "斜め壁Ck"
-		    //@comment "##壁がなければ速度を足す"
-		    @if v[315] < 21 {
-			//@comment "#Agent can move onward basically"
-			v[612].copy var1, 2
-			macro_get_tile_instant_flag_ptr(Temp16)
-			//func_show_msg("\c[17]DEBUG: \v[21] - \v[\v[21]]")
-			@if `v[reg1] & FLAG_Maptile_Crowded{//if crowded
-				var1.div Const_2_combi,2 //halve speed
+		@if `v[612] != 0 || v[613] != 0 {
 
-			}
-			agent_ProcessInstantState |= v[Temp20]-Saved_Current_MapTile_Info>90000000?agent_ProcessInstantState_FLAG_climb_hill:0
-			//@if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback {//horse back}
-			@if agent_MovementOrder > 1 {
-			    //@comment "#Then break wall detection flag"
-			    agent_AgentBits &= -8388609//~8388608 ~AgentBits_FLAG_walldetected
-			    
-			}
-			agent_MilPixX .add var1, 2
-			
-		    } .else bl {
-			agent_AgentBits |= AgentBits_FLAG_walldetected
-			
-		    }
+			/* this was shite.
+			reg3 = atan2(v[613],v[612],1000)
+			Temp17 = cos(reg3,1000,100)
+			Temp18 = sin(reg3,1000,100)
+			Temp17 = Temp17 >= 30 ? 1 : Temp17 <= -30 ? -1 : 0
+			Temp18 = Temp18 >= 30 ? v[2061] : Temp18 <= -30 ? -v[2061] : 0
+			Temp16 = Temp17 + Temp18
+			v[__id(Temp17)..__id(Temp18)] += v[632]
+			*/
 
-			//get v[v[297]] to v[341]
+			/* this doesn't work with forcemove
+			Temp16 = v[621] >= 7 ? 1 : v[621] <= -7 ? -1 : 0
+			
+			Temp17 = v[622] >= 7 ? v[2061] : v[622] <= -7 ? -v[2061] : 0
+			v[__id(Temp16)..__id(Temp17)] += v[632]*/
+
+			
+			v[303] .add v[612], 2
+			//v[303..304] /= 10000
+			//24.4.23
+			//macro_diff_var303to304()
+			macro_cord_diff(v[303] v[304])
+			v[303].sub v[69], 2
+			Temp16 = v[304] 
+			v[__id(Temp16)..__id(Temp17)] *= v[2061]
+			
+			Temp17 += v[303]//Tile Number vertical
+			Temp18 = Temp16 + v[311]//Tile Number horizontal
+
+	
+			//v[313] = v[432] + Temp17 //vertical maptile col
+			//v[313] = v[v[313]] 
+			//v[314] = v[432] + Temp18 //horizontal maptile col
+			//v[314] = v[v[314]]
+			v[313..314] = v[1182] // v[432]
+			v[313].add Temp17,2
+			v[313].deref v[313],2
+			v[313..314] %=100
+			
+			v[315] = v[313] / 20 
+			v[315] += v[314] / 20
+			v[315] %= 2
+
+			@if Is_Paused .isOff() {
+			@if v[315] == 0 {
+	    		Temp16 += v[303] //Tile Number of where unit goes
+				//@comment "nowall"
+				Temp20 = v[1182] + Temp16
+				v[315] = v[Temp20] % 100
+				//@comment "斜め壁Ck"
+				//@comment "##壁がなければ速度を足す"
+				@if v[315] < 21 {
+				//@comment "#Agent can move onward basically"
+				v[612].copy var1, 2
+				macro_get_tile_instant_flag_ptr(Temp16)
+				//func_show_msg("\c[17]DEBUG: \v[21] - \v[\v[21]]")
+				@if `v[reg1] & FLAG_Maptile_Crowded{//if crowded
+					var1.div Const_2_combi,2 //halve speed
+					var1.add v[615], 2 // and add push
+				}
+				agent_ProcessInstantState |= v[Temp20]-Saved_Current_MapTile_Info>90000000?agent_ProcessInstantState_FLAG_climb_hill:0
+				//@if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback {//horse back}
+				@if agent_MovementOrder > 1 {
+					//@comment "#Then break wall detection flag"
+					agent_AgentBits &= -8388609//~8388608 ~AgentBits_FLAG_walldetected
+					
+				}
+				agent_MilPixX .add var1, 2
+				
+				} .else bl {
+				agent_AgentBits |= AgentBits_FLAG_walldetected
+				
+				}
+
+				//get v[v[297]] to v[341]
+				v[53].copy v[341], 2
+				v[341] .mul v[4813], 2
+				//add to v[v[300]]
+				agent_MilPixX .add v[341], 2
+				agent_MilPixX.copy agent_RelativeX, 2
+				//div
+				agent_RelativeX .div v[4813], 2
+
+				agent_RelativeX.copy agent_SpriteX,2
+				agent_SpriteX.add v[896],2
+				//agent_SpriteX = agent_RelativeX + v[896]
+				//agent_SpriteY = agent_RelativeY + v[897]
+			
+				
+			} .else bl {
+				//@comment "wall detection"
+				agent_AgentBits |= AgentBits_FLAG_walldetected
+				//@comment "##20以上で壁がある"
+				v[341] = agent_ProcessMS * 100
+				//@comment "##垂直方向に壁があれば進行方向vにMSかけたものが速度に"
+				v[342] = abs(v[612])
+				@if v[313] < 21 {
+				v[612].copy var1, 1
+				macro_get_tile_instant_flag_ptr(Temp18)
+				@if `v[reg1] & FLAG_Maptile_Crowded {
+					var1 /= 2 //if crowded, halve speed
+					var1 += v[615]
+				}
+				//@comment "##壁がなければ速度を足す"
+				agent_MilPixX += var1
+				
+				} .else bl {
+				v[612] = divmul(v[612], v[342], v[341])
+				
+				}
+				//@comment "#カメラずらして"
+				agent_MilPixX += v[53] * 10000
+				//@comment "#座標を反映"
+				agent_RelativeX = agent_MilPixX / 10000
+				agent_SpriteX = agent_RelativeX + v[896]
+				//@comment "Y座標"
+				//v[295..300] += 1
+				//@comment "##垂直方向に壁があれば進行方向vにMSかけたものが速度に"
+				v[342] = abs(v[613])
+				@if v[314] < 21 {
+				v[613].copy var2, 1
+				macro_get_tile_instant_flag_ptr(Temp17)
+				@if `v[reg1] & FLAG_Maptile_Crowded {
+					var2 /= 2//if crowded, halve speed
+					var2 += v[616]
+				}
+				//@comment "##壁がなければ速度を足す"
+				agent_MilPixY += var2
+				
+				} .else bl {
+				v[613] = divmul(v[613], v[342], v[341])
+				
+				}
+				//@comment "#カメラずらして"
+				agent_MilPixY += v[54] * 10000
+				//@comment "#座標を反映"
+				agent_RelativeY = agent_MilPixY / 10000
+				agent_SpriteY = agent_RelativeY + v[897]
+				
+			}
+			@if `agent_AgentBits & AgentBits_FLAG_walldetected {//walldetected
+				@if agent_StanceOrder == ORD_ATK {
+				agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+				
+				}
+				
+			}
+			
+			} .else bl {
+			/*
+			//@comment "#カメラずらして"
+			agent_MilPixX += v[53] * 10000
+			//@comment "#座標を反映"
+			agent_RelativeX = agent_MilPixX / 10000
+			agent_SpriteX = agent_RelativeX + v[896]
+			//@comment "#カメラずらして"
+			agent_MilPixY += v[54] * 10000
+			//@comment "#座標を反映"
+			agent_RelativeY = agent_MilPixY / 10000
+			agent_SpriteY = agent_RelativeY + v[897]*/
+			
 			v[53].copy v[341], 2
 			v[341] .mul v[4813], 2
 			//add to v[v[300]]
@@ -669,78 +799,25 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 
 			agent_RelativeX.copy agent_SpriteX,2
 			agent_SpriteX.add v[896],2
-			//agent_SpriteX = agent_RelativeX + v[896]
-			//agent_SpriteY = agent_RelativeY + v[897]
-		
-		    
-		} .else bl {
-		    //@comment "wall detection"
-		    agent_AgentBits |= AgentBits_FLAG_walldetected
-		    //@comment "##20以上で壁がある"
-		    v[341] = agent_ProcessMS * 100
-		    //@comment "##垂直方向に壁があれば進行方向vにMSかけたものが速度に"
-		    v[342] = abs(v[612])
-		    @if v[313] < 21 {
-			v[612].copy var1, 1
-			macro_get_tile_instant_flag_ptr(Temp18)
-			var1 /= v[reg1] & FLAG_Maptile_Crowded?2:1 //if crowded, halve speed
-			//@comment "##壁がなければ速度を足す"
-			agent_MilPixX += var1
+
 			
-		    } .else bl {
-			v[612] = divmul(v[612], v[342], v[341])
-			
-		    }
-		    //@comment "#カメラずらして"
-		    agent_MilPixX += v[53] * 10000
-		    //@comment "#座標を反映"
-		    agent_RelativeX = agent_MilPixX / 10000
-		    agent_SpriteX = agent_RelativeX + v[896]
-		    //@comment "Y座標"
-		    //v[295..300] += 1
-		    //@comment "##垂直方向に壁があれば進行方向vにMSかけたものが速度に"
-		    v[342] = abs(v[613])
-		    @if v[314] < 21 {
-			v[613].copy var2, 1
-			macro_get_tile_instant_flag_ptr(Temp17)
-			var2 /= v[reg1] & FLAG_Maptile_Crowded?2:1 //if crowded, halve speed
-			//@comment "##壁がなければ速度を足す"
-			agent_MilPixY += var2
-			
-		    } .else bl {
-			v[613] = divmul(v[613], v[342], v[341])
-			
-		    }
-		    //@comment "#カメラずらして"
-		    agent_MilPixY += v[54] * 10000
-		    //@comment "#座標を反映"
-		    agent_RelativeY = agent_MilPixY / 10000
-		    agent_SpriteY = agent_RelativeY + v[897]
-		    
-		}
-		@if `agent_AgentBits & AgentBits_FLAG_walldetected {//walldetected
-		    @if agent_StanceOrder == ORD_ATK {
-			agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
-			
-		    }
-		    
+			}
+		}.else bl{
+			v[53].copy v[341], 2
+			v[341] .mul v[4813], 2
+			//add to v[v[300]]
+			agent_MilPixX .add v[341], 2
+			agent_MilPixX.copy agent_RelativeX, 2
+			//div
+			agent_RelativeX .div v[4813], 2
+
+			agent_RelativeX.copy agent_SpriteX,2
+			agent_SpriteX.add v[896], 2
 		}
 		
-	    } .else bl {
-		//@comment "#カメラずらして"
-	        agent_MilPixX += v[53] * 10000
-		//@comment "#座標を反映"
-		agent_RelativeX = agent_MilPixX / 10000
-		agent_SpriteX = agent_RelativeX + v[896]
-		//@comment "#カメラずらして"
-		agent_MilPixY += v[54] * 10000
-		//@comment "#座標を反映"
-		agent_RelativeY = agent_MilPixY / 10000
-		agent_SpriteY = agent_RelativeY + v[897]
-		
-		
-		
-	    }
+		// init Ax Ay
+		v[1301].copy v[615], 2
+
 	    //v[295..300] = 0
 	    //@comment "Overwrite ActionState "
 	    @if v[846] > 0 {

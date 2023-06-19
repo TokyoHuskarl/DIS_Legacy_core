@@ -253,6 +253,13 @@ struct("agent",{
 	AgentExBuffer_SLOT_ColBoxHeight = 3
 	AgentExBuffer_SLOT_BaseEyeSight = 4 // this slot won't be used
 	AgentExBuffer_SLOT_Taken_down_XP = 5
+	AgentExBuffer_SLOT_BaseSight_Root = 6
+
+	AgentExBuffer_SLOT_ActionSprite_1 = 7
+	AgentExBuffer_SLOT_ActionSprite_2 = 8
+	AgentExBuffer_SLOT_ActionSprite_3 = 9
+	AgentExBuffer_SLOT_ActionSprite_4 = 10
+	AgentExBuffer_SLOT_ActionSprite_5 = 11
 
 	
 	ClassType_Amount = 20
@@ -268,6 +275,7 @@ struct("agent",{
 
 
 	agent_PerkFlagBits1_FLAG_Pathfinder=128
+	AgentBits_FLAG_KILLED = 16384 
 
 	AgentBits_FLAG_EnableBasicAI = 1048576
 	AgentBits_FLAG_EnableCivAI = 2097152

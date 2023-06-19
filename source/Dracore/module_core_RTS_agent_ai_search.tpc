@@ -52,7 +52,7 @@ v[4035..4036] = v[205]
 		    //v[314] = v[Const_AgentMetaTeam_begin+v[211]] //v[v[301]] % 3
 		    __if DIS_EXPERIMENTAL == 1 {
 		    	//macro_get_agent_MetaTeam_into_var(v[v[536]],v[314])
-                	get_AEAB_element_wo_ptr(AgentIDholder,__id(v[314]),AgentExBuffer_SLOT_MetaTeam)
+                get_AEAB_element_wo_ptr(AgentIDholder,__id(v[314]),AgentExBuffer_SLOT_MetaTeam)
 		    }.else bl {
 		    	v[314] = Const_AgentMetaTeam_begin+v[211]
 		    	v[314] = v[v[314]]
@@ -69,8 +69,6 @@ v[4035..4036] = v[205]
 
             __if DIS_EXPERIMENTAL == 1 { // use AEBA to opt! also @if cond can be changed into other shit.
                 get_AEAB_array(AgentIDholder,4001,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
-               //@if `v[307] & 7 
-                    
 
             }.else bl {
 
@@ -103,8 +101,13 @@ v[4035..4036] = v[205]
 		    //v[308] = v[212] + 230 9.5.23
                     v[308] = v[830]
                     //@comment "##############"
+
+            // get sight range root
+            /*
 		    v[315] = v[211] + v[4806]
                     v[315] = v[v[315]]
+            */
+            get_AEAB_element_wo_ptr(AgentIDholder,__id(v[315]),AgentExBuffer_SLOT_BaseSight_Root)
 
 		    //If the agent has target agent  
                     @if v[v[300]] >= 1 {

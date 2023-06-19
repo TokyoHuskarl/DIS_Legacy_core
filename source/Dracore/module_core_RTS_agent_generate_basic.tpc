@@ -1340,6 +1340,8 @@ __fn func_generate_agent_finish_set {
 	s[160].off
 	@comment "having no min range"
 	v[718] = v[718] <= 0 ? -999999 : v[718]
+
+	/*
 	@comment "#Set SpriteOrder"
 	v[0] = v[302..306] = [3, 2, 4, 3, 2]
 	@comment "Has move sprite?"
@@ -1347,7 +1349,19 @@ __fn func_generate_agent_finish_set {
 	v[303] = (v[726] & 16) == 16 ? 4 : v[303]
 	@comment "Skill Moition"
 	v[302] = (v[726] & 4) == 4 ? 5 : 3
-	v[883] = v[302] * 10000 + v[303] * 1000 + v[304] * 100 + v[305] * 10 + v[306] * 1
+	*/
+	// sprite order -> save AEBA 
+	// v[883] = v[302] * 10000 + v[303] * 1000 + v[304] * 100 + v[305] * 10 + v[306] * 1
+
+	v[0] = v[302..306] = [2, 3, 4, 2, 3]
+	@comment "Has move sprite?"
+	v[305] = (v[726] & 2) == 2 ? 5 : v[305]
+	v[305] = (v[726] & 16) == 16 ? 4 : v[305]
+	@comment "Skill Moition"
+	v[306] = (v[726] & 4) == 4 ? 5 : 3
+	
+	set_AEAB_array(SpawnAgentID,302,AgentExBuffer_SLOT_ActionSprite_1,5)
+	
 	//ATTENTION
 	function_agent_init_set_picture_strs()
 	v[886..889] = 0
@@ -1506,12 +1520,17 @@ __fn func_generate_agent_finish_set {
 	    }
 
 	    @comment "Civilians have better AI eyesight in order to find basement"
-	    @if `agent_UnitType == 9 {
+	    @if agent_UnitType == 9 {
 		v[830] *= 2
 		
 	    }
 	    // was?
-	    v[v[4806] + v[201]] = sqrt(v[830], 1)
+		// abolished
+		vname[4806], "Abolished - ConstAgentRootSightArrayHead" 
+	    //v[v[4806] + v[201]] = sqrt(v[830], 1)
+		reg2 = sqrt(v[830], 1)
+		set_AEAB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_BaseSight_Root)
+
 	    
 	}
 	@comment "############Perks Check############"

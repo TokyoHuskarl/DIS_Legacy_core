@@ -63,36 +63,36 @@ v[v[301]].copy v[600], 243
 // v[2501] / 2 can be removed by putting some other proc
 @if `(v[401] + LEGV_Frame_count_half) % v[625] == 0 {
     //save ptr to slot3
-    Temp32 = v[301] + 3
-    v[Temp32] &= -193//~192
+    //ptr to agent_AgentBits.
+    defv Col_Ptr2AgentBits = __id(Temp32) 
+    Col_Ptr2AgentBits = v[301] + 3
+    v[Col_Ptr2AgentBits] &= -193//~192
     //@if `v[v[4529] + v[632]] & 1 { // this part seems retarded so need to remake
-    @if ` agent_AgentBits & AgentBits_FLAG_Pushed_by_terrain {
-        @if `v[53] * 1000 + v[54] == 0 {
-    	    v[298] = v[301] + 7
-    	    v[300] = v[301] + 5
-    	    v[295] = v[301] + 296
-    	    v[296] = v[301] + 36
-    	    v[297] = 53
-            v[Temp32] |= 64
-            //kabe no naka ni iru!
-            @ev[2].setPos .pos v[626], v[627]
-            v[316] = ev[2].scrx
-            v[317] = ev[2].scry
-            v[317] -= 16
-            v[v[298]].copy v[321], 2
-            v[321] .sub v[316], 2
-            v[321..322] *= 2800
-            v[v[300]] .add v[321], 2
-            v[v[300]] += v[v[297]] * 10000
-            v[v[298]] = v[v[300]] / 10000
-            v[v[296]] = v[v[298]] + v[v[295]]
-            v[295..300] += 1
-            v[v[300]] += v[v[297]] * 10000
-            v[v[298]] = v[v[300]] / 10000
-            v[v[296]] = v[v[298]] + v[v[295]]
-            v[295..300] -= 1
+    @if `agent_AgentBits & AgentBits_FLAG_Pushed_by_terrain {
+        v[298] = v[301] + 7
+        v[300] = v[301] + 5
+        v[295] = v[301] + 296
+        v[296] = v[301] + 36
+        v[297] = 53
+        v[Col_Ptr2AgentBits] |= 64
+        //kabe no naka ni iru!
+        @ev[2].setPos .pos v[626], v[627]
+        v[316] = ev[2].scrx
+        v[317] = ev[2].scry
+        v[317] -= 16
+        v[v[298]].copy v[321], 2
+        v[321] .sub v[316], 2
+        v[321..322] *= 3000
+        v[v[300]] .add v[321], 2
+        v[v[300]] += v[v[297]] * 10000
+        v[v[298]] = v[v[300]] / 10000
+        v[v[296]] = v[v[298]] + v[v[295]]
+        v[295..300] += 1
+        v[v[300]] += v[v[297]] * 10000
+        v[v[298]] = v[v[300]] / 10000
+        v[v[296]] = v[v[298]] + v[v[295]]
+        v[Col_Ptr2AgentBits] &= ~AgentBits_FLAG_Pushed_by_terrain
             
-        }
         
     } .else bl {
         //Obj Collision

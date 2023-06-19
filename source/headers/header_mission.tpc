@@ -1,3 +1,6 @@
 // you need to clean up mess of header files tbh
 #include "./define_structures_map.tpc"
 
+__fn macro_check_if_tileid_is_wall $tileid {
+	reg1 = $tileid > 20 ? 1 : 0 // what? lol
+}

@@ -570,11 +570,13 @@ cev .id(1800), .name("Mission:MapInit"), {
 	t[510] .cat t[753]
 	t[754] .asg t[510]
 	t[510] .asg  .file t[510], .utf8
-	@call .cev 1840
-	func_convert_str_into_map_script(510)
-	t[755] .asg t[510]
-	t[510] .split t[525], t[v[1219]], v[505]
-	@call .cev 1818
+	@if t[510].neq ""{
+		@call .cev 1840
+		func_convert_str_into_map_script(510)
+		t[755] .asg t[510]
+		t[510] .split t[525], t[v[1219]], v[505]
+		@call .cev 1818
+	}
 	s[290].off
 	@if v[507] >= 1 {
 	    s[290].on

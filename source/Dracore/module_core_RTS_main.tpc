@@ -2033,6 +2033,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[301] += 4700
 	    func_extract_agent_vars(v[v[536]])
 
+		// if it's standing on wall tile, let the tile push the agent
+		agent_AgentBits |= agent_TerrainIDstanding > 20 ? AgentBits_FLAG_Pushed_by_terrain : 0
+
 	    // "##############
 	    //#Terrain Check#
 	    //##############"
@@ -2100,7 +2103,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //Set tile instants begin
 		//Use Temp2 as ptr to maptile
 		Temp2 = Const_save_var_TileFlags + v[632]
-		v[Temp2] |= v[Temp2]&FLAG_Maptile_Occupied ?FLAG_Maptile_Crowded:FLAG_Maptile_Occupied //set occupied flag
+		v[Temp2] |= v[Temp2] & FLAG_Maptile_Occupied ? FLAG_Maptile_Crowded : FLAG_Maptile_Occupied //set occupied flag
 		@if agent_TacticsOrderFlag > 0 {
 			@if `agent_TacticsOrderFlag & 6  {//using shieldwall
 				@if `!(agent_ProcessObjBit & 67108864){ //can use shield
