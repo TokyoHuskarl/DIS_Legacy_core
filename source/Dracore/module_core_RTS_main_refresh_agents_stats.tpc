@@ -103,7 +103,8 @@ __fn agent_ref_stats(){
 			// get Meta team into TT10
 			macro_get_agent_MetaTeam_into_var(v[v[536]],TT10)
 		}.else bl {
-			TT10 = Const_AgentMetaTeam_begin + v[v[536]]
+			TT10 = Const_AgentMetaTeam_begin + v[v[536]]
+
 			TT10 -= 1
 			TT10 = v[TT10]
 		}
@@ -331,18 +332,18 @@ __fn agent_ref_stats(){
 #################"*/
     //@comment "#In Melee Combat"
     //v[0] = v[681] >= 1 ? (v[868..874] = [divmul(v[868], 100, 75), v[869], v[870], muldiv(v[871], 9, 10), v[872], divmul(v[873], 5, 4), agent_ProcessObjBit & ~16384 & ~1 & ~134217728]) : 0
-    @if agent_MeleeFightTimer>1{
+    @if agent_MeleeFightTimer > 1 {
 	    agent_ProcessMS -= agent_ProcessMS>>2 //= divmul(v[868], 100, 75)
 	    agent_ProcessAS -= agent_ProcessAS>>3
 	    agent_ProcessSPReg -= agent_ProcessSPReg>>2 //= muldiv(agent_ProcessSPReg,5,4) //-25%
 	    agent_ProcessObjBit &= -134234114//~134234113(BaseObjBit_FLAG_SpeedBonus)//~16384 & ~1 & ~134217728
 
 	    //Crowded?
-	    agent_ProcessMS -= v[Temp2]&FLAG_Maptile_Crowded?agent_ProcessMS>>3:0 //-12.5%
+	    agent_ProcessMS -= v[Ptr5] & FLAG_Maptile_Crowded ? agent_ProcessMS>>3:0 //-12.5%
 
     }.elif `agent_ProcessObjBit & BaseObjBit_FLAG_SpeedBonus {
 
-	agent_ProcessAD += agent_AAType != 1 ? agent_ProcessMS/10:0//if not ranged troop, gain 10% of MS now 8%->10%
+	agent_ProcessAD += agent_AAType != 1 ? agent_ProcessMS / 10:0//if not ranged troop, gain 10% of MS now 8%->10%
         
     }
     //@comment "#Set Process Parameters"

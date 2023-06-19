@@ -1,4 +1,6 @@
 defv ProjectileTeamSave = 531
+defv ProjectileHitChecker = 4860
+
 
 v[441] = 303
 v[442] = 1
@@ -147,14 +149,14 @@ TT2=MortY
 
 			// start checking morton space
                         @loop v[327] .dst v[310] {
-                            v[312] = v[424] + v[310]
+                            ProjectileHitChecker = v[424] + v[310]
 
-                            //@if `ProjectileTeamSave != v[(Const_AgentMetaTeam_begin+v[v[312]]-1)] { this one was retarded
+                            //@if `ProjectileTeamSave != v[(Const_AgentMetaTeam_begin+v[ProjectileHitChecker]-1)] { this one was retarded
 
 			    // get meta team!
-			    macro_get_agent_MetaTeam_into_var(v[v[312]],TT10)
+			    macro_get_agent_MetaTeam_into_var(v[ProjectileHitChecker],TT10)
 			    @if ProjectileTeamSave != TT10 { // this agent seems target for the projectile...
-				v[311] = v[v[312]] * v[1117] // let's check it out...
+				v[311] = v[ProjectileHitChecker] * v[1117] // let's check it out...
 			    	v[311] += 4701
                                 //@comment "当たり判定"
                                 v[311] += 6
@@ -167,8 +169,8 @@ TT2=MortY
                                     @if v[v[292]] == 2 {
 					//opt 28.4.23
                                         v[290] = v[292] + 70 
-					v[290] += v[v[312]] / 30
-                                        v[343] = pow(2, (v[v[312]] - 1) % 30)
+					v[290] += v[ProjectileHitChecker] / 30
+                                        v[343] = pow(2, (v[ProjectileHitChecker] - 1) % 30)
                                         //@comment "Check if already hit the unit or not"
                                         v[377] -= v[v[290]] & v[343] ? 1 : 0
                                         v[v[290]] |= v[343]
@@ -184,7 +186,7 @@ TT2=MortY
 					#temp3 = 属性 元のダメージ量を減らすべき？"*/
                                         v[298] = v[311] - 6
                                         v[299] = v[v[292] + 8]
-                                        v[300] = v[v[312]]
+                                        v[300] = v[ProjectileHitChecker]
                                         //@comment "HITCHECK"
                                         v[471] = [44, 43, 42][v[v[292] + 26]]
                                         v[13] = -1
@@ -238,7 +240,7 @@ TT2=MortY
                                                     //@comment "Shield Blocked!"
                                                     v[23] = 0
                                                     //@comment "Shield Cracking"
-                                                    v[300] = v[v[312]]
+                                                    v[300] = v[ProjectileHitChecker]
                                                     @if `v[624] & 1024 {
                                                        /* @comment "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"*/
                                                         v[341] = v[v[300] * 300 + 4934]
