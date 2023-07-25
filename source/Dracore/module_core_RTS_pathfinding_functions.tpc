@@ -41,7 +41,7 @@ __fn func_pathfinding_move(){
 		    
 		} .else bl {
 		    v[v[300]] = 3
-		    @if `v[v[301] + 3] & 33554432 {
+		    @if `v[v[301] + 3] & AgentBits_FLAG_PF_walldetection_switch {
 			
 		    } .else bl {
 			v[v[301] + 3] &= -16777217//~16777216
@@ -49,7 +49,7 @@ __fn func_pathfinding_move(){
 		    }
 		    
 		}
-		@if `!(v[v[301] + 3] & 4194304) {
+		@if `!(v[v[301] + 3] & AgentBits_FLAG_ForcemoveFlag) {
 		    @if v[2875] == 0 {
 			v[v[300]] = 2
 			
@@ -61,9 +61,9 @@ __fn func_pathfinding_move(){
 	    @if s[279] .isOn() {
 		v[v[300]] = 1
 		v[v[301] + 3] &= -16777217//~16777216
-		@if `v[v[301] + 3] & 33554432 {
-		    v[v[301] + 3] |= 8388608
-		    v[v[301] + 34] |= 8388608
+		@if `v[v[301] + 3] & AgentBits_FLAG_PF_walldetection_switch {
+		    v[v[301] + 3] |= AgentBits_FLAG_walldetected
+		    v[v[301] + 34] |= AI_routine_bits_FLAG_Pathblocked
 		    
 		}
 		
@@ -112,7 +112,7 @@ __fn func_pathfinding_move(){
 		
 	    }
 	    @if `v[v[301] + 1] <= 8 {
-		v[v[301] + 3] = v[v[301] + 241] <= 4 ? [v[v[301] + 3] | 1048576, v[v[301] + 3] | 1048576, v[v[301] + 3] & ~1048576, v[v[301] + 3] | 1048576, v[v[301] + 3] & ~1048576][v[v[301] + 241]] : v[v[301] + 3]
+		v[v[301] + 3] = v[v[301] + 241] <= 4 ? [v[v[301] + 3] | AgentBits_FLAG_EnableBasicAI, v[v[301] + 3] | AgentBits_FLAG_EnableBasicAI, v[v[301] + 3] & ~AgentBits_FLAG_EnableBasicAI, v[v[301] + 3] | AgentBits_FLAG_EnableBasicAI, v[v[301] + 3] & ~AgentBits_FLAG_EnableBasicAI][v[v[301] + 241]] : v[v[301] + 3]
 		
 	    }
 	    v[2878] += 1

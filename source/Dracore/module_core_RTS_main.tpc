@@ -960,6 +960,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {   
 	@comment "module_core_RTS_main.tpc"
 	// "STATIC"
+	// This process needs complete refactoring.
 	v[536] = v[4533]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
@@ -1074,7 +1075,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					v[Spawned_Agent_Id_Shift + 4941] = v[Spawned_Agent_Id_Shift + 4941] != 4 ? 2 : 4
 					}.else bl{
 					//Combat troops - check if the reserved target is enemy
-				    v[Spawned_Agent_Id_Shift + 4718] =(v[Spawned_Agent_Id_Shift + 4800]%3)==(v[v[618]*300 +4800]%3) ?0:v[618]
+				    v[Spawned_Agent_Id_Shift + 4718] =(v[Spawned_Agent_Id_Shift + 4800]%3)==(v[v[618] * 300 +4800]%3) ?0:v[618]
 				    }
 				    
 				}
@@ -1091,10 +1092,12 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				    v[Spawned_Agent_Id_Shift + 4942] = 2
 				    
 				} .else bl {
-				    v[Spawned_Agent_Id_Shift + 4942] = v[371]&1 ? 2 : 3 //if the unit is worker, then give them loose move order 
+				    v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
 				    // "指定されてる"
 				    v[641].copy v[v[341]], 2
-				    v[Spawned_Agent_Id_Shift + 4734] |= 16384 + 524288
+
+				    def Order_Spawned_agent_Pathfinding = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PF2Agent 
+				    v[Spawned_Agent_Id_Shift + 4734] |= Order_Spawned_agent_Pathfinding
 				    //v[v[21] * 300 + 4734] |= 524288
 				    
 				}
