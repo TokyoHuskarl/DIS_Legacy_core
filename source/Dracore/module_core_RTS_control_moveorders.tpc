@@ -782,17 +782,20 @@ __fn func_control_moveorder_mil {
 			    @if `v[v[301] + 1] != 11 {
 				v[v[301] + 3] &= ~384
 				// "#ForceMoveFlag"
+
+				//is attack move?
 				@if s[16] .isOn() {
-				    v[v[301] + 3] &= ~4194304
+				    v[v[301] + 3] &= ~AgentBits_FLAG_ForcemoveFlag
 				    @if `v[v[301] + 80] <= -10000 {
 					v[v[301] + 80] = v[1178]
 					
 				    }
 				    
 				} .else bl {
-				    v[v[301] + 3] |= 4194304
+				    v[v[301] + 3] |= AgentBits_FLAG_ForcemoveFlag
 				    
 				}
+
 				// "#アタックムーブじゃなければActionチェック"
 				v[843] = v[301] + 243
 				v[341] = s[16] != 1 ? v[v[843]] : -999
@@ -803,7 +806,7 @@ __fn func_control_moveorder_mil {
 				// "#if Attack Stance, set stance alert"
 				v[v[295]] = v[v[295]] == 2 ? 0 : v[v[295]]
 				// "#Manual"
-				v[v[295]] = v[v[301] + 34] & 131072 ? 4 : v[v[295]]
+				v[v[295]] = v[v[301] + 34] & AI_routine_bits_FLAG_Manual_Ordered ? 4 : v[v[295]]
 				
 			    }
 			    @if v[275] >= 1 {
@@ -823,9 +826,9 @@ __fn func_control_moveorder_mil {
 				v[273] .add v[395], 2
 				
 			    } .else bl {
-				v[v[301] + 34] &= ~(8388608 + 8192)
+				v[v[301] + 34] &= ~(AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_tracing_wp)
 				@if s[40] .isOn() {
-				    v[v[301] + 34] |= 16384
+				    v[v[301] + 34] |= AI_routine_bits_FLAG_PATHFINDING
 				    @if `between(v[v[293]], 1, 10) {
 					v[v[301] + 34] |= 16793600
 					
@@ -834,7 +837,7 @@ __fn func_control_moveorder_mil {
 				} .else bl {
 				    v[v[301] + 34] &= ~16809984
 				    @if s[112] .isOn() {
-					v[v[301] + 34] |= 16384
+					v[v[301] + 34] |= AI_routine_bits_FLAG_PATHFINDING
 					@if `between(v[v[293]], 1, 10) {
 					    v[v[301] + 34] |= 16793600
 					    

@@ -64,24 +64,24 @@ __fn func_pathfinding_Astar(){
 	}
 
 	// "Goal Node"
-	v[618] = v[v[4597] + 3] & 4194304 ? 0 : v[v[4597] + 18]
+	v[618] = v[v[4597] + 3] & AgentBits_FLAG_ForcemoveFlag ? 0 : v[v[4597] + 18]
 
 	//Have Target Agent?
-	@if v[618] > 0 {//Yes
+	@if v[618] > 0 { //Yes
 	    //Then get Target Agent position into var1 var2
 	    v[342] = v[618] * 300 
 	    //v[342] += 4707
 	    v[342] += 4726
-	    v[v[342]].copy v[11], 2
+	    v[v[342]].copy v[311], 2 // FIXED!
 	    
-	} .else bl {//No
+	} .else bl { //No
 	    //Then get Target Agent position into var1 var2
 	    v[342] = v[4597] + 41
 	    v[317] = v[342] + 14
 	    v[317] = max(v[v[317]], 0)
 	    v[342] += v[317] * 2
 	    v[v[342]].copy v[11], 2
-	    //convert into tile coordinate - maybe you can ro this without this func if the PF agent has the target agent
+	    //convert into tile coordinate - maybe you can deal this without this func if the PF agent has the target agent
 	    @call .cev 2000
 	    v[21].copy v[311], 2
 
@@ -328,7 +328,7 @@ __fn func_pathfinding_Astar(){
 		}
 
 		v[2875] = v[4595]
-		@if `v[v[4597] + 3] & 33554432 {
+		@if `v[v[4597] + 3] & AgentBits_FLAG_PF_walldetection_switch {
 		    v[341] = v[204] >= 380 ? 512 : 1024
 		    @if v[2070] == v[341] {
 			v[378] = -1
@@ -480,7 +480,7 @@ __fn func_pathfinding_Astar(){
 
 		v[2861] .sub v[1021], 14
 		v[380] = 0
-		@if `v[v[4597] + 3] & 33554432 {
+		@if `v[v[4597] + 3] & AgentBits_FLAG_PF_walldetection_switch {
 		    // "Reset Grouppath"
 		    v[v[4597] + 34] &= -16777217//~16777216
 		    //v[v[1212]..v[1212] + 199] = 0
@@ -490,25 +490,33 @@ __fn func_pathfinding_Astar(){
 		    v[2841] = 1
 		    
 		} .else bl {
+
 		    v[320] = v[v[4597] + 35] < 11 || v[v[4597] + 100] != 0 ? v[v[4597] + 35] : 0
-		    @if `v[320] > 0 && v[321] & 16777216 {
-			v[321] = v[v[4597] + 34]
+		    v[321] = v[4597] + 34
+
+		    @if `v[320] > 0 && v[v[321]] & AI_routine_bits_FLAG_GroupPath {
+
 			// "v1=Cohort	v2=Team, 0/1"
-			v[12] = v[v[4597] + 100]
+			v[12] = v[4597] + 100
+			v[12] = v[v[12]]
 			v[2861].copy v[2961], 15
 			@loop v[1012] .dst v[301] {
+
 			    // "Check Enemy Team List"
 			    v[300] = v[301] + v[1145 + v[12]]
 			    @if v[v[300]] >= 1 {
 				v[299] = v[v[300]] * 300
 				v[299] += 4735
+
 				// "The unit belongs to the selected Cohort"
 				@if v[v[299]] == v[320] {
+
 				    //opt 27.4.23
 				    v[298] = v[v[300]] * 300
 				    v[298] += 4734
-				    @if `v[v[298]] & 49152 {
-					@if `!(v[v[298] - 31] & 33554432) {
+				    @if `v[v[298]] & 49152 { // AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_PATHFINDING
+					@if `!(v[v[298] - 31] & AgentBits_FLAG_PF_walldetection_switch) {
+
 					    v[11] = v[v[300]]
 					    v[2880] = v[1212]
 					    v[2841] = 0
@@ -518,21 +526,23 @@ __fn func_pathfinding_Astar(){
 					    @call .cev 1747
 
 					    @if v[378] == -1 {
-						v[v[298]] |= 8388608
+						v[v[298]] |= AI_routine_bits_FLAG_Pathblocked
 						
 					    } .else bl {
-						v[v[298]] &= -8388609//~8388608
+						v[v[298]] &= KILL_AI_routine_bits_FLAG_Pathblocked //-8388609//~8388608
 						
 					    }
+
 					    v[v[298]] &= -16385//~16384
 					    @if v[379] == 1 {
 						v[v[298]] &= -16859137//~16859136
 						
 					    } .else bl {
-						v[v[298]] |= 32768 + 65536
+						v[v[298]] |= AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_PFskip
 						
 					    }
-					    @if `!(v[v[4597] + 3] & 8388608) || v[378] != -1 {
+
+					    @if `!(v[v[4597] + 3] & AgentBits_FLAG_walldetected) || v[378] != -1 {
 						v[v[298]] |= 4096
 						v[316] = v[v[1212]] * 300 
 						v[316] += 4741
@@ -541,7 +551,6 @@ __fn func_pathfinding_Astar(){
 						v[316] += v[317] * 2
 						v[v[316]].copy v[2851], 2
 						v[2961].copy v[2861], 15
-						//@call .cev 1771
 						func_pathfinding_move()
 					    } .else bl {
 						v[v[4597] + 34] &= AI_routine_bits_KILL_FLAG_PATHFINDING//-16385 ~16384
@@ -571,7 +580,7 @@ __fn func_pathfinding_Astar(){
 		}
 		// "####"
 		@if v[380] == 0 {
-		    @if `!(v[v[4597] + 3] & 8388608) || v[378] != -1 {
+		    @if `!(v[v[4597] + 3] & AgentBits_FLAG_walldetected) || v[378] != -1 {
 			v[316] = v[v[1212]] * 300 
 			v[316] += 4741
 			v[317] = v[316] + 14
@@ -586,7 +595,7 @@ __fn func_pathfinding_Astar(){
 			
 		    }
 		    @if v[379] == 0 {
-			v[v[4597] + 34] |= AI_routine_bits_FLAG_PFcontinue + 65536
+			v[v[4597] + 34] |= AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_PFskip
 			
 		    } .else bl {
 			v[v[4597] + 34] &= AI_routine_bits_KILL_FLAG_PFcontinue//~32768
@@ -594,7 +603,7 @@ __fn func_pathfinding_Astar(){
 			
 		    }
 		    @if v[378] == -1 {
-			v[v[4597] + 34] |= 8388608
+			v[v[4597] + 34] |= AI_routine_bits_FLAG_Pathblocked
 			v[v[4597] + 3] &= -33554433//~33554432
 			
 		    } .else bl {

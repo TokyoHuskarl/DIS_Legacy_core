@@ -282,7 +282,7 @@ struct("agent",{
 	AgentBits_FLAG_ForcemoveFlag = 4194304
 	AgentBits_FLAG_walldetected = 8388608
 	AgentBits_FLAG_NeedWpToReachObj = 16777216
-
+	AgentBits_FLAG_PF_walldetection_switch = 33554432
 	AgentBits_FLAG_1fprocessed = 67108864
 
 	AgentBits_FLAG_DirChange_skip = 134217728
@@ -323,14 +323,17 @@ struct("agent",{
 	AI_routine_bits_FLAG_AICohortGatheringAttack=128
 	AI_routine_bits_FLAG_tracing_flag=4096
 	AI_routine_bits_FLAG_tracing_wp=8192
-	AI_routine_bits_FLAG_PATHFINDING=16384
+	AI_routine_bits_FLAG_PATHFINDING =16384
 		AI_routine_bits_KILL_FLAG_PATHFINDING=-16385
-	AI_routine_bits_FLAG_PFcontinue=32768
+	AI_routine_bits_FLAG_PFcontinue =32768
 		AI_routine_bits_KILL_FLAG_PFcontinue=-32769
+	AI_routine_bits_FLAG_PFskip = 65536
 	AI_routine_bits_FLAG_Manual_Ordered = 131072
-
+	AI_routine_bits_FLAG_PF2Agent = 524288
 	AI_routine_bits_FLAG_AIskip = 2097152
 	AI_routine_bits_FLAG_ForcemoveFlag = 4194304
+	AI_routine_bits_FLAG_Pathblocked = 8388608
+	AI_routine_bits_FLAG_GroupPath = 16777216
 
 	//ObjBits
 	BaseObjBit_FLAG_Immune_to_Knock_back = 8
