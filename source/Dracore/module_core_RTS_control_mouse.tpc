@@ -1,10 +1,21 @@
 
-def click_waittime=5
+def click_waittime = 12
 
 @key.inputEx .keybdWithBind .dst v[901]
+
+// save PointerXY to TT1,2
+v[51].copy TT1, 2
+
 v[49].copy v[51], 2
 v[51..52] -= 3
 v[52] += 1
+
+// check if pointer is moved - s[70] is pointer move switch
+s[70].off
+@if `v[51] != TT1 || v[52] != TT2 {
+	s[70].on
+}
+
 @if v[47] > 0 {
     v[41] = v[49] - 1
     v[48] = v[50] - 1
@@ -311,8 +322,20 @@ v[52] += 1
                 }
                 
             }
+
+	    // check if pointer is moved
+	    @if s[70] .isOn() {
+		// if moved, immediately start drag
+		v[42] = 0
+		// also no double tap
+		s[23].off
+	    }
+
+
             @if v[43] == 1005 {
                 @if s[11] .isOn() {
+
+
                     @if s[9] .isOff() {
                         v[42] -= 1
                         v[1] += v[53]
@@ -323,6 +346,7 @@ v[52] += 1
                         v[7] = v[341] - v[51]
                         v[8] = v[342] - v[52]
 
+                        @if v[42] <= 0 {
                             v[5] = abs(v[7])
                             v[6] = abs(v[8])
                             @if v[5] <= 7 {
@@ -406,7 +430,7 @@ v[52] += 1
                                 
                             }
                             @sys.skin "Odinscall_system" .stretch .gothic
-                            
+                        }
                         
                     }
                     

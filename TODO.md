@@ -169,8 +169,6 @@ tpcrepコマンドが動作してない
 - ローマン・ラウリィ "Roman Lauriy"とすべての無名戦士に捧ぐ
 - 速水螺旋人氏に挿絵を依頼? - 二値のラフだけでも10万くらい必要なのでは？
 
-I do hope Mobik is okay - the offensive is really beginning and it seems quite tough  
-I might have to really eternalize him - since he can never come back, it's a real war, after all...
 
 # その他
 竜殺  

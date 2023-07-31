@@ -8,17 +8,18 @@ defv expected_action_sprite = 321
 
 cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Units), {   
 @comment "module_core_RTS_drawing.tpc"
-@if v[204] >= 400 {
-    @wait 0
-    
-}
+
 @if v[189] >= v[1128] {
     @wait 0
     
 }
+// low spec mode
 @if s[314] .isOn() {
     @wait 0
-    
+
+    @if v[204] >= 400 {
+	    @wait 0
+	}
 }
 //@comment "Markers Reset"
 v[233] = 0
