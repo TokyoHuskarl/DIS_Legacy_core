@@ -1,8 +1,29 @@
 #include "./../headers/header_drawing.tpc"
 
-//This one is really awful, you will fear 
+defs S_OpenInv = 64
+
+__fn get_selected_agent_data {
+	    @if s[25] .isOff() {
+		v[341] = v[101]
+		
+	    } .else bl {
+		v[341] = v[100]
+		
+	    }
+	    v[145] = v[341]
+	    v[325] = v[341] * 300
+	    v[325] += 4701
+	    v[v[325]].copy v[601], 300
+	    v[159] = v[899]
+	    v[555..556] = 996
+}
+
+
+//This one is really awful, you will fear how this is written 
 cev .id(85), .name("GameUI:Inventory"),{
 
+
+	S_OpenInv.on
 	s[19].on
 	@if s[2] .isOff() {
 	    @call .cev 2094
@@ -57,19 +78,8 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    @if s[25] .isOff() {
-		v[341] = v[101]
-		
-	    } .else bl {
-		v[341] = v[100]
-		
-	    }
-	    v[145] = v[341]
-	    v[325] = v[341] * 300
-	    v[325] += 4701
-	    v[v[325]].copy v[601], 300
-	    v[159] = v[899]
-	    v[555..556] = 996
+	    get_selected_agent_data()
+
 	    
 	} .else bl {
 	    @call .cev 1946
@@ -855,9 +865,9 @@ cev .id(85), .name("GameUI:Inventory"),{
 	    .mapLayer 9
 	    .affectedByShake
 	}
-	@comment "End
-#"
+	@comment "End#"
 	@loop .inf() {
+	    get_selected_agent_data()
 	    @key.input .dst v[43] {
 		.decision
 		.number
@@ -2694,6 +2704,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 	    
 	}
 	s[19].off
+	S_OpenInv.off
 	v[959] = 24
 	v[909] = 24
 }
