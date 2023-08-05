@@ -17,35 +17,35 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 
 	    //@comment "Get [1-100]"
 	    //@comment "モートン座標を記録するよ"
-	    agent_RelativeX.copy v[341], 2
-	    v[341] .add v[53], 2
-	    v[341] .sub v[76], 2
-	    v[341] .div v[74], 2
+	    agent_RelativeX.copy TT1, 2
+	    TT1 .add v[53], 2
+	    TT1 .sub v[76], 2
+	    TT1 .div v[74], 2
 	    //@comment "TT1=MortX
 	    //TT2=MortY
 	    //ビット演算して処理するよ"
-	    v[341] = (v[341] | v[341] << 8) & 0xFF00FF
-	    v[341] = (v[341] | v[341] << 4) & 0xF0F0F0F
-	    v[341] = (v[341] | v[341] << 2) & 0x33333333
-	    v[341] = (v[341] | v[341] << 1) & 0x55555555
-	    v[342] = (v[342] | v[342] << 8) & 0xFF00FF
-	    v[342] = (v[342] | v[342] << 4) & 0xF0F0F0F
-	    v[342] = (v[342] | v[342] << 2) & 0x33333333
-	    v[342] = ((v[342] | v[342] << 1) & 0x55555555) << 1
+	    TT1 = (TT1 | TT1 << 8) & 0xFF00FF
+	    TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
+	    TT1 = (TT1 | TT1 << 2) & 0x33333333
+	    TT1 = (TT1 | TT1 << 1) & 0x55555555
+	    TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+	    TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+	    TT2 = (TT2 | TT2 << 2) & 0x33333333
+	    TT2 = ((TT2 | TT2 << 1) & 0x55555555) << 1
 	    //@comment "yは1bitシフトで終わり"
 	    //@comment "最後にTT1 OR TT2"
-	    v[341] = v[341] | v[342]
+	    TT1 = TT1 | TT2
 
-		@if v[341] >= 0 {	// safety!
-			@if v[341] <= 1023 {	// safety!
+		@if TT1 >= 0 {	// safety!
+			@if TT1 <= 1023 {	// safety!
 				//@comment "モートン座標を記録しおえたよ
 				//次はリストに登録するよ
 				//TT3=カウンター
 				//TT2=ポインター"
-				agent_Morton = v[341]
+				agent_Morton = TT1
 				//@comment "#ルート空間だよ"
-				v[342] = v[1067] + v[v[1071]]
-				v[v[342]] = v[v[536]]
+				TT2 = v[1067] + v[v[1071]]
+				v[TT2] = v[v[536]]
 				v[v[1071]] += 1
 
 				
@@ -53,16 +53,16 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 				v[4537].copy var4, 2
 				//@comment "#第5空間だよ
 				//0~1023"
-				//v[343] = v[4538] + v[341]
-				var5 += v[341]
-				v[v[341] * v[1004] + v[4535] + v[var5]] = v[v[536]]
+				//v[343] = v[4538] + TT1
+				var5 += TT1
+				v[TT1 * v[1004] + v[4535] + v[var5]] = v[v[536]]
 				v[var5] += 1
 				//@comment "#第四空間だよ
 				//0~255"
-				v[341] >>= 2
-				//v[343] = v[4537] + v[341]
-				var4 += v[341]
-				v[v[341] * v[1004] + v[4534] + v[var4]] = v[v[536]]
+				TT1 >>= 2
+				//v[343] = v[4537] + TT1
+				var4 += TT1
+				v[TT1 * v[1004] + v[4534] + v[var4]] = v[v[536]]
 				v[var4] += 1
 
 
@@ -70,26 +70,26 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 				v[1072].copy reg1, 3
 				//@comment "#第三空間だよ
 				//0~63"
-				v[341] >>= 2
-				//v[343] = v[1074] + v[341]
-				//v[v[341] * v[1004] + v[1070] + v[v[343]]] = v[v[536]]
-				reg3 += v[341]
-				v[v[341] * v[1004] + v[1070] + v[reg3]] = v[v[536]]
+				TT1 >>= 2
+				//v[343] = v[1074] + TT1
+				//v[TT1 * v[1004] + v[1070] + v[v[343]]] = v[v[536]]
+				reg3 += TT1
+				v[TT1 * v[1004] + v[1070] + v[reg3]] = v[v[536]]
 				v[reg3] += 1
 				//@comment "#第二空間だよ
 				//0~15"
-				v[341] >>= 2
-				//v[343] = v[1073] + v[341]
-				//v[v[341] * v[1004] + v[1069] + v[v[343]]] = v[v[536]]
-				reg2 += v[341]
-				v[v[341] * v[1004] + v[1069] + v[reg2]] = v[v[536]]
+				TT1 >>= 2
+				//v[343] = v[1073] + TT1
+				//v[TT1 * v[1004] + v[1069] + v[v[343]]] = v[v[536]]
+				reg2 += TT1
+				v[TT1 * v[1004] + v[1069] + v[reg2]] = v[v[536]]
 				v[reg2] += 1
 				//@comment "#第一空間だよ
 				//0~3"
-				v[341] >>= 2
-				//v[343] = v[1072] + v[341]
-				reg1 += v[341]
-				v[v[341] * v[1004] + v[1068] + v[reg1]] = v[v[536]]
+				TT1 >>= 2
+				//v[343] = v[1072] + TT1
+				reg1 += TT1
+				v[TT1 * v[1004] + v[1068] + v[reg1]] = v[v[536]]
 				v[reg1] += 1
 				//@comment "モートン座標関係はこれで終わり"
 			}
@@ -108,7 +108,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			    
 		    }
 		    //@comment "Sub Timer"
-		    //v[341] = v[301] + v[1059]
+		    //TT1 = v[301] + v[1059]
 		    agent_InCombatTimer .sub v[1089], v[1060]
 	    }
 	    
@@ -136,13 +136,13 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 		    //@comment "Obj指定があり、そちらに行きたいとき
 		    //Get18 = 目標ObjID"
 		    //Ptr8 = Get18*300
-		    v[304] = Ptr8 + 4701
-		    @if v[v[304]] >= 1 {
-			//@comment "#Target Switched"
-			TT1 = v[304] + 100//fixed
-			@if agent_TargetAgentID != agent_LastTarget { //fixed teilzwo
+		    Temp4 = Ptr8 + 4701
+		    @if v[Temp4] >= 1 {
+			// @comment "#Target Switched"
+			TT1 = Temp4 + 100 // fixed
+			@if agent_TargetAgentID != agent_LastTarget { // fixed teilzwo
 			    @if `!(agent_AgentBits & AgentBits_FLAG_ForcemoveFlag) {
-				@if `agent_AI_routine_bits & 49152 { //AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
+				@if `agent_AI_routine_bits & 49152 { // AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
 				    agent_MovementOrder = MovementOrder_TYPE_move_ordered
 				    @if `!(agent_AgentBits & AgentBits_FLAG_walldetected) {
 					agent_AI_routine_bits |= AI_routine_bits_FLAG_AIskip
@@ -161,15 +161,15 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			    
 			} .else bl {
 			    //@comment "#目標OBJ優先"
-			    v[304] += 6
-			    v[v[304]].copy agent_MovePointX, 2
+			    Temp4 += 6
+			    v[Temp4].copy agent_MovePointX, 2
 			    @if agent_StanceOrder == 2 {
 				agent_MovementOrder = 2
-				v[v[304]].copy agent_HoldPointX, 2
+				v[Temp4].copy agent_HoldPointX, 2
 				
 			    }
 			    //@comment "T35=目標Objの幅*1000"
-			    v[335] = v[v[304] + 3] * 1000
+			    v[335] = v[Temp4 + 3] * 1000
 			    s[103].on
 			    
 			}
@@ -183,7 +183,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			//@comment "if AA Timer <1"
 			//@comment "#攻撃指令モードであれば、その場で警戒モードに移行"
 			@if agent_StanceOrder == ORD_ATK {
-			    @if `agent_AI_routine_bits & AI_routine_bits_FLAG_Manual_Ordered {//manual ordered
+			    @if `agent_AI_routine_bits & AI_routine_bits_FLAG_Manual_Ordered { //manual ordered
 				agent_StanceOrder = ORD_MANU
 				
 			    } .else bl {
@@ -198,7 +198,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 
 			//@comment "#WPを使ってOBJにたどり着こうとしていた"
 			@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
-			    //v[341] = v[301] + 43
+			    //TT1 = v[301] + 43
 			    v[1301].copy v[643], 13
 			    agent_AgentBits &= -16777217//~16777216 AgentBits_FLAG_NeedWpToReachObj
 			    agent_AI_routine_bits &= -49153//~49152
@@ -273,29 +273,28 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	    //Temp6 = 次に動く場所y"
 	    
 
-		v[607].copy v[341], 2
-		v[341] .add v[53], 2
+		v[607].copy TT1, 2
+		TT1 .add v[53], 2
 		v[619].copy v[309], 2
-		v[309] .sub v[341], 2
-		v[304] = pow(v[309], 2)
+		v[309] .sub TT1, 2
+		Temp4 = pow(v[309], 2)
 		v[306] = pow(v[310], 2)
 
 	    //v[306] = pow(v[310] = v[620] - (agent_RelativeY + v[54]), 2)
-	    v[304] += v[306]
+	    Temp4 += v[306]
 	    //@comment "Set Object[23]"
 	    //v[300] = v[301] + 23
-	    agent_MilPixMoveOrderedPointDist = sqrt(v[304], 1000)
+	    agent_MilPixMoveOrderedPointDist = sqrt(Temp4, 1000)
 	    //v[318] = agent_MilPixMoveOrderedPointDist
 
-	    /*@comment "#############
-	    ここ配列操作で高速化可能
-	    #############"*/
+	    // #############
+	    // ここ配列操作で高速化可能
+	    // #############"
 
- 	    
 	    //v[300] = v[301] + 22
-	    //v[622] = (v[622] * v[342] + v[310] * 100000 / v[318]) / (v[342] + 1)
+	    //v[622] = (v[622] * TT2 + v[310] * 100000 / v[318]) / (TT2 + 1)
 	    //v[300] = v[301] + 21
-	    //v[621] = (v[621] * v[342] + v[309] * 100000 / v[318]) / (v[342] + 1)
+	    //v[621] = (v[621] * TT2 + v[309] * 100000 / v[318]) / (TT2 + 1)
 		
 		// -> relocated to walking pro
 		defv relX_sub_TargX_saved = 351
@@ -308,20 +307,20 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			agent_ActionFlag &= -2//~1
 			//@comment "Objに向かっているときは"
 			//@comment "Set Dir"
-			v[844] = v[Ptr8 + 4707] - agent_RelativeX >= 0 ? 0 : 1
+			agent_Direction = v[Ptr8 + 4707] - agent_RelativeX >= 0 ? 0 : 1
 			//@comment "AAレンジ内か否かを見る"
 			//v[295] = v[301] + 269
-			v[869].copy v[341], 2
+			v[869].copy TT1, 2
 			//@comment "自分がMelee or townsman repairingなら([相手の幅]*1000)を引いて考える"
 			v[340] = agent_MilPixMoveOrderedPointDist
 			v[340] -= agent_AAType == 0 || agent_worker_JobType == 6 ? v[335] : 0
 			//@comment "If the target is build basement"
 			v[340] -= v[Ptr8 + 4703] & 32 && v[Ptr8 + 4701] == 11 ? v[Ptr8 + 4938] * 1000 : 0
-			@if v[340] <= v[341] {
-			    @if v[340] >= v[342] {
+			@if v[340] <= TT1 {
+			    @if v[340] >= TT2 {
 				//@comment "#WPを使ってOBJにたどり着こうとしていた"
 				@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
-				    //v[341] = v[301] + 43
+				    //TT1 = v[301] + 43
 				    v[1301].copy v[643], 13
 				    agent_AI_routine_bits &= -49153//~49152 - AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
 				    
@@ -387,6 +386,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			    //@comment "待機"
 			    //@comment "強制移動指示"
 			    //@comment "またはWPがある"
+
 			    @if `agent_TargetAgentID == 0 || (agent_StanceOrder == ORD_STD || agent_StanceOrder == ORD_DEF || agent_MovementOrder == MovementOrder_TYPE_prioritize_moving || agent_LeftWPtoChase > 0) {
 					//@comment "WPがあるならWP処理"
 					@if agent_LeftWPtoChase > 0 {
@@ -503,15 +503,15 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			agent_ActionFlag &= agent_MovementOrder >= 2 ? ~ActionFLag_FLAG_Hold_direction : ~0
 
 			// calc Vector 
-			v[342] = agent_AgentBits & 16 ? 9 : 2 // (agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback ? 4 : 2)
-			v[621..622] *= v[342]
+			TT2 = agent_AgentBits & 16 ? 9 : 2 // (agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback ? 4 : 2)
+			v[621..622] *= TT2
 			// Attention - v[351] = relX_sub_TargX_saved
 			defv relY_sub_TargY_saved= __id(relX_sub_TargX_saved)+1
 			// muldiv is slower than lower past proc, but in this case you need to use this in order to avoid var overflow
 			v[351..352] *= 100000 
 			v[351..352] /= agent_MilPixMoveOrderedPointDist
 			v[621] .add relX_sub_TargX_saved, 2
-			v[621..622] /= v[342] + 1
+			v[621..622] /= TT2 + 1
 
 
 		}
@@ -536,22 +536,22 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 		@if s[104] .isOn() {
 		    //@comment "動かない"
 		    //@comment "待機"
-		    v[1301].copy v[612], 2
+		    v[1301].copy agent_MilPixVx, 2
 		    
 		} .else bl {
-		    v[341] = agent_MovementOrder == MovementOrder_TYPE_fleeing ? -1 : 1
+		    TT1 = agent_MovementOrder == MovementOrder_TYPE_fleeing ? -1 : 1
 
-		    //v[0] = v[612..613] = [v[621] * agent_ProcessMS * v[341], v[622] * agent_ProcessMS * v[341]]
-		    v[621].copy v[612],2
-		    //v[612] = v[621] * agent_ProcessMS 
-		    //v[613] = v[622] * agent_ProcessMS 
-		    v[612..613] *= v[341] * agent_ProcessMS
+		    //v[0] = v[612..613] = [v[621] * agent_ProcessMS * TT1, v[622] * agent_ProcessMS * TT1]
+		    v[621].copy agent_MilPixVx,2
+		    //agent_MilPixVx = v[621] * agent_ProcessMS 
+		    //agent_MilPixVy = v[622] * agent_ProcessMS 
+		    v[612..613] *= TT1 * agent_ProcessMS
 		    //@comment "#WalkingSwitchOn"
 		    __if DIS_EXPERIMENTAL == 1 {
 			    agent_ActionFlag |= ActionFlag_FLAG_Walking
 		    }.else bl{
-			    v[341]=v[4558] + v[401]
-			    s[v[341]].on
+			    TT1=v[4558] + v[401]
+			    s[TT1].on
 		    }
 		}
 		
@@ -559,7 +559,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 		@if Is_Paused .isOff() {
 		    //@comment "nowall"
 		    agent_AgentBits &= -8388609//~8388608
-		    //v[341] = v[301] + 249
+		    //TT1 = v[301] + 249
 		    v[849] -= 1
 		    @if v[849] < 1 {
 			@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI {
@@ -634,11 +634,11 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 
 		// this part is kinda terrible...
 
-		v[612] .add v[615], 2
-		@if `v[612] != 0 || v[613] != 0 {
+		agent_MilPixVx .add v[615], 2
+		@if `agent_MilPixVx != 0 || agent_MilPixVy != 0 {
 
 			/* this was shite.
-			reg3 = atan2(v[613],v[612],1000)
+			reg3 = atan2(agent_MilPixVy,agent_MilPixVx,1000)
 			Temp17 = cos(reg3,1000,100)
 			Temp18 = sin(reg3,1000,100)
 			Temp17 = Temp17 >= 30 ? 1 : Temp17 <= -30 ? -1 : 0
@@ -655,12 +655,12 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 
 			
 			// get TileXY where the agent goes
-			v[303] .add v[612], 2
-			macro_cord_diff(v[303] v[304])
+			v[303] .add agent_MilPixVx, 2
+			macro_cord_diff(v[303] Temp4)
 
 			// now sub to fit DIS map
 			v[303].sub v[69], 2
-			Temp16 = v[304]
+			Temp16 = Temp4
 			v[__id(Temp16)..__id(Temp17)] *= v[2061]
 			
 			Temp17 += v[303] //Tile Number vertical
@@ -692,7 +692,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 					//@comment "##壁がなければ速度を足す"
 					@if v[315] < 21 {
 					//@comment "#Agent can move onward basically"
-					v[612].copy var1, 2
+					agent_MilPixVx.copy var1, 2
 					macro_get_tile_instant_flag_ptr(Temp16)
 
 					//func_show_msg("\c[17]DEBUG: \v[21] - \v[\v[21]]")
@@ -714,11 +714,11 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 					
 					}
 
-					//get v[v[297]] to v[341]
-					v[53].copy v[341], 2
-					v[341] .mul v[4813], 2
+					//get v[v[297]] to TT1
+					v[53].copy TT1, 2
+					TT1 .mul v[4813], 2
 					//add to v[v[300]]
-					agent_MilPixX .add v[341], 2
+					agent_MilPixX .add TT1, 2
 					agent_MilPixX.copy agent_RelativeX, 2
 					//div
 					agent_RelativeX .div v[4813], 2
@@ -733,11 +733,11 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 					//@comment "wall detection"
 					agent_AgentBits |= AgentBits_FLAG_walldetected
 					//@comment "##20以上で壁がある"
-					v[341] = agent_ProcessMS * 100
+					TT1 = agent_ProcessMS * 100
 					//@comment "##垂直方向に壁があれば進行方向vにMSかけたものが速度に"
-					v[342] = abs(v[612])
+					TT2 = abs(agent_MilPixVx)
 					@if v[313] < 21 {
-					v[612].copy var1, 1
+					agent_MilPixVx.copy var1, 1
 					macro_get_tile_instant_flag_ptr(Temp18)
 					@if `v[reg1] & FLAG_Maptile_Crowded {
 						var1 /= 2 //if crowded, halve speed
@@ -747,7 +747,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 					agent_MilPixX += var1
 					
 					} .else bl {
-					v[612] = divmul(v[612], v[342], v[341])
+					agent_MilPixVx = divmul(agent_MilPixVx, TT2, TT1)
 					
 					}
 					//@comment "#カメラずらして"
@@ -759,9 +759,9 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 					//@comment "Y座標"
 					//v[295..300] += 1
 					//@comment "##垂直方向に壁があれば進行方向vにMSかけたものが速度に"
-					v[342] = abs(v[613])
+					TT2 = abs(agent_MilPixVy)
 					@if v[314] < 21 {
-					v[613].copy var2, 1
+					agent_MilPixVy.copy var2, 1
 					macro_get_tile_instant_flag_ptr(Temp17)
 					@if `v[reg1] & FLAG_Maptile_Crowded {
 						var2 /= 2//if crowded, halve speed
@@ -771,7 +771,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 					agent_MilPixY += var2
 					
 					} .else bl {
-					v[613] = divmul(v[613], v[342], v[341])
+					agent_MilPixVy = divmul(agent_MilPixVy, TT2, TT1)
 					
 					}
 					//@comment "#カメラずらして"
@@ -802,10 +802,10 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 				agent_RelativeY = agent_MilPixY / 10000
 				agent_SpriteY = agent_RelativeY + v[897]*/
 				
-				v[53].copy v[341], 2
-				v[341] .mul v[4813], 2
+				v[53].copy TT1, 2
+				TT1 .mul v[4813], 2
 				//add to v[v[300]]
-				agent_MilPixX .add v[341], 2
+				agent_MilPixX .add TT1, 2
 				agent_MilPixX.copy agent_RelativeX, 2
 				//div
 				agent_RelativeX .div v[4813], 2
@@ -816,10 +816,10 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			
 			}
 		}.else bl{
-			v[53].copy v[341], 2
-			v[341] .mul v[4813], 2
+			v[53].copy TT1, 2
+			TT1 .mul v[4813], 2
 			//add to v[v[300]]
-			agent_MilPixX .add v[341], 2
+			agent_MilPixX .add TT1, 2
 			agent_MilPixX.copy agent_RelativeX, 2
 			//div
 			agent_RelativeX .div v[4813], 2
