@@ -44,7 +44,10 @@ __fn func_control_moveorder_proc_let_units_attack {
 		
 	    }
 	    @if s[16] .isOn() {
-		v[v[301] + 3] &= ~AgentBits_FLAG_ForcemoveFlag
+
+		// no matter if attack move key is pressed or not, once attack order is given, just give the agents force move flag 
+		//v[v[301] + 3] &= ~AgentBits_FLAG_ForcemoveFlag
+		v[v[301] + 3] |= AgentBits_FLAG_ForcemoveFlag
 		
 	    } .else bl {
 		v[v[301] + 3] |= AgentBits_FLAG_ForcemoveFlag
