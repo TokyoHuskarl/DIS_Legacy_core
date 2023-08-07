@@ -435,7 +435,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[348] = v[401] + 501
 	    s[v[348]].off
 	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
-	    TT10 = Address_agent_inSight_switch_array_head+v[401]
+	    TT10 = Address_agent_inSight_switch_array_head + v[401]
 	    @if s[TT10] .isOn() {
 	    //@if `s[2001+v[401]] != 0 {
 	    	//v[345] = v[301] + 7
@@ -967,15 +967,18 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[301] = v[401] * v[1117] 
 	    v[301] += 5000
 	    func_main_extract_agent_vars()
+
 	    //If Move Type STATIC
-	    @if `!(agent_static_Attribution_flag & 2) {
+	    //@if `(agent_static_Attribution_flag & 2) {
 		// Save MapXY/5 for static minimap.
-		v[341]=v[301]+26
+		v[341] = v[301] + 26
 		v[v[341]] .copy v[AGENT_STATIC_SLOT_MINIMAP_X], 2
-		v[AGENT_STATIC_SLOT_MINIMAP_X..AGENT_STATIC_SLOT_MINIMAP_Y]/=5
-		v[341]=v[301]+AGENT_STATIC_SLOT_MINIMAP_X
+		v[AGENT_STATIC_SLOT_MINIMAP_X..AGENT_STATIC_SLOT_MINIMAP_Y] /= 5
+		v[341] = v[301] + AGENT_STATIC_SLOT_MINIMAP_X
 		v[AGENT_STATIC_SLOT_MINIMAP_X].copy v[v[341]], 2
-	    }
+	    //}
+
+
 	    // "########################Process Parameters Setting BEGIN########################"
 	    // "#Base Parameters Get"
 	    //v[861] = v[301] + 109

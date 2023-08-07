@@ -20,7 +20,7 @@ __fn func_generate_agent {
 	    //legacy common event call spawn
 	    @call .cev v[254]
 	    
-	} .else bl {
+	} .elif v[254] > 0 {
 	    t[503] .asg ""
 	    t[505] .asg t[20034]
 	    // "Load"
@@ -580,7 +580,7 @@ __fn func_generate_agent {
 		
 	    } .else bl {
 		t[503] .asg "UNDEFINED"
-		func_errlog("ERROR:The troop attempted to be spawned is UNDEFINED.")
+		func_errlog("The troop attempted to be spawned is UNDEFINED.")
 	    }
 	    
 	}

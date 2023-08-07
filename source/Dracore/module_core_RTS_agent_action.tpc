@@ -16,7 +16,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 		    //@comment "Set Timer"
 		    v[v[210] + 84] = 3
 		    //@comment "Auto Attack"
-		    v[300] = v[210]+18
+		    v[300] = v[210] + 18
 		    v[340] = 34 + agent_AAType
 		    //Legacy - give 843 Ptr
 		    agent_ActionState = v[210] + 243
@@ -79,7 +79,8 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 			    agent_ActionTimer = 2
 			    //add 1 frame to attack frame
 			    //v[Ptr8] += 1
-			    agent_AttackFrame+=1
+			    agent_AttackFrame += 1
+
 			    @if agent_AttackFrame == skill_MotionFrame {
 				//@comment "Initialize AI Timer"
 				//v[v[210] + 84] = v[v[210] + 300] % v[1195]
@@ -146,6 +147,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 					//@comment "モーション初期化"
 					v[Ptr8] = 0
 					//agent_ActionState = v[210] + 243
+
 					//@comment "Should I Check AA CD?"
 					//actionstate set 0
 					v[v[210] + 243] = 0

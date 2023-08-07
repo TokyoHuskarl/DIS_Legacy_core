@@ -151,6 +151,8 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 				    
 				}
 				
+			    } .else bl { // if the agent gets force move order, then init the Last target..
+			    	agent_LastTarget = agent_TargetAgentID
 			    }
 			    
 			}
