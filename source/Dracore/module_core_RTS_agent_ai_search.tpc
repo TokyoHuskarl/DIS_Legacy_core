@@ -42,16 +42,15 @@ v[535] += 1
 v[533] = (v[204] / 52 + 1) * v[1134]
 v[535] %= v[533]
 v[536] = v[4532]
-//v[0] = v[4031..4033] = [v[1146], v[1145], v[1145]]
+
 v[4031] = v[1146]
 v[4032..4033] = v[1145]
-//v[0] = v[4034..4036] = [v[206], v[205], v[205]]
 v[4034] = v[206]
 v[4035..4036] = v[205]
 //Check ground type troops agents all
 
 // set expanding temp array for copying
-// v[4101..4130] = 100000000
+v[4101..4130] = 100000000 // WITHOUT AEAB this part is necessarily
 
 @while v[v[536]] != 0 {
     v[212] = v[v[536]] * 300 
@@ -88,9 +87,9 @@ v[4035..4036] = v[205]
 		    //team ID % 3
 		    //opt 28.4.23
 		    //Temp14 = v[Const_AgentMetaTeam_begin+v[211]] //v[Temp1] % 3
-		    __if DIS_EXPERIMENTAL == 1 {
+		    __if DIS_EXPERIMENTAL == -1 {
 		    	//macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14)
-                get_AEAB_element_wo_ptr(AgentIDholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
+                	get_AEAB_element_wo_ptr(AgentIDholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
 		    }.else bl {
 		    	Temp14 = Const_AgentMetaTeam_begin + v[211]
 		    	Temp14 = v[Temp14]
@@ -104,13 +103,15 @@ v[4035..4036] = v[205]
 
                     //v[4001..4030] = 100000000
 
-            __if DIS_EXPERIMENTAL == 1 { // use AEBA to opt! also @if cond can be changed into other shit.
+            __if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
                 get_AEAB_array(AgentIDholder,4001,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
 
             }.else bl {
 
-                    Temp7 = v[agent_AI_routine_bits]
-		        v[4101].copy v[4001],30
+                Temp7 = v[agent_AI_routine_bits]
+		v[4101].copy v[4001],30
+
+		// Common_Switch5 serves checking if the agent has bias to prioritize the enemy by its type, if it's on, it means the agent has the bias
                 LEGS_Common_Switch5.off
                 @if `Temp7 & 1 {
                     v[4001..4029] += 700000000
@@ -129,22 +130,28 @@ v[4035..4036] = v[205]
                     
                 }
             }
+
             Temp7 = 0
             //v[3401..3600] = 999999999
 		    v[3401] = 999999999
 		    v[3401].copy v[3402], 199
                     v[534] = v[4579] + (v[1012] + 2) * v[211]
                     v[v[534]] = 0
+
 		    //Temp8 = v[212] + 230 9.5.23
                     Temp8 = v[830]
                     //@comment "##############"
 
             // get sight range root
-            /*
-		    v[315] = v[211] + v[4806]
-                    v[315] = v[v[315]]
-            */
-            get_AEAB_element_wo_ptr(AgentIDholder,__id(v[315]),AgentExBuffer_SLOT_BaseSight_Root)
+                    __if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
+
+			    get_AEAB_element_wo_ptr(AgentIDholder,__id(v[315]),AgentExBuffer_SLOT_BaseSight_Root)
+
+		    }.else bl {
+
+			    v[315] = v[211] + v[4806]
+			    v[315] = v[v[315]]
+ 		    }
 
 		    //If the agent has target agent
 		    //Temp16 = Temp15  
@@ -172,6 +179,7 @@ v[4035..4036] = v[205]
                     TT1 .div v[74], 2
                     TT1 = max(TT1, 0)
                     TT2 = max(TT2, 0)
+
                     /*@comment "TT1=MortX
 		   TT2=MortY
 		   ビット演算して処理するよ"*/
@@ -183,18 +191,16 @@ v[4035..4036] = v[205]
                     TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
                     TT2 = (TT2 | TT2 << 2) & 0x33333333
                     TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
+
                     //@comment "yは1bitシフトで終わり"
                     //TT2 <<= 1
                     //@comment "最後にTT1 OR TT2"
 		    //opt 28.4.23
                     //v[21] = TT1 | TT2
-                    /*@comment "#########################
-		   #2002 Crd->Mort V1V2 reg1 end
-		   ##########################"*/
+                    /*@comment "#########################		   #2002 Crd->Mort V1V2 reg1 end		   ##########################"*/
                     v[351] = TT1 | TT2
-                    /*@comment "#########################
-#2002 Crd->Mort V1V2 reg1
-##########################"*/
+
+                    /*@comment "##########################2002 Crd->Mort V1V2 reg1##########################"*/
                     v[Temp9].copy TT1, 2
                     v[341..342] += v[315]
                     TT1 .add v[53], 2
@@ -202,6 +208,7 @@ v[4035..4036] = v[205]
                     TT1 .div v[74], 2
                     TT1 = min(TT1, 31)
                     TT2 = min(TT2, 31)
+
                     /*@comment "TT1=MortX
 		    TT2=MortY
 	 	    ビット演算して処理するよ"*/
@@ -231,7 +238,7 @@ v[4035..4036] = v[205]
                     //@comment "#mask with 001100"
                     //@comment "#mask with 000011"
 
-		    //If the morton space where you gonna check is root space...
+		    //If the morton space where you're gonna check is the root space...
                     @if `TT3 & 768 {
 
 			Temp2 = 4031 + Temp14
@@ -240,8 +247,8 @@ v[4035..4036] = v[205]
 			//then just check team agent list - but this seemingly not good design (also kinda buggy), so maybe I need to change this later
                         Temp6 = 3601
 
-                        //@if LEGS_Common_Switch5 .isOn() { // NOT EXPERIMENTAL
-                        @if `v[agent_AI_routine_bits] & 7 { // EXPERIMENTAL
+                        @if LEGS_Common_Switch5 .isOn() { // NOT EXPERIMENTAL
+                        //@if `v[agent_AI_routine_bits] & 7 { // EXPERIMENTAL
                             @doWhile v[Temp2] != 0 {
                                 v[Temp9].copy Temp4, 2
                                 //optimizing 25.4.23
@@ -302,14 +309,14 @@ v[4035..4036] = v[205]
                             v[312] = v[340] + v[310]
 
 
-			    __if DIS_EXPERIMENTAL == 1 {
-				    macro_get_agent_MetaTeam_into_var(v[v[312]],TT1)
+			    __if DIS_EXPERIMENTAL == -1 {
+				    macro_get_agent_MetaTeam_into_var(v[v[312]],TT1) // AEBA
 			    }.else bl {
-				    TT1 = Const_AgentMetaTeam_beginMINUSONE+v[v[312]]
+				    TT1 = Const_AgentMetaTeam_beginMINUSONE + v[v[312]]
 			    }
 
-                            @if  agent_TeamID == TT1 {
-                            //@if  agent_TeamID == v[TT1] { // NOT EXPERIMENTAL
+                            // @if  agent_TeamID == TT1 { // EXPERIMENTAL - IF YOU USE AEBA  
+                            @if  agent_TeamID == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA
 
                                 Temp11 = v[v[312]] * v[1117] 
 				Temp11 += 4700
@@ -600,8 +607,8 @@ v[4035..4036] = v[205]
                 v[299] = v[212] + 241
                 Temp1 = v[212] + 100
 
-		__if DIS_EXPERIMENTAL == 1 {
-			macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14)
+		__if DIS_EXPERIMENTAL == -1 {
+			macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEBA
 		}.else bl {
 			Temp14 = v[Const_AgentMetaTeam_begin+v[211]] //v[Temp1] % 3
 		}

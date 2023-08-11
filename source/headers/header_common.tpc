@@ -262,6 +262,13 @@ defv{
 	var_Map_Width = 2061
 	var_Map_Height = 2062
 
+	Map_LimitCoordX_min = 69
+	Map_LimitCoordX_max = 71
+
+	Map_LimitCoordY_min = 70
+	Map_LimitCoordY_max = 72
+
+
 	zeroArray100 = 1301 // only used for cleanup
 
     //vars and regs
@@ -499,5 +506,12 @@ __fn struct $name $block {
 
 #include "./id_project_cev.tpc"
 
+__fn func_general_camera_move $x $y {
+	@scr.scroll {
+		.set($x,$y),
+		.time 0,
+		.center,
+	}
+}
 
 $DIS_h_common_included = 1

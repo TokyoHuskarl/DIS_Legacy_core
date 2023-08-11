@@ -1,19 +1,21 @@
-//Compiling this file updates the DIS-RTS pathfinding in the ldb 
-//このファイルをコンパイルするとRTSモードの経路探索システムが更新されます
+// Compiling this file updates the DIS-RTS pathfinding in the ldb 
+// このファイルをコンパイルするとRTSモードの経路探索システムが更新されます
 
 #include "./../headers/header_common.tpc"
-//pathfinding funcs load
-#include "./module_core_RTS_pathfinding_functions.tpc"
 def moduletitle="module_core_RTS_pathfinding_general"
 
+//pathfinding funcs load
+#include "./module_core_RTS_pathfinding_functions.tpc"
 
 //include better one - main pathfinding algorithm, A*
 //func_pathfinding_Astar()
-#include "./module_core_RTS_pathfinding_Astar.tpc"
-
 //include worse one - will be called only when unclear path result is allowed  
 //func_pathfinding_retarded()
-#include "./module_core_RTS_pathfinding_legacy.tpc"
+// Both of A* and legacy pathfinding function combined in this one tpc file
+#include "./module_core_RTS_pathfinding_algorithm.tpc"
+//#include "./module_core_RTS_pathfinding_Astar.tpc"
+
+
 
 def KILL_AI_routine_bits_FLAG_Pathblocked = ~AI_routine_bits_FLAG_Pathblocked
 def KILL_AI_routine_bits_FLAG_PFskip = ~AI_routine_bits_FLAG_PFskip
@@ -74,9 +76,15 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 
 }
 
+cev .id(1769), .name("Pathfinding:retarded") , {   
+	func_pathfinding_retarded()
+}
+
 cev .id(1770), .name("Pathfinding:AStar"), {   
 	func_pathfinding_Astar()
 }
+
+
 
 //LEGACY cev setting
 cev .id(1771), .name("PathfindingFunc:Move") , {   

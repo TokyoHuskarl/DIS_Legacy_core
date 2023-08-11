@@ -246,8 +246,8 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //v[344] = v[301] + 1
 	    //v[345] = v[301] + 7
 
-	    // set absolute cord
-	    macro_convert_absolute_cord(agent_RelativeX,agent_AbsoluteX)
+	    // set absolute coord
+	    macro_convert_absolute_coord(agent_RelativeX,agent_AbsoluteX)
 
 	    v[348] = v[401] + 501
 	    s[v[348]].off
@@ -429,7 +429,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //#############"
 
 	    // set absolute cord
-	    macro_convert_absolute_cord(agent_RelativeX,agent_AbsoluteX)
+	    macro_convert_absolute_coord(agent_RelativeX,agent_AbsoluteX)
 
 	    //Set Obj into Drawing List
 	    v[348] = v[401] + 501
@@ -1032,8 +1032,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    @if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
 			//v[342] = v[2409 + v[251] % 3]
 			
-			__if DIS_EXPERIMENTAL == 1 { 
-				macro_get_agent_MetaTeam_into_var(v[v[536]],TT2)
+			__if DIS_EXPERIMENTAL == -1 { 
+				macro_get_agent_MetaTeam_into_var(v[v[536]],TT2) // AEBA
 			}.else bl {
 				TT2 = v[Const_AgentMetaTeam_begin+v[401]]
 			}
@@ -2117,7 +2117,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					defv bool_if_my_tile_is_covered = __id(TempFlag1)
 
 					// get agent MetaTeam
-					__if DIS_EXPERIMENTAL == 1 {
+					__if DIS_EXPERIMENTAL == -1 { // AEBA
 						macro_get_agent_MetaTeam_into_var(v[v[536]],TT1)
 						flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << TT1 //shift Meta Team
 					}.else bl {
@@ -2134,8 +2134,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				defv flag_pikecovered = __id(TT10)
 				
 				// get agent MetaTeam
-				__if DIS_EXPERIMENTAL == 1 {
-					macro_get_agent_MetaTeam_into_var(v[v[536]],TT1)
+				__if DIS_EXPERIMENTAL == -1 {
+					macro_get_agent_MetaTeam_into_var(v[v[536]],TT1) // AEBA
 					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << TT1 //shift Meta Team
 				}.else bl {
 					TT1 = Const_AgentMetaTeam_begin + v[v[536]] //get meta team - isn't this wrong?

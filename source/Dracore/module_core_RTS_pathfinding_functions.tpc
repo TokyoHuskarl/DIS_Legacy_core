@@ -1,8 +1,10 @@
 
 
+// maybe movement order itself should be combined in one
 
 __fn func_pathfinding_move(){
 	// "移動指示	Center(x.y)=(wheretox,wheretoy)"
+
 	v[2878] = v[1212]
 	v[390] = 0
 	@if v[2875] >= 1 {
@@ -18,107 +20,115 @@ __fn func_pathfinding_move(){
 	    v[2851].copy v[2873], 2
 	    
 	}
-	@loop .inf() {
-	    @if v[v[2878]] == 0 {
-		// "とぎれた"
-		@break
-		
-	    }
-	    // "配列ゲット"
-	    v[301] = v[v[2878]] * 300 
-	    v[301] += 4700
-	    v[300] = v[301] + 242
-	    v[299] = v[301] + 41
-	    v[298] = v[301] + 42
-	    v[297] = v[301] + 18
-	    v[295] = v[301] + 241
-	    v[294] = v[301] + 55
-	    v[629] = v[301] + 29
-	    @if v[v[297]] > 0 {
-		// "if you have obj"
-		@if v[v[295]] == 2 {
-		    v[v[300]] = 2
-		    
-		} .else bl {
-		    v[v[300]] = 3
-		    @if `v[v[301] + 3] & AgentBits_FLAG_PF_walldetection_switch {
+
+	// experimental - check if the target coordinate is in map or not
+	//to deal with the crash bug in 1.162BETA2
+	macro_ck_if_given_rel_coord_is_inside_map(v[2851],v[2852])
+
+	// if the coord is inside map...
+	@if reg1 != 1 {
+		// then start the movementa order
+		@loop .inf() {
+		    @if v[v[2878]] == 0 {
+			// "とぎれた"
+			@break
+			
+		    }
+		    // "配列ゲット"
+		    Temp1 = v[v[2878]] * 300 
+		    Temp1 += 4700
+		    Ptr20 = Temp1 + 242
+		    v[299] = Temp1 + 41
+		    v[298] = Temp1 + 42
+		    v[297] = Temp1 + 18
+		    Ptr15 = Temp1 + 241
+		    v[294] = Temp1 + 55
+		    v[629] = Temp1 + 29
+		    @if v[v[297]] > 0 {
+			// "if you have obj"
+			@if v[Ptr15] == 2 {
+			    v[Ptr20] = 2
+			    
+			} .else bl {
+			    v[Ptr20] = 3
+			    @if `v[Temp1 + 3] & AgentBits_FLAG_PF_walldetection_switch {
+				
+			    } .else bl {
+				v[Temp1 + 3] &= -16777217//~16777216
+				
+			    }
+			    
+			}
+			@if `!(v[Temp1 + 3] & AgentBits_FLAG_ForcemoveFlag) {
+			    @if v[2875] == 0 {
+				v[Ptr20] = 2
+				
+			    }
+			    
+			}
+			
+		    }
+		    @if s[279] .isOn() {
+			v[Ptr20] = 1
+			v[Temp1 + 3] &= -16777217//~16777216
+			@if `v[Temp1 + 3] & AgentBits_FLAG_PF_walldetection_switch {
+			    v[Temp1 + 3] |= AgentBits_FLAG_walldetected
+			    v[Temp1 + 34] |= AI_routine_bits_FLAG_Pathblocked
+			    
+			}
+			
+		    }
+		    @if v[2875] >= 1 {
+			v[293] = 2873
+			v[293] -= v[2875] * 2
+			@loop v[2875] {
+			    v[v[293]].copy v[v[299]], 2
+			    v[293] += 2
+			    v[299] += 2
+			    
+			}
+			
+			v[v[293]].copy v[v[299]], 2
+			// "#Set 現在目指してるWPと総WP数"
+			v[v[294]] = v[2875]
+			v[2873] .add v[2855], 2
 			
 		    } .else bl {
-			v[v[301] + 3] &= -16777217//~16777216
+			// "#Set 移動するX"
+			v[v[299]] = v[2851]
+			// "#Set 移動するY"
+			v[v[298]] = v[2852]
+			// "#Set 現在目指してるWPと総WP数"
+			v[v[294]] = -1
+			v[2851] .add v[2855], 2
 			
 		    }
-		    
-		}
-		@if `!(v[v[301] + 3] & AgentBits_FLAG_ForcemoveFlag) {
-		    @if v[2875] == 0 {
-			v[v[300]] = 2
+		    v[293] = Temp1 + 245
+		    v[v[293]] = 0
+		    // "Make 2nd line"
+		    v[390] += 1
+		    v[390] %= v[2859]
+		    @if v[390] == 0 {
+			@if v[2875] >= 1 {
+			    v[2853].copy v[2873], 2
+			    v[2873] .add v[2857], 2
+			    
+			} .else bl {
+			    v[2853].copy v[2851], 2
+			    v[2851] .add v[2857], 2
+			    
+			}
+			v[2851].copy v[2853], 2
 			
 		    }
+		    @if `v[Temp1 + 1] <= 8 {
+			v[Temp1 + 3] = v[Temp1 + 241] <= 4 ? [v[Temp1 + 3] | AgentBits_FLAG_EnableBasicAI, v[Temp1 + 3] | AgentBits_FLAG_EnableBasicAI, v[Temp1 + 3] & ~AgentBits_FLAG_EnableBasicAI, v[Temp1 + 3] | AgentBits_FLAG_EnableBasicAI, v[Temp1 + 3] & ~AgentBits_FLAG_EnableBasicAI][v[Temp1 + 241]] : v[Temp1 + 3]
+			
+		    }
+		    v[2878] += 1
 		    
 		}
-		
-	    }
-	    @if s[279] .isOn() {
-		v[v[300]] = 1
-		v[v[301] + 3] &= -16777217//~16777216
-		@if `v[v[301] + 3] & AgentBits_FLAG_PF_walldetection_switch {
-		    v[v[301] + 3] |= AgentBits_FLAG_walldetected
-		    v[v[301] + 34] |= AI_routine_bits_FLAG_Pathblocked
-		    
-		}
-		
-	    }
-	    @if v[2875] >= 1 {
-		v[293] = 2873
-		v[293] -= v[2875] * 2
-		@loop v[2875] {
-		    v[v[293]].copy v[v[299]], 2
-		    v[293] += 2
-		    v[299] += 2
-		    
-		}
-		
-		v[v[293]].copy v[v[299]], 2
-		// "#Set 現在目指してるWPと総WP数"
-		v[v[294]] = v[2875]
-		v[2873] .add v[2855], 2
-		
-	    } .else bl {
-		// "#Set 移動するX"
-		v[v[299]] = v[2851]
-		// "#Set 移動するY"
-		v[v[298]] = v[2852]
-		// "#Set 現在目指してるWPと総WP数"
-		v[v[294]] = -1
-		v[2851] .add v[2855], 2
-		
-	    }
-	    v[293] = v[301] + 245
-	    v[v[293]] = 0
-	    // "Make 2nd line"
-	    v[390] += 1
-	    v[390] %= v[2859]
-	    @if v[390] == 0 {
-		@if v[2875] >= 1 {
-		    v[2853].copy v[2873], 2
-		    v[2873] .add v[2857], 2
-		    
-		} .else bl {
-		    v[2853].copy v[2851], 2
-		    v[2851] .add v[2857], 2
-		    
-		}
-		v[2851].copy v[2853], 2
-		
-	    }
-	    @if `v[v[301] + 1] <= 8 {
-		v[v[301] + 3] = v[v[301] + 241] <= 4 ? [v[v[301] + 3] | AgentBits_FLAG_EnableBasicAI, v[v[301] + 3] | AgentBits_FLAG_EnableBasicAI, v[v[301] + 3] & ~AgentBits_FLAG_EnableBasicAI, v[v[301] + 3] | AgentBits_FLAG_EnableBasicAI, v[v[301] + 3] & ~AgentBits_FLAG_EnableBasicAI][v[v[301] + 241]] : v[v[301] + 3]
-		
-	    }
-	    v[2878] += 1
-	    
 	}
-
 	v[2861..2875] = 0
 	v[2875] = 0
 }
@@ -126,18 +136,18 @@ __fn func_pathfinding_move(){
 __fn func_pathfinding_open_Node(){
 	// "check"
 	v[380] = 0
-	v[310] = v[4582]
-	v[309] = v[4568]
-	v[310] += v[309]
-	@loop v[4582] .dst v[310] {
-	    v[311] = v[4568] + v[310]
-	    @if v[v[311]] == v[19] {
+	Temp10 = v[4582]
+	Temp9 = v[4568]
+	Temp10 += Temp9
+	@loop v[4582] .dst Temp10 {
+	    Temp11 = v[4568] + Temp10
+	    @if v[Temp11] == var9 {
 		v[380] = 1
-		v[311] += 40000
+		Temp11 += 40000
 		// "compare cost"
-		@if v[v[311]] > v[20] {
-		    v[v[311]] = v[20]
-		    v[v[4600] + v[19] - 1] = v[4590]
+		@if v[Temp11] > v[20] {
+		    v[Temp11] = v[20]
+		    v[v[4600] + var9 - 1] = v[4590]
 		    
 		}
 		@break
@@ -148,27 +158,27 @@ __fn func_pathfinding_open_Node(){
 
 	/*
 	@if s[1] .isOn() {
-	    @while v[309] <= v[310] {
+	    @while Temp9 <= Temp10 {
 		//opt 28.4.23
-		//v[311] = (v[309] + v[310]) / 2
-		v[311] = (v[309] + v[310]) 
-		v[311] /= 2
-		@if v[v[311]] == v[19] {
+		//Temp11 = (Temp9 + Temp10) / 2
+		Temp11 = (Temp9 + Temp10) 
+		Temp11 /= 2
+		@if v[Temp11] == var9 {
 		    v[380] = 1
-		    v[311] += 40000
+		    Temp11 += 40000
 		    // "compare cost"
-		    @if v[v[311]] > v[20] {
-			v[v[311]] = v[20]
+		    @if v[Temp11] > v[20] {
+			v[Temp11] = v[20]
 			
 		    }
 		    @break
 		    
 		} .else bl {
-		    @if v[v[311]] < v[19] {
-			v[309] = v[311] + 1
+		    @if v[Temp11] < var9 {
+			Temp9 = Temp11 + 1
 			
 		    } .else bl {
-			v[310] = v[311] - 1
+			Temp10 = Temp11 - 1
 			
 		    }
 		    
@@ -180,24 +190,24 @@ __fn func_pathfinding_open_Node(){
 	}
 	*/
 
-	v[310] = v[4583]
-	v[309] = v[4567]
-	v[310] += v[309]
-	@while v[309] <= v[310] {
+	Temp10 = v[4583]
+	Temp9 = v[4567]
+	Temp10 += Temp9
+	@while Temp9 <= Temp10 {
 	    //opt 28.4.23
-	    //v[311] = (v[309] + v[310]) / 2
-	    v[311] = (v[309] + v[310]) 
-	    v[311] /= 2
-	    @if v[v[311]] == v[19] {
+	    //Temp11 = (Temp9 + Temp10) / 2
+	    Temp11 = (Temp9 + Temp10) 
+	    Temp11 /= 2
+	    @if v[Temp11] == var9 {
 		v[380] = 1
 		@break
 		
 	    } .else bl {
-		@if v[v[311]] < v[19] {
-		    v[310] = v[311] - 1
+		@if v[Temp11] < var9 {
+		    Temp10 = Temp11 - 1
 		    
 		} .else bl {
-		    v[309] = v[311] + 1
+		    Temp9 = Temp11 + 1
 		    
 		}
 		
@@ -206,36 +216,36 @@ __fn func_pathfinding_open_Node(){
 	}
 
 	@if v[380] == 0 {
-	    v[v[4568] + v[4582]] = v[19]
+	    v[v[4568] + v[4582]] = var9
 	    v[v[4555] + v[4582]] = v[20]
-	    v[v[4600] + v[19] - 1] = v[4590]
+	    v[v[4600] + var9 - 1] = v[4590]
 	    v[4582] += 1
 	    
 	}
 }
 
 __fn func_pathfinding_remove_OpenNode(){
-	v[310] = v[4582]
-	v[309] = v[4568]
-	v[310] += v[309]
-	@while v[309] <= v[310] {
+	Temp10 = v[4582]
+	Temp9 = v[4568]
+	Temp10 += Temp9
+	@while Temp9 <= Temp10 {
 	    //opt 28.4.23
-	    //v[311] = (v[309] + v[310]) / 2
-	    v[311] = (v[309] + v[310]) 
-	    v[311] /= 2
-	    @if v[v[311]] == v[19] {
+	    //Temp11 = (Temp9 + Temp10) / 2
+	    Temp11 = (Temp9 + Temp10) 
+	    Temp11 /= 2
+	    @if v[Temp11] == var9 {
 		//ugh this one seem brutal
-		v[0] = v[v[311]..v[4568] + v[4582]] = v[v[311] + 1..v[4568] + v[4582] + 1]
-		v[0] = v[v[311] + 200..v[4555] + v[4582]] = v[v[311] + 201..v[4555] + v[4582] + 1]
+		v[0] = v[Temp11..v[4568] + v[4582]] = v[Temp11 + 1..v[4568] + v[4582] + 1]
+		v[0] = v[Temp11 + 200..v[4555] + v[4582]] = v[Temp11 + 201..v[4555] + v[4582] + 1]
 		v[4582] -= 1
 		@break
 		
 	    } .else bl {
-		@if v[v[311]] < v[19] {
-		    v[310] = v[311] - 1
+		@if v[Temp11] < var9 {
+		    Temp10 = Temp11 - 1
 		    
 		} .else bl {
-		    v[309] = v[311] + 1
+		    Temp9 = Temp11 + 1
 		    
 		}
 		

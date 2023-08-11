@@ -11,32 +11,51 @@
 
 // agentid here are expected in a range from 1 to Agents_Limit
 
+
+
+// 8.8.2023
+// The fact that kern commands of the AEAB system have fatal bug in the processes where a MP user cannot touch nor deal with, so all AEAB system is gonna be abandoned.
+
+def AEAB_abandon = {
+	__if DIS_EXPERIMENTAL != -1 {
+		func_errlog("AEAB function detected, these functions must be removed from DIS source code.")
+	}
+	mypippi = 13123
+}
+
+/*
 __fn set_AEAB_element $agentid $setadd $slot {
+	AEAB_abandon
 	set_picture_pixel($setadd,PicID_AgentExBuffer,$slot,$agentid)
 }
 
 // set_AEAB_array(int agentid, *var setadd, int startslot, int range)
 __fn set_AEAB_array $agentid $setadd $startslot $range {
+	AEAB_abandon
 	set_picture_horizontal_line($setadd,PicID_AgentExBuffer,$startslot,$agentid,$range)
 }
 
 __fn get_AEAB_element $agentid $getadd $slot {
+	AEAB_abandon
 	get_picture_pixel($getadd,PicID_AgentExBuffer,$slot,$agentid)
 }
 
 __fn get_AEAB_element_wo_ptr $agentid $getadd $slot {
+	AEAB_abandon
 	@pic.getInfo[PicID_AgentExBuffer] .pixel($slot, $agentid, 1, 1) .dst(v[$getadd])
 }
 
 __fn get_AEAB_array $agentid $getadd $startslot $range {
+	AEAB_abandon
 	get_picture_horizontal_line($getadd,PicID_AgentExBuffer,$startslot,$agentid,$range)
 }
 
 __fn init_AEAB_array $agentid {
+	AEAB_abandon
 	// fill selected array with 0
 	set_picture_horizontal_line(__id(ptr_null), PicID_AgentExBuffer,0,$agentid,AgentExtraBuffer_ArraySize)
 }
-
+*/
 
 //
 

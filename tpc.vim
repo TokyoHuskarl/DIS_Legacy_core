@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:	TPC for RM2003 Maniacs
 " First Author:	Tokyo Huskarl
-" Last Change:	2023 Mar 24
+" Last Change:	2023 Jun 3
 " garbage syntax file lmao
 
 " quit when a syntax file was already loaded
@@ -9,11 +9,11 @@ if exists("b:current_syntax")
   finish
 endif
 
-syn match tpcMetaVar "\$\S*" contains=tpcNumber
+syn match tpcMetaVar "\$\w*" contains=tpcNumber,tpcString
 syn match tpcString "__str(\S*)" contains=tpcMetaVar
 syn match tpcNumber "__id(\S*)" contains=tpcMetaVar
 
-syn keyword tpcDelimiter ,
+syn keyword tpcDelimiter , "
 
 " syn match "\." tpcKeyword
 
@@ -47,7 +47,7 @@ syntax match tpcHighlight +.*\*\*\/+ contained
 syntax region tpcString  start=+"+ end=+"+ contains=DIS_variables,DIS_colour,DIS_strings
 
 
-syn match tpcCommands +@\S*+ contains=tpcConditional,tpcRepeat,tpcComment,tpcMetaVar
+syn match tpcCommands +@\w*+ contains=tpcConditional,tpcRepeat,tpcComment,tpcMetaVar
 syn match tpcVar "v\[\S*\]" contains=tpcNumber,tpcMetaVar
 syn match tpcChar "t\[\S*\]" contains=tpcNumber,tpcMetaVar
 syn match tpcSwitch "s\[\S*\]" contains=tpcNumber,tpcMetaVar
