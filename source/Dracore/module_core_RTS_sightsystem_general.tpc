@@ -47,15 +47,15 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
 
-	    __if DIS_EXPERIMENTAL == 1 {
-		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1)
+	    __if DIS_EXPERIMENTAL == -1 {
+		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1) // ATTENTION AEBA
 	    }.else bl {
 		v[401] = v[v[536]] - 1
 		TT1 = 2001 + v[401]
 	    }
 
-	    //@if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
-	    @if reg1 == 0 { // MetaTeam of the Agent is 0 - player
+	    @if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
+	    //@if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
 		TT1 = 2000 + v[v[536]]
 		s[TT1].on
 	    } .else bl {
@@ -87,15 +87,15 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	v[536] = v[4533]
 	@while v[v[536]] != 0 {
 
-	    __if DIS_EXPERIMENTAL == 1 {
-		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1)
+	    __if DIS_EXPERIMENTAL == -1 {
+		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1) // AEBA
 	    }.else bl {
 		v[401] = v[v[536]] - 1
 		TT1 = 2001 + v[401]
 	    }
 
-	    //@if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
-	    @if reg1 == 0 { // MetaTeam of the Agent is 0 - player
+	    @if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
+	    // @if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
 
 		TT1 = 2000 + v[v[536]]
 		s[TT1].on

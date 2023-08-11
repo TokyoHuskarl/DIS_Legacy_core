@@ -1,5 +1,5 @@
 
-def click_waittime = 12
+def click_waittime = 16 //12
 
 @key.inputEx .keybdWithBind .dst v[901]
 
@@ -597,8 +597,8 @@ s[70].off
 317 238　右端
 300 227 中央
 1どっと4マス？"*/
-                        v[301] = v[51] - v[1282]
-                        v[302] = v[52] - v[1283] + 3
+                        v[301] = v[51] - v[1282] - 1
+                        v[302] = v[52] - v[1283] // + 3
                         v[66] = v[69]
                         v[67] = v[70]
                         v[66] += muldiv(v[301], v[430], 100)

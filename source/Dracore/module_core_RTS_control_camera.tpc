@@ -188,8 +188,11 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 		v[162] = min(v[162], v[520])
 		v[162] = max(v[162], v[518])
 		v[167..168] %= 1000
+
+
+		// this part was handled by the primitive command call before introducing TPC, but after MP 19.3.2023, the scr.scroll command behavior changed due to bug fix, and this part also has to be modified.
+		/*
 		// "#########################"
-		//v[0] = v[472..477] = [7, 17, 161, 162, 6, 0]
 		v[472] = 7
 		v[473] = 17
 		v[474] = 161
@@ -200,6 +203,14 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 		v[471] = 11060
 		// "#Safety"
 		@cmd v[471], "", .args v[472], 6
+		*/
+
+		// new command
+		func_general_camera_move(v[161],v[162])
+
+
+
+
 		s[71].on
 		
 	    } .else bl {
@@ -331,4 +342,71 @@ cev[10] .name("Camera:WatchDiff2"), .parallel , .cond(49),{
 	// "For AI"
 	v[2806] .add v[53], 2
 	s[49].off
+}
+
+
+cev .id(74), .name("Camera:Warp"), .parallel, .cond(44), {
+
+	@if `!(v[2502] == 0 && v[2503] == 0 && v[2504] == 2) {
+	    v[69] = ev[3].x
+	    v[70] = ev[3].y
+	    v[71] = ev[4].x
+	    v[72] = ev[4].y
+	    v[66] = min(v[66], v[71])
+	    v[66] = max(v[66], v[69])
+	    v[67] = min(v[67], v[72])
+	    v[67] = max(v[67], v[70])
+	    v[68] = player.mapId
+
+	    @map[v[68]].setVehiclePos .boat .pos v[66], v[67] .retain
+	    v[179] = boat.scrx
+	    v[180] = boat.scry
+	    v[179] -= v[1115]
+	    v[180] -= v[1116]
+	    v[161] += v[179]
+	    v[162] += v[180]
+
+	    // @comment "#########################"
+	    @if v[161] <= v[517] {
+		v[179] = v[517] - v[161] + v[179]
+		v[179] *= -1
+		v[161] = v[517]
+		
+	    }
+	    @if v[162] <= v[518] {
+		v[180] = v[518] - v[162] + v[180]
+		v[180] *= -1
+		v[162] = v[518]
+		
+	    }
+	    @if v[161] >= v[519] {
+		v[179] = v[519] - v[161] + v[179]
+		v[179] *= -1
+		v[161] = v[519]
+		
+	    }
+	    @if v[162] >= v[520] {
+		v[180] = v[520] - v[162] + v[180]
+		v[179] *= -1
+		v[162] = v[520]
+		
+	    }
+
+	    // @comment "#########################"
+	    // v[0] = v[472..477] = [7, 17, 161, 162, 6, 0]
+	    // @comment "#########################"
+	    // v[471] = 11060
+	    // @comment "#Safety"
+	    // @cmd v[471], "", .args v[472], 6
+
+	    // new command
+	    func_general_camera_move(v[161],v[162])
+
+	    v[0] = v[165..166] = [v[161] / 16, v[162] / 16]
+	    // @comment "################New scroll################"
+
+	    s[50].on
+	    s[44].off
+	    
+	}
 }

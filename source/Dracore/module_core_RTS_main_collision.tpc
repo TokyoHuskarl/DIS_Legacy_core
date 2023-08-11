@@ -1,8 +1,8 @@
 //Collision check
 
 // these are retarded and must be purged tbh tbfh
-def Const_AgentMetaTeam_beginMINUSONE = Const_AgentMetaTeam_begin-1
-def Address_Agent_HitCollisionArrayStartMinus2 = Address_Agent_HitCollisionArrayStart -2 
+def Const_AgentMetaTeam_beginMINUSONE = Const_AgentMetaTeam_begin - 1
+def Address_Agent_HitCollisionArrayStartMinus2 = Address_Agent_HitCollisionArrayStart - 2 
 
 def Const_ColPushA=-980 //-950
 def Const_ColPushB=-1400 //-1350
@@ -23,7 +23,7 @@ __fn macro_ColCheck_distance {
 	v[320].sub v[607],2
 
 	//get colbox
-	__if DIS_EXPERIMENTAL == 1 {
+	__if DIS_EXPERIMENTAL == -1 { // pixel edit bug
 		//get from AEAB
 		v[322] = v[v[203]]
 		get_AEAB_array(v[322],__id(v[322]),AgentExBuffer_SLOT_ColBoxWidth,2)
@@ -184,7 +184,7 @@ v[v[301]].copy v[600], 243
 	TT2 = v[v[536]]
 
 	//GET Colbox XY
-	__if DIS_EXPERIMENTAL == 1 {
+	__if DIS_EXPERIMENTAL == -1 {
 		//get from AEAB
 		get_AEAB_array(TT2,__id(v[337]),AgentExBuffer_SLOT_ColBoxWidth,2)
 	}.else bl {
@@ -197,8 +197,8 @@ v[v[301]].copy v[600], 243
 	v[339] += v[340]
 
 	//experimental
-	Ptr5 = Const_save_var_TileFlags+v[632]
-	@if `v[Ptr5]&FLAG_Maptile_Crowded{
+	Ptr5 = Const_save_var_TileFlags + v[632]
+	@if `v[Ptr5] & FLAG_Maptile_Crowded{
 		TT1 = min(v[327],16) // shuffling too much size array causes lag so set limitation on the max num
 		v[v[339]].shuffle TT1
 	}
@@ -213,16 +213,16 @@ v[v[301]].copy v[600], 243
 	    // if so
             @loop v[327] {
 
-		__if DIS_EXPERIMENTAL == 1 {
+		__if DIS_EXPERIMENTAL == -1 {
 			// DIS_EXPERIMENTAL - get MetaTeam from AEAB inTT3
 			TT3 = v[v[203]]
 			get_AEAB_element(TT3,__id(TT3),AgentExBuffer_SLOT_MetaTeam)
 		}
 
-                @if v[700] != TT3 { // EXPERIMENTAL cond
+                //@if v[700] != TT3 { // EXPERIMENTAL cond
 
 		// cond in case of NOT DIS_EXPERIMENTAL.. you must adjust manually
-                //@if `v[700] != v[v[v[203]]+ Const_AgentMetaTeam_beginMINUSONE ] {
+                @if `v[700] != v[v[v[203]]+ Const_AgentMetaTeam_beginMINUSONE ] {
 		
 		    macro_ColCheck_distance()
 

@@ -19,7 +19,7 @@ DIS_simple_window_skin = "SystemWindow"
 
 }
 // AUTO SOUND SYSTEM
-__if DIS_GUI_SETTING_AUTO_SOUND ==1 {
+__if DIS_GUI_SETTING_AUTO_SOUND == 1 {
 	
 	def func_DIS_gui_auto_sound_checkbox = {
 		play_system_se("ui\clock01",70,100)
@@ -71,19 +71,19 @@ PRESENTATION_FLAG_Load_Picture = 0x1
 PRESENTATION_FLAG_Use_Already_Loaded_Picture = 0x2
 
 PRESENTATION_FLAG_Make_Window = 0x4
+
 	// these flags must used with PRESENTATION_FLAG_Make_Window  
-	// PRESENTATION_FLAG_Window_Type_Simple - if you don't turn on any WindowType flag, then Just make it simple
+	// PRESENTATION_FLAG_Window_Type_Simple - if you don't turn on any WindowType flag, just set this simple flag
 
-
+// these will decide where is the window's point of reference
 GUI_OBJ_FLAG_Relative = 0x1
-
 GUI_OBJ_FLAG_topLeft = 0x10
 }
 
 def func_strpic_init_check = {
 
 	__if $SystemPictureFile == "" {
-		$SystemPictureFile = DIS_simple_window_skin //  try to use default window skin set in TPC 
+		$SystemPictureFile = DIS_simple_window_skin // try to use default window skin set in TPC 
 	}
 
 	__if $SizeX == "" {
@@ -143,7 +143,7 @@ __fn ON_CLOSE $block {
 // // // // // // // // // // // // 
 
 
-//DIS Advanced presentation system 
+// DIS Advanced presentation system 
 
 __fn ui_start_presentation $presen_name $flags $presen_picid $on_load $on_run $on_close {
 	@comment __str($presen_name)
@@ -168,7 +168,8 @@ __fn ui_start_presentation $presen_name $flags $presen_picid $on_load $on_run $o
 //Simple GUI functions
 //#################################
 
-//Functions below do not use picture buffer system, so easy to use
+// Functions below do not use picture buffer system, so easy to use..
+// On the other hand, this is not for making something complex
 
 
 __fn ui_start_simple_presentation $presen_name $flags $bg_picid $bg_pic_name $bg_pic_array $on_load $on_run $on_close {

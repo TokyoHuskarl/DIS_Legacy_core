@@ -151,11 +151,13 @@ TT2=MortY
                         @loop v[327] .dst v[310] {
                             ProjectileHitChecker = v[424] + v[310]
 
-                            //@if `ProjectileTeamSave != v[(Const_AgentMetaTeam_begin+v[ProjectileHitChecker]-1)] { this one was retarded
+                            @if `ProjectileTeamSave != v[(Const_AgentMetaTeam_begin+v[ProjectileHitChecker]-1)] { // this one is retarded - but you have to use this without AEAB
 
 			    // get meta team!
-			    macro_get_agent_MetaTeam_into_var(v[ProjectileHitChecker],TT10)
-			    @if ProjectileTeamSave != TT10 { // this agent seems target for the projectile...
+			    __if DIS_EXPERIMENTAL == -1 {
+				    macro_get_agent_MetaTeam_into_var(v[ProjectileHitChecker],TT10)
+				    // @if ProjectileTeamSave != TT10 { // this agent seems target for the projectile...
+			    }
 				v[311] = v[ProjectileHitChecker] * v[1117] // let's check it out...
 			    	v[311] += 4701
                                 //@comment "当たり判定"

@@ -35,12 +35,22 @@ cev .id(11), .name("Agent:Search Target AI") , .parallel , .cond(Const_Is_RTS_Mo
 
 #include "./module_core_RTS_agent_ai_cast_skills.tpc"
 
+// include AA functions
+#include "./module_core_RTS_agent_autoattacks.tpc"
+
+
+// Melee AA
 cev .id(34), .name("AgentAct:MeleeAA"), {
-#include "./module_core_RTS_agent_autoattack_melee.tpc"
+//#include "./module_core_RTS_agent_autoattack_melee.tpc"
+	agent_autoattack_melee()
+}
+// Ranged AA
+//#include "./module_core_RTS_agent_autoattack_ranged.tpc"
+cev .id(36), .name("AgentAct:RangedAA_Shot"), {
+	agent_autoattack_ranged()
 }
 
-//Ranged Auto Attack
-#include "./module_core_RTS_agent_autoattack_ranged.tpc"
+
 
 //Worker AA
 #include "./module_core_RTS_agent_autoattack_worker.tpc"

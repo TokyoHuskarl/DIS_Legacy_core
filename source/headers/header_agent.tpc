@@ -21,12 +21,23 @@ __fn macro_SkillCDck $agent $skillno {
 
 }
 
-__fn macro_get_agent_basic_ptr_from_AEBA $agentid $reg {
+// abandoned since AEAB has fatal bug
+/*
+
+__fn macro_get_agent_basic_ptr_from_AEAB $agentid $reg {
 
 	// YOU SHOULDN'T USE THIS MACRO WITH POINTER 
 	@pic.getInfo[PicID_AgentExBuffer] .pixel(AgentExBuffer_SLOT_Ptr_To_BasicArray, $agentid, 1, 1) .dst(v[__id($agentid)])
 
+} 
+
+__fn macro_get_agent_MetaTeam_into_var $agentid $getvar {
+	var1 = $agentid
+	get_AEAB_element(var1,__id($getvar),AgentExBuffer_SLOT_MetaTeam)
 }
+
+
+*/
 
 __fn macro_set_agent_AI_decision_Sub_WEP_Type $AAusage  {
 	var1 = $AAusage
@@ -35,9 +46,5 @@ __fn macro_set_agent_AI_decision_Sub_WEP_Type $AAusage  {
 
 }
 
-__fn macro_get_agent_MetaTeam_into_var $agentid $getvar {
-	var1 = $agentid
-	get_AEAB_element(var1,__id($getvar),AgentExBuffer_SLOT_MetaTeam)
-}
 
 

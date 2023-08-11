@@ -1,6 +1,16 @@
 
-__fn scripts_misc{
-	
+// This should be abolished later...
+
+
+
+__fn scripts_misc {
+
+	@if t[510] .contains "js(" {
+		macro_script_split()
+		t[3001] .split ")", t[3000], TT1
+		@js .run t[3000]
+	}
+
 	@if t[510] .contains "spawn_" {
 	    // "#spawnUnit"
 	    @if t[510] .contains "spawn_unit(" {
