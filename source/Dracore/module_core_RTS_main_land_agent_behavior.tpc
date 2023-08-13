@@ -95,20 +95,22 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 			}
 		}
 	    @if Is_Paused .isOff() { //optimizing 26.4.23
-		    //@comment "Minions"
+
+		    // @comment "Minions"
 		    agent_AgentBits &= -67108865//~67108864 ~AgentBits_FLAG_1fprocessed
-		    //@comment "#AA Timer"
+		    // @comment "#AA Timer"
 		    @if agent_AATimer > 0 {
-			//@comment "AA on CD"
+			// @comment "AA on CD"
 			agent_AATimer -= agent_ActionState != 1 ? agent_ProcessAS: 0
 			    
 		    } .else bl {
-			//@comment "AA可能"
+			// @comment "AA可能"
 			agent_ActionState = agent_ActionState <= 2 ? 0 : agent_ActionState
 			    
 		    }
-		    //@comment "Sub Timer"
-		    //TT1 = v[301] + v[1059]
+
+		    // @comment "Sub Timer"
+		    // TT1 = v[301] + v[1059]
 		    agent_InCombatTimer .sub v[1089], v[1060]
 	    }
 	    
@@ -121,10 +123,10 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	    //@comment "Obj指定分岐
 	    //Get18 = 目標ObjID"
 	    //@comment "TEST"
-	    s[103..104].off //Heading other agent and Trying to stop temporal flag off
+	    s[103..104].off // Heading other agent and Trying to stop temporal flag off
 	    __if DIS_EXPERIMENTAL == 1 {
-		    //Kill walking flag
-		    agent_ActionFlag &= -3//~ActionFlag_FLAG_Walking
+		    // Kill walking flag
+		    agent_ActionFlag &= -3 // ~ActionFlag_FLAG_Walking
 	    }
 
 
@@ -698,7 +700,7 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 					macro_get_tile_instant_flag_ptr(Temp16)
 
 					//func_show_msg("\c[17]DEBUG: \v[21] - \v[\v[21]]")
-					@if `v[reg1] & FLAG_Maptile_Crowded{//if crowded
+					@if `v[reg1] & FLAG_Maptile_Crowded { //if crowded
 						var1.div Const_2_combi,2 //halve speed
 						var1.add v[615], 2 // and add push
 					}
@@ -741,10 +743,12 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 					@if v[313] < 21 {
 					agent_MilPixVx.copy var1, 1
 					macro_get_tile_instant_flag_ptr(Temp18)
+
 					@if `v[reg1] & FLAG_Maptile_Crowded {
 						var1 /= 2 //if crowded, halve speed
 						var1 += v[615]
 					}
+
 					//@comment "##壁がなければ速度を足す"
 					agent_MilPixX += var1
 					

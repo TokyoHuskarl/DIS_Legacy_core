@@ -2111,8 +2111,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		Temp2 = Const_save_var_TileFlags + v[632]
 		v[Temp2] |= v[Temp2] & FLAG_Maptile_Occupied ? FLAG_Maptile_Crowded : FLAG_Maptile_Occupied //set occupied flag
 		@if agent_TacticsOrderFlag > 0 {
-			@if `agent_TacticsOrderFlag & 6  {//using shieldwall
-				@if `!(agent_ProcessObjBit & 67108864){ //can use shield
+			@if `agent_TacticsOrderFlag & 6  { //using shieldwall
+				@if `!(agent_ProcessObjBit & 67108864) { //can use shield
 					defv flag_shieldcovered = __id(TT10)
 					defv bool_if_my_tile_is_covered = __id(TempFlag1)
 
@@ -2121,25 +2121,25 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						macro_get_agent_MetaTeam_into_var(v[v[536]],TT1)
 						flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << TT1 //shift Meta Team
 					}.else bl {
-						TT1 = Const_AgentMetaTeam_begin + v[v[536]]//get meta team - isn't this wrong since MetaTeamArray has element in [0]?
+						TT1 = Const_AgentMetaTeam_begin + v[v[536]] //get meta team - isn't this wrong since MetaTeamArray has element in [0]?
 						flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << v[TT1] //shift Meta Team
 					}
 
-					bool_if_my_tile_is_covered = v[Temp2]&flag_shieldcovered?1:0//Check if agent tile is already covered
+					bool_if_my_tile_is_covered = v[Temp2] & flag_shieldcovered ? 1 : 0 //Check if agent tile is already covered
 					func_set_tileflag_in_square_range(flag_shieldcovered ShieldWall_Cover_SquareSide ShieldWall_Cover_Diff Temp11 Temp15)
-					v[Temp2]&= bool_if_my_tile_is_covered&1?v[Temp2]:~flag_shieldcovered//you must be covered by other unit to get shield covered bonus.
+					v[Temp2] &= bool_if_my_tile_is_covered & 1 ? v[Temp2] : ~flag_shieldcovered // you must be covered by other unit to get shield covered bonus.
 				}
 
-			}.elif `agent_TacticsOrderFlag & 1{//spear wall 
+			}.elif `agent_TacticsOrderFlag & 1 { //spear wall 
 				defv flag_pikecovered = __id(TT10)
 				
 				// get agent MetaTeam
 				__if DIS_EXPERIMENTAL == -1 {
 					macro_get_agent_MetaTeam_into_var(v[v[536]],TT1) // AEBA
-					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << TT1 //shift Meta Team
+					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << TT1 // shift Meta Team
 				}.else bl {
-					TT1 = Const_AgentMetaTeam_begin + v[v[536]] //get meta team - isn't this wrong?
-					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << v[TT1] //shift Meta Team
+					TT1 = Const_AgentMetaTeam_begin + v[v[536]] // get meta team - isn't this wrong?
+					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << v[TT1] // shift Meta Team
 				}
 
 				func_set_tileflag_in_square_range(flag_pikecovered ShieldWall_Cover_SquareSide ShieldWall_Cover_Diff Temp11 Temp13)
@@ -2182,7 +2182,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			@if agent_ActionState == 0 {
 			    @if agent_worker_JobType == 0 {
 				s[187].on // there's at least one idle worker unit 
-				@if s[2] .isOff() {// not pause
+				@if s[2] .isOff() { // not pause
 				    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen{ //s[500 + v[v[536]]]==1 { 
 					@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { //124 = magic number but maybe 48*3
 					    @if `!(agent_ProcessObjBit & 4096) {

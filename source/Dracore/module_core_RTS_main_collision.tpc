@@ -32,9 +32,11 @@ __fn macro_ColCheck_distance {
 		v[322] += v[v[203]] * 2
 		v[v[322]].copy v[322],2
 	}
+
 	//func_devlog("\v[\v[203]]: \v[322] \v[323] \v[320] \v[321]")
-	//v[320] = v[(v[203] * 300)+v[1607]] - v[607]
-	//v[321] = v[(v[203] * 300)+v[1608]] - v[v[334]]
+	//v[320] = v[(v[203] * 300) + v[1607]] - v[607]
+	//v[321] = v[(v[203] * 300) + v[1608]] - v[v[334]]
+
 }
 
 __fn macro_ColCheck_push {
@@ -42,55 +44,58 @@ __fn macro_ColCheck_push {
 
 	//v[320].copy v[325], 2
 	//v[325..326] *= v[527 + ((v[v[603]] | (v[v[603] + 35] & 2 && v[v[603] + 77] > 0 ? 256 : 0)) & 256) / 256]
-	//v[v[299]] .add v[325], 2
+	//v[Ptr19] .add v[325], 2
 
 	//v[320].copy v[325], 2
 
 	//opt 11.5.23
 	//v[320..321] *= v[527 + ((v[v[603]] | (v[v[603] + 35] & 2 && v[v[603] + 77] > 0 ? 256 : 0)) & 256) / 256]
-	//TT1 = Const_save_var_TileFlags+v[632]//check Tile flag
-	v[320..321] *= (v[527 + ((v[Temp32] | (v[638] & 2 && v[680] > 0 ? 256 : 0)) & 256) / 256]) + (v[Ptr5]&FLAG_Maptile_Crowded?1:0)//if it's Crowded, push more
-	v[v[299]] .add v[320], 2
+
+	// TT1 = Const_save_var_TileFlags + v[632] // check Tile flag
+	v[320..321] *= (v[527 + ((v[Temp32] | (v[638] & 2 && v[680] > 0 ? 256 : 0)) & 256) / 256]) + (v[Ptr5] & FLAG_Maptile_Crowded ? 1 : 0) // if it's Crowded, push more
+	v[Ptr19] .add v[320], 2
 
 	v[Temp32] |= 64
 	@break
 }
 
 __fn ColCheck {
+
 // extract agent data....
-v[v[301]].copy v[600], 243
+v[Temp1].copy v[600], 243
 
 // v[2501] / 2 can be removed by putting some other proc
 @if `(v[401] + LEGV_Frame_count_half) % v[625] == 0 {
+
     //save ptr to slot3
     //ptr to agent_AgentBits.
     defv Col_Ptr2AgentBits = __id(Temp32) 
-    Col_Ptr2AgentBits = v[301] + 3
-    v[Col_Ptr2AgentBits] &= -193//~192
+    Col_Ptr2AgentBits = Temp1 + 3
+    v[Col_Ptr2AgentBits] &= -193 //~192
     //@if `v[v[4529] + v[632]] & 1 { // this part seems retarded so need to remake
     @if `agent_AgentBits & AgentBits_FLAG_Pushed_by_terrain {
-        v[298] = v[301] + 7
-        v[300] = v[301] + 5
-        v[295] = v[301] + 296
-        v[296] = v[301] + 36
-        v[297] = 53
+        Ptr18 = Temp1 + 7
+        Ptr20 = Temp1 + 5
+        Ptr15 = Temp1 + 296
+        Ptr16 = Temp1 + 36
+        Ptr17 = 53
         v[Col_Ptr2AgentBits] |= 64
         //kabe no naka ni iru!
         @ev[2].setPos .pos v[626], v[627]
         v[316] = ev[2].scrx
         v[317] = ev[2].scry
         v[317] -= 16
-        v[v[298]].copy v[321], 2
+        v[Ptr18].copy v[321], 2
         v[321] .sub v[316], 2
         v[321..322] *= 3000
-        v[v[300]] .add v[321], 2
-        v[v[300]] += v[v[297]] * 10000
-        v[v[298]] = v[v[300]] / 10000
-        v[v[296]] = v[v[298]] + v[v[295]]
+        v[Ptr20] .add v[321], 2
+        v[Ptr20] += v[Ptr17] * 10000
+        v[Ptr18] = v[Ptr20] / 10000
+        v[Ptr16] = v[Ptr18] + v[Ptr15]
         v[295..300] += 1
-        v[v[300]] += v[v[297]] * 10000
-        v[v[298]] = v[v[300]] / 10000
-        v[v[296]] = v[v[298]] + v[v[295]]
+        v[Ptr20] += v[Ptr17] * 10000
+        v[Ptr18] = v[Ptr20] / 10000
+        v[Ptr16] = v[Ptr18] + v[Ptr15]
         v[Col_Ptr2AgentBits] &= ~AgentBits_FLAG_Pushed_by_terrain
             
         
@@ -105,6 +110,7 @@ v[v[301]].copy v[600], 243
         //######################
 	v[607].copy TT1, 2
         TT1 .sub v[610], 2
+
         //#########################
         //#2002 Crd->Mort V1V2 reg1
         //#########################
@@ -160,22 +166,22 @@ v[v[301]].copy v[600], 243
         //@comment "TT1 = upper left morton
         //TT2 = bottom right morton
         //TT5 = shift num"
-        v[343] = v[351] ^ TT2
+        TT3 = v[351] ^ TT2
         //@comment "#mask with 11000000
         //@comment ""#mask with 110000""
         //@comment ""#mask with 001100""
         //@comment ""#mask with 000011"""
-        v[345] = v[343] & 768 ? 10 : v[343] & 192 ? 8 : v[343] & 48 ? 6 : v[343] & 12 ? 4 : v[343] & 3 ? 2 : 0
-        v[609] = TT2 >> v[345]
+        TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
+        v[609] = TT2 >> TT5
         //@comment "#mask end"
-	v[346] = v[345] / 2
+	v[346] = TT5 / 2
 	//opt 28.4.23
         //v[340] = v[4546 - v[346]]
 	v[340] = 4546 - v[346]
         v[340] = v[v[340]]
         v[327] = v[v[4552 - v[346]] + v[609]]
         //@comment "##############"
-	v[294] = v[301] + 25
+	v[294] = Temp1 + 25
         v[v[294]] = 2 + v[327] / v[4522] + v[610] / 19 - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
 	        //@comment "DisciplineCheck"
 	//opt
@@ -192,13 +198,14 @@ v[v[301]].copy v[600], 243
 		v[337] += v[401] * 2
 		v[v[337]].copy v[337], 2
 	}
+
 	//v[339] as a ptr
         v[339] = v[609] * v[1004] 
 	v[339] += v[340]
 
 	//experimental
 	Ptr5 = Const_save_var_TileFlags + v[632]
-	@if `v[Ptr5] & FLAG_Maptile_Crowded{
+	@if `v[Ptr5] & FLAG_Maptile_Crowded {
 		TT1 = min(v[327],16) // shuffling too much size array causes lag so set limitation on the max num
 		v[v[339]].shuffle TT1
 	}
@@ -207,7 +214,7 @@ v[v[301]].copy v[600], 243
 	v[203] = v[339] //set &array[0]
 
 	// set pointer for push
-    	v[299] = v[301] + 15
+    	Ptr19 = Temp1 + 15
         @if `v[Temp32] & 512 { // the agent has discipline?
 
 	    // if so
@@ -222,9 +229,9 @@ v[v[301]].copy v[600], 243
                 //@if v[700] != TT3 { // EXPERIMENTAL cond
 
 		// cond in case of NOT DIS_EXPERIMENTAL.. you must adjust manually
-                @if `v[700] != v[v[v[203]]+ Const_AgentMetaTeam_beginMINUSONE ] {
+                @if `v[700] != v[v[v[203]] + Const_AgentMetaTeam_beginMINUSONE] {
 		
-		    macro_ColCheck_distance()
+		      macro_ColCheck_distance()
 
 		      @if `v[322] + v[337] >= abs(v[320]) {
                           @if `v[323] + v[338] >= abs(v[321]) {
@@ -234,7 +241,7 @@ v[v[301]].copy v[600], 243
                     }
                     
                 }
-                v[203] +=1//++
+                v[203] += 1 //++
                 
             }
             
@@ -254,11 +261,12 @@ v[v[301]].copy v[600], 243
                     }
                     
                 }
-            	v[203] +=1//++
+            	v[203] += 1//++
             }
             
             
         }
+
         @if `!(v[Temp32] & 64) {
             v[Temp32] &= -385//~384
             
@@ -283,8 +291,8 @@ cev .id(68),.name("Main:Agents Collision"),.parallel , .cond(Const_Is_RTS_Mode),
         v[536] = v[4532]
         @while v[v[536]] != 0 {
             v[401] = v[v[536]] - 1
-            v[301] = v[401] * v[1117] 
-	    v[301] += 5000
+            Temp1 = v[401] * v[1117] 
+	    Temp1 += 5000
             //@comment "#Col"
             ColCheck()
             //@comment "++"
@@ -294,14 +302,15 @@ cev .id(68),.name("Main:Agents Collision"),.parallel , .cond(Const_Is_RTS_Mode),
         
         
     }
+
     @wait 0
     @if s[2] .isOff() {
         //@comment "Odd Normal Units Collision "
         v[536] = v[4532] + 1
         @while v[v[536]] != 0 {
             v[401] = v[v[536]] - 1
-            v[301] = v[401] * v[1117] 
-	    v[301] += 5000
+            Temp1 = v[401] * v[1117] 
+	    Temp1 += 5000
             //@comment "#Col"
             ColCheck()
             //@comment "++"
@@ -316,13 +325,14 @@ cev .id(68),.name("Main:Agents Collision"),.parallel , .cond(Const_Is_RTS_Mode),
     @if v[204] < 600 {
         v[527] = Const_ColPushA2
         v[528] = Const_ColPushB2
+
         @if s[2] .isOff() {
             //@comment "Even Normal Units Collision "
             v[536] = v[4532]
             @while v[v[536]] != 0 {
                 v[401] = v[v[536]] - 1
-                v[301] = v[401] * v[1117] 
-	    	v[301] += 5000
+                Temp1 = v[401] * v[1117] 
+	    	Temp1 += 5000
                 //@comment "#Col"
             ColCheck()
                 //@comment "++"
@@ -332,14 +342,15 @@ cev .id(68),.name("Main:Agents Collision"),.parallel , .cond(Const_Is_RTS_Mode),
             
             
         }
+
         @wait 0
         @if s[2] .isOff() {
             //@comment "Odd Normal Units Collision "
             v[536] = v[4532] + 1
             @while v[v[536]] != 0 {
                 v[401] = v[v[536]] - 1
-                v[301] = v[401] * v[1117]
-	    	v[301] += 5000
+                Temp1 = v[401] * v[1117]
+	    	Temp1 += 5000
                 //@comment "#Col"
             	ColCheck()
                 //@comment "++"
@@ -355,8 +366,8 @@ cev .id(68),.name("Main:Agents Collision"),.parallel , .cond(Const_Is_RTS_Mode),
             v[536] = v[4532] + 2
             @while v[v[536]] != 0 {
                 v[401] = v[v[536]] - 1
-                v[301] = v[401] * v[1117]
-	    	v[301] += 5000
+                Temp1 = v[401] * v[1117]
+	    	Temp1 += 5000
                 //@comment "#Col"
             	ColCheck()
                 //@comment "++"
@@ -375,8 +386,8 @@ cev .id(68),.name("Main:Agents Collision"),.parallel , .cond(Const_Is_RTS_Mode),
             v[536] = v[4532]
             @while v[v[536]] != 0 {
                 v[401] = v[v[536]] - 1
-                v[301] = v[401] * v[1117] 
-	    	v[301] += 5000
+                Temp1 = v[401] * v[1117] 
+	    	Temp1 += 5000
                 //@comment "#Col"
             	ColCheck()
                 //@comment "++"
@@ -392,8 +403,8 @@ cev .id(68),.name("Main:Agents Collision"),.parallel , .cond(Const_Is_RTS_Mode),
             v[536] = v[4532] + 1
             @while v[v[536]] != 0 {
                 v[401] = v[v[536]] - 1
-                v[301] = v[401] * v[1117] 
-	    	v[301] += 5000
+                Temp1 = v[401] * v[1117] 
+	    	Temp1 += 5000
                 //@comment "#Col"
             	ColCheck()
                 //@comment "++"
@@ -409,8 +420,8 @@ cev .id(68),.name("Main:Agents Collision"),.parallel , .cond(Const_Is_RTS_Mode),
             v[536] = v[4532] + 2
             @while v[v[536]] != 0 {
                 v[401] = v[v[536]] - 1
-                v[301] = v[401] * v[1117] 
-	    	v[301] += 5000
+                Temp1 = v[401] * v[1117] 
+	    	Temp1 += 5000
                 //@comment "#Col"
             	ColCheck()
                 //@comment "++"
@@ -426,8 +437,8 @@ cev .id(68),.name("Main:Agents Collision"),.parallel , .cond(Const_Is_RTS_Mode),
             v[536] = v[4532] + 3
             @while v[v[536]] != 0 {
                 v[401] = v[v[536]] - 1
-                v[301] = v[401] * v[1117] 
-	    	v[301] += 5000
+                Temp1 = v[401] * v[1117] 
+	    	Temp1 += 5000
                 //@comment "#Col"
             	ColCheck()
                 //@comment "++"

@@ -51,3 +51,88 @@ __fn func_refresh_resource_window {
 	}
 
 }
+
+
+__fn func_draw_range_indicator {
+
+	@if s[83] .isOn() {
+	    v[199] = v[101]
+	    TT20 = sqrt(v[v[344]], 1)
+	    TT20 *= 2
+	    TT20 += 2
+	    @pic[998].strpic {
+		""
+		.pos 160, 120 .center
+		.size TT20, TT20        .scrollWithMap
+		.chromakey 1
+		.scale 100
+		.trans 100
+		.rgbs 100, 100, 100, 100
+		.font "", 12 .noShadow
+		.spacing 0, 4
+		.skin "" .nobg .noframe .noGradation .noPadding
+		.mapLayer 3
+		.eraseWhenTransfer
+		.affectedByShake
+	    }
+	    TT20 -= 2
+	    TT20 /= 2
+	    TT12 = -327429
+	    // @comment "Draw Circle Function"
+	    TT15 = 3 - 2 * TT20
+	    TT14 = TT20
+	    TT16 = TT20
+	    TT17 = TT20 + TT20
+	    @pic[998].setPixel .xywh TT16, TT17, 1, 1 .src TT12
+	    TT16 = TT20
+	    TT17 = -TT20 + TT20
+	    @pic[998].setPixel .xywh TT16, TT17, 1, 1 .src TT12
+	    TT16 = TT20 + TT20
+	    TT17 = TT20
+	    @pic[998].setPixel .xywh TT16, TT17, 1, 1 .src TT12
+	    TT16 = -TT20 + TT20
+	    TT17 = TT20
+	    @pic[998].setPixel .xywh TT16, TT17, 1, 1 .src TT12
+	    TT13 = 0
+	    @while TT13 <= TT14 {
+		@if TT15 < 0 {
+		    TT15 += 6 + 4 * TT13
+		    
+		} .else bl {
+		    TT15 += 10 + 4 * TT13 - 4 * (TT14 - 1)
+		    TT14 -= 1
+		    
+		}
+		TT16 = TT14 + TT20
+		TT17 = TT13 + TT20
+		@pic[998].setPixel .xywh TT16, TT17, 1, 1 .src TT12
+		TT16 = TT13 + TT20
+		TT17 = TT14 + TT20
+		@pic[998].setPixel .xywh TT16, TT17, 1, 1 .src TT12
+		TT16 = -TT14 + TT20
+		TT17 = TT13 + TT20
+		@pic[998].setPixel .xywh TT16, TT17, 1, 1 .src TT12
+		TT16 = -TT13 + TT20
+		TT17 = TT14 + TT20
+		@pic[998].setPixel .xywh TT16, TT17, 1, 1 .src TT12
+		TT16 = -TT14 + TT20
+		TT17 = -TT13 + TT20
+		@pic[998].setPixel .xywh TT16, TT17, 1, 1 .src TT12
+		TT16 = -TT13 + TT20
+		TT17 = -TT14 + TT20
+		@pic[998].setPixel .xywh TT16, TT17, 1, 1 .src TT12
+		TT16 = TT14 + TT20
+		TT17 = -TT13 + TT20
+		@pic[998].setPixel .xywh TT16, TT17, 1, 1 .src TT12
+		TT16 = TT13 + TT20
+		TT17 = -TT14 + TT20
+		@pic[998].setPixel .xywh TT16, TT17, 1, 1 .src TT12
+		TT13 += 1
+		
+	    }
+	    
+	    s[82].on
+	    
+	}
+
+}

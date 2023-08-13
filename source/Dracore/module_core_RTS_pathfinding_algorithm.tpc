@@ -3,8 +3,16 @@
 
 defv Pathfinding_AgentData_head_ptr = 4597
 
+defv Head_of_Agent_Buffer_PF = 4601
+vname[4601], "Pathfinding_Buffer_for_Agent[63]", {
+	.expand(64),
+	.pad(64),
+
+}
 
 __fn func_pathfinding_Astar() {
+	// get 
+	Pathfinding_AgentData_head_ptr.copy Head_of_Agent_Buffer_PF, 64
 
 	__if DEBUG_BUILD == 1 {
 	    @pic[1..800].erase
@@ -80,13 +88,14 @@ __fn func_pathfinding_Astar() {
 	    TT2 += 4726
 	    v[TT2].copy v[311], 2 // FIXED!
 	    
-	} .else bl { //No
+	} .else bl { // No
 	    // Then get Target Agent position into var1 var2
 	    TT2 = Pathfinding_AgentData_head_ptr + 41
 	    Temp17 = TT2 + 14
 	    Temp17 = max(v[Temp17], 0)
 	    TT2 += Temp17 * 2
 	    v[TT2].copy var1, 2
+
 	    // convert into tile coordinate - maybe you can deal with this without this func if the PF agent has the target agent
 	    @call .cev 2000
 	    reg1.copy v[311], 2
@@ -130,8 +139,6 @@ __fn func_pathfinding_Astar() {
 		v[4592] = v[4593] + 1
 		v[4595] = 0
 
-		//v[4584..4585] = 0
-		//v[4582..4583] = 0
 		v[ptr_null].copy v[4582],4
 		var1.copy v[4584], 2
 		
@@ -166,7 +173,7 @@ __fn func_pathfinding_Astar() {
 			    @if v[v[4581]] > 0 {
 				//opt 28.4.23
 				//save the v[v[4581]] / 10 to TT11
-				TT11 = v[v[4581]] /10
+				TT11 = v[v[4581]] / 10
 
 				@if TT11  == v[4585] {
 				    v[v[4600] + TT11 - 1] = v[4590]
@@ -223,9 +230,11 @@ __fn func_pathfinding_Astar() {
 		    } .else bl {
 			@loop 8 .dst v[2065] {
 			    @if v[v[4581]] > 0 {
+
 				//opt 28.4.23
 				//save v[v[4581]] / 10 to TT11
 				TT11 = v[v[4581]] / 10
+
 				@if TT11 == v[4585] {
 				    v[v[4600] + TT11 - 1] = v[4590]
 				    v[4590] = TT11
@@ -246,6 +255,7 @@ __fn func_pathfinding_Astar() {
 				    v[4001] = sqrt(v[4001] + v[4002], 100)
 				    v[3601 + v[2065]] = (v[4001] + v[4004] * 150) * 10 + v[v[4581]] % 10
 				    v[4591] += 1
+
 				    //opt 28.4.23
 				    //v[3609 + v[2065]] = v[v[4581]] / 10
 				    v[3609 + v[2065]] = TT11
@@ -308,7 +318,7 @@ __fn func_pathfinding_Astar() {
 		
 		v[2070] = v[2075]
 
-		__if DEBUG_BUILD ==1 {
+		__if DEBUG_BUILD == 1 {
 		    v[4592] = 0
 		    v[311] = (v[4590] - 1) * v[4564] + v[4569]
 		    v[v[311]].copy var1, 2
@@ -499,7 +509,6 @@ __fn func_pathfinding_Astar() {
 		@if `v[Pathfinding_AgentData_head_ptr + 3] & AgentBits_FLAG_PF_walldetection_switch {
 		    // "Reset Grouppath"
 		    v[Pathfinding_AgentData_head_ptr + 34] &= -16777217//~16777216
-		    //v[v[1212]..v[1212] + 199] = 0
 		    v[ptr_null].copy v[v[1212]],200
 		    v[v[1212]] = v[4596] + 1
 		    v[2880] = v[1212] + 1
