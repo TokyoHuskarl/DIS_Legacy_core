@@ -36,7 +36,9 @@ struct("agent",{
 	agent_BaseCamoValue = 617 
 	agent_TargetAgentID = 618
 	agent_MovePointX = 619 
-	agent_MovePointY = 620 
+	agent_MovePointY = 620
+	agent_MoveUvectorX = 621
+	agent_MoveUvectorY = 622
 	agent_MilPixMoveOrderedPointDist = 623
 
 	agent_ObjectCollideSkipFrame = 625
@@ -342,6 +344,7 @@ struct("agent",{
 	//ObjBits
 	BaseObjBit_FLAG_Immune_to_Knock_back = 8
 	BaseObjBit_FLAG_No_mind = 256
+	BaseObjBit_FLAG_Fleeing = 512
 	BaseObjBit_FLAG_Immune_to_bleed = 4096
 
 

@@ -1,67 +1,123 @@
-// Compiling this file updates the DIS-RTS pathfinding in the ldb 
+// Compiling this file updates the DIS-RTS pathfinding in the ldb.
 // このファイルをコンパイルするとRTSモードの経路探索システムが更新されます
 
 #include "./../headers/header_common.tpc"
 def moduletitle="module_core_RTS_pathfinding_general"
 
-//pathfinding funcs load
-#include "./module_core_RTS_pathfinding_functions.tpc"
 
-//include better one - main pathfinding algorithm, A*
-//func_pathfinding_Astar()
-//include worse one - will be called only when unclear path result is allowed  
-//func_pathfinding_retarded()
-// Both of A* and legacy pathfinding function combined in this one tpc file
-#include "./module_core_RTS_pathfinding_algorithm.tpc"
-//#include "./module_core_RTS_pathfinding_Astar.tpc"
+// Maybe this part should be summarized as a header for PF
+
+// defs for PF system
+defs Bool_PF_Wall_Detection = 280
 
 
+// Variables used for Pathfinding processes
+defv {
+	PFckPtr = 4587
 
+	PF_Manager_Loop_AgentPtr = 4598
+
+	PF_done_per_1f = 4599
+}
+
+defv Pathfinding_AgentData_head_ptr = 4597
+
+// Around Agent data 
+defv Head_of_Agent_Buffer_PF = 4601
+vname[4601], "Pathfinding_Buffer_for_Agent[63]", {
+	.expand(64),
+	.pad(64),
+
+}
+
+def pfagent_PtrAddress = __id(Head_of_Agent_Buffer_PF)
+defv {
+	pfagent_AgentBits = pfagent_PtrAddress + 3
+	pfagent_TargetAgentID = pfagent_PtrAddress + 18
+	pfagent_MoveUvectorX = pfagent_PtrAddress + 21
+	pfagent_MapX =  pfagent_PtrAddress + 26
+	pfagent_AI_routine_bits = pfagent_PtrAddress + 34
+	pfagent_Cohort_ID = pfagent_PtrAddress + 35
+	pfagent_HoldPointX = pfagent_PtrAddress + 41
+	pfagent_LeftWPtoChase = pfagent_PtrAddress + 55
+}
+
+
+// misc consts
 def KILL_AI_routine_bits_FLAG_Pathblocked = ~AI_routine_bits_FLAG_Pathblocked
 def KILL_AI_routine_bits_FLAG_PFskip = ~AI_routine_bits_FLAG_PFskip
 
-cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode), {   
-	v[4599] = 0
-	v[4598] = v[4532]
-	@while v[v[4598]] != 0 {
-	    v[4596] = v[v[4598]] - 1
-	    v[4597] = v[v[4598]] * 300 
-	    v[4597] += 4700
-	    v[v[4597]].copy v[600], 300
-	    @if `!(v[874] & 512) {
-		    //opt 28.4.23
-		    //v[634] = v[4597] + 34
-		@if `v[634] & AI_routine_bits_FLAG_PATHFINDING {
-		    @if `v[634] & AI_routine_bits_FLAG_PFskip {
-			 v[634] = v[4597] + 34
-			 v[v[634]] &= KILL_AI_routine_bits_FLAG_PFskip // -65537//~65536
 
+//pathfinding funcs load
+#include "./module_core_RTS_pathfinding_functions.tpc"
+
+// Both of A* and legacy pathfinding function combined in this one tpc file
+#include "./module_core_RTS_pathfinding_algorithm.tpc"
+
+
+
+//##################
+// cev part begins
+//##################
+
+
+cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode), {
+	
+	// count up how many times PF processes are called in 1f, to adjust lag 
+	PF_done_per_1f = 0
+
+	PF_Manager_Loop_AgentPtr = v[4532]
+	@while v[PF_Manager_Loop_AgentPtr] != 0 {
+	    v[4596] = v[PF_Manager_Loop_AgentPtr] - 1
+	    Pathfinding_AgentData_head_ptr = v[PF_Manager_Loop_AgentPtr] * 300 
+	    Pathfinding_AgentData_head_ptr += 4700
+	    v[Pathfinding_AgentData_head_ptr].copy v[600], 300
+	    // 
+	    @if `!(agent_ProcessObjBit & BaseObjBit_FLAG_Fleeing) {
+		// Pathfinding bits check
+		@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PATHFINDING {
+		    @if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFskip {
+
+			 // Use TT1 as a Ptr
+			 TT1 = Pathfinding_AgentData_head_ptr + 34
+			 v[TT1] &= KILL_AI_routine_bits_FLAG_PFskip // -65537//~65536
 			
 		    } .else bl {
-			@if `v[634] & AI_routine_bits_FLAG_Pathblocked {
-			    @if `!(v[603] & 8388608) {
-				@if v[4599] <= 3 {
-				    func_pathfinding_retarded()
-				    v[4599] += 1
-				    
+			
+			// Check if the agent can reach the goal node in the end
+			@if `agent_AI_routine_bits & AI_routine_bits_FLAG_Pathblocked { // If not
+			    @if `!(agent_AgentBits & AgentBits_FLAG_walldetected) { // and the situation is not around wall detection
+				
+				// then, retarded PF is not done many times (the limit setting is as half as the one for A*)
+				@if PF_done_per_1f <= 8 {
+					// start dumb "pathfinding" to look as if the agent is searching the path
+					func_pathfinding_retarded()
+					PF_done_per_1f += 1
 				}
-				v[634] = v[4597] + 34
-				v[[634]] &= KILL_AI_routine_bits_FLAG_Pathblocked // -8388609 ~8388608
-				v[[634]] |= AI_routine_bits_FLAG_PFskip
+
+				// Use TT1 as a Ptr to agent_AI_routine_bits
+				TT1 = Pathfinding_AgentData_head_ptr + 34
+				v[TT1] &= KILL_AI_routine_bits_FLAG_Pathblocked // -8388609 ~8388608
+				v[TT1] |= AI_routine_bits_FLAG_PFskip
 				
 			    }
 			    
 			} .else bl {
-			    @if v[4599] <= 16 {
-				func_pathfinding_Astar()
-				v[4599] += 1
-				v[634] = v[4597] + 34
-				@if `!(v[v[634]] & AI_routine_bits_FLAG_Pathblocked) {
-				    v[v[634]] &= AI_routine_bits_KILL_FLAG_PATHFINDING // -16385//~16384
-				    
-				}
 				
-			    }
+				@if PF_done_per_1f <= 16 {
+					
+					// go for the A*!
+					func_pathfinding_Astar()
+					PF_done_per_1f += 1
+
+					// Use TT1 as a Ptr to agent_AI_routine_bits
+					TT1 = Pathfinding_AgentData_head_ptr + 34
+					@if `!(v[TT1] & AI_routine_bits_FLAG_Pathblocked) {
+						// end Pathfinding
+						v[TT1] &= AI_routine_bits_KILL_FLAG_PATHFINDING // -16385//~16384
+					}
+					
+				}
 			    
 			}
 			
@@ -70,7 +126,7 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 		}
 		
 	    }
-	    v[4598] += 1
+	    PF_Manager_Loop_AgentPtr += 1
 
 	}
 

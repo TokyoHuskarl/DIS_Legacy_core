@@ -1,5 +1,8 @@
-def macro_extract_selecting_unit_param = {
 
+// The UI system must be remade...
+
+
+def macro_extract_selecting_unit_param = {
 	    Ptr1 = v[101] * 300
 	    Ptr1 += 4701
 	    v[Ptr1].copy agent_ObjectType,300
@@ -14,10 +17,13 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 }
 
 
+// ACTUAL PROCESS STARTS HERE
 
 @if s[18] .isOn() {
+
     @if s[5] .isOff() {
         s[60].off
+
         // "Escape"
         @if s[181] .isOn() {
             v[84] = 10001
@@ -30,9 +36,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 t[501] .asg "\c[8]\t[3001]\c[0]
 \t[3002]
 \t[3003]" .extract
-                @pic[996].strpic {
+                @pic[PicID_Popup_1].strpic {
                     t[501]
-                    .pos v[51], v[52] .topRight
+                    .pos LEGV_MousePointer_X, LEGV_MousePointer_Y .topRight
                     .size 0, 0                    .chromakey 1
                     .scale 100
                     .trans v[1066]
@@ -50,7 +56,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             s[201].on
             
         }
+
         // "FF"
+        :w
         @if s[185] .isOn() {
             v[84] = 10002
             s[60].on
@@ -62,9 +70,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 t[501] .asg "\c[8]\t[3001]\c[0]
 \t[3002]
 \t[3003]" .extract
-                @pic[996].strpic {
+                @pic[PicID_Popup_1].strpic {
                     t[501]
-                    .pos v[51], v[52] .topRight
+                    .pos LEGV_MousePointer_X, LEGV_MousePointer_Y .topRight
                     .size 0, 0                    .chromakey 1
                     .scale 100
                     .trans v[1066]
@@ -82,6 +90,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             s[201].on
             
         }
+
         // "Pause"
         @if s[184] .isOn() {
             v[84] = 10003
@@ -94,9 +103,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 t[501] .asg "\c[8]\t[3001]\c[0]
 \t[3002]
 \t[3003]" .extract
-                @pic[996].strpic {
+                @pic[PicID_Popup_1].strpic {
                     t[501]
-                    .pos v[51], v[52] .topRight
+                    .pos LEGV_MousePointer_X, LEGV_MousePointer_Y .topRight
                     .size 0, 0                    .chromakey 1
                     .scale 100
                     .trans v[1066]
@@ -114,6 +123,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             s[201].on
             
         }
+
         // "IdleWorker"
         @if s[188] .isOn() {
             v[84] = 10004
@@ -123,9 +133,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 // "#call quickstrings"
                 v[11] = 425 + s[187]
                 @call .cev 1890
-                @pic[996].strpic {
+                @pic[PicID_Popup_1].strpic {
                     t[3000]
-                    .pos v[51], v[1286] .bottomRight
+                    .pos LEGV_MousePointer_X, v[1286] .bottomRight
                     .size 0, 0                    .chromakey 1
                     .scale 100
                     .trans v[1066]
@@ -143,6 +153,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             s[201].on
             
         }
+
         // "Log"
         @if s[186] .isOn() {
             v[84] = 10005
@@ -152,9 +163,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 // "#call quickstrings"
                 v[11] = 427
                 @call .cev 1890
-                @pic[996].strpic {
+                @pic[PicID_Popup_1].strpic {
                     t[3000]
-                    .pos v[51], v[1286] .bottomRight
+                    .pos LEGV_MousePointer_X, v[1286] .bottomRight
                     .size 0, 0                    .chromakey 1
                     .scale 100
                     .trans v[1066]
@@ -172,11 +183,12 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             s[201].on
             
         }
+
         // "Cent Monitor"
         @if v[81] == 1 {
             // "Unit name"
             @pic[974].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-            @if `between(v[51], v[1952] - 190, v[1952] - 82) && between(v[52], v[1953] + 2, v[1953] + 18) {
+            @if `between(LEGV_MousePointer_X, v[1952] - 190, v[1952] - 82) && between(LEGV_MousePointer_Y, v[1953] + 2, v[1953] + 18) {
                 v[84] = 10000
                 s[60].on
                 @if v[84] != v[85] {
@@ -185,7 +197,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     v[342] = v[1286]
                     v[11] = 185
                     @call .cev 1890
-                    @pic[996].strpic {
+                    @pic[PicID_Popup_1].strpic {
                         t[3001]
                         .pos v[341], v[342] .bottom
                         .size 0, 0                        .chromakey 1
@@ -205,9 +217,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 s[201].on
                 
             }
-            @if `between(v[52], v[1953] + v[1955] / 4, v[1953] + v[1955] / 4 + 8) {
+            @if `between(LEGV_MousePointer_Y, v[1953] + v[1955] / 4, v[1953] + v[1955] / 4 + 8) {
                 v[341] = 0
-                @if `between(v[51] - 74 * v[341], v[1952] - 188, v[1952] - 114) {
+                @if `between(LEGV_MousePointer_X - 74 * v[341], v[1952] - 188, v[1952] - 114) {
                     v[84] = 10006 + v[341]
                     s[60].on
                     @if v[84] != v[85] {
@@ -218,7 +230,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20475],v[872],2)
-                        @pic[996].strpic {
+                        @pic[PicID_Popup_1].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
                             .size 0, 0                            .chromakey 1
@@ -238,7 +250,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     
                 }
                 v[341] = 1
-                @if `between(v[51] - 74 * v[341], v[1952] - 188, v[1952] - 114) {
+                @if `between(LEGV_MousePointer_X - 74 * v[341], v[1952] - 188, v[1952] - 114) {
                     v[84] = 10006 + v[341]
                     s[60].on
                     @if v[84] != v[85] {
@@ -249,7 +261,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20476],v[863],3)
-                        @pic[996].strpic {
+                        @pic[PicID_Popup_1].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
                             .size 0, 0                            .chromakey 1
@@ -270,7 +282,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     
                 }
                 v[341] = 2
-                @if `between(v[51] - 74 * v[341], v[1952] - 188, v[1952] - 114) {
+                @if `between(LEGV_MousePointer_X - 74 * v[341], v[1952] - 188, v[1952] - 114) {
                     v[84] = 10006 + v[341]
                     s[60].on
                     @if v[84] != v[85] {
@@ -281,7 +293,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20475],v[873],10)
-                        @pic[996].strpic {
+                        @pic[PicID_Popup_1].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
                             .size 0, 0                            .chromakey 1
@@ -303,9 +315,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 }
                 
             }
-            @if `between(v[52], v[1953] + v[1955] / 4 + 8, v[1953] + v[1955] / 4 + 18) {
+            @if `between(LEGV_MousePointer_Y, v[1953] + v[1955] / 4 + 8, v[1953] + v[1955] / 4 + 18) {
                 v[341] = 0
-                @if `between(v[51] - 36 * v[341], v[1952] - 192, v[1952] - 148) {
+                @if `between(LEGV_MousePointer_X - 36 * v[341], v[1952] - 192, v[1952] - 148) {
                     v[84] = 10001 + v[341]
                     s[60].on
                     @if v[84] != v[85] {
@@ -316,7 +328,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20476],v[861],17)
-                        @pic[996].strpic {
+                        @pic[PicID_Popup_1].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
                             .size 0, 0                            .chromakey 1
@@ -337,7 +349,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     
                 }
                 v[341] = 1
-                @if `between(v[51] - 36 * v[341], v[1952] - 192, v[1952] - 148) {
+                @if `between(LEGV_MousePointer_X - 36 * v[341], v[1952] - 192, v[1952] - 148) {
                     v[84] = 10001 + v[341]
                     s[60].on
                     @if v[84] != v[85] {
@@ -348,7 +360,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20476],v[862],16)
-                        @pic[996].strpic {
+                        @pic[PicID_Popup_1].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
                             .size 0, 0                            .chromakey 1
@@ -369,7 +381,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     
                 }
                 v[341] = 2
-                @if `between(v[51] - 36 * v[341], v[1952] - 192, v[1952] - 148) {
+                @if `between(LEGV_MousePointer_X - 36 * v[341], v[1952] - 192, v[1952] - 148) {
                     v[84] = 10001 + v[341]
                     s[60].on
                     @if v[84] != v[85] {
@@ -380,7 +392,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20476],v[864],6)
-                        @pic[996].strpic {
+                        @pic[PicID_Popup_1].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
                             .size 0, 0                            .chromakey 1
@@ -401,7 +413,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     
                 }
                 v[341] = 3
-                @if `between(v[51] - 36 * v[341], v[1952] - 192, v[1952] - 148) {
+                @if `between(LEGV_MousePointer_X - 36 * v[341], v[1952] - 192, v[1952] - 148) {
                     v[84] = 10001 + v[341]
                     s[60].on
                     @if v[84] != v[85] {
@@ -412,7 +424,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20476],v[865],5)
-                        @pic[996].strpic {
+                        @pic[PicID_Popup_1].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
                             .size 0, 0                            .chromakey 1
@@ -433,7 +445,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     
                 }
                 v[341] = 4
-                @if `between(v[51] - 36 * v[341], v[1952] - 192, v[1952] - 148) {
+                @if `between(LEGV_MousePointer_X - 36 * v[341], v[1952] - 192, v[1952] - 148) {
                     v[84] = 10001 + v[341]
                     s[60].on
                     @if v[84] != v[85] {
@@ -444,7 +456,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                         @call .cev 1890
 		        macro_extract_selecting_unit_param
                         macro_strcat_adjustment(t[20476],v[866],3)
-                        @pic[996].strpic {
+                        @pic[PicID_Popup_1].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
                             .size 0, 0                            .chromakey 1
@@ -465,7 +477,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     
                 }
                 v[341] = 5
-                @if `between(v[51] - 36 * v[341], v[1952] - 192, v[1952] - 148) {
+                @if `between(LEGV_MousePointer_X - 36 * v[341], v[1952] - 192, v[1952] - 148) {
                     v[84] = 10001 + v[341]
                     s[60].on
                     @if v[84] != v[85] {
@@ -476,7 +488,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20476],v[875],0)
-                        @pic[996].strpic {
+                        @pic[PicID_Popup_1].strpic {
                             t[3000]
                             .pos v[341], v[342] .bottom
                             .size 0, 0                            .chromakey 1
@@ -501,7 +513,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             
         }
         // "Terrain"
-        @if `between(v[51], v[1125] - 8 - 4 * 16, v[1125] + 8 + -(4 * 16)) && between(v[52], v[1126] - 16, v[1126]) {
+        @if `between(LEGV_MousePointer_X, v[1125] - 8 - 4 * 16, v[1125] + 8 + -(4 * 16)) && between(LEGV_MousePointer_Y, v[1126] - 16, v[1126]) {
             @if s[25] .isOn() {
                 s[60].on
                 v[300] = s[25] == 0 ? v[101] : v[100]
@@ -540,11 +552,11 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 v[84] = v[11]
                 @if v[84] != v[85] {
                     v[85] = v[84]
-                    v[341] = v[51]
+                    v[341] = LEGV_MousePointer_X
                     v[342] = v[1286] - 16
                     // "#call quickstrings"
                     @call .cev 1890
-                    @pic[996].strpic {
+                    @pic[PicID_Popup_1].strpic {
                         t[3000]
                         .pos v[341], v[342] .bottomLeft
                         .size 0, 0                        .chromakey 1
@@ -567,7 +579,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             
         }
         // "Tactical Order"
-        @if `between(v[51], v[1125] - 8 - 3 * 16, v[1125] + 8 + -(3 * 16)) && between(v[52], v[1126] - 16, v[1126]) {
+        @if `between(LEGV_MousePointer_X, v[1125] - 8 - 3 * 16, v[1125] + 8 + -(3 * 16)) && between(LEGV_MousePointer_Y, v[1126] - 16, v[1126]) {
             @if s[25] .isOn() {
                 s[60].on
                 v[300] = s[25] == 0 ? v[101] : v[100]
@@ -586,7 +598,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 v[84] = 1211 + v[v[300]]
                 @if v[84] != v[85] {
                     v[85] = v[84]
-                    v[341] = v[51]
+                    v[341] = LEGV_MousePointer_X
                     v[342] = v[1286] - 16
                     // "#call quickstrings"
                     // "#NOT SMART"
@@ -609,7 +621,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                         
                     }
                     @call .cev 1890
-                    @pic[996].strpic {
+                    @pic[PicID_Popup_1].strpic {
                         t[3000]
                         .pos v[341], v[342] .bottomLeft
                         .size 0, 0                        .chromakey 1
@@ -632,7 +644,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             
         }
         // "Morale"
-        @if `between(v[51], v[1125] - 8 - 2 * 16, v[1125] + 8 + -(2 * 16)) && between(v[52], v[1126] - 16, v[1126]) {
+        @if `between(LEGV_MousePointer_X, v[1125] - 8 - 2 * 16, v[1125] + 8 + -(2 * 16)) && between(LEGV_MousePointer_Y, v[1126] - 16, v[1126]) {
             @if s[25] .isOn() {
                 s[60].on
                 v[300] = s[25] == 0 ? v[101] : v[100]
@@ -651,12 +663,12 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 v[84] = 1189 + v[v[300]]
                 @if v[84] != v[85] {
                     v[85] = v[84]
-                    v[341] = v[51]
+                    v[341] = LEGV_MousePointer_X
                     v[342] = v[1286] - 16
                     @if v[v[300]] > 0 {
                         v[11] = 1 + v[v[300]]
                         @call .cev 1890
-                        @pic[996].strpic {
+                        @pic[PicID_Popup_1].strpic {
                             "\c[5]\t[3001]\c[0]：
 \t[3002]
 \c[5]\t[3003] \t[3004]"
@@ -677,7 +689,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     } .else bl {
                         v[11] = 5
                         @call .cev 1890
-                        @pic[996].strpic {
+                        @pic[PicID_Popup_1].strpic {
                             "\c[2]\t[3001]\c[0]：
 \t[3002]
 \c[1]\t[3003]"
@@ -704,18 +716,18 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             
         }
         // "Melee Penalty"
-        @if `between(v[51], v[1125] - 8 - 1 * 16, v[1125] + 8 + -(1 * 16)) && between(v[52], v[1126] - 16, v[1126]) {
+        @if `between(LEGV_MousePointer_X, v[1125] - 8 - 1 * 16, v[1125] + 8 + -(1 * 16)) && between(LEGV_MousePointer_Y, v[1126] - 16, v[1126]) {
             s[60].on
             v[300] = (s[25] == 0 ? v[101] : v[100]) * 300 + 4781
             @if v[v[300]] >= 1 {
                 v[84] = 1198
                 @if v[84] != v[85] {
                     v[85] = v[84]
-                    v[341] = v[51]
+                    v[341] = LEGV_MousePointer_X
                     v[342] = v[1286] - 16
                     v[11] = 1
                     @call .cev 1890
-                    @pic[996].strpic {
+                    @pic[PicID_Popup_1].strpic {
                         t[3000]
                         .pos v[341], v[342] .bottomLeft
                         .size 0, 0                        .chromakey 1
@@ -739,7 +751,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
         }
         // "Buffs"
         @loop 8 .dst v[360] {
-            @if `between(v[51], v[1125] - 8 + v[360] * 16, v[1125] + 8 + v[360] * 16) && between(v[52], v[1126] - 16, v[1126]) {
+            @if `between(LEGV_MousePointer_X, v[1125] - 8 + v[360] * 16, v[1125] + 8 + v[360] * 16) && between(LEGV_MousePointer_Y, v[1126] - 16, v[1126]) {
                 s[60].on
                 v[300] = (s[25] == 0 ? v[101] : v[100]) * 300 + 4700
                 // "スキルチェック"
@@ -757,13 +769,13 @@ __fn macro_strcat_adjustment $str1 $var $colour {
         }
         
         // "Passive"
-        @if `between(v[51], v[1287], v[1287] + v[1289]) && between(v[52], v[1288], v[1288] + v[1290]) {
+        @if `between(LEGV_MousePointer_X, v[1287], v[1287] + v[1289]) && between(LEGV_MousePointer_Y, v[1288], v[1288] + v[1290]) {
             v[341] = v[1287] + v[1289] / 2 + 1
             v[342] = v[1288] + v[1290] / 2
-            @pic[1764].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
             @if `v[341] != v[345] || v[342] != v[346] {
                 v[1289].copy v[343], 2
-                @pic[1764].strpic {
+                @pic[PicID_ButtonSelect].strpic {
                     ""
                     .pos v[341], v[342] .center
                     .size v[343], v[344]                    .chromakey 1
@@ -777,9 +789,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .mapLayer 9
                     .eraseWhenTransfer
                 }
-                @pic[996].erase
-                @pic[1765].erase
-                @pic[1766].erase
+                @pic[PicID_Popup_1].erase
+                @pic[PicID_Auxilia_Message_Window].erase
+                @pic[PicID_Square_Checker].erase
                 s[82].off
                 
             }
@@ -807,14 +819,14 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             
         }
         // "Q"
-        @if `between(v[51], v[1037] - v[1291], v[1037] + v[1291]) && between(v[52], v[1038] - v[1292], v[1038] + v[1292]) {
+        @if `between(LEGV_MousePointer_X, v[1037] - v[1291], v[1037] + v[1291]) && between(LEGV_MousePointer_Y, v[1038] - v[1292], v[1038] + v[1292]) {
             v[341] = v[1037]
             v[342] = v[1038] - 1
-            @pic[1764].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
             @if `v[341] != v[345] || v[342] != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
-                @pic[1764].strpic {
+                @pic[PicID_ButtonSelect].strpic {
                     ""
                     .pos v[341], v[342] .center
                     .size v[343], v[344]                    .chromakey 1
@@ -828,9 +840,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .mapLayer 9
                     .eraseWhenTransfer
                 }
-                @pic[996].erase
-                @pic[1765].erase
-                @pic[1766].erase
+                @pic[PicID_Popup_1].erase
+                @pic[PicID_Auxilia_Message_Window].erase
+                @pic[PicID_Square_Checker].erase
                 
             }
             @if s[25] .isOn() {
@@ -887,14 +899,14 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             
         }
         // "W"
-        @if `between(v[51], v[1039] - v[1291], v[1039] + v[1291]) && between(v[52], v[1040] - v[1292], v[1040] + v[1292]) {
+        @if `between(LEGV_MousePointer_X, v[1039] - v[1291], v[1039] + v[1291]) && between(LEGV_MousePointer_Y, v[1040] - v[1292], v[1040] + v[1292]) {
             v[341] = v[1039]
             v[342] = v[1040] - 1
-            @pic[1764].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
             @if `v[341] != v[345] || v[342] != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
-                @pic[1764].strpic {
+                @pic[PicID_ButtonSelect].strpic {
                     ""
                     .pos v[341], v[342] .center
                     .size v[343], v[344]                    .chromakey 1
@@ -908,9 +920,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .mapLayer 9
                     .eraseWhenTransfer
                 }
-                @pic[996].erase
-                @pic[1765].erase
-                @pic[1766].erase
+                @pic[PicID_Popup_1].erase
+                @pic[PicID_Auxilia_Message_Window].erase
+                @pic[PicID_Square_Checker].erase
                 
             }
             @if s[25] .isOn() {
@@ -967,14 +979,14 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             
         }
         // "E"
-        @if `between(v[51], v[1041] - v[1291], v[1041] + v[1291]) && between(v[52], v[1042] - v[1292], v[1042] + v[1292]) {
+        @if `between(LEGV_MousePointer_X, v[1041] - v[1291], v[1041] + v[1291]) && between(LEGV_MousePointer_Y, v[1042] - v[1292], v[1042] + v[1292]) {
             v[341] = v[1041]
             v[342] = v[1042] - 1
-            @pic[1764].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
             @if `v[341] != v[345] || v[342] != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
-                @pic[1764].strpic {
+                @pic[PicID_ButtonSelect].strpic {
                     ""
                     .pos v[341], v[342] .center
                     .size v[343], v[344]                    .chromakey 1
@@ -988,9 +1000,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .mapLayer 9
                     .eraseWhenTransfer
                 }
-                @pic[996].erase
-                @pic[1765].erase
-                @pic[1766].erase
+                @pic[PicID_Popup_1].erase
+                @pic[PicID_Auxilia_Message_Window].erase
+                @pic[PicID_Square_Checker].erase
                 
             }
             @if s[25] .isOn() {
@@ -1048,14 +1060,14 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             
         }
         // "R"
-        @if `between(v[51], v[1043] - v[1291], v[1043] + v[1291]) && between(v[52], v[1044] - v[1292], v[1044] + v[1292]) {
+        @if `between(LEGV_MousePointer_X, v[1043] - v[1291], v[1043] + v[1291]) && between(LEGV_MousePointer_Y, v[1044] - v[1292], v[1044] + v[1292]) {
             v[341] = v[1043]
             v[342] = v[1044] - 1
-            @pic[1764].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
             @if `v[341] != v[345] || v[342] != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
-                @pic[1764].strpic {
+                @pic[PicID_ButtonSelect].strpic {
                     ""
                     .pos v[341], v[342] .center
                     .size v[343], v[344]                    .chromakey 1
@@ -1069,9 +1081,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .mapLayer 9
                     .eraseWhenTransfer
                 }
-                @pic[996].erase
-                @pic[1765].erase
-                @pic[1766].erase
+                @pic[PicID_Popup_1].erase
+                @pic[PicID_Auxilia_Message_Window].erase
+                @pic[PicID_Square_Checker].erase
                 
             }
             @if s[25] .isOn() {
@@ -1129,15 +1141,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             
         }
         // "A"
-        v[341] = between(v[51], v[1045] - v[1291], v[1045] + v[1291]) && between(v[52], v[1046] - v[1292], v[1046] + v[1292]) ? 1 : 0
+        v[341] = between(LEGV_MousePointer_X, v[1045] - v[1291], v[1045] + v[1291]) && between(LEGV_MousePointer_Y, v[1046] - v[1292], v[1046] + v[1292]) ? 1 : 0
         @if v[341] == 1 {
             v[341] = v[1045]
             v[342] = v[1046] - 1
-            @pic[1764].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
             @if `v[341] != v[345] || v[342] != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
-                @pic[1764].strpic {
+                @pic[PicID_ButtonSelect].strpic {
                     ""
                     .pos v[341], v[342] .center
                     .size v[343], v[344]                    .chromakey 1
@@ -1151,9 +1163,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .mapLayer 9
                     .eraseWhenTransfer
                 }
-                @pic[996].erase
-                @pic[1765].erase
-                @pic[1766].erase
+                @pic[PicID_Popup_1].erase
+                @pic[PicID_Auxilia_Message_Window].erase
+                @pic[PicID_Square_Checker].erase
                 
             }
             @if v[101] >= 1 {
@@ -1170,6 +1182,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                         }
                         
                     } .else bl {
+
                         // "STATIC以外"
                         @if v[943] >= 1 {
                             
@@ -1180,7 +1193,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                                 // "#call quickstrings"
                                 v[11] = 106
                                 @call .cev 1890
-                                @pic[996].strpic {
+                                @pic[PicID_Popup_1].strpic {
                                     "\t[3000]"
                                     .pos v[1301], v[1065] .bottomLeft
                                     .size 0, 0                                    .chromakey 1
@@ -1195,7 +1208,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                                     .affectedByFlash
                                     .affectedByShake
                                 }
-                                @pic[1765].erase
+                                @pic[PicID_Auxilia_Message_Window].erase
                                 
                             }
                             
@@ -1225,15 +1238,16 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             }
             
         }
+
         // "S"
-        @if `between(v[51], v[1047] - v[1291], v[1047] + v[1291]) && between(v[52], v[1048] - v[1292], v[1048] + v[1292]) {
+        @if `between(LEGV_MousePointer_X, v[1047] - v[1291], v[1047] + v[1291]) && between(LEGV_MousePointer_Y, v[1048] - v[1292], v[1048] + v[1292]) {
             v[341] = v[1047]
             v[342] = v[1048] - 1
-            @pic[1764].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
             @if `v[341] != v[345] || v[342] != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
-                @pic[1764].strpic {
+                @pic[PicID_ButtonSelect].strpic {
                     ""
                     .pos v[341], v[342] .center
                     .size v[343], v[344]                    .chromakey 1
@@ -1247,11 +1261,12 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .mapLayer 9
                     .eraseWhenTransfer
                 }
-                @pic[996].erase
-                @pic[1765].erase
-                @pic[1766].erase
+                @pic[PicID_Popup_1].erase
+                @pic[PicID_Auxilia_Message_Window].erase
+                @pic[PicID_Square_Checker].erase
                 
             }
+
             @if v[101] >= 1 {
                 s[60].on
                 @if s[27] .isOff() {
@@ -1275,7 +1290,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             @if v[85] != v[84] {
                                 v[11] = 107
                                 @call .cev 1890
-                                @pic[996].strpic {
+                                @pic[PicID_Popup_1].strpic {
                                     "\t[3000]"
                                     .pos v[1301], v[1065] .bottomLeft
                                     .size 0, 0                                    .chromakey 1
@@ -1290,7 +1305,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                                     .affectedByFlash
                                     .affectedByShake
                                 }
-                                @pic[1765].erase
+                                @pic[PicID_Auxilia_Message_Window].erase
                                 
                             }
                             
@@ -1320,15 +1335,16 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             }
             
         }
+
         // "D"
-        @if `between(v[51], v[1049] - v[1291], v[1049] + v[1291]) && between(v[52], v[1050] - v[1292], v[1050] + v[1292]) {
+        @if `between(LEGV_MousePointer_X, v[1049] - v[1291], v[1049] + v[1291]) && between(LEGV_MousePointer_Y, v[1050] - v[1292], v[1050] + v[1292]) {
             v[341] = v[1049]
             v[342] = v[1050] - 1
-            @pic[1764].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
             @if `v[341] != v[345] || v[342] != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
-                @pic[1764].strpic {
+                @pic[PicID_ButtonSelect].strpic {
                     ""
                     .pos v[341], v[342] .center
                     .size v[343], v[344]                    .chromakey 1
@@ -1342,11 +1358,12 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .mapLayer 9
                     .eraseWhenTransfer
                 }
-                @pic[996].erase
-                @pic[1765].erase
-                @pic[1766].erase
+                @pic[PicID_Popup_1].erase
+                @pic[PicID_Auxilia_Message_Window].erase
+                @pic[PicID_Square_Checker].erase
                 
             }
+
             @if v[101] >= 1 {
                 s[60].on
                 @if s[27] .isOff() {
@@ -1370,7 +1387,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             @if v[85] != v[84] {
                                 v[11] = 108
                                 @call .cev 1890
-                                @pic[996].strpic {
+                                @pic[PicID_Popup_1].strpic {
                                     "\t[3000]"
                                     .pos v[1301], v[1065] .bottomLeft
                                     .size 0, 0                                    .chromakey 1
@@ -1385,7 +1402,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                                     .affectedByFlash
                                     .affectedByShake
                                 }
-                                @pic[1765].erase
+                                @pic[PicID_Auxilia_Message_Window].erase
                                 
                             }
                             
@@ -1415,15 +1432,16 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             }
             
         }
+
         // "F"
-        @if `between(v[51], v[1051] - v[1291], v[1051] + v[1291]) && between(v[52], v[1052] - v[1292], v[1052] + v[1292]) {
+        @if `between(LEGV_MousePointer_X, v[1051] - v[1291], v[1051] + v[1291]) && between(LEGV_MousePointer_Y, v[1052] - v[1292], v[1052] + v[1292]) {
             v[341] = v[1051]
             v[342] = v[1052] - 1
-            @pic[1764].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
             @if `v[341] != v[345] || v[342] != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
-                @pic[1764].strpic {
+                @pic[PicID_ButtonSelect].strpic {
                     ""
                     .pos v[341], v[342] .center
                     .size v[343], v[344]                    .chromakey 1
@@ -1437,11 +1455,12 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .mapLayer 9
                     .eraseWhenTransfer
                 }
-                @pic[996].erase
-                @pic[1765].erase
-                @pic[1766].erase
+                @pic[PicID_Popup_1].erase
+                @pic[PicID_Auxilia_Message_Window].erase
+                @pic[PicID_Square_Checker].erase
                 
             }
+
             @if v[101] >= 1 {
                 s[60].on
                 @if s[27] .isOff() {
@@ -1455,7 +1474,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                                 // "#call quickstrings"
                                 v[11] = 104
                                 @call .cev 1890
-                                @pic[996].strpic {
+                                @pic[PicID_Popup_1].strpic {
                                     "\t[3000]"
                                     .pos v[1301], v[1065] .bottomLeft
                                     .size 0, 0                                    .chromakey 1
@@ -1470,7 +1489,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                                     .affectedByFlash
                                     .affectedByShake
                                 }
-                                @pic[1765].erase
+                                @pic[PicID_Auxilia_Message_Window].erase
                                 
                             }
                             
@@ -1480,7 +1499,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             @if v[85] != v[84] {
                                 v[11] = 109
                                 @call .cev 1890
-                                @pic[996].strpic {
+                                @pic[PicID_Popup_1].strpic {
                                     "\t[3000]"
                                     .pos v[1301], v[1065] .bottomLeft
                                     .size 0, 0                                    .chromakey 1
@@ -1495,7 +1514,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                                     .affectedByFlash
                                     .affectedByShake
                                 }
-                                @pic[1765].erase
+                                @pic[PicID_Auxilia_Message_Window].erase
                                 
                             }
                             
@@ -1510,7 +1529,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                         // "#call quickstrings"
                         v[11] = 105
                         @call .cev 1890
-                        @pic[996].strpic {
+                        @pic[PicID_Popup_1].strpic {
                             "\t[3000]"
                             .pos v[1301], v[1065] .bottomLeft
                             .size 0, 0                            .chromakey 1
@@ -1525,7 +1544,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             .affectedByFlash
                             .affectedByShake
                         }
-                        @pic[1765].erase
+                        @pic[PicID_Auxilia_Message_Window].erase
                         
                     }
                     
@@ -1534,11 +1553,14 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             }
             
         }
+
+
+	// PAUSED INFORMATION
         @if s[60] .isOff() {
             @if s[2] .isOn() {
-                @if v[52] <= v[1286] {
-                    @if `!(v[51] <= v[4514] && v[52] >= v[4515]) {
-                        @if `!(between(v[51], v[1282], v[1284]) && between(v[52], v[1283], v[1285])) {
+                @if LEGV_MousePointer_Y <= v[1286] {
+                    @if `!(LEGV_MousePointer_X <= v[4514] && LEGV_MousePointer_Y >= v[4515]) {
+                        @if `!(between(LEGV_MousePointer_X, v[1282], v[1284]) && between(LEGV_MousePointer_Y, v[1283], v[1285])) {
                             @if v[93] >= 12 {
                                 s[60].on
                                 @if s[61] .isOff() {
@@ -1563,7 +1585,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                                             v[310] = v[302] + 23
                                             v[311] = v[302] + 100
                                             v[320] = v[302] + 99
-                                            @if `between(v[51], v[303], v[305]) && between(v[52], v[304], v[306]) {
+                                            @if `between(LEGV_MousePointer_X, v[303], v[305]) && between(LEGV_MousePointer_Y, v[304], v[306]) {
                                                 v[311] = v[302] + 99
                                                 v[v[311]].copy v[700], 150
                                                 v[84] = 1000
@@ -1578,7 +1600,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 \c[1]HP:\v[706]/\v[705]
 \c[3]AR:\v[711]/\v[738]
 \c[10]SP:\v[708]/\v[707]" .extract
-                                                    @pic[996].strpic {
+                                                    @pic[PicID_Popup_1].strpic {
                                                         t[501]
                                                         .pos v[350], v[351] .bottom
                                                         .size 0, 0                                                        .chromakey 1
@@ -1593,7 +1615,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                                                         .affectedByFlash
                                                         .affectedByShake
                                                     }
-                                                    @pic[996].move {
+                                                    @pic[PicID_Popup_1].move {
                                                         .pos v[350], v[351] .bottom
                                                         .scale 100
                                                         .trans v[1066]
@@ -1637,24 +1659,28 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 }
                 
             }
+
             @if s[60] .isOff() {
                 s[61].off
                 v[84] = 0
-                @pic[996].erase
-                @pic[1765].erase
+                @pic[PicID_Popup_1].erase
+                @pic[PicID_Auxilia_Message_Window].erase
                 // "Paused Information"
                 @if v[81] == 0 {
                     @if s[11] .isOff() {
+
+			// ????
                         // "#Check Terrain"
-                        v[51].copy v[11], 2
+                        LEGV_MousePointer_X.copy v[11], 2
                         v[12] -= 8
                         @call .cev 2000
+
                         // "######################Get Terrain and Elevation info"
                         v[313] = v[v[1182] + v[21] - v[69] + (v[22] - v[70]) * v[2061]]
                         v[341] = v[313] / 100000000
                         v[342] = v[313] % 100
-                        v[350] = v[51]
-                        v[351] = v[52] - 16
+                        v[350] = LEGV_MousePointer_X
+                        v[351] = LEGV_MousePointer_Y - 16
                         v[342] = v[1239] + v[342]
                         // "######################"
                         v[341] = v[21]
@@ -1686,7 +1712,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     @pic[PicID_pointer_sub].erase
                     
                 }
-                @pic[1764].erase
+                @pic[PicID_ButtonSelect].erase
                 
             } .else bl {
                 @pic[PicID_pointer_sub].erase
