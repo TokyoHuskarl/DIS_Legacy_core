@@ -534,12 +534,8 @@ cev .id(2051),.name("[System]Escape Menu"),{
 	v[0] = v[165..166] = [v[161] / 16, v[162] / 16]
 	//@comment "#Safety"
 	//@cmd v[471], "", .args v[472], 6
-	@scr.scroll {
-		.set(v[161],v[162]),
-		.time 0,
-		.center,
-		.legacy
-	}
+
+	func_general_camera_move(v[161],v[162])
 
 	@pic[2135..2144].erase
 	@if v[2401] >= 5 {

@@ -241,9 +241,11 @@ __fn func_CkIfSklCall $agent $skillno {
 	v[343] = $skillno * 20
 	v[342] += v[343]*/
 	reg1 += skill_ID >= 1 ? 0 : 1
+
 	//@comment "#If Pointed Type, Ck range"
 	//v[342] += 2
 	@if skill_Type == Type_PointSkl {
+
 	    //v[344] = v[342] + 9
 	    //v[352] = v[341] + 4707
 	    //v[351] = v[344] - 2
@@ -258,6 +260,7 @@ __fn func_CkIfSklCall $agent $skillno {
 	    @if v[351] > skill_Range_max {
 		reg1 += 1
 		//call ranged indicator
+		TT4 = __id(skill_Range_max)
 		@call .cev 81
 		
 	    }
@@ -279,6 +282,7 @@ __fn func_CkIfSklCall $agent $skillno {
 		@if v[351] > skill_Range_max {
 		    reg1 += 1
 		    //call ranged indicator
+		    TT4 = __id(skill_Range_max)
 		    @call .cev 81
 		    
 		}
