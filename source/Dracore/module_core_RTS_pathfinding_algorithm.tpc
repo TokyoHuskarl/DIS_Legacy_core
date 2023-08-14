@@ -3,7 +3,7 @@
 
 
 __fn refresh_deployed_agent_data {
-	Pathfinding_AgentData_head_ptr.copy Head_of_Agent_Buffer_PF, 64
+	v[Pathfinding_AgentData_head_ptr].copy Head_of_Agent_Buffer_PF, 64
 }
 
 __fn func_pathfinding_Astar() {

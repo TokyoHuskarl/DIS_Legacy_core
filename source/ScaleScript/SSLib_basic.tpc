@@ -8,7 +8,7 @@ __fn ScaleScriptBasicLib $LINKstr $md $i $given_v_or_str $flags {
 		//Command set start
 
 		//let javascript interpreter execute what is written in file
-		{SScommand($LINKstr, $md, $i, var,"js",nargs_nolimit,[str],[{/*coming soon*/},{SSreturn_string("let javascript interpreter execute what is written in file")}])},
+		{SScommand($LINKstr, $md, $i, var,"js",nargs_nolimit,[str],[{@js .run SSargs0},{SSreturn_string("let javascript interpreter execute given string")}])},
 
 		//Calculation
 		{SScommand($LINKstr, $md, $i, var,"calc",nargs_nolimit,[str],[{func_eval(SSargs0)},{SSreturn_string("Calculate given formula")}])},

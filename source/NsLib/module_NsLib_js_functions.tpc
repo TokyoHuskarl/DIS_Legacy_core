@@ -1,0 +1,17 @@
+// treating java script from TPC/RM2003 side
+
+def {
+	js_directory = "../js/"
+}
+
+// kari
+deft js_StringBuffer = 3000
+
+//
+__fn execute_js $filename {
+	// load
+	js_StringBuffer.asg .cat(js_directory,"",$filename)
+	js_StringBuffer.asg .file(js_StringBuffer), .utf8
+	@js .run js_StringBuffer
+}
+

@@ -13,7 +13,10 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 
 	ptr_null = 50000000 // This value itself has no meaning, just to get null array from unallocated area to init an array
 	
-
+	// js test
+	__if DIS_EXPERIMENTAL == 1 {
+		execute_js("experiment.js")
+	}
 	
 
 	t[510] .asg  .file "..\Data\version_info", .sjis

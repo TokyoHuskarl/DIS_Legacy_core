@@ -514,4 +514,16 @@ __fn func_general_camera_move $x $y {
 	}
 }
 
+
+// quick string functions..
+def QuickString_Start = 20000
+deft string_buffer = 3000
+deft string_buffer_array_head = 3001
+
+// return quick string to string_buffer
+__fn getQstr $quickstring_id {
+	v[1961] = v[1213] + $quickstring_id
+	string_buffer .asg .rep(t[v[1961]],"^",LF) .extract
+}
+
 $DIS_h_common_included = 1
