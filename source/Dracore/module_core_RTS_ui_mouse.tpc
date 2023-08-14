@@ -12,7 +12,7 @@ def macro_extract_selecting_unit_param = {
 __fn macro_strcat_adjustment $str1 $var $colour {
 	t[3000].cat $str1
 	var1 = $colour
-	t[3000].cat ":\c[\v[11]]" .extract
+	t[3000].cat ":\c[\var1]" .extract
 	t[3000].cat $var
 }
 
@@ -30,20 +30,19 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             s[60].on
             @if v[84] != v[85] {
                 v[85] = v[84]
+
                 // "#call quickstrings"
-                v[11] = 50
-                @call .cev 1890
-                t[501] .asg "\c[8]\t[3001]\c[0]
-\t[3002]
-\t[3003]" .extract
+                //var1 = 50
+                //@call .cev 1890
+		getQstr(50)
                 @pic[PicID_Popup_1].strpic {
-                    t[501]
+                    t[3000]
                     .pos LEGV_MousePointer_X, LEGV_MousePointer_Y .topRight
                     .size 0, 0                    .chromakey 1
                     .scale 100
                     .trans v[1066]
                     .rgbs 100, 100, 100, 100
-                    .font t[530], v[4511]
+                    .font Font_UI, v[4511]
                     .spacing 0, 0
                     .skin "" .stretch
                     .mapLayer 9
@@ -58,14 +57,13 @@ __fn macro_strcat_adjustment $str1 $var $colour {
         }
 
         // "FF"
-        :w
         @if s[185] .isOn() {
             v[84] = 10002
             s[60].on
             @if v[84] != v[85] {
                 v[85] = v[84]
                 // "#call quickstrings"
-                v[11] = 184
+                var1 = 184
                 @call .cev 1890
                 t[501] .asg "\c[8]\t[3001]\c[0]
 \t[3002]
@@ -77,7 +75,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .scale 100
                     .trans v[1066]
                     .rgbs 100, 100, 100, 100
-                    .font t[530], v[4511]
+                    .font Font_UI, v[4511]
                     .spacing 0, 0
                     .skin "" .stretch
                     .mapLayer 9
@@ -98,7 +96,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             @if v[84] != v[85] {
                 v[85] = v[84]
                 // "#call quickstrings"
-                v[11] = 183
+                var1 = 183
                 @call .cev 1890
                 t[501] .asg "\c[8]\t[3001]\c[0]
 \t[3002]
@@ -110,7 +108,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .scale 100
                     .trans v[1066]
                     .rgbs 100, 100, 100, 100
-                    .font t[530], v[4511]
+                    .font Font_UI, v[4511]
                     .spacing 0, 0
                     .skin "" .stretch
                     .mapLayer 9
@@ -131,8 +129,10 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             @if v[84] != v[85] {
                 v[85] = v[84]
                 // "#call quickstrings"
-                v[11] = 425 + s[187]
-                @call .cev 1890
+                var1 = 425 + s[187]
+                //@call .cev 1890
+		getQstr(var1)
+
                 @pic[PicID_Popup_1].strpic {
                     t[3000]
                     .pos LEGV_MousePointer_X, v[1286] .bottomRight
@@ -140,7 +140,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .scale 100
                     .trans v[1066]
                     .rgbs 100, 100, 100, 100
-                    .font t[530], v[4511]
+                    .font Font_UI, v[4511]
                     .spacing 0, 0
                     .skin "" .stretch
                     .mapLayer 9
@@ -160,9 +160,11 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             s[60].on
             @if v[84] != v[85] {
                 v[85] = v[84]
+
                 // "#call quickstrings"
-                v[11] = 427
-                @call .cev 1890
+                // var1 = 427
+                // @call .cev 1890
+		getQstr(427)
                 @pic[PicID_Popup_1].strpic {
                     t[3000]
                     .pos LEGV_MousePointer_X, v[1286] .bottomRight
@@ -170,7 +172,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .scale 100
                     .trans v[1066]
                     .rgbs 100, 100, 100, 100
-                    .font t[530], v[4511]
+                    .font Font_UI, v[4511]
                     .spacing 0, 0
                     .skin "" .stretch
                     .mapLayer 9
@@ -195,16 +197,18 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     v[85] = v[84]
                     v[341] = v[1115]
                     v[342] = v[1286]
-                    v[11] = 185
-                    @call .cev 1890
+
+                    //var1 = 185
+                    //@call .cev 1890
+		    getQstr(185)
                     @pic[PicID_Popup_1].strpic {
-                        t[3001]
+                        t[3000]
                         .pos v[341], v[342] .bottom
                         .size 0, 0                        .chromakey 1
                         .scale 100
                         .trans v[1066]
                         .rgbs 100, 100, 100, 100
-                        .font t[530], v[4511]
+                        .font Font_UI, v[4511]
                         .spacing 0, 0
                         .skin "" .stretch
                         .mapLayer 9
@@ -223,7 +227,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     v[84] = 10006 + v[341]
                     s[60].on
                     @if v[84] != v[85] {
-                        v[11] = 462 + v[341]
+                        var1 = 462 + v[341]
                         v[85] = v[84]
                         v[341] = v[1115]
                         v[342] = v[1286]
@@ -237,7 +241,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             .scale 100
                             .trans v[1066]
                             .rgbs 100, 100, 100, 100
-                            .font t[530], v[4511]
+                            .font Font_UI, v[4511]
                             .spacing 0, 0
                             .skin "" .stretch
                             .mapLayer 9
@@ -255,7 +259,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[60].on
                     @if v[84] != v[85] {
                         v[85] = v[84]
-                        v[11] = 462 + v[341]
+                        var1 = 462 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
 		        macro_extract_selecting_unit_param
@@ -268,7 +272,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             .scale 100
                             .trans v[1066]
                             .rgbs 100, 100, 100, 100
-                            .font t[530], v[4511]
+                            .font Font_UI, v[4511]
                             .spacing 0, 0
                             .skin "" .stretch
                             .mapLayer 9
@@ -287,7 +291,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[60].on
                     @if v[84] != v[85] {
                         v[85] = v[84]
-                        v[11] = 462 + v[341]
+                        var1 = 462 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
 		        macro_extract_selecting_unit_param
@@ -300,7 +304,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             .scale 100
                             .trans v[1066]
                             .rgbs 100, 100, 100, 100
-                            .font t[530], v[4511]
+                            .font Font_UI, v[4511]
                             .spacing 0, 0
                             .skin "" .stretch
                             .mapLayer 9
@@ -322,7 +326,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[60].on
                     @if v[84] != v[85] {
                         v[85] = v[84]
-                        v[11] = 456 + v[341]
+                        var1 = 456 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
 		        macro_extract_selecting_unit_param
@@ -335,7 +339,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             .scale 100
                             .trans v[1066]
                             .rgbs 100, 100, 100, 100
-                            .font t[530], v[4511]
+                            .font Font_UI, v[4511]
                             .spacing 0, 0
                             .skin "" .stretch
                             .mapLayer 9
@@ -354,7 +358,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[60].on
                     @if v[84] != v[85] {
                         v[85] = v[84]
-                        v[11] = 456 + v[341]
+                        var1 = 456 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
 		        macro_extract_selecting_unit_param
@@ -367,7 +371,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             .scale 100
                             .trans v[1066]
                             .rgbs 100, 100, 100, 100
-                            .font t[530], v[4511]
+                            .font Font_UI, v[4511]
                             .spacing 0, 0
                             .skin "" .stretch
                             .mapLayer 9
@@ -386,7 +390,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[60].on
                     @if v[84] != v[85] {
                         v[85] = v[84]
-                        v[11] = 456 + v[341]
+                        var1 = 456 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
 		        macro_extract_selecting_unit_param
@@ -399,7 +403,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             .scale 100
                             .trans v[1066]
                             .rgbs 100, 100, 100, 100
-                            .font t[530], v[4511]
+                            .font Font_UI, v[4511]
                             .spacing 0, 0
                             .skin "" .stretch
                             .mapLayer 9
@@ -418,7 +422,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[60].on
                     @if v[84] != v[85] {
                         v[85] = v[84]
-                        v[11] = 456 + v[341]
+                        var1 = 456 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
 		        macro_extract_selecting_unit_param
@@ -431,7 +435,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             .scale 100
                             .trans v[1066]
                             .rgbs 100, 100, 100, 100
-                            .font t[530], v[4511]
+                            .font Font_UI, v[4511]
                             .spacing 0, 0
                             .skin "" .stretch
                             .mapLayer 9
@@ -450,7 +454,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[60].on
                     @if v[84] != v[85] {
                         v[85] = v[84]
-                        v[11] = 456 + v[341]
+                        var1 = 456 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
                         @call .cev 1890
@@ -463,7 +467,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             .scale 100
                             .trans v[1066]
                             .rgbs 100, 100, 100, 100
-                            .font t[530], v[4511]
+                            .font Font_UI, v[4511]
                             .spacing 0, 0
                             .skin "" .stretch
                             .mapLayer 9
@@ -482,7 +486,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[60].on
                     @if v[84] != v[85] {
                         v[85] = v[84]
-                        v[11] = 456 + v[341]
+                        var1 = 456 + v[341]
                         v[341] = v[1115]
                         v[342] = v[1286]
 		        macro_extract_selecting_unit_param
@@ -495,7 +499,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             .scale 100
                             .trans v[1066]
                             .rgbs 100, 100, 100, 100
-                            .font t[530], v[4511]
+                            .font Font_UI, v[4511]
                             .spacing 0, 0
                             .skin "" .stretch
                             .mapLayer 9
@@ -530,26 +534,26 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             v[300] += 4703
             // "#NOT SMART"
             @if `v[v[300]] & 8 {
-                v[11] = 448
+                var1 = 448
                 
             } .else bl {
                 @if `v[v[300]] & 2 {
-                    v[11] = 447
+                    var1 = 447
                     
                 } .else bl {
                     @if `v[v[300]] & 1 {
-                        v[11] = 446
+                        var1 = 446
                         
                     } .else bl {
-                        v[11] = -1
+                        var1 = -1
                         
                     }
                     
                 }
                 
             }
-            @if v[11] != -1 {
-                v[84] = v[11]
+            @if var1 != -1 {
+                v[84] = var1
                 @if v[84] != v[85] {
                     v[85] = v[84]
                     v[341] = LEGV_MousePointer_X
@@ -563,7 +567,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                         .scale 100
                         .trans v[1066]
                         .rgbs 100, 100, 100, 100
-                        .font t[530], v[4511]
+                        .font Font_UI, v[4511]
                         .spacing 0, 0
                         .skin "" .stretch
                         .mapLayer 9
@@ -603,15 +607,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     // "#call quickstrings"
                     // "#NOT SMART"
                     @if v[v[300]] <= 8 {
-                        v[11] = 5 + [1, 2, 3, 4, 4][(v[v[300]] / 2)]
+                        var1 = 5 + [1, 2, 3, 4, 4][(v[v[300]] / 2)]
                         
                     } .else bl {
                         @if v[v[300]] == 16 {
-                            v[11] = 182
+                            var1 = 182
                             
                         } .else bl {
                             @if v[v[300]] == 64 {
-                                v[11] = 467
+                                var1 = 467
                                 
                             } .else bl {
                                 
@@ -628,7 +632,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                         .scale 100
                         .trans v[1066]
                         .rgbs 100, 100, 100, 100
-                        .font t[530], v[4511]
+                        .font Font_UI, v[4511]
                         .spacing 0, 0
                         .skin "" .stretch
                         .mapLayer 9
@@ -666,7 +670,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     v[341] = LEGV_MousePointer_X
                     v[342] = v[1286] - 16
                     @if v[v[300]] > 0 {
-                        v[11] = 1 + v[v[300]]
+                        var1 = 1 + v[v[300]]
                         @call .cev 1890
                         @pic[PicID_Popup_1].strpic {
                             "\c[5]\t[3001]\c[0]：
@@ -677,7 +681,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             .scale 100
                             .trans v[1066]
                             .rgbs 100, 100, 100, 100
-                            .font t[530], v[4511]
+                            .font Font_UI, v[4511]
                             .spacing 0, 0
                             .skin "" .stretch
                             .mapLayer 9
@@ -687,7 +691,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                         }
                         
                     } .else bl {
-                        v[11] = 5
+                        var1 = 5
                         @call .cev 1890
                         @pic[PicID_Popup_1].strpic {
                             "\c[2]\t[3001]\c[0]：
@@ -698,7 +702,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             .scale 100
                             .trans v[1066]
                             .rgbs 100, 100, 100, 100
-                            .font t[530], v[4511]
+                            .font Font_UI, v[4511]
                             .spacing 0, 0
                             .skin "" .stretch
                             .mapLayer 9
@@ -725,7 +729,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     v[85] = v[84]
                     v[341] = LEGV_MousePointer_X
                     v[342] = v[1286] - 16
-                    v[11] = 1
+                    var1 = 1
                     @call .cev 1890
                     @pic[PicID_Popup_1].strpic {
                         t[3000]
@@ -734,7 +738,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                         .scale 100
                         .trans v[1066]
                         .rgbs 100, 100, 100, 100
-                        .font t[530], v[4511]
+                        .font Font_UI, v[4511]
                         .spacing 0, 0
                         .skin "" .stretch
                         .mapLayer 9
@@ -782,7 +786,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     .scale 100
                     .trans 20
                     .rgbs 0, 200, 0, 100
-                    .font t[530], v[4511]
+                    .font Font_UI, v[4511]
                     .spacing 0, 4
                     .skin "Odinscall_mapcam" .nobg .noGradation
                     .add
@@ -1191,16 +1195,17 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             v[84] = -1
                             @if v[85] != v[84] {
                                 // "#call quickstrings"
-                                v[11] = 106
-                                @call .cev 1890
+                                // var1 = 106
+                                // @call .cev 1890
+				getQstr(106)
                                 @pic[PicID_Popup_1].strpic {
-                                    "\t[3000]"
+                                    t[3000]
                                     .pos v[1301], v[1065] .bottomLeft
                                     .size 0, 0                                    .chromakey 1
                                     .scale 100
                                     .trans v[1066]
                                     .rgbs 100, 100, 100, 100
-                                    .font t[530], v[4511]
+                                    .font Font_UI, v[4511]
                                     .spacing 0, 0
                                     .skin "" .stretch
                                     .mapLayer 9
@@ -1288,16 +1293,17 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             // "防御指令"
                             v[84] = -2
                             @if v[85] != v[84] {
-                                v[11] = 107
-                                @call .cev 1890
+                                // var1 = 107
+                                // @call .cev 1890
+				getQstr(107)
                                 @pic[PicID_Popup_1].strpic {
-                                    "\t[3000]"
+                                    t[3000]
                                     .pos v[1301], v[1065] .bottomLeft
                                     .size 0, 0                                    .chromakey 1
                                     .scale 100
                                     .trans v[1066]
                                     .rgbs 100, 100, 100, 100
-                                    .font t[530], v[4511]
+                                    .font Font_UI, v[4511]
                                     .spacing 0, 0
                                     .skin "" .stretch
                                     .mapLayer 9
@@ -1385,8 +1391,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             // "待機指令"
                             v[84] = -3
                             @if v[85] != v[84] {
-                                v[11] = 108
+                                var1 = 108
                                 @call .cev 1890
+
                                 @pic[PicID_Popup_1].strpic {
                                     "\t[3000]"
                                     .pos v[1301], v[1065] .bottomLeft
@@ -1394,7 +1401,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                                     .scale 100
                                     .trans v[1066]
                                     .rgbs 100, 100, 100, 100
-                                    .font t[530], v[4511]
+                                    .font Font_UI, v[4511]
                                     .spacing 0, 0
                                     .skin "" .stretch
                                     .mapLayer 9
@@ -1472,16 +1479,17 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             v[84] = -6
                             @if v[85] != v[84] {
                                 // "#call quickstrings"
-                                v[11] = 104
-                                @call .cev 1890
+                                // var1 = 104
+                                // @call .cev 1890
+				getQstr(105)
                                 @pic[PicID_Popup_1].strpic {
-                                    "\t[3000]"
+                                    t[3000]
                                     .pos v[1301], v[1065] .bottomLeft
                                     .size 0, 0                                    .chromakey 1
                                     .scale 100
                                     .trans v[1066]
                                     .rgbs 100, 100, 100, 100
-                                    .font t[530], v[4511]
+                                    .font Font_UI, v[4511]
                                     .spacing 0, 0
                                     .skin "" .stretch
                                     .mapLayer 9
@@ -1497,16 +1505,17 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             // "手動指令"
                             v[84] = -4
                             @if v[85] != v[84] {
-                                v[11] = 109
-                                @call .cev 1890
+                                // var1 = 109
+                                // @call .cev 1890
+				getQstr(109)
                                 @pic[PicID_Popup_1].strpic {
-                                    "\t[3000]"
+                                    t[3000]
                                     .pos v[1301], v[1065] .bottomLeft
                                     .size 0, 0                                    .chromakey 1
                                     .scale 100
                                     .trans v[1066]
                                     .rgbs 100, 100, 100, 100
-                                    .font t[530], v[4511]
+                                    .font Font_UI, v[4511]
                                     .spacing 0, 0
                                     .skin "" .stretch
                                     .mapLayer 9
@@ -1527,16 +1536,17 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     v[84] = -5
                     @if v[85] != v[84] {
                         // "#call quickstrings"
-                        v[11] = 105
-                        @call .cev 1890
+                        // var1 = 105
+                        // @call .cev 1890
+			getQstr(105)
                         @pic[PicID_Popup_1].strpic {
-                            "\t[3000]"
+                            t[3000]
                             .pos v[1301], v[1065] .bottomLeft
                             .size 0, 0                            .chromakey 1
                             .scale 100
                             .trans v[1066]
                             .rgbs 100, 100, 100, 100
-                            .font t[530], v[4511]
+                            .font Font_UI, v[4511]
                             .spacing 0, 0
                             .skin "" .stretch
                             .mapLayer 9
@@ -1607,7 +1617,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                                                         .scale 100
                                                         .trans 100
                                                         .rgbs 100, 100, 100, 100
-                                                        .font t[530], v[4511]
+                                                        .font Font_UI, v[4511]
                                                         .spacing 0, 0
                                                         .skin "" .stretch
                                                         .mapLayer 9
@@ -1671,7 +1681,7 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 
 			// ????
                         // "#Check Terrain"
-                        LEGV_MousePointer_X.copy v[11], 2
+                        LEGV_MousePointer_X.copy var1, 2
                         v[12] -= 8
                         @call .cev 2000
 

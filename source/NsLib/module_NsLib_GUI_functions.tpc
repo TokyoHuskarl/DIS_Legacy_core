@@ -1,4 +1,4 @@
-module_
+// this part will be regulated by js
 
 //",;"
 
@@ -143,12 +143,41 @@ __fn ON_CLOSE $block {
 // // // // // // // // // // // // 
 
 
-// DIS Advanced presentation system 
+// DIS Advanced presentation system
 
-__fn ui_start_presentation $presen_name $flags $presen_picid $on_load $on_run $on_close {
+
+// with js
+
+__fn init_GUI_Manager {
+
+	// call js Ns_GUI_Manager Object and init
+	@js .run "
+		Ns_GUI_Manager.reset_presentation()
+	"
+	
+}
+
+
+__fn ui_start_presentation $presen_name $presen_picid $on_load $on_run $on_close {
 	@comment __str($presen_name)
 
-	
+
+	$on_load
+
+	@wait 0
+
+	@loop bl {
+
+		$on_run
+
+	}
+
+	$on_close
+
+}
+__fn ui_start_presentation_leg $presen_name $flags $presen_picid $on_load $on_run $on_close {
+	@comment __str($presen_name)
+
 
 	$on_load
 
