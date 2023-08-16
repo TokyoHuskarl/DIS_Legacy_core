@@ -1,19 +1,124 @@
+// misc functions
+
+
 
 __fn func_remove_dead_agent_picture $agentid {
-	v[21] = Const_layer_amount * $agentid + v[1202]
+	reg1 = Const_layer_amount * $agentid + v[1202]
 	@comment "safety"
-	@if v[21] <= v[2299] {
-	    v[22] = v[21] + v[4516] - 1
-	    @pic[v[21]..v[22]].erase
-	    //v[21] = (v[11] - 1) 
-	    //v[21] *= v[4516] + v[1185]
-	    //v[1301].copy v[v[21]], v[4516]
+	@if reg1 <= v[2299] {
+	    reg2 = reg1 + v[4516] - 1
+	    @pic[reg1..reg2].erase
+	    //reg1 = (v[11] - 1) 
+	    //reg1 *= v[4516] + v[1185]
+	    //v[1301].copy v[reg1], v[4516]
 	    
 	}
 
 }
 
-cev .id(2152), .name("miscfunc:remove dead agent pic"), {
-	func_remove_dead_agent_picture(var1)
+// Tile information functions
+// args[1],[2] must be tile coordinate, not raw map coordinate
+__fn getTileInfoPtr $return $x $y {
+	v[__id($return)] = $y * var_Map_Width
+	v[__id($return)] += v[1182] + $x
 }
+
+// Wall Check
+__fn Is_TileInfo_Wall_to_reg9 $tileptr {
+	reg9 = (v[$tileptr] % 100) > 21 ? 1 : 0
+}
+
+
+// debug function, will be removed
+__fn RayCastTest $x $y {
+	func_tilecheck_RayCast(40,40,$x,$y)
+	@if reg1 == 1 {
+		play_system_se ("decide1" 100 100)
+		__if DEBUG_BUILD == 1 { 
+			var1 = rnd(5,8)
+			@map.rewrite {
+			    .pos($x, $y)
+			    .size(1, 1)
+			    .lower
+			    .single(var1)
+			}
+		}
+	}
+}
+
+// use var1~4
+// return if wall detected or not to reg1 
+__fn func_tilecheck_RayCast $X0 $Y0 $X1 $Y1 {
+
+	// use Bresenham's line algorithm to check line from Point1 to Point2
+	// use common vars to caluculate
+	defv {
+		RC_deltax = __id(TT1)
+		RC_deltay = __id(TT2)
+
+		RC_x = __id(TT3)
+		RC_y = __id(TT4)
+		RC_err = __id(TT5)
+
+		RC_swapx = __id(TT6)
+		RC_swapy = __id(TT7)
+		RC_err2 = __id(TT8) 
+
+	}
+
+	// RC_deltax = abs($X1 - $X0)
+	RC_deltax = ($X1 - $X0)
+	RC_deltax = abs(RC_deltax)
+
+	// RC_deltay = abs($Y1 - $Y0)
+	RC_deltay = ($Y1 - $Y0)
+	RC_deltay = abs(RC_deltay)
+	RC_deltay *= -1 // only -(dy) used in this proc, so make RC_deltay = (dy * -1) initially to optimize in RM system
+	
+	RC_swapx = $X0 < $X1 ? 1 : -1
+	RC_swapy = $Y0 < $Y1 ? 1 : -1
+	RC_err = RC_deltax + RC_deltay
+
+	RC_x = $X0
+	RC_y = $Y0
+	
+	@loop bl {
+
+		/* check maptile information of the coordinate */
+
+		getTileInfoPtr(reg1,RC_x,RC_y) // get tile info ptr to reg1
+		Is_TileInfo_Wall_to_reg9(reg1) // check if it's wall and return its result to reg9
+		
+		@if reg9 == 1 { // wall found
+			reg1 = 1 // return 1
+			@break
+		}
+
+		/* maptile info check end */
+		
+		// reach the goal coordinate
+		@if RC_x == $X1 {
+			@if RC_y == $Y1 {
+				reg1 = 0 // no obstacle found, return 0
+				@break
+			}
+		}
+
+		RC_err2 = RC_err * 2
+		
+		@if RC_err2 > RC_deltay {
+			RC_err += RC_deltay // -(dy)
+			RC_x += RC_swapx
+		}
+
+		@if RC_err2 < RC_deltax {
+		
+			RC_err += RC_deltax
+			RC_y += RC_swapy
+		}
+		
+	}
+
+}
+
 

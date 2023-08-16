@@ -4,52 +4,7 @@
 #include "./../headers/header_common.tpc"
 def moduletitle="module_core_RTS_pathfinding_general"
 
-
-// Maybe this part should be summarized as a header for PF
-
-// defs for PF system
-defs Bool_PF_Wall_Detection = 280
-
-
-// Variables used for Pathfinding processes
-defv {
-	PFckPtr = 4587
-
-	PF_Manager_Loop_AgentPtr = 4598
-
-	PF_done_per_1f = 4599
-}
-
-defv Pathfinding_AgentData_head_ptr = 4597
-
-// Around Agent data 
-defv Head_of_Agent_Buffer_PF = 4601
-vname[4601], "Pathfinding_Buffer_for_Agent[63]", {
-	.expand(64),
-	.pad(64),
-
-}
-
-def pfagent_PtrAddress = __id(Head_of_Agent_Buffer_PF)
-defv {
-	pfagent_AgentBits = pfagent_PtrAddress + 3
-	pfagent_TargetAgentID = pfagent_PtrAddress + 18
-	pfagent_MoveUvectorX = pfagent_PtrAddress + 21
-	pfagent_MapX =  pfagent_PtrAddress + 26
-	pfagent_AI_routine_bits = pfagent_PtrAddress + 34
-	pfagent_Cohort_ID = pfagent_PtrAddress + 35
-	pfagent_HoldPointX = pfagent_PtrAddress + 41
-	pfagent_LeftWPtoChase = pfagent_PtrAddress + 55
-}
-
-
-// misc consts
-def KILL_AI_routine_bits_FLAG_Pathblocked = ~AI_routine_bits_FLAG_Pathblocked
-def KILL_AI_routine_bits_FLAG_PFskip = ~AI_routine_bits_FLAG_PFskip
-
-
-//pathfinding funcs load
-#include "./module_core_RTS_pathfinding_functions.tpc"
+#include "./../headers/header_pathfinding.tpc"
 
 // Both of A* and legacy pathfinding function combined in this one tpc file
 #include "./module_core_RTS_pathfinding_algorithm.tpc"
@@ -67,67 +22,165 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 	PF_done_per_1f = 0
 
 	PF_Manager_Loop_AgentPtr = v[4532]
-	@while v[PF_Manager_Loop_AgentPtr] != 0 {
-	    v[4596] = v[PF_Manager_Loop_AgentPtr] - 1
-	    Pathfinding_AgentData_head_ptr = v[PF_Manager_Loop_AgentPtr] * 300 
-	    Pathfinding_AgentData_head_ptr += 4700
-	    v[Pathfinding_AgentData_head_ptr].copy v[600], 300
-	    // 
-	    @if `!(agent_ProcessObjBit & BaseObjBit_FLAG_Fleeing) {
-		// Pathfinding bits check
-		@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PATHFINDING {
-		    @if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFskip {
+	@while v[PF_Manager_Loop_AgentPtr] > 0 {
+		@if PF_done_per_1f < PF_Limit_per1f {
+		    // set ptrs
+		    v[4596] = v[PF_Manager_Loop_AgentPtr] - 1
+		    Pathfinding_AgentData_head_ptr = v[PF_Manager_Loop_AgentPtr] * 300 
+		    Pathfinding_AgentData_head_ptr += 4700
 
-			 // Use TT1 as a Ptr
-			 TT1 = Pathfinding_AgentData_head_ptr + 34
-			 v[TT1] &= KILL_AI_routine_bits_FLAG_PFskip // -65537//~65536
-			
-		    } .else bl {
-			
-			// Check if the agent can reach the goal node in the end
-			@if `agent_AI_routine_bits & AI_routine_bits_FLAG_Pathblocked { // If not
-			    @if `!(agent_AgentBits & AgentBits_FLAG_walldetected) { // and the situation is not around wall detection
-				
-				// then, retarded PF is not done many times (the limit setting is as half as the one for A*)
-				@if PF_done_per_1f <= 8 {
-					// start dumb "pathfinding" to look as if the agent is searching the path
-					func_pathfinding_retarded()
-					PF_done_per_1f += 1
+		    // deploy agent data
+		    v[Pathfinding_AgentData_head_ptr].copy v[600], 300
+
+		    // NOT fleeing 
+		    @if `!(agent_ProcessObjBit & BaseObjBit_FLAG_Fleeing) {
+
+			// horrible solution
+			@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_1secDelay_PF) {
+
+				// Ray Casting bits check
+				@if `agent_AI_routine_bits & AI_routine_bits_FLAG_RayCast {
+					@if agent_TargetAgentID > 0 { // has target
+						// get target Map Coord.
+						var1 = agent_TargetAgentID * 300 
+						var1 += 4726
+						v[var1].copy var3, 2
+						var3.sub v[69],2 // convert into tile coord
+
+						// get raycasting agent's one.
+						agent_MapX.copy var1, 2
+						var1.sub v[69],2 // convert into tile coord
+						
+						// then convert both into Node Coord
+						v[__id(var1)..__id(var4)] /= 2
+
+						// Then do node ray casting
+						func_nodecheck_RayCast(var1,var2,var3,var4)
+						@if reg1 == 1 { // wall found
+							@if `!(agent_ai_routine_bits & ai_routine_bits_flag_wp_set_by_raycast || agent_AgentBits & AgentBits_FLAG_walldetected) {
+								// agent_AgentBits |= AgentBits_FLAG_NeedWpToReachObj
+								agent_AI_routine_bits |= (AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_WP_set_by_RayCast) // + AgentBits_FLAG_walldetected
+							}
+
+
+						}.else bl {
+
+							@if `agent_ai_routine_bits & ai_routine_bits_flag_wp_set_by_raycast {
+								// agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
+
+								// kill Raycast flag
+								agent_AI_routine_bits &= ~AI_routine_bits_FLAG_WP_set_by_RayCast
+
+								@if `agent_AI_routine_bits & 49152 {
+									agent_AI_routine_bits &= ~49152
+								}
+							}
+
+							@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_ForcemoveFlag) {
+								// if it's not force move, then 
+								agent_MovementOrder = MovementOrder_TYPE_move_ordered
+
+							}
+							
+							agent_AI_routine_bits &= ~AI_routine_bits_FLAG_RayCast
+						}
+
+					}.else bl { // what if you have no target?
+						// underconstruction
+
+						// get target Map Coord.
+						TT2 =__id(agent_HoldPointX) // Pathfinding_AgentData_head_ptr + 41
+						Temp17 = max(agent_LeftWPtoChase, 0)
+						TT2 += Temp17 * 2
+						v[TT2].copy var1, 2
+						// convert into tile coordinate - maybe you can deal with this without this func if the PF agent has the target agent
+						@call .cev 2000
+						reg1.copy var3, 2
+
+
+						// get raycasting agent's one.
+						agent_MapX.copy var1, 2
+						var1.sub v[69],2 // convert into tile coord
+						
+						// then convert both into Node Coord
+						v[__id(var1)..__id(var4)] /= 2
+
+						// Then do node ray casting
+						func_nodecheck_RayCast(var1,var2,var3,var4)
+						@if reg1 == 1 { // wall found
+							agent_AI_routine_bits |= (AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_WP_set_by_RayCast)
+
+						}.else bl {
+							agent_AI_routine_bits &= ~AI_routine_bits_FLAG_WP_set_by_RayCast
+							agent_AI_routine_bits &= ~AI_routine_bits_FLAG_RayCast
+						}
+					}
+
+					// after raycasting, kill the flag
+					Ptr1 = Pathfinding_AgentData_head_ptr + 1
+
+					agent_AgentType.copy v[Ptr1], 250
 				}
 
-				// Use TT1 as a Ptr to agent_AI_routine_bits
-				TT1 = Pathfinding_AgentData_head_ptr + 34
-				v[TT1] &= KILL_AI_routine_bits_FLAG_Pathblocked // -8388609 ~8388608
-				v[TT1] |= AI_routine_bits_FLAG_PFskip
-				
-			    }
-			    
-			} .else bl {
-				
-				@if PF_done_per_1f <= 16 {
-					
-					// go for the A*!
-					func_pathfinding_Astar()
-					PF_done_per_1f += 1
+				// Pathfinding bits check
+				@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PATHFINDING {
+				    @if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFskip {
 
-					// Use TT1 as a Ptr to agent_AI_routine_bits
-					TT1 = Pathfinding_AgentData_head_ptr + 34
-					@if `!(v[TT1] & AI_routine_bits_FLAG_Pathblocked) {
-						// end Pathfinding
-						v[TT1] &= AI_routine_bits_KILL_FLAG_PATHFINDING // -16385//~16384
+					 // Use TT1 as a Ptr
+					 TT1 = Pathfinding_AgentData_head_ptr + 34
+					 v[TT1] &= KILL_AI_routine_bits_FLAG_PFskip // -65537//~65536
+					
+				    } .else bl {
+					
+					// Check if the agent can reach the goal node in the end
+					@if `agent_AI_routine_bits & AI_routine_bits_FLAG_Pathblocked { // If not
+					    @if `!(agent_AgentBits & AgentBits_FLAG_walldetected) { // and the situation is not around wall detection
+						
+						// then, retarded PF is not done many times (the limit setting is as half as the one for A*)
+						@if PF_done_per_1f <= 8 {
+							// start dumb "pathfinding" to look as if the agent is searching the path
+							func_pathfinding_retarded()
+							PF_done_per_1f += 1
+						}
+
+						// Use TT1 as a Ptr to agent_AI_routine_bits
+						TT1 = Pathfinding_AgentData_head_ptr + 34
+						v[TT1] &= ~AI_routine_bits_FLAG_RayCast 
+						v[TT1] &= KILL_AI_routine_bits_FLAG_Pathblocked // -8388609 ~8388608
+
+						v[TT1] |= AI_routine_bits_FLAG_1secDelay_PF
+						
+					    }
+					    
+					} .else bl {
+						
+							
+						// go for the A*!
+						func_pathfinding_Astar()
+						PF_done_per_1f += 1
+
+						// Use TT1 as a Ptr to agent_AI_routine_bits
+						TT1 = Pathfinding_AgentData_head_ptr + 34
+						v[TT1] &= ~AI_routine_bits_FLAG_RayCast 
+						@if `!(v[TT1] & AI_routine_bits_FLAG_Pathblocked) {
+							// end Pathfinding
+							v[TT1] &= AI_routine_bits_KILL_FLAG_PATHFINDING // -16385//~16384
+						}
+							
+					    
 					}
 					
+				    }
+				    
 				}
-			    
+				
 			}
-			
 		    }
-		    
-		}
-		
-	    }
-	    PF_Manager_Loop_AgentPtr += 1
+		    PF_Manager_Loop_AgentPtr += 1
 
+		}.else bl {
+			@break
+		}
 	}
 
 }

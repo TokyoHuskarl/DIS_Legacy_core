@@ -50,7 +50,7 @@ v[4035..4036] = v[205]
 //Check ground type troops agents all
 
 // set expanding temp array for copying
-v[4101..4130] = 100000000 // WITHOUT AEAB this part is necessarily
+v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 
 @while v[v[536]] != 0 {
     v[212] = v[v[536]] * 300 
@@ -62,9 +62,9 @@ v[4101..4130] = 100000000 // WITHOUT AEAB this part is necessarily
         AgentIDholder = v[v[536]] 
         v[v[212] + 3] &= -134217729//~134217728
 	//If worker AI flag is on
-        @if `agent_AgentBits & AgentBits_FLAG_EnableCivAI {//9.5.23
-            @if `agent_AgentBits & AgentBits_FLAG_walldetected {//9.5.23
-                @if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_tracing_flag) {//9.5.23
+        @if `agent_AgentBits & AgentBits_FLAG_EnableCivAI {
+            @if `agent_AgentBits & AgentBits_FLAG_walldetected {
+                @if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_tracing_flag) {
                     s[280].on
                     v[v[212] + 34] |= AI_routine_bits_FLAG_PATHFINDING
                     
@@ -427,13 +427,13 @@ v[4101..4130] = 100000000 // WITHOUT AEAB this part is necessarily
                                                         Temp7 += 1
                                                         
                                                     } .else bl {
-                                                        v[v[212] + 3] |= 33554432
+                                                        v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
                                                         v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
                                                         
                                                     }
                                                     
                                                 } .else bl {
-                                                    v[v[212] + 3] |= 33554432
+                                                    v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
                                                     v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
                                                     
                                                 }
@@ -443,7 +443,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB this part is necessarily
                                         }
                                         
                                     } .else bl {
-                                        v[v[212] + 3] |= 33554432
+                                        v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
                                         v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
                                         
                                     }
@@ -452,7 +452,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB this part is necessarily
                                 
                             } .else bl {
                                 @if `!(v[agent_AI_routine_bits] & AI_routine_bits_FLAG_tracing_flag) {
-                                    v[v[212] + 3] |= 33554432
+                                    v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
                                     v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
                                     
                                 }

@@ -22,14 +22,14 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 @if s[18] .isOn() {
 
     @if s[5] .isOff() {
-        s[60].off
+        LEGS_Showing_PopupWindow_1.off
 
         // "Escape"
         @if s[181] .isOn() {
-            v[84] = 10001
-            s[60].on
-            @if v[84] != v[85] {
-                v[85] = v[84]
+            LEGV_sentence_id_on_popup1 = 10001
+            LEGS_Showing_PopupWindow_1.on
+            @if LEGV_sentence_id_on_popup1 != v[85] {
+                v[85] = LEGV_sentence_id_on_popup1
 
                 // "#call quickstrings"
                 //var1 = 50
@@ -58,10 +58,10 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 
         // "FF"
         @if s[185] .isOn() {
-            v[84] = 10002
-            s[60].on
-            @if v[84] != v[85] {
-                v[85] = v[84]
+            LEGV_sentence_id_on_popup1 = 10002
+            LEGS_Showing_PopupWindow_1.on
+            @if LEGV_sentence_id_on_popup1 != v[85] {
+                v[85] = LEGV_sentence_id_on_popup1
                 // "#call quickstrings"
                 var1 = 184
                 @call .cev 1890
@@ -91,10 +91,10 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 
         // "Pause"
         @if s[184] .isOn() {
-            v[84] = 10003
-            s[60].on
-            @if v[84] != v[85] {
-                v[85] = v[84]
+            LEGV_sentence_id_on_popup1 = 10003
+            LEGS_Showing_PopupWindow_1.on
+            @if LEGV_sentence_id_on_popup1 != v[85] {
+                v[85] = LEGV_sentence_id_on_popup1
                 // "#call quickstrings"
                 var1 = 183
                 @call .cev 1890
@@ -124,10 +124,10 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 
         // "IdleWorker"
         @if s[188] .isOn() {
-            v[84] = 10004
-            s[60].on
-            @if v[84] != v[85] {
-                v[85] = v[84]
+            LEGV_sentence_id_on_popup1 = 10004
+            LEGS_Showing_PopupWindow_1.on
+            @if LEGV_sentence_id_on_popup1 != v[85] {
+                v[85] = LEGV_sentence_id_on_popup1
                 // "#call quickstrings"
                 var1 = 425 + s[187]
                 //@call .cev 1890
@@ -156,10 +156,10 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 
         // "Log"
         @if s[186] .isOn() {
-            v[84] = 10005
-            s[60].on
-            @if v[84] != v[85] {
-                v[85] = v[84]
+            LEGV_sentence_id_on_popup1 = 10005
+            LEGS_Showing_PopupWindow_1.on
+            @if LEGV_sentence_id_on_popup1 != v[85] {
+                v[85] = LEGV_sentence_id_on_popup1
 
                 // "#call quickstrings"
                 // var1 = 427
@@ -191,19 +191,19 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             // "Unit name"
             @pic[974].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
             @if `between(LEGV_MousePointer_X, v[1952] - 190, v[1952] - 82) && between(LEGV_MousePointer_Y, v[1953] + 2, v[1953] + 18) {
-                v[84] = 10000
-                s[60].on
-                @if v[84] != v[85] {
-                    v[85] = v[84]
-                    v[341] = v[1115]
-                    v[342] = v[1286]
+                LEGV_sentence_id_on_popup1 = 10000
+                LEGS_Showing_PopupWindow_1.on
+                @if LEGV_sentence_id_on_popup1 != v[85] {
+                    v[85] = LEGV_sentence_id_on_popup1
+                    TT1 = v[1115]
+                    TT2 = v[1286]
 
                     //var1 = 185
                     //@call .cev 1890
 		    getQstr(185)
                     @pic[PicID_Popup_1].strpic {
                         t[3000]
-                        .pos v[341], v[342] .bottom
+                        .pos TT1, TT2 .bottom
                         .size 0, 0                        .chromakey 1
                         .scale 100
                         .trans v[1066]
@@ -222,21 +222,21 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 
             }
             @if `between(LEGV_MousePointer_Y, v[1953] + v[1955] / 4, v[1953] + v[1955] / 4 + 8) {
-                v[341] = 0
-                @if `between(LEGV_MousePointer_X - 74 * v[341], v[1952] - 188, v[1952] - 114) {
-                    v[84] = 10006 + v[341]
-                    s[60].on
-                    @if v[84] != v[85] {
-                        var1 = 462 + v[341]
-                        v[85] = v[84]
-                        v[341] = v[1115]
-                        v[342] = v[1286]
+                TT1 = 0
+                @if `between(LEGV_MousePointer_X - 74 * TT1, v[1952] - 188, v[1952] - 114) {
+                    LEGV_sentence_id_on_popup1 = 10006 + TT1
+                    LEGS_Showing_PopupWindow_1.on
+                    @if LEGV_sentence_id_on_popup1 != v[85] {
+                        var1 = 462 + TT1
+                        v[85] = LEGV_sentence_id_on_popup1
+                        TT1 = v[1115]
+                        TT2 = v[1286]
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20475],v[872],2)
                         @pic[PicID_Popup_1].strpic {
                             t[3000]
-                            .pos v[341], v[342] .bottom
+                            .pos TT1, TT2 .bottom
                             .size 0, 0                            .chromakey 1
                             .scale 100
                             .trans v[1066]
@@ -253,21 +253,21 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[201].on
                     
                 }
-                v[341] = 1
-                @if `between(LEGV_MousePointer_X - 74 * v[341], v[1952] - 188, v[1952] - 114) {
-                    v[84] = 10006 + v[341]
-                    s[60].on
-                    @if v[84] != v[85] {
-                        v[85] = v[84]
-                        var1 = 462 + v[341]
-                        v[341] = v[1115]
-                        v[342] = v[1286]
+                TT1 = 1
+                @if `between(LEGV_MousePointer_X - 74 * TT1, v[1952] - 188, v[1952] - 114) {
+                    LEGV_sentence_id_on_popup1 = 10006 + TT1
+                    LEGS_Showing_PopupWindow_1.on
+                    @if LEGV_sentence_id_on_popup1 != v[85] {
+                        v[85] = LEGV_sentence_id_on_popup1
+                        var1 = 462 + TT1
+                        TT1 = v[1115]
+                        TT2 = v[1286]
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20476],v[863],3)
                         @pic[PicID_Popup_1].strpic {
                             t[3000]
-                            .pos v[341], v[342] .bottom
+                            .pos TT1, TT2 .bottom
                             .size 0, 0                            .chromakey 1
                             .scale 100
                             .trans v[1066]
@@ -285,21 +285,21 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[201].on
                     
                 }
-                v[341] = 2
-                @if `between(LEGV_MousePointer_X - 74 * v[341], v[1952] - 188, v[1952] - 114) {
-                    v[84] = 10006 + v[341]
-                    s[60].on
-                    @if v[84] != v[85] {
-                        v[85] = v[84]
-                        var1 = 462 + v[341]
-                        v[341] = v[1115]
-                        v[342] = v[1286]
+                TT1 = 2
+                @if `between(LEGV_MousePointer_X - 74 * TT1, v[1952] - 188, v[1952] - 114) {
+                    LEGV_sentence_id_on_popup1 = 10006 + TT1
+                    LEGS_Showing_PopupWindow_1.on
+                    @if LEGV_sentence_id_on_popup1 != v[85] {
+                        v[85] = LEGV_sentence_id_on_popup1
+                        var1 = 462 + TT1
+                        TT1 = v[1115]
+                        TT2 = v[1286]
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20475],v[873],10)
                         @pic[PicID_Popup_1].strpic {
                             t[3000]
-                            .pos v[341], v[342] .bottom
+                            .pos TT1, TT2 .bottom
                             .size 0, 0                            .chromakey 1
                             .scale 100
                             .trans v[1066]
@@ -320,21 +320,21 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 
             }
             @if `between(LEGV_MousePointer_Y, v[1953] + v[1955] / 4 + 8, v[1953] + v[1955] / 4 + 18) {
-                v[341] = 0
-                @if `between(LEGV_MousePointer_X - 36 * v[341], v[1952] - 192, v[1952] - 148) {
-                    v[84] = 10001 + v[341]
-                    s[60].on
-                    @if v[84] != v[85] {
-                        v[85] = v[84]
-                        var1 = 456 + v[341]
-                        v[341] = v[1115]
-                        v[342] = v[1286]
+                TT1 = 0
+                @if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
+                    LEGV_sentence_id_on_popup1 = 10001 + TT1
+                    LEGS_Showing_PopupWindow_1.on
+                    @if LEGV_sentence_id_on_popup1 != v[85] {
+                        v[85] = LEGV_sentence_id_on_popup1
+                        var1 = 456 + TT1
+                        TT1 = v[1115]
+                        TT2 = v[1286]
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20476],v[861],17)
                         @pic[PicID_Popup_1].strpic {
                             t[3000]
-                            .pos v[341], v[342] .bottom
+                            .pos TT1, TT2 .bottom
                             .size 0, 0                            .chromakey 1
                             .scale 100
                             .trans v[1066]
@@ -352,21 +352,21 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[201].on
                     
                 }
-                v[341] = 1
-                @if `between(LEGV_MousePointer_X - 36 * v[341], v[1952] - 192, v[1952] - 148) {
-                    v[84] = 10001 + v[341]
-                    s[60].on
-                    @if v[84] != v[85] {
-                        v[85] = v[84]
-                        var1 = 456 + v[341]
-                        v[341] = v[1115]
-                        v[342] = v[1286]
+                TT1 = 1
+                @if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
+                    LEGV_sentence_id_on_popup1 = 10001 + TT1
+                    LEGS_Showing_PopupWindow_1.on
+                    @if LEGV_sentence_id_on_popup1 != v[85] {
+                        v[85] = LEGV_sentence_id_on_popup1
+                        var1 = 456 + TT1
+                        TT1 = v[1115]
+                        TT2 = v[1286]
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20476],v[862],16)
                         @pic[PicID_Popup_1].strpic {
                             t[3000]
-                            .pos v[341], v[342] .bottom
+                            .pos TT1, TT2 .bottom
                             .size 0, 0                            .chromakey 1
                             .scale 100
                             .trans v[1066]
@@ -384,21 +384,21 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[201].on
                     
                 }
-                v[341] = 2
-                @if `between(LEGV_MousePointer_X - 36 * v[341], v[1952] - 192, v[1952] - 148) {
-                    v[84] = 10001 + v[341]
-                    s[60].on
-                    @if v[84] != v[85] {
-                        v[85] = v[84]
-                        var1 = 456 + v[341]
-                        v[341] = v[1115]
-                        v[342] = v[1286]
+                TT1 = 2
+                @if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
+                    LEGV_sentence_id_on_popup1 = 10001 + TT1
+                    LEGS_Showing_PopupWindow_1.on
+                    @if LEGV_sentence_id_on_popup1 != v[85] {
+                        v[85] = LEGV_sentence_id_on_popup1
+                        var1 = 456 + TT1
+                        TT1 = v[1115]
+                        TT2 = v[1286]
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20476],v[864],6)
                         @pic[PicID_Popup_1].strpic {
                             t[3000]
-                            .pos v[341], v[342] .bottom
+                            .pos TT1, TT2 .bottom
                             .size 0, 0                            .chromakey 1
                             .scale 100
                             .trans v[1066]
@@ -416,21 +416,21 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[201].on
                     
                 }
-                v[341] = 3
-                @if `between(LEGV_MousePointer_X - 36 * v[341], v[1952] - 192, v[1952] - 148) {
-                    v[84] = 10001 + v[341]
-                    s[60].on
-                    @if v[84] != v[85] {
-                        v[85] = v[84]
-                        var1 = 456 + v[341]
-                        v[341] = v[1115]
-                        v[342] = v[1286]
+                TT1 = 3
+                @if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
+                    LEGV_sentence_id_on_popup1 = 10001 + TT1
+                    LEGS_Showing_PopupWindow_1.on
+                    @if LEGV_sentence_id_on_popup1 != v[85] {
+                        v[85] = LEGV_sentence_id_on_popup1
+                        var1 = 456 + TT1
+                        TT1 = v[1115]
+                        TT2 = v[1286]
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20476],v[865],5)
                         @pic[PicID_Popup_1].strpic {
                             t[3000]
-                            .pos v[341], v[342] .bottom
+                            .pos TT1, TT2 .bottom
                             .size 0, 0                            .chromakey 1
                             .scale 100
                             .trans v[1066]
@@ -448,21 +448,21 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[201].on
                     
                 }
-                v[341] = 4
-                @if `between(LEGV_MousePointer_X - 36 * v[341], v[1952] - 192, v[1952] - 148) {
-                    v[84] = 10001 + v[341]
-                    s[60].on
-                    @if v[84] != v[85] {
-                        v[85] = v[84]
-                        var1 = 456 + v[341]
-                        v[341] = v[1115]
-                        v[342] = v[1286]
+                TT1 = 4
+                @if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
+                    LEGV_sentence_id_on_popup1 = 10001 + TT1
+                    LEGS_Showing_PopupWindow_1.on
+                    @if LEGV_sentence_id_on_popup1 != v[85] {
+                        v[85] = LEGV_sentence_id_on_popup1
+                        var1 = 456 + TT1
+                        TT1 = v[1115]
+                        TT2 = v[1286]
                         @call .cev 1890
 		        macro_extract_selecting_unit_param
                         macro_strcat_adjustment(t[20476],v[866],3)
                         @pic[PicID_Popup_1].strpic {
                             t[3000]
-                            .pos v[341], v[342] .bottom
+                            .pos TT1, TT2 .bottom
                             .size 0, 0                            .chromakey 1
                             .scale 100
                             .trans v[1066]
@@ -480,21 +480,21 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     s[201].on
                     
                 }
-                v[341] = 5
-                @if `between(LEGV_MousePointer_X - 36 * v[341], v[1952] - 192, v[1952] - 148) {
-                    v[84] = 10001 + v[341]
-                    s[60].on
-                    @if v[84] != v[85] {
-                        v[85] = v[84]
-                        var1 = 456 + v[341]
-                        v[341] = v[1115]
-                        v[342] = v[1286]
+                TT1 = 5
+                @if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
+                    LEGV_sentence_id_on_popup1 = 10001 + TT1
+                    LEGS_Showing_PopupWindow_1.on
+                    @if LEGV_sentence_id_on_popup1 != v[85] {
+                        v[85] = LEGV_sentence_id_on_popup1
+                        var1 = 456 + TT1
+                        TT1 = v[1115]
+                        TT2 = v[1286]
 		        macro_extract_selecting_unit_param
                         @call .cev 1890
                         macro_strcat_adjustment(t[20476],v[875],0)
                         @pic[PicID_Popup_1].strpic {
                             t[3000]
-                            .pos v[341], v[342] .bottom
+                            .pos TT1, TT2 .bottom
                             .size 0, 0                            .chromakey 1
                             .scale 100
                             .trans v[1066]
@@ -516,272 +516,285 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             }
             
         }
-        // "Terrain"
-        @if `between(LEGV_MousePointer_X, v[1125] - 8 - 4 * 16, v[1125] + 8 + -(4 * 16)) && between(LEGV_MousePointer_Y, v[1126] - 16, v[1126]) {
-            @if s[25] .isOn() {
-                s[60].on
-                v[300] = s[25] == 0 ? v[101] : v[100]
-                
-            } .else bl {
-                @if v[101] >= 1 {
-                    s[60].on
-                    v[300] = s[25] == 0 ? v[101] : v[100]
-                    
-                }
-                
-            }
-            v[300] *= 300
-            v[300] += 4703
-            // "#NOT SMART"
-            @if `v[v[300]] & 8 {
-                var1 = 448
-                
-            } .else bl {
-                @if `v[v[300]] & 2 {
-                    var1 = 447
-                    
-                } .else bl {
-                    @if `v[v[300]] & 1 {
-                        var1 = 446
-                        
-                    } .else bl {
-                        var1 = -1
-                        
-                    }
-                    
-                }
-                
-            }
-            @if var1 != -1 {
-                v[84] = var1
-                @if v[84] != v[85] {
-                    v[85] = v[84]
-                    v[341] = LEGV_MousePointer_X
-                    v[342] = v[1286] - 16
-                    // "#call quickstrings"
-                    @call .cev 1890
-                    @pic[PicID_Popup_1].strpic {
-                        t[3000]
-                        .pos v[341], v[342] .bottomLeft
-                        .size 0, 0                        .chromakey 1
-                        .scale 100
-                        .trans v[1066]
-                        .rgbs 100, 100, 100, 100
-                        .font Font_UI, v[4511]
-                        .spacing 0, 0
-                        .skin "" .stretch
-                        .mapLayer 9
-                        .eraseWhenTransfer
-                        .affectedByFlash
-                        .affectedByShake
-                    }
-                    
-                }
-                
-            }
-            s[201].on
-            
-        }
-        // "Tactical Order"
-        @if `between(LEGV_MousePointer_X, v[1125] - 8 - 3 * 16, v[1125] + 8 + -(3 * 16)) && between(LEGV_MousePointer_Y, v[1126] - 16, v[1126]) {
-            @if s[25] .isOn() {
-                s[60].on
-                v[300] = s[25] == 0 ? v[101] : v[100]
-                
-            } .else bl {
-                @if v[101] >= 1 {
-                    s[60].on
-                    v[300] = s[25] == 0 ? v[101] : v[100]
-                    
-                }
-                
-            }
-            v[300] *= 300
-            v[300] += 4948
-            @if v[v[300]] != 0 {
-                v[84] = 1211 + v[v[300]]
-                @if v[84] != v[85] {
-                    v[85] = v[84]
-                    v[341] = LEGV_MousePointer_X
-                    v[342] = v[1286] - 16
-                    // "#call quickstrings"
-                    // "#NOT SMART"
-                    @if v[v[300]] <= 8 {
-                        var1 = 5 + [1, 2, 3, 4, 4][(v[v[300]] / 2)]
-                        
-                    } .else bl {
-                        @if v[v[300]] == 16 {
-                            var1 = 182
-                            
-                        } .else bl {
-                            @if v[v[300]] == 64 {
-                                var1 = 467
-                                
-                            } .else bl {
-                                
-                            }
-                            
-                        }
-                        
-                    }
-                    @call .cev 1890
-                    @pic[PicID_Popup_1].strpic {
-                        t[3000]
-                        .pos v[341], v[342] .bottomLeft
-                        .size 0, 0                        .chromakey 1
-                        .scale 100
-                        .trans v[1066]
-                        .rgbs 100, 100, 100, 100
-                        .font Font_UI, v[4511]
-                        .spacing 0, 0
-                        .skin "" .stretch
-                        .mapLayer 9
-                        .eraseWhenTransfer
-                        .affectedByFlash
-                        .affectedByShake
-                    }
-                    
-                }
-                s[201].on
-                
-            }
-            
-        }
-        // "Morale"
-        @if `between(LEGV_MousePointer_X, v[1125] - 8 - 2 * 16, v[1125] + 8 + -(2 * 16)) && between(LEGV_MousePointer_Y, v[1126] - 16, v[1126]) {
-            @if s[25] .isOn() {
-                s[60].on
-                v[300] = s[25] == 0 ? v[101] : v[100]
-                
-            } .else bl {
-                @if v[101] >= 1 {
-                    s[60].on
-                    v[300] = s[25] == 0 ? v[101] : v[100]
-                    
-                }
-                
-            }
-            v[300] *= 300
-            v[300] += 4960
-            @if v[v[300]] != 0 {
-                v[84] = 1189 + v[v[300]]
-                @if v[84] != v[85] {
-                    v[85] = v[84]
-                    v[341] = LEGV_MousePointer_X
-                    v[342] = v[1286] - 16
-                    @if v[v[300]] > 0 {
-                        var1 = 1 + v[v[300]]
-                        @call .cev 1890
-                        @pic[PicID_Popup_1].strpic {
-                            "\c[5]\t[3001]\c[0]：
+
+	// Unit State Icons
+	@if `between(LEGV_MousePointer_Y, LEGV_ConstBuffIconsStartY - 16, LEGV_ConstBuffIconsStartY) {
+		
+		// "Terrain"
+		@if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 4 * 16 - 8, LEGV_ConstBuffIconsStartX - (4 * 16) + 8) {
+		    @if LEGS_selecting_enemy .isOn() {
+			LEGS_Showing_PopupWindow_1.on
+			Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+			
+		    } .else bl {
+			@if v[101] >= 1 {
+			    LEGS_Showing_PopupWindow_1.on
+			    Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+			    
+			}
+			
+		    }
+		    Ptr20 *= 300
+		    Ptr20 += 4703
+		    // "#NOT SMART"
+		    @if `v[Ptr20] & 8 {
+			var1 = 448
+			
+		    } .else bl {
+			@if `v[Ptr20] & 2 {
+			    var1 = 447
+			    
+			} .else bl {
+			    @if `v[Ptr20] & 1 {
+				var1 = 446
+				
+			    } .else bl {
+				var1 = -1
+				
+			    }
+			    
+			}
+			
+		    }
+		    @if var1 != -1 {
+			LEGV_sentence_id_on_popup1 = var1
+			@if LEGV_sentence_id_on_popup1 != v[85] {
+			    v[85] = LEGV_sentence_id_on_popup1
+			    TT1 = LEGV_MousePointer_X
+			    TT2 = v[1286] - 16
+			
+			    // "#call quickstrings"
+			    // @call .cev 1890
+			    getQstr(var1)
+			    @pic[PicID_Popup_1].strpic {
+				t[3000]
+				.pos TT1, TT2 .bottomLeft
+				.size 0, 0                        .chromakey 1
+				.scale 100
+				.trans v[1066]
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, v[4511]
+				.spacing 0, 0
+				.skin "" .stretch
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    
+			}
+			
+		    }
+		    s[201].on
+		    
+		}
+
+		// "Tactical Order"
+		@if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 8 - 3 * 16, LEGV_ConstBuffIconsStartX + 8 + -(3 * 16))  {
+		    @if LEGS_selecting_enemy .isOn() {
+			LEGS_Showing_PopupWindow_1.on
+			Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+			
+		    } .else bl {
+			@if v[101] >= 1 {
+			    LEGS_Showing_PopupWindow_1.on
+			    Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+			    
+			}
+			
+		    }
+		    Ptr20 *= 300
+		    Ptr20 += 4948
+		    @if v[Ptr20] != 0 {
+			LEGV_sentence_id_on_popup1 = 1211 + v[Ptr20]
+			@if LEGV_sentence_id_on_popup1 != v[85] {
+			    v[85] = LEGV_sentence_id_on_popup1
+			    TT1 = LEGV_MousePointer_X
+			    TT2 = v[1286] - 16
+			    // "#call quickstrings"
+			    // "#NOT SMART"
+			    @if v[Ptr20] <= 8 {
+				var1 = 5 + [1, 2, 3, 4, 4][(v[Ptr20] / 2)]
+				
+			    } .else bl {
+				@if v[Ptr20] == 16 {
+				    var1 = 182
+				    
+				} .else bl {
+				    @if v[Ptr20] == 64 {
+					var1 = 467
+					
+				    } .else bl {
+					
+				    }
+				    
+				}
+				
+			    }
+			    getQstr(var1)
+			    @pic[PicID_Popup_1].strpic {
+				t[3000]
+				.pos TT1, TT2 .bottomLeft
+				.size 0, 0                        .chromakey 1
+				.scale 100
+				.trans v[1066]
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, v[4511]
+				.spacing 0, 0
+				.skin "" .stretch
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    
+			}
+			s[201].on
+			
+		    }
+		    
+		}
+
+		// "Morale"
+		@if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 8 - 2 * 16, LEGV_ConstBuffIconsStartX + 8 + -(2 * 16)) {
+		    @if LEGS_selecting_enemy .isOn() {
+			LEGS_Showing_PopupWindow_1.on
+			Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+			
+		    } .else bl {
+			@if v[101] >= 1 {
+			    LEGS_Showing_PopupWindow_1.on
+			    Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+			    
+			}
+			
+		    }
+		    Ptr20 *= 300
+		    Ptr20 += 4960
+		    @if v[Ptr20] != 0 {
+			LEGV_sentence_id_on_popup1 = 1189 + v[Ptr20]
+			@if LEGV_sentence_id_on_popup1 != v[85] {
+			    v[85] = LEGV_sentence_id_on_popup1
+			    TT1 = LEGV_MousePointer_X
+			    TT2 = v[1286] - 16
+			    @if v[Ptr20] > 0 {
+				var1 = 1 + v[Ptr20]
+				@call .cev 1890
+				@pic[PicID_Popup_1].strpic {
+				    "\c[5]\t[3001]\c[0]：
 \t[3002]
 \c[5]\t[3003] \t[3004]"
-                            .pos v[341], v[342] .bottomLeft
-                            .size 0, 0                            .chromakey 1
-                            .scale 100
-                            .trans v[1066]
-                            .rgbs 100, 100, 100, 100
-                            .font Font_UI, v[4511]
-                            .spacing 0, 0
-                            .skin "" .stretch
-                            .mapLayer 9
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
-                        
-                    } .else bl {
-                        var1 = 5
-                        @call .cev 1890
-                        @pic[PicID_Popup_1].strpic {
-                            "\c[2]\t[3001]\c[0]：
+				    .pos TT1, TT2 .bottomLeft
+				    .size 0, 0                            .chromakey 1
+				    .scale 100
+				    .trans v[1066]
+				    .rgbs 100, 100, 100, 100
+				    .font Font_UI, v[4511]
+				    .spacing 0, 0
+				    .skin "" .stretch
+				    .mapLayer 9
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+				
+			    } .else bl {
+				var1 = 5
+				@call .cev 1890
+				@pic[PicID_Popup_1].strpic {
+				    "\c[2]\t[3001]\c[0]：
 \t[3002]
 \c[1]\t[3003]"
-                            .pos v[341], v[342] .bottomLeft
-                            .size 0, 0                            .chromakey 1
-                            .scale 100
-                            .trans v[1066]
-                            .rgbs 100, 100, 100, 100
-                            .font Font_UI, v[4511]
-                            .spacing 0, 0
-                            .skin "" .stretch
-                            .mapLayer 9
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
-                        
-                    }
-                    
-                }
-                s[201].on
-                
-            }
-            
-        }
-        // "Melee Penalty"
-        @if `between(LEGV_MousePointer_X, v[1125] - 8 - 1 * 16, v[1125] + 8 + -(1 * 16)) && between(LEGV_MousePointer_Y, v[1126] - 16, v[1126]) {
-            s[60].on
-            v[300] = (s[25] == 0 ? v[101] : v[100]) * 300 + 4781
-            @if v[v[300]] >= 1 {
-                v[84] = 1198
-                @if v[84] != v[85] {
-                    v[85] = v[84]
-                    v[341] = LEGV_MousePointer_X
-                    v[342] = v[1286] - 16
-                    var1 = 1
-                    @call .cev 1890
-                    @pic[PicID_Popup_1].strpic {
-                        t[3000]
-                        .pos v[341], v[342] .bottomLeft
-                        .size 0, 0                        .chromakey 1
-                        .scale 100
-                        .trans v[1066]
-                        .rgbs 100, 100, 100, 100
-                        .font Font_UI, v[4511]
-                        .spacing 0, 0
-                        .skin "" .stretch
-                        .mapLayer 9
-                        .eraseWhenTransfer
-                        .affectedByFlash
-                        .affectedByShake
-                    }
-                    
-                }
-                s[201].on
-                
-            }
-            
-        }
-        // "Buffs"
-        @loop 8 .dst v[360] {
-            @if `between(LEGV_MousePointer_X, v[1125] - 8 + v[360] * 16, v[1125] + 8 + v[360] * 16) && between(LEGV_MousePointer_Y, v[1126] - 16, v[1126]) {
-                s[60].on
-                v[300] = (s[25] == 0 ? v[101] : v[100]) * 300 + 4700
-                // "スキルチェック"
-                v[301] = v[300] + 71 + v[360]
-                // "番号を見る"
-                v[84] = v[v[301]]
-                @if v[99] <= 1 {
-                    @call .cev 1101
-                    
-                }
-                @break
-                
-            }
-            
-        }
-        
+				    .pos TT1, TT2 .bottomLeft
+				    .size 0, 0                            .chromakey 1
+				    .scale 100
+				    .trans v[1066]
+				    .rgbs 100, 100, 100, 100
+				    .font Font_UI, v[4511]
+				    .spacing 0, 0
+				    .skin "" .stretch
+				    .mapLayer 9
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+				
+			    }
+			    
+			}
+			s[201].on
+			
+		    }
+		    
+		}
+
+		// "Melee Penalty"
+		@if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 8 - 1 * 16, LEGV_ConstBuffIconsStartX + 8 + -(1 * 16)) {
+		    LEGS_Showing_PopupWindow_1.on
+		    Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4781
+		    @if v[Ptr20] >= 1 {
+			LEGV_sentence_id_on_popup1 = 1198
+			@if LEGV_sentence_id_on_popup1 != v[85] {
+			    v[85] = LEGV_sentence_id_on_popup1
+			    TT1 = LEGV_MousePointer_X
+			    TT2 = v[1286] - 16
+			    var1 = 1
+			    @call .cev 1890
+			    @pic[PicID_Popup_1].strpic {
+				t[3000]
+				.pos TT1, TT2 .bottomLeft
+				.size 0, 0                        .chromakey 1
+				.scale 100
+				.trans v[1066]
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, v[4511]
+				.spacing 0, 0
+				.skin "" .stretch
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    
+			}
+			s[201].on
+			
+		    }
+		    
+		}
+
+		// "Buffs"
+		@loop 8 .dst v[360] {
+		    @if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 8 + v[360] * 16, LEGV_ConstBuffIconsStartX + 8 + v[360] * 16) {
+			LEGS_Showing_PopupWindow_1.on
+			Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+			// "スキルチェック"
+			v[301] = Ptr20 + 71 + v[360]
+			// "番号を見る"
+			LEGV_sentence_id_on_popup1 = v[v[301]]
+			@if v[99] <= 1 {
+			    @call .cev 1101
+			    
+			}
+			@break
+			
+		    }
+		    
+		}
+		
+	}
+
+
         // "Passive"
         @if `between(LEGV_MousePointer_X, v[1287], v[1287] + v[1289]) && between(LEGV_MousePointer_Y, v[1288], v[1288] + v[1290]) {
-            v[341] = v[1287] + v[1289] / 2 + 1
-            v[342] = v[1288] + v[1290] / 2
+            TT1 = v[1287] + v[1289] / 2 + 1
+            TT2 = v[1288] + v[1290] / 2
             @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `v[341] != v[345] || v[342] != v[346] {
+            @if `TT1 != v[345] || TT2 != v[346] {
                 v[1289].copy v[343], 2
                 @pic[PicID_ButtonSelect].strpic {
                     ""
-                    .pos v[341], v[342] .center
+                    .pos TT1, TT2 .center
                     .size v[343], v[344]                    .chromakey 1
                     .scale 100
                     .trans 20
@@ -799,20 +812,20 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 s[82].off
                 
             }
-            s[60].on
-            v[299] = s[25] == 0 ? v[101] : v[100]
-            v[300] = v[299] * 300 + 4700
+            LEGS_Showing_PopupWindow_1.on
+            v[299] = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+            Ptr20 = v[299] * 300 + 4700
             // "スキルチェック"
-            v[301] = v[300] + 221
+            v[301] = Ptr20 + 221
             // "番号を見る"
-            v[84] = v[v[301]]
-            @if s[25] .isOn() {
+            LEGV_sentence_id_on_popup1 = v[v[301]]
+            @if LEGS_selecting_enemy .isOn() {
                 @call .cev 1100
                 
             } .else bl {
                 @if v[101] >= 1 {
                     @if v[99] > 1 {
-                        v[84] = s[24] == 1 ? v[84] : -2
+                        LEGV_sentence_id_on_popup1 = s[24] == 1 ? LEGV_sentence_id_on_popup1 : -2
                         
                     }
                     @call .cev 1100
@@ -824,15 +837,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
         }
         // "Q"
         @if `between(LEGV_MousePointer_X, v[1037] - v[1291], v[1037] + v[1291]) && between(LEGV_MousePointer_Y, v[1038] - v[1292], v[1038] + v[1292]) {
-            v[341] = v[1037]
-            v[342] = v[1038] - 1
+            TT1 = v[1037]
+            TT2 = v[1038] - 1
             @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `v[341] != v[345] || v[342] != v[346] {
+            @if `TT1 != v[345] || TT2 != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
                 @pic[PicID_ButtonSelect].strpic {
                     ""
-                    .pos v[341], v[342] .center
+                    .pos TT1, TT2 .center
                     .size v[343], v[344]                    .chromakey 1
                     .scale 100
                     .trans 20
@@ -849,15 +862,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 @pic[PicID_Square_Checker].erase
                 
             }
-            @if s[25] .isOn() {
-                s[60].on
-                v[300] = (s[25] == 0 ? v[101] : v[100]) * 300 + 4700
+            @if LEGS_selecting_enemy .isOn() {
+                LEGS_Showing_PopupWindow_1.on
+                Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
                 // "スキルチェック"
-                v[301] = v[300] + 141
+                v[301] = Ptr20 + 141
                 // "番号を見る"
-                v[84] = v[v[301]]
+                LEGV_sentence_id_on_popup1 = v[v[301]]
                 // "skillが存在するなら文章を見る"
-                @if v[84] >= 1 {
+                @if LEGV_sentence_id_on_popup1 >= 1 {
                     @call .cev 1200
                     
                 }
@@ -866,31 +879,31 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 @if v[101] >= 1 {
                     @if s[27] .isOn() {
                         // "STATICを選択中"
-                        s[60].on
-                        v[300] = v[101] * 300 + 4700
+                        LEGS_Showing_PopupWindow_1.on
+                        Ptr20 = v[101] * 300 + 4700
                         // "生産できるやつを見る"
-                        v[301] = v[300] + 138
+                        v[301] = Ptr20 + 138
                         // "Qなので1"
-                        v[341] = 1
+                        TT1 = 1
                         // "番号を見る"
-                        v[301] += v[341] * 3
-                        v[84] = v[v[301]]
+                        v[301] += TT1 * 3
+                        LEGV_sentence_id_on_popup1 = v[v[301]]
                         // "生産できる兵士が存在するなら文章を見る"
-                        @if v[84] >= 1 {
+                        @if LEGV_sentence_id_on_popup1 >= 1 {
                             @call .cev 199
                             
                         }
                         
                     } .else bl {
-                        s[60].on
-                        v[300] = (s[25] == 0 ? v[101] : v[100]) * 300 + 4700
+                        LEGS_Showing_PopupWindow_1.on
+                        Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
                         // "スキルチェック"
-                        v[301] = v[300] + 141
+                        v[301] = Ptr20 + 141
                         // "番号を見る"
-                        v[84] = v[v[301]]
+                        LEGV_sentence_id_on_popup1 = v[v[301]]
                         // "skillが存在するなら文章を見る"
                         v[89] = v[557]
-                        @if v[84] >= 1 {
+                        @if LEGV_sentence_id_on_popup1 >= 1 {
                             @call .cev 1200
                             
                         }
@@ -904,15 +917,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
         }
         // "W"
         @if `between(LEGV_MousePointer_X, v[1039] - v[1291], v[1039] + v[1291]) && between(LEGV_MousePointer_Y, v[1040] - v[1292], v[1040] + v[1292]) {
-            v[341] = v[1039]
-            v[342] = v[1040] - 1
+            TT1 = v[1039]
+            TT2 = v[1040] - 1
             @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `v[341] != v[345] || v[342] != v[346] {
+            @if `TT1 != v[345] || TT2 != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
                 @pic[PicID_ButtonSelect].strpic {
                     ""
-                    .pos v[341], v[342] .center
+                    .pos TT1, TT2 .center
                     .size v[343], v[344]                    .chromakey 1
                     .scale 100
                     .trans 20
@@ -929,15 +942,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 @pic[PicID_Square_Checker].erase
                 
             }
-            @if s[25] .isOn() {
-                s[60].on
-                v[300] = (s[25] == 0 ? v[101] : v[100]) * 300 + 4700
+            @if LEGS_selecting_enemy .isOn() {
+                LEGS_Showing_PopupWindow_1.on
+                Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
                 // "スキルチェック"
-                v[301] = v[300] + 161
+                v[301] = Ptr20 + 161
                 // "番号を見る"
-                v[84] = v[v[301]]
+                LEGV_sentence_id_on_popup1 = v[v[301]]
                 // "生産できる兵士が存在するなら文章を見る"
-                @if v[84] >= 1 {
+                @if LEGV_sentence_id_on_popup1 >= 1 {
                     @call .cev 1200
                     
                 }
@@ -946,31 +959,31 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 @if v[101] >= 1 {
                     @if s[27] .isOn() {
                         // "STATICを選択中"
-                        s[60].on
-                        v[300] = v[101] * 300 + 4700
+                        LEGS_Showing_PopupWindow_1.on
+                        Ptr20 = v[101] * 300 + 4700
                         // "生産できるやつを見る"
-                        v[301] = v[300] + 138
+                        v[301] = Ptr20 + 138
                         // "W 2"
-                        v[341] = 2
+                        TT1 = 2
                         // "番号を見る"
-                        v[301] += v[341] * 3
-                        v[84] = v[v[301]]
+                        v[301] += TT1 * 3
+                        LEGV_sentence_id_on_popup1 = v[v[301]]
                         // "生産できる兵士が存在するなら文章を見る"
-                        @if v[84] >= 1 {
+                        @if LEGV_sentence_id_on_popup1 >= 1 {
                             @call .cev 199
                             
                         }
                         
                     } .else bl {
-                        s[60].on
-                        v[300] = (s[25] == 0 ? v[101] : v[100]) * 300 + 4700
+                        LEGS_Showing_PopupWindow_1.on
+                        Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
                         // "スキルチェック"
-                        v[301] = v[300] + 161
+                        v[301] = Ptr20 + 161
                         // "番号を見る"
-                        v[84] = v[v[301]]
+                        LEGV_sentence_id_on_popup1 = v[v[301]]
                         // "生産できる兵士が存在するなら文章を見る"
                         v[89] = v[558]
-                        @if v[84] >= 1 {
+                        @if LEGV_sentence_id_on_popup1 >= 1 {
                             @call .cev 1200
                             
                         }
@@ -984,15 +997,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
         }
         // "E"
         @if `between(LEGV_MousePointer_X, v[1041] - v[1291], v[1041] + v[1291]) && between(LEGV_MousePointer_Y, v[1042] - v[1292], v[1042] + v[1292]) {
-            v[341] = v[1041]
-            v[342] = v[1042] - 1
+            TT1 = v[1041]
+            TT2 = v[1042] - 1
             @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `v[341] != v[345] || v[342] != v[346] {
+            @if `TT1 != v[345] || TT2 != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
                 @pic[PicID_ButtonSelect].strpic {
                     ""
-                    .pos v[341], v[342] .center
+                    .pos TT1, TT2 .center
                     .size v[343], v[344]                    .chromakey 1
                     .scale 100
                     .trans 20
@@ -1009,15 +1022,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 @pic[PicID_Square_Checker].erase
                 
             }
-            @if s[25] .isOn() {
-                s[60].on
-                v[300] = (s[25] == 0 ? v[101] : v[100]) * 300 + 4700
+            @if LEGS_selecting_enemy .isOn() {
+                LEGS_Showing_PopupWindow_1.on
+                Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
                 // "スキルチェック"
-                v[301] = v[300] + 181
+                v[301] = Ptr20 + 181
                 // "番号を見る"
-                v[84] = v[v[301]]
+                LEGV_sentence_id_on_popup1 = v[v[301]]
                 // "生産できる兵士が存在するなら文章を見る"
-                @if v[84] >= 1 {
+                @if LEGV_sentence_id_on_popup1 >= 1 {
                     @call .cev 1200
                     
                 }
@@ -1026,32 +1039,32 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 @if v[101] >= 1 {
                     @if s[27] .isOn() {
                         // "STATICを選択中"
-                        s[60].on
-                        v[300] = v[101] * 300
-                        v[300] += 4700
+                        LEGS_Showing_PopupWindow_1.on
+                        Ptr20 = v[101] * 300
+                        Ptr20 += 4700
                         // "生産できるやつを見る"
-                        v[301] = v[300] + 138
+                        v[301] = Ptr20 + 138
                         // "E 3"
-                        v[341] = 3
+                        TT1 = 3
                         // "番号を見る"
-                        v[301] += v[341] * 3
-                        v[84] = v[v[301]]
+                        v[301] += TT1 * 3
+                        LEGV_sentence_id_on_popup1 = v[v[301]]
                         // "生産できる兵士が存在するなら文章を見る"
-                        @if v[84] >= 1 {
+                        @if LEGV_sentence_id_on_popup1 >= 1 {
                             @call .cev 199
                             
                         }
                         
                     } .else bl {
-                        s[60].on
-                        v[300] = (s[25] == 0 ? v[101] : v[100]) * 300 + 4700
+                        LEGS_Showing_PopupWindow_1.on
+                        Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
                         // "スキルチェック"
-                        v[301] = v[300] + 181
+                        v[301] = Ptr20 + 181
                         // "番号を見る"
-                        v[84] = v[v[301]]
+                        LEGV_sentence_id_on_popup1 = v[v[301]]
                         // "生産できる兵士が存在するなら文章を見る"
                         v[89] = v[559]
-                        @if v[84] >= 1 {
+                        @if LEGV_sentence_id_on_popup1 >= 1 {
                             @call .cev 1200
                             
                         }
@@ -1065,15 +1078,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
         }
         // "R"
         @if `between(LEGV_MousePointer_X, v[1043] - v[1291], v[1043] + v[1291]) && between(LEGV_MousePointer_Y, v[1044] - v[1292], v[1044] + v[1292]) {
-            v[341] = v[1043]
-            v[342] = v[1044] - 1
+            TT1 = v[1043]
+            TT2 = v[1044] - 1
             @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `v[341] != v[345] || v[342] != v[346] {
+            @if `TT1 != v[345] || TT2 != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
                 @pic[PicID_ButtonSelect].strpic {
                     ""
-                    .pos v[341], v[342] .center
+                    .pos TT1, TT2 .center
                     .size v[343], v[344]                    .chromakey 1
                     .scale 100
                     .trans 20
@@ -1090,15 +1103,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 @pic[PicID_Square_Checker].erase
                 
             }
-            @if s[25] .isOn() {
-                s[60].on
-                v[300] = (s[25] == 0 ? v[101] : v[100]) * 300 + 4700
+            @if LEGS_selecting_enemy .isOn() {
+                LEGS_Showing_PopupWindow_1.on
+                Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
                 // "スキルチェック"
-                v[301] = v[300] + 201
+                v[301] = Ptr20 + 201
                 // "番号を見る"
-                v[84] = v[v[301]]
+                LEGV_sentence_id_on_popup1 = v[v[301]]
                 // "生産できる兵士が存在するなら文章を見る"
-                @if v[84] >= 1 {
+                @if LEGV_sentence_id_on_popup1 >= 1 {
                     @call .cev 1200
                     
                 }
@@ -1107,31 +1120,31 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 @if v[101] >= 1 {
                     @if s[27] .isOn() {
                         // "STATICを選択中"
-                        s[60].on
-                        v[300] = v[101] * 300 + 4700
+                        LEGS_Showing_PopupWindow_1.on
+                        Ptr20 = v[101] * 300 + 4700
                         // "生産できるやつを見る"
-                        v[301] = v[300] + 138
+                        v[301] = Ptr20 + 138
                         // "E 3"
-                        v[341] = 4
+                        TT1 = 4
                         // "番号を見る"
-                        v[301] += v[341] * 3
-                        v[84] = v[v[301]]
+                        v[301] += TT1 * 3
+                        LEGV_sentence_id_on_popup1 = v[v[301]]
                         // "生産できる兵士が存在するなら文章を見る"
                         v[89] = v[560]
-                        @if v[84] >= 1 {
+                        @if LEGV_sentence_id_on_popup1 >= 1 {
                             @call .cev 199
                             
                         }
                         
                     } .else bl {
-                        s[60].on
-                        v[300] = (s[25] == 0 ? v[101] : v[100]) * 300 + 4700
+                        LEGS_Showing_PopupWindow_1.on
+                        Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
                         // "スキルチェック"
-                        v[301] = v[300] + 201
+                        v[301] = Ptr20 + 201
                         // "番号を見る"
-                        v[84] = v[v[301]]
+                        LEGV_sentence_id_on_popup1 = v[v[301]]
                         // "生産できる兵士が存在するなら文章を見る"
-                        @if v[84] >= 1 {
+                        @if LEGV_sentence_id_on_popup1 >= 1 {
                             v[89] = v[560]
                             @call .cev 1200
                             
@@ -1145,17 +1158,17 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             
         }
         // "A"
-        v[341] = between(LEGV_MousePointer_X, v[1045] - v[1291], v[1045] + v[1291]) && between(LEGV_MousePointer_Y, v[1046] - v[1292], v[1046] + v[1292]) ? 1 : 0
-        @if v[341] == 1 {
-            v[341] = v[1045]
-            v[342] = v[1046] - 1
+        TT1 = between(LEGV_MousePointer_X, v[1045] - v[1291], v[1045] + v[1291]) && between(LEGV_MousePointer_Y, v[1046] - v[1292], v[1046] + v[1292]) ? 1 : 0
+        @if TT1 == 1 {
+            TT1 = v[1045]
+            TT2 = v[1046] - 1
             @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `v[341] != v[345] || v[342] != v[346] {
+            @if `TT1 != v[345] || TT2 != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
                 @pic[PicID_ButtonSelect].strpic {
                     ""
-                    .pos v[341], v[342] .center
+                    .pos TT1, TT2 .center
                     .size v[343], v[344]                    .chromakey 1
                     .scale 100
                     .trans 20
@@ -1173,13 +1186,13 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 
             }
             @if v[101] >= 1 {
-                s[60].on
+                LEGS_Showing_PopupWindow_1.on
                 @if s[27] .isOff() {
                     @if s[29] .isOn() {
-                        s[60].on
-                        v[84] = 17
+                        LEGS_Showing_PopupWindow_1.on
+                        LEGV_sentence_id_on_popup1 = 17
                         // "生産できる兵士が存在するなら文章を見る"
-                        @if v[84] >= 1 {
+                        @if LEGV_sentence_id_on_popup1 >= 1 {
                             v[89] = v[484]
                             @call .cev 1200
                             
@@ -1192,8 +1205,8 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             
                         } .else bl {
                             // "警戒指令"
-                            v[84] = -1
-                            @if v[85] != v[84] {
+                            LEGV_sentence_id_on_popup1 = -1
+                            @if v[85] != LEGV_sentence_id_on_popup1 {
                                 // "#call quickstrings"
                                 // var1 = 106
                                 // @call .cev 1890
@@ -1223,17 +1236,17 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     
                 } .else bl {
                     // "STATICを選択中"
-                    s[60].on
-                    v[300] = v[101] * 300 + 4700
+                    LEGS_Showing_PopupWindow_1.on
+                    Ptr20 = v[101] * 300 + 4700
                     // "生産できるやつを見る"
-                    v[301] = v[300] + 138
+                    v[301] = Ptr20 + 138
                     // "A 5"
-                    v[341] = 5
+                    TT1 = 5
                     // "番号を見る"
-                    v[301] += v[341] * 3
-                    v[84] = v[v[301]]
+                    v[301] += TT1 * 3
+                    LEGV_sentence_id_on_popup1 = v[v[301]]
                     // "生産できる兵士が存在するなら文章を見る"
-                    @if v[84] >= 1 {
+                    @if LEGV_sentence_id_on_popup1 >= 1 {
                         @call .cev 199
                         
                     }
@@ -1246,15 +1259,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 
         // "S"
         @if `between(LEGV_MousePointer_X, v[1047] - v[1291], v[1047] + v[1291]) && between(LEGV_MousePointer_Y, v[1048] - v[1292], v[1048] + v[1292]) {
-            v[341] = v[1047]
-            v[342] = v[1048] - 1
+            TT1 = v[1047]
+            TT2 = v[1048] - 1
             @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `v[341] != v[345] || v[342] != v[346] {
+            @if `TT1 != v[345] || TT2 != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
                 @pic[PicID_ButtonSelect].strpic {
                     ""
-                    .pos v[341], v[342] .center
+                    .pos TT1, TT2 .center
                     .size v[343], v[344]                    .chromakey 1
                     .scale 100
                     .trans 20
@@ -1273,13 +1286,13 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             }
 
             @if v[101] >= 1 {
-                s[60].on
+                LEGS_Showing_PopupWindow_1.on
                 @if s[27] .isOff() {
                     @if s[29] .isOn() {
-                        s[60].on
-                        v[84] = 17
+                        LEGS_Showing_PopupWindow_1.on
+                        LEGV_sentence_id_on_popup1 = 17
                         // "生産できる兵士が存在するなら文章を見る"
-                        @if v[84] >= 1 {
+                        @if LEGV_sentence_id_on_popup1 >= 1 {
                             v[89] = v[485]
                             @call .cev 1200
                             
@@ -1291,8 +1304,8 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             
                         } .else bl {
                             // "防御指令"
-                            v[84] = -2
-                            @if v[85] != v[84] {
+                            LEGV_sentence_id_on_popup1 = -2
+                            @if v[85] != LEGV_sentence_id_on_popup1 {
                                 // var1 = 107
                                 // @call .cev 1890
 				getQstr(107)
@@ -1321,17 +1334,17 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     
                 } .else bl {
                     // "STATICを選択中"
-                    s[60].on
-                    v[300] = v[101] * 300 + 4700
+                    LEGS_Showing_PopupWindow_1.on
+                    Ptr20 = v[101] * 300 + 4700
                     // "生産できるやつを見る"
-                    v[301] = v[300] + 138
+                    v[301] = Ptr20 + 138
                     // "S 6"
-                    v[341] = 6
+                    TT1 = 6
                     // "番号を見る"
-                    v[301] += v[341] * 3
-                    v[84] = v[v[301]]
+                    v[301] += TT1 * 3
+                    LEGV_sentence_id_on_popup1 = v[v[301]]
                     // "生産できる兵士が存在するなら文章を見る"
-                    @if v[84] >= 1 {
+                    @if LEGV_sentence_id_on_popup1 >= 1 {
                         @call .cev 199
                         
                     }
@@ -1344,15 +1357,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 
         // "D"
         @if `between(LEGV_MousePointer_X, v[1049] - v[1291], v[1049] + v[1291]) && between(LEGV_MousePointer_Y, v[1050] - v[1292], v[1050] + v[1292]) {
-            v[341] = v[1049]
-            v[342] = v[1050] - 1
+            TT1 = v[1049]
+            TT2 = v[1050] - 1
             @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `v[341] != v[345] || v[342] != v[346] {
+            @if `TT1 != v[345] || TT2 != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
                 @pic[PicID_ButtonSelect].strpic {
                     ""
-                    .pos v[341], v[342] .center
+                    .pos TT1, TT2 .center
                     .size v[343], v[344]                    .chromakey 1
                     .scale 100
                     .trans 20
@@ -1371,13 +1384,13 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             }
 
             @if v[101] >= 1 {
-                s[60].on
+                LEGS_Showing_PopupWindow_1.on
                 @if s[27] .isOff() {
                     @if s[29] .isOn() {
-                        s[60].on
-                        v[84] = 17
+                        LEGS_Showing_PopupWindow_1.on
+                        LEGV_sentence_id_on_popup1 = 17
                         // "生産できる兵士が存在するなら文章を見る"
-                        @if v[84] >= 1 {
+                        @if LEGV_sentence_id_on_popup1 >= 1 {
                             v[89] = v[486]
                             @call .cev 1200
                             
@@ -1389,8 +1402,8 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             
                         } .else bl {
                             // "待機指令"
-                            v[84] = -3
-                            @if v[85] != v[84] {
+                            LEGV_sentence_id_on_popup1 = -3
+                            @if v[85] != LEGV_sentence_id_on_popup1 {
                                 var1 = 108
                                 @call .cev 1890
 
@@ -1419,17 +1432,17 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     
                 } .else bl {
                     // "STATICを選択中"
-                    s[60].on
-                    v[300] = v[101] * 300 + 4700
+                    LEGS_Showing_PopupWindow_1.on
+                    Ptr20 = v[101] * 300 + 4700
                     // "生産できるやつを見る"
-                    v[301] = v[300] + 138
+                    v[301] = Ptr20 + 138
                     // "D 7"
-                    v[341] = 7
+                    TT1 = 7
                     // "番号を見る"
-                    v[301] += v[341] * 3
-                    v[84] = v[v[301]]
+                    v[301] += TT1 * 3
+                    LEGV_sentence_id_on_popup1 = v[v[301]]
                     // "生産できる兵士が存在するなら文章を見る"
-                    @if v[84] >= 1 {
+                    @if LEGV_sentence_id_on_popup1 >= 1 {
                         @call .cev 199
                         
                     }
@@ -1442,15 +1455,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 
         // "F"
         @if `between(LEGV_MousePointer_X, v[1051] - v[1291], v[1051] + v[1291]) && between(LEGV_MousePointer_Y, v[1052] - v[1292], v[1052] + v[1292]) {
-            v[341] = v[1051]
-            v[342] = v[1052] - 1
+            TT1 = v[1051]
+            TT2 = v[1052] - 1
             @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `v[341] != v[345] || v[342] != v[346] {
+            @if `TT1 != v[345] || TT2 != v[346] {
                 v[1291].copy v[343], 2
                 v[343..344] *= 2
                 @pic[PicID_ButtonSelect].strpic {
                     ""
-                    .pos v[341], v[342] .center
+                    .pos TT1, TT2 .center
                     .size v[343], v[344]                    .chromakey 1
                     .scale 100
                     .trans 20
@@ -1469,15 +1482,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
             }
 
             @if v[101] >= 1 {
-                s[60].on
+                LEGS_Showing_PopupWindow_1.on
                 @if s[27] .isOff() {
                     // "STATIC以外"
                     @if s[29] .isOn() {
                         
                     } .else bl {
                         @if v[943] >= 1 {
-                            v[84] = -6
-                            @if v[85] != v[84] {
+                            LEGV_sentence_id_on_popup1 = -6
+                            @if v[85] != LEGV_sentence_id_on_popup1 {
                                 // "#call quickstrings"
                                 // var1 = 104
                                 // @call .cev 1890
@@ -1503,8 +1516,8 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                             
                         } .else bl {
                             // "手動指令"
-                            v[84] = -4
-                            @if v[85] != v[84] {
+                            LEGV_sentence_id_on_popup1 = -4
+                            @if v[85] != LEGV_sentence_id_on_popup1 {
                                 // var1 = 109
                                 // @call .cev 1890
 				getQstr(109)
@@ -1533,8 +1546,8 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                     
                 } .else bl {
                     // "STATICを選択中"
-                    v[84] = -5
-                    @if v[85] != v[84] {
+                    LEGV_sentence_id_on_popup1 = -5
+                    @if v[85] != LEGV_sentence_id_on_popup1 {
                         // "#call quickstrings"
                         // var1 = 105
                         // @call .cev 1890
@@ -1566,13 +1579,13 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 
 
 	// PAUSED INFORMATION
-        @if s[60] .isOff() {
+        @if LEGS_Showing_PopupWindow_1 .isOff() {
             @if s[2] .isOn() {
                 @if LEGV_MousePointer_Y <= v[1286] {
                     @if `!(LEGV_MousePointer_X <= v[4514] && LEGV_MousePointer_Y >= v[4515]) {
                         @if `!(between(LEGV_MousePointer_X, v[1282], v[1284]) && between(LEGV_MousePointer_Y, v[1283], v[1285])) {
                             @if v[93] >= 12 {
-                                s[60].on
+                                LEGS_Showing_PopupWindow_1.on
                                 @if s[61] .isOff() {
                                     v[368..369] = 0
                                     @loop v[1004] .dst v[301] {
@@ -1598,15 +1611,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                                             @if `between(LEGV_MousePointer_X, v[303], v[305]) && between(LEGV_MousePointer_Y, v[304], v[306]) {
                                                 v[311] = v[302] + 99
                                                 v[v[311]].copy v[700], 150
-                                                v[84] = 1000
-                                                @if v[85] != v[84] {
-                                                    v[341] = v[301] + 1
-                                                    v[369] = v[341]
-                                                    v[341] += v[4562]
-                                                    v[342] = [8, 2, 17][(v[700] + 1)]
+                                                LEGV_sentence_id_on_popup1 = 1000
+                                                @if v[85] != LEGV_sentence_id_on_popup1 {
+                                                    TT1 = v[301] + 1
+                                                    v[369] = TT1
+                                                    TT1 += v[4562]
+                                                    TT2 = [8, 2, 17][(v[700] + 1)]
                                                     v[350] = v[v[302] + 6]
                                                     v[351] = v[v[302] + 7] - 16
-                                                    t[501] .asg "\c[\v[342]]\t[\v[341]]\c[0]
+                                                    t[501] .asg "\c[\TT2]\t[\TT1]\c[0]
 \c[1]HP:\v[706]/\v[705]
 \c[3]AR:\v[711]/\v[738]
 \c[10]SP:\v[708]/\v[707]" .extract
@@ -1670,9 +1683,9 @@ __fn macro_strcat_adjustment $str1 $var $colour {
                 
             }
 
-            @if s[60] .isOff() {
+            @if LEGS_Showing_PopupWindow_1 .isOff() {
                 s[61].off
-                v[84] = 0
+                LEGV_sentence_id_on_popup1 = 0
                 @pic[PicID_Popup_1].erase
                 @pic[PicID_Auxilia_Message_Window].erase
                 // "Paused Information"
@@ -1687,14 +1700,14 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 
                         // "######################Get Terrain and Elevation info"
                         v[313] = v[v[1182] + v[21] - v[69] + (v[22] - v[70]) * v[2061]]
-                        v[341] = v[313] / 100000000
-                        v[342] = v[313] % 100
+                        TT1 = v[313] / 100000000
+                        TT2 = v[313] % 100
                         v[350] = LEGV_MousePointer_X
                         v[351] = LEGV_MousePointer_Y - 16
-                        v[342] = v[1239] + v[342]
+                        TT2 = v[1239] + TT2
                         // "######################"
-                        v[341] = v[21]
-                        v[342] = v[22]
+                        TT1 = v[21]
+                        TT2 = v[22]
                         @call .cev 2001
                         v[344] = 63
 			@if Var_MouseMode != MODE_Elevation {
@@ -1733,8 +1746,8 @@ __fn macro_strcat_adjustment $str1 $var $colour {
         @wait 0
         @wait 0
         @wait 0
-        v[85] = v[84]
-        v[90] = v[84] <= 0 ? 0 : v[89]
+        v[85] = LEGV_sentence_id_on_popup1
+        v[90] = LEGV_sentence_id_on_popup1 <= 0 ? 0 : v[89]
         
     }
     

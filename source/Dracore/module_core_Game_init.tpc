@@ -1,5 +1,6 @@
 #include "./../headers/header_common.tpc"
 #include "./../headers/header_drawing.tpc"
+#include "./../headers/header_pathfinding.tpc"
 
 #include "./../headers/header_config_files.tpc"
 
@@ -453,11 +454,14 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[4840] = v[1018] + 1 
 	@comment "##OBJ数拡張する場合ここもいじる必要あり"
 	@comment "#Pathfinding"
-	v[4569] = v[1018] + v[1017] * 100 //
+
+	// NODE DATA ADDRESS SETTING
+	RMconst_Node_Array_Address_Start = v[1018] + v[1017] * 100 //
+	RMconst_MapNodeMemSize = 20
+	RMconst_Node_Array_Address_Start_MINUS_NODE_MEMSIZE = RMconst_Node_Array_Address_Start - RMconst_MapNodeMemSize
 	
-	v[4564] = 20
 	v[4558] = 3001
-	v[4568] = v[4569] + v[4564] * 200 * 200 + 1
+	v[4568] = RMconst_Node_Array_Address_Start + RMconst_MapNodeMemSize * 200 * 200 + 1
 	v[4555] = v[4568] + 200 * 200 + 1
 	v[4567] = v[4555] + 200 * 200 + 1
 	v[4600] = v[4567] + 200 * 200 + 1

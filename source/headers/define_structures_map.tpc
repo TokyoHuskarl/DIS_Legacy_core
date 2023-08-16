@@ -29,7 +29,14 @@ struct("DISmap",{
 	})
 
 	struct("mapnode",{
-		def mapnode_ArraySize = 20
+		defv RMconst_Node_Array_Address_Start = 4569
+
+		// dafuq
+		vname[4828],"const_Node_ArrayHead_MinusMemSize",bl
+		defv RMconst_Node_Array_Address_Start_MINUS_NODE_MEMSIZE = 4828
+
+		def mapnode_ArraySize = 20 // this one is saved in v[4564]
+		defv RMconst_MapNodeMemSize = 4564
 		defv {
 			mapnode_RefMapX = 581
 			mapnode_RefMapY 

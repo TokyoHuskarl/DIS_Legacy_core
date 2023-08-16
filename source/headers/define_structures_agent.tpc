@@ -42,8 +42,10 @@ struct("agent",{
 	agent_MilPixMoveOrderedPointDist = 623
 
 	agent_ObjectCollideSkipFrame = 625
+
 	agent_MapX = 626
 	agent_MapY = 627
+
 	agent_AATimer = 628
 	agent_AttackFrame = 629
 	agent_AttackDelay = 630
@@ -59,8 +61,8 @@ struct("agent",{
 	agent_MoveTypeBIts = 638
 	agent_ColDimension = 639 // ? maybe used in collision proc
 	agent_TerrainIDstanding = 640
-	agent_HoldPointX = 641
 
+	agent_HoldPointX = 641
 	agent_HoldPointy = 642
 	agent_WayPoint1X= 643
 	agent_WayPoint1Y = 644
@@ -340,6 +342,9 @@ struct("agent",{
 	AI_routine_bits_FLAG_ForcemoveFlag = 4194304
 	AI_routine_bits_FLAG_Pathblocked = 8388608
 	AI_routine_bits_FLAG_GroupPath = 16777216
+	AI_routine_bits_FLAG_RayCast = 33554432
+	AI_routine_bits_FLAG_WP_set_by_RayCast = 67108864
+	AI_routine_bits_FLAG_1secDelay_PF = 134217728
 
 	//ObjBits
 	BaseObjBit_FLAG_Immune_to_Knock_back = 8

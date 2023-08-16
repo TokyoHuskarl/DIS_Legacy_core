@@ -1,4 +1,88 @@
 
+// Raycast
+__fn func_nodecheck_RayCast $X0 $Y0 $X1 $Y1 {
+
+	// use Bresenham's line algorithm to check line from Point1 to Point2
+	// use common vars to caluculate
+	defv {
+		RC_deltax = __id(TT1)
+		RC_deltay = __id(TT2)
+
+		RC_x = __id(TT3)
+		RC_y = __id(TT4)
+		RC_err = __id(TT5)
+
+		RC_swapx = __id(TT6)
+		RC_swapy = __id(TT7)
+		RC_err2 = __id(TT8) 
+	}
+
+	// RC_deltax = abs($X1 - $X0)
+	RC_deltax = ($X1 - $X0)
+	RC_deltax = abs(RC_deltax)
+
+	// RC_deltay = abs($Y1 - $Y0)
+	RC_deltay = ($Y1 - $Y0)
+	RC_deltay = abs(RC_deltay)
+	RC_deltay *= -1 // only -(dy) used in this proc, so make RC_deltay = (dy * -1) initially to optimize in RM system
+	
+	RC_swapx = $X0 < $X1 ? 1 : -1
+	RC_swapy = $Y0 < $Y1 ? 1 : -1
+	RC_err = RC_deltax + RC_deltay
+
+	RC_x = $X0
+	RC_y = $Y0
+
+	// get Start Node Ptr
+	defv RC_PF_NodePtr = __id(TT9)
+	RC_PF_NodePtr = LEGV_MapNodeAmountX * RC_y
+	RC_PF_NodePtr += RC_x
+	RC_PF_NodePtr *= Node_Data_Size
+	RC_PF_NodePtr += RMconst_Node_Array_Address_Start_MINUS_NODE_MEMSIZE
+
+	@loop bl {
+	
+		// reach the goal coordinate
+		// if the agent can reach there, it doesn't matter whether the goal node is wall or not
+		@if RC_x == $X1 {
+			@if RC_y == $Y1 {
+				reg1 = 0 // no obstacle found, return 0
+				@break
+			}
+		}
+		
+
+		/* check node information of the coordinate */
+		v[RC_PF_NodePtr].copy mapnode_RefMapX, 3 // Node[2] is movement cost that we need
+		@if mapnode_MovementCost >= Node_Obstacle_Threshold {
+			reg1 = 1 // return 1
+			@break
+		}
+	
+
+		RC_err2 = RC_err * 2
+		
+		@if RC_err2 > RC_deltay {
+			RC_err += RC_deltay // -(dy)
+			RC_x += RC_swapx
+			// Node X diff
+			RC_PF_NodePtr += RC_swapx * Node_Data_Size
+		}
+
+		@if RC_err2 < RC_deltax {
+			RC_err += RC_deltax
+			RC_y += RC_swapy
+			// Node Y diff
+			// use reg1 to temp var
+			reg1 = RC_swapy * LEGV_MapNodeAmountX
+			RC_PF_NodePtr += reg1 * Node_Data_Size
+		}
+		
+	}
+
+}
+
+
 
 // maybe movement order itself should be combined in one
 
@@ -46,15 +130,18 @@ __fn func_pathfinding_move(){
 		    v[629] = Temp1 + 29
 		    @if v[v[297]] > 0 {
 			// "if you have obj"
-			@if v[Ptr15] == 2 {
+			@if v[Ptr15] == 2 { // ATK
 			    v[Ptr20] = 2
-			    
-			} .else bl {
-			    v[Ptr20] = 3
 			    @if `v[Temp1 + 3] & AgentBits_FLAG_PF_walldetection_switch {
-				
+			    	v[Temp1 + 34] |= AI_routine_bits_FLAG_1secDelay_PF
+			    }
+
+			} .else bl { // OTHERWISE
+			    v[Ptr20] = 3 // ForceMovement?
+			    @if `v[Temp1 + 3] & AgentBits_FLAG_PF_walldetection_switch {
+				v[Temp1 + 34] |= AI_routine_bits_FLAG_1secDelay_PF
 			    } .else bl {
-				v[Temp1 + 3] &= -16777217//~16777216
+				v[Temp1 + 3] &= ~AgentBits_FLAG_NeedWpToReachObj
 				
 			    }
 			    
@@ -70,10 +157,12 @@ __fn func_pathfinding_move(){
 		    }
 		    @if s[279] .isOn() {
 			v[Ptr20] = 1
-			v[Temp1 + 3] &= -16777217//~16777216
+			v[Temp1 + 3] &= ~AgentBits_FLAG_NeedWpToReachObj
 			@if `v[Temp1 + 3] & AgentBits_FLAG_PF_walldetection_switch {
 			    v[Temp1 + 3] |= AgentBits_FLAG_walldetected
-			    v[Temp1 + 34] |= AI_routine_bits_FLAG_Pathblocked
+			    // 
+			    def Pathblock_AND_1secDelay = AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_1secDelay_PF
+			    v[Temp1 + 34] |= Pathblock_AND_1secDelay
 			    
 			}
 			
@@ -224,13 +313,13 @@ __fn func_pathfinding_open_Node(){
 	}
 }
 
+// WHAT THE FUCK IS Temp11?
 __fn func_pathfinding_remove_OpenNode(){
 	Temp10 = v[4582]
 	Temp9 = v[4568]
 	Temp10 += Temp9
+	// searching TT11 I guess
 	@while Temp9 <= Temp10 {
-	    //opt 28.4.23
-	    //Temp11 = (Temp9 + Temp10) / 2
 	    Temp11 = (Temp9 + Temp10) 
 	    Temp11 /= 2
 	    @if v[Temp11] == var9 {

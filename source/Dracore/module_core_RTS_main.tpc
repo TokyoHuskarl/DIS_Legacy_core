@@ -2,7 +2,7 @@
     
 #include "./../headers/header_common.tpc"
 
-
+#include "./module_core_RTS_misc_functions.tpc"
 #include "./module_core_RTS_ui_misc_functions.tpc"
 #include "./../headers/header_drawing.tpc"
 #include "./../headers/header_agent.tpc"
@@ -918,6 +918,11 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			//v[726] &= ~67108864
 			v[726] &=-100663297
 		    }
+
+		    // kill Pathfinding 1 sec delay by wall detection
+		    v[634] &= ~AI_routine_bits_FLAG_1secDelay_PF
+
+
 		    //v[680] = v[301] + 80 
 		    //v[680] = v[v[680]]
 
@@ -2379,3 +2384,8 @@ cev .id(71), .name("Main:Frame Count") , .parallel , .cond(Const_Is_RTS_Mode), {
 cev .id(2006), .name("RecoverH/M v1v2v3"),{
 	macro_HPSPreg(var1 var2 var3)
 }
+
+cev .id(2152), .name("miscfunc:remove dead agent pic"), {
+	func_remove_dead_agent_picture(var1)
+}
+

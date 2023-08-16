@@ -20,7 +20,7 @@ def AEAB_abandon = {
 	__if DIS_EXPERIMENTAL != -1 {
 		func_errlog("AEAB function detected, these functions must be removed from DIS source code.")
 	}
-	mypippi = 13123
+
 }
 
 /*
@@ -88,3 +88,6 @@ __fn func_get_AA_usage $agent $flags {
 		func_errlog("the function func_get_AA_usage not defined...")
 	}
 }
+
+
+
