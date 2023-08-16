@@ -32,7 +32,7 @@ def DIS_DEBUG_BUILD = DEBUG_BUILD
 
 
 
-__if DEBUG_BUILD ==1 {
+__if DEBUG_BUILD == 1 {
 #optimize 0
 }.else bl {
 #optimize 1 //eggsperimental, can cause some problems
@@ -136,6 +136,7 @@ __fn macro_get_agent_slot_ptr $pointer $agent $slot{
 
 //basic structures definitions
 #include "./define_structures_agent.tpc"
+#include "./define_structures_map.tpc"
 
 //cev 2004 GetParaNow v1v2 r1
 def {

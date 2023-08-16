@@ -343,8 +343,9 @@ cev .id(1800), .name("Mission:MapInit"), {
 		v[341] = v[2065] * 2 + v[69]
 		v[342] = v[2064] * 2 + v[70]
 		v[341].copy v[v[286]], 2
-		@comment "tile check
-#detect init static"
+
+		@comment "tile check #detect init static"
+		// 100 = neutral
 		v[v[286] + 2] += 100
 		@comment "Road Counter"
 		v[316] = 0
@@ -613,9 +614,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 	    
 	}
 	@if s[308] .isOff() {
-	    @comment "#########
-	NEED CONVERTING
-#########"
+	    @comment "#########	NEED CONVERTING#########"
 	    v[341] = muldiv(100, v[1001], 800)
 	    @if v[1001] > 800 {
 		v[341] += 5
@@ -1008,4 +1007,20 @@ cev .id(1800), .name("Mission:MapInit"), {
 	}
 	v[2511] = 0
 	@wait 0
+}
+
+
+// link
+cev .id(1793), .name("set NodesLink"), {
+	v[303] = (v[288] - v[4569]) / 20 + 1
+	v[304] = v[v[288] + 3]
+	@comment "kari"
+	// 87 seems magic number
+	@if v[304] <= 87 {
+	v[v[287]] = v[303] * 10 + v[302]
+	v[287] += 1
+
+	} .else bl { // ?
+
+	}
 }
