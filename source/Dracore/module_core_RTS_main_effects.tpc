@@ -1,209 +1,215 @@
 
 defv EffectPtrHolder = 4859
 
-cev .id(22), .name("Main:Normal Effect") , .parallel , .cond(Const_Is_RTS_Mode), {   
-v[243] = 0
-@loop v[1017] .dst v[241] {
-    v[241] %= v[1017]
-    Temp1 = v[241] * 100 
-    Temp1 += v[1018]
-    //@comment "エフェクトが存在する"
-    @if s[2] .isOff() {
-        //@comment "タイマーが切れていない"
-        @if v[Temp1] >= 1 {
-            v[Temp1].copy v[601], 100
-            @if v[700] >= 1 {
+// cev .id(22), .name("Main:Normal Effect") , .parallel , .cond(Const_Is_RTS_Mode), {
+__fn MAIN_CEV_RTS_NORMAL_EFFECT_MANAGER {
 
-	        EffectPtrHolder = Temp1
+	v[243] = 0
+	@loop v[1017] .dst v[241] {
+	    v[241] %= v[1017]
+	    Temp1 = v[241] * 100 
+	    Temp1 += v[1018]
+	    //@comment "エフェクトが存在する"
+	    @if s[2] .isOff() {
+		//@comment "タイマーが切れていない"
+		@if v[Temp1] >= 1 {
+		    v[Temp1].copy v[601], 100
+		    @if v[700] >= 1 {
 
-		@if v[601] == EffectType_Has_LinkedFunc_Registered { // igonore registered frame
-			v[601] = EffectType_Has_LinkedFunc // convert
-            		v[601].copy v[Temp1], 100
-		}.else bl {
-			s[141].off
-			//@comment "Access15 = タイマー"
-			v[295] = Temp1 + 99
-			v[243] += 1
-			//@comment "タイマー減らす"
-			v[v[295]] -= 1
-			    __if DEBUG_BUILD==1{
-				@if v[611] >= 300 {
-				    @if v[611] <= 500 {
-					func_export_deblog_array("illegal_effect_report_1" Temp1 100)
-				    }
-				}
-			    }
+			EffectPtrHolder = Temp1
 
-
-			//@comment "#あとは個別イベントに丸投げ#V[604]>=1"
-			@if v[604] >= 1 {
-			    @call .cev v[604]
-			}
-
-
-			v[EffectPtrHolder].copy v[601], 100
-
-			//@comment "時間切れ消滅処理"
-			@if v[700] <= 0 {
-			    //@comment "2番ならLinkedFuncをCallする"
-			    @if v[EffectPtrHolder] == 2 {
-				@if v[611] >= 31 {
-
-				    Temp1 = EffectPtrHolder
-
-				    s[143].on
-				    
-				    //DEBUG FUNCTION!
+			@if v[601] == EffectType_Has_LinkedFunc_Registered { // igonore registered frame
+				v[601] = EffectType_Has_LinkedFunc // convert
+				v[601].copy v[Temp1], 100
+			}.else bl {
+				s[141].off
+				//@comment "Access15 = タイマー"
+				v[295] = Temp1 + 99
+				v[243] += 1
+				//@comment "タイマー減らす"
+				v[v[295]] -= 1
 				    __if DEBUG_BUILD==1{
-					func_devlog("effect removed, cev called - id:\v[611]")
 					@if v[611] >= 300 {
 					    @if v[611] <= 500 {
-						func_export_deblog_array("illegal_effect_report" Temp1 100)
-						func_force_crash("Illegal cev called in effect erasing")
-						
+						func_export_deblog_array("illegal_effect_report_1" Temp1 100)
 					    }
 					}
 				    }
 
 
-				    @call .cev v[611]
-				    s[143].off
+				//@comment "#あとは個別イベントに丸投げ#V[604]>=1"
+				@if v[604] >= 1 {
+				    @call .cev v[604]
+				}
+
+
+				v[EffectPtrHolder].copy v[601], 100
+
+				//@comment "時間切れ消滅処理"
+				@if v[700] <= 0 {
+				    //@comment "2番ならLinkedFuncをCallする"
+				    @if v[EffectPtrHolder] == 2 {
+					@if v[611] >= 31 {
+
+					    Temp1 = EffectPtrHolder
+
+					    s[143].on
+					    
+					    //DEBUG FUNCTION!
+					    __if DEBUG_BUILD==1{
+						func_devlog("effect removed, cev called - id:\v[611]")
+						@if v[611] >= 300 {
+						    @if v[611] <= 500 {
+							func_export_deblog_array("illegal_effect_report" Temp1 100)
+							func_force_crash("Illegal cev called in effect erasing")
+							
+						    }
+						}
+					    }
+
+
+					    @call .cev v[611]
+					    s[143].off
+					    
+					}
+					
+				    }
+				    //@comment "消滅処理"
+				    v[1301].copy v[EffectPtrHolder], 100
+				    
+				}
+			  }
+		    }
+		    
+		}
+		
+	    } .else bl {
+		//@comment "Access15 = x"
+		v[295] = Temp1 + 4
+		// add milpix
+		v[53].copy TT1, 2
+		v[341..342] *= 1000
+		v[v[295]].add TT1,2
+		v[295] += 2
+		//@comment "ずれセット"
+		v[v[295]] .add v[53], 2
+		v[295] += 11
+		v[v[295]] .add v[53], 2
+		v[295] += 3
+		v[v[295]] .add v[53], 2
+		v[295] += 3
+		v[v[295]] .add v[53], 2
+		v[295] += 3
+		v[v[295]] .add v[53], 2
+
+	    }
+	    
+	}
+
+}
+
+// cev .id(23), .name("Main:Particle Effect") , .parallel , .cond(Const_Is_RTS_Mode), {   
+//@comment "Check whether each emitter is in screen or not per 4f->6f "
+__fn MAIN_CEV_RTS_PARTICLE_MANAGER {
+
+	@if `v[2219] % 6 == 0 {
+	    @loop v[1199] .dst v[241] {
+		Temp1 = v[241] * 50 
+		Temp1 += v[1198]
+		//@comment "Access15 = タイマー"
+		//@comment "Is there Emitter?"
+		@if `v[Temp1] >= 1 {
+		    v[Temp1 + 48] = between(v[Temp1 + 6], v[1008], v[1009]) && between(v[Temp1 + 7], v[1010], v[1011]) ? 0 : 1
+		    
+		}
+		
+	    }
+	    
+	    
+	}
+	@if s[19] .isOff() {
+	    v[246..247] = 0
+	    @loop v[1199] .dst v[241] {
+		v[244] %= v[1199]
+		Temp1 = v[241] * 50 
+		Temp1 += v[1198]
+		//@comment "Access15 = タイマー"
+		//@comment "Is there Emitter?"
+		@if v[Temp1] >= 1 {
+		    @if v[Temp1] == 1002 {
+			v[Temp1] = 2
+		    }.else bl {
+
+			    @if `v[Temp1 + 49] >= 1 {
+				s[141].off
+				//@comment "タイマーが切れていない"
+				v[295] = Temp1 + 49
+				v[246] += 1
+				//@comment "タイマー減らす"
+				v[v[295]] -= 1
+				v[Temp1].copy v[601], 11
+				//@comment "#あとは個別イベントに丸投げ#V[604]>=1"
+				@if v[604] >= 1 {
+				    @call .cev v[604]
+				    
+				}
+				//@comment "時間切れ消滅処理"
+				@if v[v[295]] <= 0 {
+				    //@comment "消滅処理"
+				    Temp1 = v[241] * 50 
+				    Temp1 += v[1198]
+				    v[1301].copy v[Temp1], 50
 				    
 				}
 				
+			    } .else bl {
+				//@comment "消滅処理"
+				Temp1 = v[241] * 50 
+				Temp1 += v[1198]
+				v[1301].copy v[Temp1], 50
+				
 			    }
-			    //@comment "消滅処理"
-			    v[1301].copy v[EffectPtrHolder], 100
-			    
-			}
-             	  }
-            }
-            
-        }
-        
-    } .else bl {
-        //@comment "Access15 = x"
-        v[295] = Temp1 + 4
-	// add milpix
-        v[53].copy TT1, 2
-	v[341..342] *= 1000
-	v[v[295]].add TT1,2
-        v[295] += 2
-        //@comment "ずれセット"
-        v[v[295]] .add v[53], 2
-        v[295] += 11
-        v[v[295]] .add v[53], 2
-        v[295] += 3
-        v[v[295]] .add v[53], 2
-        v[295] += 3
-        v[v[295]] .add v[53], 2
-        v[295] += 3
-        v[v[295]] .add v[53], 2
-
-    }
-    
-}
+		   }
+		}
+		
+	    }
+	    
+	    
+	}
 
 }
 
-cev .id(23), .name("Main:Particle Effect") , .parallel , .cond(Const_Is_RTS_Mode), {   
-//@comment "Check whether each emitter is in screen or not per 4f->6f "
-@if `v[2219] % 6 == 0 {
-    @loop v[1199] .dst v[241] {
-        Temp1 = v[241] * 50 
-	Temp1 += v[1198]
-        //@comment "Access15 = タイマー"
-        //@comment "Is there Emitter?"
-        @if `v[Temp1] >= 1 {
-            v[Temp1 + 48] = between(v[Temp1 + 6], v[1008], v[1009]) && between(v[Temp1 + 7], v[1010], v[1011]) ? 0 : 1
-            
-        }
-        
-    }
-    
-    
-}
-@if s[19] .isOff() {
-    v[246..247] = 0
-    @loop v[1199] .dst v[241] {
-        v[244] %= v[1199]
-        Temp1 = v[241] * 50 
-	Temp1 += v[1198]
-        //@comment "Access15 = タイマー"
-        //@comment "Is there Emitter?"
-        @if v[Temp1] >= 1 {
-	    @if v[Temp1] == 1002 {
-		v[Temp1] = 2
-	    }.else bl {
-
-		    @if `v[Temp1 + 49] >= 1 {
+// cev .id(24), .name("Main:Gib Effect") , .parallel , .cond(Const_Is_RTS_Mode), {
+__fn MAIN_CEV_RTS_GIB_MANAGER {
+	
+	@if s[302] .isOff() {
+	    v[419] = 0
+	    @loop v[1163] .dst v[241] {
+		v[241] %= v[1017]
+		Temp1 = v[241] * 100 
+		Temp1 += v[1162]
+		//@comment "エフェクトが存在する"
+		//@comment "タイマーが切れていない"
+		@if v[Temp1] >= 1 {
+		    @if `v[Temp1 + 99] >= 1 {
 			s[141].off
-			//@comment "タイマーが切れていない"
-			v[295] = Temp1 + 49
-			v[246] += 1
-			//@comment "タイマー減らす"
-			v[v[295]] -= 1
+			//@comment "Access15 = タイマー"
+			v[295] = Temp1 + 99
+			v[419] += 1
 			v[Temp1].copy v[601], 11
 			//@comment "#あとは個別イベントに丸投げ#V[604]>=1"
 			@if v[604] >= 1 {
 			    @call .cev v[604]
 			    
 			}
-			//@comment "時間切れ消滅処理"
-			@if v[v[295]] <= 0 {
-			    //@comment "消滅処理"
-			    Temp1 = v[241] * 50 
-			    Temp1 += v[1198]
-			    v[1301].copy v[Temp1], 50
-			    
-			}
-			
-		    } .else bl {
-			//@comment "消滅処理"
-			Temp1 = v[241] * 50 
-			Temp1 += v[1198]
-			v[1301].copy v[Temp1], 50
 			
 		    }
-           }
-        }
-        
-    }
-    
-    
-}
-
-}
-
-cev .id(24), .name("Main:Gib Effect") , .parallel , .cond(Const_Is_RTS_Mode), {   
-@if s[302] .isOff() {
-    v[419] = 0
-    @loop v[1163] .dst v[241] {
-        v[241] %= v[1017]
-        Temp1 = v[241] * 100 
-	Temp1 += v[1162]
-        //@comment "エフェクトが存在する"
-        //@comment "タイマーが切れていない"
-        @if v[Temp1] >= 1 {
-            @if `v[Temp1 + 99] >= 1 {
-                s[141].off
-                //@comment "Access15 = タイマー"
-                v[295] = Temp1 + 99
-                v[419] += 1
-                v[Temp1].copy v[601], 11
-                //@comment "#あとは個別イベントに丸投げ#V[604]>=1"
-                @if v[604] >= 1 {
-                    @call .cev v[604]
-                    
-                }
-                
-            }
-            
-        }
-        
-    }
-    
-    
-}
+		    
+		}
+		
+	    }
+	    
+	    
+	}
 
 }
