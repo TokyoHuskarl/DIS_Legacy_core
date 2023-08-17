@@ -14,39 +14,7 @@ def Ptr_worker_on_job_start =2940
 
 
 
-//cev 2006
 
-__fn func_main_extract_agent_vars {
-	    Ptr1 = v[301] + 1
-	    v[Ptr1].copy v[601], 300
-
-}
-
-__fn func_main_save_agent_vars {
-	    v[601].copy v[Ptr1], 300
-}
-
-__fn func_blink_set {
-
-	@if s[2] .isOff()  {
-		@if `!(v[725] & 448) {
-			//blink flag?
-			TT1 = v[604] + v[2500] 
-			v[725] |= (TT1 % 200) == 0 ? 64 : 0 //?
-		}
-	}
-
-
-}
-
-__fn func_blink_progress {
-	@if s[2] .isOff()  {
-		//v[725]=v[301]+125
-		@if `v[725] & 448 {
-			v[725] = v[725] & 256 ? v[725] & -449 : (v[725] & 128 ? v[725] | 256 : (v[725] & 64 ? v[725] | 128 : v[725])) //256+128->384 +64 ->448 then ~448 -> -449
-		}
-	}
-}
 
 
 //this is obsolete shite
@@ -87,8 +55,6 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    
 	}*/
 	v[522] = v[2501] == 0 ? 0 : v[522] + v[182]
-	//v[181..184] = 0
-	//v[181..184] = 0
 	v[ptr_null].copy v[181],4
 	v[191] -= 1
 
@@ -96,11 +62,11 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	//v[v[1071]..v[1079]] >>= Const_var_bit_maniacs
 	v[ptr_null].copy v[v[1071]], Const_var_save_all_morton_memories
 
-	// "Minimap"
-	v[403] = ev[1].scrx
-	v[404] = ev[1].scry
-	v[76] = ev[3].scrx
-	v[77] = ev[3].scry
+	// get Map Origin's ref coord
+	LEGV_MainMAP_PointOfReferenceX = ev[1].scrx
+	LEGV_MainMAP_PointOfReferenceY = ev[1].scry
+	LEGV_MapTileOriginX = ev[3].scrx
+	LEGV_MapTileOriginY = ev[3].scry
 
 	// "#WalkingSwitchOff"
 	__if DIS_EXPERIMENTAL == 0 {
@@ -373,7 +339,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //24.4.23
 	    macro_cord_diff(v[311] v[312])
 	    //macro_diff_var311to312()
-	    /*v[311] .sub v[403], 2
+	    /*v[311] .sub LEGV_MainMAP_PointOfReferenceX, 2
 	    v[311] .add v[53], 2
 	    // "ずれおわり"
 	    v[311..312] /= 16*/
@@ -386,7 +352,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "ずれ計算"
 	    //24.4.23
 	    macro_cord_diff(v[303] v[304])
-	    /*v[303] .sub v[403], 2
+	    /*v[303] .sub LEGV_MainMAP_PointOfReferenceX, 2
 	    v[303] .add v[53], 2
 	    // "ずれおわり"
 	    v[303..304] /= 16*/
@@ -2363,25 +2329,40 @@ cev .id(2020), .name("Main:Statsets_temp") , {
 	agent_ref_stats()
 }
 
-cev .id(21), .name("Main:Projectiles Manager") , .parallel , .cond(Const_Is_RTS_Mode), {   
-
-@comment "module_core_RTS_main.tpc"
 #include "./module_core_RTS_main_projectiles.tpc"
+cev .id(21), .name("Main:Projectiles Manager") , .parallel , .cond(Const_Is_RTS_Mode), {
+	MAIN_CEV_RTS_PROJECTILE_MANAGER()
 }
 
-cev .id(71), .name("Main:Frame Count") , .parallel , .cond(Const_Is_RTS_Mode), {
-@comment "module_core_RTS_main.tpc"
-#include "./module_core_RTS_main_Frame_Count.tpc"
-}
-
-//Effect Managers
+// Effect Managers
+// cevs
 #include "./module_core_RTS_main_effects.tpc"
+cev .id(22), .name("Main:Normal Effect") , .parallel , .cond(Const_Is_RTS_Mode), {   
+	MAIN_CEV_RTS_NORMAL_EFFECT_MANAGER()
+}
 
-//Agent Collision Check
+
+cev .id(23), .name("Main:Particle Effect") , .parallel , .cond(Const_Is_RTS_Mode), {   
+	MAIN_CEV_RTS_PARTICLE_MANAGER()
+}
+
+
+cev .id(24), .name("Main:Gib Effect") , .parallel , .cond(Const_Is_RTS_Mode), {   
+	MAIN_CEV_RTS_GIB_MANAGER()
+}
+
+// Agent Collision Check
 #include "./module_core_RTS_main_collision.tpc"
+cev .id(68),.name("Main:Agents Collision"),.parallel , .cond(Const_Is_RTS_Mode), {
+	MAIN_CEV_RTS_COLLISION_MANAGER()
+}
 
+// #include "./module_core_RTS_main_Frame_Count.tpc" -> module_core_RTS_misc_functions.tpc
+cev .id(71), .name("Main:Frame Count") , .parallel , .cond(Const_Is_RTS_Mode), {
+	MAIN_CEV_RTS_FRAME_COUNT()
+}
 
-//legacy macro cevs
+// legacy macro cevs
 cev .id(2006), .name("RecoverH/M v1v2v3"),{
 	macro_HPSPreg(var1 var2 var3)
 }
@@ -2390,3 +2371,36 @@ cev .id(2152), .name("miscfunc:remove dead agent pic"), {
 	func_remove_dead_agent_picture(var1)
 }
 
+//cev 2006
+
+__fn func_main_extract_agent_vars {
+	    Ptr1 = v[301] + 1
+	    v[Ptr1].copy v[601], 300
+
+}
+
+__fn func_main_save_agent_vars {
+	    v[601].copy v[Ptr1], 300
+}
+
+__fn func_blink_set {
+
+	@if s[2] .isOff()  {
+		@if `!(v[725] & 448) {
+			//blink flag?
+			TT1 = v[604] + v[2500] 
+			v[725] |= (TT1 % 200) == 0 ? 64 : 0 //?
+		}
+	}
+
+
+}
+
+__fn func_blink_progress {
+	@if s[2] .isOff()  {
+		//v[725]=v[301]+125
+		@if `v[725] & 448 {
+			v[725] = v[725] & 256 ? v[725] & -449 : (v[725] & 128 ? v[725] | 256 : (v[725] & 64 ? v[725] | 128 : v[725])) //256+128->384 +64 ->448 then ~448 -> -449
+		}
+	}
+}
