@@ -345,7 +345,9 @@ cev .id(2) ,.name("@Mission Init") ,{
 		}
 		
 	}
+	
 
+	// UI setting
 	@comment "Env"
 	v[2901] = v[1001] / 2
 	v[2902] = v[1002] / 2
@@ -375,8 +377,8 @@ cev .id(2) ,.name("@Mission Init") ,{
 		.affectedByShake
 	}
 	@pic[974].getInfo .ltrb .baseRect v[341], v[342], v[343], v[343]
-	v[1125] = v[341] + 262
-	v[1126] = v[1286]
+	LEGV_ConstBuffIconsStartX = v[341] + 254
+	LEGV_ConstBuffIconsStartY = v[1286]
 	v[341] += 502
 	v[341] += 84
 	v[342] = v[1286] + 3
