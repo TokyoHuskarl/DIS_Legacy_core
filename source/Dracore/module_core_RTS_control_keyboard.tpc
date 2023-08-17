@@ -410,10 +410,12 @@ Y:撤退開始 N:キャンセル"
             s[199].off
             
         }
+
+	def SPACE_HOLDING_THRESHOLD
         // "SPACE:カメラワープ"
-        @if v[945] >= 1 {
+        @if LEGV_SPACE >= 1 {
             @if s[43] .isOff() {
-                @if v[995] == 0 {
+                @if LEGV_Space_Frame == 0 {
                     @if v[101] >= 1 {
                         v[202] = 101
                         v[313..315] = 0
@@ -457,7 +459,7 @@ Y:撤退開始 N:キャンセル"
                     }
                     
                 } .else bl {
-                    @if v[995] >= 4 {
+                    @if LEGV_Space_Frame >= 4 {
                         // "部隊登録"
                         v[101].copy v[v[1078]], 40
                         s[42].on
@@ -465,12 +467,16 @@ Y:撤退開始 N:キャンセル"
                     }
                     
                 }
-                v[995] += 1
+                LEGV_Space_Frame += 1
                 
             }
             
         } .else bl {
-            v[995] = 0
+	    // SPACE TAP..
+	    @if LEGV_Space_Frame < 4 {
+		
+	    }
+            LEGV_Space_Frame = 0
             @if s[43] .isOff() {
                 v[1301].copy v[v[1078]], 40
                 s[42].off
@@ -582,7 +588,7 @@ Y:撤退開始 N:キャンセル"
             // "Y:テストインベントリ"
             @if v[925] >= 1 {
                 @if v[975] == 0 {
-                    @if v[995] == 0 {
+                    @if LEGV_Space_Frame == 0 {
                         @if s[43] .isOn() {
                             @se.play "Buzzer4" .opt 80, 50, 50
                             v[1301].copy v[v[1078]], 40

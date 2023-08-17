@@ -14,33 +14,38 @@
 def moduletitle="module_core_RTS_ui_general"
 
 //Map Common UI
-cev .id(26) ,.name("UI:Map Common UI"), .parallel , .cond(Const_Is_RTS_Mode), {
-@comment moduletitle
 #include "./module_core_RTS_ui_map_common.tpc"
+cev .id(26) ,.name("UI:RTS Screen Common UI"), .parallel , .cond(Const_Is_RTS_Mode), {
+	@comment moduletitle
+	UI_CEV_RTS_SCREEN_MANAGEMENT()
 }
 
 //Minimap
-cev .id(27) ,.name("UI:Minimap"), .parallel , .cond(Const_Is_Minimap_Set), {
-@comment moduletitle
 #include "module_core_RTS_ui_minimap.tpc"
+cev .id(27) ,.name("UI:Minimap"), .parallel , .cond(Const_Is_Minimap_Set), {
+	@comment moduletitle
+	UI_CEV_MINIMAP_MANAGER()
 }
 
 //Central monitor
-cev .id(28) ,.name("UI:Cent Monitor"), .parallel , .cond(Const_Is_RTS_Mode), {
-@comment moduletitle
 #include "./module_core_RTS_ui_central_monitor.tpc"
+cev .id(28) ,.name("UI:Cent Monitor"), .parallel , .cond(Const_Is_RTS_Mode), {
+	@comment moduletitle
+	UI_CEV_CENTRAL_MONITOR_MANAGEMENT()
 }
 
 //Unit management
-cev .id(29) ,.name("UI:Unit management"), .parallel , .cond(Const_Is_RTS_Mode), {
-@comment moduletitle
 #include "./module_core_RTS_ui_unit_management.tpc"
+cev .id(29) ,.name("UI:Unit management"), .parallel , .cond(Const_Is_RTS_Mode), {
+	@comment moduletitle
+	UI_CEV_SELECTED_AGENT_MANAGEMENT()
 }
 
 //Mouse Observe
-cev .id(47) ,.name("UI:Mouse Observer"), .parallel , .cond(Const_Is_RTS_Mode), {
-@comment moduletitle
 #include "./module_core_RTS_ui_mouse.tpc"
+cev .id(47) ,.name("UI:Mouse Observer"), .parallel , .cond(Const_Is_RTS_Mode), {
+	@comment moduletitle
+	UI_CEV_MOUSE_OBSERVER()
 }
 
 //Resource Window
@@ -77,6 +82,7 @@ cev .id(70) ,.name("Log:RTS log manager"), .parallel , .cond(Const_Is_RTS_Mode),
 	    
 	}
 }
+
 
 cev[81] "Draw Range Indicator", {
 	func_draw_range_indicator()

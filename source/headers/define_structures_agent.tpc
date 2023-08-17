@@ -156,8 +156,8 @@ struct("agent",{
 	agent_AA_ARorMR=722
 	agent_AAElement=723
 	agent_AABits=724
-	agent_AddMotionBits=725
-	agent_ExMotionFlags=726
+	agent_AddMotionBits = 725
+	agent_ExMotionFlags = 726
 
 	agent_AAamount = 727
 	agent_AAvelocity = 727
@@ -203,6 +203,7 @@ struct("agent",{
 	agent_CastSkillOrder = 846
 	agent_worker_JobType = 847
 	agent_TacticsOrderFlag = 848
+	agent_KnockBackTimer = 849
 	agent_ForceSprite = 850
 
 	agent_MainWeaponID = 851 
@@ -282,7 +283,12 @@ struct("agent",{
 	//Perks1
 
 
-	agent_PerkFlagBits1_FLAG_Pathfinder=128
+	agent_PerkFlagBits1_FLAG_Pathfinder = 128
+
+	AgentBits_Collided_Other_Agent = 64
+	AgentBits_Endpoint_Collision_Trouble = 128
+	AgentBits_Movement_Giveup = 256
+
 	AgentBits_FLAG_KILLED = 16384 
 
 	AgentBits_FLAG_EnableBasicAI = 1048576
@@ -333,8 +339,9 @@ struct("agent",{
 	AI_routine_bits_FLAG_tracing_wp=8192
 	AI_routine_bits_FLAG_PATHFINDING =16384
 		AI_routine_bits_KILL_FLAG_PATHFINDING=-16385
-	AI_routine_bits_FLAG_PFcontinue =32768
+	AI_routine_bits_FLAG_PFcontinue = 32768
 		AI_routine_bits_KILL_FLAG_PFcontinue=-32769
+		AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PFcontinue 
 	AI_routine_bits_FLAG_PFskip = 65536
 	AI_routine_bits_FLAG_Manual_Ordered = 131072
 	AI_routine_bits_FLAG_PF2Agent = 524288

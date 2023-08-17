@@ -57,7 +57,9 @@ __fn init_AEAB_array $agentid {
 }
 */
 
-//
+
+
+
 
 __fn func_extract_skill_data_from_agent_slot $agent $skillno $flags {
 	__if $flags & EXTRACT_FLAG_Data_extracted {
@@ -88,6 +90,8 @@ __fn func_get_AA_usage $agent $flags {
 		func_errlog("the function func_get_AA_usage not defined...")
 	}
 }
+
+
 
 
 

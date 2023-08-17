@@ -1,6 +1,11 @@
 
 // The UI system must be remade...
 
+def {
+	UI_BOTTOMLEFT = 0
+	UI_TOPRIGHT = 1
+
+}
 
 def macro_extract_selecting_unit_param = {
 	    Ptr1 = v[101] * 300
@@ -18,570 +23,37 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 
 
 // ACTUAL PROCESS STARTS HERE
+__fn UI_CEV_MOUSE_OBSERVER {
+	@if s[18] .isOn() {
 
-@if s[18] .isOn() {
+	    @if s[5] .isOff() {
+		LEGS_Showing_PopupWindow_1.off
 
-    @if s[5] .isOff() {
-        LEGS_Showing_PopupWindow_1.off
+		// "Escape"
+		@if s[181] .isOn() {
+		    LEGV_sentence_id_on_popup1 = 10001
+		    LEGS_Showing_PopupWindow_1.on
+		    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+			LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
 
-        // "Escape"
-        @if s[181] .isOn() {
-            LEGV_sentence_id_on_popup1 = 10001
-            LEGS_Showing_PopupWindow_1.on
-            @if LEGV_sentence_id_on_popup1 != v[85] {
-                v[85] = LEGV_sentence_id_on_popup1
-
-                // "#call quickstrings"
-                //var1 = 50
-                //@call .cev 1890
-		getQstr(50)
-                @pic[PicID_Popup_1].strpic {
-                    t[3000]
-                    .pos LEGV_MousePointer_X, LEGV_MousePointer_Y .topRight
-                    .size 0, 0                    .chromakey 1
-                    .scale 100
-                    .trans v[1066]
-                    .rgbs 100, 100, 100, 100
-                    .font Font_UI, v[4511]
-                    .spacing 0, 0
-                    .skin "" .stretch
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            }
-            s[201].on
-            
-        }
-
-        // "FF"
-        @if s[185] .isOn() {
-            LEGV_sentence_id_on_popup1 = 10002
-            LEGS_Showing_PopupWindow_1.on
-            @if LEGV_sentence_id_on_popup1 != v[85] {
-                v[85] = LEGV_sentence_id_on_popup1
-                // "#call quickstrings"
-                var1 = 184
-                @call .cev 1890
-                t[501] .asg "\c[8]\t[3001]\c[0]
-\t[3002]
-\t[3003]" .extract
-                @pic[PicID_Popup_1].strpic {
-                    t[501]
-                    .pos LEGV_MousePointer_X, LEGV_MousePointer_Y .topRight
-                    .size 0, 0                    .chromakey 1
-                    .scale 100
-                    .trans v[1066]
-                    .rgbs 100, 100, 100, 100
-                    .font Font_UI, v[4511]
-                    .spacing 0, 0
-                    .skin "" .stretch
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            }
-            s[201].on
-            
-        }
-
-        // "Pause"
-        @if s[184] .isOn() {
-            LEGV_sentence_id_on_popup1 = 10003
-            LEGS_Showing_PopupWindow_1.on
-            @if LEGV_sentence_id_on_popup1 != v[85] {
-                v[85] = LEGV_sentence_id_on_popup1
-                // "#call quickstrings"
-                var1 = 183
-                @call .cev 1890
-                t[501] .asg "\c[8]\t[3001]\c[0]
-\t[3002]
-\t[3003]" .extract
-                @pic[PicID_Popup_1].strpic {
-                    t[501]
-                    .pos LEGV_MousePointer_X, LEGV_MousePointer_Y .topRight
-                    .size 0, 0                    .chromakey 1
-                    .scale 100
-                    .trans v[1066]
-                    .rgbs 100, 100, 100, 100
-                    .font Font_UI, v[4511]
-                    .spacing 0, 0
-                    .skin "" .stretch
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            }
-            s[201].on
-            
-        }
-
-        // "IdleWorker"
-        @if s[188] .isOn() {
-            LEGV_sentence_id_on_popup1 = 10004
-            LEGS_Showing_PopupWindow_1.on
-            @if LEGV_sentence_id_on_popup1 != v[85] {
-                v[85] = LEGV_sentence_id_on_popup1
-                // "#call quickstrings"
-                var1 = 425 + s[187]
-                //@call .cev 1890
-		getQstr(var1)
-
-                @pic[PicID_Popup_1].strpic {
-                    t[3000]
-                    .pos LEGV_MousePointer_X, v[1286] .bottomRight
-                    .size 0, 0                    .chromakey 1
-                    .scale 100
-                    .trans v[1066]
-                    .rgbs 100, 100, 100, 100
-                    .font Font_UI, v[4511]
-                    .spacing 0, 0
-                    .skin "" .stretch
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            }
-            s[201].on
-            
-        }
-
-        // "Log"
-        @if s[186] .isOn() {
-            LEGV_sentence_id_on_popup1 = 10005
-            LEGS_Showing_PopupWindow_1.on
-            @if LEGV_sentence_id_on_popup1 != v[85] {
-                v[85] = LEGV_sentence_id_on_popup1
-
-                // "#call quickstrings"
-                // var1 = 427
-                // @call .cev 1890
-		getQstr(427)
-                @pic[PicID_Popup_1].strpic {
-                    t[3000]
-                    .pos LEGV_MousePointer_X, v[1286] .bottomRight
-                    .size 0, 0                    .chromakey 1
-                    .scale 100
-                    .trans v[1066]
-                    .rgbs 100, 100, 100, 100
-                    .font Font_UI, v[4511]
-                    .spacing 0, 0
-                    .skin "" .stretch
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            }
-            s[201].on
-            
-        }
-
-        // "Cent Monitor"
-        @if v[81] == 1 {
-            // "Unit name"
-            @pic[974].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-            @if `between(LEGV_MousePointer_X, v[1952] - 190, v[1952] - 82) && between(LEGV_MousePointer_Y, v[1953] + 2, v[1953] + 18) {
-                LEGV_sentence_id_on_popup1 = 10000
-                LEGS_Showing_PopupWindow_1.on
-                @if LEGV_sentence_id_on_popup1 != v[85] {
-                    v[85] = LEGV_sentence_id_on_popup1
-                    TT1 = v[1115]
-                    TT2 = v[1286]
-
-                    //var1 = 185
-                    //@call .cev 1890
-		    getQstr(185)
-                    @pic[PicID_Popup_1].strpic {
-                        t[3000]
-                        .pos TT1, TT2 .bottom
-                        .size 0, 0                        .chromakey 1
-                        .scale 100
-                        .trans v[1066]
-                        .rgbs 100, 100, 100, 100
-                        .font Font_UI, v[4511]
-                        .spacing 0, 0
-                        .skin "" .stretch
-                        .mapLayer 9
-                        .eraseWhenTransfer
-                        .affectedByFlash
-                        .affectedByShake
-                    }
-                    
-                }
-                s[201].on
-                
-            }
-            @if `between(LEGV_MousePointer_Y, v[1953] + v[1955] / 4, v[1953] + v[1955] / 4 + 8) {
-                TT1 = 0
-                @if `between(LEGV_MousePointer_X - 74 * TT1, v[1952] - 188, v[1952] - 114) {
-                    LEGV_sentence_id_on_popup1 = 10006 + TT1
-                    LEGS_Showing_PopupWindow_1.on
-                    @if LEGV_sentence_id_on_popup1 != v[85] {
-                        var1 = 462 + TT1
-                        v[85] = LEGV_sentence_id_on_popup1
-                        TT1 = v[1115]
-                        TT2 = v[1286]
-		        macro_extract_selecting_unit_param
-                        @call .cev 1890
-                        macro_strcat_adjustment(t[20475],v[872],2)
-                        @pic[PicID_Popup_1].strpic {
-                            t[3000]
-                            .pos TT1, TT2 .bottom
-                            .size 0, 0                            .chromakey 1
-                            .scale 100
-                            .trans v[1066]
-                            .rgbs 100, 100, 100, 100
-                            .font Font_UI, v[4511]
-                            .spacing 0, 0
-                            .skin "" .stretch
-                            .mapLayer 9
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
-                    }
-                    s[201].on
-                    
-                }
-                TT1 = 1
-                @if `between(LEGV_MousePointer_X - 74 * TT1, v[1952] - 188, v[1952] - 114) {
-                    LEGV_sentence_id_on_popup1 = 10006 + TT1
-                    LEGS_Showing_PopupWindow_1.on
-                    @if LEGV_sentence_id_on_popup1 != v[85] {
-                        v[85] = LEGV_sentence_id_on_popup1
-                        var1 = 462 + TT1
-                        TT1 = v[1115]
-                        TT2 = v[1286]
-		        macro_extract_selecting_unit_param
-                        @call .cev 1890
-                        macro_strcat_adjustment(t[20476],v[863],3)
-                        @pic[PicID_Popup_1].strpic {
-                            t[3000]
-                            .pos TT1, TT2 .bottom
-                            .size 0, 0                            .chromakey 1
-                            .scale 100
-                            .trans v[1066]
-                            .rgbs 100, 100, 100, 100
-                            .font Font_UI, v[4511]
-                            .spacing 0, 0
-                            .skin "" .stretch
-                            .mapLayer 9
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
-                        
-                    }
-                    s[201].on
-                    
-                }
-                TT1 = 2
-                @if `between(LEGV_MousePointer_X - 74 * TT1, v[1952] - 188, v[1952] - 114) {
-                    LEGV_sentence_id_on_popup1 = 10006 + TT1
-                    LEGS_Showing_PopupWindow_1.on
-                    @if LEGV_sentence_id_on_popup1 != v[85] {
-                        v[85] = LEGV_sentence_id_on_popup1
-                        var1 = 462 + TT1
-                        TT1 = v[1115]
-                        TT2 = v[1286]
-		        macro_extract_selecting_unit_param
-                        @call .cev 1890
-                        macro_strcat_adjustment(t[20475],v[873],10)
-                        @pic[PicID_Popup_1].strpic {
-                            t[3000]
-                            .pos TT1, TT2 .bottom
-                            .size 0, 0                            .chromakey 1
-                            .scale 100
-                            .trans v[1066]
-                            .rgbs 100, 100, 100, 100
-                            .font Font_UI, v[4511]
-                            .spacing 0, 0
-                            .skin "" .stretch
-                            .mapLayer 9
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
-                        
-                    }
-                    s[201].on
-                    
-                }
-                
-            }
-            @if `between(LEGV_MousePointer_Y, v[1953] + v[1955] / 4 + 8, v[1953] + v[1955] / 4 + 18) {
-                TT1 = 0
-                @if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
-                    LEGV_sentence_id_on_popup1 = 10001 + TT1
-                    LEGS_Showing_PopupWindow_1.on
-                    @if LEGV_sentence_id_on_popup1 != v[85] {
-                        v[85] = LEGV_sentence_id_on_popup1
-                        var1 = 456 + TT1
-                        TT1 = v[1115]
-                        TT2 = v[1286]
-		        macro_extract_selecting_unit_param
-                        @call .cev 1890
-                        macro_strcat_adjustment(t[20476],v[861],17)
-                        @pic[PicID_Popup_1].strpic {
-                            t[3000]
-                            .pos TT1, TT2 .bottom
-                            .size 0, 0                            .chromakey 1
-                            .scale 100
-                            .trans v[1066]
-                            .rgbs 100, 100, 100, 100
-                            .font Font_UI, v[4511]
-                            .spacing 0, 0
-                            .skin "" .stretch
-                            .mapLayer 9
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
-                        
-                    }
-                    s[201].on
-                    
-                }
-                TT1 = 1
-                @if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
-                    LEGV_sentence_id_on_popup1 = 10001 + TT1
-                    LEGS_Showing_PopupWindow_1.on
-                    @if LEGV_sentence_id_on_popup1 != v[85] {
-                        v[85] = LEGV_sentence_id_on_popup1
-                        var1 = 456 + TT1
-                        TT1 = v[1115]
-                        TT2 = v[1286]
-		        macro_extract_selecting_unit_param
-                        @call .cev 1890
-                        macro_strcat_adjustment(t[20476],v[862],16)
-                        @pic[PicID_Popup_1].strpic {
-                            t[3000]
-                            .pos TT1, TT2 .bottom
-                            .size 0, 0                            .chromakey 1
-                            .scale 100
-                            .trans v[1066]
-                            .rgbs 100, 100, 100, 100
-                            .font Font_UI, v[4511]
-                            .spacing 0, 0
-                            .skin "" .stretch
-                            .mapLayer 9
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
-                        
-                    }
-                    s[201].on
-                    
-                }
-                TT1 = 2
-                @if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
-                    LEGV_sentence_id_on_popup1 = 10001 + TT1
-                    LEGS_Showing_PopupWindow_1.on
-                    @if LEGV_sentence_id_on_popup1 != v[85] {
-                        v[85] = LEGV_sentence_id_on_popup1
-                        var1 = 456 + TT1
-                        TT1 = v[1115]
-                        TT2 = v[1286]
-		        macro_extract_selecting_unit_param
-                        @call .cev 1890
-                        macro_strcat_adjustment(t[20476],v[864],6)
-                        @pic[PicID_Popup_1].strpic {
-                            t[3000]
-                            .pos TT1, TT2 .bottom
-                            .size 0, 0                            .chromakey 1
-                            .scale 100
-                            .trans v[1066]
-                            .rgbs 100, 100, 100, 100
-                            .font Font_UI, v[4511]
-                            .spacing 0, 0
-                            .skin "" .stretch
-                            .mapLayer 9
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
-                        
-                    }
-                    s[201].on
-                    
-                }
-                TT1 = 3
-                @if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
-                    LEGV_sentence_id_on_popup1 = 10001 + TT1
-                    LEGS_Showing_PopupWindow_1.on
-                    @if LEGV_sentence_id_on_popup1 != v[85] {
-                        v[85] = LEGV_sentence_id_on_popup1
-                        var1 = 456 + TT1
-                        TT1 = v[1115]
-                        TT2 = v[1286]
-		        macro_extract_selecting_unit_param
-                        @call .cev 1890
-                        macro_strcat_adjustment(t[20476],v[865],5)
-                        @pic[PicID_Popup_1].strpic {
-                            t[3000]
-                            .pos TT1, TT2 .bottom
-                            .size 0, 0                            .chromakey 1
-                            .scale 100
-                            .trans v[1066]
-                            .rgbs 100, 100, 100, 100
-                            .font Font_UI, v[4511]
-                            .spacing 0, 0
-                            .skin "" .stretch
-                            .mapLayer 9
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
-                        
-                    }
-                    s[201].on
-                    
-                }
-                TT1 = 4
-                @if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
-                    LEGV_sentence_id_on_popup1 = 10001 + TT1
-                    LEGS_Showing_PopupWindow_1.on
-                    @if LEGV_sentence_id_on_popup1 != v[85] {
-                        v[85] = LEGV_sentence_id_on_popup1
-                        var1 = 456 + TT1
-                        TT1 = v[1115]
-                        TT2 = v[1286]
-                        @call .cev 1890
-		        macro_extract_selecting_unit_param
-                        macro_strcat_adjustment(t[20476],v[866],3)
-                        @pic[PicID_Popup_1].strpic {
-                            t[3000]
-                            .pos TT1, TT2 .bottom
-                            .size 0, 0                            .chromakey 1
-                            .scale 100
-                            .trans v[1066]
-                            .rgbs 100, 100, 100, 100
-                            .font Font_UI, v[4511]
-                            .spacing 0, 0
-                            .skin "" .stretch
-                            .mapLayer 9
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
-                        
-                    }
-                    s[201].on
-                    
-                }
-                TT1 = 5
-                @if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
-                    LEGV_sentence_id_on_popup1 = 10001 + TT1
-                    LEGS_Showing_PopupWindow_1.on
-                    @if LEGV_sentence_id_on_popup1 != v[85] {
-                        v[85] = LEGV_sentence_id_on_popup1
-                        var1 = 456 + TT1
-                        TT1 = v[1115]
-                        TT2 = v[1286]
-		        macro_extract_selecting_unit_param
-                        @call .cev 1890
-                        macro_strcat_adjustment(t[20476],v[875],0)
-                        @pic[PicID_Popup_1].strpic {
-                            t[3000]
-                            .pos TT1, TT2 .bottom
-                            .size 0, 0                            .chromakey 1
-                            .scale 100
-                            .trans v[1066]
-                            .rgbs 100, 100, 100, 100
-                            .font Font_UI, v[4511]
-                            .spacing 0, 0
-                            .skin "" .stretch
-                            .mapLayer 9
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
-                        
-                    }
-                    s[201].on
-                    
-                }
-                
-            }
-            
-        }
-
-	// Unit State Icons
-	@if `between(LEGV_MousePointer_Y, LEGV_ConstBuffIconsStartY - 16, LEGV_ConstBuffIconsStartY) {
-		
-		// "Terrain"
-		@if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 4 * 16 - 8, LEGV_ConstBuffIconsStartX - (4 * 16) + 8) {
-		    @if LEGS_selecting_enemy .isOn() {
-			LEGS_Showing_PopupWindow_1.on
-			Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
-			
-		    } .else bl {
-			@if v[101] >= 1 {
-			    LEGS_Showing_PopupWindow_1.on
-			    Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
-			    
-			}
-			
-		    }
-		    Ptr20 *= 300
-		    Ptr20 += 4703
-		    // "#NOT SMART"
-		    @if `v[Ptr20] & 8 {
-			var1 = 448
-			
-		    } .else bl {
-			@if `v[Ptr20] & 2 {
-			    var1 = 447
-			    
-			} .else bl {
-			    @if `v[Ptr20] & 1 {
-				var1 = 446
-				
-			    } .else bl {
-				var1 = -1
-				
-			    }
-			    
-			}
-			
-		    }
-		    @if var1 != -1 {
-			LEGV_sentence_id_on_popup1 = var1
-			@if LEGV_sentence_id_on_popup1 != v[85] {
-			    v[85] = LEGV_sentence_id_on_popup1
-			    TT1 = LEGV_MousePointer_X
-			    TT2 = v[1286] - 16
-			
-			    // "#call quickstrings"
-			    // @call .cev 1890
-			    getQstr(var1)
-			    @pic[PicID_Popup_1].strpic {
-				t[3000]
-				.pos TT1, TT2 .bottomLeft
-				.size 0, 0                        .chromakey 1
-				.scale 100
-				.trans v[1066]
-				.rgbs 100, 100, 100, 100
-				.font Font_UI, v[4511]
-				.spacing 0, 0
-				.skin "" .stretch
-				.mapLayer 9
-				.eraseWhenTransfer
-				.affectedByFlash
-				.affectedByShake
-			    }
-			    
+			// "#call quickstrings"
+			//var1 = 50
+			//@call .cev 1890
+			getQstr(50)
+			@pic[PicID_Popup_1].strpic {
+			    t[3000]
+			    .pos LEGV_MousePointer_X, LEGV_MousePointer_Y .topRight
+			    .size 0, 0                    .chromakey 1
+			    .scale 100
+			    .trans v[1066]
+			    .rgbs 100, 100, 100, 100
+			    .font Font_UI, v[4511]
+			    .spacing 0, 0
+			    .skin "" .stretch
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
 			}
 			
 		    }
@@ -589,1166 +61,1670 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 		    
 		}
 
-		// "Tactical Order"
-		@if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 8 - 3 * 16, LEGV_ConstBuffIconsStartX + 8 + -(3 * 16))  {
-		    @if LEGS_selecting_enemy .isOn() {
-			LEGS_Showing_PopupWindow_1.on
-			Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+		// "FF"
+		@if s[185] .isOn() {
+		    LEGV_sentence_id_on_popup1 = 10002
+		    LEGS_Showing_PopupWindow_1.on
+		    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+			LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+			// "#call quickstrings"
+			var1 = 184
+			@call .cev 1890
+			t[501] .asg "\c[8]\t[3001]\c[0]
+	\t[3002]
+	\t[3003]" .extract
+			@pic[PicID_Popup_1].strpic {
+			    t[501]
+			    .pos LEGV_MousePointer_X, LEGV_MousePointer_Y .topRight
+			    .size 0, 0                    .chromakey 1
+			    .scale 100
+			    .trans v[1066]
+			    .rgbs 100, 100, 100, 100
+			    .font Font_UI, v[4511]
+			    .spacing 0, 0
+			    .skin "" .stretch
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
 			
-		    } .else bl {
-			@if v[101] >= 1 {
+		    }
+		    s[201].on
+		    
+		}
+
+		// "Pause"
+		@if s[184] .isOn() {
+		    LEGV_sentence_id_on_popup1 = 10003
+		    LEGS_Showing_PopupWindow_1.on
+		    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+			LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+			// "#call quickstrings"
+			var1 = 183
+			@call .cev 1890
+			t[501] .asg "\c[8]\t[3001]\c[0]
+	\t[3002]
+	\t[3003]" .extract
+			@pic[PicID_Popup_1].strpic {
+			    t[501]
+			    .pos LEGV_MousePointer_X, LEGV_MousePointer_Y .topRight
+			    .size 0, 0                    .chromakey 1
+			    .scale 100
+			    .trans v[1066]
+			    .rgbs 100, 100, 100, 100
+			    .font Font_UI, v[4511]
+			    .spacing 0, 0
+			    .skin "" .stretch
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			
+		    }
+		    s[201].on
+		    
+		}
+
+		// "IdleWorker"
+		@if s[188] .isOn() {
+		    LEGV_sentence_id_on_popup1 = 10004
+		    LEGS_Showing_PopupWindow_1.on
+		    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+			LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+			// "#call quickstrings"
+			var1 = 425 + s[187]
+			//@call .cev 1890
+			getQstr(var1)
+			@pic[PicID_Popup_1].strpic {
+			    t[3000]
+			    .pos LEGV_MousePointer_X, v[1286] .bottomRight
+			    .size 0, 0                    .chromakey 1
+			    .scale 100
+			    .trans v[1066]
+			    .rgbs 100, 100, 100, 100
+			    .font Font_UI, v[4511]
+			    .spacing 0, 0
+			    .skin "" .stretch
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			
+		    }
+		    s[201].on
+		    
+		}
+
+		// "Log"
+		@if s[186] .isOn() {
+		    LEGV_sentence_id_on_popup1 = 10005
+		    LEGS_Showing_PopupWindow_1.on
+		    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+			LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+
+			// "#call quickstrings"
+			// var1 = 427
+			// @call .cev 1890
+			getQstr(427)
+			@pic[PicID_Popup_1].strpic {
+			    t[3000]
+			    .pos LEGV_MousePointer_X, v[1286] .bottomRight
+			    .size 0, 0                    .chromakey 1
+			    .scale 100
+			    .trans v[1066]
+			    .rgbs 100, 100, 100, 100
+			    .font Font_UI, v[4511]
+			    .spacing 0, 0
+			    .skin "" .stretch
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			
+		    }
+		    s[201].on
+		    
+		}
+
+		// "Cent Monitor"
+		@if v[81] == 1 {
+		    // "Unit name"
+		    @pic[974].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
+		    @if `between(LEGV_MousePointer_X, v[1952] - 190, v[1952] - 82) && between(LEGV_MousePointer_Y, v[1953] + 2, v[1953] + 18) {
+			LEGV_sentence_id_on_popup1 = 10000
+			LEGS_Showing_PopupWindow_1.on
+			@if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+			    LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+			    TT1 = v[1115]
+			    TT2 = v[1286]
+
+			    //var1 = 185
+			    //@call .cev 1890
+			    getQstr(185)
+			    @pic[PicID_Popup_1].strpic {
+				t[3000]
+				.pos TT1, TT2 .bottom
+				.size 0, 0                        .chromakey 1
+				.scale 100
+				.trans v[1066]
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, v[4511]
+				.spacing 0, 0
+				.skin "" .stretch
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    
+			}
+			s[201].on
+			
+		    }
+		    @if `between(LEGV_MousePointer_Y, v[1953] + v[1955] / 4, v[1953] + v[1955] / 4 + 8) {
+			TT1 = 0
+			@if `between(LEGV_MousePointer_X - 74 * TT1, v[1952] - 188, v[1952] - 114) {
+			    LEGV_sentence_id_on_popup1 = 10006 + TT1
 			    LEGS_Showing_PopupWindow_1.on
-			    Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+			    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				var1 = 462 + TT1
+				LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+				TT1 = v[1115]
+				TT2 = v[1286]
+				macro_extract_selecting_unit_param
+				@call .cev 1890
+				macro_strcat_adjustment(t[20475],v[872],2)
+				@pic[PicID_Popup_1].strpic {
+				    t[3000]
+				    .pos TT1, TT2 .bottom
+				    .size 0, 0                            .chromakey 1
+				    .scale 100
+				    .trans v[1066]
+				    .rgbs 100, 100, 100, 100
+				    .font Font_UI, v[4511]
+				    .spacing 0, 0
+				    .skin "" .stretch
+				    .mapLayer 9
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+			    }
+			    s[201].on
+			    
+			}
+			TT1 = 1
+			@if `between(LEGV_MousePointer_X - 74 * TT1, v[1952] - 188, v[1952] - 114) {
+			    LEGV_sentence_id_on_popup1 = 10006 + TT1
+			    LEGS_Showing_PopupWindow_1.on
+			    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+				var1 = 462 + TT1
+				TT1 = v[1115]
+				TT2 = v[1286]
+				macro_extract_selecting_unit_param
+				@call .cev 1890
+				macro_strcat_adjustment(t[20476],v[863],3)
+				@pic[PicID_Popup_1].strpic {
+				    t[3000]
+				    .pos TT1, TT2 .bottom
+				    .size 0, 0                            .chromakey 1
+				    .scale 100
+				    .trans v[1066]
+				    .rgbs 100, 100, 100, 100
+				    .font Font_UI, v[4511]
+				    .spacing 0, 0
+				    .skin "" .stretch
+				    .mapLayer 9
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+				
+			    }
+			    s[201].on
+			    
+			}
+			TT1 = 2
+			@if `between(LEGV_MousePointer_X - 74 * TT1, v[1952] - 188, v[1952] - 114) {
+			    LEGV_sentence_id_on_popup1 = 10006 + TT1
+			    LEGS_Showing_PopupWindow_1.on
+			    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+				var1 = 462 + TT1
+				TT1 = v[1115]
+				TT2 = v[1286]
+				macro_extract_selecting_unit_param
+				@call .cev 1890
+				macro_strcat_adjustment(t[20475],v[873],10)
+				@pic[PicID_Popup_1].strpic {
+				    t[3000]
+				    .pos TT1, TT2 .bottom
+				    .size 0, 0                            .chromakey 1
+				    .scale 100
+				    .trans v[1066]
+				    .rgbs 100, 100, 100, 100
+				    .font Font_UI, v[4511]
+				    .spacing 0, 0
+				    .skin "" .stretch
+				    .mapLayer 9
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+				
+			    }
+			    s[201].on
 			    
 			}
 			
 		    }
-		    Ptr20 *= 300
-		    Ptr20 += 4948
-		    @if v[Ptr20] != 0 {
-			LEGV_sentence_id_on_popup1 = 1211 + v[Ptr20]
-			@if LEGV_sentence_id_on_popup1 != v[85] {
-			    v[85] = LEGV_sentence_id_on_popup1
-			    TT1 = LEGV_MousePointer_X
-			    TT2 = v[1286] - 16
-			    // "#call quickstrings"
-			    // "#NOT SMART"
-			    @if v[Ptr20] <= 8 {
-				var1 = 5 + [1, 2, 3, 4, 4][(v[Ptr20] / 2)]
+		    @if `between(LEGV_MousePointer_Y, v[1953] + v[1955] / 4 + 8, v[1953] + v[1955] / 4 + 18) {
+			TT1 = 0
+			@if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
+			    LEGV_sentence_id_on_popup1 = 10001 + TT1
+			    LEGS_Showing_PopupWindow_1.on
+			    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+				var1 = 456 + TT1
+				TT1 = v[1115]
+				TT2 = v[1286]
+				macro_extract_selecting_unit_param
+				@call .cev 1890
+				macro_strcat_adjustment(t[20476],v[861],17)
+				@pic[PicID_Popup_1].strpic {
+				    t[3000]
+				    .pos TT1, TT2 .bottom
+				    .size 0, 0                            .chromakey 1
+				    .scale 100
+				    .trans v[1066]
+				    .rgbs 100, 100, 100, 100
+				    .font Font_UI, v[4511]
+				    .spacing 0, 0
+				    .skin "" .stretch
+				    .mapLayer 9
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+				
+			    }
+			    s[201].on
+			    
+			}
+			TT1 = 1
+			@if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
+			    LEGV_sentence_id_on_popup1 = 10001 + TT1
+			    LEGS_Showing_PopupWindow_1.on
+			    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+				var1 = 456 + TT1
+				TT1 = v[1115]
+				TT2 = v[1286]
+				macro_extract_selecting_unit_param
+				@call .cev 1890
+				macro_strcat_adjustment(t[20476],v[862],16)
+				@pic[PicID_Popup_1].strpic {
+				    t[3000]
+				    .pos TT1, TT2 .bottom
+				    .size 0, 0                            .chromakey 1
+				    .scale 100
+				    .trans v[1066]
+				    .rgbs 100, 100, 100, 100
+				    .font Font_UI, v[4511]
+				    .spacing 0, 0
+				    .skin "" .stretch
+				    .mapLayer 9
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+				
+			    }
+			    s[201].on
+			    
+			}
+			TT1 = 2
+			@if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
+			    LEGV_sentence_id_on_popup1 = 10001 + TT1
+			    LEGS_Showing_PopupWindow_1.on
+			    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+				var1 = 456 + TT1
+				TT1 = v[1115]
+				TT2 = v[1286]
+				macro_extract_selecting_unit_param
+				@call .cev 1890
+				macro_strcat_adjustment(t[20476],v[864],6)
+				@pic[PicID_Popup_1].strpic {
+				    t[3000]
+				    .pos TT1, TT2 .bottom
+				    .size 0, 0                            .chromakey 1
+				    .scale 100
+				    .trans v[1066]
+				    .rgbs 100, 100, 100, 100
+				    .font Font_UI, v[4511]
+				    .spacing 0, 0
+				    .skin "" .stretch
+				    .mapLayer 9
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+				
+			    }
+			    s[201].on
+			    
+			}
+			TT1 = 3
+			@if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
+			    LEGV_sentence_id_on_popup1 = 10001 + TT1
+			    LEGS_Showing_PopupWindow_1.on
+			    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+				var1 = 456 + TT1
+				TT1 = v[1115]
+				TT2 = v[1286]
+				macro_extract_selecting_unit_param
+				@call .cev 1890
+				macro_strcat_adjustment(t[20476],v[865],5)
+				@pic[PicID_Popup_1].strpic {
+				    t[3000]
+				    .pos TT1, TT2 .bottom
+				    .size 0, 0                            .chromakey 1
+				    .scale 100
+				    .trans v[1066]
+				    .rgbs 100, 100, 100, 100
+				    .font Font_UI, v[4511]
+				    .spacing 0, 0
+				    .skin "" .stretch
+				    .mapLayer 9
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+				
+			    }
+			    s[201].on
+			    
+			}
+			TT1 = 4
+			@if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
+			    LEGV_sentence_id_on_popup1 = 10001 + TT1
+			    LEGS_Showing_PopupWindow_1.on
+			    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+				var1 = 456 + TT1
+				TT1 = v[1115]
+				TT2 = v[1286]
+				@call .cev 1890
+				macro_extract_selecting_unit_param
+				macro_strcat_adjustment(t[20476],v[866],3)
+				@pic[PicID_Popup_1].strpic {
+				    t[3000]
+				    .pos TT1, TT2 .bottom
+				    .size 0, 0                            .chromakey 1
+				    .scale 100
+				    .trans v[1066]
+				    .rgbs 100, 100, 100, 100
+				    .font Font_UI, v[4511]
+				    .spacing 0, 0
+				    .skin "" .stretch
+				    .mapLayer 9
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+				
+			    }
+			    s[201].on
+			    
+			}
+			TT1 = 5
+			@if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
+			    LEGV_sentence_id_on_popup1 = 10001 + TT1
+			    LEGS_Showing_PopupWindow_1.on
+			    @if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+				var1 = 456 + TT1
+				TT1 = v[1115]
+				TT2 = v[1286]
+				macro_extract_selecting_unit_param
+				@call .cev 1890
+				macro_strcat_adjustment(t[20476],v[875],0)
+				@pic[PicID_Popup_1].strpic {
+				    t[3000]
+				    .pos TT1, TT2 .bottom
+				    .size 0, 0                            .chromakey 1
+				    .scale 100
+				    .trans v[1066]
+				    .rgbs 100, 100, 100, 100
+				    .font Font_UI, v[4511]
+				    .spacing 0, 0
+				    .skin "" .stretch
+				    .mapLayer 9
+				    .eraseWhenTransfer
+				    .affectedByFlash
+				    .affectedByShake
+				}
+				
+			    }
+			    s[201].on
+			    
+			}
+			
+		    }
+		    
+		}
+
+		def IconSize = 15
+
+		// Unit State Icons
+		@if `between(LEGV_MousePointer_Y, LEGV_ConstBuffIconsStartY - 16, LEGV_ConstBuffIconsStartY) {
+			
+			// "Terrain"
+			@if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 4 * LEGV_ConstBuffIconsDif, LEGV_ConstBuffIconsStartX - (4 * LEGV_ConstBuffIconsDif) + IconSize) {
+			    @if LEGS_selecting_enemy .isOn() {
+				LEGS_Showing_PopupWindow_1.on
+				Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
 				
 			    } .else bl {
-				@if v[Ptr20] == 16 {
-				    var1 = 182
+				@if v[101] >= 1 {
+				    LEGS_Showing_PopupWindow_1.on
+				    Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+				    
+				}
+				
+			    }
+
+
+			    // get what terrain effect is on the agent
+			    Ptr20 *= 300
+			    Ptr20 += 4703
+			    // "#NOT SMART"
+			    @if `v[Ptr20] & 8 {
+				var1 = 448
+				
+			    } .else bl {
+				@if `v[Ptr20] & 2 {
+				    var1 = 447
 				    
 				} .else bl {
-				    @if v[Ptr20] == 64 {
-					var1 = 467
+				    @if `v[Ptr20] & 1 {
+					var1 = 446
 					
 				    } .else bl {
+					var1 = -1
 					
 				    }
 				    
 				}
 				
 			    }
-			    getQstr(var1)
-			    @pic[PicID_Popup_1].strpic {
-				t[3000]
-				.pos TT1, TT2 .bottomLeft
-				.size 0, 0                        .chromakey 1
-				.scale 100
-				.trans v[1066]
-				.rgbs 100, 100, 100, 100
-				.font Font_UI, v[4511]
-				.spacing 0, 0
-				.skin "" .stretch
-				.mapLayer 9
-				.eraseWhenTransfer
-				.affectedByFlash
-				.affectedByShake
+			    @if var1 != -1 {
+				LEGV_sentence_id_on_popup1 = var1
+				@if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				    LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+
+				    TT1 = LEGV_MousePointer_X
+				    TT2 = v[1286] - 16
+				    show_pupwin1_with_Qstr(var1,TT1,TT2)
+				    
+				}
+				
+			    }
+			    s[201].on
+			    
+			}
+
+			// "Tactical Order"
+			@if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 3 * LEGV_ConstBuffIconsDif, LEGV_ConstBuffIconsStartX + IconSize + -(3 * LEGV_ConstBuffIconsDif))  {
+			    @if LEGS_selecting_enemy .isOn() {
+				LEGS_Showing_PopupWindow_1.on
+				Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+				
+			    } .else bl {
+				@if v[101] >= 1 {
+				    LEGS_Showing_PopupWindow_1.on
+				    Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+				    
+				}
+				
+			    }
+		
+			    Ptr20 *= 300
+			    Ptr20 += 4948
+			    @if v[Ptr20] != 0 {
+				LEGV_sentence_id_on_popup1 = 1211 + v[Ptr20]
+				@if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				    LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+				    TT1 = LEGV_MousePointer_X
+				    TT2 = v[1286] - 16
+				    // "#call quickstrings"
+				    // "#NOT SMART"
+				    @if v[Ptr20] <= 8 {
+					var1 = 5 + [1, 2, 3, 4, 4][(v[Ptr20] / 2)]
+					
+				    } .else bl {
+					@if v[Ptr20] == 16 {
+					    var1 = 182
+					    
+					} .else bl {
+					    @if v[Ptr20] == 64 {
+						var1 = 467
+						
+					    } .else bl {
+						
+					    }
+					    
+					}
+					
+				    }
+				    show_pupwin1_with_Qstr(var1,TT1,TT2)
+				    
+				}
+				s[201].on
+				
 			    }
 			    
 			}
-			s[201].on
+
+			// "Morale"
+			@if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 2 * LEGV_ConstBuffIconsDif, LEGV_ConstBuffIconsStartX + IconSize + -(2 * LEGV_ConstBuffIconsDif)) {
+			    @if LEGS_selecting_enemy .isOn() {
+				LEGS_Showing_PopupWindow_1.on
+				Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+				
+			    } .else bl {
+				@if v[101] >= 1 {
+				    LEGS_Showing_PopupWindow_1.on
+				    Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+				    
+				}
+				
+			    }
+			    Ptr20 *= 300
+			    Ptr20 += 4960
+			    @if v[Ptr20] != 0 {
+				LEGV_sentence_id_on_popup1 = 1189 + v[Ptr20]
+				@if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				    LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+				    TT1 = LEGV_MousePointer_X
+				    TT2 = v[1286] - 16
+				    @if v[Ptr20] > 0 {
+					var1 = 1 + v[Ptr20]
+					@call .cev 1890
+					@pic[PicID_Popup_1].strpic {
+					    "\c[5]\t[3001]\c[0]：
+	\t[3002]
+	\c[5]\t[3003] \t[3004]"
+					    .pos TT1, TT2 .bottomLeft
+					    .size 0, 0                            .chromakey 1
+					    .scale 100
+					    .trans v[1066]
+					    .rgbs 100, 100, 100, 100
+					    .font Font_UI, v[4511]
+					    .spacing 0, 0
+					    .skin "" .stretch
+					    .mapLayer 9
+					    .eraseWhenTransfer
+					    .affectedByFlash
+					    .affectedByShake
+					}
+					
+				    } .else bl {
+					var1 = 5
+					@call .cev 1890
+					@pic[PicID_Popup_1].strpic {
+					    "\c[2]\t[3001]\c[0]：
+	\t[3002]
+	\c[1]\t[3003]"
+					    .pos TT1, TT2 .bottomLeft
+					    .size 0, 0                            .chromakey 1
+					    .scale 100
+					    .trans v[1066]
+					    .rgbs 100, 100, 100, 100
+					    .font Font_UI, v[4511]
+					    .spacing 0, 0
+					    .skin "" .stretch
+					    .mapLayer 9
+					    .eraseWhenTransfer
+					    .affectedByFlash
+					    .affectedByShake
+					}
+					
+				    }
+				    
+				}
+				s[201].on
+				
+			    }
+			    
+			}
+
+			// "Melee Penalty"
+			@if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 1 * LEGV_ConstBuffIconsDif, LEGV_ConstBuffIconsStartX + IconSize + -(1 * LEGV_ConstBuffIconsDif)) {
+			    LEGS_Showing_PopupWindow_1.on
+			    Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4781
+			    @if v[Ptr20] >= 1 {
+				LEGV_sentence_id_on_popup1 = 1198
+				@if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
+				    LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+				    TT1 = LEGV_MousePointer_X
+				    TT2 = v[1286] - 16
+				    show_pupwin1_with_Qstr(1,TT1,TT2)
+				}
+				s[201].on
+				
+			    }
+			    
+			}
+
+			// "Buffs"
+			@loop 8 .dst v[360] {
+			    @if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX + v[360] * LEGV_ConstBuffIconsDif, LEGV_ConstBuffIconsStartX + IconSize + v[360] * LEGV_ConstBuffIconsDif) {
+				LEGS_Showing_PopupWindow_1.on
+				Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+				// "スキルチェック"
+				v[301] = Ptr20 + 71 + v[360]
+				// "番号を見る"
+				LEGV_sentence_id_on_popup1 = v[v[301]]
+				@if v[99] <= 1 {
+				    @call .cev 1101
+				    
+				}
+				@break
+				
+			    }
+			    
 			
-		    }
-		    
+			
 		}
 
-		// "Morale"
-		@if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 8 - 2 * 16, LEGV_ConstBuffIconsStartX + 8 + -(2 * 16)) {
+
+		// "Passive"
+		@if `between(LEGV_MousePointer_X, v[1287], v[1287] + v[1289]) && between(LEGV_MousePointer_Y, v[1288], v[1288] + v[1290]) {
+		    TT1 = v[1287] + v[1289] / 2 + 1
+		    TT2 = v[1288] + v[1290] / 2
+		    @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+		    @if `TT1 != v[345] || TT2 != v[346] {
+			v[1289].copy v[343], 2
+			show_frame_overlap_effect(TT1,TT2,TT3,TT4)
+			/*
+			@pic[PicID_ButtonSelect].strpic {
+			    ""
+			    .pos TT1, TT2 .center
+			    .size v[343], v[344]                    .chromakey 1
+			    .scale 100
+			    .trans 20
+			    .rgbs 0, 200, 0, 100
+			    .font Font_UI, v[4511]
+			    .spacing 0, 4
+			    .skin "Odinscall_mapcam" .nobg .noGradation
+			    .add
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			}
+			*/
+
+			@pic[PicID_Popup_1].erase
+			@pic[PicID_Auxilia_Message_Window].erase
+			@pic[PicID_Square_Checker].erase
+			s[82].off
+			
+		    }
+		    LEGS_Showing_PopupWindow_1.on
+		    v[299] = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+		    Ptr20 = v[299] * 300 + 4700
+		    // "スキルチェック"
+		    v[301] = Ptr20 + 221
+		    // "番号を見る"
+		    LEGV_sentence_id_on_popup1 = v[v[301]]
 		    @if LEGS_selecting_enemy .isOn() {
-			LEGS_Showing_PopupWindow_1.on
-			Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
+			@call .cev 1100
 			
 		    } .else bl {
 			@if v[101] >= 1 {
-			    LEGS_Showing_PopupWindow_1.on
-			    Ptr20 = LEGS_selecting_enemy == 0 ? v[101] : v[100]
-			    
-			}
-			
-		    }
-		    Ptr20 *= 300
-		    Ptr20 += 4960
-		    @if v[Ptr20] != 0 {
-			LEGV_sentence_id_on_popup1 = 1189 + v[Ptr20]
-			@if LEGV_sentence_id_on_popup1 != v[85] {
-			    v[85] = LEGV_sentence_id_on_popup1
-			    TT1 = LEGV_MousePointer_X
-			    TT2 = v[1286] - 16
-			    @if v[Ptr20] > 0 {
-				var1 = 1 + v[Ptr20]
-				@call .cev 1890
-				@pic[PicID_Popup_1].strpic {
-				    "\c[5]\t[3001]\c[0]：
-\t[3002]
-\c[5]\t[3003] \t[3004]"
-				    .pos TT1, TT2 .bottomLeft
-				    .size 0, 0                            .chromakey 1
-				    .scale 100
-				    .trans v[1066]
-				    .rgbs 100, 100, 100, 100
-				    .font Font_UI, v[4511]
-				    .spacing 0, 0
-				    .skin "" .stretch
-				    .mapLayer 9
-				    .eraseWhenTransfer
-				    .affectedByFlash
-				    .affectedByShake
-				}
-				
-			    } .else bl {
-				var1 = 5
-				@call .cev 1890
-				@pic[PicID_Popup_1].strpic {
-				    "\c[2]\t[3001]\c[0]：
-\t[3002]
-\c[1]\t[3003]"
-				    .pos TT1, TT2 .bottomLeft
-				    .size 0, 0                            .chromakey 1
-				    .scale 100
-				    .trans v[1066]
-				    .rgbs 100, 100, 100, 100
-				    .font Font_UI, v[4511]
-				    .spacing 0, 0
-				    .skin "" .stretch
-				    .mapLayer 9
-				    .eraseWhenTransfer
-				    .affectedByFlash
-				    .affectedByShake
-				}
+			    @if v[99] > 1 {
+				LEGV_sentence_id_on_popup1 = s[24] == 1 ? LEGV_sentence_id_on_popup1 : -2
 				
 			    }
+			    @call .cev 1100
 			    
 			}
-			s[201].on
 			
 		    }
 		    
 		}
-
-		// "Melee Penalty"
-		@if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 8 - 1 * 16, LEGV_ConstBuffIconsStartX + 8 + -(1 * 16)) {
-		    LEGS_Showing_PopupWindow_1.on
-		    Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4781
-		    @if v[Ptr20] >= 1 {
-			LEGV_sentence_id_on_popup1 = 1198
-			@if LEGV_sentence_id_on_popup1 != v[85] {
-			    v[85] = LEGV_sentence_id_on_popup1
-			    TT1 = LEGV_MousePointer_X
-			    TT2 = v[1286] - 16
-			    var1 = 1
-			    @call .cev 1890
-			    @pic[PicID_Popup_1].strpic {
-				t[3000]
-				.pos TT1, TT2 .bottomLeft
-				.size 0, 0                        .chromakey 1
-				.scale 100
-				.trans v[1066]
-				.rgbs 100, 100, 100, 100
-				.font Font_UI, v[4511]
-				.spacing 0, 0
-				.skin "" .stretch
-				.mapLayer 9
-				.eraseWhenTransfer
-				.affectedByFlash
-				.affectedByShake
-			    }
-			    
+		// "Q"
+		@if `between(LEGV_MousePointer_X, v[1037] - v[1291], v[1037] + v[1291]) && between(LEGV_MousePointer_Y, v[1038] - v[1292], v[1038] + v[1292]) {
+		    TT1 = v[1037]
+		    TT2 = v[1038] - 1
+		    @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+		    @if `TT1 != v[345] || TT2 != v[346] {
+			v[1291].copy v[343], 2
+			v[343..344] *= 2
+			@pic[PicID_ButtonSelect].strpic {
+			    ""
+			    .pos TT1, TT2 .center
+			    .size v[343], v[344]                    .chromakey 1
+			    .scale 100
+			    .trans 20
+			    .rgbs 0, 200, 0, 100
+			    .font "", 12 .noShadow
+			    .spacing 0, 4
+			    .skin "Odinscall_mapcam" .nobg .noGradation
+			    .add
+			    .mapLayer 9
+			    .eraseWhenTransfer
 			}
-			s[201].on
+			@pic[PicID_Popup_1].erase
+			@pic[PicID_Auxilia_Message_Window].erase
+			@pic[PicID_Square_Checker].erase
 			
 		    }
-		    
-		}
-
-		// "Buffs"
-		@loop 8 .dst v[360] {
-		    @if `between(LEGV_MousePointer_X, LEGV_ConstBuffIconsStartX - 8 + v[360] * 16, LEGV_ConstBuffIconsStartX + 8 + v[360] * 16) {
+		    @if LEGS_selecting_enemy .isOn() {
 			LEGS_Showing_PopupWindow_1.on
 			Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
 			// "スキルチェック"
-			v[301] = Ptr20 + 71 + v[360]
+			v[301] = Ptr20 + 141
 			// "番号を見る"
 			LEGV_sentence_id_on_popup1 = v[v[301]]
-			@if v[99] <= 1 {
-			    @call .cev 1101
+			// "skillが存在するなら文章を見る"
+			@if LEGV_sentence_id_on_popup1 >= 1 {
+			    @call .cev 1200
 			    
 			}
-			@break
+			
+		    } .else bl {
+			@if v[101] >= 1 {
+			    @if s[27] .isOn() {
+				// "STATICを選択中"
+				LEGS_Showing_PopupWindow_1.on
+				Ptr20 = v[101] * 300 + 4700
+				// "生産できるやつを見る"
+				v[301] = Ptr20 + 138
+				// "Qなので1"
+				TT1 = 1
+				// "番号を見る"
+				v[301] += TT1 * 3
+				LEGV_sentence_id_on_popup1 = v[v[301]]
+				// "生産できる兵士が存在するなら文章を見る"
+				@if LEGV_sentence_id_on_popup1 >= 1 {
+				    @call .cev 199
+				    
+				}
+				
+			    } .else bl {
+				LEGS_Showing_PopupWindow_1.on
+				Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+				// "スキルチェック"
+				v[301] = Ptr20 + 141
+				// "番号を見る"
+				LEGV_sentence_id_on_popup1 = v[v[301]]
+				// "skillが存在するなら文章を見る"
+				v[89] = v[557]
+				@if LEGV_sentence_id_on_popup1 >= 1 {
+				    @call .cev 1200
+				    
+				}
+				
+			    }
+			    
+			}
 			
 		    }
 		    
 		}
-		
-	}
+		// "W"
+		@if `between(LEGV_MousePointer_X, v[1039] - v[1291], v[1039] + v[1291]) && between(LEGV_MousePointer_Y, v[1040] - v[1292], v[1040] + v[1292]) {
+		    TT1 = v[1039]
+		    TT2 = v[1040] - 1
+		    @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+		    @if `TT1 != v[345] || TT2 != v[346] {
+			v[1291].copy v[343], 2
+			v[343..344] *= 2
+			@pic[PicID_ButtonSelect].strpic {
+			    ""
+			    .pos TT1, TT2 .center
+			    .size v[343], v[344]                    .chromakey 1
+			    .scale 100
+			    .trans 20
+			    .rgbs 0, 200, 0, 100
+			    .font "", 12 .noShadow
+			    .spacing 0, 4
+			    .skin "Odinscall_mapcam" .nobg .noGradation
+			    .add
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			}
+			@pic[PicID_Popup_1].erase
+			@pic[PicID_Auxilia_Message_Window].erase
+			@pic[PicID_Square_Checker].erase
+			
+		    }
+		    @if LEGS_selecting_enemy .isOn() {
+			LEGS_Showing_PopupWindow_1.on
+			Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+			// "スキルチェック"
+			v[301] = Ptr20 + 161
+			// "番号を見る"
+			LEGV_sentence_id_on_popup1 = v[v[301]]
+			// "生産できる兵士が存在するなら文章を見る"
+			@if LEGV_sentence_id_on_popup1 >= 1 {
+			    @call .cev 1200
+			    
+			}
+			
+		    } .else bl {
+			@if v[101] >= 1 {
+			    @if s[27] .isOn() {
+				// "STATICを選択中"
+				LEGS_Showing_PopupWindow_1.on
+				Ptr20 = v[101] * 300 + 4700
+				// "生産できるやつを見る"
+				v[301] = Ptr20 + 138
+				// "W 2"
+				TT1 = 2
+				// "番号を見る"
+				v[301] += TT1 * 3
+				LEGV_sentence_id_on_popup1 = v[v[301]]
+				// "生産できる兵士が存在するなら文章を見る"
+				@if LEGV_sentence_id_on_popup1 >= 1 {
+				    @call .cev 199
+				    
+				}
+				
+			    } .else bl {
+				LEGS_Showing_PopupWindow_1.on
+				Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+				// "スキルチェック"
+				v[301] = Ptr20 + 161
+				// "番号を見る"
+				LEGV_sentence_id_on_popup1 = v[v[301]]
+				// "生産できる兵士が存在するなら文章を見る"
+				v[89] = v[558]
+				@if LEGV_sentence_id_on_popup1 >= 1 {
+				    @call .cev 1200
+				    
+				}
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		}
+		// "E"
+		@if `between(LEGV_MousePointer_X, v[1041] - v[1291], v[1041] + v[1291]) && between(LEGV_MousePointer_Y, v[1042] - v[1292], v[1042] + v[1292]) {
+		    TT1 = v[1041]
+		    TT2 = v[1042] - 1
+		    @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+		    @if `TT1 != v[345] || TT2 != v[346] {
+			v[1291].copy v[343], 2
+			v[343..344] *= 2
+			@pic[PicID_ButtonSelect].strpic {
+			    ""
+			    .pos TT1, TT2 .center
+			    .size v[343], v[344]                    .chromakey 1
+			    .scale 100
+			    .trans 20
+			    .rgbs 0, 200, 0, 100
+			    .font "", 12 .noShadow
+			    .spacing 0, 4
+			    .skin "Odinscall_mapcam" .nobg .noGradation
+			    .add
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			}
+			@pic[PicID_Popup_1].erase
+			@pic[PicID_Auxilia_Message_Window].erase
+			@pic[PicID_Square_Checker].erase
+			
+		    }
+		    @if LEGS_selecting_enemy .isOn() {
+			LEGS_Showing_PopupWindow_1.on
+			Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+			// "スキルチェック"
+			v[301] = Ptr20 + 181
+			// "番号を見る"
+			LEGV_sentence_id_on_popup1 = v[v[301]]
+			// "生産できる兵士が存在するなら文章を見る"
+			@if LEGV_sentence_id_on_popup1 >= 1 {
+			    @call .cev 1200
+			    
+			}
+			
+		    } .else bl {
+			@if v[101] >= 1 {
+			    @if s[27] .isOn() {
+				// "STATICを選択中"
+				LEGS_Showing_PopupWindow_1.on
+				Ptr20 = v[101] * 300
+				Ptr20 += 4700
+				// "生産できるやつを見る"
+				v[301] = Ptr20 + 138
+				// "E 3"
+				TT1 = 3
+				// "番号を見る"
+				v[301] += TT1 * 3
+				LEGV_sentence_id_on_popup1 = v[v[301]]
+				// "生産できる兵士が存在するなら文章を見る"
+				@if LEGV_sentence_id_on_popup1 >= 1 {
+				    @call .cev 199
+				    
+				}
+				
+			    } .else bl {
+				LEGS_Showing_PopupWindow_1.on
+				Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+				// "スキルチェック"
+				v[301] = Ptr20 + 181
+				// "番号を見る"
+				LEGV_sentence_id_on_popup1 = v[v[301]]
+				// "生産できる兵士が存在するなら文章を見る"
+				v[89] = v[559]
+				@if LEGV_sentence_id_on_popup1 >= 1 {
+				    @call .cev 1200
+				    
+				}
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		}
+		// "R"
+		@if `between(LEGV_MousePointer_X, v[1043] - v[1291], v[1043] + v[1291]) && between(LEGV_MousePointer_Y, v[1044] - v[1292], v[1044] + v[1292]) {
+		    TT1 = v[1043]
+		    TT2 = v[1044] - 1
+		    @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+		    @if `TT1 != v[345] || TT2 != v[346] {
+			v[1291].copy v[343], 2
+			v[343..344] *= 2
+			@pic[PicID_ButtonSelect].strpic {
+			    ""
+			    .pos TT1, TT2 .center
+			    .size v[343], v[344]                    .chromakey 1
+			    .scale 100
+			    .trans 20
+			    .rgbs 0, 200, 0, 100
+			    .font "", 12 .noShadow
+			    .spacing 0, 4
+			    .skin "Odinscall_mapcam" .nobg .noGradation
+			    .add
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			}
+			@pic[PicID_Popup_1].erase
+			@pic[PicID_Auxilia_Message_Window].erase
+			@pic[PicID_Square_Checker].erase
+			
+		    }
+		    @if LEGS_selecting_enemy .isOn() {
+			LEGS_Showing_PopupWindow_1.on
+			Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+			// "スキルチェック"
+			v[301] = Ptr20 + 201
+			// "番号を見る"
+			LEGV_sentence_id_on_popup1 = v[v[301]]
+			// "生産できる兵士が存在するなら文章を見る"
+			@if LEGV_sentence_id_on_popup1 >= 1 {
+			    @call .cev 1200
+			    
+			}
+			
+		    } .else bl {
+			@if v[101] >= 1 {
+			    @if s[27] .isOn() {
+				// "STATICを選択中"
+				LEGS_Showing_PopupWindow_1.on
+				Ptr20 = v[101] * 300 + 4700
+				// "生産できるやつを見る"
+				v[301] = Ptr20 + 138
+				// "E 3"
+				TT1 = 4
+				// "番号を見る"
+				v[301] += TT1 * 3
+				LEGV_sentence_id_on_popup1 = v[v[301]]
+				// "生産できる兵士が存在するなら文章を見る"
+				v[89] = v[560]
+				@if LEGV_sentence_id_on_popup1 >= 1 {
+				    @call .cev 199
+				    
+				}
+				
+			    } .else bl {
+				LEGS_Showing_PopupWindow_1.on
+				Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+				// "スキルチェック"
+				v[301] = Ptr20 + 201
+				// "番号を見る"
+				LEGV_sentence_id_on_popup1 = v[v[301]]
+				// "生産できる兵士が存在するなら文章を見る"
+				@if LEGV_sentence_id_on_popup1 >= 1 {
+				    v[89] = v[560]
+				    @call .cev 1200
+				    
+				}
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		}
+		// "A"
+		TT1 = between(LEGV_MousePointer_X, v[1045] - v[1291], v[1045] + v[1291]) && between(LEGV_MousePointer_Y, v[1046] - v[1292], v[1046] + v[1292]) ? 1 : 0
+		@if TT1 == 1 {
+		    TT1 = v[1045]
+		    TT2 = v[1046] - 1
+		    @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+		    @if `TT1 != v[345] || TT2 != v[346] {
+			v[1291].copy v[343], 2
+			v[343..344] *= 2
+			@pic[PicID_ButtonSelect].strpic {
+			    ""
+			    .pos TT1, TT2 .center
+			    .size v[343], v[344]                    .chromakey 1
+			    .scale 100
+			    .trans 20
+			    .rgbs 0, 200, 0, 100
+			    .font "", 12 .noShadow
+			    .spacing 0, 4
+			    .skin "Odinscall_mapcam" .nobg .noGradation
+			    .add
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			}
+			@pic[PicID_Popup_1].erase
+			@pic[PicID_Auxilia_Message_Window].erase
+			@pic[PicID_Square_Checker].erase
+			
+		    }
+		    @if v[101] >= 1 {
+			LEGS_Showing_PopupWindow_1.on
+			@if s[27] .isOff() {
+			    @if s[29] .isOn() {
+				LEGS_Showing_PopupWindow_1.on
+				LEGV_sentence_id_on_popup1 = 17
+				// "生産できる兵士が存在するなら文章を見る"
+				@if LEGV_sentence_id_on_popup1 >= 1 {
+				    v[89] = v[484]
+				    @call .cev 1200
+				    
+				}
+				
+			    } .else bl {
 
+				// "STATIC以外"
+				@if v[943] >= 1 {
+				    
+				} .else bl {
+				    // "警戒指令"
+				    LEGV_sentence_id_on_popup1 = -1
+				    @if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+					// "#call quickstrings"
+					// var1 = 106
+					// @call .cev 1890
+					getQstr(106)
+					@pic[PicID_Popup_1].strpic {
+					    t[3000]
+					    .pos v[1301], v[1065] .bottomLeft
+					    .size 0, 0                                    .chromakey 1
+					    .scale 100
+					    .trans v[1066]
+					    .rgbs 100, 100, 100, 100
+					    .font Font_UI, v[4511]
+					    .spacing 0, 0
+					    .skin "" .stretch
+					    .mapLayer 9
+					    .eraseWhenTransfer
+					    .affectedByFlash
+					    .affectedByShake
+					}
+					@pic[PicID_Auxilia_Message_Window].erase
+					
+				    }
+				    
+				}
+				
+			    }
+			    
+			} .else bl {
+			    // "STATICを選択中"
+			    LEGS_Showing_PopupWindow_1.on
+			    Ptr20 = v[101] * 300 + 4700
+			    // "生産できるやつを見る"
+			    v[301] = Ptr20 + 138
+			    // "A 5"
+			    TT1 = 5
+			    // "番号を見る"
+			    v[301] += TT1 * 3
+			    LEGV_sentence_id_on_popup1 = v[v[301]]
+			    // "生産できる兵士が存在するなら文章を見る"
+			    @if LEGV_sentence_id_on_popup1 >= 1 {
+				@call .cev 199
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		}
 
-        // "Passive"
-        @if `between(LEGV_MousePointer_X, v[1287], v[1287] + v[1289]) && between(LEGV_MousePointer_Y, v[1288], v[1288] + v[1290]) {
-            TT1 = v[1287] + v[1289] / 2 + 1
-            TT2 = v[1288] + v[1290] / 2
-            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `TT1 != v[345] || TT2 != v[346] {
-                v[1289].copy v[343], 2
-                @pic[PicID_ButtonSelect].strpic {
-                    ""
-                    .pos TT1, TT2 .center
-                    .size v[343], v[344]                    .chromakey 1
-                    .scale 100
-                    .trans 20
-                    .rgbs 0, 200, 0, 100
-                    .font Font_UI, v[4511]
-                    .spacing 0, 4
-                    .skin "Odinscall_mapcam" .nobg .noGradation
-                    .add
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                }
-                @pic[PicID_Popup_1].erase
-                @pic[PicID_Auxilia_Message_Window].erase
-                @pic[PicID_Square_Checker].erase
-                s[82].off
-                
-            }
-            LEGS_Showing_PopupWindow_1.on
-            v[299] = LEGS_selecting_enemy == 0 ? v[101] : v[100]
-            Ptr20 = v[299] * 300 + 4700
-            // "スキルチェック"
-            v[301] = Ptr20 + 221
-            // "番号を見る"
-            LEGV_sentence_id_on_popup1 = v[v[301]]
-            @if LEGS_selecting_enemy .isOn() {
-                @call .cev 1100
-                
-            } .else bl {
-                @if v[101] >= 1 {
-                    @if v[99] > 1 {
-                        LEGV_sentence_id_on_popup1 = s[24] == 1 ? LEGV_sentence_id_on_popup1 : -2
-                        
-                    }
-                    @call .cev 1100
-                    
-                }
-                
-            }
-            
-        }
-        // "Q"
-        @if `between(LEGV_MousePointer_X, v[1037] - v[1291], v[1037] + v[1291]) && between(LEGV_MousePointer_Y, v[1038] - v[1292], v[1038] + v[1292]) {
-            TT1 = v[1037]
-            TT2 = v[1038] - 1
-            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `TT1 != v[345] || TT2 != v[346] {
-                v[1291].copy v[343], 2
-                v[343..344] *= 2
-                @pic[PicID_ButtonSelect].strpic {
-                    ""
-                    .pos TT1, TT2 .center
-                    .size v[343], v[344]                    .chromakey 1
-                    .scale 100
-                    .trans 20
-                    .rgbs 0, 200, 0, 100
-                    .font "", 12 .noShadow
-                    .spacing 0, 4
-                    .skin "Odinscall_mapcam" .nobg .noGradation
-                    .add
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                }
-                @pic[PicID_Popup_1].erase
-                @pic[PicID_Auxilia_Message_Window].erase
-                @pic[PicID_Square_Checker].erase
-                
-            }
-            @if LEGS_selecting_enemy .isOn() {
-                LEGS_Showing_PopupWindow_1.on
-                Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-                // "スキルチェック"
-                v[301] = Ptr20 + 141
-                // "番号を見る"
-                LEGV_sentence_id_on_popup1 = v[v[301]]
-                // "skillが存在するなら文章を見る"
-                @if LEGV_sentence_id_on_popup1 >= 1 {
-                    @call .cev 1200
-                    
-                }
-                
-            } .else bl {
-                @if v[101] >= 1 {
-                    @if s[27] .isOn() {
-                        // "STATICを選択中"
-                        LEGS_Showing_PopupWindow_1.on
-                        Ptr20 = v[101] * 300 + 4700
-                        // "生産できるやつを見る"
-                        v[301] = Ptr20 + 138
-                        // "Qなので1"
-                        TT1 = 1
-                        // "番号を見る"
-                        v[301] += TT1 * 3
-                        LEGV_sentence_id_on_popup1 = v[v[301]]
-                        // "生産できる兵士が存在するなら文章を見る"
-                        @if LEGV_sentence_id_on_popup1 >= 1 {
-                            @call .cev 199
-                            
-                        }
-                        
-                    } .else bl {
-                        LEGS_Showing_PopupWindow_1.on
-                        Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-                        // "スキルチェック"
-                        v[301] = Ptr20 + 141
-                        // "番号を見る"
-                        LEGV_sentence_id_on_popup1 = v[v[301]]
-                        // "skillが存在するなら文章を見る"
-                        v[89] = v[557]
-                        @if LEGV_sentence_id_on_popup1 >= 1 {
-                            @call .cev 1200
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        // "W"
-        @if `between(LEGV_MousePointer_X, v[1039] - v[1291], v[1039] + v[1291]) && between(LEGV_MousePointer_Y, v[1040] - v[1292], v[1040] + v[1292]) {
-            TT1 = v[1039]
-            TT2 = v[1040] - 1
-            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `TT1 != v[345] || TT2 != v[346] {
-                v[1291].copy v[343], 2
-                v[343..344] *= 2
-                @pic[PicID_ButtonSelect].strpic {
-                    ""
-                    .pos TT1, TT2 .center
-                    .size v[343], v[344]                    .chromakey 1
-                    .scale 100
-                    .trans 20
-                    .rgbs 0, 200, 0, 100
-                    .font "", 12 .noShadow
-                    .spacing 0, 4
-                    .skin "Odinscall_mapcam" .nobg .noGradation
-                    .add
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                }
-                @pic[PicID_Popup_1].erase
-                @pic[PicID_Auxilia_Message_Window].erase
-                @pic[PicID_Square_Checker].erase
-                
-            }
-            @if LEGS_selecting_enemy .isOn() {
-                LEGS_Showing_PopupWindow_1.on
-                Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-                // "スキルチェック"
-                v[301] = Ptr20 + 161
-                // "番号を見る"
-                LEGV_sentence_id_on_popup1 = v[v[301]]
-                // "生産できる兵士が存在するなら文章を見る"
-                @if LEGV_sentence_id_on_popup1 >= 1 {
-                    @call .cev 1200
-                    
-                }
-                
-            } .else bl {
-                @if v[101] >= 1 {
-                    @if s[27] .isOn() {
-                        // "STATICを選択中"
-                        LEGS_Showing_PopupWindow_1.on
-                        Ptr20 = v[101] * 300 + 4700
-                        // "生産できるやつを見る"
-                        v[301] = Ptr20 + 138
-                        // "W 2"
-                        TT1 = 2
-                        // "番号を見る"
-                        v[301] += TT1 * 3
-                        LEGV_sentence_id_on_popup1 = v[v[301]]
-                        // "生産できる兵士が存在するなら文章を見る"
-                        @if LEGV_sentence_id_on_popup1 >= 1 {
-                            @call .cev 199
-                            
-                        }
-                        
-                    } .else bl {
-                        LEGS_Showing_PopupWindow_1.on
-                        Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-                        // "スキルチェック"
-                        v[301] = Ptr20 + 161
-                        // "番号を見る"
-                        LEGV_sentence_id_on_popup1 = v[v[301]]
-                        // "生産できる兵士が存在するなら文章を見る"
-                        v[89] = v[558]
-                        @if LEGV_sentence_id_on_popup1 >= 1 {
-                            @call .cev 1200
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        // "E"
-        @if `between(LEGV_MousePointer_X, v[1041] - v[1291], v[1041] + v[1291]) && between(LEGV_MousePointer_Y, v[1042] - v[1292], v[1042] + v[1292]) {
-            TT1 = v[1041]
-            TT2 = v[1042] - 1
-            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `TT1 != v[345] || TT2 != v[346] {
-                v[1291].copy v[343], 2
-                v[343..344] *= 2
-                @pic[PicID_ButtonSelect].strpic {
-                    ""
-                    .pos TT1, TT2 .center
-                    .size v[343], v[344]                    .chromakey 1
-                    .scale 100
-                    .trans 20
-                    .rgbs 0, 200, 0, 100
-                    .font "", 12 .noShadow
-                    .spacing 0, 4
-                    .skin "Odinscall_mapcam" .nobg .noGradation
-                    .add
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                }
-                @pic[PicID_Popup_1].erase
-                @pic[PicID_Auxilia_Message_Window].erase
-                @pic[PicID_Square_Checker].erase
-                
-            }
-            @if LEGS_selecting_enemy .isOn() {
-                LEGS_Showing_PopupWindow_1.on
-                Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-                // "スキルチェック"
-                v[301] = Ptr20 + 181
-                // "番号を見る"
-                LEGV_sentence_id_on_popup1 = v[v[301]]
-                // "生産できる兵士が存在するなら文章を見る"
-                @if LEGV_sentence_id_on_popup1 >= 1 {
-                    @call .cev 1200
-                    
-                }
-                
-            } .else bl {
-                @if v[101] >= 1 {
-                    @if s[27] .isOn() {
-                        // "STATICを選択中"
-                        LEGS_Showing_PopupWindow_1.on
-                        Ptr20 = v[101] * 300
-                        Ptr20 += 4700
-                        // "生産できるやつを見る"
-                        v[301] = Ptr20 + 138
-                        // "E 3"
-                        TT1 = 3
-                        // "番号を見る"
-                        v[301] += TT1 * 3
-                        LEGV_sentence_id_on_popup1 = v[v[301]]
-                        // "生産できる兵士が存在するなら文章を見る"
-                        @if LEGV_sentence_id_on_popup1 >= 1 {
-                            @call .cev 199
-                            
-                        }
-                        
-                    } .else bl {
-                        LEGS_Showing_PopupWindow_1.on
-                        Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-                        // "スキルチェック"
-                        v[301] = Ptr20 + 181
-                        // "番号を見る"
-                        LEGV_sentence_id_on_popup1 = v[v[301]]
-                        // "生産できる兵士が存在するなら文章を見る"
-                        v[89] = v[559]
-                        @if LEGV_sentence_id_on_popup1 >= 1 {
-                            @call .cev 1200
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        // "R"
-        @if `between(LEGV_MousePointer_X, v[1043] - v[1291], v[1043] + v[1291]) && between(LEGV_MousePointer_Y, v[1044] - v[1292], v[1044] + v[1292]) {
-            TT1 = v[1043]
-            TT2 = v[1044] - 1
-            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `TT1 != v[345] || TT2 != v[346] {
-                v[1291].copy v[343], 2
-                v[343..344] *= 2
-                @pic[PicID_ButtonSelect].strpic {
-                    ""
-                    .pos TT1, TT2 .center
-                    .size v[343], v[344]                    .chromakey 1
-                    .scale 100
-                    .trans 20
-                    .rgbs 0, 200, 0, 100
-                    .font "", 12 .noShadow
-                    .spacing 0, 4
-                    .skin "Odinscall_mapcam" .nobg .noGradation
-                    .add
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                }
-                @pic[PicID_Popup_1].erase
-                @pic[PicID_Auxilia_Message_Window].erase
-                @pic[PicID_Square_Checker].erase
-                
-            }
-            @if LEGS_selecting_enemy .isOn() {
-                LEGS_Showing_PopupWindow_1.on
-                Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-                // "スキルチェック"
-                v[301] = Ptr20 + 201
-                // "番号を見る"
-                LEGV_sentence_id_on_popup1 = v[v[301]]
-                // "生産できる兵士が存在するなら文章を見る"
-                @if LEGV_sentence_id_on_popup1 >= 1 {
-                    @call .cev 1200
-                    
-                }
-                
-            } .else bl {
-                @if v[101] >= 1 {
-                    @if s[27] .isOn() {
-                        // "STATICを選択中"
-                        LEGS_Showing_PopupWindow_1.on
-                        Ptr20 = v[101] * 300 + 4700
-                        // "生産できるやつを見る"
-                        v[301] = Ptr20 + 138
-                        // "E 3"
-                        TT1 = 4
-                        // "番号を見る"
-                        v[301] += TT1 * 3
-                        LEGV_sentence_id_on_popup1 = v[v[301]]
-                        // "生産できる兵士が存在するなら文章を見る"
-                        v[89] = v[560]
-                        @if LEGV_sentence_id_on_popup1 >= 1 {
-                            @call .cev 199
-                            
-                        }
-                        
-                    } .else bl {
-                        LEGS_Showing_PopupWindow_1.on
-                        Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-                        // "スキルチェック"
-                        v[301] = Ptr20 + 201
-                        // "番号を見る"
-                        LEGV_sentence_id_on_popup1 = v[v[301]]
-                        // "生産できる兵士が存在するなら文章を見る"
-                        @if LEGV_sentence_id_on_popup1 >= 1 {
-                            v[89] = v[560]
-                            @call .cev 1200
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        // "A"
-        TT1 = between(LEGV_MousePointer_X, v[1045] - v[1291], v[1045] + v[1291]) && between(LEGV_MousePointer_Y, v[1046] - v[1292], v[1046] + v[1292]) ? 1 : 0
-        @if TT1 == 1 {
-            TT1 = v[1045]
-            TT2 = v[1046] - 1
-            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `TT1 != v[345] || TT2 != v[346] {
-                v[1291].copy v[343], 2
-                v[343..344] *= 2
-                @pic[PicID_ButtonSelect].strpic {
-                    ""
-                    .pos TT1, TT2 .center
-                    .size v[343], v[344]                    .chromakey 1
-                    .scale 100
-                    .trans 20
-                    .rgbs 0, 200, 0, 100
-                    .font "", 12 .noShadow
-                    .spacing 0, 4
-                    .skin "Odinscall_mapcam" .nobg .noGradation
-                    .add
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                }
-                @pic[PicID_Popup_1].erase
-                @pic[PicID_Auxilia_Message_Window].erase
-                @pic[PicID_Square_Checker].erase
-                
-            }
-            @if v[101] >= 1 {
-                LEGS_Showing_PopupWindow_1.on
-                @if s[27] .isOff() {
-                    @if s[29] .isOn() {
-                        LEGS_Showing_PopupWindow_1.on
-                        LEGV_sentence_id_on_popup1 = 17
-                        // "生産できる兵士が存在するなら文章を見る"
-                        @if LEGV_sentence_id_on_popup1 >= 1 {
-                            v[89] = v[484]
-                            @call .cev 1200
-                            
-                        }
-                        
-                    } .else bl {
+		// "S"
+		@if `between(LEGV_MousePointer_X, v[1047] - v[1291], v[1047] + v[1291]) && between(LEGV_MousePointer_Y, v[1048] - v[1292], v[1048] + v[1292]) {
+		    TT1 = v[1047]
+		    TT2 = v[1048] - 1
+		    @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+		    @if `TT1 != v[345] || TT2 != v[346] {
+			v[1291].copy v[343], 2
+			v[343..344] *= 2
+			@pic[PicID_ButtonSelect].strpic {
+			    ""
+			    .pos TT1, TT2 .center
+			    .size v[343], v[344]                    .chromakey 1
+			    .scale 100
+			    .trans 20
+			    .rgbs 0, 200, 0, 100
+			    .font "", 12 .noShadow
+			    .spacing 0, 4
+			    .skin "Odinscall_mapcam" .nobg .noGradation
+			    .add
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			}
+			@pic[PicID_Popup_1].erase
+			@pic[PicID_Auxilia_Message_Window].erase
+			@pic[PicID_Square_Checker].erase
+			
+		    }
 
-                        // "STATIC以外"
-                        @if v[943] >= 1 {
-                            
-                        } .else bl {
-                            // "警戒指令"
-                            LEGV_sentence_id_on_popup1 = -1
-                            @if v[85] != LEGV_sentence_id_on_popup1 {
-                                // "#call quickstrings"
-                                // var1 = 106
-                                // @call .cev 1890
-				getQstr(106)
-                                @pic[PicID_Popup_1].strpic {
-                                    t[3000]
-                                    .pos v[1301], v[1065] .bottomLeft
-                                    .size 0, 0                                    .chromakey 1
-                                    .scale 100
-                                    .trans v[1066]
-                                    .rgbs 100, 100, 100, 100
-                                    .font Font_UI, v[4511]
-                                    .spacing 0, 0
-                                    .skin "" .stretch
-                                    .mapLayer 9
-                                    .eraseWhenTransfer
-                                    .affectedByFlash
-                                    .affectedByShake
-                                }
-                                @pic[PicID_Auxilia_Message_Window].erase
-                                
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                } .else bl {
-                    // "STATICを選択中"
-                    LEGS_Showing_PopupWindow_1.on
-                    Ptr20 = v[101] * 300 + 4700
-                    // "生産できるやつを見る"
-                    v[301] = Ptr20 + 138
-                    // "A 5"
-                    TT1 = 5
-                    // "番号を見る"
-                    v[301] += TT1 * 3
-                    LEGV_sentence_id_on_popup1 = v[v[301]]
-                    // "生産できる兵士が存在するなら文章を見る"
-                    @if LEGV_sentence_id_on_popup1 >= 1 {
-                        @call .cev 199
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
+		    @if v[101] >= 1 {
+			LEGS_Showing_PopupWindow_1.on
+			@if s[27] .isOff() {
+			    @if s[29] .isOn() {
+				LEGS_Showing_PopupWindow_1.on
+				LEGV_sentence_id_on_popup1 = 17
+				// "生産できる兵士が存在するなら文章を見る"
+				@if LEGV_sentence_id_on_popup1 >= 1 {
+				    v[89] = v[485]
+				    @call .cev 1200
+				    
+				}
+				
+			    } .else bl {
+				// "STATIC以外"
+				@if v[943] >= 1 {
+				    
+				} .else bl {
+				    // "防御指令"
+				    LEGV_sentence_id_on_popup1 = -2
+				    @if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+					// var1 = 107
+					// @call .cev 1890
+					getQstr(107)
+					@pic[PicID_Popup_1].strpic {
+					    t[3000]
+					    .pos v[1301], v[1065] .bottomLeft
+					    .size 0, 0                                    .chromakey 1
+					    .scale 100
+					    .trans v[1066]
+					    .rgbs 100, 100, 100, 100
+					    .font Font_UI, v[4511]
+					    .spacing 0, 0
+					    .skin "" .stretch
+					    .mapLayer 9
+					    .eraseWhenTransfer
+					    .affectedByFlash
+					    .affectedByShake
+					}
+					@pic[PicID_Auxilia_Message_Window].erase
+					
+				    }
+				    
+				}
+				
+			    }
+			    
+			} .else bl {
+			    // "STATICを選択中"
+			    LEGS_Showing_PopupWindow_1.on
+			    Ptr20 = v[101] * 300 + 4700
+			    // "生産できるやつを見る"
+			    v[301] = Ptr20 + 138
+			    // "S 6"
+			    TT1 = 6
+			    // "番号を見る"
+			    v[301] += TT1 * 3
+			    LEGV_sentence_id_on_popup1 = v[v[301]]
+			    // "生産できる兵士が存在するなら文章を見る"
+			    @if LEGV_sentence_id_on_popup1 >= 1 {
+				@call .cev 199
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		}
 
-        // "S"
-        @if `between(LEGV_MousePointer_X, v[1047] - v[1291], v[1047] + v[1291]) && between(LEGV_MousePointer_Y, v[1048] - v[1292], v[1048] + v[1292]) {
-            TT1 = v[1047]
-            TT2 = v[1048] - 1
-            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `TT1 != v[345] || TT2 != v[346] {
-                v[1291].copy v[343], 2
-                v[343..344] *= 2
-                @pic[PicID_ButtonSelect].strpic {
-                    ""
-                    .pos TT1, TT2 .center
-                    .size v[343], v[344]                    .chromakey 1
-                    .scale 100
-                    .trans 20
-                    .rgbs 0, 200, 0, 100
-                    .font "", 12 .noShadow
-                    .spacing 0, 4
-                    .skin "Odinscall_mapcam" .nobg .noGradation
-                    .add
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                }
-                @pic[PicID_Popup_1].erase
-                @pic[PicID_Auxilia_Message_Window].erase
-                @pic[PicID_Square_Checker].erase
-                
-            }
+		// "D"
+		@if `between(LEGV_MousePointer_X, v[1049] - v[1291], v[1049] + v[1291]) && between(LEGV_MousePointer_Y, v[1050] - v[1292], v[1050] + v[1292]) {
+		    TT1 = v[1049]
+		    TT2 = v[1050] - 1
+		    @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+		    @if `TT1 != v[345] || TT2 != v[346] {
+			v[1291].copy v[343], 2
+			v[343..344] *= 2
+			@pic[PicID_ButtonSelect].strpic {
+			    ""
+			    .pos TT1, TT2 .center
+			    .size v[343], v[344]                    .chromakey 1
+			    .scale 100
+			    .trans 20
+			    .rgbs 0, 200, 0, 100
+			    .font "", 12 .noShadow
+			    .spacing 0, 4
+			    .skin "Odinscall_mapcam" .nobg .noGradation
+			    .add
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			}
+			@pic[PicID_Popup_1].erase
+			@pic[PicID_Auxilia_Message_Window].erase
+			@pic[PicID_Square_Checker].erase
+			
+		    }
 
-            @if v[101] >= 1 {
-                LEGS_Showing_PopupWindow_1.on
-                @if s[27] .isOff() {
-                    @if s[29] .isOn() {
-                        LEGS_Showing_PopupWindow_1.on
-                        LEGV_sentence_id_on_popup1 = 17
-                        // "生産できる兵士が存在するなら文章を見る"
-                        @if LEGV_sentence_id_on_popup1 >= 1 {
-                            v[89] = v[485]
-                            @call .cev 1200
-                            
-                        }
-                        
-                    } .else bl {
-                        // "STATIC以外"
-                        @if v[943] >= 1 {
-                            
-                        } .else bl {
-                            // "防御指令"
-                            LEGV_sentence_id_on_popup1 = -2
-                            @if v[85] != LEGV_sentence_id_on_popup1 {
-                                // var1 = 107
-                                // @call .cev 1890
-				getQstr(107)
-                                @pic[PicID_Popup_1].strpic {
-                                    t[3000]
-                                    .pos v[1301], v[1065] .bottomLeft
-                                    .size 0, 0                                    .chromakey 1
-                                    .scale 100
-                                    .trans v[1066]
-                                    .rgbs 100, 100, 100, 100
-                                    .font Font_UI, v[4511]
-                                    .spacing 0, 0
-                                    .skin "" .stretch
-                                    .mapLayer 9
-                                    .eraseWhenTransfer
-                                    .affectedByFlash
-                                    .affectedByShake
-                                }
-                                @pic[PicID_Auxilia_Message_Window].erase
-                                
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                } .else bl {
-                    // "STATICを選択中"
-                    LEGS_Showing_PopupWindow_1.on
-                    Ptr20 = v[101] * 300 + 4700
-                    // "生産できるやつを見る"
-                    v[301] = Ptr20 + 138
-                    // "S 6"
-                    TT1 = 6
-                    // "番号を見る"
-                    v[301] += TT1 * 3
-                    LEGV_sentence_id_on_popup1 = v[v[301]]
-                    // "生産できる兵士が存在するなら文章を見る"
-                    @if LEGV_sentence_id_on_popup1 >= 1 {
-                        @call .cev 199
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
+		    @if v[101] >= 1 {
+			LEGS_Showing_PopupWindow_1.on
+			@if s[27] .isOff() {
+			    @if s[29] .isOn() {
+				LEGS_Showing_PopupWindow_1.on
+				LEGV_sentence_id_on_popup1 = 17
+				// "生産できる兵士が存在するなら文章を見る"
+				@if LEGV_sentence_id_on_popup1 >= 1 {
+				    v[89] = v[486]
+				    @call .cev 1200
+				    
+				}
+				
+			    } .else bl {
+				// "STATIC以外"
+				@if v[943] >= 1 {
+				    
+				} .else bl {
+				    // "待機指令"
+				    LEGV_sentence_id_on_popup1 = -3
+				    @if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+					var1 = 108
+					@call .cev 1890
 
-        // "D"
-        @if `between(LEGV_MousePointer_X, v[1049] - v[1291], v[1049] + v[1291]) && between(LEGV_MousePointer_Y, v[1050] - v[1292], v[1050] + v[1292]) {
-            TT1 = v[1049]
-            TT2 = v[1050] - 1
-            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `TT1 != v[345] || TT2 != v[346] {
-                v[1291].copy v[343], 2
-                v[343..344] *= 2
-                @pic[PicID_ButtonSelect].strpic {
-                    ""
-                    .pos TT1, TT2 .center
-                    .size v[343], v[344]                    .chromakey 1
-                    .scale 100
-                    .trans 20
-                    .rgbs 0, 200, 0, 100
-                    .font "", 12 .noShadow
-                    .spacing 0, 4
-                    .skin "Odinscall_mapcam" .nobg .noGradation
-                    .add
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                }
-                @pic[PicID_Popup_1].erase
-                @pic[PicID_Auxilia_Message_Window].erase
-                @pic[PicID_Square_Checker].erase
-                
-            }
+					@pic[PicID_Popup_1].strpic {
+					    "\t[3000]"
+					    .pos v[1301], v[1065] .bottomLeft
+					    .size 0, 0                                    .chromakey 1
+					    .scale 100
+					    .trans v[1066]
+					    .rgbs 100, 100, 100, 100
+					    .font Font_UI, v[4511]
+					    .spacing 0, 0
+					    .skin "" .stretch
+					    .mapLayer 9
+					    .eraseWhenTransfer
+					    .affectedByFlash
+					    .affectedByShake
+					}
+					@pic[PicID_Auxilia_Message_Window].erase
+					
+				    }
+				    
+				}
+				
+			    }
+			    
+			} .else bl {
+			    // "STATICを選択中"
+			    LEGS_Showing_PopupWindow_1.on
+			    Ptr20 = v[101] * 300 + 4700
+			    // "生産できるやつを見る"
+			    v[301] = Ptr20 + 138
+			    // "D 7"
+			    TT1 = 7
+			    // "番号を見る"
+			    v[301] += TT1 * 3
+			    LEGV_sentence_id_on_popup1 = v[v[301]]
+			    // "生産できる兵士が存在するなら文章を見る"
+			    @if LEGV_sentence_id_on_popup1 >= 1 {
+				@call .cev 199
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		}
 
-            @if v[101] >= 1 {
-                LEGS_Showing_PopupWindow_1.on
-                @if s[27] .isOff() {
-                    @if s[29] .isOn() {
-                        LEGS_Showing_PopupWindow_1.on
-                        LEGV_sentence_id_on_popup1 = 17
-                        // "生産できる兵士が存在するなら文章を見る"
-                        @if LEGV_sentence_id_on_popup1 >= 1 {
-                            v[89] = v[486]
-                            @call .cev 1200
-                            
-                        }
-                        
-                    } .else bl {
-                        // "STATIC以外"
-                        @if v[943] >= 1 {
-                            
-                        } .else bl {
-                            // "待機指令"
-                            LEGV_sentence_id_on_popup1 = -3
-                            @if v[85] != LEGV_sentence_id_on_popup1 {
-                                var1 = 108
-                                @call .cev 1890
+		// "F"
+		@if `between(LEGV_MousePointer_X, v[1051] - v[1291], v[1051] + v[1291]) && between(LEGV_MousePointer_Y, v[1052] - v[1292], v[1052] + v[1292]) {
+		    TT1 = v[1051]
+		    TT2 = v[1052] - 1
+		    @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+		    @if `TT1 != v[345] || TT2 != v[346] {
+			v[1291].copy v[343], 2
+			v[343..344] *= 2
+			@pic[PicID_ButtonSelect].strpic {
+			    ""
+			    .pos TT1, TT2 .center
+			    .size v[343], v[344]                    .chromakey 1
+			    .scale 100
+			    .trans 20
+			    .rgbs 0, 200, 0, 100
+			    .font "", 12 .noShadow
+			    .spacing 0, 4
+			    .skin "Odinscall_mapcam" .nobg .noGradation
+			    .add
+			    .mapLayer 9
+			    .eraseWhenTransfer
+			}
+			@pic[PicID_Popup_1].erase
+			@pic[PicID_Auxilia_Message_Window].erase
+			@pic[PicID_Square_Checker].erase
+			
+		    }
 
-                                @pic[PicID_Popup_1].strpic {
-                                    "\t[3000]"
-                                    .pos v[1301], v[1065] .bottomLeft
-                                    .size 0, 0                                    .chromakey 1
-                                    .scale 100
-                                    .trans v[1066]
-                                    .rgbs 100, 100, 100, 100
-                                    .font Font_UI, v[4511]
-                                    .spacing 0, 0
-                                    .skin "" .stretch
-                                    .mapLayer 9
-                                    .eraseWhenTransfer
-                                    .affectedByFlash
-                                    .affectedByShake
-                                }
-                                @pic[PicID_Auxilia_Message_Window].erase
-                                
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                } .else bl {
-                    // "STATICを選択中"
-                    LEGS_Showing_PopupWindow_1.on
-                    Ptr20 = v[101] * 300 + 4700
-                    // "生産できるやつを見る"
-                    v[301] = Ptr20 + 138
-                    // "D 7"
-                    TT1 = 7
-                    // "番号を見る"
-                    v[301] += TT1 * 3
-                    LEGV_sentence_id_on_popup1 = v[v[301]]
-                    // "生産できる兵士が存在するなら文章を見る"
-                    @if LEGV_sentence_id_on_popup1 >= 1 {
-                        @call .cev 199
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-
-        // "F"
-        @if `between(LEGV_MousePointer_X, v[1051] - v[1291], v[1051] + v[1291]) && between(LEGV_MousePointer_Y, v[1052] - v[1292], v[1052] + v[1292]) {
-            TT1 = v[1051]
-            TT2 = v[1052] - 1
-            @pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-            @if `TT1 != v[345] || TT2 != v[346] {
-                v[1291].copy v[343], 2
-                v[343..344] *= 2
-                @pic[PicID_ButtonSelect].strpic {
-                    ""
-                    .pos TT1, TT2 .center
-                    .size v[343], v[344]                    .chromakey 1
-                    .scale 100
-                    .trans 20
-                    .rgbs 0, 200, 0, 100
-                    .font "", 12 .noShadow
-                    .spacing 0, 4
-                    .skin "Odinscall_mapcam" .nobg .noGradation
-                    .add
-                    .mapLayer 9
-                    .eraseWhenTransfer
-                }
-                @pic[PicID_Popup_1].erase
-                @pic[PicID_Auxilia_Message_Window].erase
-                @pic[PicID_Square_Checker].erase
-                
-            }
-
-            @if v[101] >= 1 {
-                LEGS_Showing_PopupWindow_1.on
-                @if s[27] .isOff() {
-                    // "STATIC以外"
-                    @if s[29] .isOn() {
-                        
-                    } .else bl {
-                        @if v[943] >= 1 {
-                            LEGV_sentence_id_on_popup1 = -6
-                            @if v[85] != LEGV_sentence_id_on_popup1 {
-                                // "#call quickstrings"
-                                // var1 = 104
-                                // @call .cev 1890
+		    @if v[101] >= 1 {
+			LEGS_Showing_PopupWindow_1.on
+			@if s[27] .isOff() {
+			    // "STATIC以外"
+			    @if s[29] .isOn() {
+				
+			    } .else bl {
+				@if v[943] >= 1 {
+				    LEGV_sentence_id_on_popup1 = -6
+				    @if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+					// "#call quickstrings"
+					// var1 = 104
+					// @call .cev 1890
+					show_pupwin1_with_Qstr(104,v[1301],v[1065])
+					@pic[PicID_Auxilia_Message_Window].erase
+					
+				    }
+				    
+				} .else bl {
+				    // "手動指令"
+				    LEGV_sentence_id_on_popup1 = -4
+				    @if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+					// var1 = 109
+					// @call .cev 1890
+					show_pupwin1_with_Qstr(109,v[1301],v[1065])
+					@pic[PicID_Auxilia_Message_Window].erase
+					
+				    }
+				    
+				}
+				
+			    }
+			    
+			} .else bl {
+			    // "STATICを選択中"
+			    LEGV_sentence_id_on_popup1 = -5
+			    @if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+				// "#call quickstrings"
+				// var1 = 105
+				// @call .cev 1890
 				getQstr(105)
-                                @pic[PicID_Popup_1].strpic {
-                                    t[3000]
-                                    .pos v[1301], v[1065] .bottomLeft
-                                    .size 0, 0                                    .chromakey 1
-                                    .scale 100
-                                    .trans v[1066]
-                                    .rgbs 100, 100, 100, 100
-                                    .font Font_UI, v[4511]
-                                    .spacing 0, 0
-                                    .skin "" .stretch
-                                    .mapLayer 9
-                                    .eraseWhenTransfer
-                                    .affectedByFlash
-                                    .affectedByShake
-                                }
-                                @pic[PicID_Auxilia_Message_Window].erase
-                                
-                            }
-                            
-                        } .else bl {
-                            // "手動指令"
-                            LEGV_sentence_id_on_popup1 = -4
-                            @if v[85] != LEGV_sentence_id_on_popup1 {
-                                // var1 = 109
-                                // @call .cev 1890
-				getQstr(109)
-                                @pic[PicID_Popup_1].strpic {
-                                    t[3000]
-                                    .pos v[1301], v[1065] .bottomLeft
-                                    .size 0, 0                                    .chromakey 1
-                                    .scale 100
-                                    .trans v[1066]
-                                    .rgbs 100, 100, 100, 100
-                                    .font Font_UI, v[4511]
-                                    .spacing 0, 0
-                                    .skin "" .stretch
-                                    .mapLayer 9
-                                    .eraseWhenTransfer
-                                    .affectedByFlash
-                                    .affectedByShake
-                                }
-                                @pic[PicID_Auxilia_Message_Window].erase
-                                
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                } .else bl {
-                    // "STATICを選択中"
-                    LEGV_sentence_id_on_popup1 = -5
-                    @if v[85] != LEGV_sentence_id_on_popup1 {
-                        // "#call quickstrings"
-                        // var1 = 105
-                        // @call .cev 1890
-			getQstr(105)
-                        @pic[PicID_Popup_1].strpic {
-                            t[3000]
-                            .pos v[1301], v[1065] .bottomLeft
-                            .size 0, 0                            .chromakey 1
-                            .scale 100
-                            .trans v[1066]
-                            .rgbs 100, 100, 100, 100
-                            .font Font_UI, v[4511]
-                            .spacing 0, 0
-                            .skin "" .stretch
-                            .mapLayer 9
-                            .eraseWhenTransfer
-                            .affectedByFlash
-                            .affectedByShake
-                        }
-                        @pic[PicID_Auxilia_Message_Window].erase
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-
-
-	// PAUSED INFORMATION
-        @if LEGS_Showing_PopupWindow_1 .isOff() {
-            @if s[2] .isOn() {
-                @if LEGV_MousePointer_Y <= v[1286] {
-                    @if `!(LEGV_MousePointer_X <= v[4514] && LEGV_MousePointer_Y >= v[4515]) {
-                        @if `!(between(LEGV_MousePointer_X, v[1282], v[1284]) && between(LEGV_MousePointer_Y, v[1283], v[1285])) {
-                            @if v[93] >= 12 {
-                                LEGS_Showing_PopupWindow_1.on
-                                @if s[61] .isOff() {
-                                    v[368..369] = 0
-                                    @loop v[1004] .dst v[301] {
-                                        v[302] = v[301] * 300
-                                        v[302] += 5001
-                                        // "とりあえず40体までしか選択できない"
-                                        // "ObjID>0"
-                                        @if v[v[302]] > 0 {
-                                            v[v[302]].copy v[601], 11
-                                            // "左上"
-                                            v[303] = v[607] - v[610]
-                                            v[303] -= v[610] <= 18 ? v[1122] : 0
-                                            v[304] = v[608] - v[611]
-                                            v[304] -= v[611] <= 18 ? v[1123] : 0
-                                            // "右下"
-                                            v[305] = v[607] + v[610]
-                                            v[305] += v[610] <= 18 ? v[1122] : 0
-                                            v[306] = v[608] + v[611]
-                                            v[306] += v[611] <= 18 ? v[1123] : 0
-                                            v[310] = v[302] + 23
-                                            v[311] = v[302] + 100
-                                            v[320] = v[302] + 99
-                                            @if `between(LEGV_MousePointer_X, v[303], v[305]) && between(LEGV_MousePointer_Y, v[304], v[306]) {
-                                                v[311] = v[302] + 99
-                                                v[v[311]].copy v[700], 150
-                                                LEGV_sentence_id_on_popup1 = 1000
-                                                @if v[85] != LEGV_sentence_id_on_popup1 {
-                                                    TT1 = v[301] + 1
-                                                    v[369] = TT1
-                                                    TT1 += v[4562]
-                                                    TT2 = [8, 2, 17][(v[700] + 1)]
-                                                    v[350] = v[v[302] + 6]
-                                                    v[351] = v[v[302] + 7] - 16
-                                                    t[501] .asg "\c[\TT2]\t[\TT1]\c[0]
-\c[1]HP:\v[706]/\v[705]
-\c[3]AR:\v[711]/\v[738]
-\c[10]SP:\v[708]/\v[707]" .extract
-                                                    @pic[PicID_Popup_1].strpic {
-                                                        t[501]
-                                                        .pos v[350], v[351] .bottom
-                                                        .size 0, 0                                                        .chromakey 1
-                                                        .scale 100
-                                                        .trans 100
-                                                        .rgbs 100, 100, 100, 100
-                                                        .font Font_UI, v[4511]
-                                                        .spacing 0, 0
-                                                        .skin "" .stretch
-                                                        .mapLayer 9
-                                                        .eraseWhenTransfer
-                                                        .affectedByFlash
-                                                        .affectedByShake
-                                                    }
-                                                    @pic[PicID_Popup_1].move {
-                                                        .pos v[350], v[351] .bottom
-                                                        .scale 100
-                                                        .trans v[1066]
-                                                        .time 1
-                                                        .rgbs 100, 100, 100, 100
-                                                    }
-                                                    
-                                                }
-                                                @break
-                                                
-                                            }
-                                            
-                                        }
-                                        
-                                    }
-                                    
-                                    s[61].on
-                                    
-                                } .else bl {
-                                    @if v[369] > 0 {
-                                        v[368] -= 1
-                                        // "#White Flash"
-                                        v[302] = v[369] * 300 + 4701
-                                        @if `v[v[302] + 294] == 0 && v[368] <= 0 {
-                                            v[v[302] + 294] = 4
-                                            v[0] = v[v[302] + 290..v[302] + 292] = [120, 120, 120]
-                                            v[368] = 8
-                                            
-                                        }
-                                        
-                                    }
-                                    
-                                }
-                                
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-
-            @if LEGS_Showing_PopupWindow_1 .isOff() {
-                s[61].off
-                LEGV_sentence_id_on_popup1 = 0
-                @pic[PicID_Popup_1].erase
-                @pic[PicID_Auxilia_Message_Window].erase
-                // "Paused Information"
-                @if v[81] == 0 {
-                    @if s[11] .isOff() {
-
-			// ????
-                        // "#Check Terrain"
-                        LEGV_MousePointer_X.copy var1, 2
-                        v[12] -= 8
-                        @call .cev 2000
-
-                        // "######################Get Terrain and Elevation info"
-                        v[313] = v[v[1182] + v[21] - v[69] + (v[22] - v[70]) * v[2061]]
-                        TT1 = v[313] / 100000000
-                        TT2 = v[313] % 100
-                        v[350] = LEGV_MousePointer_X
-                        v[351] = LEGV_MousePointer_Y - 16
-                        TT2 = v[1239] + TT2
-                        // "######################"
-                        TT1 = v[21]
-                        TT2 = v[22]
-                        @call .cev 2001
-                        v[344] = 63
-			@if Var_MouseMode != MODE_Elevation {
-				@pic[PicID_pointer_sub].show {
-				    "ui\terrainsquare"
-				    .pos v[22], v[23] .center
-				    .chromakey 1
+				@pic[PicID_Popup_1].strpic {
+				    t[3000]
+				    .pos v[1301], v[1065] .bottomLeft
+				    .size 0, 0                            .chromakey 1
 				    .scale 100
-				    .trans v[344]
+				    .trans v[1066]
 				    .rgbs 100, 100, 100, 100
-				    .add
-				    .mapLayer 5
+				    .font Font_UI, v[4511]
+				    .spacing 0, 0
+				    .skin "" .stretch
+				    .mapLayer 9
 				    .eraseWhenTransfer
 				    .affectedByFlash
 				    .affectedByShake
 				}
+				@pic[PicID_Auxilia_Message_Window].erase
+				
+			    }
+			    
 			}
-                        
-                    } .else bl {
-                        @pic[PicID_pointer_sub].erase
-                        
-                    }
-                    
-                } .else bl {
-                    @pic[PicID_pointer_sub].erase
-                    
-                }
-                @pic[PicID_ButtonSelect].erase
-                
-            } .else bl {
-                @pic[PicID_pointer_sub].erase
-                
-            }
-            
-        }
-        @wait 0
-        @wait 0
-        @wait 0
-        v[85] = LEGV_sentence_id_on_popup1
-        v[90] = LEGV_sentence_id_on_popup1 <= 0 ? 0 : v[89]
-        
-    }
-    
+			
+		    }
+		    
+		}
+
+
+		// PAUSED INFORMATION
+		// awful as fugg :D
+		@if LEGS_Showing_PopupWindow_1 .isOff() {
+		    @if s[2] .isOn() {
+			@if LEGV_MousePointer_Y <= v[1286] {
+			    @if `!(LEGV_MousePointer_X <= v[4514] && LEGV_MousePointer_Y >= v[4515]) {
+				@if `!(between(LEGV_MousePointer_X, v[1282], v[1284]) && between(LEGV_MousePointer_Y, v[1283], v[1285])) {
+				    @if v[93] >= 12 {
+					LEGS_Showing_PopupWindow_1.on
+					@if s[61] .isOff() {
+					    v[368..369] = 0
+					    @loop v[1004] .dst v[301] {
+						v[302] = v[301] * 300
+						v[302] += 5001
+						// "とりあえず40体までしか選択できない"
+						// "ObjID>0"
+						@if v[v[302]] > 0 {
+						    v[v[302]].copy v[601], 11
+						    // "左上"
+						    v[303] = v[607] - v[610]
+						    v[303] -= v[610] <= 18 ? v[1122] : 0
+						    v[304] = v[608] - v[611]
+						    v[304] -= v[611] <= 18 ? v[1123] : 0
+						    // "右下"
+						    v[305] = v[607] + v[610]
+						    v[305] += v[610] <= 18 ? v[1122] : 0
+						    v[306] = v[608] + v[611]
+						    v[306] += v[611] <= 18 ? v[1123] : 0
+						    v[310] = v[302] + 23
+						    v[311] = v[302] + 100
+						    v[320] = v[302] + 99
+						    @if `between(LEGV_MousePointer_X, v[303], v[305]) && between(LEGV_MousePointer_Y, v[304], v[306]) {
+							v[311] = v[302] + 99
+							v[v[311]].copy v[700], 150
+							LEGV_sentence_id_on_popup1 = 1000
+							@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+							    TT1 = v[301] + 1
+							    v[369] = TT1
+							    TT1 += v[4562]
+							    TT2 = [8, 2, 17][(v[700] + 1)]
+							    v[350] = v[v[302] + 6]
+							    v[351] = v[v[302] + 7] - 16
+							    t[501] .asg "\c[\TT2]\t[\TT1]\c[0]
+	\c[1]HP:\v[706]/\v[705]
+	\c[3]AR:\v[711]/\v[738]
+	\c[10]SP:\v[708]/\v[707]" .extract
+							    @pic[PicID_Popup_1].strpic {
+								t[501]
+								.pos v[350], v[351] .bottom
+								.size 0, 0                                                        .chromakey 1
+								.scale 100
+								.trans 100
+								.rgbs 100, 100, 100, 100
+								.font Font_UI, v[4511]
+								.spacing 0, 0
+								.skin "" .stretch
+								.mapLayer 9
+								.eraseWhenTransfer
+								.affectedByFlash
+								.affectedByShake
+							    }
+							    @pic[PicID_Popup_1].move {
+								.pos v[350], v[351] .bottom
+								.scale 100
+								.trans v[1066]
+								.time 1
+								.rgbs 100, 100, 100, 100
+							    }
+							    
+							}
+							@break
+							
+						    }
+						    
+						}
+						
+					    }
+					    
+					    s[61].on
+					    
+					} .else bl {
+					    @if v[369] > 0 {
+						v[368] -= 1
+						// "#White Flash"
+						v[302] = v[369] * 300 + 4701
+						@if `v[v[302] + 294] == 0 && v[368] <= 0 {
+						    v[v[302] + 294] = 4
+						    v[0] = v[v[302] + 290..v[302] + 292] = [120, 120, 120]
+						    v[368] = 8
+						    
+						}
+						
+					    }
+					    
+					}
+					
+				    }
+				    
+				}
+				
+			    }
+			    
+			}
+			
+		    }
+
+		    @if LEGS_Showing_PopupWindow_1 .isOff() {
+			s[61].off
+			LEGV_sentence_id_on_popup1 = 0
+			@pic[PicID_Popup_1].erase
+			@pic[PicID_Auxilia_Message_Window].erase
+			// "Paused Information"
+			@if v[81] == 0 {
+			    @if s[11] .isOff() {
+
+				// ????
+				// "#Check Terrain"
+				LEGV_MousePointer_X.copy var1, 2
+				v[12] -= 8
+				@call .cev 2000
+
+				// "######################Get Terrain and Elevation info"
+				v[313] = v[v[1182] + v[21] - v[69] + (v[22] - v[70]) * v[2061]]
+				TT1 = v[313] / 100000000
+				TT2 = v[313] % 100
+				v[350] = LEGV_MousePointer_X
+				v[351] = LEGV_MousePointer_Y - 16
+				TT2 = v[1239] + TT2
+				// "######################"
+				TT1 = v[21]
+				TT2 = v[22]
+				@call .cev 2001
+				v[344] = 63
+				@if Var_MouseMode != MODE_Elevation {
+					@pic[PicID_pointer_sub].show {
+					    "ui\terrainsquare"
+					    .pos v[22], v[23] .center
+					    .chromakey 1
+					    .scale 100
+					    .trans v[344]
+					    .rgbs 100, 100, 100, 100
+					    .add
+					    .mapLayer 5
+					    .eraseWhenTransfer
+					    .affectedByFlash
+					    .affectedByShake
+					}
+				}
+				
+			    } .else bl {
+				@pic[PicID_pointer_sub].erase
+				
+			    }
+			    
+			} .else bl {
+			    @pic[PicID_pointer_sub].erase
+			    
+			}
+			@pic[PicID_ButtonSelect].erase
+			
+		    } .else bl {
+			@pic[PicID_pointer_sub].erase
+			
+		    }
+		    
+		}
+		@wait 0
+		@wait 0
+		@wait 0
+		LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+		v[90] = LEGV_sentence_id_on_popup1 <= 0 ? 0 : v[89]
+		
+	    }
+	    
+	}
+	}
+}
+
+
+__fn show_frame_overlap_effect $x $y $w $h {
+	@pic[PicID_ButtonSelect].strpic {
+		""
+		.pos $x, $y .center
+		.size $w, $h                    .chromakey 1
+		.scale 100
+		.trans 20
+		.rgbs 0, 200, 0, 100
+		.font Font_UI, v[4511]
+		.spacing 0, 4
+		.skin "Odinscall_mapcam" .nobg .noGradation
+		.add
+		.mapLayer 9
+		.eraseWhenTransfer
+	}
+
+}
+
+// bottomleft
+__fn show_pupwin1_with_Qstr $QstrId $x $y {
+	getQstr($QstrId)
+	@pic[PicID_Popup_1].strpic {
+		t[3000]
+		.pos $x, $y .bottomLeft
+		.size 0, 0                        .chromakey 1
+		.scale 100
+		.trans v[1066]
+		.rgbs 100, 100, 100, 100
+		.font Font_UI, v[4511]
+		.spacing 0, 0
+		.skin "" .stretch
+		.mapLayer 9
+		.eraseWhenTransfer
+	}
+
 }

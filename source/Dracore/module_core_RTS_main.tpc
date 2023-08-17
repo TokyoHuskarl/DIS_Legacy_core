@@ -70,7 +70,8 @@ __fn macro_HPSPreg $agent $HP_or_SP $amount{
 //agent_ref_stats()
 #include "./module_core_RTS_main_refresh_agents_stats.tpc"
 
-
+//RTS_MAIN_LAND_AGENT_1f()
+#include "./module_core_RTS_main_land_agent_behavior.tpc"
 
 
 
@@ -109,7 +110,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	// "Normal Units"
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
-#include "./module_core_RTS_main_land_agent_behavior.tpc"
+	    RTS_MAIN_LAND_AGENT_1f()
 	    //"++"
 	    v[536] += 1
 	    
