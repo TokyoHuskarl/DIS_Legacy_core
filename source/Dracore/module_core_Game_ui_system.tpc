@@ -1,219 +1,226 @@
+// ->
 
+__fn UI_GAME_CEV_JS_UI_SYSTEM {
+	
+
+}
 
 
 __fn func_open_y_or_n_menu $picid_begin $str_main $str_y $str_n {
 
-__if DIS_EXPERIMENTAL == 0 {
-	v[347] = 2186
-	@pic[v[347]].strpic {
-	    ""
-	    .pos v[1115], v[1116] .center
-	    .size 240, 120    .chromakey 1
-	    .scale 100
-	    .trans 0
-	    .rgbs 100, 100, 100, 100
-	    .font "", 12 .noShadow
-	    .spacing 0, 4
-	    .skin "SystemWindow" .stretch .noGradation .noPadding
-	    .mapLayer 9
-	    .eraseWhenTransfer
-	    .affectedByFlash
-	    .affectedByShake
-	}
-	v[347] += 1
-	v[341] = v[1115]
-	v[342] = v[1116] - 24
-	@pic[v[347]].strpic {
-	    "\t[3000]"
-	    .pos v[341], v[342] .center
-	    .size 0, 0    .chromakey 1
-	    .scale 100
-	    .trans 0
-	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
-	    .spacing 0, 4
-	    .skin "SystemSwitch" .nobg .noframe .noGradation .noPadding
-	    .mapLayer 9
-	    .eraseWhenTransfer
-	    .affectedByFlash
-	    .affectedByShake
-	}
-	v[347] += 1
-	v[341] = v[1115] - 74
-	v[342] = v[1116] + 40
-	@pic[v[347]].strpic {
-	    "Yes"
-	    .pos v[341], v[342] .center
-	    .size 0, 0    .chromakey 1
-	    .scale 100
-	    .trans 0
-	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
-	    .spacing 0, 4
-	    .skin "SystemSwitch" .nobg
-	    .mapLayer 9
-	    .eraseWhenTransfer
-	    .affectedByFlash
-	    .affectedByShake
-	}
-	v[347] += 1
-	v[341] = v[1115] + 74
-	@pic[v[347]].strpic {
-	    "No"
-	    .pos v[341], v[342] .center
-	    .size 0, 0    .chromakey 1
-	    .scale 100
-	    .trans 0
-	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
-	    .spacing 0, 4
-	    .skin "SystemSwitch" .nobg
-	    .mapLayer 9
-	    .eraseWhenTransfer
-	    .affectedByFlash
-	    .affectedByShake
-	}
-	@loop .inf() {
-	    @if s[39] .isOff() {
-		@mouse.getPos v[49], v[50]
-		
-	    }
-	    v[49].copy v[51], 2
-	    v[51..52] -= 3
-	    v[52..52] += 1
-	    @key.input .dst v[43] {
-		.decision
-		.number
-		.lclick
-		.rclick
-		.wheelDown
-		.wheelUp
-	    }
-	    @comment "#Y"
-	    v[347] = 2188
-	    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-	    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
-		    .scale 100
-		    .trans 0
-		    .time -2
-		    .rgbs 0, 200, 0, 100
+	__if DIS_EXPERIMENTAL == 0 {
+		TT7 = 2186
+		@pic[TT7].strpic {
+				""
+				.pos v[1115], v[1116] .center
+				.size 240, 120    .chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.font "", 12 .noShadow
+				.spacing 0, 4
+				.skin "SystemWindow" .stretch .noGradation .noPadding
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
 		}
-		@if v[43] == 1005 {
-		    @if s[11] .isOff() {
-			v[2381] = 1
-			@break
+		TT7 += 1
+		TT1 = v[1115]
+		TT2 = v[1116] - 24
+		@pic[TT7].strpic {
+				"\t[3000]"
+				.pos TT1, TT2 .center
+				.size 0, 0    .chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, 11
+				.spacing 0, 4
+				.skin "SystemSwitch" .nobg .noframe .noGradation .noPadding
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+		}
+		TT7 += 1
+		TT1 = v[1115] - 74
+		TT2 = v[1116] + 40
+		@pic[TT7].strpic {
+				"Yes"
+				.pos TT1, TT2 .center
+				.size 0, 0    .chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, 11
+				.spacing 0, 4
+				.skin "SystemSwitch" .nobg
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+		}
+		TT7 += 1
+		TT1 = v[1115] + 74
+		@pic[TT7].strpic {
+				"No"
+				.pos TT1, TT2 .center
+				.size 0, 0    .chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, 11
+				.spacing 0, 4
+				.skin "SystemSwitch" .nobg
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+		}
+		
+		@loop .inf() {
+				@if s[39] .isOff() {
+					@mouse.getPos Mouse_x, Mouse_y
 			
-		    }
-		    
-		}
-		
-	    } .else bl {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
-		    .scale 100
-		    .trans 0
-		    .time -2
-		    .rgbs 100, 100, 100, 100
-		}
-		
-	    }
-	    @comment "#N"
-	    v[347] += 1
-	    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-	    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
-		    .scale 100
-		    .trans 0
-		    .time -2
-		    .rgbs 0, 200, 0, 100
-		}
-		@if v[43] == 1005 {
-		    @if s[11] .isOff() {
-			v[2381] = 0
-			@break
+				}
+				Mouse_x.copy MousePtr_x, 2
+				v[51..52] -= 3
+				v[52..52] += 1
+				@key.input .dst Common_Control_Ck {
+					.decision
+					.number
+					.lclick
+					.rclick
+					.wheelDown
+					.wheelUp
+				}
+				@comment "#Y"
+				TT7 = 2188
+				@pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+				@if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+			@pic[TT7].move {
+					.pos InvVar2, InvVar3 .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 0, 200, 0, 100
+			}
+			@if Common_Control_Ck == 1005 {
+					@if s[11] .isOff() {
+				v[2381] = 1
+				@break
+				
+					}
+					
+			}
 			
-		    }
-		    
+				} .else bl {
+			@pic[TT7].move {
+					.pos InvVar2, InvVar3 .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 100, 100, 100, 100
+			}
+			
+				}
+				@comment "#N"
+				TT7 += 1
+				@pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+				@if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+			@pic[TT7].move {
+					.pos InvVar2, InvVar3 .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 0, 200, 0, 100
+			}
+
+			@if Common_Control_Ck == 1005 {
+					@if s[11] .isOff() {
+				v[2381] = 0
+				@break
+				
+					}
+					
+			}
+			
+				} .else bl {
+			@pic[TT7].move {
+					.pos InvVar2, InvVar3 .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 100, 100, 100, 100
+			}
+			
+				}
+				@wait 0
+				@if Common_Control_Ck != 1005 {
+			s[11].off
+			
+				}
+				
 		}
-		
-	    } .else bl {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
-		    .scale 100
-		    .trans 0
-		    .time -2
-		    .rgbs 100, 100, 100, 100
+
+		@pic[2186..2189].erase
+		s[11].on
+
+	}.else bl {
+
+	//exactly the same function but with new GUI building support
+		def {
+		PicID_START = 2186
+		PicID_Y = 2188
+		PicID_N = 2189
 		}
-		
-	    }
-	    @wait 0
-	    @if v[43] != 1005 {
-		s[11].off
-		
-	    }
-	    
+
+		ui_start_simple_presentation("Yes or No",0,0,0,0,
+			ON_LOAD({
+				$PicID = 2186
+				ui_create_window($PicID,v[1115],v[1116],240,120,0)
+				$PicID += 1
+				TT1 = v[1115]
+				TT2 = v[1116] - 24
+				ui_create_textbox($PicID,t[3000], TT1, TT2,0,0)
+				$PicID += 1
+				$UI_Yes_PicID = $PicID
+				TT1 = v[1115] - 74
+				TT2 = v[1116] + 40
+				ui_create_simple_button($PicID, "Yes",TT1, TT2,0,0)
+				$PicID += 1
+				$UI_No_PicID = $PicID
+				TT1 = v[1115] + 74
+				ui_create_simple_button($PicID, "No",TT1, TT2,0,0)
+			}),
+
+			ON_RUN({
+				func_ui_DIS_basic_mouse_control()
+						//YES
+				ui_simple_button_process(PicID_Y, 
+					PROC({//L
+						v[2381] = 1
+						@break
+					})
+				) 
+				//No
+				ui_simple_button_process(PicID_N, 
+					PROC({//L
+						v[2381] = 0
+						@break
+					})
+				)
+
+			}),
+
+			ON_CLOSE({
+				@pic[2186..2189].erase
+				s[11].on
+			}),
+		)
+
 	}
-
-	@pic[2186..2189].erase
-	s[11].on
-
-}.else bl {
-
-//exactly the same function but with new GUI building support
-	def {
-	PicID_START = 2186
-	PicID_Y = 2188
-	PicID_N = 2189
-	}
-
-	ui_start_simple_presentation("Yes or No",0,0,0,0,
-		ON_LOAD({
-			$PicID = 2186
-			ui_create_window($PicID,v[1115],v[1116],240,120,0)
-			$PicID += 1
-			TT1 = v[1115]
-			TT2 = v[1116] - 24
-			ui_create_textbox($PicID,t[3000], TT1, TT2,0,0)
-			$PicID += 1
-			$UI_Yes_PicID = $PicID
-			TT1 = v[1115] - 74
-			TT2 = v[1116] + 40
-			ui_create_simple_button($PicID, "Yes",TT1, TT2,0,0)
-			$PicID += 1
-			$UI_No_PicID = $PicID
-			TT1 = v[1115] + 74
-			ui_create_simple_button($PicID, "No",TT1, TT2,0,0)
-		}),
-
-		ON_RUN({
-			func_ui_DIS_basic_mouse_control()
-		    	//YES
-			ui_simple_button_process(PicID_Y, 
-				PROC({//L
-					v[2381] = 1
-					@break
-				})
-			) 
-			//No
-			ui_simple_button_process(PicID_N, 
-				PROC({//L
-					v[2381] = 0
-					@break
-				})
-			)
-
-		}),
-
-		ON_CLOSE({
-			@pic[2186..2189].erase
-			s[11].on
-		}),
-	)
-
-}
 
 }
 
@@ -239,43 +246,43 @@ __fn func_ui_start_pick_faction_window {
 	    .affectedByShake
 	}
 	@comment "Inventry mode switches end"
-	t[510] .asg  .file "\def\definition_selectable_factions", .sjis
-	t[510] .split "*/", t[509], v[341]
-	t[510] .split t[525], t[0], v[341]
+	inputstr .asg  .file "\def\definition_selectable_factions", .sjis
+	inputstr .split "*/", str9, TT1
+	inputstr .split LF, t[0], TT1
 	v[1243] = v[157] + v[1248]
-	@pic[1231].getInfo .ltrb .baseRect v[359], v[360], v[343], v[34]
+	@pic[1231].getInfo .ltrb .baseRect TT19, TT20, TT3, v[34]
 	@if `v[2223] <= 0 || v[2223] == 3 && v[2224] <= 0 {
 	    macro_set_faction_default
 	}.elif `v[2223]!=3&&v[2224]>0 { //No hero currently
 	    macro_set_faction_default
 	}
-	@loop 16 .dst v[343] {
-	    v[11] = v[173]
-	    v[12] = v[343] + 1
-	    t[2999] .asg t[v[12]]
+	@loop 16 .dst TT3 {
+	    var1 = v[173]
+	    var2 = TT3 + 1
+	    t[2999] .asg t[var2]
 	    t[2999] .split ",", t[3000], v[1941]
-	    t[3001] .toNum v[341]
-	    @if v[341] >= 1 {
-		v[348] = 100
-		@if v[2223] == v[341] {
+	    t[3001] .toNum TT1
+	    @if TT1 >= 1 {
+		TT8 = 100
+		@if v[2223] == TT1 {
 		    v[345..347] = 100
 		    
 		} .else bl {
 		    v[345..347] = 45
 		    
 		}
-		v[350] = 1500 + v[343]
-		v[351] = v[359] + 42 + v[343] % 4 * 63
-		v[352] = v[360] + 62 + v[343] / 4 * 63
+		TT10 = 1500 + TT3
+		TT11 = TT19 + 42 + TT3 % 4 * 63
+		TT12 = TT20 + 62 + TT3 / 4 * 63
 		t[2999] .asg "passive_icon\\"
 		t[2999] .cat t[3003]
-		@pic[v[350]].show {
+		@pic[TT10].show {
 		    t[2999]
-		    .pos v[351], v[352] .center
+		    .pos TT11, TT12 .center
 		    .chromakey 1
 		    .scale 100
 		    .trans 0
-		    .rgbs v[345], v[346], v[347], v[348]
+		    .rgbs TT5, TT6, TT7, TT8
 		    .mapLayer 9
 		    .eraseWhenTransfer
 		    .affectedByFlash
@@ -289,16 +296,16 @@ __fn func_ui_start_pick_faction_window {
 	v[40] = v[2223]
 	v[39] = v[2224]
 	@comment "def 84 12"
-	v[341] = v[1115] - 208
-	v[342] = v[1116] + 160
+	TT1 = v[1115] - 208
+	TT2 = v[1116] + 160
 	@pic[2138].strpic {
 	    "Cancel"
-	    .pos v[341], v[342] .center
+	    .pos TT1, TT2 .center
 	    .size 45, 28    .chromakey 1
 	    .scale 100
 	    .trans 0
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
+	    .font Font_UI, 11
 	    .spacing 0, 4
 	    .skin "SystemSwitch" .nobg
 	    .mapLayer 9
@@ -306,15 +313,15 @@ __fn func_ui_start_pick_faction_window {
 	    .affectedByFlash
 	    .affectedByShake
 	}
-	v[341] = v[1115] + 208
+	TT1 = v[1115] + 208
 	@pic[2137].strpic {
 	    "Confirm"
-	    .pos v[341], v[342] .center
+	    .pos TT1, TT2 .center
 	    .size 50, 28    .chromakey 1
 	    .scale 100
 	    .trans 0
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
+	    .font Font_UI, 11
 	    .spacing 0, 4
 	    .skin "SystemSwitch" .nobg
 	    .mapLayer 9
@@ -322,14 +329,14 @@ __fn func_ui_start_pick_faction_window {
 	    .affectedByFlash
 	    .affectedByShake
 	}
-	v[341] = v[1115] - 208
-	v[342] = v[1116] + 160
-	@pic[1231].getInfo .ltrb .baseRect v[359], v[360], v[343], v[1955]
-	v[341] = v[359] + 8
-	v[342] = v[360] + 6
+	TT1 = v[1115] - 208
+	TT2 = v[1116] + 160
+	@pic[1231].getInfo .ltrb .baseRect TT19, TT20, TT3, InvVar5
+	TT1 = TT19 + 8
+	TT2 = TT20 + 6
 	@pic[1603].strpic {
 	    t[20334]
-	    .pos v[341], v[342] .topLeft
+	    .pos TT1, TT2 .topLeft
 	    .size 0, 0    .chromakey 1
 	    .scale 100
 	    .trans 0
@@ -345,13 +352,13 @@ __fn func_ui_start_pick_faction_window {
 	s[207].off
 	@loop .inf() {
 	    @if s[39] .isOff() {
-		@mouse.getPos v[49], v[50]
+		@mouse.getPos Mouse_x, Mouse_y
 		
 	    }
-	    v[49].copy v[51], 2
+	    Mouse_x.copy MousePtr_x, 2
 	    v[51..52] -= 3
 	    v[52..52] += 1
-	    @key.input .dst v[43] {
+	    @key.input .dst Common_Control_Ck {
 		.decision
 		.number
 		.lclick
@@ -360,11 +367,11 @@ __fn func_ui_start_pick_faction_window {
 		.wheelUp
 	    }
 	    @comment "Close"
-	    @pic[1231].getInfo .ltrb .baseRect v[341], v[342], v[343], v[344]
-	    v[342] += 5
-	    v[343] -= 5
-	    @if `between(v[51], v[343] - 4, v[343] + 4) && between(v[52], v[342] - 5, v[342] + 5) {
-		@if v[43] == 1005 {
+	    @pic[1231].getInfo .ltrb .baseRect TT1, TT2, TT3, TT4
+	    TT2 += 5
+	    TT3 -= 5
+	    @if `between(MousePtr_x, TT3 - 4, TT3 + 4) && between(MousePtr_y, TT2 - 5, TT2 + 5) {
+		@if Common_Control_Ck == 1005 {
 		    @if s[11] .isOff() {
 			s[201].off
 			s[207].on
@@ -376,19 +383,19 @@ __fn func_ui_start_pick_faction_window {
 		
 	    }
 	    @comment "Buttons"
-	    v[347] = 2136
+	    TT7 = 2136
 	    @comment "#Resume"
-	    v[347] = v[347] + 1
-	    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-	    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+	    TT7 = TT7 + 1
+	    @pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+	    @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
 		    .rgbs 0, 200, 0, 100
 		}
-		@if v[43] == 1005 {
+		@if Common_Control_Ck == 1005 {
 		    @if s[11] .isOff() {
 			v[2223] = v[40]
 			@if v[2223] == 1 {
@@ -422,8 +429,8 @@ __fn func_ui_start_pick_faction_window {
 		}
 		
 	    } .else bl {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -432,17 +439,17 @@ __fn func_ui_start_pick_faction_window {
 		
 	    }
 	    @comment "#2"
-	    v[347] = v[347] + 1
-	    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-	    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+	    TT7 = TT7 + 1
+	    @pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+	    @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
 		    .rgbs 0, 200, 0, 100
 		}
-		@if v[43] == 1005 {
+		@if Common_Control_Ck == 1005 {
 		    @if s[11] .isOff() {
 			v[472] = divmul(90, 100, v[2216])
 			@se.play "cursor09" .opt v[472], 100, 50
@@ -456,8 +463,8 @@ __fn func_ui_start_pick_faction_window {
 		}
 		
 	    } .else bl {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -468,7 +475,7 @@ __fn func_ui_start_pick_faction_window {
 	    @comment "#Factions"
 	    @pic[1601].show {
 		"ui\facselect"
-		.pos v[354], v[355] .topLeft
+		.pos TT14, TT15 .topLeft
 		.chromakey 1
 		.scale 100
 		.trans 100
@@ -480,47 +487,47 @@ __fn func_ui_start_pick_faction_window {
 	    s[203].off
 	    v[31] = v[40]
 	    v[33] = v[39]
-	    @loop 16 .dst v[343] {
-		v[347] = 1500 + v[343]
-		@pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
+	    @loop 16 .dst TT3 {
+		TT7 = 1500 + TT3
+		@pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
 		v[1954..1955] = 46
-		v[12] = v[343] + 1
-		t[2999] .asg t[v[12]]
+		var2 = TT3 + 1
+		t[2999] .asg t[var2]
 		t[2999] .split ",", t[3000], v[1941]
-		t[3001] .toNum v[341]
-		t[3002] .toNum v[342]
-		@if `between(v[51], v[1952] - v[1954] / 2 - 8, v[1952] + v[1954] / 2 + 8) && between(v[52], v[1953] - v[1955] / 2 - 8, v[1953] + v[1955] / 2 + 8) {
-		    @if `v[341] == v[40] && v[342] == v[39] {
-			@pic[v[347]].move {
-			    .pos v[1952], v[1953] .center
+		t[3001] .toNum TT1
+		t[3002] .toNum TT2
+		@if `between(MousePtr_x, InvVar2 - InvVar4 / 2 - 8, InvVar2 + InvVar4 / 2 + 8) && between(MousePtr_y, InvVar3 - InvVar5 / 2 - 8, InvVar3 + InvVar5 / 2 + 8) {
+		    @if `TT1 == v[40] && TT2 == v[39] {
+			@pic[TT7].move {
+			    .pos InvVar2, InvVar3 .center
 			    .scale 100
 			    .trans 0
 			    .time -2
 			    .rgbs 100, 100, 100, 100
 			}
-			t[510] .asg t[3015]
+			inputstr .asg t[3015]
 			
 		    } .else bl {
-			@pic[v[347]].move {
-			    .pos v[1952], v[1953] .center
+			@pic[TT7].move {
+			    .pos InvVar2, InvVar3 .center
 			    .scale 100
 			    .trans 0
 			    .time -2
 			    .rgbs 70, 70, 70, 100
 			}
-			v[31] = v[341]
-			v[33] = v[342]
-			t[509] .asg t[3015]
+			v[31] = TT1
+			v[33] = TT2
+			str9 .asg t[3015]
 			s[203].on
 			
 		    }
-		    @if v[43] == 1005 {
+		    @if Common_Control_Ck == 1005 {
 			@if s[11] .isOff() {
 			    v[472] = divmul(90, 100, v[2216])
 			    @se.play "ui\UI_Quirky_39" .opt v[472], 100, 50
 			    s[11].on
-			    v[40] = v[341]
-			    v[39] = v[342]
+			    v[40] = TT1
+			    v[39] = TT2
 			    @break
 			    
 			}
@@ -528,19 +535,19 @@ __fn func_ui_start_pick_faction_window {
 		    }
 		    
 		} .else bl {
-		    @if `v[341] == v[40] && v[342] == v[39] {
-			@pic[v[347]].move {
-			    .pos v[1952], v[1953] .center
+		    @if `TT1 == v[40] && TT2 == v[39] {
+			@pic[TT7].move {
+			    .pos InvVar2, InvVar3 .center
 			    .scale 100
 			    .trans 0
 			    .time -2
 			    .rgbs 100, 100, 100, 100
 			}
-			t[510] .asg t[3015]
+			inputstr .asg t[3015]
 			
 		    } .else bl {
-			@pic[v[347]].move {
-			    .pos v[1952], v[1953] .center
+			@pic[TT7].move {
+			    .pos InvVar2, InvVar3 .center
 			    .scale 100
 			    .trans 0
 			    .time -2
@@ -554,10 +561,10 @@ __fn func_ui_start_pick_faction_window {
 	    }
 	    
 	    @if s[203] .isOff() {
-		t[3000] .asg t[510]
+		t[3000] .asg inputstr
 		
 	    } .else bl {
-		t[3000] .asg t[509]
+		t[3000] .asg str9
 		
 	    }
 	    @if `v[31] != v[32] || v[34] != v[33] {
@@ -577,23 +584,23 @@ __fn func_ui_start_pick_faction_window {
 		@loop v[1961] .dst v[1962] {
 		    v[1963] = v[1211] + v[1962]
 		    t[3000] .cat t[v[1963]] .extract
-		    t[3000] .cat t[525]
+		    t[3000] .cat LF
 		    
 		}
 		
 		t[3000] .asg t[3000] .extract
 		@comment "def 84 12"
-		@pic[1231].getInfo .ltrb .baseRect v[359], v[360], v[343], v[1955]
-		v[341] = v[343] - 224
-		v[342] = v[360] + 32
+		@pic[1231].getInfo .ltrb .baseRect TT19, TT20, TT3, InvVar5
+		TT1 = TT3 - 224
+		TT2 = TT20 + 32
 		@pic[1602].strpic {
 		    t[3000]
-		    .pos v[341], v[342] .topLeft
+		    .pos TT1, TT2 .topLeft
 		    .size 0, 0            .chromakey 1
 		    .scale 100
 		    .trans 0
 		    .rgbs 100, 100, 100, 100
-		    .font t[529], v[4510]
+		    .font Font_Common, v[4510]
 		    .spacing 0, 4
 		    .skin "" .nobg .noframe .noPadding
 		    .mapLayer 9
@@ -608,7 +615,7 @@ __fn func_ui_start_pick_faction_window {
 		
 	    }
 	    @wait 0
-	    @if v[43] != 1005 {
+	    @if Common_Control_Ck != 1005 {
 		s[11].off
 		
 	    }
@@ -621,3 +628,5 @@ __fn func_ui_start_pick_faction_window {
 	@pic[2136..2138].erase
 
 }
+
+

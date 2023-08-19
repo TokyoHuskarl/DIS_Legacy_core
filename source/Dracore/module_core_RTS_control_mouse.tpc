@@ -4,30 +4,30 @@ def click_waittime = 16 //12
 @key.inputEx .keybdWithBind .dst v[901]
 
 // save PointerXY to TT1,2
-v[51].copy TT1, 2
+MousePtr_x.copy TT1, 2
 
-v[49].copy v[51], 2
+Mouse_x.copy MousePtr_x, 2
 v[51..52] -= 3
-v[52] += 1
+MousePtr_y += 1
 
 // check if pointer is moved - s[70] is pointer move switch
 s[70].off
-@if `v[51] != TT1 || v[52] != TT2 {
+@if `MousePtr_x != TT1 || MousePtr_y != TT2 {
 	s[70].on
 }
 
 @if v[47] > 0 {
-    v[41] = v[49] - 1
-    v[48] = v[50] - 1
+    v[41] = Mouse_x - 1
+    v[48] = Mouse_y - 1
     v[47] -= 1
     
 } .else bl {
-    v[41] = v[49]
-    v[48] = v[50]
+    v[41] = Mouse_x
+    v[48] = Mouse_y
     
 }
 @if s[18] .isOn() {
-    @key.input .dst v[43] {
+    @key.input .dst Common_Control_Ck {
         .decision
         .number
         .lclick
@@ -35,16 +35,16 @@ s[70].off
         .wheelDown
         .wheelUp
     }
-    @key.input .dst v[43] {
+    @key.input .dst Common_Control_Ck {
         .lclick
         .rclick
     }
     @if s[1] .isOn() {
-        @if v[43] == 1004 {
+        @if Common_Control_Ck == 1004 {
             v[438] = 100
             
         }
-        @if v[43] == 1001 {
+        @if Common_Control_Ck == 1001 {
             v[438] = 50
             
         }
@@ -52,17 +52,17 @@ s[70].off
     }
     // "UIs"
     // "#Escape"
-    @pic[1771].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
+    @pic[1771].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+    @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
         @pic[1771].move {
-            .pos v[1952], v[1953] .center
+            .pos InvVar2, InvVar3 .center
             .scale 100
             .trans 0
             .time -2
             .rgbs 0, 200, 0, 100
         }
         s[181].on
-        @if v[43] == 1005 {
+        @if Common_Control_Ck == 1005 {
             @if s[11] .isOff() {
                 s[9].on
                 s[11].on
@@ -75,7 +75,7 @@ s[70].off
         
     } .else bl {
         @pic[1771].move {
-            .pos v[1952], v[1953] .center
+            .pos InvVar2, InvVar3 .center
             .scale 100
             .trans 0
             .time -2
@@ -85,28 +85,28 @@ s[70].off
         
     }
     // "#Escape"
-    @pic[1772].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
+    @pic[1772].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+    @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
         @pic[1772].move {
-            .pos v[1952], v[1953] .center
+            .pos InvVar2, InvVar3 .center
             .scale 100
             .trans 0
             .time -2
             .rgbs 0, 200, 0, 100
         }
         s[185].on
-        @if v[43] == 1005 {
+        @if Common_Control_Ck == 1005 {
             @if s[11] .isOff() {
                 s[9].on
                 s[11].on
                 s[37].toggle
                 @call .cev 1924
-                v[341] = 2
+                TT1 = 2
                 v[601] = 1
                 @if s[37] .isOn() {
                     @pic[1772].show {
                         "ui\switch_ff"
-                        .pos v[1952], v[1953] .center
+                        .pos InvVar2, InvVar3 .center
                         .chromakey 1
                         .scale 100
                         .trans 20
@@ -119,14 +119,16 @@ s[70].off
                     }
                     v[472] = divmul(90, 100, v[2216])
                     @se.play "cursor21" .opt v[472], 100, 50
+										// 
+										getQstr(477)
                     @pic[v[1155]].strpic {
-                        "\c[2]SYSTEM:\c[0]高速モードを起動しました。"
-                        .pos v[341], v[1126] .bottomLeft
+												t[3000]
+                        .pos TT1, v[1126] .bottomLeft
                         .size 0, 0                        .chromakey 1
                         .scale 100
                         .trans 30
                         .rgbs 100, 100, 100, 100
-                        .font "misaki_gothic", 10
+                        .font Font_Common, Font_Common_size
                         .spacing 0, 4
                         .skin "" .nobg .noframe .noPadding
                         .mapLayer 8
@@ -138,7 +140,7 @@ s[70].off
                 } .else bl {
                     @pic[1772].show {
                         "ui\switch_ff"
-                        .pos v[1952], v[1953] .center
+                        .pos InvVar2, InvVar3 .center
                         .chromakey 1
                         .scale 100
                         .trans 20
@@ -151,14 +153,15 @@ s[70].off
                     }
                     v[472] = divmul(90, 100, v[2216])
                     @se.play "cursor19" .opt v[472], 100, 50
+										getQstr(478)
                     @pic[v[1155]].strpic {
-                        "\c[2]SYSTEM:\c[0]高速モードを停止しました。"
-                        .pos v[341], v[1126] .bottomLeft
+												t[3000]
+                        .pos TT1, v[1126] .bottomLeft
                         .size 0, 0                        .chromakey 1
                         .scale 100
                         .trans 30
                         .rgbs 100, 100, 100, 100
-                        .font "misaki_gothic", 10
+                        .font Font_Common, Font_Common_size
                         .spacing 0, 4
                         .skin "" .nobg .noframe .noPadding
                         .mapLayer 8
@@ -178,7 +181,7 @@ s[70].off
         
     } .else bl {
         @pic[1772].move {
-            .pos v[1952], v[1953] .center
+            .pos InvVar2, InvVar3 .center
             .scale 100
             .trans 0
             .time -2
@@ -188,17 +191,17 @@ s[70].off
         
     }
     // "#Pause"
-    @pic[1773].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
+    @pic[1773].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+    @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
         @pic[1773].move {
-            .pos v[1952], v[1953] .center
+            .pos InvVar2, InvVar3 .center
             .scale 100
             .trans 0
             .time -2
             .rgbs 0, 200, 0, 100
         }
         s[184].on
-        @if v[43] == 1005 {
+        @if Common_Control_Ck == 1005 {
             @if s[11] .isOff() {
                 s[11].on
                 s[9].on
@@ -211,7 +214,7 @@ s[70].off
         
     } .else bl {
         @pic[1773].move {
-            .pos v[1952], v[1953] .center
+            .pos InvVar2, InvVar3 .center
             .scale 100
             .trans 0
             .time -2
@@ -221,10 +224,10 @@ s[70].off
         
     }
     // "#Log"
-    @pic[1775].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
+    @pic[1775].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+    @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
         s[186].on
-        @if v[43] == 1005 {
+        @if Common_Control_Ck == 1005 {
             @if s[11] .isOff() {
                 v[912] = 1
                 @break
@@ -254,10 +257,10 @@ s[70].off
         @key.inputEx .keyCode 6 .dst v[1236]
         @key.inputEx .keyCode 190 .dst v[1238]
         // "#Idle Check"
-        @pic[1774].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-        @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
+        @pic[1774].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+        @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
             s[188].on
-            @if v[43] == 1005 {
+            @if Common_Control_Ck == 1005 {
                 @if s[11] .isOff() {
                     v[1236] = 1
                     
@@ -301,13 +304,13 @@ s[70].off
                 .affectedByShake
             }
             // "#Check Terrain"
-            v[51].copy v[11], 2
-            v[11] += 8
-            v[12] -= 8
+            MousePtr_x.copy var1, 2
+            var1 += 8
+            var2 -= 8
             @call .cev 2000
             // "######################Get Terrain and Elevation info"
-            v[13] = v[v[1182] + v[21] - v[69] + (v[22] - v[70]) * v[2061]] % 100
-            @if `v[13] == 18 || v[13] == 22 {
+            var3 = v[v[1182] + reg1 - Map_LimitCoordX_min + (reg2 - Map_LimitCoordY_min) * var_Map_Width] % 100
+            @if `var3 == 18 || var3 == 22 {
                 @pic[1000].show {
                     t[522]
                     .pos v[41], v[48] .center
@@ -332,7 +335,7 @@ s[70].off
 	    }
 
 
-            @if v[43] == 1005 {
+            @if Common_Control_Ck == 1005 {
                 @if s[11] .isOn() {
 
 
@@ -340,11 +343,11 @@ s[70].off
                         v[42] -= 1
                         v[1] += v[53]
                         v[2] += v[54]
-                        v[1].copy v[341], 2
-                        v[341] = max(v[1008], min(v[341], v[1009]))
-                        v[342] = max(v[1010], min(v[342], v[1011]))
-                        v[7] = v[341] - v[51]
-                        v[8] = v[342] - v[52]
+                        v[1].copy TT1, 2
+                        TT1 = max(v[1008], min(TT1, v[1009]))
+                        TT2 = max(v[1010], min(TT2, v[1011]))
+                        v[7] = TT1 - MousePtr_x
+                        v[8] = TT2 - MousePtr_y
 
                         @if v[42] <= 0 {
                             v[5] = abs(v[7])
@@ -362,7 +365,7 @@ s[70].off
                                 @if v[8] > 0 {
                                     @pic[973].strpic {
                                         ""
-                                        .pos v[341], v[342] .bottomRight
+                                        .pos TT1, TT2 .bottomRight
                                         .size v[5], v[6]                                        .chromakey 1
                                         .scale 100
                                         .trans 0
@@ -378,7 +381,7 @@ s[70].off
                                 } .else bl {
                                     @pic[973].strpic {
                                         ""
-                                        .pos v[341], v[342] .topRight
+                                        .pos TT1, TT2 .topRight
                                         .size v[5], v[6]                                        .chromakey 1
                                         .scale 100
                                         .trans 0
@@ -397,7 +400,7 @@ s[70].off
                                 @if v[8] > 0 {
                                     @pic[973].strpic {
                                         ""
-                                        .pos v[341], v[342] .bottomLeft
+                                        .pos TT1, TT2 .bottomLeft
                                         .size v[5], v[6]                                        .chromakey 1
                                         .scale 100
                                         .trans 0
@@ -413,7 +416,7 @@ s[70].off
                                 } .else bl {
                                     @pic[973].strpic {
                                         ""
-                                        .pos v[341], v[342] .topLeft
+                                        .pos TT1, TT2 .topLeft
                                         .size v[5], v[6]                                        .chromakey 1
                                         .scale 100
                                         .trans 0
@@ -436,24 +439,24 @@ s[70].off
                     
                 } .else bl {
                     // "Minimap"
-                    @if `between(v[51], v[1282], v[1284]) && between(v[52], v[1283], v[1285]) {
+                    @if `between(MousePtr_x, v[1282], v[1284]) && between(MousePtr_y, v[1283], v[1285]) {
                         /* "282 216 左端317 238　右端300 227 中央1どっと4マス？"*/
-                        v[301] = v[51] - v[1282]
-                        v[302] = v[52] - (v[1283] + 3)
-                        v[66] = v[69] + muldiv(v[301], v[430], 100)
-                        v[67] = v[70] + muldiv(v[302], v[431], 100)
+                        Temp1 = MousePtr_x - v[1282]
+                        Temp2 = MousePtr_y - (v[1283] + 3)
+                        v[66] = Map_LimitCoordX_min + muldiv(Temp1, v[430], 100)
+                        v[67] = Map_LimitCoordY_min + muldiv(Temp2, v[431], 100)
                         s[44].on
                         s[77].on
                         
                     } .else bl {
                         // "UIじゃない"
                         @if s[77] .isOff() {
-                            @if `v[52] <= v[1286] && !(v[51] <= v[4514] && v[52] >= v[4515]) {
+                            @if `MousePtr_y <= v[1286] && !(MousePtr_x <= v[4514] && MousePtr_y >= v[4515]) {
                                 s[201].off
                                 @loop 10 .dst v[340] {
-                                    v[341] = v[1118] + v[340]
-                                    @pic[v[341]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-                                    @if `between(v[51], v[1952] - 12, v[1952] + 12) && between(v[52], v[1953] - 11, v[1953] + 11) {
+                                    TT1 = v[1118] + v[340]
+                                    @pic[TT1].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+                                    @if `between(MousePtr_x, InvVar2 - 12, InvVar2 + 12) && between(MousePtr_y, InvVar3 - 11, InvVar3 + 11) {
                                         @if s[11] .isOff() {
                                             s[11].on
                                             v[45] = 1 + v[340]
@@ -469,9 +472,9 @@ s[70].off
                                 
                                 @if `v[944] == 1 || s[2] == 1 {
                                     @loop 10 .dst v[340] {
-                                        v[341] = v[4513] + v[340]
-                                        @pic[v[341]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-                                        @if `between(v[51], v[1952] - 16, v[1952] + 16) && between(v[52], v[1953] - 28, v[1953] + 18) {
+                                        TT1 = v[4513] + v[340]
+                                        @pic[TT1].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+                                        @if `between(MousePtr_x, InvVar2 - 16, InvVar2 + 16) && between(MousePtr_y, InvVar3 - 28, InvVar3 + 18) {
                                             @if s[11] .isOff() {
                                                 s[11].on
                                                 v[45] = 1 + v[340]
@@ -490,8 +493,8 @@ s[70].off
                                 @if s[201] .isOff() {
                                     v[42] = 5
                                     v[42] = s[37] == 1 ? muldiv(v[42], 150, 100) : v[42]
-                                    v[1] = v[51]
-                                    v[2] = v[52]
+                                    v[1] = MousePtr_x
+                                    v[2] = MousePtr_y
                                     v[7] = 0
                                     v[8] = 0
                                     s[11].on
@@ -501,42 +504,42 @@ s[70].off
                             } .else bl {
                                 // "UI"
                                 // "＃Qキー"
-                                @if `between(v[51], v[1037] - v[1291], v[1037] + v[1291]) && between(v[52], v[1038] - v[1292], v[1038] + v[1292]) {
+                                @if `between(MousePtr_x, v[1037] - v[1291], v[1037] + v[1291]) && between(MousePtr_y, v[1038] - v[1292], v[1038] + v[1292]) {
                                     v[917] = 1
                                     
                                 }
                                 // "＃Wキー"
-                                @if `between(v[51], v[1039] - v[1291], v[1039] + v[1291]) && between(v[52], v[1040] - v[1292], v[1040] + v[1292]) {
+                                @if `between(MousePtr_x, v[1039] - v[1291], v[1039] + v[1291]) && between(MousePtr_y, v[1040] - v[1292], v[1040] + v[1292]) {
                                     v[923] = 1
                                     
                                 }
                                 // "＃Eキー"
-                                @if `between(v[51], v[1041] - v[1291], v[1041] + v[1291]) && between(v[52], v[1042] - v[1292], v[1042] + v[1292]) {
+                                @if `between(MousePtr_x, v[1041] - v[1291], v[1041] + v[1291]) && between(MousePtr_y, v[1042] - v[1292], v[1042] + v[1292]) {
                                     v[905] = 1
                                     
                                 }
                                 // "＃Rキー"
-                                @if `between(v[51], v[1043] - v[1291], v[1043] + v[1291]) && between(v[52], v[1044] - v[1292], v[1044] + v[1292]) {
+                                @if `between(MousePtr_x, v[1043] - v[1291], v[1043] + v[1291]) && between(MousePtr_y, v[1044] - v[1292], v[1044] + v[1292]) {
                                     v[918] = 1
                                     
                                 }
                                 // "A"
-                                @if `between(v[51], v[1045] - v[1291], v[1045] + v[1291]) && between(v[52], v[1046] - v[1292], v[1046] + v[1292]) {
+                                @if `between(MousePtr_x, v[1045] - v[1291], v[1045] + v[1291]) && between(MousePtr_y, v[1046] - v[1292], v[1046] + v[1292]) {
                                     v[901] = 1
                                     
                                 }
                                 // "S"
-                                @if `between(v[51], v[1047] - v[1291], v[1047] + v[1291]) && between(v[52], v[1048] - v[1292], v[1048] + v[1292]) {
+                                @if `between(MousePtr_x, v[1047] - v[1291], v[1047] + v[1291]) && between(MousePtr_y, v[1048] - v[1292], v[1048] + v[1292]) {
                                     v[919] = 1
                                     
                                 }
                                 // "D"
-                                @if `between(v[51], v[1049] - v[1291], v[1049] + v[1291]) && between(v[52], v[1050] - v[1292], v[1050] + v[1292]) {
+                                @if `between(MousePtr_x, v[1049] - v[1291], v[1049] + v[1291]) && between(MousePtr_y, v[1050] - v[1292], v[1050] + v[1292]) {
                                     v[904] = 1
                                     
                                 }
                                 // "F"
-                                @if `between(v[51], v[1051] - v[1291], v[1051] + v[1291]) && between(v[52], v[1052] - v[1292], v[1052] + v[1292]) {
+                                @if `between(MousePtr_x, v[1051] - v[1291], v[1051] + v[1291]) && between(MousePtr_y, v[1052] - v[1292], v[1052] + v[1292]) {
                                     v[906] = 1
                                     
                                 }
@@ -587,37 +590,37 @@ s[70].off
                 @pic[973].erase
                 
             }
-            @if v[43] == 1006 {
+            @if Common_Control_Ck == 1006 {
                 // "ミニマップ上クリック"
-                @if `between(v[51], v[1282], v[1284]) && between(v[52], v[1283], v[1285]) {
+                @if `between(MousePtr_x, v[1282], v[1284]) && between(MousePtr_y, v[1283], v[1285]) {
                     s[40].on
                     @if s[13] .isOff() {
-                        v[51].copy v[407], 2
+                        MousePtr_x.copy v[407], 2
                         /*"282 216 左端
 317 238　右端
 300 227 中央
 1どっと4マス？"*/
-                        v[301] = v[51] - v[1282] - 1
-                        v[302] = v[52] - v[1283] // + 3
-                        v[66] = v[69]
-                        v[67] = v[70]
-                        v[66] += muldiv(v[301], v[430], 100)
-                        v[67] += muldiv(v[302], v[431], 100)
+                        Temp1 = MousePtr_x - v[1282] - 1
+                        Temp2 = MousePtr_y - v[1283] // + 3
+                        v[66] = Map_LimitCoordX_min
+                        v[67] = Map_LimitCoordY_min
+                        v[66] += muldiv(Temp1, v[430], 100)
+                        v[67] += muldiv(Temp2, v[431], 100)
                         v[472] = divmul(90, 100, v[2216])
                         @se.play "click2" .opt v[472], 90, 50
-                        v[69] = ev[3].x
-                        v[70] = ev[3].y
-                        v[71] = ev[4].x
-                        v[72] = ev[4].y
-                        v[66] = min(v[66], v[71])
-                        v[66] = max(v[66], v[69])
-                        v[67] = min(v[67], v[72])
-                        v[67] = max(v[67], v[70])
+                        Map_LimitCoordX_min = ev[3].x
+                        Map_LimitCoordY_min = ev[3].y
+                        Map_LimitCoordX_max = ev[4].x
+                        Map_LimitCoordY_max = ev[4].y
+                        v[66] = min(v[66], Map_LimitCoordX_max)
+                        v[66] = max(v[66], Map_LimitCoordX_min)
+                        v[67] = min(v[67], Map_LimitCoordY_max)
+                        v[67] = max(v[67], Map_LimitCoordY_min)
                         v[68] = player.mapId
                         @ev[2].setPos .pos v[66], v[67]
-                        v[11] = ev[2].scrx
-                        v[12] = ev[2].scry
-                        v[12] -= 16
+                        var1 = ev[2].scrx
+                        var2 = ev[2].scry
+                        var2 -= 16
                         // "煩雑なのでそのうちなおす"
                         @if v[942] >= 1 {
                             @call .cev 57
@@ -643,9 +646,9 @@ s[70].off
                 }
                 @loop 1 {
                     // "＃Qキー"
-                    @if `between(v[51], v[1037] - v[1291], v[1037] + v[1291]) && between(v[52], v[1038] - v[1292], v[1038] + v[1292]) {
+                    @if `between(MousePtr_x, v[1037] - v[1291], v[1037] + v[1291]) && between(MousePtr_y, v[1038] - v[1292], v[1038] + v[1292]) {
                         @if s[13] .isOff() {
-                            v[11] = 1
+                            var1 = 1
                             @call .cev 2097
                             
                         }
@@ -653,9 +656,9 @@ s[70].off
                         
                     }
                     // "＃Wキー"
-                    @if `between(v[51], v[1039] - v[1291], v[1039] + v[1291]) && between(v[52], v[1040] - v[1292], v[1040] + v[1292]) {
+                    @if `between(MousePtr_x, v[1039] - v[1291], v[1039] + v[1291]) && between(MousePtr_y, v[1040] - v[1292], v[1040] + v[1292]) {
                         @if s[13] .isOff() {
-                            v[11] = 2
+                            var1 = 2
                             @call .cev 2097
                             
                         }
@@ -663,9 +666,9 @@ s[70].off
                         
                     }
                     // "＃Eキー"
-                    @if `between(v[51], v[1041] - v[1291], v[1041] + v[1291]) && between(v[52], v[1042] - v[1292], v[1042] + v[1292]) {
+                    @if `between(MousePtr_x, v[1041] - v[1291], v[1041] + v[1291]) && between(MousePtr_y, v[1042] - v[1292], v[1042] + v[1292]) {
                         @if s[13] .isOff() {
-                            v[11] = 3
+                            var1 = 3
                             @call .cev 2097
                             
                         }
@@ -673,9 +676,9 @@ s[70].off
                         
                     }
                     // "＃Rキー"
-                    @if `between(v[51], v[1043] - v[1291], v[1043] + v[1291]) && between(v[52], v[1044] - v[1292], v[1044] + v[1292]) {
+                    @if `between(MousePtr_x, v[1043] - v[1291], v[1043] + v[1291]) && between(MousePtr_y, v[1044] - v[1292], v[1044] + v[1292]) {
                         @if s[13] .isOff() {
-                            v[11] = 4
+                            var1 = 4
                             @call .cev 2097
                             
                         }
@@ -741,12 +744,12 @@ s[70].off
         } .else bl {
             @if v[87] == 1 {
                 @pic[999].erase
-                @pic[973].getInfo .cewh .baseRect v[341], v[342], v[343], v[343]
-                v[371] = v[341] != v[425] || v[342] != v[426] ? 1 : 0
-                v[341].copy v[425], 2
+                @pic[973].getInfo .cewh .baseRect TT1, TT2, TT3, TT3
+                v[371] = TT1 != v[425] || TT2 != v[426] ? 1 : 0
+                TT1.copy v[425], 2
                 @if v[371] == 1 {
-                    v[341].copy v[11], 2
-                    v[11].copy v[252], 2
+                    TT1.copy var1, 2
+                    var1.copy v[252], 2
                     s[180].off
                     s[179].off
                     @call .cev 795
@@ -766,15 +769,15 @@ s[70].off
                 }
                 @if s[11] .isOff() {
                     @if s[180] .isOff() {
-                        v[11] = v[51]
-                        v[12] = v[52]
-                        v[12] += 8
+                        var1 = MousePtr_x
+                        var2 = MousePtr_y
+                        var2 += 8
                         v[11..12] *= 10000
                         @call .cev 1999
-                        v[21].copy v[341], 2
-                        v[342] -= 1
+                        reg1.copy TT1, 2
+                        TT2 -= 1
                         @call .cev 2001
-                        v[22].copy v[1], 2
+                        reg2.copy v[1], 2
                         v[7] = 0
                         v[8] = 0
                         @pic[973].strpic {
@@ -794,22 +797,22 @@ s[70].off
                         }
                         
                     } .else bl {
-                        v[11] = v[51]
-                        v[12] = v[52]
-                        v[11] -= 16 * (v[69] % 2)
-                        v[12] -= 16 * (v[70] % 2)
-                        v[12] -= 8
+                        var1 = MousePtr_x
+                        var2 = MousePtr_y
+                        var1 -= 16 * (Map_LimitCoordX_min % 2)
+                        var2 -= 16 * (Map_LimitCoordY_min % 2)
+                        var2 -= 8
                         v[11..12] *= 10000
                         @call .cev 1999
-                        v[21].copy v[341], 2
-                        v[341] += 1
-                        v[342] -= 1
-                        v[341] += v[69] % 2
-                        v[342] += v[70] % 2
+                        reg1.copy TT1, 2
+                        TT1 += 1
+                        TT2 -= 1
+                        TT1 += Map_LimitCoordX_min % 2
+                        TT2 += Map_LimitCoordY_min % 2
                         v[341..342] /= 2
                         v[341..342] *= 2
                         @call .cev 2001
-                        v[22].copy v[1], 2
+                        reg2.copy v[1], 2
                         v[1..2] -= 16
                         v[1] -= 8
                         v[2] += 24
@@ -818,8 +821,8 @@ s[70].off
                         v[8] = 0
                         v[1] += v[53]
                         v[2] += v[54]
-                        v[1] -= 16 * (v[69] % 2)
-                        v[2] -= 16 * (v[70] % 2)
+                        v[1] -= 16 * (Map_LimitCoordX_min % 2)
+                        v[2] -= 16 * (Map_LimitCoordY_min % 2)
                         @pic[973].strpic {
                             ""
                             .pos v[1], v[2] .center
@@ -839,7 +842,7 @@ s[70].off
                     }
                     
                 }
-                @if v[43] == 1005 {
+                @if Common_Control_Ck == 1005 {
                     @if s[11] .isOn() {
                         @if s[9] .isOff() {
                             v[42] -= 1
@@ -868,8 +871,8 @@ s[70].off
                                 }
                                 
                             }
-                            v[7] = v[3] - v[51]
-                            v[8] = v[4] - v[52]
+                            v[7] = v[3] - MousePtr_x
+                            v[8] = v[4] - MousePtr_y
                             @if v[42] <= 0 {
                                 @if s[180] .isOff() {
                                     v[5] = (abs(v[7] / 16) + 1) * 16
@@ -975,7 +978,7 @@ s[70].off
                                         }
                                         
                                     }
-                                    v[341] = 16
+                                    TT1 = 16
                                     @if v[7] > 0 {
                                         @if v[8] > 0 {
                                             v[3] += 16
@@ -1068,40 +1071,40 @@ s[70].off
                         
                     } .else bl {
                         // "UIじゃない"
-                        @if `v[52] <= v[1286] && !(v[51] <= v[4514] && v[52] >= v[4515]) {
+                        @if `MousePtr_y <= v[1286] && !(MousePtr_x <= v[4514] && MousePtr_y >= v[4515]) {
                             v[42] = 5
                             v[42] = s[37] == 1 ? muldiv(v[42], 150, 100) : v[42]
                             @if s[180] .isOff() {
-                                v[11] = v[51]
-                                v[12] = v[52]
-                                v[12] += 8
+                                var1 = MousePtr_x
+                                var2 = MousePtr_y
+                                var2 += 8
                                 v[11..12] *= 10000
                                 @call .cev 1999
-                                v[21].copy v[341], 2
+                                reg1.copy TT1, 2
                                 @call .cev 2001
-                                v[22].copy v[1], 2
+                                reg2.copy v[1], 2
                                 v[1] -= 8
                                 v[2] -= 8
                                 v[7] = 0
                                 v[8] = 0
                                 
                             } .else bl {
-                                v[11] = v[51]
-                                v[12] = v[52]
-                                v[11] -= 16 * (v[69] % 2)
-                                v[12] -= 16 * (v[70] % 2)
-                                v[12] -= 8
+                                var1 = MousePtr_x
+                                var2 = MousePtr_y
+                                var1 -= 16 * (Map_LimitCoordX_min % 2)
+                                var2 -= 16 * (Map_LimitCoordY_min % 2)
+                                var2 -= 8
                                 v[11..12] *= 10000
                                 @call .cev 1999
-                                v[21].copy v[341], 2
-                                v[341] += 1
-                                v[342] -= 1
-                                v[341] += v[69] % 2
-                                v[342] += v[70] % 2
+                                reg1.copy TT1, 2
+                                TT1 += 1
+                                TT2 -= 1
+                                TT1 += Map_LimitCoordX_min % 2
+                                TT2 += Map_LimitCoordY_min % 2
                                 v[341..342] /= 2
                                 v[341..342] *= 2
                                 @call .cev 2001
-                                v[22].copy v[1], 2
+                                reg2.copy v[1], 2
                                 v[1..2] -= 16
                                 v[1] -= 8
                                 v[2] += 24
@@ -1110,8 +1113,8 @@ s[70].off
                                 v[8] = 0
                                 v[1] += v[53]
                                 v[2] += v[54]
-                                v[1] -= 16 * (v[69] % 2)
-                                v[2] -= 16 * (v[70] % 2)
+                                v[1] -= 16 * (Map_LimitCoordX_min % 2)
+                                v[2] -= 16 * (Map_LimitCoordY_min % 2)
                                 
                             }
                             s[11].on
@@ -1119,42 +1122,42 @@ s[70].off
                         } .else bl {
                             // "UI"
                             // "＃Qキー"
-                            @if `between(v[51], v[1037] - v[1291], v[1037] + v[1291]) && between(v[52], v[1038] - v[1292], v[1038] + v[1292]) {
+                            @if `between(MousePtr_x, v[1037] - v[1291], v[1037] + v[1291]) && between(MousePtr_y, v[1038] - v[1292], v[1038] + v[1292]) {
                                 v[917] = 1
                                 
                             }
                             // "＃Wキー"
-                            @if `between(v[51], v[1039] - v[1291], v[1039] + v[1291]) && between(v[52], v[1040] - v[1292], v[1040] + v[1292]) {
+                            @if `between(MousePtr_x, v[1039] - v[1291], v[1039] + v[1291]) && between(MousePtr_y, v[1040] - v[1292], v[1040] + v[1292]) {
                                 v[923] = 1
                                 
                             }
                             // "＃Eキー"
-                            @if `between(v[51], v[1041] - v[1291], v[1041] + v[1291]) && between(v[52], v[1042] - v[1292], v[1042] + v[1292]) {
+                            @if `between(MousePtr_x, v[1041] - v[1291], v[1041] + v[1291]) && between(MousePtr_y, v[1042] - v[1292], v[1042] + v[1292]) {
                                 v[905] = 1
                                 
                             }
                             // "＃Rキー"
-                            @if `between(v[51], v[1043] - v[1291], v[1043] + v[1291]) && between(v[52], v[1044] - v[1292], v[1044] + v[1292]) {
+                            @if `between(MousePtr_x, v[1043] - v[1291], v[1043] + v[1291]) && between(MousePtr_y, v[1044] - v[1292], v[1044] + v[1292]) {
                                 v[918] = 1
                                 
                             }
                             // "A"
-                            @if `between(v[51], v[1045] - v[1291], v[1045] + v[1291]) && between(v[52], v[1046] - v[1292], v[1046] + v[1292]) {
+                            @if `between(MousePtr_x, v[1045] - v[1291], v[1045] + v[1291]) && between(MousePtr_y, v[1046] - v[1292], v[1046] + v[1292]) {
                                 v[901] = 1
                                 
                             }
                             // "S"
-                            @if `between(v[51], v[1047] - v[1291], v[1047] + v[1291]) && between(v[52], v[1048] - v[1292], v[1048] + v[1292]) {
+                            @if `between(MousePtr_x, v[1047] - v[1291], v[1047] + v[1291]) && between(MousePtr_y, v[1048] - v[1292], v[1048] + v[1292]) {
                                 v[919] = 1
                                 
                             }
                             // "D"
-                            @if `between(v[51], v[1049] - v[1291], v[1049] + v[1291]) && between(v[52], v[1050] - v[1292], v[1050] + v[1292]) {
+                            @if `between(MousePtr_x, v[1049] - v[1291], v[1049] + v[1291]) && between(MousePtr_y, v[1050] - v[1292], v[1050] + v[1292]) {
                                 v[904] = 1
                                 
                             }
                             // "F"
-                            @if `between(v[51], v[1051] - v[1291], v[1051] + v[1291]) && between(v[52], v[1052] - v[1292], v[1052] + v[1292]) {
+                            @if `between(MousePtr_x, v[1051] - v[1291], v[1051] + v[1291]) && between(MousePtr_y, v[1052] - v[1292], v[1052] + v[1292]) {
                                 v[906] = 1
                                 
                             }
@@ -1166,7 +1169,7 @@ s[70].off
                 } .else bl {
                     @if s[11] .isOn() {
                         @if s[9] .isOff() {
-                            @if v[43] == 1006 {
+                            @if Common_Control_Ck == 1006 {
                                 s[9].on
                                 s[13].on
                                 @pic[999].erase
@@ -1175,23 +1178,23 @@ s[70].off
                             } .else bl {
                                 // "ドラッグ終わったあとの処理"
                                 v[42] = -1
-                                @pic[973].getInfo .cewh .baseRect v[11], v[12], v[13], v[14]
-                                @if `v[13] > 0 && v[14] > 0 {
-                                    v[11].copy v[252], 2
+                                @pic[973].getInfo .cewh .baseRect var1, var2, var3, var4
+                                @if `var3 > 0 && var4 > 0 {
+                                    var1.copy v[252], 2
                                     v[251] = 0
                                     @call .cev 39
                                     @if v[40] == 0 {
-                                        v[343] = 800 + v[88]
+                                        TT3 = 800 + v[88]
                                         s[151].on
-                                        @call .cev v[343]
+                                        @call .cev TT3
                                         s[151].off
-                                        v[31].copy v[15], 4
-                                        v[341] = v[300001] >= v[15] ? 1 : 0
-                                        v[341] += v[300002] >= v[16] ? 1 : 0
-                                        v[341] += v[300003] >= v[17] ? 1 : 0
-                                        v[341] += v[300004] >= v[18] ? 1 : 0
-                                        v[21] = v[341] != 4 ? -1 : 0
-                                        @if v[21] != 0 {
+                                        v[31].copy var5, 4
+                                        TT1 = v[300001] >= var5 ? 1 : 0
+                                        TT1 += v[300002] >= var6 ? 1 : 0
+                                        TT1 += v[300003] >= var7 ? 1 : 0
+                                        TT1 += v[300004] >= var8 ? 1 : 0
+                                        reg1 = TT1 != 4 ? -1 : 0
+                                        @if reg1 != 0 {
                                             v[942] = 0
                                             
                                         }
@@ -1236,7 +1239,7 @@ s[70].off
                     .time 0
                     .rgbs v[4031], v[4032], v[4033], v[4034]
                 }
-                @if v[43] == 1006 {
+                @if Common_Control_Ck == 1006 {
                     @if s[13] .isOff() {
                         v[87..88] = 0
                         s[13].on
@@ -1255,40 +1258,40 @@ s[70].off
                 
             } .else bl {
                 // "Building Mode.."
-                v[51].copy v[11], 2
+                MousePtr_x.copy var1, 2
                 @if s[180] .isOff() {
-                    v[11].copy v[252], 2
+                    var1.copy v[252], 2
                     @call .cev 795
-                    v[51].copy v[11], 2
-                    v[403].copy v[13], 2
+                    MousePtr_x.copy var1, 2
+                    v[403].copy var3, 2
                     v[13..14] %= 16
                     // "ずれ計算"
                     v[11..12] /= 16
                     v[11..12] += 1
                     v[11..12] *= 16
-                    v[11] .add v[13], 2
+                    var1 .add var3, 2
                     // "処理開始"
                     @if v[37] == 0 {
-                        v[11] -= 8
+                        var1 -= 8
                         
                     }
                     
                 } .else bl {
-                    v[11] = v[51]
-                    v[12] = v[52]
-                    v[11] -= 16 * (v[69] % 2)
-                    v[12] -= 16 * (v[70] % 2)
-                    v[12] -= 8
+                    var1 = MousePtr_x
+                    var2 = MousePtr_y
+                    var1 -= 16 * (Map_LimitCoordX_min % 2)
+                    var2 -= 16 * (Map_LimitCoordY_min % 2)
+                    var2 -= 8
                     v[11..12] *= 10000
                     @call .cev 1999
-                    v[21].copy v[341], 2
-                    v[342] -= 1
-                    v[341] += v[69] % 2
-                    v[342] += v[70] % 2
+                    reg1.copy TT1, 2
+                    TT2 -= 1
+                    TT1 += Map_LimitCoordX_min % 2
+                    TT2 += Map_LimitCoordY_min % 2
                     v[341..342] /= 2
                     v[341..342] *= 2
                     @call .cev 2001
-                    v[22].copy v[1], 2
+                    reg2.copy v[1], 2
                     v[1..2] -= 16
                     v[1] -= 8
                     v[2] += 8
@@ -1298,8 +1301,8 @@ s[70].off
                     v[8] = 0
                     v[1] += v[53]
                     v[2] += v[54]
-                    v[1] -= 16 * (v[69] % 2)
-                    v[2] -= 16 * (v[70] % 2)
+                    v[1] -= 16 * (Map_LimitCoordX_min % 2)
+                    v[2] -= 16 * (Map_LimitCoordY_min % 2)
                     @if s[177] .isOn() {
                         v[1] -= 16
                         
@@ -1308,10 +1311,10 @@ s[70].off
                         v[2] -= 16
                         
                     }
-                    v[1].copy v[11], 2
-                    v[11].copy v[252], 2
+                    v[1].copy var1, 2
+                    var1.copy v[252], 2
                     @call .cev 795
-                    v[1].copy v[11], 2
+                    v[1].copy var1, 2
                     
                 }
                 @pic[1000].show {
@@ -1359,30 +1362,30 @@ s[70].off
                 v[468] = 5
                 @if v[38] != 0 {
                     v[444] = 14
-                    v[14] = v[12] + v[38] * 1
+                    var4 = var2 + v[38] * 1
                     
                 }
                 @cmd 11110, "static\spr_static_1", .args v[441], 30
-                @if v[43] == 1005 {
-                    @if `v[52] <= v[1286] && !(v[51] <= v[4514] && v[52] >= v[4515]) {
+                @if Common_Control_Ck == 1005 {
+                    @if `MousePtr_y <= v[1286] && !(MousePtr_x <= v[4514] && MousePtr_y >= v[4515]) {
                         @if s[11] .isOff() {
                             s[11].on
                             v[42] = -1
-                            v[11].copy v[252], 2
+                            var1.copy v[252], 2
                             v[251] = 0
                             @call .cev 39
                             @if v[40] == 0 {
-                                v[343] = 800 + v[88]
+                                TT3 = 800 + v[88]
                                 s[151].on
-                                @call .cev v[343]
+                                @call .cev TT3
                                 s[151].off
-                                v[31].copy v[15], 4
-                                v[341] = v[300001] >= v[15] ? 1 : 0
-                                v[341] += v[300002] >= v[16] ? 1 : 0
-                                v[341] += v[300003] >= v[17] ? 1 : 0
-                                v[341] += v[300004] >= v[18] ? 1 : 0
-                                v[21] = v[341] != 4 ? -1 : 0
-                                @if v[21] != 0 {
+                                v[31].copy var5, 4
+                                TT1 = v[300001] >= var5 ? 1 : 0
+                                TT1 += v[300002] >= var6 ? 1 : 0
+                                TT1 += v[300003] >= var7 ? 1 : 0
+                                TT1 += v[300004] >= var8 ? 1 : 0
+                                reg1 = TT1 != 4 ? -1 : 0
+                                @if reg1 != 0 {
                                     v[942] = 0
                                     
                                 }
@@ -1406,60 +1409,60 @@ s[70].off
                     } .else bl {
                         // "UI"
                         // "＃Qキー"
-                        @if `between(v[51], v[1037] - v[1291], v[1037] + v[1291]) && between(v[52], v[1038] - v[1292], v[1038] + v[1292]) {
+                        @if `between(MousePtr_x, v[1037] - v[1291], v[1037] + v[1291]) && between(MousePtr_y, v[1038] - v[1292], v[1038] + v[1292]) {
                             v[917] = 1
                             
                         }
                         // "＃Wキー"
-                        @if `between(v[51], v[1039] - v[1291], v[1039] + v[1291]) && between(v[52], v[1040] - v[1292], v[1040] + v[1292]) {
+                        @if `between(MousePtr_x, v[1039] - v[1291], v[1039] + v[1291]) && between(MousePtr_y, v[1040] - v[1292], v[1040] + v[1292]) {
                             v[923] = 1
                             
                         }
                         // "＃Eキー"
-                        @if `between(v[51], v[1041] - v[1291], v[1041] + v[1291]) && between(v[52], v[1042] - v[1292], v[1042] + v[1292]) {
+                        @if `between(MousePtr_x, v[1041] - v[1291], v[1041] + v[1291]) && between(MousePtr_y, v[1042] - v[1292], v[1042] + v[1292]) {
                             v[905] = 1
                             
                         }
                         // "＃Rキー"
-                        @if `between(v[51], v[1043] - v[1291], v[1043] + v[1291]) && between(v[52], v[1044] - v[1292], v[1044] + v[1292]) {
+                        @if `between(MousePtr_x, v[1043] - v[1291], v[1043] + v[1291]) && between(MousePtr_y, v[1044] - v[1292], v[1044] + v[1292]) {
                             v[918] = 1
                             
                         }
                         // "A"
-                        @if `between(v[51], v[1045] - v[1291], v[1045] + v[1291]) && between(v[52], v[1046] - v[1292], v[1046] + v[1292]) {
+                        @if `between(MousePtr_x, v[1045] - v[1291], v[1045] + v[1291]) && between(MousePtr_y, v[1046] - v[1292], v[1046] + v[1292]) {
                             v[901] = 1
                             
                         }
                         // "S"
-                        @if `between(v[51], v[1047] - v[1291], v[1047] + v[1291]) && between(v[52], v[1048] - v[1292], v[1048] + v[1292]) {
+                        @if `between(MousePtr_x, v[1047] - v[1291], v[1047] + v[1291]) && between(MousePtr_y, v[1048] - v[1292], v[1048] + v[1292]) {
                             v[919] = 1
                             
                         }
                         // "D"
-                        @if `between(v[51], v[1049] - v[1291], v[1049] + v[1291]) && between(v[52], v[1050] - v[1292], v[1050] + v[1292]) {
+                        @if `between(MousePtr_x, v[1049] - v[1291], v[1049] + v[1291]) && between(MousePtr_y, v[1050] - v[1292], v[1050] + v[1292]) {
                             v[904] = 1
                             
                         }
                         // "F"
-                        @if `between(v[51], v[1051] - v[1291], v[1051] + v[1291]) && between(v[52], v[1052] - v[1292], v[1052] + v[1292]) {
+                        @if `between(MousePtr_x, v[1051] - v[1291], v[1051] + v[1291]) && between(MousePtr_y, v[1052] - v[1292], v[1052] + v[1292]) {
                             v[906] = 1
                             
                         }
                         // "UI"
-                        @if `between(v[51], v[1282], v[1284]) && between(v[52], v[1283], v[1285]) && v[42] <= 0 {
+                        @if `between(MousePtr_x, v[1282], v[1284]) && between(MousePtr_y, v[1283], v[1285]) && v[42] <= 0 {
                             v[42] = 7
                             /* "282 216 左端
 317 238　右端
 300 227 中央
 1どっと4マス？"*/
-                            v[301] = v[51]
-                            v[302] = v[52]
-                            v[301] -= v[1282]
-                            v[302] -= v[1283] + 3
-                            v[66] = v[69]
-                            v[67] = v[70]
-                            v[66] += muldiv(v[301], v[430], 100)
-                            v[67] += muldiv(v[302], v[431], 100)
+                            Temp1 = MousePtr_x
+                            Temp2 = MousePtr_y
+                            Temp1 -= v[1282]
+                            Temp2 -= v[1283] + 3
+                            v[66] = Map_LimitCoordX_min
+                            v[67] = Map_LimitCoordY_min
+                            v[66] += muldiv(Temp1, v[430], 100)
+                            v[67] += muldiv(Temp2, v[431], 100)
                             s[44].on
                             
                         }
@@ -1471,7 +1474,7 @@ s[70].off
                     s[11].off
                     
                 }
-                @if v[43] == 1006 {
+                @if Common_Control_Ck == 1006 {
                     v[87..88] = 0
                     s[15].on
                     s[13].on

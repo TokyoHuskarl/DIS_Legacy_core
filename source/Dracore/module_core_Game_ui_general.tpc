@@ -24,28 +24,28 @@ cev[7], "Base Mouse Lock", .parallel, .cond(6),{
 	    }
 	    v[93] += 1
 	    @if s[2] .isOff() {
-		@mouse.getPos v[341], v[342]
-		v[93] = v[341] == v[1115] && v[342] == v[1116] ? v[93] : 0
-		v[49] -= muldiv(v[1115] - v[341], v[2221], 50)
-		v[49] = max(0, v[49])
-		v[49] = min(v[1001], v[49])
-		v[50] -= muldiv(v[1116] - v[342], v[2221], 50)
-		v[50] = max(0, v[50])
-		v[50] = min(v[1002], v[50])
+		@mouse.getPos TT1, TT2
+		v[93] = TT1 == v[1115] && TT2 == v[1116] ? v[93] : 0
+		Mouse_x -= muldiv(v[1115] - TT1, v[2221], 50)
+		Mouse_x = max(0, Mouse_x)
+		Mouse_x = min(v[1001], Mouse_x)
+		Mouse_y -= muldiv(v[1116] - TT2, v[2221], 50)
+		Mouse_y = max(0, Mouse_y)
+		Mouse_y = min(v[1002], Mouse_y)
 		@mouse.setPos v[1115], v[1116]
 		@wait 0
 		s[51].on
 		
 	    } .else bl {
 		@if s[4] .isOff() {
-		    @mouse.getPos v[341], v[342]
-		    v[93] = v[341] == v[1115] && v[342] == v[1116] ? v[93] : 0
-		    v[49] -= muldiv(v[1115] - v[341], v[2221], 50)
-		    v[49] = max(0, v[49])
-		    v[49] = min(v[1001], v[49])
-		    v[50] -= muldiv(v[1116] - v[342], v[2221], 50)
-		    v[50] = max(0, v[50])
-		    v[50] = min(v[1002], v[50])
+		    @mouse.getPos TT1, TT2
+		    v[93] = TT1 == v[1115] && TT2 == v[1116] ? v[93] : 0
+		    Mouse_x -= muldiv(v[1115] - TT1, v[2221], 50)
+		    Mouse_x = max(0, Mouse_x)
+		    Mouse_x = min(v[1001], Mouse_x)
+		    Mouse_y -= muldiv(v[1116] - TT2, v[2221], 50)
+		    Mouse_y = max(0, Mouse_y)
+		    Mouse_y = min(v[1002], Mouse_y)
 		    @mouse.setPos v[1115], v[1116]
 		    @wait 0
 		    s[51].on
@@ -56,26 +56,26 @@ cev[7], "Base Mouse Lock", .parallel, .cond(6),{
 	    
 	} .else bl {
 	    @if s[239] .isOff() {
-		@mouse.setPos v[49], v[50]
+		@mouse.setPos Mouse_x, Mouse_y
 		s[239].on
 		s[51].off
 		
 	    }
 	    @if s[39] .isOff() {
-		@mouse.getPos v[49], v[50]
+		@mouse.getPos Mouse_x, Mouse_y
 		
 	    }
-	    v[49].copy v[51], 2
+	    Mouse_x.copy MousePtr_x, 2
 	    v[51..52] -= 3
 	    v[52..52] += 1
 	    @if v[47] > 0 {
-		v[41] = v[49] - 1
-		v[48] = v[50] - 1
+		v[41] = Mouse_x - 1
+		v[48] = Mouse_y - 1
 		v[47] -= 1
 		
 	    } .else bl {
-		v[41] = v[49]
-		v[48] = v[50]
+		v[41] = Mouse_x
+		v[48] = Mouse_y
 		
 	    }
 	    @pic[1000].show {
@@ -115,30 +115,30 @@ cev[7], "Base Mouse Lock", .parallel, .cond(6),{
 
 cev[8], "Additional Mouse Lock ", .parallel, .cond(51),{
 	v[93] += 1
-	v[49].copy v[409], 2
+	Mouse_x.copy v[409], 2
 	@if s[2] .isOff() {
-	    @mouse.getPos v[341], v[342]
-	    v[93] = v[341] == v[1115] && v[342] == v[1116] ? v[93] : 0
-	    v[49] -= muldiv(v[1115] - v[341], v[2221], 50)
-	    v[49] = max(0, v[49])
-	    v[49] = min(v[1001], v[49])
-	    v[50] -= muldiv(v[1116] - v[342], v[2221], 50)
-	    v[50] = max(0, v[50])
-	    v[50] = min(v[1002], v[50])
+	    @mouse.getPos TT1, TT2
+	    v[93] = TT1 == v[1115] && TT2 == v[1116] ? v[93] : 0
+	    Mouse_x -= muldiv(v[1115] - TT1, v[2221], 50)
+	    Mouse_x = max(0, Mouse_x)
+	    Mouse_x = min(v[1001], Mouse_x)
+	    Mouse_y -= muldiv(v[1116] - TT2, v[2221], 50)
+	    Mouse_y = max(0, Mouse_y)
+	    Mouse_y = min(v[1002], Mouse_y)
 	    @mouse.setPos v[1115], v[1116]
 	    @wait 0
 	    s[51].off
 	    
 	} .else bl {
 	    @if s[4] .isOn() {
-		@mouse.getPos v[341], v[342]
-		v[93] = v[341] == v[1115] && v[342] == v[1116] ? v[93] : 0
-		v[49] -= muldiv(v[1115] - v[341], v[2221], 50)
-		v[49] = max(0, v[49])
-		v[49] = min(v[1001], v[49])
-		v[50] -= muldiv(v[1116] - v[342], v[2221], 50)
-		v[50] = max(0, v[50])
-		v[50] = min(v[1002], v[50])
+		@mouse.getPos TT1, TT2
+		v[93] = TT1 == v[1115] && TT2 == v[1116] ? v[93] : 0
+		Mouse_x -= muldiv(v[1115] - TT1, v[2221], 50)
+		Mouse_x = max(0, Mouse_x)
+		Mouse_x = min(v[1001], Mouse_x)
+		Mouse_y -= muldiv(v[1116] - TT2, v[2221], 50)
+		Mouse_y = max(0, Mouse_y)
+		Mouse_y = min(v[1002], Mouse_y)
 		@mouse.setPos v[1115], v[1116]
 		@wait 0
 		s[51].off

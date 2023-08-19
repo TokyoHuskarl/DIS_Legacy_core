@@ -739,7 +739,7 @@ Object:
 	#AI_behavior_flag=34 #0 = standard,1=siege_ram,2=skirmisher,4=assassin,8=ranged
 	AI_routine_bit=34 #1=siegeweapon_flag,2:2=skirmisher,3:4=assassin,4:8=ranged,5:16=targetting_ally,6:32=target_switched_by_AI,7:64=IdleAfterEnemySearch,8:128=AICohortGatheringAttack 12:4096=tracing_flag,13:8192=tracing_wp/*tracing_lefthand*/,
  											14:16384=PATHFINDING 15:32768=PFcontinue 16:65536=PFskip 17:131072=manual　/*18:262144=wannastop 19:524288=towardobj*/ 
-											20:524288=waypoint_priority,/*21:1048576=hit_and_run_tactics*/,22:2097152=AIskip,23:8388608=pathblocked,24:16777216=group_path  
+											20:524288=waypoint_priority,/*21:1048576=hit_and_run_tactics*/,22:2097152=AIskip,23:8388608=pathblocked,24:16777216=group_path, 25:Raycast
 
 
 	Cohort_ID= 35 //31=Comitatenses			
@@ -1338,7 +1338,7 @@ maptilefunction:
 MapNodes:[20]
 	refmapX=1
 	refmapY=2
-	movementcost=3
+	movementcost = 3
 	setup =4 
 	
 	
