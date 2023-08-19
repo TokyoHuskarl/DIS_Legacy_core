@@ -22,12 +22,12 @@ __fn macro_HPSPreg $agent $HP_or_SP $amount{
 	/* "Var1 = Obj 1~
 	Var2 = 0/1# HP/MP
 	Var3 = Amount"*/
-	//v[341] = $HP_or_SP * 2
-	v[342] = $agent * 300 + 4806 + ($HP_or_SP * 2)
-	//v[343] = v[342] - 1
-	//v[v[342]] += $amount
+	//TT1 = $HP_or_SP * 2
+	TT2 = $agent * 300 + 4806 + ($HP_or_SP * 2)
+	//TT3 = TT2 - 1
+	//v[TT2] += $amount
 	// "Min(HealedHP,MaxHP)"
-	v[v[342]] = min(v[v[342]] + $amount, v[v[342] - 1])
+	v[TT2] = min(v[TT2] + $amount, v[TT2 - 1])
 }
 
 
@@ -86,90 +86,90 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	v[536] = v[4533]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
-	    v[301] = v[401] * v[1117] 
-	    v[301] += 5001
-	    v[v[301]].copy v[601], 300
+	    Temp1 = v[401] * v[1117] 
+	    Temp1 += 5001
+	    v[Temp1].copy v[601], 300
 	    @if `!(agent_AgentBits & 2097152) {
 		@if `v[811] & 2 { // there's moving static (vikang ship
 
 		    Bool_Refresh_Static_Minimap.on//request refresh static minimap
 		    // "Get [1-100]"
 		    // "モートン座標を記録するよ"
-		    v[607].copy v[341], 2
-		    v[341] .add v[53], 2
-		    v[341] .sub v[76], 2
-		    v[341] .div v[74], 2
+		    v[607].copy TT1, 2
+		    TT1 .add v[53], 2
+		    TT1 .sub v[76], 2
+		    TT1 .div v[74], 2
 		    // "TT1=MortX
 		    //TT2=MortY
 		    //ビット演算して処理するよ"
-		    v[341] = (v[341] | v[341] << 8) & 0xFF00FF
-		    v[341] = (v[341] | v[341] << 4) & 0xF0F0F0F
-		    v[341] = (v[341] | v[341] << 2) & 0x33333333
-		    v[341] = (v[341] | v[341] << 1) & 0x55555555
-		    v[342] = (v[342] | v[342] << 8) & 0xFF00FF
-		    v[342] = (v[342] | v[342] << 4) & 0xF0F0F0F
-		    v[342] = (v[342] | v[342] << 2) & 0x33333333
-		    v[342] = ((v[342] | v[342] << 1) & 0x55555555)<<1
+		    TT1 = (TT1 | TT1 << 8) & 0xFF00FF
+		    TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
+		    TT1 = (TT1 | TT1 << 2) & 0x33333333
+		    TT1 = (TT1 | TT1 << 1) & 0x55555555
+		    TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+		    TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+		    TT2 = (TT2 | TT2 << 2) & 0x33333333
+		    TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
 		    // "yは1bitシフトで終わり"
-		    //v[342] <<= 1
+		    //TT2 <<= 1
 		    // "最後にTT1 OR TT2"
-		    v[609] = v[341] | v[342]
+		    v[609] = TT1 | TT2
 		    
 		}
 		// "モートン座標を記録しおえたよ 次はリストに登録するよ TT3=カウンター TT2=ポインター"
-		v[341] = v[609]
+		TT1 = v[609]
 		// "#ルート空間だよ"
-		v[342] = v[1067] + v[v[1071]]
-		v[v[342]] = v[401] + 1
+		TT2 = v[1067] + v[v[1071]]
+		v[TT2] = v[401] + 1
 		v[v[1071]] += 1
 		// "#第5空間だよ0~1023"
-		v[343] = v[4538] + v[341]
-		v[v[341] * v[1004] + v[4535] + v[v[343]]] = v[401] + 1
-		v[v[343]] += 1
+		TT3 = v[4538] + TT1
+		v[TT1 * v[1004] + v[4535] + v[TT3]] = v[401] + 1
+		v[TT3] += 1
 		// "#第四空間だよ 0~255"
-		v[341] >>= 2
-		v[343] = v[4537] + v[341]
-		v[v[341] * v[1004] + v[4534] + v[v[343]]] = v[401] + 1
-		v[v[343]] += 1
+		TT1 >>= 2
+		TT3 = v[4537] + TT1
+		v[TT1 * v[1004] + v[4534] + v[TT3]] = v[401] + 1
+		v[TT3] += 1
 		// "#第三空間だよ 0~63"
-		v[341] >>= 2
-		v[343] = v[1074] + v[341]
-		v[v[341] * v[1004] + v[1070] + v[v[343]]] = v[401] + 1
-		v[v[343]] += 1
+		TT1 >>= 2
+		TT3 = v[1074] + TT1
+		v[TT1 * v[1004] + v[1070] + v[TT3]] = v[401] + 1
+		v[TT3] += 1
 		// "#第二空間だよ 0~15"
-		v[341] >>= 2
-		v[343] = v[1073] + v[341]
-		v[v[341] * v[1004] + v[1069] + v[v[343]]] = v[401] + 1
-		v[v[343]] += 1
+		TT1 >>= 2
+		TT3 = v[1073] + TT1
+		v[TT1 * v[1004] + v[1069] + v[TT3]] = v[401] + 1
+		v[TT3] += 1
 		// "#第一空間だよ 0~3"
-		v[341] >>= 2
-		v[343] = v[1072] + v[341]
-		v[v[341] * v[1004] + v[1068] + v[v[343]]] = v[401] + 1
-		v[v[343]] += 1
+		TT1 >>= 2
+		TT3 = v[1072] + TT1
+		v[TT1 * v[1004] + v[1068] + v[TT3]] = v[401] + 1
+		v[TT3] += 1
 		// "モートン座標関係はこれで終わり"
 		
 	    }
 	    // "STATIC OBJECT"
-	    v[301] -= 1
+	    Temp1 -= 1
 	    // "Sub Timer"
 	    v[680] .sub v[1089], v[1060]
 	    // "#"
 	    // "WPのずれを一括で修正"
 	    v[641] .add v[1021], 2
 	    // "座標ずらし"
-	    //v[300] = v[301] + 5
-	    //v[299] = v[301] + 12 
-	    //v[298] = v[301] + 7
-	    //v[297] = 53
+	    //Ptr20 = Temp1 + 5
+	    //Ptr19 = Temp1 + 12 
+	    //Ptr18 = Temp1 + 7
+	    //Ptr17 = 53
 	    // "#壁衝突チェックパート
 	    //#自己x 311
 	    //#自己y 312
 	    //#保存x*10000 303
 	    //#保存y*10000 304"
 	    //This part seems needless after once you save the height I guess?
-	    v[605].copy v[311], 2
-	    v[311] .add v[1061], 2
-	    v[311].copy v[303], 2
+	    v[605].copy Temp11, 2
+	    Temp11 .add v[1061], 2
+	    Temp11.copy Temp3, 2
 		    
 	    // "######################Get Terrain and Elevation info"
 	    @if `v[811] & 2 { // unless it's moving static, skip getting tile info...
@@ -177,25 +177,25 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    //v[311..312] /= 10000
 		    // "ずれ計算"
 		    //24.4.23
-		    macro_cord_diff(v[311] v[312])
+		    macro_cord_diff(Temp11 Temp12)
 		    //macro_diff_var311to312()
 	    
-		    v[313] = v[v[1182] + v[311] - v[69] + (v[312] - v[70]) * v[2061]]
-		    v[657] = v[313] / 100000000
-		    v[640] = v[313] % 100
+		    Temp13 = v[v[1182] + Temp11 - Map_LimitCoordX_min + (Temp12 - Map_LimitCoordY_min) * var_Map_Width]
+		    v[657] = Temp13 / 100000000
+		    v[640] = Temp13 % 100
 	    }
 	    // "######################"
-	    v[303] .add v[612], 2
+	    Temp3 .add v[612], 2
 
 	    //v[303..304] /= 10000
 	    // "ずれ計算"
 	    //24.4.23
-	    macro_cord_diff(v[303] v[304])
+	    macro_cord_diff(Temp3 Temp4)
 	    //macro_diff_var303to304_ev()
 
 	    // "set mapXY"
-	    //v[293] = v[301] + 26
-	    v[303].copy v[626], 2
+	    //Ptr13 = Temp1 + 26
+	    Temp3.copy v[626], 2
 	    // "X座標"
 	    // "#カメラずらして"
 	    v[605] += v[53] * 10000
@@ -210,45 +210,45 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    /* "#############
 	    #Set Y Position EV
 	    #############"*/
-	    //v[344] = v[301] + 1
-	    //v[345] = v[301] + 7
+	    //TT4 = Temp1 + 1
+	    //TT5 = Temp1 + 7
 
 	    // set absolute coord
 	    macro_convert_absolute_coord(agent_RelativeX,agent_AbsoluteX)
 
-	    v[348] = v[401] + 501
-	    s[v[348]].off
+	    TT8 = v[401] + 501
+	    s[TT8].off
 	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
 	    //opt
 	    TT10 = Address_agent_inSight_switch_array_head+v[401]
 	    @if s[TT10] .isOn() {
 	    //@if `s[2001 + v[401]] != 0 {
 			// "Walls "
-			v[1008].copy v[354], 4
+			v[1008].copy TT14, 4
 			@if `agent_AgentBits & 16 {
-			    v[354] -= 240
-			    v[355] += 240
-			    v[356] -= 240
-			    v[357] += 240
+			    TT14 -= 240
+			    TT15 += 240
+			    TT16 -= 240
+			    TT17 += 240
 			    
 			}
 			//Set Obj into Drawing List
-			//v[349] = v[301] + 10
-			v[354] -= v[610]
-			v[355] += v[610]
-			@if v[607]>=v[354] {
-				@if v[607]<=v[355] {
-	    			    //v[346] = v[301] + 8
-	    			    //v[347] = v[301] + 11
-				    v[356] -= v[611] + v[882]
-				    v[357] += v[611] - v[882]
-				    @if v[608]>=v[356] {
-					    @if v[608]<=v[357]{
+			//TT9 = Temp1 + 10
+			TT14 -= v[610]
+			TT15 += v[610]
+			@if v[607]>=TT14 {
+				@if v[607]<=TT15 {
+	    			    //TT6 = Temp1 + 8
+	    			    //TT7 = Temp1 + 11
+				    TT16 -= v[611] + v[882]
+				    TT17 += v[611] - v[882]
+				    @if v[608]>=TT16 {
+					    @if v[608]<=TT17{
 						// "#Set OffsetY"
 						v[637] = v[608] + v[882]
 						// "Will_be_depicted"
 						agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
-						s[v[348]].on
+						s[TT8].on
 						// "#"
 						// "#描画範囲内であれば保存"
 						v[v[1112] + v[184]] = (v[608] + v[611] + v[1011]) * 1000 + v[401]
@@ -260,7 +260,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				}
 	    		}
 	    }
-	    TT1 = v[301] + 1
+	    TT1 = Temp1 + 1
 	    v[601].copy v[TT1], 300
 
 	
@@ -274,50 +274,50 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
 	    // "死体"
-	    v[301] = v[401] * v[1117] 
-	    v[301] += 5000
+	    Temp1 = v[401] * v[1117] 
+	    Temp1 += 5000
 	    func_main_extract_agent_vars()
 
 	    // "慣性"
 	    // "座標ずらし"
-	    //v[300] = v[301] + 5
-	    //v[299] = v[301] + 12
-	    //v[298] = v[301] + 7
-	    //v[297] = 53
-	    //v[295] = v[301] + 266
-	    //v[294] = v[301] + 265
+	    //Ptr20 = Temp1 + 5
+	    //Ptr19 = Temp1 + 12
+	    //Ptr18 = Temp1 + 7
+	    //Ptr17 = 53
+	    //Ptr15 = Temp1 + 266
+	    //Ptr14 = Temp1 + 265
 	    @if v[865] < v[866] {
 		v[864] += g_perFPS //98000 / 48
-		//v[883] = v[301] + 261
-		//v[296] = v[301] + 263
+		//v[883] = Temp1 + 261
+		//Ptr16 = Temp1 + 263
 		v[861] .add v[863], 2
 		v[867] += v[868]
 		v[865] += 1
 		
 	    }
-	    //v[295] = v[301] + 281
+	    //Ptr15 = Temp1 + 281
 	    @if v[881] != 0 {
 		v[881] = muldiv(v[881], 4, 5)
 		v[882] /= 2
 		v[879] = divmul(v[879] ,17500,10000) 
 	    }
-	    //v[295] = v[301] + 274
-	    //v[294] = v[301] + 273
+	    //Ptr15 = Temp1 + 274
+	    //Ptr14 = Temp1 + 273
 	    @if v[873] < v[874] {
 		v[872] += g_perFPS //98000 / 48
-		//v[296] = v[301] + 271
-		//v[883] = v[301] + 269
+		//Ptr16 = Temp1 + 271
+		//v[883] = Temp1 + 269
 		v[869] .add v[871], 2
 		v[875] += v[876]
 		v[873] += 1
 		
 	    }
-	    //v[296] = v[301] + 285
-	    //v[295] = v[301] + 288
-	    //v[294] = v[301] + 287
+	    //Ptr16 = Temp1 + 285
+	    //Ptr15 = Temp1 + 288
+	    //Ptr14 = Temp1 + 287
 	    @if v[887] < v[888] {
 		v[886] +=  g_perFPS //98000 / 48
-		//v[883] = v[301] + 283
+		//v[883] = Temp1 + 283
 		v[883] .add v[885], 2
 		v[887] += 1
 		
@@ -330,62 +330,62 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //#自己y 312
 	    //#保存x*10000 303
 	    //#保存y*10000 304"
-	    v[605].copy v[311], 2
-	    v[311] .add v[1061], 2
-	    v[311].copy v[303], 2
+	    v[605].copy Temp11, 2
+	    Temp11 .add v[1061], 2
+	    Temp11.copy Temp3, 2
 
 	    //v[311..312] /= 10000
 	    // "ずれ計算"
 	    //24.4.23
-	    macro_cord_diff(v[311] v[312])
+	    macro_cord_diff(Temp11 Temp12)
 	    //macro_diff_var311to312()
-	    /*v[311] .sub LEGV_MainMAP_PointOfReferenceX, 2
-	    v[311] .add v[53], 2
+	    /*Temp11 .sub LEGV_MainMAP_PointOfReferenceX, 2
+	    Temp11 .add v[53], 2
 	    // "ずれおわり"
 	    v[311..312] /= 16*/
 
-	    @map.getTerrain .pos v[311], v[312] .dst v[313]
+	    @map.getTerrain .pos Temp11, Temp12 .dst Temp13
 	    // "#移動先壁チェック"
 
-	    v[303] .add v[612], 2
+	    Temp3 .add v[612], 2
 	    //v[303..304] /= 10000
 	    // "ずれ計算"
 	    //24.4.23
-	    macro_cord_diff(v[303] v[304])
-	    /*v[303] .sub LEGV_MainMAP_PointOfReferenceX, 2
-	    v[303] .add v[53], 2
+	    macro_cord_diff(Temp3 Temp4)
+	    /*Temp3 .sub LEGV_MainMAP_PointOfReferenceX, 2
+	    Temp3 .add v[53], 2
 	    // "ずれおわり"
 	    v[303..304] /= 16*/
 
 	    // "X座標"
-	    @map.getTerrain .pos v[303], v[312] .dst v[313]
+	    @map.getTerrain .pos Temp3, Temp12 .dst Temp13
 	    // "##20以上で壁がある
 	    //##壁がなければ速度を足す"
 	    
-	    //v[300] = v[301] + 5
-	    //v[299] = v[301] + 12
-	    //v[298] = v[301] + 7
-	    //v[297] = 53
-	    //v[295] = v[301] + 266
-	    //v[294] = v[301] + 265
+	    //Ptr20 = Temp1 + 5
+	    //Ptr19 = Temp1 + 12
+	    //Ptr18 = Temp1 + 7
+	    //Ptr17 = 53
+	    //Ptr15 = Temp1 + 266
+	    //Ptr14 = Temp1 + 265
 
 	    // "#減衰"
 	    v[612] = muldiv(v[612], 4, 5)
 	    v[612] = 500 >= abs(v[612]) ? 0 : v[612]
-	    v[605] += v[313] < 20 ? v[612] : 0
+	    v[605] += Temp13 < 20 ? v[612] : 0
 	    // "#カメラずらして"
 	    v[605] += v[53] * 10000
 	    // "#座標を反映"
 	    v[607] = v[605] / 10000
 	    // "Y座標"
-	    @map.getTerrain .pos v[311], v[304] .dst v[313]
+	    @map.getTerrain .pos Temp11, Temp4 .dst Temp13
 	    //v[297..300] += 1
 	    // "##20以上で壁がある
 	    //##壁がなければ速度を足す"
 	    // "#減衰"
 	    v[613] = muldiv(v[613], 4, 5)
 	    v[613] = 500 >= abs(v[613]) ? 0 : v[613]
-	    v[606] += v[313] < 20 ? v[613] : 0
+	    v[606] += Temp13 < 20 ? v[613] : 0
 	    // "#カメラずらして"
 	    v[606] += v[54] * 10000
 	    // "#座標を反映"
@@ -399,22 +399,22 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    macro_convert_absolute_coord(agent_RelativeX,agent_AbsoluteX)
 
 	    //Set Obj into Drawing List
-	    v[348] = v[401] + 501
-	    s[v[348]].off
+	    TT8 = v[401] + 501
+	    s[TT8].off
 	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
 	    TT10 = Address_agent_inSight_switch_array_head + v[401]
 	    @if s[TT10] .isOn() {
 	    //@if `s[2001+v[401]] != 0 {
-	    	//v[345] = v[301] + 7
+	    	//TT5 = Temp1 + 7
 		@if v[607] >= v[1008] {
 			@if v[607] <= v[1009]{
-				//v[346] = v[301] + 8
+				//TT6 = Temp1 + 8
 				@if v[608] >= v[1010]{
 					@if v[608] <= v[1011]{
 					    	// "#描画範囲内であれば保存"
 					    	// "Will_be_depicted"
 						agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
-					    	s[v[348]].on
+					    	s[TT8].on
 					    	// "#"
 					    	v[v[1112] + v[184]] = (v[601] != -9 ? (v[608] + v[611] / 2 + v[1011] + 500) * 1000 : 9999000) + v[401]
 					    	v[v[1113] + v[184]]=v[401]
@@ -442,8 +442,8 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
-	    v[301] = v[401] * v[1117] 
-	    v[301] += 5000
+	    Temp1 = v[401] * v[1117] 
+	    Temp1 += 5000
 
 	    func_main_extract_agent_vars()
 
@@ -452,7 +452,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //Shield Flash
 	    //#########################"
 	    //opt 26.4.23
-	    //v[v[301] + 284] -= v[v[301] + 284] > 0 ? 1 : 0
+	    //v[Temp1 + 284] -= v[Temp1 + 284] > 0 ? 1 : 0
 	    v[884] -= v[884] > 0
 	    // "Flash Effect"
 	    @if v[895] >= 4 {
@@ -464,7 +464,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		v[357 + v[895]] = 20
 		
 	    }
-	    v[891] .sub v[358], 3
+	    v[891] .sub TT18, 3
 	    // "Temp... only check R"
 	    v[895] = v[891] <= 0 ? 0 : v[895]
 	    // "++"
@@ -478,8 +478,8 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[536] = v[4532]
 	    @while v[v[536]] != 0 {
 		v[401] = v[v[536]] - 1
-		v[301] = v[401] * v[1117] 
-		v[301] += 5000
+		Temp1 = v[401] * v[1117] 
+		Temp1 += 5000
 
 	    	func_main_extract_agent_vars()
 
@@ -492,7 +492,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    @if `divmul(v[707], 100, 35) > v[708] && v[682] <= 0 && !(v[726] & 2048) {
 			v[682] = 48
 			// "Sweat Particle"
-			@loop v[1017] .dst v[320] {
+			@loop v[1017] .dst Temp20 {
 			    v[244] %= v[1199]
 			    v[331] = v[244] * 50 
 			    v[331] += v[1198]
@@ -509,8 +509,8 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				// "Set Parent Obj"
 				v[v[331] + 9] = v[401] + 1
 				// "普通にアニメ"
-				v[341] = v[331] + 6
-				v[607].copy v[v[341]], 2
+				TT1 = v[331] + 6
+				v[607].copy v[TT1], 2
 				// "仕上げに登録消す"
 				v[244] += 1
 				@break
@@ -531,7 +531,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			// "#Sub timer"
 			v[886] -= 2
 			@if v[886] <= 0 {
-			    v[341] = v[1179] + v[640] + 20 * v[887]
+			    TT1 = v[1179] + v[640] + 20 * v[887]
 			    v[685] = 13
 			    @if `v[638] & 1 {
 				@if v[182] < 1 {
@@ -542,11 +542,11 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					v[473] = rnd(95, 105)
 					v[474] = divmul(v[607] + v[1001], v[1281], 50)
 					v[329] = rnd(0, 2)
-					t[510] .asg "footsteps\fly"
-					t[510] .cat v[329]
-					v[342] = 510
-					// "Strings = t[v[342]]"
-					@cmd 11550, t[v[342]], .args v[472], 3
+					inputstr .asg "footsteps\fly"
+					inputstr .cat v[329]
+					TT2 = 510
+					// "Strings = t[TT2]"
+					@cmd 11550, t[TT2], .args v[472], 3
 					// "#########################"
 					
 				    }
@@ -564,11 +564,11 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					v[473] = rnd(95, 105)
 					v[474] = divmul(v[607] + v[1001], v[1281], 50)
 					v[329] = rnd(0, 6)
-					t[510] .asg t[v[341]]
-					t[510] .cat v[329]
-					v[342] = 510
-					// "Strings = t[v[342]]"
-					@cmd 11550, t[v[342]], .args v[472], 3
+					inputstr .asg t[TT1]
+					inputstr .cat v[329]
+					TT2 = 510
+					// "Strings = t[TT2]"
+					@cmd 11550, t[TT2], .args v[472], 3
 					// "#########################"
 					
 				    }
@@ -579,21 +579,21 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				// "Is_in_water"
 				@if `agent_AgentBits & 4 {
 				    // "Bubble Particle"
-				    @loop v[1017] .dst v[320] {
+				    @loop v[1017] .dst Temp20 {
 					v[244] %= v[1199]
-					v[351] = v[244] * 50 
-					v[351] += v[1198]
-					@if v[v[351]] <= 1 {
+					TT11 = v[244] * 50 
+					TT11 += v[1198]
+					@if v[TT11] <= 1 {
 					    // "init"
-					    v[1301].copy v[v[351]], 50
-					    v[v[351]] = 1
+					    v[1301].copy v[TT11], 50
+					    v[TT11] = 1
 					    // "timer"
-					    v[v[351] + 49] = 3
+					    v[TT11 + 49] = 3
 					    // "Set itself"
-					    v[v[351] + 3] = 133
+					    v[TT11 + 3] = 133
 					    // "set pos"
-					    v[341] = v[351] + 6
-					    v[607].copy v[v[341]], 2
+					    TT1 = TT11 + 6
+					    v[607].copy v[TT1], 2
 					    v[244] += 1
 					    @break
 					    
@@ -605,23 +605,23 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				    
 				} .else bl {
 				    @if `v[874] & 512 {
-					@loop v[1017] .dst v[320] {
+					@loop v[1017] .dst Temp20 {
 					    v[244] %= v[1199]
-					    v[351] = v[244] * 50 
-					    v[351] += v[1198]
-					    @if v[v[351]] <= 1 {
+					    TT11 = v[244] * 50 
+					    TT11 += v[1198]
+					    @if v[TT11] <= 1 {
 						// "init"
-						v[1301].copy v[v[351]], 50
-						v[v[351]] = 1
+						v[1301].copy v[TT11], 50
+						v[TT11] = 1
 						// "timer"
-						v[v[351] + 49] = 1
+						v[TT11 + 49] = 1
 						// "Set itself"
-						v[v[351] + 3] = 155
+						v[TT11 + 3] = 155
 						// "Set Dire"
-						v[v[351] + 27] = v[v[301] + 244]
+						v[TT11 + 27] = v[Temp1 + 244]
 						// "set pos"
-						v[341] = v[351] + 6
-						v[607].copy v[v[341]], 2
+						TT1 = TT11 + 6
+						v[607].copy v[TT1], 2
 						v[244] += 1
 						@break
 						
@@ -633,24 +633,24 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					
 				    } .else bl {
 					// "Is_horse"
-					@if v[341] >= 551 {
+					@if TT1 >= 551 {
 					    @if `agent_AgentBits & 8 {
 						// "Leaf Particle"
-						@loop v[1017] .dst v[320] {
+						@loop v[1017] .dst Temp20 {
 						    v[244] %= v[1199]
-						    v[351] = v[244] * 50 
-						    v[351] += v[1198]
-						    @if v[v[351]] <= 1 {
+						    TT11 = v[244] * 50 
+						    TT11 += v[1198]
+						    @if v[TT11] <= 1 {
 							// "init"
-							v[1301].copy v[v[351]], 50
-							v[v[351]] = 1
+							v[1301].copy v[TT11], 50
+							v[TT11] = 1
 							// "timer"
-							v[v[351] + 49] = 3
+							v[TT11 + 49] = 3
 							// "Set itself"
-							v[v[351] + 3] = 134
+							v[TT11 + 3] = 134
 							// "set pos"
-							v[341] = v[351] + 6
-							v[607].copy v[v[341]], 2
+							TT1 = TT11 + 6
+							v[607].copy v[TT1], 2
 							v[244] += 1
 							@break
 							
@@ -661,21 +661,21 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						
 						
 					    } .else bl {
-						@loop v[1017] .dst v[320] {
+						@loop v[1017] .dst Temp20 {
 						    v[244] %= v[1199]
-						    v[351] = v[244] * 50 
-						    v[351] += v[1198]
-						    @if v[v[351]] <= 1 {
+						    TT11 = v[244] * 50 
+						    TT11 += v[1198]
+						    @if v[TT11] <= 1 {
 							// "init"
-							v[1301].copy v[v[351]], 50
-							v[v[351]] = 1
+							v[1301].copy v[TT11], 50
+							v[TT11] = 1
 							// "timer"
-							v[v[351] + 49] = 3
+							v[TT11 + 49] = 3
 							// "Set itself"
-							v[v[351] + 3] = 130
+							v[TT11 + 3] = 130
 							// "set pos"
-							v[341] = v[351] + 6
-							v[607].copy v[v[341]], 2
+							TT1 = TT11 + 6
+							v[607].copy v[TT1], 2
 							v[244] += 1
 							@break
 							
@@ -720,8 +720,8 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
-	    v[301] = v[401] * v[1117] 
-	    v[301] += 5000
+	    Temp1 = v[401] * v[1117] 
+	    Temp1 += 5000
 	    func_main_extract_agent_vars()
 	    // "Set Dir"
 	    @if s[2] .isOff() {
@@ -770,15 +770,15 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
-	    v[301] = v[401] * v[1117] 
-	    v[301] += 5000
+	    Temp1 = v[401] * v[1117] 
+	    Temp1 += 5000
 
-	    v[299] = v[301] + 1
-	    v[v[299]].copy v[601], 300
+	    Ptr19 = Temp1 + 1
+	    v[Ptr19].copy v[601], 300
 		agent_ref_stats()
 		func_blink_progress()
 	    //@call .cev 2020
-	    v[601].copy v[v[299]], 300    
+	    v[601].copy v[Ptr19], 300    
 	    // "++"
 	    v[536] += 2
 	    
@@ -789,16 +789,16 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	v[536] = v[4532] + 1
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
-	    v[301] = v[401] * v[1117] 
-	    v[301] += 5000
+	    Temp1 = v[401] * v[1117] 
+	    Temp1 += 5000
 
-	    v[299] = v[301] + 1
-	    v[v[299]].copy v[601], 300
+	    Ptr19 = Temp1 + 1
+	    v[Ptr19].copy v[601], 300
 
 		agent_ref_stats()
 		func_blink_progress()
 	    //@call .cev 2020
-	    v[601].copy v[v[299]], 300    
+	    v[601].copy v[Ptr19], 300    
 	    // "++"
 	    v[536] += 2
 	    
@@ -809,19 +809,19 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[536] = v[4532]
 	    @while v[v[536]] != 0 {
 		v[401] = v[v[536]] - 1
-		v[301] = v[401] * v[1117] 
-		v[301] += 5000
+		Temp1 = v[401] * v[1117] 
+		Temp1 += 5000
 	        func_main_extract_agent_vars()
 		// "#Reg Timer"
 		@if v[699] <= 0 {
 		    //opt 25.4.23
-		    //v[0] = v[11..13] = [v[401] + 1, 0, v[v[301] + 272]]
+		    //v[0] = v[11..13] = [v[401] + 1, 0, v[Temp1 + 272]]
 		    //var2=0
 		    // "#EV RecoverH/M"
 		    /* "Var1 = Obj 1~	Var2 = 0/1# HP/MP	Var3 = Amount"*/
-		    //v[342] = v[301]+106
-		    //v[343] = v[342] - 1
-		    //var3=v[301]+272
+		    //TT2 = Temp1+106
+		    //TT3 = TT2 - 1
+		    //var3=Temp1+272
 		    // "#そのうち処理作る"
 		    v[706] += v[872]
 		    // "Min(HealedHP,MaxHP)"
@@ -833,7 +833,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    var3 = divmul(v[707], 100, 35) > v[708] && v[665] & 1024 ? 15 : 10
 		    @if var3 == 15 {
 			// "Breath Particle"
-			@loop v[1017] .dst v[320] {
+			@loop v[1017] .dst Temp20 {
 			    v[244] %= v[1199]
 			    v[331] = v[244] * 50 
 			    v[331] += v[1198]
@@ -850,8 +850,8 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				// "Set Parent Obj"
 				v[v[331] + 9] = v[401] + 1
 				// "普通にアニメ"
-				v[341] = v[331] + 6
-				v[607].copy v[v[341]], 2
+				TT1 = v[331] + 6
+				v[607].copy v[TT1], 2
 				// "Colour"
 				v[0] = v[v[331] + 31..v[331] + 38] = [0, 40, 150, 90, 0, 40, 150, 60]
 				// "仕上げに登録消す"
@@ -870,8 +870,8 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    /* "Var1 = Obj 1~
 	Var2 = 0/1# HP/MP
 	Var3 = Amount"*/
-		    //v[342] = v[301]+108
-		    //v[343] = v[342] - 1
+		    //TT2 = Temp1+108
+		    //TT3 = TT2 - 1
 		    // "#そのうち処理作る"
 		    v[708] += var3
 		    // "Min(HealedHP,MaxHP)"
@@ -890,13 +890,13 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    v[634] &= ~AI_routine_bits_FLAG_1secDelay_PF
 
 
-		    //v[680] = v[301] + 80 
+		    //v[680] = Temp1 + 80 
 		    //v[680] = v[v[680]]
 
 
 		    @if `s[7] == 1 || s[474] == 1 {
 			// "##If Fleeing"
-			//v[860] = v[301] + 260
+			//v[860] = Temp1 + 260
 			@if v[680] < -480 {
 			    v[860] = 0
 			    
@@ -936,50 +936,50 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	v[536] = v[4533]
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
-	    v[301] = v[401] * v[1117] 
-	    v[301] += 5000
+	    Temp1 = v[401] * v[1117] 
+	    Temp1 += 5000
 	    func_main_extract_agent_vars()
 
 	    //If Move Type STATIC
 	    //@if `(agent_static_Attribution_flag & 2) {
 		// Save MapXY/5 for static minimap.
-		v[341] = v[301] + 26
-		v[v[341]] .copy v[AGENT_STATIC_SLOT_MINIMAP_X], 2
+		TT1 = Temp1 + 26
+		v[TT1] .copy v[AGENT_STATIC_SLOT_MINIMAP_X], 2
 		v[AGENT_STATIC_SLOT_MINIMAP_X..AGENT_STATIC_SLOT_MINIMAP_Y] /= 5
-		v[341] = v[301] + AGENT_STATIC_SLOT_MINIMAP_X
-		v[AGENT_STATIC_SLOT_MINIMAP_X].copy v[v[341]], 2
+		TT1 = Temp1 + AGENT_STATIC_SLOT_MINIMAP_X
+		v[AGENT_STATIC_SLOT_MINIMAP_X].copy v[TT1], 2
 	    //}
 
 
 	    // "########################Process Parameters Setting BEGIN########################"
 	    // "#Base Parameters Get"
-	    //v[861] = v[301] + 109
+	    //v[861] = Temp1 + 109
 	    agent_BaseAD.copy agent_ProcessAD, 11
-	    //v[872] = v[301] + 131
+	    //v[872] = Temp1 + 131
 	    agent_BaseRegHP.copy agent_ProcessHPreg, 2
 	    // "#Never get Morale Effect"
 	    agent_ProcessObjBit = agent_static_Obj_flag | BaseObjBit_FLAG_No_mind //... is this necessary?
 	    agent_ProcessCamoValue = agent_BaseCamoValue
 	    // "#Set Process Parameters"
-	    v[341] = v[301] + 261
-	    v[861].copy v[v[341]], 16 //set.
+	    TT1 = Temp1 + 261
+	    v[861].copy v[TT1], 16 //set.
 	    // "########################Process Parameters Setting END########################"
-	    //v[841] = v[301] + 241 needless
-	    v[843] = v[301] + 243
+	    //v[841] = Temp1 + 241 needless
+	    v[843] = Temp1 + 243
 	    // "ＳＴＡＴＩＣタイマー"
-	    //agent_AgentBits = v[301] + 3
-	    //v[702] = v[301] + 102
+	    //agent_AgentBits = Temp1 + 3
+	    //v[702] = Temp1 + 102
 	    v[370] = (s[2] == 0 ? 1 : -1) + (agent_AgentBits & AgentBits_STATIC_FLAG_No_function ? -1 : 1)
 	    // "have function? "
 	    //v[370] += v[agent_AgentBits] & 1024 ? -1 : 1
 	    @if v[370] >= 2 {
 		// "AAタイマー"
 		@if v[702] == 106 {
-		    v[628] = v[301] + 28
+		    v[628] = Temp1 + 28
 		    @if v[v[628]] > 0 {
 			// "まだAAできない"
 			@if v[v[843]] != 1 {
-			    v[719] = v[301] + 119
+			    v[719] = Temp1 + 119
 			    v[v[628]] -= v[v[719]]
 			    
 			}
@@ -987,22 +987,22 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    } .else bl {
 			// "AA可能"
 			// "AAクールタイムモーションつきなら解消しておく"
-			//v[726] = v[301] + 126
-			v[v[843]] = v[v[301] + 126] == 1 ? 0 : v[v[843]]
+			//v[726] = Temp1 + 126
+			v[v[843]] = v[Temp1 + 126] == 1 ? 0 : v[v[843]]
 			
 		    }
 		    
 		}
 		// "#予約がある"
-		//v[770] = v[301] + 170
+		//v[770] = Temp1 + 170
 		@if v[770] >= 1 {
 		    // "MP(生産力)をためようね"
-		    v[341] = v[301] + 108
-		    //v[707] = v[301] + 107
-		    //v[740] = v[301] + 140
-		    //v[700] = v[v[301] + 100]
+		    TT1 = Temp1 + 108
+		    //v[707] = Temp1 + 107
+		    //v[740] = Temp1 + 140
+		    //v[700] = v[Temp1 + 100]
 		    @if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
-			//v[342] = v[2409 + v[251] % 3]
+			//TT2 = v[2409 + v[251] % 3]
 			
 			__if DIS_EXPERIMENTAL == -1 { 
 				macro_get_agent_MetaTeam_into_var(v[v[536]],TT2) // AEBA
@@ -1010,12 +1010,12 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				TT2 = v[Const_AgentMetaTeam_begin+v[401]]
 			}
 
-			v[v[341]] += v[740] * 6
+			v[TT1] += v[740] * 6
 			// "徴用スイッチ"
-			v[v[341]] += v[342] & 134217728 && !(v[v[301] + 3] & 1) ? muldiv(v[740], 198, 100) : 0
+			v[TT1] += TT2 & 134217728 && !(v[Temp1 + 3] & 1) ? muldiv(v[740], 198, 100) : 0
 			// "MP(生産力)がたまった"
-			@if v[v[341]] >= v[707] {
-			    v[v[341]] = 0
+			@if v[TT1] >= v[707] {
+			    v[TT1] = 0
 			   // "生産完了"
 			    // "#Tech Flag"
 
@@ -1026,19 +1026,19 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    v[252] = v[607] + rnd(-6, 6)
 			    v[253] = v[608] + v[611] + rnd(-3, 3)
 			    @call .cev 46 //spawn ev
-			    v[301] = v[401] * 300 
-			    v[301] += 5000
+			    Temp1 = v[401] * 300 
+			    Temp1 += 5000
 	    		    func_main_extract_agent_vars()//extract STATIC datas again
 			    defv Spawned_Agent_Id_Shift = __id(Temp2) 
-			    Spawned_Agent_Id_Shift = v[21] * 300 //use Temp2 as 
+			    Spawned_Agent_Id_Shift = reg1 * 300 //use Temp2 as 
 			    @if v[822] != 3 {
-				v[Spawned_Agent_Id_Shift + 4922] = v[Spawned_Agent_Id_Shift + 4922] == 0 ? v[v[301] + 222] : v[Spawned_Agent_Id_Shift + 4922]
+				v[Spawned_Agent_Id_Shift + 4922] = v[Spawned_Agent_Id_Shift + 4922] == 0 ? v[Temp1 + 222] : v[Spawned_Agent_Id_Shift + 4922]
 				
 			    }
-			    v[v[301] + 3] &= -2//~1
-			    @if v[21] >= 1 {
+			    v[Temp1 + 3] &= -2//~1
+			    @if reg1 >= 1 {
 				// "指定地点まで歩かせる"
-				v[341] = Spawned_Agent_Id_Shift + 4741
+				TT1 = Spawned_Agent_Id_Shift + 4741
 				// "set reserved target "
 				v[371]=0//Flag for trained troop
 				@if v[618] >= 1 {
@@ -1054,26 +1054,26 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				    }
 				    
 				}
-				//v[607] = v[301] + 7
+				//v[607] = Temp1 + 7
 				//v[v[607]].copy v[607], 2
-				//v[641] = v[301] + 41
+				//v[641] = Temp1 + 41
 				//v[v[641]].copy v[641], 2
 				@if `v[607] == v[641] && v[608] == v[642] {
 				    // "指定されてない"
 				    v[252] = v[607] + rnd(-3, 3)
 				    v[253] = v[608] + v[611] + rnd(-3, 3)
 				    v[252] .add v[53], 2
-				    v[252].copy v[v[341]], 2
+				    v[252].copy v[TT1], 2
 				    v[Spawned_Agent_Id_Shift + 4942] = 2
 				    
 				} .else bl {
 				    v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
 				    // "指定されてる"
-				    v[641].copy v[v[341]], 2
+				    v[641].copy v[TT1], 2
 
 				    def Order_Spawned_agent_Pathfinding = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PF2Agent 
 				    v[Spawned_Agent_Id_Shift + 4734] |= Order_Spawned_agent_Pathfinding
-				    //v[v[21] * 300 + 4734] |= 524288
+				    //v[reg1 * 300 + 4734] |= 524288
 				    
 				}
 				
@@ -1084,7 +1084,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    }
 		    // "research particle"
 		    @if `agent_AgentBits & 1 {
-			@loop v[1017] .dst v[320] {
+			@loop v[1017] .dst Temp20 {
 			    v[244] %= v[1199]
 			    //v[331] = v[244] * 50
 			    v[331] = v[244] * 50 
@@ -1102,10 +1102,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				// "Set Parent Obj"
 				v[v[331] + 9] = v[401] + 1
 				// "普通にアニメ"
-				//v[607] = v[301] + 7
+				//v[607] = Temp1 + 7
 				v[607].copy var1, 2
-				v[341] = v[331] + 6
-				var1.copy v[v[341]], 2
+				TT1 = v[331] + 6
+				var1.copy v[TT1], 2
 				// "Colour"
 				v[0] = v[v[331] + 31..v[331] + 38] = [180, 129, 0, 90, 180, 129, 0, 60]
 				// "仕上げに登録消す"
@@ -1126,31 +1126,31 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    // "HP"
 		    var1 = v[401] + 1
 		    //var2 = 0
-		    var3 = v[301] + 131
+		    var3 = Temp1 + 131
 		    var3 = v[var3]
 		    //@call .cev 2006
 		    macro_HPSPreg(var1 0 var3)
-		    @if v[v[342]] <= 0 {
+		    @if v[TT2] <= 0 {
 			// "Check if it can be rebuilded"
-			v[290] = 300001 + v[700] * 4 //300001 magic number refers to factional resource
-			@if `v[v[290]] >= v[851] && v[v[290] + 1] >= v[852] && v[v[290] + 2] >= v[853] && v[v[290] + 3] >= v[854] && v[855] > 0 {
-			    v[341] = v[301] + 251//reconstructed!
-			    v[v[290]] .sub v[v[341]], 4
+			Ptr10 = 300001 + v[700] * 4 //300001 magic number refers to factional resource
+			@if `v[Ptr10] >= v[851] && v[Ptr10 + 1] >= v[852] && v[Ptr10 + 2] >= v[853] && v[Ptr10 + 3] >= v[854] && v[855] > 0 {
+			    TT1 = Temp1 + 251//reconstructed!
+			    v[Ptr10] .sub v[TT1], 4
 			    @call .cev 84
-			    v[v[342]] = v[v[342] - 1]
+			    v[TT2] = v[TT2 - 1]
 			    
 			} .else bl {
 			    // "Decay"
 			    v[299..300] = v[401] + 1
-			    v[298] = v[300] * 300 + 4701
-			    @if v[v[298]] >= 1 {
-				v[305..312] = v[300] * 300 //killed.
+			    Ptr18 = Ptr20 * 300 + 4701
+			    @if v[Ptr18] >= 1 {
+				v[305..312] = Ptr20 * 300 //killed.
 				@call .cev 41
 				
 			    } .else bl {
 				// "Dead Static is not removed from List!?"
 				/*@if s[1] .isOn() { DEBUG feature, needless now
-				    var1 = v[300]
+				    var1 = Ptr20
 				    @call .cev 2150
 				    var1 = 734947
 				    var2 = 1000
@@ -1166,18 +1166,18 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    // "SP reg"
 		    var1 = v[401] + 1
 		    //var2 = 1
-		    var3 = v[v[301] + 132]
+		    var3 = v[Temp1 + 132]
 		    //@call .cev 2006
 		    macro_HPSPreg(var1 1 var3)
-		    v[699] = v[301] + 99
-		    v[v[699]] = v[v[301] + 255] >= 1 ? 88 : 48
+		    v[699] = Temp1 + 99
+		    v[v[699]] = v[Temp1 + 255] >= 1 ? 88 : 48
 		    // "init farm owner"
-		    v[v[301] + 255] = 0
+		    v[Temp1 + 255] = 0
 		    // "#Flammable"
 		    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//s[v[401] + 501] {
 			@if `!(agent_AgentBits & 2048) {
 			    // "#Hp 66%"
-			    @if `divmul(v[v[301] + 105], 100, 66) > v[v[301] + 106] {
+			    @if `divmul(v[Temp1 + 105], 100, 66) > v[Temp1 + 106] {
 				@if v[182] <= 0 {
 				    @if v[522] <= 24 {
 					v[182] += 1
@@ -1185,12 +1185,12 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					v[471] = 11550
 					v[472] = divmul(45, 100, v[2216])
 					v[473] = rnd(90, 115)
-					v[607] = v[301] + 7
+					v[607] = Temp1 + 7
 					v[v[607]].copy v[361], 2
 					v[474] = divmul(v[361] + v[1001], v[1281], 50)
 					// "#########################"
-					t[510] .asg "misc\blazing"
-					@cmd v[471], t[510], .args v[472], 3
+					inputstr .asg "misc\blazing"
+					@cmd v[471], inputstr, .args v[472], 3
 					
 				    }
 				    
@@ -1203,58 +1203,58 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    }
 		    
 		}
-		v[699] = v[301] + 99
-		v[341] = v[v[699]]
+		v[699] = Temp1 + 99
+		TT1 = v[v[699]]
 		// "########################"
 		
 	    }
 	    // "目標位置"
-	    v[619] = v[301] + 19
-	    v[620] = v[301] + 20
+	    v[619] = Temp1 + 19
+	    v[620] = Temp1 + 20
 	    // "################"
 	    /* "Obj指定分岐
 	Get18 = 目標ObjID"*/
-	    @if `v[v[301] + 18] >= 1 {
+	    @if `v[Temp1 + 18] >= 1 {
 		/* "Obj指定があり、そちらに行きたいとき
 	Get18 = 目標ObjID"*/
-		v[304] = v[v[301] + 18] * 300 + 4701
-		@if v[v[304]] >= 1 {
+		Temp4 = v[Temp1 + 18] * 300 + 4701
+		@if v[Temp4] >= 1 {
 		    // "#指定Objが存在する"
-		    v[304] += 6
-		    v[v[304]].copy v[v[619]], 2
+		    Temp4 += 6
+		    v[Temp4].copy v[v[619]], 2
 		    // "#攻撃"
 		    @if v[370] >= 2 {
 			// "目標地点にカメラのずれを加算"
 			v[v[619]] .add v[53], 2
 			/* "Temp4 = 次に動く場所x
 	Temp6 = 次に動く場所y"*/
-			v[304] = v[v[619]]
-			v[300] = v[301] + 7
-			v[304] -= v[v[300]]
-			v[309] = v[304]
-			v[304] = pow(v[304], 2)
+			Temp4 = v[v[619]]
+			Ptr20 = Temp1 + 7
+			Temp4 -= v[Ptr20]
+			Temp9 = Temp4
+			Temp4 = pow(Temp4, 2)
 			// "#######"
-			v[306] = v[v[620]]
-			v[300] = v[301] + 8
-			v[306] -= v[v[300]]
-			v[310] = v[306]
-			v[306] = pow(v[306], 2)
-			v[304] += v[306]
+			Temp6 = v[v[620]]
+			Ptr20 = Temp1 + 8
+			Temp6 -= v[Ptr20]
+			Temp10 = Temp6
+			Temp6 = pow(Temp6, 2)
+			Temp4 += Temp6
 			// "Set Object[23]"
-			v[300] = v[301] + 23
-			v[v[300]] = sqrt(v[304], 1000)
-			v[318] = v[v[300]]
+			Ptr20 = Temp1 + 23
+			v[Ptr20] = sqrt(Temp4, 1000)
+			Temp18 = v[Ptr20]
 			// "AAレンジ内か否かを見る"
-			v[295] = v[301] + 117
-			v[v[295]].copy v[341], 2
+			Ptr15 = Temp1 + 117
+			v[Ptr15].copy TT1, 2
 			// "自分がMeleeなら([相手の幅]*1000)を引いて考える"
-			v[340] = v[318]
+			v[340] = Temp18
 			v[340] -= v[v[703]] == 0 ? v[335] : 0
-			@if v[340] <= v[341] {
-			    @if v[340] >= v[342] {
-				v[842] = v[301] + 242
+			@if v[340] <= TT1 {
+			    @if v[340] >= TT2 {
+				v[842] = Temp1 + 242
 				v[v[842]] = -1
-				v[628] = v[301] + 28
+				v[628] = Temp1 + 28
 				// "AAタイマー見る"
 				v[v[843]] = v[v[628]] <= 0 ? 1 : v[v[843]]
 				/* "#＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
@@ -1270,7 +1270,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    
 		} .else bl {
 		    // "#指定Objが存在しない"
-		    v[618] = v[301] + 18
+		    v[618] = Temp1 + 18
 		    // "#Obj目標を消す"
 		    v[v[618]] = 0
 		    v[607].copy v[v[619]], 2
@@ -1283,9 +1283,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		// "#Flammable"
 		@if `!(agent_AgentBits & 2048) {
 		    // "#Hp 66%"
-		    @if `divmul(v[v[301] + 105], 100, 66) > v[v[301] + 106] {
+		    @if `divmul(v[Temp1 + 105], 100, 66) > v[Temp1 + 106] {
 			// "Fire Particle"
-			@loop v[1017] .dst v[320] {
+			@loop v[1017] .dst Temp20 {
 			    v[244] %= v[1199]
 			    v[331] = v[244] * 50 + v[1198]
 			    @if v[v[331]] <= 1 {
@@ -1301,10 +1301,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				// "Set Parent Obj"
 				v[v[331] + 9] = v[401] + 1
 				// "普通にアニメ"
-				v[607] = v[301] + 7
+				v[607] = Temp1 + 7
 				v[v[607]].copy v[607], 2
-				v[341] = v[331] + 6
-				v[607].copy v[v[341]], 2
+				TT1 = v[331] + 6
+				v[607].copy v[TT1], 2
 				// "仕上げに登録消す"
 				v[244] += 1
 				@break
@@ -1318,10 +1318,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    }
 		    
 		}
-		v[701] = v[301] + 101
+		v[701] = Temp1 + 101
 		// "#Blacksmith"
 		@if v[v[701]] == 15 {
-		    @loop v[1017] .dst v[320] {
+		    @loop v[1017] .dst Temp20 {
 			v[244] %= v[1199]
 			v[331] = v[244] * 50 
 			v[331] += v[1198]
@@ -1338,11 +1338,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    // "Set Parent Obj"
 			    v[v[331] + 9] = v[401] + 1
 			    // "普通にアニメ"
-			    v[607] = v[301] + 7
+			    v[607] = Temp1 + 7
 			    v[v[607]].copy v[607], 2
 			    v[608] -= 20
-			    v[341] = v[331] + 6
-			    v[607].copy v[v[341]], 2
+			    TT1 = v[331] + 6
+			    v[607].copy v[TT1], 2
 			    // "仕上げに登録消す"
 			    v[244] += 1
 			    @break
@@ -1356,10 +1356,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 		// "#MageAltar"
 		@if v[v[701]] == 27 {
-		    v[628] = v[301] + 28
+		    v[628] = Temp1 + 28
 		    @if v[v[628]] >= 48 {
 			@if v[v[628]] <= 680 {
-			    @loop v[1017] .dst v[320] {
+			    @loop v[1017] .dst Temp20 {
 				v[244] %= v[1199]
 				v[331] = v[244] * 50 
 				v[331] += v[1198]
@@ -1376,11 +1376,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				    // "Set Parent Obj"
 				    v[v[331] + 9] = v[401] + 1
 				    // "普通にアニメ"
-				    v[607] = v[301] + 7
+				    v[607] = Temp1 + 7
 				    v[v[607]].copy v[607], 2
 				    v[608] -= 12
-				    v[341] = v[331] + 6
-				    v[607].copy v[v[341]], 2
+				    TT1 = v[331] + 6
+				    v[607].copy v[TT1], 2
 				    // "仕上げに登録消す"
 				    v[244] += 1
 				    @break
@@ -1398,7 +1398,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 		// "#mana light"
 		@if v[v[701]] == 37 {
-		    @loop v[1017] .dst v[320] {
+		    @loop v[1017] .dst Temp20 {
 			v[244] %= v[1199]
 			v[331] = v[244] * 50 
 			v[331] += v[1198]
@@ -1415,11 +1415,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    // "Set Parent Obj"
 			    v[v[331] + 9] = v[401] + 1
 			    // "普通にアニメ"
-			    v[607] = v[301] + 7
+			    v[607] = Temp1 + 7
 			    v[v[607]].copy v[607], 2
 			    v[608] -= 20
-			    v[341] = v[331] + 6
-			    v[607].copy v[v[341]], 2
+			    TT1 = v[331] + 6
+			    v[607].copy v[TT1], 2
 			    // "仕上げに登録消す"
 			    v[244] += 1
 			    @break
@@ -1435,9 +1435,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    }
 	    @if v[370] >= 2 {
 		/* "########################	PAssive#########################"*/
-		@if `v[v[301] + 223] & 1 {
-		    @if `v[v[301] + 94] <= 0 {
-			v[824] = v[v[301] + 224] > v[1186] ? v[v[301] + 224] : 1899
+		@if `v[Temp1 + 223] & 1 {
+		    @if `v[Temp1 + 94] <= 0 {
+			v[824] = v[Temp1 + 224] > v[1186] ? v[Temp1 + 224] : 1899
 			@call .cev v[824]
 			
 		    }
@@ -1446,96 +1446,96 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		// "gate flag"
 		@if `agent_AgentBits & 256 {
 		    // "##############"
-		    v[300] = v[301] + 5
-		    v[299] = v[301] + 15
-		    v[298] = v[301] + 7
-		    v[297] = 53
-		    v[296] = v[301] + 36
-		    v[295] = v[301] + 296
+		    Ptr20 = Temp1 + 5
+		    Ptr19 = Temp1 + 15
+		    Ptr18 = Temp1 + 7
+		    Ptr17 = 53
+		    Ptr16 = Temp1 + 36
+		    Ptr15 = Temp1 + 296
 		    // "Get mapXY"
-		    v[293] = v[301] + 26
-		    v[v[293]].copy v[311], 2
+		    Ptr13 = Temp1 + 26
+		    v[Ptr13].copy Temp11, 2
 		    // "#Obj衝突チェック試作begin"
-		    v[319] = v[401]
+		    Temp19 = v[401]
 		    // "##"
-		    v[333] = v[301] + 7
-		    v[334] = v[301] + 8
-		    v[335] = v[301] + 10
-		    v[336] = v[301] + 11
+		    v[333] = Temp1 + 7
+		    v[334] = Temp1 + 8
+		    v[335] = Temp1 + 10
+		    v[336] = Temp1 + 11
 		    /* "Maybe this is faster
 	...Yes, this is far faster, it's confirmed."*/
 		    // "Morton"
 		    // "##############"
-		    v[607] = v[301] + 7
-		    v[610] = v[301] + 10
+		    v[607] = Temp1 + 7
+		    v[610] = Temp1 + 10
 		    v[v[607]].copy var1, 2
 		    v[11..12] -= 20
 		    var1 .sub v[v[610]], 2
 		    /* "#########################
 #2002 Crd->Mort V1V2 reg1
 ##########################"*/
-		    var1.copy v[341], 2
-		    v[341] .sub v[76], 2
-		    v[341] .div v[74], 2
+		    var1.copy TT1, 2
+		    TT1 .sub v[76], 2
+		    TT1 .div v[74], 2
 		    /* "TT1=MortX
 	TT2=MortY
 	ビット演算して処理するよ"*/
-		    v[341] = (v[341] | v[341] << 8) & 0xFF00FF
-		    v[341] = (v[341] | v[341] << 4) & 0xF0F0F0F
-		    v[341] = (v[341] | v[341] << 2) & 0x33333333
-		    v[341] = (v[341] | v[341] << 1) & 0x55555555
-		    v[342] = (v[342] | v[342] << 8) & 0xFF00FF
-		    v[342] = (v[342] | v[342] << 4) & 0xF0F0F0F
-		    v[342] = (v[342] | v[342] << 2) & 0x33333333
-		    v[342] = ((v[342] | v[342] << 1) & 0x55555555)<<1
+		    TT1 = (TT1 | TT1 << 8) & 0xFF00FF
+		    TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
+		    TT1 = (TT1 | TT1 << 2) & 0x33333333
+		    TT1 = (TT1 | TT1 << 1) & 0x55555555
+		    TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+		    TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+		    TT2 = (TT2 | TT2 << 2) & 0x33333333
+		    TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
 		    // "yは1bitシフトで終わり"
-		    //v[342] <<= 1
+		    //TT2 <<= 1
 		    // "最後にTT1 OR TT2"
-		    v[21] = v[341] | v[342]
+		    reg1 = TT1 | TT2
 		    /* "#########################
 #2002 Crd->Mort V1V2 reg1 end
 ##########################"*/
-		    v[351] = v[21]
+		    TT11 = reg1
 		    v[v[607]].copy var1, 2
 		    v[11..12] += 20
 		    var1 .add v[v[610]], 2
 		    /* "#########################
 #2002 Crd->Mort V1V2 reg1
 ##########################"*/
-		    var1.copy v[341], 2
-		    v[341] .sub v[76], 2
-		    v[341] .div v[74], 2
+		    var1.copy TT1, 2
+		    TT1 .sub v[76], 2
+		    TT1 .div v[74], 2
 		    /* "TT1=MortX
 	TT2=MortY
 	ビット演算して処理するよ"*/
-		    v[341] = (v[341] | v[341] << 8) & 0xFF00FF
-		    v[341] = (v[341] | v[341] << 4) & 0xF0F0F0F
-		    v[341] = (v[341] | v[341] << 2) & 0x33333333
-		    v[341] = (v[341] | v[341] << 1) & 0x55555555
-		    v[342] = (v[342] | v[342] << 8) & 0xFF00FF
-		    v[342] = (v[342] | v[342] << 4) & 0xF0F0F0F
-		    v[342] = (v[342] | v[342] << 2) & 0x33333333
-		    v[342] = ((v[342] | v[342] << 1) & 0x55555555)<<1
+		    TT1 = (TT1 | TT1 << 8) & 0xFF00FF
+		    TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
+		    TT1 = (TT1 | TT1 << 2) & 0x33333333
+		    TT1 = (TT1 | TT1 << 1) & 0x55555555
+		    TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+		    TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+		    TT2 = (TT2 | TT2 << 2) & 0x33333333
+		    TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
 		    // "yは1bitシフトで終わり"
-		    //v[342] <<= 1
+		    //TT2 <<= 1
 		    // "最後にTT1 OR TT2"
-		    v[21] = v[341] | v[342]
+		    reg1 = TT1 | TT2
 		    /* "##########################2002 Crd->Mort V1V2 reg1 end##########################"*/
-		    v[341] = v[351]
-		    v[342] = v[21]
+		    TT1 = TT11
+		    TT2 = reg1
 		    /* "TT1 = upper left morton
 	TT2 = bottom right morton
 	TT5 = shift num"*/
-		    v[343] = v[341] ^ v[342]
+		    TT3 = TT1 ^ TT2
 		    // "#mask with 11000000"
 		    // "#mask with 110000"
 		    // "#mask with 001100"
 		    // "#mask with 000011"
-		    v[345] = v[343] & 768 ? 10 : v[343] & 192 ? 8 : v[343] & 48 ? 6 : v[343] & 12 ? 4 : v[343] & 3 ? 2 : 0
-		    v[609] = v[342] >> v[345]
+		    TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
+		    v[609] = TT2 >> TT5
 		    // "#mask end"
-		    v[340] = v[4546 - v[345] / 2]
-		    v[327] = v[v[4552 - v[345] / 2] + v[609]]
+		    v[340] = v[4546 - TT5 / 2]
+		    v[327] = v[v[4552 - TT5 / 2] + v[609]]
 		    // "##############"
 		    // "DisciplineCheck"
 		    v[337] = v[401] * 300 
@@ -1544,10 +1544,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    v[337..338] += 12
 		    v[339] = v[609] * v[1004] 
 		    v[339] += v[340]
-		    v[700] = v[Const_AgentMetaTeam_begin+v[401]]  //v[v[301] + 100] % 3
+		    v[700] = v[Const_AgentMetaTeam_begin+v[401]]  //v[Temp1 + 100] % 3
 		    v[371] = 0
-		    @loop v[327] .dst v[342] {
-			v[203] = v[v[339] + v[342]] - 1
+		    @loop v[327] .dst TT2 {
+			v[203] = v[v[339] + TT2] - 1
 			v[601] = v[203] * 300 
 			v[601] += 5001
 			@if v[v[601]] <= 9 {
@@ -1559,13 +1559,13 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				// "衝突チェック開始"
 				v[320..322] = v[203] * 300
 				// "T30=modifier for collision, Statics have bigger col"
-				v[320] .add v[1607], 2
+				Temp20 .add v[1607], 2
 				v[322] += v[1610]
 				v[v[322]].copy v[322], 2
-				//v[0] = v[320..321] = [v[v[320]] - v[v[333]], v[v[321]] - v[v[334]]]
-				v[320] = v[v[320]] - v[v[333]]
+				//v[0] = v[320..321] = [v[Temp20] - v[v[333]], v[v[321]] - v[v[334]]]
+				Temp20 = v[Temp20] - v[v[333]]
 				// "TT1でチェック"
-				@if `v[322] + v[337] >= abs(v[320]) {
+				@if `v[322] + v[337] >= abs(Temp20) {
 				    v[321] = v[v[321]] - v[v[334]]
 				    @if `v[323] + v[338] >= abs(v[321]) {
 					v[371] = 1
@@ -1585,21 +1585,21 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    @if v[371] == 1 {
 			@if `!(agent_AgentBits & 4) {
 			    @if `!(agent_AgentBits & 8) {
-				v[v[301] + 243] = 1
-				v[v[301] + 3] |= 4
-				v[803] = v[301] + 203
+				v[Temp1 + 243] = 1
+				v[Temp1 + 3] |= 4
+				v[803] = Temp1 + 203
 				v[v[803]].copy v[803], 4
 				@loop v[806] .dst v[2064] {
-				    v[286] = v[803] - v[69] + v[2061] * (v[804] - v[70]) + v[2061] * v[2064] + v[4529]
-				    v[287] = v[803] - v[69] + v[2061] * (v[804] - v[70]) + v[2061] * v[2064] + v[1182]
+				    Ptr6 = v[803] - Map_LimitCoordX_min + var_Map_Width * (v[804] - Map_LimitCoordY_min) + var_Map_Width * v[2064] + v[4529]
+				    Ptr7 = v[803] - Map_LimitCoordX_min + var_Map_Width * (v[804] - Map_LimitCoordY_min) + var_Map_Width * v[2064] + v[1182]
 				    @loop v[805] .dst v[2065] {
-					v[311] = v[2065] + v[803]
-					v[312] = v[2064] + v[804]
-					v[v[287]] /= 100
-					v[v[287]] *= 100
-					v[v[287]] += 1
+					Temp11 = v[2065] + v[803]
+					Temp12 = v[2064] + v[804]
+					v[Ptr7] /= 100
+					v[Ptr7] *= 100
+					v[Ptr7] += 1
 					// "#TileFuncPushFlag"
-					v[v[286]] &= -2//~1
+					v[Ptr6] &= -2//~1
 					v[286..287] += 1
 					
 				    }
@@ -1609,7 +1609,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				
 				@if v[182] < 2 {
 				    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen{ //`s[v[401] + 501] == 1 {
-					v[607] = v[301] + 7
+					v[607] = Temp1 + 7
 					v[v[607]].copy v[607], 2
 					v[182] += 1
 					// "#########################"
@@ -1629,21 +1629,21 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			
 		    } .else bl {
 			@if `agent_AgentBits & 4 {
-			    v[v[301] + 243] = 0
-			    v[v[301] + 3] &= -5//~4
-			    v[803] = v[301] + 203
+			    v[Temp1 + 243] = 0
+			    v[Temp1 + 3] &= -5//~4
+			    v[803] = Temp1 + 203
 			    v[v[803]].copy v[803], 4
 			    @loop v[806] .dst v[2064] {
-				v[286] = v[803] - v[69] + v[2061] * (v[804] - v[70]) + v[2061] * v[2064] + v[4529]
-				v[287] = v[803] - v[69] + v[2061] * (v[804] - v[70]) + v[2061] * v[2064] + v[1182]
+				Ptr6 = v[803] - Map_LimitCoordX_min + var_Map_Width * (v[804] - Map_LimitCoordY_min) + var_Map_Width * v[2064] + v[4529]
+				Ptr7 = v[803] - Map_LimitCoordX_min + var_Map_Width * (v[804] - Map_LimitCoordY_min) + var_Map_Width * v[2064] + v[1182]
 				@loop v[805] .dst v[2065] {
-				    v[311] = v[2065] + v[803]
-				    v[312] = v[2064] + v[804]
-				    v[v[287]] /= 100
-				    v[v[287]] *= 100
-				    v[v[287]] += 21
+				    Temp11 = v[2065] + v[803]
+				    Temp12 = v[2064] + v[804]
+				    v[Ptr7] /= 100
+				    v[Ptr7] *= 100
+				    v[Ptr7] += 21
 				    // "#TileFuncPushFlag"
-				    v[v[286]] |= 1
+				    v[Ptr6] |= 1
 				    v[286..287] += 1
 				    
 				}
@@ -1653,7 +1653,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    
 			    @if v[182] < 2 {
 				@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//s[v[401] + 501] == 1 {
-				    v[607] = v[301] + 7
+				    v[607] = Temp1 + 7
 				    v[v[607]].copy v[607], 2
 				    v[182] += 1
 				    // "#########################"
@@ -1683,13 +1683,13 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	// "############"
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
-	    v[301] = v[v[536]] * v[1117] 
-	    v[301] += 4700
+	    Temp1 = v[v[536]] * v[1117] 
+	    Temp1 += 4700
 	    func_main_extract_agent_vars()
 	    // "colck"
 	    @if `agent_AgentBits & 256 {
 		@if `agent_AgentBits & 128 {
-		    //v[842] = v[301] + 239
+		    //v[842] = Temp1 + 239
 		    //v[v[842]] = -1
 		    agent_MovementOrder = -1
 		    agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
@@ -1699,7 +1699,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		
 	    } .else bl {
 		@if `agent_AgentBits & 128 {
-		    //v[294] = v[301] + 22
+		    //Ptr14 = Temp1 + 22
 		    @if `v[2501] / 6 % (agent_ObjectCollideSkipFrame * 16) == 0 {
 			agent_AgentBits |= 256
 			
@@ -1733,7 +1733,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    })
 		    )
 
-		    /*@loop v[1017] .dst v[320] {
+		    /*@loop v[1017] .dst Temp20 {
 			v[244] %= v[1199]
 			v[331] = v[244] * 50 
 			v[331] += v[1198]
@@ -1775,8 +1775,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 		
 	    }
-	    //v[827] = v[301] + 227
-	    //v[640] = v[301] + 40
+	    //v[827] = Temp1 + 227
+	    //v[640] = Temp1 + 40
 	    //v[640] = v[v[640]]
 	    @if agent_InCombatTimer < v[1178] {
 		agent_2hweapon_stain -= agent_2hweapon_stain > 0 ? 1 : 0
@@ -1794,11 +1794,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		agent_ChokeTimer += 5
 		// "Choked to death"
 		@if agent_ChokeTimer >= 200 {
-		    //v[300] = v[299] = v[v[536]]
+		    //Ptr20 = Ptr19 = v[v[536]]
 		    v[299..300] = v[v[536]]
-		    v[298] = v[300] * 300 
-		    v[298] += 4701
-		    v[305..312] = v[300] * 300
+		    Ptr18 = Ptr20 * 300 
+		    Ptr18 += 4701
+		    v[305..312] = Ptr20 * 300
 		    func_main_save_agent_vars()//save anything before die - is this really necessary?
 		    @call .cev 41 // call choked to death event
 		    
@@ -1812,54 +1812,54 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "#########################PAssive#########################"
 	    // "Passive"
 	    
-	    v[301] = v[v[536]] * v[1117] 
-	    v[301] += 4700
-	    TT1 = v[301] + 1
+	    Temp1 = v[v[536]] * v[1117] 
+	    Temp1 += 4700
+	    TT1 = Temp1 + 1
 	    @if v[TT1] > 0 { //if only the unit isn't choked to death
-		    v[694] = v[301] + 94
+		    v[694] = Temp1 + 94
 		    @if `v[v[694]] <= 0 {
 			v[401] = v[v[536]] - 1
 			v[v[694]] = 100
-			@if `v[v[301] + 223] & 1 {
-			    v[824] = v[v[301] + 224] > v[1186] ? v[v[301] + 224] : 1899
+			@if `v[Temp1 + 223] & 1 {
+			    v[824] = v[Temp1 + 224] > v[1186] ? v[Temp1 + 224] : 1899
 			    @call .cev v[824]
 			    
 			}
-			v[874] = v[301] + 274
+			v[874] = Temp1 + 274
 			@if `v[v[874]] & 1048576 {
 			    // "standard_bearer"
-			    v[299] = v[401] + 1
+			    Ptr19 = v[401] + 1
 			    @if v[217] < v[4559] {
 				v[217] += 1
-				@loop v[4559] .dst v[320] {
+				@loop v[4559] .dst Temp20 {
 				    v[216] %= v[4559]
-				    v[301] = v[216] * 100
-				    v[301] += v[1076]
-				    v[295] = v[301] + 1
-				    @if v[v[295]] == 0 {
+				    Temp1 = v[216] * 100
+				    Temp1 += v[1076]
+				    Ptr15 = Temp1 + 1
+				    @if v[Ptr15] == 0 {
 					// "Access17 = AttackerObjチェックPtr"
-					v[297] = v[299] * 300
-					v[297] += 4700
+					Ptr17 = Ptr19 * 300
+					Ptr17 += 4700
 					// "まず清掃"
 					v[1301].copy v[601], 100
-					v[1301].copy v[v[295]], 100
+					v[1301].copy v[Ptr15], 100
 					// "ParentObjセット"
-					v[609] = v[299]
+					v[609] = Ptr19
 					// "出る場所セット"
-					v[341] = v[297] + 7
-					v[v[341]].copy v[605], 2
+					TT1 = Ptr17 + 7
+					v[TT1].copy v[605], 2
 					v[605..606] *= 10000
-					v[v[341]].copy v[607], 2
+					v[TT1].copy v[607], 2
 					// "Projectile team"
-					v[341] = v[297] + 100
-					v[618] = v[v[341]] == 0 ? 1 : 0
+					TT1 = Ptr17 + 100
+					v[618] = v[TT1] == 0 ? 1 : 0
 					// "パラメータ等入力begin"
 					// "#Pic"
 					v[602] = 1
 					// "#ProjectileType"
 					v[601] = 2
 					// "#あたり判定"
-					v[610..611] = muldiv(v[v[297] + 275], 12, 10)
+					v[610..611] = muldiv(v[Ptr17 + 275], 12, 10)
 					// "#威力"
 					v[621] = 0
 					// "#Timer"
@@ -1871,42 +1871,42 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					v[623] = 1
 					v[628] |= 8
 					// "パラメータ等入力end"
-					v[601].copy v[v[295]], 100
+					v[601].copy v[Ptr15], 100
 					// "Having no timer passive conflict"
-					@if `!(v[v[297] + 223] & 1) {
+					@if `!(v[Ptr17 + 223] & 1) {
 					    // "Timer Reset"
-					    v[v[297] + 94] = v[1240] * 5
+					    v[Ptr17 + 94] = v[1240] * 5
 					    
 					}
 					// "Eff"
-					v[341] = v[v[299] * 300 + 4922]
-					@if v[341] >= 1 {
-					    v[342] = v[299] * 300 
-					    v[342] += 4925
-					    v[v[342]] = (v[v[342]] + 1) % 2
-					    @if v[v[342]] == 0 {
-						@if `s[500 + v[299]] == 1 {
+					TT1 = v[Ptr19 * 300 + 4922]
+					@if TT1 >= 1 {
+					    TT2 = Ptr19 * 300 
+					    TT2 += 4925
+					    v[TT2] = (v[TT2] + 1) % 2
+					    @if v[TT2] == 0 {
+						@if `s[500 + Ptr19] == 1 {
 						    v[607].copy v[361], 2
-						    @loop v[1017] .dst v[320] {
+						    @loop v[1017] .dst Temp20 {
 							v[242] %= v[1017]
-							v[301] = v[242] * 100
-							v[301] = v[301] + v[1018]
-							@if v[v[301]] <= 1 {
-							    v[243] -= v[v[301]] == 1 ? 1 : 0
+							Temp1 = v[242] * 100
+							Temp1 = Temp1 + v[1018]
+							@if v[Temp1] <= 1 {
+							    v[243] -= v[Temp1] == 1 ? 1 : 0
 							    v[242] %= v[1017]
-							    v[281] = v[242] * 100
-							    v[281] = v[281] + v[1018]
+							    Ptr1 = v[242] * 100
+							    Ptr1 = Ptr1 + v[1018]
 							    // "まず清掃"
-							    v[1301].copy v[v[301]], 100
+							    v[1301].copy v[Temp1], 100
 							    // "ポインタセット開始"
-							    v[310] = v[242] + v[1220]
-							    v[295] = v[301] + 99
+							    Temp10 = v[242] + v[1220]
+							    Ptr15 = Temp1 + 99
 							    // "設定"
-							    v[v[301]] = 1
-							    v[v[295]] = 0
+							    v[Temp1] = 1
+							    v[Ptr15] = 0
 							    // "普通にアニメ"
-							    @pic[v[310]].show {
-								"passive_icon\picon_0" .repl 1 v[341]
+							    @pic[Temp10].show {
+								"passive_icon\picon_0" .repl 1 TT1
 								.pos v[361], v[362] .center
 								.scrollWithMap
 								.chromakey 1
@@ -1919,7 +1919,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 								.affectedByShake
 							    }
 							    v[362] -= 36
-							    @pic[v[310]].move {
+							    @pic[Temp10].move {
 								.pos v[361], v[362] .center
 								.scale 250
 								.trans 100
@@ -1982,7 +1982,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 		//Try not to be over from map range
 		agent_MapX.copy STARTPOINTx,2
-		STARTPOINTx.sub v[69],2 
+		STARTPOINTx.sub Map_LimitCoordX_min,2 
 		v[__id(STARTPOINTx)..__id(STARTPOINTy)] -= $diff
 		STARTPOINTx = max(STARTPOINTx,0)
 		STARTPOINTy = max(STARTPOINTy,0)
@@ -1991,11 +1991,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		Length_x.sub STARTPOINTx,2
 		Length_x = min(Length_x,$length)
 		Length_y = min(Length_y,$length)
-		//func_devlog("Shield Wall aura STARTs from \v[341],\v[342] - Length \v[343],\v[344] ")
+		//func_devlog("Shield Wall aura STARTs from \TT1,\TT2 - Length \TT3,\TT4 ")
 		STARTPOINTx += STARTPOINTy * var_Map_Width
 		STARTPOINTx += Const_save_var_TileFlags
 		@loop Length_y {
-			//func_devlog("Shield Wall aura set to memory adress[\v[341]] + \v[343] ")
+			//func_devlog("Shield Wall aura set to memory adress[\TT1] + \TT3 ")
 			v[STARTPOINTx].or $var_rangestart, Length_x //set flag
 			STARTPOINTx += var_Map_Width
 		}
@@ -2007,8 +2007,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	//Land units
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
-	    v[301] = v[v[536]] * v[1117] 
-	    v[301] += 4700
+	    Temp1 = v[v[536]] * v[1117] 
+	    Temp1 += 4700
 	    func_extract_agent_vars(v[v[536]])
 
 		// if it's standing on wall tile, let the tile push the agent
@@ -2021,7 +2021,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[340] = v[v[340]]
 	    // "#Reset Terrain Flags"
 	    agent_AgentBits &= -1072//~1071 //15 + 32 + 1024
-	    //v[638] = v[301] + 38
+	    //v[638] = Temp1 + 38
 	    // "##Not Flying"
 	    @if `!(v[638] & 1) {
 		// "#Water"
@@ -2133,22 +2133,22 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	v[536] = v[4532]
 	s[187].off
 	@while v[v[536]] != 0 {
-	    v[301] = v[v[536]] * v[1117] 
-	    v[301] += 4700
-	    Ptr1 = v[301] + 1 
+	    Temp1 = v[v[536]] * v[1117] 
+	    Temp1 += 4700
+	    Ptr1 = Temp1 + 1 
 	    v[Ptr1].copy v[601], 300
 
 	    @if `agent_AgentBits & AgentBits_FLAG_EnableCivAI { //Worker AI flag is on
 		// "Escaping time"
-		//v[680] = v[301] + 77
+		//v[680] = Temp1 + 77
 		//v[v[680]] -= 4
 		agent_InCombatTimer -= 4
-		@if agent_TeamID == 0 { //`v[v[301] + 97] == 0 {
+		@if agent_TeamID == 0 { //`v[Temp1 + 97] == 0 {
 		    // "Count up worker assignment"
-		    //v[v[v[301] + 244] + 2940] += between(v[v[301] + 244], 1, 4) ? 1 : 0
+		    //v[v[Temp1 + 244] + 2940] += between(v[Temp1 + 244], 1, 4) ? 1 : 0
 		    v[agent_worker_JobType + 2940] += between(agent_worker_JobType, 1, 4) ? 1 : 0
 		    // "idle"
-		    //v[842] = v[301] + 239
+		    //v[842] = Temp1 + 239
 		    //v[v[842]].copy v[842], 6
 		    @if agent_StanceOrder <= 0 {
 			@if agent_ActionState == 0 {
@@ -2158,11 +2158,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen{ //s[500 + v[v[536]]]==1 { 
 					@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { //124 = magic number but maybe 48*3
 					    @if `!(agent_ProcessObjBit & 4096) {
-						//v[607] = v[301] + 4
+						//v[607] = Temp1 + 4
 						//v[v[607]].copy v[607], 2
 						agent_RelativeX.copy v[361], 2
-						v[341] = 20422
-						//v[680] = v[301] + 77
+						TT1 = 20422
+						//v[680] = Temp1 + 77
 
 						//Dragon voice, outdated 
 						@if agent_Race == 3 {
@@ -2176,21 +2176,21 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							    v[474] = divmul(v[361] + v[1001], v[1281], 50)
 							    // #########################
 							    v[329] = rnd(1, 3)
-							    t[510] .asg "vo\dragon_gyaogyao"
-							    t[510] .cat v[329]
-							    @cmd v[471], t[510], .args v[472], 3
+							    inputstr .asg "vo\dragon_gyaogyao"
+							    inputstr .cat v[329]
+							    @cmd v[471], inputstr, .args v[472], 3
 							    
 							}
 							
 						    }*/
 						    // quotes of dragon workers vary
-						    v[341] += agent_UnitID == 10 ? 1 : 2
+						    TT1 += agent_UnitID == 10 ? 1 : 2
 						    
 						}
 
-						t[501] .asg t[v[341]] // text that says "I'm idle"
+						str1 .asg t[TT1] // text that says "I'm idle"
 						// Set new particle emitter
-						@loop v[1017] .dst v[320] {
+						@loop v[1017] .dst Temp20 {
 						    v[242] %= v[1017]
 						    v[331] = v[242] * 100
 						    v[331] = v[331] + v[1018]
@@ -2200,15 +2200,15 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							// "まず清掃"
 							v[ptr_null].copy v[v[331]], 100
 							// "ポインタセット開始"
-							v[310] = v[242] + v[1220]
-							v[295] = v[331] + 99
+							Temp10 = v[242] + v[1220]
+							Ptr15 = v[331] + 99
 							// "設定"
 							v[v[331]] = 1
-							v[v[295]] = 0
+							v[Ptr15] = 0
 							// "普通にアニメ"
 							v[607].copy v[361], 2
-							@pic[v[310]].strpic {
-							    t[501]
+							@pic[Temp10].strpic {
+							    str1
 							    .pos v[361], v[362] .center
 							    .size 0, 0                                                   .scrollWithMap
 							    .chromakey 1
@@ -2224,7 +2224,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							    .affectedByShake
 							}
 							v[362] -= 48
-							@pic[v[310]].move {
+							@pic[Temp10].move {
 							    .pos v[361], v[362] .center
 							    .scale 100
 							    .trans 100
@@ -2285,8 +2285,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
 	    // "死体"
-	    v[301] = v[401] * v[1117] 
-	    v[301] += 5000
+	    Temp1 = v[401] * v[1117] 
+	    Temp1 += 5000
 	    func_main_extract_agent_vars()
 	    v[680] -= 1
 	    @if v[680] <= 0 {
@@ -2374,7 +2374,7 @@ cev .id(2152), .name("miscfunc:remove dead agent pic"), {
 //cev 2006
 
 __fn func_main_extract_agent_vars {
-	    Ptr1 = v[301] + 1
+	    Ptr1 = Temp1 + 1
 	    v[Ptr1].copy v[601], 300
 
 }
@@ -2398,7 +2398,7 @@ __fn func_blink_set {
 
 __fn func_blink_progress {
 	@if s[2] .isOff()  {
-		//v[725]=v[301]+125
+		//v[725]=Temp1+125
 		@if `v[725] & 448 {
 			v[725] = v[725] & 256 ? v[725] & -449 : (v[725] & 128 ? v[725] | 256 : (v[725] & 64 ? v[725] | 128 : v[725])) //256+128->384 +64 ->448 then ~448 -> -449
 		}

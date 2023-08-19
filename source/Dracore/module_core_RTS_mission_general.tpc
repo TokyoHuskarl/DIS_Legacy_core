@@ -33,12 +33,12 @@ cev .id(2) ,.name("@Mission Init") ,{
 	v[522] = 0
 	s[37].off
 	@call .cev 1922
-	v[341] = actor[1].level
-	v[341] -= 1
-	@actor[1].level .sub v[341]
-	v[341] = actor[1].mhp
-	v[341] -= 1
-	@actor[1].param .hp .sub v[341]
+	TT1 = actor[1].level
+	TT1 -= 1
+	@actor[1].level .sub TT1
+	TT1 = actor[1].mhp
+	TT1 -= 1
+	@actor[1].param .hp .sub TT1
 	@comment "初期化"
 	s[309].off
 	s[401..500].off
@@ -125,18 +125,18 @@ cev .id(2) ,.name("@Mission Init") ,{
 	@comment "Experimental Cache"
 	v[4801] = v[4807]
 	@comment "ui"
-	t[510] .asg  .file "..\\Picture\ui\preload_setting", .utf8
-	t[510] .split t[525], t[1], v[505]
+	inputstr .asg  .file "..\\Picture\ui\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
 	@loop v[505] .dst v[506] {
-		v[11] = 1 + v[506]
-		t[510] .asg t[v[11]]
-		t[510] .inStr "//", 321,  .beg 0
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
 		@if v[321] == -1 {
-			@if t[510] .neq "" {
-				t[501] .asg "ui\"
-				t[501] .cat t[510]
+			@if inputstr .neq "" {
+				str1 .asg "ui\"
+				str1 .cat inputstr
 				@pic[v[4801]].show {
-					t[501]
+					str1
 					.pos -10000, -10000 .center
 					.chromakey 1
 					.scale 100
@@ -156,18 +156,18 @@ cev .id(2) ,.name("@Mission Init") ,{
 	}
 
 	@comment "num"
-	t[510] .asg  .file "..\\Picture\num\preload_setting", .utf8
-	t[510] .split t[525], t[1], v[505]
+	inputstr .asg  .file "..\\Picture\num\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
 	@loop v[505] .dst v[506] {
-		v[11] = 1 + v[506]
-		t[510] .asg t[v[11]]
-		t[510] .inStr "//", 321,  .beg 0
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
 		@if v[321] == -1 {
-			@if t[510] .neq "" {
-				t[501] .asg "num\"
-				t[501] .cat t[510]
+			@if inputstr .neq "" {
+				str1 .asg "num\"
+				str1 .cat inputstr
 				@pic[v[4801]].show {
-					t[501]
+					str1
 					.pos -10000, -10000 .center
 					.chromakey 1
 					.scale 100
@@ -187,19 +187,19 @@ cev .id(2) ,.name("@Mission Init") ,{
 	}
 
 	@comment "Effects"
-	t[510] .asg  .file "..\\Picture\effects\preload_setting", .utf8
-	t[510] .split t[525], t[1], v[505]
+	inputstr .asg  .file "..\\Picture\effects\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
 	@loop v[505] .dst v[506] {
-		v[11] = 1 + v[506]
-		t[510] .asg t[v[11]]
-		t[510] .inStr "//", 321,  .beg 0
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
 		@comment "#""//""Comment out"
 		@if v[321] == -1 {
-			@if t[510] .neq "" {
-				t[501] .asg "effects\"
-				t[501] .cat t[510]
+			@if inputstr .neq "" {
+				str1 .asg "effects\"
+				str1 .cat inputstr
 				@pic[v[4801]].show {
-					t[501]
+					str1
 					.pos -10000, -10000 .center
 					.chromakey 1
 					.scale 100
@@ -219,19 +219,19 @@ cev .id(2) ,.name("@Mission Init") ,{
 	}
 
 	@comment "popstrings"
-	t[510] .asg  .file "..\\Picture\popstrings\preload_setting", .utf8
-	t[510] .split t[525], t[1], v[505]
+	inputstr .asg  .file "..\\Picture\popstrings\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
 	@loop v[505] .dst v[506] {
-		v[11] = 1 + v[506]
-		t[510] .asg t[v[11]]
-		t[510] .inStr "//", 321,  .beg 0
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
 		@comment "#""//""Comment out"
 		@if v[321] == -1 {
-			@if t[510] .neq "" {
-				t[501] .asg "popstrings\"
-				t[501] .cat t[510]
+			@if inputstr .neq "" {
+				str1 .asg "popstrings\"
+				str1 .cat inputstr
 				@pic[v[4801]].show {
-					t[501]
+					str1
 					.pos -10000, -10000 .center
 					.chromakey 1
 					.scale 100
@@ -251,19 +251,19 @@ cev .id(2) ,.name("@Mission Init") ,{
 	}
 
 	@comment "Arrows"
-	t[510] .asg  .file "..\\Picture\arrows\preload_setting", .utf8
-	t[510] .split t[525], t[1], v[505]
+	inputstr .asg  .file "..\\Picture\arrows\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
 	@loop v[505] .dst v[506] {
-		v[11] = 1 + v[506]
-		t[510] .asg t[v[11]]
-		t[510] .inStr "//", 321,  .beg 0
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
 		@comment "#""//""Comment out"
 		@if v[321] == -1 {
-			@if t[510] .neq "" {
-				t[501] .asg "arrows\"
-				t[501] .cat t[510]
+			@if inputstr .neq "" {
+				str1 .asg "arrows\"
+				str1 .cat inputstr
 				@pic[v[4801]].show {
-					t[501]
+					str1
 					.pos -10000, -10000 .center
 					.chromakey 1
 					.scale 100
@@ -283,19 +283,19 @@ cev .id(2) ,.name("@Mission Init") ,{
 	}
 
 	@comment "Projectiles"
-	t[510] .asg  .file "..\\Picture\projectile\preload_setting", .utf8
-	t[510] .split t[525], t[1], v[505]
+	inputstr .asg  .file "..\\Picture\projectile\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
 	@loop v[505] .dst v[506] {
-		v[11] = 1 + v[506]
-		t[510] .asg t[v[11]]
-		t[510] .inStr "//", 321,  .beg 0
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
 		@comment "#""//""Comment out"
 		@if v[321] == -1 {
-			@if t[510] .neq "" {
-				t[501] .asg "projectile\"
-				t[501] .cat t[510]
+			@if inputstr .neq "" {
+				str1 .asg "projectile\"
+				str1 .cat inputstr
 				@pic[v[4801]].show {
-					t[501]
+					str1
 					.pos -10000, -10000 .center
 					.chromakey 1
 					.scale 100
@@ -315,19 +315,19 @@ cev .id(2) ,.name("@Mission Init") ,{
 	}
 
 	@comment "Stamps"
-	t[510] .asg  .file "..\\Picture\stamp\preload_setting", .utf8
-	t[510] .split t[525], t[1], v[505]
+	inputstr .asg  .file "..\\Picture\stamp\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
 	@loop v[505] .dst v[506] {
-		v[11] = 1 + v[506]
-		t[510] .asg t[v[11]]
-		t[510] .inStr "//", 321,  .beg 0
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
 		@comment "#""//""Comment out"
 		@if v[321] == -1 {
-			@if t[510] .neq "" {
-				t[501] .asg "stamp\"
-				t[501] .cat t[510]
+			@if inputstr .neq "" {
+				str1 .asg "stamp\"
+				str1 .cat inputstr
 				@pic[v[4801]].show {
-					t[501]
+					str1
 					.pos -10000, -10000 .center
 					.chromakey 1
 					.scale 100
@@ -376,12 +376,12 @@ cev .id(2) ,.name("@Mission Init") ,{
 		.affectedByFlash
 		.affectedByShake
 	}
-	@pic[974].getInfo .ltrb .baseRect v[341], v[342], v[343], v[343]
-	LEGV_ConstBuffIconsStartX = v[341] + 254
+	@pic[974].getInfo .ltrb .baseRect TT1, TT2, TT3, TT3
+	LEGV_ConstBuffIconsStartX = TT1 + 254
 	LEGV_ConstBuffIconsStartY = v[1286]
-	v[341] += 502
-	v[341] += 84
-	v[342] = v[1286] + 3
+	TT1 += 502
+	TT1 += 84
+	TT2 = v[1286] + 3
 	@pic[1790].show {
 		"UI\minimapui_0"
 		.pos v[1001], v[1002] .bottomRight
@@ -394,7 +394,7 @@ cev .id(2) ,.name("@Mission Init") ,{
 	}
 	@pic[1774].show {
 		"ui\switch_idle_worker"
-		.pos v[341], v[342] .topLeft
+		.pos TT1, TT2 .topLeft
 		.chromakey 1
 		.scale 100
 		.trans 35
@@ -403,11 +403,11 @@ cev .id(2) ,.name("@Mission Init") ,{
 		.mapLayer 8
 		.eraseWhenTransfer
 	}
-	v[342] += 16
+	TT2 += 16
 	@if v[231] == 3 {
 		@pic[1775].show {
 			"ui\switch_log"
-			.pos v[341], v[342] .topLeft
+			.pos TT1, TT2 .topLeft
 			.chromakey 1
 			.scale 100
 			.trans 35
@@ -420,7 +420,7 @@ cev .id(2) ,.name("@Mission Init") ,{
 	} .else bl {
 		@pic[1775].show {
 			"ui\switch_log"
-			.pos v[341], v[342] .topLeft
+			.pos TT1, TT2 .topLeft
 			.chromakey 1
 			.scale 100
 			.trans 35
@@ -447,11 +447,11 @@ cev .id(2) ,.name("@Mission Init") ,{
 		.affectedByFlash
 		.affectedByShake
 	}
-	v[341] = v[1001] - 4
-	v[342] = 0 + 4
+	TT1 = v[1001] - 4
+	TT2 = 0 + 4
 	@pic[1771].show {
 		"ui\switch_esc"
-		.pos v[341], v[342] .topRight
+		.pos TT1, TT2 .topRight
 		.chromakey 1
 		.scale 100
 		.trans 20
@@ -461,12 +461,12 @@ cev .id(2) ,.name("@Mission Init") ,{
 		.affectedByFlash
 		.affectedByShake
 	}
-	v[341] -= 14
-	v[342] = 0 + 4
+	TT1 -= 14
+	TT2 = 0 + 4
 	@if v[2401] < 5 {
 		@pic[1772].show {
 			"ui\switch_ff"
-			.pos v[341], v[342] .topRight
+			.pos TT1, TT2 .topRight
 			.chromakey 1
 			.scale 100
 			.trans 20
@@ -479,12 +479,12 @@ cev .id(2) ,.name("@Mission Init") ,{
 		}
 		
 	}
-	v[341] -= 14
-	v[342] = 0 + 4
+	TT1 -= 14
+	TT2 = 0 + 4
 	@if v[2401] < 5 {
 		@pic[1773].show {
 			"ui\switch_pause"
-			.pos v[341], v[342] .topRight
+			.pos TT1, TT2 .topRight
 			.chromakey 1
 			.scale 100
 			.trans 20
@@ -504,12 +504,12 @@ cev .id(2) ,.name("@Mission Init") ,{
 	UI Picture Preload
 	＃＃＃＃＃＃"
 	@comment "AItoggle"
-	v[341] = v[4556]
+	TT1 = v[4556]
 	@loop 4 {
-		v[341] += 1
-		@pic[v[341]].show {
+		TT1 += 1
+		@pic[TT1].show {
 			"StaticIcon"
-			.pos v[305], v[306] .center
+			.pos Temp5, Temp6 .center
 			.scrollWithMap
 			.chromakey 1
 			.scale 100
@@ -524,12 +524,12 @@ cev .id(2) ,.name("@Mission Init") ,{
 	}
 
 	@comment "Markers"
-	v[341] = v[1196]
+	TT1 = v[1196]
 	@loop v[1203] {
-		v[341] += 1
-		@pic[v[341]].show {
+		TT1 += 1
+		@pic[TT1].show {
 			"marker"
-			.pos v[305], v[306] .center
+			.pos Temp5, Temp6 .center
 			.scrollWithMap
 			.chromakey 1
 			.scale 100
@@ -544,12 +544,12 @@ cev .id(2) ,.name("@Mission Init") ,{
 	}
 
 	@comment "#Particles"
-	v[341] = v[1164]
-	@loop v[1163] .dst v[342] {
-		v[341] += 1
-		@pic[v[341]].show {
+	TT1 = v[1164]
+	@loop v[1163] .dst TT2 {
+		TT1 += 1
+		@pic[TT1].show {
 			"effects\sprite_fresheffects"
-			.pos v[1119], v[343] .right
+			.pos v[1119], TT3 .right
 			.chromakey 1
 			.scale 100
 			.trans 100
@@ -564,12 +564,12 @@ cev .id(2) ,.name("@Mission Init") ,{
 	s[144].off
 	@if v[2215] > 0 {
 		s[144].on
-		v[341] = v[1200]
-		@loop v[2215] .dst v[342] {
-			v[341] += 1
-			@pic[v[341]].show {
+		TT1 = v[1200]
+		@loop v[2215] .dst TT2 {
+			TT1 += 1
+			@pic[TT1].show {
 				"effects\particles"
-				.pos v[1119], v[343] .right
+				.pos v[1119], TT3 .right
 				.chromakey 1
 				.scale 100
 				.trans 100
@@ -589,7 +589,7 @@ cev .id(2) ,.name("@Mission Init") ,{
 		v[235] += 987
 		@pic[v[235]].show {
 			"ui\bufficon"
-			.pos v[1119], v[343] .right
+			.pos v[1119], TT3 .right
 			.chromakey 1
 			.scale 100
 			.trans 100
@@ -604,15 +604,15 @@ cev .id(2) ,.name("@Mission Init") ,{
 	@comment "#Side HP bar"
 	v[1121] = 4001
 	v[1118] = 1181
-	v[341] = 10 + v[1118]
-	@loop 10 .dst v[342] {
-		v[343] = 21 * v[342]
-		v[343] += v[1120]
-		v[342] += 1
-		v[342] %= 10
-		@pic[v[341]].show {
-			"ui\HP_bar_side_0" .repl 1 v[342]
-			.pos v[1119], v[343] .right
+	TT1 = 10 + v[1118]
+	@loop 10 .dst TT2 {
+		TT3 = 21 * TT2
+		TT3 += v[1120]
+		TT2 += 1
+		TT2 %= 10
+		@pic[TT1].show {
+			"ui\HP_bar_side_0" .repl 1 TT2
+			.pos v[1119], TT3 .right
 			.chromakey 1
 			.scale 100
 			.trans 100
@@ -622,22 +622,22 @@ cev .id(2) ,.name("@Mission Init") ,{
 			.eraseWhenTransfer
 			.affectedByShake
 		}
-		v[341] += 1
+		TT1 += 1
 		
 	}
 
 	@comment "Markers"
-	v[341] = 921
-	v[342] = 1
+	TT1 = 921
+	TT2 = 1
 	@loop 6 {
-		@pic[v[341]].show {
+		@pic[TT1].show {
 			"pointer_waypoint"
 			.pos 160, 120 .center
 			.chromakey 1
 			.scale 100
 			.trans 100
 			.rgbs 100, 100, 100, 100
-			.grid 6, 1 .cell v[342]
+			.grid 6, 1 .cell TT2
 			.mapLayer 8
 			.eraseWhenTransfer
 			.affectedByShake
@@ -647,9 +647,9 @@ cev .id(2) ,.name("@Mission Init") ,{
 	}
 
 	@comment "num"
-	v[341] = 1201
+	TT1 = 1201
 	@loop 30 {
-		@pic[v[341]].show {
+		@pic[TT1].show {
 			"num\ord"
 			.pos v[221], v[222] .center
 			.scrollWithMap
@@ -662,7 +662,7 @@ cev .id(2) ,.name("@Mission Init") ,{
 			.affectedByFlash
 			.affectedByShake
 		}
-		v[341] += 1
+		TT1 += 1
 		
 	}
 
@@ -673,8 +673,8 @@ cev .id(2) ,.name("@Mission Init") ,{
 	v[2056] = 0
 	v[501] = player.mapId
 	v[2080] = 2301
-	v[69] = ev[3].x
-	v[70] = ev[3].y
+	Map_LimitCoordX_min = ev[3].x
+	Map_LimitCoordY_min = ev[3].y
 	@comment "*get map config*"
 	s[300].on
 	@sys.getInfo .tilesetId  .dst v[2060]
@@ -682,44 +682,44 @@ cev .id(2) ,.name("@Mission Init") ,{
 		t[751] .asg "\v[501]" .extract
 		
 	}
-	t[501] .asg  .file "../Maps/define_maps", .utf8
-	t[502] .asg ".*="
-	t[502] .cat t[751]
-	t[501].exMatch {
-		t[502]
-		t[501]
-		v[341]
+	str1 .asg  .file "../Maps/define_maps", .utf8
+	str2 .asg ".*="
+	str2 .cat t[751]
+	str1.exMatch {
+		str2
+		str1
+		TT1
 		.beg 0
 		.extract
 	}
-	@if t[501] .neq "" {
-		t[501] .split "=", t[501], v[341]
-		t[750] .asg t[501]
+	@if str1 .neq "" {
+		str1 .split "=", str1, TT1
+		t[750] .asg str1
 		
 	}
-	t[510] .asg "..\Maps\"
-	t[510] .cat t[750]
-	t[510] .cat "\\config"
-	t[510] .asg  .file t[510], .utf8, .extract
-	t[510] .split t[525], t[v[1219]], v[505]
+	inputstr .asg "..\Maps\"
+	inputstr .cat t[750]
+	inputstr .cat "\\config"
+	inputstr .asg  .file inputstr, .utf8, .extract
+	inputstr .split LF, t[v[1219]], v[505]
 	@loop v[505] .dst v[506] {
-		v[11] = v[1219] + v[506]
-		t[510] .asg t[v[11]]
+		var1 = v[1219] + v[506]
+		inputstr .asg t[var1]
 		@call .cev 1796
 		t[3000..3300] .asg ""
 		
 	}
 
-	v[71] = ev[4].x
-	v[72] = ev[4].y
-	v[411] = (v[71] + v[69]) / 2
-	v[412] = (v[72] + v[70]) / 2
-	v[413] = (v[71] - v[69]) / v[1277] + 1
-	v[416] = (v[72] - v[70]) / v[1276] + 1
-	v[430] = muldiv(v[71] - v[69], 100, v[1277])
-	v[431] = muldiv(v[72] - v[70], 100, v[1276])
-	v[2061] = v[71] - v[69]
-	v[2062] = v[72] - v[70]
+	Map_LimitCoordX_max = ev[4].x
+	Map_LimitCoordY_max = ev[4].y
+	v[411] = (Map_LimitCoordX_max + Map_LimitCoordX_min) / 2
+	v[412] = (Map_LimitCoordY_max + Map_LimitCoordY_min) / 2
+	v[413] = (Map_LimitCoordX_max - Map_LimitCoordX_min) / v[1277] + 1
+	v[416] = (Map_LimitCoordY_max - Map_LimitCoordY_min) / v[1276] + 1
+	v[430] = muldiv(Map_LimitCoordX_max - Map_LimitCoordX_min, 100, v[1277])
+	v[431] = muldiv(Map_LimitCoordY_max - Map_LimitCoordY_min, 100, v[1276])
+	var_Map_Width = Map_LimitCoordX_max - Map_LimitCoordX_min
+	var_Map_Height = Map_LimitCoordY_max - Map_LimitCoordY_min
 	v[2061..2062] += 1
 	v[165] = player.x
 	v[166] = player.y
@@ -730,17 +730,17 @@ cev .id(2) ,.name("@Mission Init") ,{
 	v[162] = max(v[162], v[1116])
 	@comment "＃＃＃＃＃＃
 	Camera Set Up"
-	@map.getPlayerPos v[68] v[351] v[352]
-	//@map[v[68]].setVehiclePos .pos v[69], v[70] .retain
-	@map[v[68]].setPlayerPos .pos v[69] v[70]
+	@map.getPlayerPos v[68] TT11 TT12
+	//@map[v[68]].setVehiclePos .pos Map_LimitCoordX_min, Map_LimitCoordY_min .retain
+	@map[v[68]].setPlayerPos .pos Map_LimitCoordX_min Map_LimitCoordY_min
 	
-	@loop v[1276] .dst v[344] {
-		v[v[4802] + v[344]] = (muldiv(v[344], v[431], 100) + v[70]) / 5
+	@loop v[1276] .dst TT4 {
+		v[v[4802] + TT4] = (muldiv(TT4, v[431], 100) + Map_LimitCoordY_min) / 5
 		
 	}
 
-	@loop v[1277] .dst v[343] {
-		v[v[4803] + v[343]] = (muldiv(v[343], v[430], 100) + v[69]) / 5
+	@loop v[1277] .dst TT3 {
+		v[v[4803] + TT3] = (muldiv(TT3, v[430], 100) + Map_LimitCoordX_min) / 5
 		
 	}
 
@@ -749,12 +749,12 @@ cev .id(2) ,.name("@Mission Init") ,{
 	v[2925] = ev[3].scrx
 	v[2926] = ev[3].scry
 	@comment "#四分木用"
-	v[71] = ev[4].scrx
-	v[71] -= ev[3].scrx
-	v[72] = ev[4].scry
-	v[72] -= ev[3].scry
-	v[74] = v[71] / 32
-	v[75] = v[72] / 32
+	Map_LimitCoordX_max = ev[4].scrx
+	Map_LimitCoordX_max -= ev[3].scrx
+	Map_LimitCoordY_max = ev[4].scry
+	Map_LimitCoordY_max -= ev[3].scry
+	v[74] = Map_LimitCoordX_max / 32
+	v[75] = Map_LimitCoordY_max / 32
 	@if v[74] >= 64 {
 		s[297].on
 		
@@ -762,12 +762,12 @@ cev .id(2) ,.name("@Mission Init") ,{
 		s[297].off
 		
 	}
-	v[78] = v[71] / 2
-	v[79] = v[72] / 2
-	v[69] = ev[3].x
-	v[70] = ev[3].y
-	v[71] = ev[4].x
-	v[72] = ev[4].y
+	v[78] = Map_LimitCoordX_max / 2
+	v[79] = Map_LimitCoordY_max / 2
+	Map_LimitCoordX_min = ev[3].x
+	Map_LimitCoordY_min = ev[3].y
+	Map_LimitCoordX_max = ev[4].x
+	Map_LimitCoordY_max = ev[4].y
 	@comment "#四分木用
 	End"
 	v[517] = ev[3].scrx
@@ -895,7 +895,7 @@ cev .id(2) ,.name("@Mission Init") ,{
 	@comment "#Deep Water"
 	v[v[4505] + 22] |= 1
 	@comment "#For faster calculation"
-	v[432] = v[1182] - v[69]
+	v[432] = v[1182] - Map_LimitCoordX_min
 	@comment "#Wave adjustment"
 	@if s[7] .isOn() {
 		v[2057] = 6
@@ -915,26 +915,26 @@ cev .id(2) ,.name("@Mission Init") ,{
 			t[751] .asg "\v[501]" .extract
 			
 		}
-		t[501] .asg  .file "../Maps/define_maps", .utf8
-		t[502] .asg ".*="
-		t[502] .cat t[751]
-		t[501].exMatch {
-			t[502]
-			t[501]
-			v[341]
+		str1 .asg  .file "../Maps/define_maps", .utf8
+		str2 .asg ".*="
+		str2 .cat t[751]
+		str1.exMatch {
+			str2
+			str1
+			TT1
 			.beg 0
 			.extract
 		}
-		t[501] .split "=", t[501], v[341]
-		t[750] .asg t[501]
-		t[510] .asg "..\Maps\"
-		t[510] .cat t[750]
-		t[510] .cat "\\config"
-		t[510] .asg  .file t[510], .utf8, .extract
-		t[510] .split t[525], t[v[1219]], v[505]
+		str1 .split "=", str1, TT1
+		t[750] .asg str1
+		inputstr .asg "..\Maps\"
+		inputstr .cat t[750]
+		inputstr .cat "\\config"
+		inputstr .asg  .file inputstr, .utf8, .extract
+		inputstr .split LF, t[v[1219]], v[505]
 		@loop v[505] .dst v[506] {
-			v[11] = v[1219] + v[506]
-			t[510] .asg t[v[11]]
+			var1 = v[1219] + v[506]
+			inputstr .asg t[var1]
 			@call .cev 1796
 			t[3000..3300] .asg ""
 			
@@ -948,24 +948,24 @@ cev .id(2) ,.name("@Mission Init") ,{
 	}
 	@comment "*faction template load*"
 	@comment "PL"
-	v[11] = v[4574] + v[2403]
-	t[v[11]] .split ",", t[2998], v[505]
+	var1 = v[4574] + v[2403]
+	t[var1] .split ",", t[2998], v[505]
 	@loop 36 .dst v[506] {
-		v[11] = 3001 + v[506]
-		v[12] = v[4575] + v[506] + 5
-		t[v[11]] .toNum v[31]
-		v[v[12]] = v[31]
+		var1 = 3001 + v[506]
+		var2 = v[4575] + v[506] + 5
+		t[var1] .toNum v[31]
+		v[var2] = v[31]
 		
 	}
 
 	@comment "EN"
-	v[11] = v[4574] + v[2404]
-	t[v[11]] .split ",", t[2998], v[505]
+	var1 = v[4574] + v[2404]
+	t[var1] .split ",", t[2998], v[505]
 	@loop 36 .dst v[506] {
-		v[11] = 3001 + v[506]
-		v[12] = v[4575] + 40 + v[506] + 5
-		t[v[11]] .toNum v[31]
-		v[v[12]] = v[31]
+		var1 = 3001 + v[506]
+		var2 = v[4575] + 40 + v[506] + 5
+		t[var1] .toNum v[31]
+		v[var2] = v[31]
 		
 	}
 
@@ -1013,34 +1013,34 @@ cev .id(2) ,.name("@Mission Init") ,{
 		
 	}
 	v[438] = 100
-	t[501] .asg  .file "../Maps/define_maps", .utf8
+	str1 .asg  .file "../Maps/define_maps", .utf8
 	@if t[750] .eq "" {
-		t[502] .asg ".*="
-		t[502] .cat t[751]
-		t[501].exMatch {
-			t[502]
-			t[501]
-			v[341]
+		str2 .asg ".*="
+		str2 .cat t[751]
+		str1.exMatch {
+			str2
+			str1
+			TT1
 			.beg 0
 			.extract
 		}
-		t[501] .split "=", t[501], v[341]
-		t[750] .asg t[501]
+		str1 .split "=", str1, TT1
+		t[750] .asg str1
 		
 	} .else bl {
-		t[502] .asg t[750]
-		t[502] .cat "@.*"
-		t[501].exMatch {
-			t[502]
-			t[501]
-			v[341]
+		str2 .asg t[750]
+		str2 .cat "@.*"
+		str1.exMatch {
+			str2
+			str1
+			TT1
 			.beg 0
 			.extract
 		}
-		t[501] .split "=", t[501], v[341]
-		t[502] .toNum v[341]
+		str1 .split "=", str1, TT1
+		str2 .toNum TT1
 		@comment "need to load tilegen.txt"
-		@if v[341] == 0 {
+		@if TT1 == 0 {
 			Mapgentype = Mapgentype==0?1:Mapgentype
 			
 		}
@@ -1140,7 +1140,7 @@ cev .id(3), .name("@Mission End"),{
 	v[53..1000] = 0
 	v[2001..2200] = 0
 	v[2800..4400] = 0
-	v[341]=5000
+	TT1=5000
 	v[5000..v[1079]] = 0
 	t[1..400] .asg ""
 	@sys.gameOpt .fatal 60, 0, 0
@@ -1171,18 +1171,18 @@ cev .id(2121), .name("Game:Battle Result"),{
 	s[401..500].off
 	s[38].on
 	@comment "Player Party"
-	v[310] = 1
-	v[311] = 200
-	v[311] += 80
-	v[312] = 12
-	@pic[v[310]].strpic {
+	Temp10 = 1
+	Temp11 = 200
+	Temp11 += 80
+	Temp12 = 12
+	@pic[Temp10].strpic {
 	    "$u  $A  $o  $B"
-	    .pos v[311], v[312] .topLeft
+	    .pos Temp11, Temp12 .topLeft
 	    .size 0, 0    .chromakey 1
 	    .scale 100
 	    .trans 0
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
+	    .font Font_UI, 11
 	    .spacing 0, 4
 	    .skin "" .nobg .noframe .noPadding
 	    .mapLayer 8
@@ -1190,36 +1190,36 @@ cev .id(2121), .name("Game:Battle Result"),{
 	    .affectedByFlash
 	    .affectedByShake
 	}
-	v[310] = 5
-	v[312] = 32
+	Temp10 = 5
+	Temp12 = 32
 	@comment "Disabled in DIS series"
 	/*@if s[1] .isOn() {
 	    @comment "Player Heroes"
 	    s[151].on
-	    @loop 63 .dst v[341] {
-		v[302] = v[341] * 300 + v[1261] - 1
-		v[342] = v[302] + 1
-		@if v[v[342]] == 1 {
-		    v[343] = v[1180] + v[341]
-		    v[342] = v[343] * 4
-		    v[342] += v[1259]
-		    v[343] = v[v[342]]
-		    @if v[v[342]] > 0 {
-			v[v[342]].copy v[321], 4
-			v[11] = v[341] + 1
-			v[1950] = (v[11] - 1) * 5 + v[1262]
-			t[501] .asg t[v[1950]]
+	    @loop 63 .dst TT1 {
+		Temp2 = TT1 * 300 + v[1261] - 1
+		TT2 = Temp2 + 1
+		@if v[TT2] == 1 {
+		    TT3 = v[1180] + TT1
+		    TT2 = TT3 * 4
+		    TT2 += v[1259]
+		    TT3 = v[TT2]
+		    @if v[TT2] > 0 {
+			v[TT2].copy v[321], 4
+			var1 = TT1 + 1
+			v[1950] = (var1 - 1) * 5 + v[1262]
+			str1 .asg t[v[1950]]
 			@comment "x"
-			v[311] = 24
-			v[311] += 80
-			@pic[v[310]].strpic {
-			    "\c[10]\t[501]"
-			    .pos v[311], v[312] .left
+			Temp11 = 24
+			Temp11 += 80
+			@pic[Temp10].strpic {
+			    "\c[10]\str1"
+			    .pos Temp11, Temp12 .left
 			    .size 0, 0                    .chromakey 1
 			    .scale 100
 			    .trans 0
 			    .rgbs 100, 100, 100, 100
-			    .font t[530], 11
+			    .font Font_UI, 11
 			    .spacing 0, 4
 			    .skin "" .nobg .noframe .noPadding
 			    .mapLayer 7
@@ -1227,18 +1227,18 @@ cev .id(2121), .name("Game:Battle Result"),{
 			    .affectedByFlash
 			    .affectedByShake
 			}
-			v[310] += 1
+			Temp10 += 1
 			@comment "x"
-			v[311] = 200
-			v[311] += 80
-			@pic[v[310]].strpic {
+			Temp11 = 200
+			Temp11 += 80
+			@pic[Temp10].strpic {
 			    "\D[3]\v[321] \c[2]\D[3]\v[322] \c[17]\D[3]\v[323] \c[5]\D[3]\v[324]"
-			    .pos v[311], v[312] .left
+			    .pos Temp11, Temp12 .left
 			    .size 0, 0                    .chromakey 1
 			    .scale 100
 			    .trans 0
 			    .rgbs 100, 100, 100, 100
-			    .font t[530], 11
+			    .font Font_UI, 11
 			    .spacing 0, 4
 			    .skin "" .nobg .noframe .noPadding
 			    .mapLayer 7
@@ -1246,11 +1246,11 @@ cev .id(2121), .name("Game:Battle Result"),{
 			    .affectedByFlash
 			    .affectedByShake
 			}
-			v[310] += 1
-			v[312] += 11
+			Temp10 += 1
+			Temp12 += 11
 			@comment "Gain XP "
-			v[12] = v[11]
-			v[11] = v[2701]
+			var2 = var1
+			var1 = v[2701]
 			@call .cev 1981
 			
 		    }
@@ -1263,29 +1263,29 @@ cev .id(2121), .name("Game:Battle Result"),{
 	}*/
 	@comment "Player Troops"
 	s[151].on
-	@loop v[1260] .dst v[341] {
-	    v[342] = v[341] * 4
-	    v[342] += v[1259]
-	    @if v[v[342]] > 0 {
-		v[v[342]].copy v[321], 4
-		v[343] = v[341] + 201
-		@if v[343] >= v[1180] {
+	@loop v[1260] .dst TT1 {
+	    TT2 = TT1 * 4
+	    TT2 += v[1259]
+	    @if v[TT2] > 0 {
+		v[TT2].copy v[321], 4
+		TT3 = TT1 + 201
+		@if TT3 >= v[1180] {
 		    @break
 		    
 		}
-		v[254] = v[343]
+		v[254] = TT3
 		@call .cev 300
 		@comment "x"
-		v[311] = game_result_ally_x
-		v[311] += 80
-		@pic[v[310]].strpic {
-		    "\c[10]\t[501]"
-		    .pos v[311], v[312] .left
+		Temp11 = game_result_ally_x
+		Temp11 += 80
+		@pic[Temp10].strpic {
+		    "\c[10]\str1"
+		    .pos Temp11, Temp12 .left
 		    .size 0, 0            .chromakey 1
 		    .scale 100
 		    .trans 0
 		    .rgbs 100, 100, 100, 100
-		    .font t[530], 11
+		    .font Font_UI, 11
 		    .spacing 0, 4
 		    .skin "" .nobg .noframe .noPadding
 		    .mapLayer 7
@@ -1293,18 +1293,18 @@ cev .id(2121), .name("Game:Battle Result"),{
 		    .affectedByFlash
 		    .affectedByShake
 		}
-		v[310] += 1
+		Temp10 += 1
 		@comment "x"
-		v[311] = game_result_ally_signs
-		v[311] += 80
-		@pic[v[310]].strpic {
+		Temp11 = game_result_ally_signs
+		Temp11 += 80
+		@pic[Temp10].strpic {
 		    "\D[3]\v[321] \c[2]\D[3]\v[322] \c[17]\D[3]\v[323] \c[5]\D[3]\v[324]"
-		    .pos v[311], v[312] .left
+		    .pos Temp11, Temp12 .left
 		    .size 0, 0            .chromakey 1
 		    .scale 100
 		    .trans 0
 		    .rgbs 100, 100, 100, 100
-		    .font t[530], 11
+		    .font Font_UI, 11
 		    .spacing 0, 4
 		    .skin "" .nobg .noframe .noPadding
 		    .mapLayer 7
@@ -1312,19 +1312,19 @@ cev .id(2121), .name("Game:Battle Result"),{
 		    .affectedByFlash
 		    .affectedByShake
 		}
-		v[310] += 1
-		v[312] += 11
+		Temp10 += 1
+		Temp12 += 11
 		@comment "Wound"
 		@comment "Dead"
 		@if v[323] > 0 {
-		    v[11] = v[341] + 1
+		    var1 = TT1 + 1
 		    @loop v[323] {
 			@loop v[1192] .dst v[329] {
 			    v[330] = v[329] * 300 + v[1261]
 			    @if v[v[330]] == 3 {
 				v[331] = v[330] + 100
-				@if v[v[331]] == v[11] {
-				    v[12] = v[329] + 1
+				@if v[v[331]] == var1 {
+				    var2 = v[329] + 1
 				    @call .cev 1979
 				    @break
 				    
@@ -1338,7 +1338,7 @@ cev .id(2121), .name("Game:Battle Result"),{
 		    }
 		    
 		    @if s[1] .isOn() {
-			v[0] = v[11..12] = [v[341] + 1, v[323]]
+			v[0] = v[11..12] = [TT1 + 1, v[323]]
 			@call .cev 2032
 			
 		    }
@@ -1350,18 +1350,18 @@ cev .id(2121), .name("Game:Battle Result"),{
 	}
 
 	@comment "Enemy"
-	v[310] = 1001
-	v[311] = game_result_enemy_signs
-	v[311] += 80
-	v[312] = 12
-	@pic[v[310]].strpic {
+	Temp10 = 1001
+	Temp11 = game_result_enemy_signs
+	Temp11 += 80
+	Temp12 = 12
+	@pic[Temp10].strpic {
 	    "$u  $A  $o  $B"
-	    .pos v[311], v[312] .topLeft
+	    .pos Temp11, Temp12 .topLeft
 	    .size 0, 0    .chromakey 1
 	    .scale 100
 	    .trans 0
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
+	    .font Font_UI, 11
 	    .spacing 0, 4
 	    .skin "" .nobg .noframe .noPadding
 	    .mapLayer 8
@@ -1369,29 +1369,29 @@ cev .id(2121), .name("Game:Battle Result"),{
 	    .affectedByFlash
 	    .affectedByShake
 	}
-	v[310] = 1005
-	v[312] = 32
+	Temp10 = 1005
+	Temp12 = 32
 	s[151].on
-	@loop v[1260] .dst v[341] {
-	    v[342] = v[341] * 4
-	    v[342] += v[1259]
-	    v[342] += v[1260] * 4
-	    @if v[v[342]] > 0 {
-		v[v[342]].copy v[321], 4
-		v[343] = v[341] + 201
-		v[254] = v[343]
+	@loop v[1260] .dst TT1 {
+	    TT2 = TT1 * 4
+	    TT2 += v[1259]
+	    TT2 += v[1260] * 4
+	    @if v[TT2] > 0 {
+		v[TT2].copy v[321], 4
+		TT3 = TT1 + 201
+		v[254] = TT3
 		@call .cev 300
 		@comment "x"
-		v[311] = game_result_enemy_x
-		v[311] += 80
-		@pic[v[310]].strpic {
-		    "\c[5]\t[501]"
-		    .pos v[311], v[312] .left
+		Temp11 = game_result_enemy_x
+		Temp11 += 80
+		@pic[Temp10].strpic {
+		    "\c[5]\str1"
+		    .pos Temp11, Temp12 .left
 		    .size 0, 0            .chromakey 1
 		    .scale 100
 		    .trans 0
 		    .rgbs 100, 100, 100, 100
-		    .font t[530], 11
+		    .font Font_UI, 11
 		    .spacing 0, 4
 		    .skin "" .nobg .noframe .noPadding
 		    .mapLayer 7
@@ -1399,18 +1399,18 @@ cev .id(2121), .name("Game:Battle Result"),{
 		    .affectedByFlash
 		    .affectedByShake
 		}
-		v[310] += 1
+		Temp10 += 1
 		@comment "x"
-		v[311] = game_result_enemy_signs
-		v[311] += 80
-		@pic[v[310]].strpic {
+		Temp11 = game_result_enemy_signs
+		Temp11 += 80
+		@pic[Temp10].strpic {
 		    "\D[3]\v[321] \c[2]\D[3]\v[322] \c[17]\D[3]\v[323] \c[5]\D[3]\v[324]"
-		    .pos v[311], v[312] .left
+		    .pos Temp11, Temp12 .left
 		    .size 0, 0            .chromakey 1
 		    .scale 100
 		    .trans 0
 		    .rgbs 100, 100, 100, 100
-		    .font t[530], 11
+		    .font Font_UI, 11
 		    .spacing 0, 4
 		    .skin "" .nobg .noframe .noPadding
 		    .mapLayer 7
@@ -1418,8 +1418,8 @@ cev .id(2121), .name("Game:Battle Result"),{
 		    .affectedByFlash
 		    .affectedByShake
 		}
-		v[310] += 1
-		v[312] += 11
+		Temp10 += 1
+		Temp12 += 11
 		
 	    }
 	    
@@ -1438,16 +1438,16 @@ cev .id(2121), .name("Game:Battle Result"),{
 		    @gsave.open
 		    gv[101].copyTo v[3011], 100
 		    @gsave.close
-		    v[341] = v[2220] * 6 + 3011
-		    v[342] = v[2220] * 5 + 3061
-		    v[v[341]] = v[2520]
-		    v[v[341]] *= 1000000
-		    v[v[341]] += v[2403]
-		    @if v[v[341]] > v[v[342]] {
+		    TT1 = v[2220] * 6 + 3011
+		    TT2 = v[2220] * 5 + 3061
+		    v[TT1] = v[2520]
+		    v[TT1] *= 1000000
+		    v[TT1] += v[2403]
+		    @if v[TT1] > v[TT2] {
 			s[201].on
 			
 		    }
-		    v[v[342]].sortDescending 6
+		    v[TT2].sortDescending 6
 		    
 		}
 		
@@ -1459,18 +1459,18 @@ cev .id(2121), .name("Game:Battle Result"),{
 		.size 0, 0
 		.font "", 0
 	}
-	    v[11] = 0
-	    v[11] = 353
+	    var1 = 0
+	    var1 = 353
 	    @call .cev 1890
 	    @if s[477] .isOn() {
-		t[501] .asg t[20351]
+		str1 .asg t[20351]
 		
 	    } .else bl {
-		t[501] .asg t[20352] .extract
+		str1 .asg t[20352] .extract
 		
 	    }
-	    t[501] .cat t[3000] .extract
-	    @msg.show "\>\t[501]"
+	    str1 .cat t[3000] .extract
+	    @msg.show "\>\str1"
 	    @gsave.open
 	    v[2203] .add v[2513], 3
 	    v[2206] .add v[2521], 8
@@ -1509,21 +1509,21 @@ cev .id(67), .name("Combat Detection AI.."),.parallel , .cond(297), {
 	@wait 5
 	@if v[2661] >= 0 {
 	    @map[v[501]].setVehiclePos .boat .pos v[2662], v[2663] .retain
-	    v[22] = boat.scrx
-	    v[23] = boat.scry
-	    v[23] -= 8
+	    reg2 = boat.scrx
+	    reg3 = boat.scry
+	    reg3 -= 8
 	    @comment "#ck only 3rd dim"
 	    v[340] = v[1146] //[v[1145], v[1146], v[1146]][(v[2664] % 3)]
-	    @loop v[1080] .dst v[310] {
-		v[312] = v[v[340] + v[310]]
-		@if v[312] >= 1 {
-		    v[312] = v[312] * 300 + 4700
-		    @if `v[v[312] + 100] == v[2664] {
-			@if `v[v[312] + 35] == v[2665] && v[v[312] + 241] == 0 && v[v[312] + 18] <= 0 && v[v[312] + 242] <= -1 {
-			    v[341] = v[312] + 41
-			    v[22].copy v[v[341]], 2
-			    v[v[312] + 3] |= 1048576
-			    v[v[312] + 242] = 2
+	    @loop v[1080] .dst Temp10 {
+		Temp12 = v[v[340] + Temp10]
+		@if Temp12 >= 1 {
+		    Temp12 = Temp12 * 300 + 4700
+		    @if `v[Temp12 + 100] == v[2664] {
+			@if `v[Temp12 + 35] == v[2665] && v[Temp12 + 241] == 0 && v[Temp12 + 18] <= 0 && v[Temp12 + 242] <= -1 {
+			    TT1 = Temp12 + 41
+			    reg2.copy v[TT1], 2
+			    v[Temp12 + 3] |= 1048576
+			    v[Temp12 + 242] = 2
 			    
 			}
 			

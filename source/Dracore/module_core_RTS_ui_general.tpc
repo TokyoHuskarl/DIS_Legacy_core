@@ -48,6 +48,11 @@ cev .id(47) ,.name("UI:Mouse Observer"), .parallel , .cond(Const_Is_RTS_Mode), {
 	UI_CEV_MOUSE_OBSERVER()
 }
 
+cev .id(199) ,.name("UIfunc:Show Troop Description"), {
+	@comment moduletitle
+	UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW()
+}
+
 //Resource Window
 cev[84] "Resource Window", {
 	func_refresh_resource_window()
@@ -58,22 +63,22 @@ cev .id(70) ,.name("Log:RTS log manager"), .parallel , .cond(Const_Is_RTS_Mode),
 	@if s[2] .isOff() {
 	    v[238] -= 1
 	    @if v[238] <= 0 {
-		v[341] = v[1155]
-		v[350] = 2
-		v[351] = v[4515]
-		v[345] = v[239]
-		v[346] = divmul(-25, 45, v[1139])
-		@loop v[1136] .dst v[342] {
-		    v[342] += v[341]
-		    @pic[v[342]].move {
-			.pos v[350], v[351] .bottomLeft
+		TT1 = v[1155]
+		TT10 = 2
+		TT11 = v[4515]
+		TT5 = v[239]
+		TT6 = divmul(-25, 45, v[1139])
+		@loop v[1136] .dst TT2 {
+		    TT2 += TT1
+		    @pic[TT2].move {
+			.pos TT10, TT11 .bottomLeft
 			.scale 100
 			.trans 100
-			.time v[346]
+			.time TT6
 			.rgbs 100, 100, 100, 100
 		    }
-		    v[351] -= v[1137]
-		    v[345] = min(v[345] + 5, 100)
+		    TT11 -= v[1137]
+		    TT5 = min(TT5 + 5, 100)
 		    
 		}
 		

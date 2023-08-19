@@ -70,8 +70,8 @@ def {
 
 	Const_Massive_Battle_Amount = 250
 
-    	Const_Map_Allocate_Limit = 160000
-	//ObjLimit = 845
+	Const_Map_Allocate_Limit = 160000 // which part of the map mem allocated???
+
 	Agents_Limit = 845
 	Effects_Limit = 120
 	Effects_Additional_Cap = 65
@@ -80,6 +80,8 @@ def {
 	Projectiles_Limit = 180
 
 }
+
+
 defv {
 	Const_save_var_Agents_Limit = 1004
 
@@ -140,12 +142,12 @@ __fn macro_get_agent_slot_ptr $pointer $agent $slot{
 
 //cev 2004 GetParaNow v1v2 r1
 def {
-
+	RMkey_Lclick = 1005
 
 	Const_var_bit_maniacs = 32
 	Const_AgentMetaTeam_begin = 460318
 	
-	Memory_MapInfo=300317
+	Memory_MapInfo = 300317
 
 	//0 = inf, 1 = archer, 2 = cav, 3 = magician, 4 = healer, 5 = siege, 7 = animals, 8=decayable, 9 = civilians, 11 = flying, 21 = ship, 101 = barrack, 102 = no_col_static, 103 = decoy, 104 = basement, 105 = resource, 106 = turret, 107 = terrainchange
 	UNIT_CLASS_INF=0
@@ -254,10 +256,17 @@ defs Bool_Refresh_Static_Minimap = 75
 
 //vars
 defv{
-    
-    AllFrameCount = 2501
-    ConstPtr_ObjPicSort_begin = 1112
-    ConstPtr_ObjDrawnList_begin =1184
+
+	// control vars
+	Common_Control_Ck = 43
+	Mouse_x = 49
+	Mouse_y = 50
+	MousePtr_X = 51
+	MousePtr_Y = 52
+
+	AllFrameCount = 2501
+	ConstPtr_ObjPicSort_begin = 1112
+	ConstPtr_ObjDrawnList_begin = 1184
 
 //map vars
 	var_Map_Width = 2061
@@ -286,91 +295,91 @@ defv{
 	var9=19
 	var10=20
     //regs
-	reg1=21
-	reg2=22
-	reg3=23
-	reg4=24
-	reg5=25
-	reg6=26
-	reg7=27
-	reg8=28
-	reg9=29
-	reg10=30
+	reg1 = 21
+	reg2 = 22
+	reg3 = 23
+	reg4 = 24
+	reg5 = 25
+	reg6 = 26
+	reg7 = 27
+	reg8 = 28
+	reg9 = 29
+	reg10 = 30
     //Temporary variables begin
     //I know it's freaking terrible but you cannot avoid using them; DIS project started in 2019 - it's before the maniacs patch implements common event self variables and etc.
 
     //temporary Ptrs
-	Ptr1=281
-	Ptr2=282
-	Ptr3=283
-	Ptr4=284
-	Ptr5=285
-	Ptr6=286
-	Ptr7=287
-	Ptr8=288
-	Ptr9=289
-	Ptr10=290
-	Ptr11=291
-	Ptr12=292
-	Ptr13=293
-	Ptr14=294
-	Ptr15=295
-	Ptr16=296
-	Ptr17=297
-	Ptr18=298
-	Ptr19=299
-	Ptr20=300
+	Ptr1 = 281
+	Ptr2 = 282
+	Ptr3 = 283
+	Ptr4 = 284
+	Ptr5 = 285
+	Ptr6 = 286
+	Ptr7 = 287
+	Ptr8 = 288
+	Ptr9 = 289
+	Ptr10 = 290
+	Ptr11 = 291
+	Ptr12 = 292
+	Ptr13 = 293
+	Ptr14 = 294
+	Ptr15 = 295
+	Ptr16 = 296
+	Ptr17 = 297
+	Ptr18 = 298
+	Ptr19 = 299
+	Ptr20 = 300
 
 
     //TEMP vars
-	Temp1=301
-	Temp2=302
-	Temp3=303
-	Temp4=304
-	Temp5=305
-	Temp6=306
-	Temp7=307
-	Temp8=308
-	Temp9=309
-	Temp10=310
-	Temp11=311
-	Temp12=312
-	Temp13=313
-	Temp14=314
-	Temp15=315
-	Temp16=316
-	Temp17=317
-	Temp18=318
-	Temp19=319
-	Temp20=320
-	Temp21=321
-	Temp22=322
-	Temp23=323
-	Temp32=332
-	Temp35=335
-	Temp37=337
+	Temp1 = 301
+	Temp2 = 302
+	Temp3 = 303
+	Temp4 = 304
+	Temp5 = 305
+	Temp6 = 306
+	Temp7 = 307
+	Temp8 = 308
+	Temp9 = 309
+	Temp10 = 310
+	Temp11 = 311
+	Temp12 = 312
+	Temp13 = 313
+	Temp14 = 314
+	Temp15 = 315
+	Temp16 = 316
+	Temp17 = 317
+	Temp18 = 318
+	Temp19 = 319
+	Temp20 = 320
+	Temp21 = 321
+	Temp22 = 322
+	Temp23 = 323
+	Temp32 = 332
+	Temp35 = 335
+	Temp37 = 337
     //TEMPTEMPS
     //They are more temporary than regular TEMPS... what?
-	TT1=341
-	TT2=342
-	TT3=343
-	TT4=344
-	TT5=345
-	TT6=346
-	TT7=347
-	TT8=348
-	TT9=349
-	TT10=350
-	TT11=351
-	TT12=352
-	TT13=353
-	TT14=354
-	TT15=355
-	TT16=356
-	TT17=357
-	TT18=358
-	TT19=359
-	TT20=360
+	TT1 = 341
+	TT2 = 342
+	TT3 = 343
+	TT4 = 344
+	TT5 = 345
+	TT6 = 346
+	TT7 = 347
+	TT8 = 348
+	TT9 = 349
+	TT10 = 350
+	TT11 = 351
+	TT12 = 352
+	TT13 = 353
+	TT14 = 354
+	TT15 = 355
+	TT16 = 356
+	TT17 = 357
+	TT18 = 358
+	TT19 = 359
+	TT20 = 360
 
 	TempFlag1 = 371
 
@@ -385,16 +394,16 @@ defv{
 
 //strs
 deft{
-	str1=501
-	str2=502
-	str3=503
-	str4=504
-	str5=505
-	str6=506
-	str7=507
-	str8=508
-	str9=509
-	
+	str1 = 501
+	str2 = 502
+	str3 = 503
+	str4 = 504
+	str5 = 505
+	str6 = 506
+	str7 = 507
+	str8 = 508
+	str9 = 509
+	inputstr = 510
 	strreg1=1 // are you serious?
 
 }
@@ -478,11 +487,11 @@ __fn macro_cord_diff $x $y {
 	    //v[__id($x)] = ($x / 10000 + v[53] - v[403])/16
 	    //v[__id($y)] = ($y / 10000 + v[54] - v[404])/16
 	    
-	    //this one was far faster
-	    v[__id($x)..__id($y)]/=10000
+	    //this one is far faster
+	    v[__id($x)..__id($y)] /= 10000
 	    v[__id($x)] .sub v[403], 2
 	    v[__id($x)] .add v[53], 2
-	    v[__id($x)..__id($y)]/=16
+	    v[__id($x)..__id($y)] /= 16
 }
 
 #include "./header_common_items.tpc"

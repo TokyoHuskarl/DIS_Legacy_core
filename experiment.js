@@ -5,7 +5,8 @@
 // UI types set
 const UItyp_undefined = 0,
 	UItyp_checkbox = 1;
-	
+	UItyp_simplebutton = 2;
+
 // RM var types
 const RMvar = 1,
 	RMswitch = 2,
@@ -127,6 +128,9 @@ const Ns_Presentation = {
 
 }
 
+class UIobject {
+	
+}
 
 // simple checkbox 
 function createCheckbox(targ_type,targ_address,text) {

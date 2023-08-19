@@ -654,22 +654,22 @@ __fn func_pathfinding_Astar() {
 			func_pathfinding_move()
 			
 			// agent AI_routine_bit
-			v[Head_of_Agent_Buffer_PF + 34] |= AI_routine_bits_FLAG_tracing_flag
+			v[Pathfinding_AgentData_head_ptr + 34] |= AI_routine_bits_FLAG_tracing_flag
 			
 		    } .else bl {
 			// stop pathfinding
 			// agent AI_routine_bit
-			v[Head_of_Agent_Buffer_PF + 34] &= AI_routine_bits_KILL_FLAG_PATHFINDING //~16384
+			v[Pathfinding_AgentData_head_ptr + 34] &= AI_routine_bits_KILL_FLAG_PATHFINDING //~16384
 			
 		    }
 
 		    // flag management after movement order
 		    // use buffers as pointers
 		    defv pfagent_Ptr_pfagent_AgentBits = __id(pfagent_AgentBits)
-		    pfagent_Ptr_pfagent_AgentBits = Head_of_Agent_Buffer_PF + 3
+		    pfagent_Ptr_pfagent_AgentBits = Pathfinding_AgentData_head_ptr + 3
 
 		    defv pfagent_Ptr_AI_routine_bits = __id(pfagent_AI_routine_bits)
-		    pfagent_Ptr_AI_routine_bits = Head_of_Agent_Buffer_PF + 34
+		    pfagent_Ptr_AI_routine_bits = Pathfinding_AgentData_head_ptr + 34
 
 
 		    // 
@@ -831,7 +831,7 @@ __fn func_pathfinding_retarded() {
 		    Temp10 += Temp9
 		    @while Temp9 <= Temp10 {
 			Temp11 = (Temp9 + Temp10) 
-			Temp11 =/ 2
+			Temp11 /= 2
 			@if v[Temp11] == v[4020] {
 			    v[371] = 1
 			    @break
