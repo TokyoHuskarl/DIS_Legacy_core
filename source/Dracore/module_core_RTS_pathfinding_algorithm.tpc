@@ -146,10 +146,10 @@ __fn func_pathfinding_Astar() {
 
 		// check from start node
 		PF_current_checking_Node = PF_start_Node
-		v[20] = PF_start_Node
+		var10 = PF_start_Node
 
 		// "######add start Node to openlist"
-		v[v[4568] + v[4582]] = v[20]
+		v[v[4568] + v[4582]] = var10
 		v[4582] += 1
 
 		v[v[4568]].sortDescending v[4582]
@@ -202,7 +202,6 @@ __fn func_pathfinding_Astar() {
 				    TT12 =  v[4001] + v[4002]
 				    v[4001] = sqrt(TT12, 100) // using sqrt might be the very reason of the slowness of this loop?
 
-				    //opt 28.4.23
 				    //save v[v[4581]] % 10 to some temp var and you vill happy
 				    TT12 = v[v[4581]] % 10
 				    TT13 = 3601 + v[2065] 
@@ -232,6 +231,7 @@ __fn func_pathfinding_Astar() {
 			
 			
 		    } .else bl {
+
 			@loop 8 .dst v[2065] {
 			    @if v[v[4581]] > 0 {
 
@@ -495,8 +495,8 @@ __fn func_pathfinding_Astar() {
 		    t[801] .cat t[525]
 		    @loop v[4582] .dst var1 {
 			var2 = v[4568] + var1
-			v[20] = v[var2]
-			t[801] .cat "\v[20]" .extract
+			var10 = v[var2]
+			t[801] .cat "\var10" .extract
 			t[801] .cat t[525]
 			
 		    }
@@ -506,8 +506,8 @@ __fn func_pathfinding_Astar() {
 		    t[801] .cat t[525]
 		    @loop v[4583] .dst var1 {
 			var2 = v[4567] + var1
-			v[20] = v[var2]
-			t[801] .cat "\v[20]" .extract
+			var10 = v[var2]
+			t[801] .cat "\var10" .extract
 			t[801] .cat t[525]
 			
 		    }
@@ -515,6 +515,9 @@ __fn func_pathfinding_Astar() {
 		    t[801] .toFile "debug_closelist", .utf8
 		    
 		}*/
+
+
+		// from this part seemingly buggy
 
 		v[2861] .sub v[1021], 14
 		v[380] = 0
@@ -524,9 +527,9 @@ __fn func_pathfinding_Astar() {
 		    v[TT1] &= -16777217 //~16777216
 		    v[TT1] |= AI_routine_bits_FLAG_1secDelay_PF
 
-		    v[ptr_null].copy v[v[1212]],200
-		    v[v[1212]] = v[4596] + 1
-		    v[2880] = v[1212] + 1
+		    v[ptr_null].copy v[LEGV_ConstAIselectedListHead],200
+		    v[LEGV_ConstAIselectedListHead] = v[4596] + 1
+		    v[2880] = LEGV_ConstAIselectedListHead + 1
 		    v[2841] = 1
 		    
 		} .else bl {
@@ -546,16 +549,16 @@ __fn func_pathfinding_Astar() {
 			var2 = v[var2]
 
 			v[2861].copy v[2961], 15
-			@loop v[1012] .dst v[301] {
+			@loop v[1012] .dst Temp1 {
 
 			    // "Check Enemy Team List"
-			    Ptr20 = v[301] + v[1145 + var2]
+			    Ptr20 = Temp1 + v[1145 + var2]
 			    @if v[Ptr20] >= 1 {
-				v[299] = v[Ptr20] * 300
-				v[299] += 4735
+				Ptr19 = v[Ptr20] * 300
+				Ptr19 += 4735
 
 				// "The unit belongs to the selected Cohort"
-				@if v[v[299]] == v[320] {
+				@if v[Ptr19] == v[320] {
 				    
 				    //opt 27.4.23
 				    Ptr18 = v[Ptr20] * 300
@@ -565,13 +568,13 @@ __fn func_pathfinding_Astar() {
 					@if `!(v[Ptr18 - 31] & AgentBits_FLAG_PF_walldetection_switch) {
 
 					    var1 = v[Ptr20]
-					    v[2880] = v[1212]
+					    v[2880] = LEGV_ConstAIselectedListHead
 					    v[2841] = 0
-					    v[ptr_null].copy v[v[1212]],200 //v[v[1212]..v[1212] + 199] = 0
+					    v[ptr_null].copy v[LEGV_ConstAIselectedListHead],200 //v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
 
-					    //CEV.. hey what the fugg is this cev?
+					    //CEV.. add agent to AI control list
 					    // @call .cev 1747
-					    v[v[2880]] = v[11]
+					    v[v[2880]] = var1
 					    v[2880] += 1
 					    v[2841] += 1
 					    
@@ -594,7 +597,7 @@ __fn func_pathfinding_Astar() {
 
 					    @if `!(v[Pathfinding_AgentData_head_ptr + 3] & AgentBits_FLAG_walldetected) || v[378] != -1 {
 						v[Ptr18] |= 4096
-						Temp16 = v[v[1212]] * 300 
+						Temp16 = v[LEGV_ConstAIselectedListHead] * 300 
 						Temp16 += 4741
 						Temp17 = Temp16 + 14
 						Temp17 = max(v[Temp17], 0)
@@ -622,9 +625,9 @@ __fn func_pathfinding_Astar() {
 			v[380] = 1
 			
 		    } .else bl {
-			v[ptr_null].copy v[v[1212]],200 //v[v[1212]..v[1212] + 199] = 0
-			v[v[1212]] = v[4596] + 1
-			v[2880] = v[1212] + 1
+			v[ptr_null].copy v[LEGV_ConstAIselectedListHead],200 //v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
+			v[LEGV_ConstAIselectedListHead] = v[4596] + 1
+			v[2880] = LEGV_ConstAIselectedListHead + 1
 			v[2841] = 1
 			
 		    }
@@ -641,7 +644,7 @@ __fn func_pathfinding_Astar() {
 		    @if `!(pfagent_AgentBits & AgentBits_FLAG_walldetected) || v[378] != -1 {
 
 			// set up the point coordinate to move
-			Temp16 = v[v[1212]] * 300 
+			Temp16 = v[LEGV_ConstAIselectedListHead] * 300 
 			Temp16 += 4741
 			Temp17 = Temp16 + 14
 			Temp17 = max(v[Temp17], 0)
@@ -764,7 +767,7 @@ __fn func_pathfinding_retarded() {
 	v[317] = v[342] + 14
 	v[317] = max(v[v[317]], 0)
 	v[342] += v[317] * 2
-	v[v[342]].copy v[11], 2
+	v[v[342]].copy var1, 2
 	@call .cev 2000
 	v[21].copy Temp11, 2
 	Temp11 = (Temp11 - v[69]) / 2
@@ -776,7 +779,7 @@ __fn func_pathfinding_retarded() {
 	v[v[342]].copy Temp11, 2
 	Temp11 = (Temp11 - v[69]) / 2
 	v[312] = (v[312] - v[70]) / 2
-	v[11] = Temp11 + v[312] * v[433] + 1
+	var1 = Temp11 + v[312] * v[433] + 1
 
 	/* "#
 	v1=start
@@ -787,14 +790,14 @@ __fn func_pathfinding_retarded() {
 	v[4595] = 0
 	v[4584..4585] = 0
 	v[4582..4583] = 0
-	v[11].copy PF_start_Node, 2
+	var1.copy PF_start_Node, 2
 	v[1301].copy v[v[4568]], 200
 	v[1301].copy v[v[4567]], 200
 	PF_current_checking_Node = PF_start_Node
-	v[20] = PF_start_Node
+	var10 = PF_start_Node
 
 	// "######add var10 to openlist"
-	v[v[4568] + v[4582]] = v[20]
+	v[v[4568] + v[4582]] = var10
 	v[4582] += 1
 	v[v[4568]].sortDescending v[4582]
 	// "######"
@@ -827,7 +830,8 @@ __fn func_pathfinding_retarded() {
 		    Temp9 = v[4567]
 		    Temp10 += Temp9
 		    @while Temp9 <= Temp10 {
-			Temp11 = (Temp9 + Temp10) / 2
+			Temp11 = (Temp9 + Temp10) 
+			Temp11 =/ 2
 			@if v[Temp11] == v[4020] {
 			    v[371] = 1
 			    @break
@@ -852,8 +856,8 @@ __fn func_pathfinding_retarded() {
 			    @if v[4592] >= v[4593] {
 				v[4592] = 0
 				Temp11 = (v[4020] - 1) * v[4564] + v[4569]
-				v[Temp11].copy v[11], 2
-				@map[v[501]].setVehiclePos .boat .pos v[11], v[12] .retain
+				v[Temp11].copy var1, 2
+				@map[v[501]].setVehiclePos .boat .pos var1, v[12] .retain
 				v[22] = boat.scrx
 				v[23] = boat.scry
 				v[23] -= 8
@@ -892,9 +896,9 @@ __fn func_pathfinding_retarded() {
 
 	    // "check if NodeV[3609] is in close list"
 	    @if v[371] != 1 {
-		v[20] = PF_current_checking_Node
+		var10 = PF_current_checking_Node
 		// "######	add var10 to closelist"
-		v[v[4567] + v[4583]] = v[20]
+		v[v[4567] + v[4583]] = var10
 		v[4583] += 1
 		v[v[4567]].sortDescending v[4583]
 		
@@ -913,9 +917,9 @@ __fn func_pathfinding_retarded() {
 	v[2861] .sub v[1021], 14
 	v[380] = 0
 	@if `v[Pathfinding_AgentData_head_ptr + 3] & 33554432 {
-	    v[v[1212]..v[1212] + 199] = 0
-	    v[v[1212]] = v[4596] + 1
-	    v[2880] = v[1212] + 1
+	    v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
+	    v[LEGV_ConstAIselectedListHead] = v[4596] + 1
+	    v[2880] = LEGV_ConstAIselectedListHead + 1
 	    v[2841] = 1
 	    
 	} .else bl {
@@ -924,26 +928,26 @@ __fn func_pathfinding_retarded() {
 		// "v1=Cohort	v2=Team, 0/1"
 		v[12] = v[Pathfinding_AgentData_head_ptr + 100]
 		v[2861].copy v[2961], 15
-		@loop v[1012] .dst v[301] {
+		@loop v[1012] .dst Temp1 {
 		    // "Check Enemy Team List"
-		    v[300] = v[301] + v[1145 + v[12]]
+		    v[300] = Temp1 + v[1145 + v[12]]
 		    @if v[v[300]] >= 1 {
-			v[299] = v[v[300]] * 300
-			v[299] += 4735
+			Ptr19 = v[v[300]] * 300
+			Ptr19 += 4735
 			// "The unit belongs to the selected Cohort"
-			@if v[v[299]] == v[320] {
+			@if v[Ptr19] == v[320] {
 			    v[298] = v[v[300]] * 300 + 4734
 			    @if `v[v[298]] & 16384 {
-				v[v[1212]..v[1212] + 199] = 0
-				v[2880] = v[1212]
+				v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
+				v[2880] = LEGV_ConstAIselectedListHead
 				v[2841] = 0
-				v[11] = v[v[300]]
+				var1 = v[v[300]]
 				@call .cev 1747
 				v[v[298]] |= 4096
 				v[v[298]] &= ~16384
 				v[v[298]] &= ~8388608
 				v[v[298]] &= ~32768
-				v[316] = v[v[1212]] * 300 + 4741
+				v[316] = v[LEGV_ConstAIselectedListHead] * 300 + 4741
 				v[317] = v[316] + 14
 				v[317] = max(v[v[317]], 0)
 				v[316] += v[317] * 2
@@ -962,9 +966,9 @@ __fn func_pathfinding_retarded() {
 		v[380] = 1
 		
 	    } .else bl {
-		v[v[1212]..v[1212] + 199] = 0
-		v[v[1212]] = v[4596] + 1
-		v[2880] = v[1212] + 1
+		v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
+		v[LEGV_ConstAIselectedListHead] = v[4596] + 1
+		v[2880] = LEGV_ConstAIselectedListHead + 1
 		v[2841] = 1
 		
 	    }
@@ -972,7 +976,7 @@ __fn func_pathfinding_retarded() {
 	}
 	// "####"
 	@if v[380] == 0 {
-	    v[316] = v[v[1212]] * 300 + 4741
+	    v[316] = v[LEGV_ConstAIselectedListHead] * 300 + 4741
 	    v[317] = v[316] + 14
 	    v[317] = max(v[v[317]], 0)
 	    v[316] += v[317] * 2

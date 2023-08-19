@@ -11,25 +11,26 @@ __fn agent_ref_stats(){
     }
     //@comment "#Base Parameters Get"
     agent_BaseAD.copy agent_ProcessAD, 11
-    agent_BaseRegHP.copy v[872], 2
+    agent_BaseRegHP.copy agent_ProcessHPreg, 2
     agent_ProcessObjBit = agent_BaseObjBit
-    v[875] = agent_BaseWill
+    agent_ProcessWill = agent_BaseWill
     //@comment "#SP fatigue penalty"
-    v[868] -= !(agent_ExMotionFlags & 2048) ? muldiv(v[868], v[707] - v[708], v[707]) / 2 / (!(agent_PerkFlagBits1 & 32768) ? 1 : 2) : 0
+    agent_ProcessMS -= !(agent_ExMotionFlags & 2048) ? muldiv(agent_ProcessMS, agent_MaxSP - agent_SP, agent_MaxSP) / 2 / (!(agent_PerkFlagBits1 & 32768) ? 1 : 2) : 0
     //@comment "#ProcessCamo dealed in per3f"
     /*@comment "##############
 #Terrain Check#
 ##############"*/
     //@comment "#Suitable Terrain"
     @if `agent_AgentBits & 2 {
-        v[868] = muldiv(v[868], 120, 100)
+        agent_ProcessMS = muldiv(agent_ProcessMS, 120, 100)
         
     }
+
     //@comment "#Water Terrain"
     @if `agent_AgentBits & 1 {
         //@comment "pathfinder"
         @if `agent_PerkFlagBits1 & agent_PerkFlagBits1_FLAG_Pathfinder {
-            agent_ProcessMS -= agent_ProcessMS>>2 //muldiv(v[868], 3, 4)
+            agent_ProcessMS -= agent_ProcessMS>>2 //muldiv(agent_ProcessMS, 3, 4)
             agent_ProcessSPReg -= 1
             
         } .else bl {
@@ -43,33 +44,33 @@ __fn agent_ref_stats(){
     //@comment "#Ice"
     @if `agent_AgentBits & 32 {
         agent_AgentBits |= 16
-        v[868] += v[868]>>2 //muldiv(v[868], 125, 100)
+        agent_ProcessMS += agent_ProcessMS>>2 //muldiv(agent_ProcessMS, 125, 100)
         
     }
     //cavalries and terrain effects
-    @if `!(v[638] & 1){//not flying
+    @if `!(agent_MoveTypeBIts & 1){//not flying
 	    @if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback{
 			@if `agent_PerkFlagBits1 & 128 {//Pathfinder
-			    v[868] = agent_AgentBits & 8 ? muldiv(v[868], 80, 100) : v[868] //cav in forest
+			    agent_ProcessMS = agent_AgentBits & 8 ? muldiv(agent_ProcessMS, 80, 100) : agent_ProcessMS //cav in forest
 			    @if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill {
-				    v[868] /= 2 //cav on hill 
+				    agent_ProcessMS /= 2 //cav on hill 
 				    agent_SP = max(agent_SP-8,0)
 			    }
 			}.else bl{
-			    v[868] = agent_AgentBits & 8 ? muldiv(v[868], 60, 100) : v[868] //cav in forest
+			    agent_ProcessMS = agent_AgentBits & 8 ? muldiv(agent_ProcessMS, 60, 100) : agent_ProcessMS //cav in forest
 			    @if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill {
-				[868] /= 3
-				agent_SP = max(agent_SP-12,0)
+				agent_ProcessMS /= 3
+				agent_SP = max(agent_SP - 12,0)
 			    }
 			}
 	    }.else bl{ //infantries
 		    
 			@if `agent_PerkFlagBits1 & 128 {//Pathfinder
-			    v[868] -= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill ? v[868]>>5 :0 
+			    agent_ProcessMS -= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill ? agent_ProcessMS >> 5 :0 
 			}.else bl{
 			    @if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill {
-				    v[868] -= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill ? v[868]>>4 :0
-				    agent_SP = max(agent_SP-5,0)
+				    agent_ProcessMS -= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill ? agent_ProcessMS>>4 :0
+				    agent_SP = max(agent_SP - 5,0)
 			    }
 			}
 	    }
@@ -83,7 +84,7 @@ __fn agent_ref_stats(){
 
     //Check TileFlags begin
 
-    Ptr5 = Const_save_var_TileFlags + v[632]
+    Ptr5 = Const_save_var_TileFlags + agent_TileLink
 
 	/*
 	__if DEBUG_BUILD==1{
@@ -119,14 +120,14 @@ __fn agent_ref_stats(){
 			agent_ProcessInstantState &= -49 //~(agent_ProcessInstantState_FLAG_shield_covered + agent_ProcessInstantState_FLAG_shield_covered_double_check)
 		}
 		// Big units like cavalries cannot be covered by infantry shieldwall
-		agent_ProcessInstantState &= agent_BaseObjBit & BaseObjBit_FLAG_big_unit ? -49:agent_ProcessInstantState
+		agent_ProcessInstantState &= agent_BaseObjBit & BaseObjBit_FLAG_big_unit ? -49 : agent_ProcessInstantState
 
 		//FLAG_Maptile_PikeWallTeam0 = 256
 		//FLAG_Maptile_PikeWallTeam1 = 512
 		//FLAG_Maptile_PikeWallTeam2 = 1024
 		// check if under other team's pike effect or not
 		@if agent_UnitType == UNIT_CLASS_CAV {
-			agent_MeleeFightTimer = v[Ptr5] & (1792 & ~(FLAG_Maptile_PikeWallTeam0<<TT10))&& !(agent_ProcessObjBit & 128)?Const_Melee_Fight_Time_by_Melee_Attack:agent_MeleeFightTimer //Cavalries near enemy pike wall will automatically get Melee fighting Penalty
+			agent_MeleeFightTimer = v[Ptr5] & (1792 & ~(FLAG_Maptile_PikeWallTeam0 << TT10))&& !(agent_ProcessObjBit & 128) ? Const_Melee_Fight_Time_by_Melee_Attack : agent_MeleeFightTimer // Cavalries near enemy pike wall will automatically get Melee fighting Penalty
 		}
 		
 			
@@ -134,7 +135,7 @@ __fn agent_ref_stats(){
 
 	/*this was OP
 	@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
-		agent_ProcessEVA +=5 
+		agent_ProcessEVA += 5 
 	}*/
     }
 
@@ -185,8 +186,8 @@ __fn agent_ref_stats(){
     //@comment "##Flee"
     @if agent_Morale == 3 {
         agent_ProcessInstantState |= agent_ProcessInstantState_FLAG_blind
-        agent_ProcessObjBit |= 67110400//1024+512+67108864
-        agent_ProcessObjBit &= -16793601//~16793600//(16777216+16384)
+        agent_ProcessObjBit |= 67110400 //1024+512+67108864
+        agent_ProcessObjBit &= -16793601 //~16793600//(16777216+16384)
         //agent_ProcessObjBit |= 67108864 24.4.23
         v[842] = 11
         agent_ActionState = 0
@@ -197,7 +198,7 @@ __fn agent_ref_stats(){
         //v[869] = v[869..870] = [9899999, 0]
 	v[870] = 9899999 //is it fucking serious? what is going on?
 	v[869] = 0
-        v[868] += v[868]>>3 //muldiv(v[868], 110, 100)
+        agent_ProcessMS += agent_ProcessMS >> 3 //muldiv(agent_ProcessMS, 110, 100)
         
     } .else bl {
         v[875] = muldiv(v[875], TT2, 10)
@@ -217,13 +218,13 @@ __fn agent_ref_stats(){
                 //@comment "cart1"
                 @if `v[341] & 16 {
                     v[871] += muldiv(v[719], 12, 100)
-                    v[868] = muldiv(v[868], 11, 10)
+                    agent_ProcessMS = muldiv(agent_ProcessMS, 11, 10)
                     
                 }
                 //@comment "cart2"
                 @if `v[341] & 32 {
                     v[871] += muldiv(v[719], 10, 100)
-                    v[868] = muldiv(v[868], 11, 10)
+                    agent_ProcessMS = muldiv(agent_ProcessMS, 11, 10)
                     
                 }
                 //@comment "crane"
@@ -239,32 +240,32 @@ __fn agent_ref_stats(){
  		@if `agent_TacticsOrderFlag & 2 {
  			@if `!(agent_ProcessObjBit & 67108864) {
 				//1.62BETA2... nerfed, because we introduce the team shieldwall aura effect
-				agent_ProcessAR += v[711]>>2 //muldiv(v[711], 30, 100) 30%->25%
-				agent_ProcessMR += v[712]>>2 //muldiv(v[712], 30, 100) 30%->25
+				agent_ProcessAR += v[711] >> 2 //muldiv(v[711], 30, 100) 30%->25%
+				agent_ProcessMR += v[712] >> 2 //muldiv(v[712], 30, 100) 30%->25
 				agent_ProcessEVA += v[714] / 3  //muldiv(v[714], 40, 100) 40%->33%
-				@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check{
-					agent_ProcessEVA += agent_ProcessEVA>>3
-					agent_ProcessAR += v[711]>>4//+6%
-					agent_ProcessMR += v[712]>>4//+6%
+				@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
+					agent_ProcessEVA += agent_ProcessEVA >> 3
+					agent_ProcessAR += v[711] >> 4//+6%
+					agent_ProcessMR += v[712] >> 4//+6%
 					agent_ProcessEVA += 3
 				}
 				//single shield wall give you 33% bonus so you have 133% base 
 				//And team shield wall will additinally give unit ([Current EVA]*8%) 
 				//so bacially mass weaker shield wall gives you 141% boost at least  - Eva effect is bit stronger than before1.162.
 				v[871] /= 2
-				v[868] = muldiv(v[868], 8, 10)
+				agent_ProcessMS = muldiv(agent_ProcessMS, 8, 10)
 				//@comment "#Force Spr"
 				v[850] = 2
                         }
                 }.elif `agent_TacticsOrderFlag & 4 {//stronger shield wall
  			@if `!(agent_ProcessObjBit & 67108864) {
-				agent_ProcessAR += v[711]/3 //muldiv(v[711], 40, 100) 40%->33%
-				agent_ProcessMR += v[712]/3 //muldiv(v[712], 40, 100) 40%->33%
+				agent_ProcessAR += v[711] / 3 //muldiv(v[711], 40, 100) 40%->33%
+				agent_ProcessMR += v[712] / 3 //muldiv(v[712], 40, 100) 40%->33%
 				agent_ProcessEVA += muldiv(v[714], 40, 100)//50%->40%
-				@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check{
-					agent_ProcessEVA += agent_ProcessEVA>>3//
-					agent_ProcessAR += v[711]>>4//+6%
-					agent_ProcessMR += v[712]>>4//+6%
+				@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
+					agent_ProcessEVA += agent_ProcessEVA >> 3//
+					agent_ProcessAR += v[711] >> 4 //+6%
+					agent_ProcessMR += v[712] >> 4 //+6%
 					agent_ProcessEVA += 3
 				}
 				//single strong shield wall gives you 40% bonus so you have 140% base
@@ -272,7 +273,7 @@ __fn agent_ref_stats(){
 				//so basically mass shield wall gives you 148% base - it seems bit weaker than before 1.162 - but still you have +3 assured eva bonus + anti ranged bonus.
 				
 				v[871] /= 2
-				v[868] = muldiv(v[868], 8, 10)
+				agent_ProcessMS = muldiv(agent_ProcessMS, 8, 10)
 				agent_ProcessObjBit |= 8192
 				//@comment "#Force Spr"
 				v[850] = 2
@@ -280,16 +281,16 @@ __fn agent_ref_stats(){
                         
                 }.elif `agent_TacticsOrderFlag & 1 {//@comment "##pikewall"
                     v[865] = muldiv(v[865], 12, 10)
-                    agent_ProcessAS -= agent_ProcessAS>>3 //muldiv(v[871], 88, 100)
+                    agent_ProcessAS -= agent_ProcessAS >> 3 //muldiv(v[871], 88, 100)
 
                     v[869] += 5000
-                    v[868] /= 2
+                    agent_ProcessMS /= 2
                     //@comment "##knock back immunity"
                     agent_ProcessObjBit |= BaseObjBit_FLAG_Immune_to_Knock_back
                     //@comment "#ForceSpr"
                     v[850] = 2
                     
-                } .elif `agent_TacticsOrderFlag & 8 {//@comment "##Skirmishing" 
+                } .elif `agent_TacticsOrderFlag & 8 { //@comment "##Skirmishing" 
                     v[870] = v[869] / 2
                     v[869] = muldiv(v[869], 9, 10)
                     v[865] = muldiv(v[865], 9, 10)
@@ -297,15 +298,15 @@ __fn agent_ref_stats(){
                     
                 } .elif `agent_TacticsOrderFlag & 16 {//@comment "##Cast Support"
                     v[870] = v[869] / 2
-                    v[869] += v[869]>>3 //muldiv(v[869], 11, 10)
-                    v[868] += agent_ProcessMS>>2 //muldiv(v[868], 75, 100)
+                    v[869] += v[869] >> 3 //muldiv(v[869], 11, 10)
+                    agent_ProcessMS += agent_ProcessMS >> 2 //muldiv(agent_ProcessMS, 75, 100)
                     v[873] += 2
                     
                 }.elif `agent_TacticsOrderFlag & 64 {//@comment "##Rallying"
                     v[863] += muldiv(v[711], 10, 100)
                     v[864] += muldiv(v[712], 10, 100)
                     v[871] /= 2
-                    v[868] = muldiv(v[868], 8, 10)
+                    agent_ProcessMS = muldiv(agent_ProcessMS, 8, 10)
                     agent_ProcessWill += agent_ProcessWill / 2 //muldiv(v[875], 50, 100)
                     v[876] = 0
                     
@@ -313,7 +314,7 @@ __fn agent_ref_stats(){
                     v[863] += muldiv(v[711], 10, 100)
                     v[864] += muldiv(v[712], 10, 100)
                     v[871] /= 2
-                    v[868] = muldiv(v[868], 8, 10)
+                    agent_ProcessMS = muldiv(agent_ProcessMS, 8, 10)
                     v[875] += muldiv(v[875], 50, 100)
                     v[876] += 500000
                     
@@ -331,19 +332,19 @@ __fn agent_ref_stats(){
 #Morale Check End#
 #################"*/
     //@comment "#In Melee Combat"
-    //v[0] = v[681] >= 1 ? (v[868..874] = [divmul(v[868], 100, 75), v[869], v[870], muldiv(v[871], 9, 10), v[872], divmul(v[873], 5, 4), agent_ProcessObjBit & ~16384 & ~1 & ~134217728]) : 0
+    //v[0] = v[681] >= 1 ? (v[868..874] = [divmul(agent_ProcessMS, 100, 75), v[869], v[870], muldiv(v[871], 9, 10), v[872], divmul(v[873], 5, 4), agent_ProcessObjBit & ~16384 & ~1 & ~134217728]) : 0
     @if agent_MeleeFightTimer > 1 {
-	    agent_ProcessMS -= agent_ProcessMS>>2 //= divmul(v[868], 100, 75)
-	    agent_ProcessAS -= agent_ProcessAS>>3
-	    agent_ProcessSPReg -= agent_ProcessSPReg>>2 //= muldiv(agent_ProcessSPReg,5,4) //-25%
-	    agent_ProcessObjBit &= -134234114//~134234113(BaseObjBit_FLAG_SpeedBonus)//~16384 & ~1 & ~134217728
+	    agent_ProcessMS -= agent_ProcessMS >> 2 //= divmul(agent_ProcessMS, 100, 75)
+	    agent_ProcessAS -= agent_ProcessAS >> 3
+	    agent_ProcessSPReg -= agent_ProcessSPReg >> 2 //= muldiv(agent_ProcessSPReg,5,4) //-25%
+	    agent_ProcessObjBit &= -134234114 //~134234113(BaseObjBit_FLAG_SpeedBonus)//~16384 & ~1 & ~134217728
 
 	    //Crowded?
-	    agent_ProcessMS -= v[Ptr5] & FLAG_Maptile_Crowded ? agent_ProcessMS>>3:0 //-12.5%
+	    agent_ProcessMS -= v[Ptr5] & FLAG_Maptile_Crowded ? agent_ProcessMS >> 3 : 0 //-12.5%
 
     }.elif `agent_ProcessObjBit & BaseObjBit_FLAG_SpeedBonus {
 
-	agent_ProcessAD += agent_AAType != 1 ? agent_ProcessMS / 10:0//if not ranged troop, gain 10% of MS now 8%->10%
+	agent_ProcessAD += agent_AAType != 1 ? agent_ProcessMS / 10 : 0 //if not ranged troop, gain 10% of MS now 8%->10%
         
     }
     //@comment "#Set Process Parameters"

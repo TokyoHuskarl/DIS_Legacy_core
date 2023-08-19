@@ -149,7 +149,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				TT1 = Temp4 + 100 // ... isn't this needless?
 				@if agent_TargetAgentID != agent_LastTarget { // check if Target is switched
 				    @if `!(agent_AgentBits & AgentBits_FLAG_ForcemoveFlag) { // Forcemove order isn't given to the agent
-					    agent_AI_routine_bits |= AI_routine_bits_FLAG_RayCast // RayCast to check if the agent can reach at the target straightly
+
+					    // RayCast to check if the agent can reach the target straightly AND it's melee troop
+					    agent_AI_routine_bits |= agent_AAType == 0 ? AI_routine_bits_FLAG_RayCast : 0 
 
 					@if `agent_AI_routine_bits & AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue { // AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
 					    agent_MovementOrder = MovementOrder_TYPE_move_ordered // Change movement order to loose one
@@ -346,6 +348,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				    agent_AI_routine_bits &= -49153//~49152 - AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
 				    
 				}
+
 				LEGS_MAIN_Agent_tries_to_stop.on
 				agent_MovementOrder = MovementOrder_TYPE_do_not_move
 				//@comment "Not casting skill"
@@ -509,10 +512,10 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 		    LEGS_MAIN_Agent_tries_to_stop.on
 		    agent_ActionFlag |= 1
 		    //@comment "hovering"
-		    @if `agent_AgentBits & 1024 {
-			agent_ForceSprite = 3 // hovering animation
+		    @if `agent_AgentBits & AgentBits_Hovering {
+			agent_ForceSprite = ForceSprite_MOVE // hovering animation
 			LEGS_MAIN_Agent_tries_to_stop.off
-			v[1301].copy v[621], 2
+			v[1301].copy agent_MoveUvectorX, 2
 			
 		    }
 		    
@@ -529,7 +532,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			// muldiv is slower than lower past proc, but in this case you need to use this in order to avoid var overflow
 			v[351..352] *= 100000 
 			v[351..352] /= agent_MilPixMoveOrderedPointDist
-			v[621] .add relX_sub_TargX_saved, 2
+			agent_MoveUvectorX .add relX_sub_TargX_saved, 2
 			v[621..622] /= TT2 + 1
 
 
@@ -538,7 +541,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 		//@comment "Attacking"
 		@if agent_ActionState == 1 {
 		    //@comment "#Set ForceSprite Attack"
-		    agent_ForceSprite = 1
+		    agent_ForceSprite = ForceSprite_ATTACK
 		    agent_ActionFlag = agent_AttackFrame > 0 ? agent_ActionFlag | ActionFLag_FLAG_Hold_direction : agent_ActionFlag & ~ActionFLag_FLAG_Hold_direction
 		    LEGS_MAIN_Agent_tries_to_stop.on
 		    
@@ -580,7 +583,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 		    agent_AgentBits &= ~AgentBits_FLAG_walldetected // kill wall flag
 		    agent_KnockBackTimer -= 1 // --KBtimer
 		    
-		    @if agent_KnockBackTimer < 1 { // Knock Back ends in this frame
+		    @if agent_KnockBackTimer < 1 { // If Knock-Back ends in this frame
 			
 			@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI { // normal military unit 
 			    @if agent_StanceOrder == ORD_ATK { // was ordered to attack some unit
@@ -619,7 +622,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 	    agent_MilPixX.copy Temp11, 2
 	    Temp11 .add v[1061], 2
-	    Temp11.copy v[303], 2
+	    Temp11.copy Temp3, 2
 
 	    //v[311..312] /= 10000
 	    //@comment "ずれ計算"
@@ -681,15 +684,15 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 			
 			// get TileXY where the agent goes
-			v[303] .add agent_MilPixVx, 2
-			macro_cord_diff(v[303] Temp4)
+			Temp3 .add agent_MilPixVx, 2
+			macro_cord_diff(Temp3 Temp4)
 
 			// now sub to fit DIS map
-			v[303].sub v[69], 2
+			Temp3.sub v[69], 2
 			Temp16 = Temp4
 			v[__id(Temp16)..__id(Temp17)] *= v[2061]
 			
-			Temp17 += v[303] //Tile Number vertical
+			Temp17 += Temp3 //Tile Number vertical
 			Temp18 += Temp16 //Tile Number horizontal
 
 	
@@ -710,7 +713,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			@if Is_Paused .isOff() {
 
 				@if v[315] == 0 {
-				Temp16 += v[303] //Tile Number of where unit goes
+				Temp16 += Temp3 //Tile Number of where unit goes
 					//@comment "nowall"
 					Temp20 = v[1182] + Temp16
 					v[315] = v[Temp20] % 100
@@ -730,7 +733,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					//@if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback {//horse back}
 					@if agent_MovementOrder > 1 {
 						//@comment "#Then break wall detection flag"
-						agent_AgentBits &= -8388609//~8388608 ~AgentBits_FLAG_walldetected
+						agent_AgentBits &= -8388609 //~8388608 ~AgentBits_FLAG_walldetected
 						
 					}
 					agent_MilPixX .add var1, 2

@@ -67,17 +67,14 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 
 							@if `agent_ai_routine_bits & ai_routine_bits_flag_wp_set_by_raycast {
 								// agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
-
-								// kill Raycast flag
-								agent_AI_routine_bits &= ~AI_routine_bits_FLAG_WP_set_by_RayCast
-
-								@if `agent_AI_routine_bits & 49152 {
-									agent_AI_routine_bits &= ~49152
-								}
+								
+								agent_AI_routine_bits &= ~AI_routine_bits_FLAG_WP_set_by_RayCast // kill Raycast flag
+								agent_LeftWPtoChase = -1 // Agent does not chase left WPs anymore
+								agent_AI_routine_bits &= ~AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue
 							}
 
 							@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_ForcemoveFlag) {
-								// if it's not force move, then 
+								// if it's not forced prioritizing movement, then 
 								agent_MovementOrder = MovementOrder_TYPE_move_ordered
 
 							}
@@ -90,27 +87,27 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 
 						// get target Map Coord.
 						TT2 =__id(agent_HoldPointX) // Pathfinding_AgentData_head_ptr + 41
-						Temp17 = max(agent_LeftWPtoChase, 0)
+						
+						Temp17 = max(agent_LeftWPtoChase, 0) // Use Temp17 to count how many wps left to chase 
 						TT2 += Temp17 * 2
-						v[TT2].copy var1, 2
+						v[TT2].copy var1, 2 // get WP coord from agent WP array
 						// convert into tile coordinate - maybe you can deal with this without this func if the PF agent has the target agent
 						@call .cev 2000
 						reg1.copy var3, 2
 
-
-						// get raycasting agent's one.
+						// get raycasting agent's Coord.
 						agent_MapX.copy var1, 2
 						var1.sub v[69],2 // convert into tile coord
 						
 						// then convert both into Node Coord
 						v[__id(var1)..__id(var4)] /= 2
 
-						// Then do node ray casting
+						// node ray casting
 						func_nodecheck_RayCast(var1,var2,var3,var4)
-						@if reg1 == 1 { // wall found
+						@if reg1 == 1 { // obstacle found
 							agent_AI_routine_bits |= (AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_WP_set_by_RayCast)
 
-						}.else bl {
+						}.else bl { // no obstacle found
 							agent_AI_routine_bits &= ~AI_routine_bits_FLAG_WP_set_by_RayCast
 							agent_AI_routine_bits &= ~AI_routine_bits_FLAG_RayCast
 						}
@@ -118,7 +115,6 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 
 					// after raycasting, kill the flag
 					Ptr1 = Pathfinding_AgentData_head_ptr + 1
-
 					agent_AgentType.copy v[Ptr1], 250
 				}
 
@@ -161,9 +157,9 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 
 						// Use TT1 as a Ptr to agent_AI_routine_bits
 						TT1 = Pathfinding_AgentData_head_ptr + 34
-						v[TT1] &= ~AI_routine_bits_FLAG_RayCast 
-						@if `!(v[TT1] & AI_routine_bits_FLAG_Pathblocked) {
-							// end Pathfinding
+						v[TT1] &= ~AI_routine_bits_FLAG_RayCast // kill raycasting flag
+						@if `!(v[TT1] & AI_routine_bits_FLAG_Pathblocked) { // the agent seemingly cannot reach the goal node
+							// then end Pathfinding
 							v[TT1] &= AI_routine_bits_KILL_FLAG_PATHFINDING // -16385//~16384
 						}
 							

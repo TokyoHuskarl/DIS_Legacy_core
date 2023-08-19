@@ -55,11 +55,11 @@ __fn func_control_moveorder_proc_let_units_attack {
 	    }
 	    v[v[301] + 3] &= ~1048576 //AgentBits_FLAG_EnableBasicAI
 	    // "#########"
-	    @if v[275] >= 1 {
+	    @if LEGV_WPamount_to_set >= 1 {
 		v[293] = 273
-		v[293] -= v[275] * 2
+		v[293] -= LEGV_WPamount_to_set * 2
 		v[299] = v[301] + 41
-		@loop v[275] {
+		@loop LEGV_WPamount_to_set {
 		    v[v[293]].copy v[v[299]], 2
 		    v[293] += 2
 		    v[299] += 2
@@ -68,7 +68,7 @@ __fn func_control_moveorder_proc_let_units_attack {
 		
 		v[v[293]].copy v[v[299]], 2
 		// "#Set 現在目指してるWPと総WP数"
-		v[v[294]] = v[275]
+		v[v[294]] = LEGV_WPamount_to_set
 		v[v[301] + 242] = 3
 		v[v[301] + 242] = 2
 		
@@ -730,7 +730,7 @@ __fn func_control_moveorder_mil {
 		    }
 		    
 		}
-		@if v[275] >= 1 {
+		@if LEGV_WPamount_to_set >= 1 {
 		    // "WPをとおる"
 		    v[263].copy v[261], 2
 		    v[265].copy v[263], 2
@@ -812,10 +812,11 @@ __fn func_control_moveorder_mil {
 				v[v[295]] = v[v[301] + 34] & AI_routine_bits_FLAG_Manual_Ordered ? 4 : v[v[295]]
 				
 			    }
-			    @if v[275] >= 1 {
+
+			    @if LEGV_WPamount_to_set >= 1 {
 				v[293] = 273
-				v[293] -= v[275] * 2
-				@loop v[275] {
+				v[293] -= LEGV_WPamount_to_set * 2
+				@loop LEGV_WPamount_to_set {
 				    v[v[293]].copy v[v[299]], 2
 				    v[293] += 2
 				    v[299] += 2
@@ -824,7 +825,7 @@ __fn func_control_moveorder_mil {
 				
 				v[v[293]].copy v[v[299]], 2
 				// "#Set 現在目指してるWPと総WP数"
-				v[v[294]] = v[275]
+				v[v[294]] = LEGV_WPamount_to_set
 				v[273].copy v[361], 2
 				v[273] .add v[395], 2
 				
@@ -889,7 +890,7 @@ __fn func_control_moveorder_mil {
 			    v[390] += 1
 			    v[390] %= v[399]
 			    @if v[390] == 0 {
-				@if v[275] >= 1 {
+				@if LEGV_WPamount_to_set >= 1 {
 				    v[393].copy v[273], 2
 				    v[273] .add v[397], 2
 				    v[273].copy v[393], 2
