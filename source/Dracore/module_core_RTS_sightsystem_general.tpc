@@ -16,7 +16,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 
 	v[2921..2922] %= 80
 	v[2931] = v[4527] + v[2923]
-	v[346] = muldiv(12, v[1001], 800)
+	TT6 = muldiv(12, v[1001], 800)
 
 	TT2 = v[4525]
 
@@ -24,14 +24,14 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	// ACHTUNG
 	v[4001..4016] = 7
 	@loop v[4526] .dst TT1 {
-	    v[348] =TT1 % v[346]
-	    v[349] =TT1 / v[346]
+	    TT8 = TT1 % TT6
+	    TT9 = TT1 / TT6
 
-	    v[345] = v[2931] + v[348]
-	    v[345] += v[349] * v[2927]
-	    TT10 = v[v[345]] & 1 ? 100 : v[v[345]] & 2 ? 50 : 0
-	    TT3 = 80 * v[348]
-	    v[344] = 80 * v[349]
+	    TT5 = v[2931] + TT8
+	    TT5 += TT9 * v[2927]
+	    TT10 = v[TT5] & 1 ? 100 : v[TT5] & 2 ? 50 : 0
+	    TT3 = 80 * TT8
+	    v[344] = 80 * TT9
 	    TT3 .sub v[2921], 2
 	    @pic[TT2].move {
 		.pos TT3, v[344] .topLeft
@@ -384,43 +384,44 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 	    }
 	    
 	    @wait 0
-	    //@if LEGS_Request_Refresh_Obs .isOn() {
-            @if `LEGV_FoWManagementFlags & 2 { //EXPERIMENTAL
-		@if s[78] .isOn() {
-		    @if s[299] .isOff() {
-			@pic[v[2932]].getInfo .cewh .baseRect TT1, TT1, TT2, TT3
-			@pic[v[2932]].show {
-			    "ui\minimapback"
-			    .pos v[1282], v[1283] .topLeft
-			    .chromakey 1
-			    .scale 100
-			    .trans 0
-			    .rgbs 100, 100, 100, 100
-			    .mapLayer 9
-			    .eraseWhenTransfer
-			}
 
-			// use Array operand!
-			v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
-			@loop v[1276] .dst v[344] {
-			    // tempA = v[344] * v[1277] 
-			    // tempB = v[4802] + v[344] ...no need to calc these in inner loop
-			    @loop v[1277] .dst TT3 {
-				v[v[4563] + TT3 + v[344] * v[1277]] = v[v[4527] + v[v[4803] + TT3] + v[v[4802] + v[344]] * v[2927]] & 2 ? 0x0 : 0xFF111111
+	    //@if LEGS_Request_Refresh_Obs .isOn() {
+        @if `LEGV_FoWManagementFlags & 2 { //EXPERIMENTAL
+				@if s[78] .isOn() {
+					@if s[299] .isOff() {
+							@pic[v[2932]].getInfo .cewh .baseRect TT1, TT1, TT2, TT3
+							@pic[v[2932]].show {
+								"ui\minimapback"
+								.pos v[1282], v[1283] .topLeft
+								.chromakey 1
+								.scale 100
+								.trans 0
+								.rgbs 100, 100, 100, 100
+								.mapLayer 9
+								.eraseWhenTransfer
+							}
+
+							// use Array operand!
+							v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
+							@loop v[1276] .dst v[344] {
+								// tempA = v[344] * v[1277] 
+								// tempB = v[4802] + v[344] ...no need to calc these in inner loop
+								@loop v[1277] .dst TT3 {
+										v[v[4563] + TT3 + v[344] * v[1277]] = v[v[4527] + v[v[4803] + TT3] + v[v[4802] + v[344]] * v[2927]] & 2 ? 0x0 : 0xFF111111
+								
+								}
+								
+								
+							}
+							
+							@pic[v[2932]].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
+							
+					}
+					
+				}
+				//LEGS_Request_Refresh_Obs.off
+				LEGV_FoWManagementFlags &= ~2
 				
-			    }
-			    
-			    
-			}
-			
-			@pic[v[2932]].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
-			
-		    }
-		    
-		}
-		//LEGS_Request_Refresh_Obs.off
-		LEGV_FoWManagementFlags &= ~2
-		
 	    }
 	    //@comment "##################"
 	    @wait 0

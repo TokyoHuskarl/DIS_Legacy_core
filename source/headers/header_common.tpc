@@ -4,13 +4,13 @@
 //And you need to put tpc.exe and its blueprint txt files in Append directory.
 
 //YOU HAVE TO CHANGE HERE TO BUILD ALL LDB AT ONCE
-__if PSEUDO_ARG_SET == 0{
+__if PSEUDO_ARG_SET == 0 {
 	//def MAKE_TYPE = 0
 }
 
 def DEBUG_BUILD = 0 //0 = release, 1 = debug
 
-__if MAKE_TYPE == 0{
+__if MAKE_TYPE == 0 {
 #apply
 #directory "./../../.."
 #blueprint.db("./../../def_ldb.txt")

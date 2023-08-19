@@ -93,9 +93,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 		}
 	
 
-	@comment "########
-#Sight System
-########"
+	@comment "#########Sight System########"
 	@if s[300] .isOff() {
 	    s[2001..2500].on
 	    s[299].on

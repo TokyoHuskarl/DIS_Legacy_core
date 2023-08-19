@@ -1,4 +1,4 @@
-// misc functions
+/ misc functions
 
 __fn MAIN_CEV_RTS_FRAME_COUNT {
 	@comment "module_core_main_RTS_Frame_Count.tpc"
@@ -252,24 +252,6 @@ __fn getTileInfoPtr $return $x $y {
 // Wall Check
 __fn Is_TileInfo_Wall_to_reg9 $tileptr {
 	reg9 = (v[$tileptr] % 100) > 21 ? 1 : 0
-}
-
-
-// debug function, will be removed
-__fn RayCastTest $x $y {
-	func_tilecheck_RayCast(40,40,$x,$y)
-	@if reg1 == 1 {
-		play_system_se ("decide1" 100 100)
-		__if DEBUG_BUILD == 1 { 
-			var1 = rnd(5,8)
-			@map.rewrite {
-			    .pos($x, $y)
-			    .size(1, 1)
-			    .lower
-			    .single(var1)
-			}
-		}
-	}
 }
 
 // use var1~4

@@ -285,9 +285,13 @@ struct("agent",{
 
 	agent_PerkFlagBits1_FLAG_Pathfinder = 128
 
+	AgentBits_Inertia = 16
+
 	AgentBits_Collided_Other_Agent = 64
 	AgentBits_Endpoint_Collision_Trouble = 128
 	AgentBits_Movement_Giveup = 256
+
+	AgentBits_Hovering = 1024
 
 	AgentBits_FLAG_KILLED = 16384 
 
@@ -428,6 +432,12 @@ struct("agent",{
 
 
 	//Other
+
+	//SPRITE_DEAD = 0 ???
+	//SPRITE_STAND = 0 ???
+	ForceSprite_ATTACK = 1
+	ForceSprite_MOVE = 3
+
 	Address_agent_inSight_switch_array_head = 2001
 	}
 

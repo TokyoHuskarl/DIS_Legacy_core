@@ -6,8 +6,8 @@ __fn func_blush_elevation {
 	v[51].copy var1, 2
 	var2 -= 8
 	@call .cev 2000
-	Temp19 = reg1 - v[150]/2
-	Temp20 = reg2 - v[150]/2
+	Temp19 = reg1 - v[150] / 2
+	Temp20 = reg2 - v[150] / 2
 	@loop v[150] .dst v[343] {
 	    Temp21 = Temp19 + v[343]
 	    @if `between(Temp21, 0, v[2061]) {
