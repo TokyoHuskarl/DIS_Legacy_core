@@ -1,4 +1,7 @@
-__fn func_logupdate_begin{
+// you should move these functions to module files, not header
+
+//?
+__fn func_logupdate_begin {
 
 	var1 = v[1136] + v[1155]
 	@pic[var1].erase
@@ -9,7 +12,9 @@ __fn func_logupdate_begin{
 	}
 
 }
-__fn func_logupdate_end{
+
+//
+__fn func_logupdate_end {
 	var2 = 2
 	var3 = v[4515]
 	var4 = v[239]
@@ -42,7 +47,7 @@ __fn func_show_msg $str {
 	    .scale 100
 	    .trans 30
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], v[4511]
+	    .font Font_UI, Font_UI_size
 	    .spacing 0, 4
 	    .skin "" .nobg .noframe .noPadding
 	    .mapLayer 8
@@ -65,15 +70,15 @@ __fn func_errlog $str {
 	t[3000].asg "\c[17]ERROR: "
 	t[3000].cat $str .extract
 	func_logupdate_begin()
-	v[341] = 2
+	TT1 = 2
 	@pic[v[1155]].strpic {
 	    t[3000]
-	    .pos v[341], v[1126] .bottomLeft
+	    .pos TT1, v[1126] .bottomLeft
 	    .size 0, 0    .chromakey 1
 	    .scale 100
 	    .trans 30
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], v[4511]
+	    .font Font_UI, Font_UI_size
 	    .spacing 0, 4
 	    .skin "" .nobg .noframe .noPadding
 	    .mapLayer 8
@@ -102,7 +107,7 @@ __fn func_devlog $str{
 	    .scale 100
 	    .trans 30
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], v[4511]
+	    .font Font_UI, Font_UI_size
 	    .spacing 0, 4
 	    .skin "" .nobg .noframe .noPadding
 	    .mapLayer 8

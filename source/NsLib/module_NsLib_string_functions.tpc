@@ -40,6 +40,20 @@ __fn str_remove_comment_out $ptr_target_str {
 
 }
 
+__fn str_toNum_array $getT $setV $amount {
+	var1 =__id($getT) 
+	var2 =__id($setV) 
+	var3 = $amount
+	@loop var3 {
+		t[var1].toNum reg1
+		v[var2] = reg1
+		var1 += 1
+		var2 += 1
+	}
+
+}
+
+
 
 /*
 __fn str_replace_string_all $ptr_target_str $pat $sub {
