@@ -169,13 +169,16 @@ cev[2093], "ScreenshotManager", .parallel, {
 
 }
 
-
+//
 
 
 //Parallel funcs end
 
 
-
+cev[2101] .name("UI:JS UI order interpreter"), .parallel, .cond(ADR_CALL_UI_RENDERING_FLAG),{
+	NsGUI_CEV_UI_RENDERING_MANAGEMENT()
+	Bool_RUN_UI_ORDER.off
+}
 
 cev[2131] .name("UI:Pick_faction") {
 	func_ui_start_pick_faction_window()
