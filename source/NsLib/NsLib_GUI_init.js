@@ -22,9 +22,12 @@ function deblog(text) {
 
 
 // UI types set
-const UItyp_undefined = 0,
-	UItyp_checkbox = 1,
-	UItyp_simplebutton = 2;
+const UIOBJ_undefined = 0,
+	UIOBJ_checkbox = 1,
+	UIOBJ_simplebutton = 2,
+	UIOBJ_simplesprite = 3,
+	UIOBJ_strpic = 4,
+	UIOBJ_radiobutton = 5;
 
 // UI render order
 const PICCMD_Keep = 0,
@@ -58,6 +61,7 @@ function getRM(typ,add) {
 const RM_MousePointer = {
 	x: 51, // v[51]
 	y: 52, // v[52]
+	click: 43, // ?
 }
 
 // RM information var addresses - if these elements become directly accessible through RM2k3 Object later, this part will be removed
@@ -72,9 +76,34 @@ const adr_RMstr_UIorder = 731; // -> NsLib_GUI_functions.tpc -> Str_UI_ORDER
 const adr_RMbool_RUN_RENDER = 131; // -> NsLib_GUI_functions.tpc -> Str_UI_ORDER
 
 
+// ------------------------------------------------
+// DIS objects
+// ------------------------------------------------
 
-// DIS object only
 var DIS = DIS || {};
+
+const trp = {}; // troop ID table
+
+DIS = { // DIS fundamental components
+	initID: function(){ // this must be called every after DIS game id is loaded on the game
+
+		// macro (man there must be more better way to make macro but idk js very well)
+		let parse_DISid = function(line) {
+			const [key, value] = line.split('=');
+			trp[key] = parseInt(value,10);
+		};
+
+		// starts from troop ID
+		let TroopIDstr = gett(801); // get scripts/const_troops.txt
+		let lines = TroopIDstr.trim().split('\n');
+		lines.forEach(line => {
+			parse_DISid(line)
+		});
+		
+	},
+},
+
+
 
 DIS.log = {
 	
@@ -116,10 +145,75 @@ DIS.string = {
 
 }
 
+// ------------------------------------------------
+// DIS Command Object
+// ------------------------------------------------
 
-let mousePointer = {
+// DIS Command types
+const CTYP_MAP = 1,
+	CTYP_SND = 2;
+
+// -> Game_scripts_general.tpc
+const adr_RMbool_RUN_CMD = 132,
+	adr_RMStr_CmdOrder = 795;
+
+// DIS Command Object
+var Cmd = {
+	// DIS command
+	CmdQueue: "",
+
+	setCmstr: function(typ,name,ord){
+		Cmd.CmdQueue += (typ + "," + name + "," + ord + ";");
+	},
+
+
+	// give signal to run DIS commands 
+	run: function() {
+		if (this.CmdQueue != "") {
+			// give raw cmd as string to RPGMaker
+			sett(adr_RMStr_CmdOrder,this.CmdQueue);
+			// turn on RM switch to run interpreter
+			sets(adr_RMbool_RUN_CMD,1);
+			
+			this.CmdOrder = ""; // initialize Command Order
+		}
+	},
+
+	map: {
+		CmdType: CTYP_MAP,
+
+
+		spawnAgent: function(troopid,x,y) {
+			Cmd.Qset(this.CTYP_MAP,"spawnAgent",`${troopid},${x},${y}`);
+		},
+
+	},
+
+	snd: {
+		CmdType: CTYP_SND, 
+			playGlobalSE: function(file,vol,tempo,bal) { // "cmd_play_global_sound"
+			
+		},
+
+
+	},
+
+
+
+};
+
+
+
+
+
+
+let mouseState = {
 	x: 0,
 	y: 0,
+	click: 0,
+	Ldrag: 0,
+	Rdrag: 0,
+	Mdrag: 0,
 }
 
 
@@ -132,7 +226,7 @@ let mousePointer = {
 let NsGUImgr = {
 
 	scene: 0,
-	mousePointer: mousePointer,
+	mouseState: mouseState,
 	presentations: [],
 
 	resetPresens: function() {
@@ -143,9 +237,14 @@ let NsGUImgr = {
 
 	// get mouse status
 	controlUpdate: function() { 
-		this.mousePointer.x = getv(RM_MousePointer.x);
-		this.mousePointer.y = getv(RM_MousePointer.y);
+		this.mouseState.x = getv(RM_MousePointer.x);
+		this.mouseState.y = getv(RM_MousePointer.y);
+		this.mouseState.click = getv(RM_MousePointer.click);
+		this.mouseState.Ldrag = getv(RM_MousePointer.click) == 1005 ? this.mouseState.Ldrag + 1 : 0; // if == 1, it's clicked.
+
 	},
+
+
 	
 
 	// try
@@ -206,13 +305,13 @@ class Ns_Presentation {
 		};
 
 		// store rendering order string
-		this.UI_RenderingOrder2RMcev = rendering_order_string
+		this.UI_RenderingOrder2RMcev = rendering_order_string;
 
 		
 		
 	}
 
-	add = function(component){
+	add = function(component) {
 		this.UI_components.push(component); // push to components array
 		this.alloc_pid += component.set_to_presen(this.alloc_pid); // the presentation allocates pid to the object and its children
 	}
@@ -221,11 +320,11 @@ class Ns_Presentation {
 
 
 // Fundamental class for every UI objects.
-// An UI object usually has one RMpicture, its pid is set when it is pushed to the presentation.components array.
+// An UI object usually has one RMpicture, when the object is pushed to the presentation.components array, its pid is set.
 class UI_object {
 	// x, y
 	constructor(x,y) {
-		this.UI_objtype = UItyp_undefined;
+		this.UI_objtype = UIOBJ_undefined;
 		this.pid = 0;
 		this.x = x;
 		this.y = y;
@@ -234,34 +333,42 @@ class UI_object {
 		this.transparency = 0; // 0 to 100
 	}
 
+
 	setpic = function(picture_file) {
-		this.picture = picture_file
+		this.picture = picture_file;
+		this.UI_objtype = UIOBJ_simplesprite;
 	}
 
 	settxt = function(string) {
 		this.text = string;
+		this.UI_objtype = UIOBJ_strpic;
 	}
 
 
 	render = function() {
 		// override me if you want.
-		let order_to_TPC = -1; // 
-		
-		if (this.picture != NULL) { // show picture cmd
-			
+		// initial UIobj render method is quite simple.
 
-		} else if (this.text != NULL) { // show string picture cmd
+		let ORDER = ""; // init
 
+		if (this.picCmd == PICCMD_Refresh) { // renew picture 
+			if (this.picture != NULL) { // call show picture cmd
+				ORDER = `${this.UI_objtype},${this.pid},${this.picCmd},${this.picture},${this.x},${this.y}`;
+				
+			} else if (this.text != NULL) { // show string picture cmd
+				ORDER = `${this.UI_objtype},${this.pid},${this.picCmd},${this.text},${this.x},${this.y}`;
 
+			}
 		}
 
-		return order_to_TPC;
+		this.picCmd == PICCMD_Keep;
+		return ORDER;
 		
 	}
 
 	UIcheck = function() {
 		// override me
-			
+		
 	}
 
 	L_click = function() {
@@ -272,6 +379,16 @@ class UI_object {
 	R_click = function() {
 		// override me
 			
+	}
+
+	overlap = function() {
+		// override me
+			
+	}
+
+	
+	addChild = function(childobj) {
+		this.children.push(childobj); // push to components array
 	}
 
 	set_to_presen = function(allocpid) {
@@ -294,8 +411,8 @@ class UI_object {
 // (you may think this would do bit flag management, but sadly this code doesn't work for it yet.)
 class Simple_Checkbox extends UI_object {
 	constructor(x,y,targ_type,targ_address) {
-		super(x,y)
-		this.UI_objtype = UItyp_checkbox;
+		super(x,y);
+		this.UI_objtype = UIOBJ_checkbox;
 		this.targTyp = targ_type; // RMvar or RMswitch
 		this.targAddr = targ_address; // RM v[n]
 		this.flag = Boolean(getRM(targ_type,targ_address));
@@ -305,15 +422,12 @@ class Simple_Checkbox extends UI_object {
 	}
 
 	setCheckMark = function(flag) {
-		if (flag = !flag) {
-			this.txt = " x";
-		} else {
-			this.txt = " ";
-		}
+		this.txt = (flag == !flag) ? " x" : " " 
 	}
 
 	Lclick = function() {
 		// toggle check box flag
+		// use RMset
 		if (this.targTyp == RMswitch) {
 			sets(this.targAddr,this.flag)
 		} else if (this.targTyp == RMvar) {
@@ -333,8 +447,56 @@ class Simple_Checkbox extends UI_object {
 
 	render = function() {
 		// checkbox,pid,picCmd,text
-		//this.picCmd = PICCMD_Refresh; // debug
+		// // debug
 		let ORDER = `${this.UI_objtype},${this.pid},${this.picCmd},${this.txt},${this.x},${this.y}`;
+		this.picCmd = PICCMD_Keep; // reset picCmd
+		return ORDER;
+	}
+
+	
+}
+
+class Radiobutton extends UI_object {
+	constructor(x,y,targ_address) {
+		super(x,y)
+		this.UI_objtype = UIOBJ_radiobutton;
+		this.targAddr = targ_address; // RM v[n]
+		this.selected = getv(targ_address); // RM v[n]
+		this.picCmd = PICCMD_Refresh;
+	}
+
+	
+	addStrpic = function(relX,relY,text) { // set relative position to Parent Radiobutton object
+		// make a quite simple string picture and add it as a child
+		let childstr = new UI_object(relX + this.x,relY + this.y); 
+		childstr.settxt(text);
+		this.addChild(childstr);
+	}
+	
+	addButton =  function(relX,relY,setnum) {
+		// make a simple button that turns on  and add it as a child
+		let childbut = new UI_object(relX + this.x,relY + this.y); 
+		this.addChild(childbut);
+	}
+
+	Lclick = function() {
+
+	}
+
+	UIcheck = function() {
+		// check hit box
+	}
+
+	render = function() {
+		// checkbox,pid,picCmd,text
+		// // debug
+		let ORDER = "";
+		for (let child of this.children) {
+			child.picCmd = this.picCmd;
+			ORDER += child.picCmd.render();
+		};
+
+		this.picCmd = PICCMD_Keep; // reset picCmd
 		return ORDER;
 	}
 
@@ -342,11 +504,9 @@ class Simple_Checkbox extends UI_object {
 }
 
 
-
-
-
 // init load
 {
-	deblog("aaa")
-
+	Cmd.map.spawnAgent(1,42,41);
+	deblog(Cmd.CmdQueue);
+	deblog("TRP_merc_mob = " + trp["TRP_merc_mob"])
 }

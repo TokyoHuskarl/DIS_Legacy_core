@@ -1,5 +1,6 @@
 // Header for PF system
 
+__if LOAD_HEADER_PF != 1 {
 
 // node structures are defined in -> "structures_map.tpc"
 // Node system configuration
@@ -67,5 +68,6 @@ def KILL_AI_routine_bits_FLAG_PFskip = ~AI_routine_bits_FLAG_PFskip
 
 //pathfinding funcs load
 #include "./../Dracore/module_core_RTS_pathfinding_functions.tpc"
+def LOAD_HEADER_PF = 1
 
-
+}

@@ -17,11 +17,9 @@ __fn agent_ref_stats(){
     //@comment "#SP fatigue penalty"
     agent_ProcessMS -= !(agent_ExMotionFlags & 2048) ? muldiv(agent_ProcessMS, agent_MaxSP - agent_SP, agent_MaxSP) / 2 / (!(agent_PerkFlagBits1 & 32768) ? 1 : 2) : 0
     //@comment "#ProcessCamo dealed in per3f"
-    /*@comment "##############
-#Terrain Check#
-##############"*/
-    //@comment "#Suitable Terrain"
-    @if `agent_AgentBits & 2 {
+    /*@comment "###############Terrain Check###############"*/
+
+    @if `agent_AgentBits & 2 { // agent is on suitable terrain
         agent_ProcessMS = muldiv(agent_ProcessMS, 120, 100)
         
     }
@@ -30,11 +28,11 @@ __fn agent_ref_stats(){
     @if `agent_AgentBits & 1 {
         //@comment "pathfinder"
         @if `agent_PerkFlagBits1 & agent_PerkFlagBits1_FLAG_Pathfinder {
-            agent_ProcessMS -= agent_ProcessMS>>2 //muldiv(agent_ProcessMS, 3, 4)
+            agent_ProcessMS -= agent_ProcessMS >> 2 // muldiv(agent_ProcessMS, 3, 4)
             agent_ProcessSPReg -= 1
             
         } .else bl {
-            agent_ProcessEVA -= agent_ProcessEVA>>2 //muldiv(v[866], 3, 4)
+            agent_ProcessEVA -= agent_ProcessEVA >> 2 // muldiv(v[866], 3, 4)
             agent_ProcessMS /= 2
             agent_ProcessSPReg -= 2
             
@@ -44,32 +42,32 @@ __fn agent_ref_stats(){
     //@comment "#Ice"
     @if `agent_AgentBits & 32 {
         agent_AgentBits |= 16
-        agent_ProcessMS += agent_ProcessMS>>2 //muldiv(agent_ProcessMS, 125, 100)
+        agent_ProcessMS += agent_ProcessMS >> 2 // muldiv(agent_ProcessMS, 125, 100)
         
     }
-    //cavalries and terrain effects
-    @if `!(agent_MoveTypeBIts & 1){//not flying
-	    @if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback{
-			@if `agent_PerkFlagBits1 & 128 {//Pathfinder
-			    agent_ProcessMS = agent_AgentBits & 8 ? muldiv(agent_ProcessMS, 80, 100) : agent_ProcessMS //cav in forest
-			    @if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill {
-				    agent_ProcessMS /= 2 //cav on hill 
-				    agent_SP = max(agent_SP-8,0)
-			    }
-			}.else bl{
-			    agent_ProcessMS = agent_AgentBits & 8 ? muldiv(agent_ProcessMS, 60, 100) : agent_ProcessMS //cav in forest
-			    @if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill {
-				agent_ProcessMS /= 3
-				agent_SP = max(agent_SP - 12,0)
-			    }
-			}
+    // cavalries and terrain effects
+    @if `!(agent_MoveTypeBIts & 1){ // not flying
+	    @if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback {
+				@if `agent_PerkFlagBits1 & 128 { // Pathfinder
+						agent_ProcessMS = agent_AgentBits & 8 ? muldiv(agent_ProcessMS, 80, 100) : agent_ProcessMS // cav in forest
+						@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill {
+							agent_ProcessMS /= 2 //cav on hill 
+							agent_SP = max(agent_SP - 8,0)
+						}
+				}.else bl{
+						agent_ProcessMS = agent_AgentBits & 8 ? muldiv(agent_ProcessMS, 60, 100) : agent_ProcessMS //cav in forest
+						@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill {
+					agent_ProcessMS /= 3
+					agent_SP = max(agent_SP - 12, 0)
+						}
+				}
 	    }.else bl{ //infantries
 		    
 			@if `agent_PerkFlagBits1 & 128 {//Pathfinder
-			    agent_ProcessMS -= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill ? agent_ProcessMS >> 5 :0 
+			    agent_ProcessMS -= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill ? agent_ProcessMS >> 5 : 0 
 			}.else bl{
 			    @if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill {
-				    agent_ProcessMS -= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill ? agent_ProcessMS>>4 :0
+				    agent_ProcessMS -= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill ? agent_ProcessMS >> 4 : 0
 				    agent_SP = max(agent_SP - 5,0)
 			    }
 			}
@@ -98,11 +96,11 @@ __fn agent_ref_stats(){
 
 	//check aura effect only per 20f
 	TT1 = AllFrameCount % 5
-	@if TT1 == 0{
+	@if TT1 == 0 {
 
 		__if DIS_EXPERIMENTAL == -1 {
 			// get Meta team into TT10
-			macro_get_agent_MetaTeam_into_var(v[v[536]],TT10) // AEBA
+			macro_get_agent_MetaTeam_into_var(v[v[536]], TT10) // AEBA
 		}.else bl {
 			TT10 = Const_AgentMetaTeam_begin + v[v[536]]
 

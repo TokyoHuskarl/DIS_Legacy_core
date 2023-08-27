@@ -1,9 +1,12 @@
 // this part will be regulated by js
 
 def { // UI types
-	UItyp_undefined = 0
-	UItyp_checkbox = 1
-	UItyp_simplebutton = 2
+	UIOBJ_undefined = 0
+	UIOBJ_checkbox = 1
+	UIOBJ_simplebutton = 2
+	UIOBJ_simplesprite = 3
+	UIOBJ_strpic = 4
+
 }
 
 def {
@@ -70,20 +73,28 @@ def DELIMITER = ";"
 __fn NsGUI_CEV_UI_RENDERING_MANAGEMENT {
 	// split ORDER string given from js UI manager object 
 	Str_UI_ORDER.split(DELIMITER, Str_Deploy_head, guiVar7)
-	guiVar8 = __id(Str_Parsing)
+	guiVar8 = __id(Str_Deploy_head)
 	guiVar1 = 0
 	@loop bl  {
-		guiVar1 += 1
-		@if guiVar7 == guiVar1 {@break} //
+		@if guiVar7 <= guiVar1 {@break} //
 
-		guiVar8 += 1  // get current shit
 		t[guiVar8].split(",", Str_Parsing, reg1)
-		Str_Parsing.toNum(guiVar1)
+		Str_Parsing.toNum(guiVar2)
 
-		// CHECK objtype 'n shiiiet 
-		@if guiVar1 == UItyp_checkbox {
+		// CHECK objtype 'n shiiiet
+		defv UIT = __id(guiVar2) // UI object type
+
+		@if UIT == UIOBJ_checkbox { // simple checkbox
 			UIT_checkbox_Render()
+
+		}.elif ObjID == UIOBJ_simplesprite { // 
+
+		}.elif ObjID == UIOBJ_strpic { // 
+			UIT_strpic_Render()
 		}
+
+		guiVar1 += 1
+		guiVar8 += 1  // get current shit
 	
 	}
 	
@@ -125,9 +136,73 @@ __fn UIT_checkbox_Render {
 
 }
 
+// simple sprite
+// ORDER = `${this.UI_objtype},${this.pid},${this.picCmd},${this.txt},${this.x},${this.y}`;
+__fn UIT_sprite_Render {
+	str_toNum_array(Str_Parsing,ParsV1,6) // ?
+	// Check box render function has only Keep or Refresh
+	@if ParsV3 == PICCMD_Keep {
+			@pic[ParsV2].move {
+				.pos ParsV5, ParsV6 .center
+				.scale 100
+				.trans 0
+				.time 0
+				.rgbs 100, 100, 100, 100
+			}
+	}.elif ParsV3 == PICCMD_Refresh {
+			
+			@pic[ParsV2].strpic {
+			     Str_Parsing4 // this.txt
+			    .pos ParsV5, ParsV6 .center
+			    .size 16, 15    .chromakey 1
+			    .scale 100
+			    .trans 0
+			    .rgbs 100, 100, 100, 100
+			    .font DIS_gui_UI_font, 12
+			    .spacing 0, 0
+			    .skin DIS_simple_switch_skin .nobg .noPadding
+			    .mapLayer DIS_gui_Layer
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+	}
+
+}
+
+// ORDER = `${this.UI_objtype},${this.pid},${this.picCmd},${this.text},${this.x},${this.y}`;
+__fn UIT_strpic_Render {
+	str_toNum_array(Str_Parsing,ParsV1,6) // ?
+	// Check box render function has only Keep or Refresh
+	@if ParsV3 == PICCMD_Keep {
+			@pic[ParsV2].move {
+				.pos ParsV5, ParsV6 .center
+				.scale 100
+				.trans 0
+				.time 0
+				.rgbs 100, 100, 100, 100
+			}
+	}.elif ParsV3 == PICCMD_Refresh {
+			@pic[ParsV2].strpic {
+			     Str_Parsing4 // this.txt
+			    .pos ParsV5, ParsV6 .center
+			    .size 0, 0    .chromakey 1
+			    .scale 100
+			    .trans 0
+			    .rgbs 100, 100, 100, 100
+			    .font DIS_gui_UI_font, DIS_Font_UI_size
+			    .spacing 0, 0
+			    .skin "" .nobg .noPadding
+			    .mapLayer DIS_gui_Layer
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+	}
 
 
 
+}
 
 
 

@@ -1,8 +1,10 @@
 defv SpawnAgentID = 537
 
 //get drawing functions
-#include "./../headers/header_drawing.tpc"
-#include "./module_core_Game_items_functions.tpc"
+
+__if LOAD_HEADER_DRAW != 1 {
+	YOU_MUST_INCLUDE_DRAWING_HEADER // Since behavior of TPC #include directive is SHIT, you must manually #include header_drawing.tpc whenever you use these functions  
+}
 
 //temp
 struct("weapon",{
