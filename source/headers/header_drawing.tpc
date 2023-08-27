@@ -1,3 +1,5 @@
+__if LOAD_HEADER_DRAW != 1 {
+
 def Const_str_agent_pictures_strings_start = 60000
 def Const_layer_amount = 8 //6
 
@@ -18,3 +20,6 @@ def Const_str_hair = "parts\hair\spr_hair_"
 def Const_str_minion_head = "minions\head\spr_head_"
 
 #include "./../Dracore/module_core_RTS_drawing_functions.tpc"
+
+def LOAD_HEADER_DRAW = 1
+}

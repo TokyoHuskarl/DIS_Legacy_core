@@ -22,6 +22,7 @@ __fn SS_system_popup $givenstring {
 				__if PROJECT_NAME == "DIS_LEGACY" { // The project is DIS:Legacy
 					//then let DIS log system deal with the given string
 					func_show_msg($givenstring)
+
 				}.else bl{ // Default but not with DIS
 					@msg.show $givenstring //just use message window
 				}
@@ -57,7 +58,7 @@ __fn func_compile_map_script $ptr2scriptstr{
 		//back up script to t[501] for Debug
 		t[501] .asg t[$ptr2scriptstr]
 		//TT1=index
-		TT1=0
+		TT1 = 0
 		//v[505]=counter
 		v[505]=0
 		//init t[502] to use it return value

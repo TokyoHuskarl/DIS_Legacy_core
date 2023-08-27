@@ -328,8 +328,14 @@ __fn SScmdPackage_Build $pkName $LINKstr $md $counter $given_v_or_str $flags $bl
 
 	}.elif $md == SScmd_Mode_Exec {
 		macro_demiliterset
-		SScmdPackage_ExecMode_parsing(t[__id($given_v_or_str)])
-		SScmd.toNum(SScmdnum)
+		t[__id($given_v_or_str)] .split($delimiter, SScmd, SSnargs)//nargs?
+		SSLink_search_cmd(parsSScmd,SScmd,$LINKstr,0)
+		@if parsSScmd.neq "NULL"{
+			parsSScmd.split(",", parsSScmd, SSvar2)
+			parsSScmd.toNum(SScmdnum)
+		}.else bl{//NULL
+			SScmdnum = -1
+		}
 
 
 	}.elif $md == SScmd_Mode_Call {
@@ -646,6 +652,25 @@ __fn SScmdLib_Build $LibName $LINKstr $md $i $given_v_or_str $flags $cmdList { /
 SS_funcgroup("SScommand functions",{
 	//Command type function 
 	def nargs_nolimit = -1
+	
+	// Much more simple one
+	__fn NsCmd $LINKstr $mode $ID $NAME $func {
+
+		//Construct Link
+		__if $mode == SScmd_Mode_Construct_Link {
+			t[__id($LINKstr)].cat $NAME
+			t[__id($LINKstr)].cat "="
+			t[__id($LINKstr)].cat $ID
+			t[__id($LINKstr)].cat ";"
+			//end
+
+
+		//Execute Mode / Help Mode
+		}.elif $mode == SScmd_Mode_Exec {//Just execute functions from list
+			$func
+		}
+
+	}
 
 	//SS command !
 	__fn SScommand $LINKstr $mode $ID $type $NAME $nargv $argv_type_list $funclist {
@@ -662,12 +687,12 @@ SS_funcgroup("SScommand functions",{
 				t[__id($LINKstr)].cat $el
 				t[__id($LINKstr)].cat ","
 			}
-			t[__id($LINKstr)].cat ";"
+			t[__id($LINKstr)].cat ";"argv_type_list
 			//end
 
 
 		//Execute Mode / Help Mode
-		}.elif $mode == SScmd_Mode_Exec {//Just execute functions from list
+		}. elif $mode == SScmd_Mode_Exec {//Just execute functions from list
 			SScmdfunc($funclist, $mode)
 
 

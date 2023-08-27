@@ -3,6 +3,34 @@
 //all args of functions below are string type since this called via SS command
 
 
+deft DISmapCmdLink = 771
+
+
+__fn DIS_Cmd_map $LINKstr $md $counter $given_v_or_str $flags {
+	SScmdPackage_Build("Cmd.Map",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+		DIS_map_methods($LINKstr $md $counter $given_v_or_str $flags)
+	})
+}
+
+
+// ---------------------------------------------
+//Scale Script Command libraries
+// ---------------------------------------------
+
+
+// Cmd.map
+__fn DIS_map_methods $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("mapmethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+
+		//let javascript interpreter execute what is written in file
+		{NsCmd($LINKstr, $md, $i, "spawnAgent",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})},
+		{NsCmd($LINKstr, $md, $i, "spawnAgent",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})},
+
+	])
+}
+
+
+
 //##########################
 //fundamental system commands
 //##########################
@@ -31,8 +59,6 @@ __fn cmd_play_global_music $filename $volume $tempo $balance {
 //spawn commands
 //##########################
 
-//import agent generate commands
-#include "./module_core_RTS_agent_generate_basic.tpc"
 
 //
 
@@ -47,7 +73,7 @@ __fn cmd_spawn_agent $troop_id $TileX $TileY $TeamID $CohortID $Dir $Stance {
 	//lmao retarded
 	s[156].off
 	@if v[258] >= 1 {
-	s[156].on
+		s[156].on
 	}
 	t[__id($Dir)] .toNum v[280]
 	t[__id($Stance)] .toNum v[277]

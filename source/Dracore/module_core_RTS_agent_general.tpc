@@ -5,6 +5,8 @@ def moduletitle="module_core_RTS_agent_general.tpc"
 #include "./../headers/header_battlesystem.tpc"
 //macro_SkillCDck($agent $skillno)
 #include "./../headers/header_agent.tpc"
+
+#include "./../headers/header_drawing.tpc"
 //func_CkIfSklCall($agent $skillno)
 #include "./module_core_RTS_agent_skill_functions.tpc"
 //Fresh effects functions
@@ -54,9 +56,6 @@ cev .id(36), .name("AgentAct:RangedAA_Shot"), {
 
 //Worker AA
 #include "./module_core_RTS_agent_autoattack_worker.tpc"
-
-//Agent Generate Functions
-#include "./module_core_RTS_agent_generate_basic.tpc"
 
 cev .id(cevID_Agent_Generate_Basic), .name("Agent:Spawn Basic"), {
 	func_generate_agent()
