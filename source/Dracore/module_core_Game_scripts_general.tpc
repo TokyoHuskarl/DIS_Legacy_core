@@ -22,10 +22,12 @@ cev[2041], .name("DIS command interpriter"), .parallel , .cond(__id(BOOL_CMD_RUN
 
 		//t[guiVar8].split(",", Str_Parsing, reg1)
 		// - CUT -
-		Str_Parsing.toNum(guiVar2)
+		//Str_Parsing.toNum(guiVar2)
 
 		// CHECK objtype 'n shiiiet
-		DIS_Cmd_map(DISmapCmdLink,SScmd_Mode_Exec,SScmdDynCounter,t[510],0)
+		DIS_Cmd_callPackageTree(SScmdDynCounter,guiVar8)
+
+		//DIS_Cmd_map(DISmapCmdLink,SScmd_Mode_Exec,SScmdDynCounter,t[510],0)
 
 		/* @if UIT == UIOBJ_checkbox { // simple checkbox
 			UIT_checkbox_Render()

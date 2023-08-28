@@ -1,9 +1,18 @@
 # 必要要素
-- 翻訳
+
+
+## 翻訳
+- 勢力ストリング化
+- terrain bits and terrain strings also need to be modernized
+- Perks are also needed to be renewed, tbh tbqh
+- 詳細画面表記をQstringに移す(to solve font problem)
+
+
 # ゲーム要素アイデア
 
 ## js導入
-- js?
+- js
+- Scale Script System is to be abandoned and integreted into the NsLib
 
 ## 修正
 - 壁にぶち当たったときの処理をどうするのかを決める必要がある

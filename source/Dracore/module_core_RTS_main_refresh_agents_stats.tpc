@@ -5,17 +5,22 @@ __fn agent_ref_stats(){
     agent_AgentBits &= -17//~16
     /*@comment "########################Process Parameters Setting BEGIN########################"*/
     //@comment "#Set ForceSprite Default"
-    @if agent_ActionState < 4 {
+    /*
+		@if agent_ActionState < 4 {
         agent_ForceSprite = -2
-        
     }
-    //@comment "#Base Parameters Get"
+		*/
+
+		agent_ForceSprite = agent_ActionState < 4 ? -2 : agent_ForceSprite 
+
+    // get Base Parameters to Process slots
     agent_BaseAD.copy agent_ProcessAD, 11
     agent_BaseRegHP.copy agent_ProcessHPreg, 2
     agent_ProcessObjBit = agent_BaseObjBit
     agent_ProcessWill = agent_BaseWill
-    //@comment "#SP fatigue penalty"
-    agent_ProcessMS -= !(agent_ExMotionFlags & 2048) ? muldiv(agent_ProcessMS, agent_MaxSP - agent_SP, agent_MaxSP) / 2 / (!(agent_PerkFlagBits1 & 32768) ? 1 : 2) : 0
+
+    // SP fatigue penalty -  exhausted units move much slower.
+    agent_ProcessMS -= !(agent_ExMotionFlags & ExMotionFlags_FLAG_no_fatigue) ? muldiv(agent_ProcessMS, agent_MaxSP - agent_SP, agent_MaxSP) / 2 / (!(agent_PerkFlagBits1 & PerkFlagBits1_FLAG_Strider) ? 1 : 2) : 0 // PerkFlagBits1_FLAG_Strider was 32768 (UnseenThreat) before 28Aug2023. maybe that was mistakenly set I guess? 
     //@comment "#ProcessCamo dealed in per3f"
     /*@comment "###############Terrain Check###############"*/
 
@@ -46,16 +51,16 @@ __fn agent_ref_stats(){
         
     }
     // cavalries and terrain effects
-    @if `!(agent_MoveTypeBIts & 1){ // not flying
+    @if `!(agent_MoveTypeBIts & MoveTypeBits_Flying){ // not flying
 	    @if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback {
-				@if `agent_PerkFlagBits1 & 128 { // Pathfinder
-						agent_ProcessMS = agent_AgentBits & 8 ? muldiv(agent_ProcessMS, 80, 100) : agent_ProcessMS // cav in forest
+				@if `agent_PerkFlagBits1 & PerkFlagBits1_FLAG_Pathfinder { // Pathfinder
+						agent_ProcessMS = agent_AgentBits & AgentBits_horse_in_forest ? muldiv(agent_ProcessMS, 80, 100) : agent_ProcessMS // cav in forest
 						@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill {
 							agent_ProcessMS /= 2 //cav on hill 
 							agent_SP = max(agent_SP - 8,0)
 						}
 				}.else bl{
-						agent_ProcessMS = agent_AgentBits & 8 ? muldiv(agent_ProcessMS, 60, 100) : agent_ProcessMS //cav in forest
+						agent_ProcessMS = agent_AgentBits & AgentBits_horse_in_forest ? muldiv(agent_ProcessMS, 60, 100) : agent_ProcessMS //cav in forest
 						@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill {
 					agent_ProcessMS /= 3
 					agent_SP = max(agent_SP - 12, 0)
@@ -63,7 +68,7 @@ __fn agent_ref_stats(){
 				}
 	    }.else bl{ //infantries
 		    
-			@if `agent_PerkFlagBits1 & 128 {//Pathfinder
+			@if `agent_PerkFlagBits1 & agent_ExMotionFlags_FLAG_horseback {//Pathfinder
 			    agent_ProcessMS -= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill ? agent_ProcessMS >> 5 : 0 
 			}.else bl{
 			    @if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_climb_hill {
@@ -78,9 +83,9 @@ __fn agent_ref_stats(){
 #Terrain Check End#
 ##################"*/
     //after check, ProcInstantState reset
-    agent_ProcessInstantState &= 48//agent_ProcessInstantState_FLAG_shield_covered + agent_ProcessInstantState_FLAG_shield_covered_double_check //= 0 Instant States fade per refresh except few
+    agent_ProcessInstantState &= 48 // agent_ProcessInstantState_FLAG_shield_covered + agent_ProcessInstantState_FLAG_shield_covered_double_check //= 0 Instant States fade per refresh except few
 
-    //Check TileFlags begin
+    // Check TileFlags begin
 
     Ptr5 = Const_save_var_TileFlags + agent_TileLink
 
@@ -90,52 +95,52 @@ __fn agent_ref_stats(){
 			var1 = v[Ptr5] 
 			func_devlog("TileFlag found! its value is \v[11]")
 		}
-	}*/
+	} */
 
-    __if DIS_EXPERIMENTAL == 1 {
+	__if DIS_EXPERIMENTAL == 1 {
 
-	//check aura effect only per 20f
-	TT1 = AllFrameCount % 5
-	@if TT1 == 0 {
+		//check aura effect only per 20f
+		TT1 = AllFrameCount % 5
+		@if TT1 == 0 {
 
-		__if DIS_EXPERIMENTAL == -1 {
-			// get Meta team into TT10
-			macro_get_agent_MetaTeam_into_var(v[v[536]], TT10) // AEBA
-		}.else bl {
-			TT10 = Const_AgentMetaTeam_begin + v[v[536]]
+			__if DIS_EXPERIMENTAL == -1 {
+				// get Meta team into TT10
+				macro_get_agent_MetaTeam_into_var(v[v[536]], TT10) // AEBA
+			}.else bl {
+				TT10 = Const_AgentMetaTeam_begin + v[v[536]]
 
-			TT10 -= 1
-			TT10 = v[TT10]
-		}
+				TT10 -= 1
+				TT10 = v[TT10]
+			}
 
-		// SHIELD WALL COVER
-		@if `v[Ptr5] & (FLAG_Maptile_ShieldCoverTeam0 << TT10) {//covered by other guy's shield wall
-			// EXPERIMENTAL - just check if it's working
-			agent_ProcessInstantState |= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered ? agent_ProcessInstantState_FLAG_shield_covered_double_check : agent_ProcessInstantState_FLAG_shield_covered //needs double check
-			// andthen
+			// SHIELD WALL COVER
+			@if `v[Ptr5] & (FLAG_Maptile_ShieldCoverTeam0 << TT10) {//covered by other guy's shield wall
+				// EXPERIMENTAL - just check if it's working
+				agent_ProcessInstantState |= agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered ? agent_ProcessInstantState_FLAG_shield_covered_double_check : agent_ProcessInstantState_FLAG_shield_covered //needs double check
+				// andthen
 
-		}.else bl{
-			agent_ProcessInstantState &= -49 //~(agent_ProcessInstantState_FLAG_shield_covered + agent_ProcessInstantState_FLAG_shield_covered_double_check)
-		}
-		// Big units like cavalries cannot be covered by infantry shieldwall
-		agent_ProcessInstantState &= agent_BaseObjBit & BaseObjBit_FLAG_big_unit ? -49 : agent_ProcessInstantState
+			}.else bl{
+				agent_ProcessInstantState &= -49 //~(agent_ProcessInstantState_FLAG_shield_covered + agent_ProcessInstantState_FLAG_shield_covered_double_check)
+			}
+			// Big units like cavalries cannot be covered by infantry shieldwall
+			agent_ProcessInstantState &= agent_BaseObjBit & BaseObjBit_FLAG_big_unit ? -49 : agent_ProcessInstantState
 
-		//FLAG_Maptile_PikeWallTeam0 = 256
-		//FLAG_Maptile_PikeWallTeam1 = 512
-		//FLAG_Maptile_PikeWallTeam2 = 1024
-		// check if under other team's pike effect or not
-		@if agent_UnitType == UNIT_CLASS_CAV {
-			agent_MeleeFightTimer = v[Ptr5] & (1792 & ~(FLAG_Maptile_PikeWallTeam0 << TT10))&& !(agent_ProcessObjBit & 128) ? Const_Melee_Fight_Time_by_Melee_Attack : agent_MeleeFightTimer // Cavalries near enemy pike wall will automatically get Melee fighting Penalty
-		}
-		
+			//FLAG_Maptile_PikeWallTeam0 = 256
+			//FLAG_Maptile_PikeWallTeam1 = 512
+			//FLAG_Maptile_PikeWallTeam2 = 1024
+			// check if under other team's pike effect or not
+			@if agent_UnitType == UNIT_CLASS_CAV {
+				agent_MeleeFightTimer = v[Ptr5] & (1792 & ~(FLAG_Maptile_PikeWallTeam0 << TT10))&& !(agent_ProcessObjBit & 128) ? Const_Melee_Fight_Time_by_Melee_Attack : agent_MeleeFightTimer // Cavalries near enemy pike wall will automatically get Melee fighting Penalty
+			}
 			
-	    }
+				
+				}
 
-	/*this was OP
-	@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
-		agent_ProcessEVA += 5 
-	}*/
-    }
+		/*this was OP
+		@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
+			agent_ProcessEVA += 5 
+		}*/
+	}
 
 
     //Check TileFlags end
@@ -165,28 +170,24 @@ __fn agent_ref_stats(){
         
     }
     s[119].off
-    /*@comment "##############
-	#Perk Check#
-	##############"*/
-    /*@comment "#Last Stand
-    gains Attack Speed based on missing Health."*/
+    /*@comment "###############Perk Check###############"*/
+
+    // On Last Stand effect, the unit gains Attack Speed bonus based on missing Health ratio.
     v[871] += v[665] & 524288 ? divmul(v[871], v[705], v[705] - v[706]) : 0
-    /*@comment "##################
-	#Perk Check End#
-	##################"
+		
+    /*@comment "###################Perk Check End###################"
         ##############
 	#Morale Check#
 	##############"*/
     //v[341] = v[860]
-    TT2 = 10 - agent_Morale // save 10-agent_Morale
+    TT2 = 10 - agent_Morale // save 10 - agent_Morale
     v[862..866] *= TT2
     v[862..866] /= 10
     //@comment "##Flee"
     @if agent_Morale == 3 {
         agent_ProcessInstantState |= agent_ProcessInstantState_FLAG_blind
-        agent_ProcessObjBit |= 67110400 //1024+512+67108864
-        agent_ProcessObjBit &= -16793601 //~16793600//(16777216+16384)
-        //agent_ProcessObjBit |= 67108864 24.4.23
+        agent_ProcessObjBit |= 67110400 // 1024+512+67108864
+        agent_ProcessObjBit &= -16793601 // ~16793600//(16777216+16384)
         v[842] = 11
         agent_ActionState = 0
         //@comment "#Break Discipline"
@@ -247,6 +248,7 @@ __fn agent_ref_stats(){
 					agent_ProcessMR += v[712] >> 4//+6%
 					agent_ProcessEVA += 3
 				}
+
 				//single shield wall give you 33% bonus so you have 133% base 
 				//And team shield wall will additinally give unit ([Current EVA]*8%) 
 				//so bacially mass weaker shield wall gives you 141% boost at least  - Eva effect is bit stronger than before1.162.
@@ -254,8 +256,8 @@ __fn agent_ref_stats(){
 				agent_ProcessMS = muldiv(agent_ProcessMS, 8, 10)
 				//@comment "#Force Spr"
 				v[850] = 2
-                        }
-                }.elif `agent_TacticsOrderFlag & 4 {//stronger shield wall
+			}
+		}.elif `agent_TacticsOrderFlag & 4 {//stronger shield wall
  			@if `!(agent_ProcessObjBit & 67108864) {
 				agent_ProcessAR += v[711] / 3 //muldiv(v[711], 40, 100) 40%->33%
 				agent_ProcessMR += v[712] / 3 //muldiv(v[712], 40, 100) 40%->33%
@@ -266,6 +268,7 @@ __fn agent_ref_stats(){
 					agent_ProcessMR += v[712] >> 4 //+6%
 					agent_ProcessEVA += 3
 				}
+
 				//single strong shield wall gives you 40% bonus so you have 140% base
 				//then team shield wall gives you ([Current EVA]*12%)
 				//so basically mass shield wall gives you 148% base - it seems bit weaker than before 1.162 - but still you have +3 assured eva bonus + anti ranged bonus.

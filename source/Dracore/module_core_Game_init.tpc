@@ -8,7 +8,10 @@
 
 deft str_ShLog = 782 // -> NsLib_GUI_init.js 
 
-//CEV 1f
+// -----------------------------------
+// GAME INIT
+// -----------------------------------
+
 cev .id(cevID_Game_Init), .name("@Game Init") , {
 	//set LF   
 	StrConst_LF .asg "
@@ -18,12 +21,13 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 
 	ptr_null = 50000000 // This value itself has no meaning, just to get null array from unallocated area to init an array
 	
-	// js test
-	__if DIS_EXPERIMENTAL == 1 {
-		execute_js("NsLib_GUI_init.js")
-	}
+
 	
-	DIS_Cmd_map(DISmapCmdLink,SScmd_Mode_Construct_Link,SScmdDynCounter,var2,0)
+
+	// DIS SS Cmd Packages init
+	@loop CTYP_END .dst TT1 { // <- module_Game_scripts_functions 
+		DIS_Cmd_PackTree(TT1,SScmd_Mode_Construct_Link,SScmdDynCounter,var2,0)
+	}
 
 	t[510] .asg  .file "..\Data\version_info", .sjis
 	t[510] .split " /", t[3000], TT1
@@ -530,6 +534,19 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	s[38].on
 	s[239].on
 	s[6].on
+
+
+
+	// --------------------------
+	// JAVA SCRIPT SYSTEM init
+	// --------------------------
+	execute_js("NsLib_GUI_init.js")
+
+
+
+
+
+
 	@comment "####################DEBUG"
 	/*
 	@if s[1] .isOn() {
@@ -843,6 +860,8 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	}
 	v[2470] = 20
 	*/
+
+
 }
 
 
@@ -1912,4 +1931,7 @@ cev .id(2120), .name("Game:Boot"),{
 	    
 	}
 	@map[4].setPlayerPos .pos 9, 1 .retain
+
+
+	
 }

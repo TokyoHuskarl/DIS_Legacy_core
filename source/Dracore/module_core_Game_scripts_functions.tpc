@@ -1,20 +1,117 @@
-//
 // actual functions for scale script commands of DIS:Legacy here - it's bit weird since header/header_rmsh_scalescript.tpc refers this meanwhile this is in /module/ Directory
-//all args of functions below are string type since this called via SS command
 
 
-deft DISmapCmdLink = 771
+def {
+	CTYP_MAP = 1
+	CTYP_SND = 2
+	CTYP_MISSION = 3
+	CTYP_GAME = 4
+	CTYP_AGENT = 5
+	CTYP_PLAYER = 6
+	
+	CTYP_END
+}
+
+deft {
+	str_link_Cmd_map = 771
+	str_link_Cmd_snd
+	str_link_Cmd_mission
+	str_link_Cmd_game
+	str_link_Cmd_agent
+	str_link_Cmd_player
+
+}
 
 
-__fn DIS_Cmd_map $LINKstr $md $counter $given_v_or_str $flags {
-	SScmdPackage_Build("Cmd.Map",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
-		DIS_map_methods($LINKstr $md $counter $given_v_or_str $flags)
-	})
+
+// Package Tree - only for calling Cmd.obj.method on RPG_RT.exe, you need init process for each of Cmd Packages before you use this function. 
+__fn DIS_Cmd_callPackageTree $counter $CmdStr {
+
+	// Split given Str before calling Package
+	macro_demiliterset
+	t[$CmdStr] .split($delimiter, SS_CmdObjType, SSnargs)
+
+	// check which object is called by js
+	SS_CmdObjType.toNum TT1
+
+	DIS_Cmd_PackTree(TT1,SScmd_Mode_Exec,SScmdDynCounter,0,0)
+
 }
 
 
 // ---------------------------------------------
-//Scale Script Command libraries
+// Scale Script Command Package Tree
+// ---------------------------------------------
+
+
+
+
+// attention to that linkstr cmd containers of each of the packages are fixed for DIS project. 
+__fn DIS_Cmd_PackTree $chosenobj $md $counter $given_v_or_str $flags {
+
+	@if $chosenobj == CTYP_MAP { // Cmd.map
+		DIS_Cmd_map(str_link_Cmd_map,$md,$counter,$given_v_or_str,$flags)
+
+	}.elif $chosenobj == CTYP_MISSION { // Cmd.mission
+		DIS_Cmd_mission(str_link_Cmd_mission,$md,$counter,$given_v_or_str,$flags)
+
+	}.elif $chosenobj == CTYP_GAME { // Cmd.game
+		DIS_Cmd_game(str_link_Cmd_game,$md,$counter,$given_v_or_str,$flags)
+
+	}.elif $chosenobj == CTYP_AGENT { // Cmd.game
+		DIS_Cmd_agent(str_link_Cmd_agent,$md,$counter,$given_v_or_str,$flags)
+
+	}.elif $chosenobj == CTYP_PLAYER { // Cmd.game
+		DIS_Cmd_player(str_link_Cmd_player,$md,$counter,$given_v_or_str,$flags)
+
+	}
+
+}
+
+
+// ---------------------------------------------
+// Scale Script Command Packages
+// ---------------------------------------------
+
+
+__fn DIS_Cmd_map $LINKstr $md $counter $given_v_or_str $flags {
+	SScmdPackage_Build("Cmd.map",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+		DIS_map_methods($LINKstr $md $counter $given_v_or_str $flags)
+	})
+}
+
+__fn DIS_Cmd_snd $LINKstr $md $counter $given_v_or_str $flags {
+	SScmdPackage_Build("Cmd.snd",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+		DIS_snd_methods($LINKstr $md $counter $given_v_or_str $flags)
+	})
+}
+
+__fn DIS_Cmd_mission $LINKstr $md $counter $given_v_or_str $flags {
+	SScmdPackage_Build("Cmd.mission",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+		DIS_mission_methods($LINKstr $md $counter $given_v_or_str $flags)
+	})
+}
+
+__fn DIS_Cmd_game $LINKstr $md $counter $given_v_or_str $flags {
+	SScmdPackage_Build("Cmd.game",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+		DIS_game_methods($LINKstr $md $counter $given_v_or_str $flags)
+	})
+}
+
+__fn DIS_Cmd_agent $LINKstr $md $counter $given_v_or_str $flags {
+	SScmdPackage_Build("Cmd.agent",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+		DIS_agent_methods($LINKstr $md $counter $given_v_or_str $flags)
+	})
+}
+
+__fn DIS_Cmd_player $LINKstr $md $counter $given_v_or_str $flags {
+	SScmdPackage_Build("Cmd.player",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+		DIS_player_methods($LINKstr $md $counter $given_v_or_str $flags)
+	})
+}
+
+// ---------------------------------------------
+// Scale Script Command libraries
 // ---------------------------------------------
 
 
@@ -22,14 +119,76 @@ __fn DIS_Cmd_map $LINKstr $md $counter $given_v_or_str $flags {
 __fn DIS_map_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("mapmethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
-		//let javascript interpreter execute what is written in file
+		// let javascript interpreter execute what is written in file
 		{NsCmd($LINKstr, $md, $i, "spawnAgent",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})},
-		{NsCmd($LINKstr, $md, $i, "spawnAgent",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})},
+		{NsCmd($LINKstr, $md, $i, "spawnStatic",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})},
+		
 
 	])
 }
 
+// Cmd.snd
+__fn DIS_snd_methods $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("sndmethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
+		// let javascript interpreter execute what is written in file
+		{NsCmd($LINKstr, $md, $i, "playGSE",{cmd_play_global_sound(SSargs0,SSargs1,SSargs2,SSargs3)})}, // snd.playGlobalSE
+		{NsCmd($LINKstr, $md, $i, "playBGM",{cmd_play_global_music(SSargs0,SSargs1,SSargs2,SSargs3)})}, // snd.playBGM
+		
+
+	])
+}
+
+// Cmd.mission
+__fn DIS_mission_methods $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("missionmethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+
+		//let javascript interpreter execute what is written in file
+		{NsCmd($LINKstr, $md, $i, "endGame",{cmd_player_prepare_endgame(0,SSargs0)})},
+
+	])
+}
+
+__fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("gamemethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+
+		//let javascript interpreter execute what is written in file
+		{NsCmd($LINKstr, $md, $i, "exec",{execute_js(SSargs0)})}, // <- NsLib_js
+		{NsCmd($LINKstr, $md, $i, "wait",{@wait (SSargs0)})},
+		{NsCmd($LINKstr, $md, $i, "eval",{@js .run SSargs0})},
+		{NsCmd($LINKstr, $md, $i, "gotoRMmap",{/*@wait (SSargs0)*/
+			
+		})},
+
+	])
+}
+
+__fn DIS_agent_methods $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("agentmethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+
+		//let javascript interpreter execute what is written in file
+		{NsCmd($LINKstr, $md, $i, "setName",{
+			execute_js(SSargs0)
+			})}, // uncinoketafs!!!!IT'S OVER!!!!!!!!
+
+	])
+}
+
+__fn DIS_player_methods $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("playermethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+
+		//let javascript interpreter execute what is written in file
+		{NsCmd($LINKstr, $md, $i, "revealMap",{cmd_reveal_map()})}, // revealMap
+		{NsCmd($LINKstr, $md, $i, "moveCamera",{cmd_player_change_view(SSargs0,SSargs1,SSargs2)})}, 
+
+	])
+}
+
+// ---------------------------------------------
+// DIS command functions 
+// ---------------------------------------------
+
+//all args of functions below are string type since these commands called via SS command
 
 //##########################
 //fundamental system commands
@@ -79,7 +238,7 @@ __fn cmd_spawn_agent $troop_id $TileX $TileY $TeamID $CohortID $Dir $Stance {
 	t[__id($Stance)] .toNum v[277]
 	//@call .cev 2001
 	macro_convert_maptileXY_into_relativeXY(TT1,TT2,v[252],v[253])
-	//v[22].copy v[252], 2
+	//reg2.copy v[252], 2
 
 	s[152].on
 	//call fn
@@ -97,6 +256,88 @@ __fn cmd_spawn_agent $troop_id $TileX $TileY $TeamID $CohortID $Dir $Stance {
 
 }
 
+// koreha hidoi
+__fn cmd_spawnStatic $staticID $x $y $team $cohort {
+	t[__id($staticID)] .toNum v[254]
+	v[254] += 800
+	s[177..180].off
+	s[151].on
+	@call .cev v[254]
+	s[151].off
+	@if s[179] .isOn() {
+		t[__id($x)] .toNum TT11
+		t[__id($y)] .toNum TT12
+		TT11.copy TT13, 2
+		TT11.copy TT1, 2
+		TT11 += Map_LimitCoordX_min % 2
+		TT12 += Map_LimitCoordY_min % 2
+		TT13 += Map_LimitCoordX_min % 2
+		TT14 += Map_LimitCoordY_min % 2
+		v[351..354] /= 2
+		v[351..354] *= 2
+		TT15 = (TT11 + TT13 + Map_LimitCoordX_min % 2) / 2
+		TT16 = (TT12 + TT14 + Map_LimitCoordY_min % 2) / 2
+		@call .cev 2001
+		reg2.copy v[252], 2
+		TT13.copy TT1, 2
+		@call .cev 2001
+		// "############"
+		v[11..12] = 0
+		var1 .add TT11, 2
+		var1 .sub TT13, 2
+		v[11..12] *= 16
+		@if var1 == var2 {
+				var1 *= 2
+				var2 *= 2
+				
+		} .else bl {
+				@if var1 > var2 {
+			var1 *= 2
+			
+				} .else bl {
+			var2 *= 2
+			
+				}
+				
+		}
+		var1 = abs(var1)
+		var2 = abs(var2)
+		v[11..12] += 16
+		v[11..12] += 16
+		// "############"
+		TT15.copy TT1, 2
+		@call .cev 2001
+		reg2 += 8 - 16 * (Map_LimitCoordX_min % 2)
+		reg3 += 8 - 16 * (Map_LimitCoordY_min % 2)
+		@if s[177] .isOn() {
+				reg2 -= 16
+				
+		}
+		@if s[178] .isOn() {
+				reg3 -= 16
+				
+		}
+		reg2.copy v[252], 2
+		t[__id($team)] .toNum v[251]
+		t[__id($cohort)] .toNum v[258]
+		s[177..180].off
+	
+	} .else bl {
+		t[__id($x)] .toNum TT1
+		t[__id($y)] .toNum TT2
+		@call .cev 2001
+		reg3 += 8
+		reg2.copy v[252], 2
+		t[__id($team)] .toNum v[251]
+		t[__id($cohort)] .toNum v[258]
+		
+		}
+	t[__id($staticID)] .toNum v[254]
+	v[254] += 800
+	@call .cev v[254]
+		
+}
+
 
 //##########################
 //map and sight system functions
@@ -105,9 +346,9 @@ __fn cmd_spawn_agent $troop_id $TileX $TileY $TeamID $CohortID $Dir $Stance {
 
 //cmd_reveal_map()
 // just reveal map, no reg 
-__fn cmd_reveal_map {
+__fn cmd_reveal_map { // ko koreha hidoi
 	//v[562447..572446] ^= 2
-	v[LEGV_Ptr2FoW_FlagsArray..LEGV_Ptr2FoW_FlagsArray+999] ^= 2 //?
+	v[LEGV_Ptr2FoW_FlagsArray..LEGV_Ptr2FoW_FlagsArray + 999] ^= 2 //?
 	LEGS_MapPreRevealed.on //?
 }
 
@@ -156,25 +397,25 @@ __fn cmd_team_get_schwerepunkt $teamID {
 
 	v[2881] = $teamID
 	v[2806..2808] = 0
-	v[23] = 0
-	@loop v[1012] .dst v[301] {
+	reg3 = 0
+	@loop v[1012] .dst Temp1 {
 	    //@comment "Check Player Team List"
 	    //@comment "Check AllyTeam List"
-	    v[2821] = v[301] + v[1145 + v[2881] % 3]
+	    v[2821] = Temp1 + v[1145 + v[2881] % 3]
 	    @if v[v[2821]] >= 1 {
 		v[2822] = v[v[2821]] * 300
 		v[2822] += 4701
 		@if v[v[2822]] <= 9 {
 		    @if `v[v[2822] + 99] == v[2881] {
-			v[11] = v[v[2821]]
+			var1 = v[v[2821]]
 			@call .cev 2009
-			@if v[21] >= 1 {
-			    v[23] += 1
+			@if reg1 >= 1 {
+			    reg3 += 1
 			    
 			}
-			v[2808] += v[21]
+			v[2808] += reg1
 			v[v[2822]].copy v[601], 9
-			v[607..608] *= v[21]
+			v[607..608] *= reg1
 			v[2806] .add v[607], 2
 			
 		    }
@@ -259,16 +500,17 @@ def {
 	DIS_playerid_singleplay = 0
 
 }
-
 __fn cmd_player_change_view $playerid $tileX $tileY {
-	@map[LEGV_MAPID].setVehiclePos .boat .pos $tileX, $tileY .retain
+	t[__id($tileX)].toNum var1 
+	t[__id($tileY)].toNum var2 
+	@map[LEGV_MAPID].setVehiclePos .boat .pos var1, var2 .retain
 	LEGV_CamWarpx = boat.x
 	LEGV_CamWarpy = boat.y
 	LEGS_Call_CameraWarp.on
 }
 
 //$vic_or_def 1 = def, 2 = vic 
-__fn cmd_player_prepare_endgame $playerid $vic_or_def {
+__fn cmd_player_prepare_endgame $playerid $vic_or_def { // Cmd.mission.endMission
 	var1 = $vic_or_def
 	@if var1 == 1 { // victory
 		v[2820] = var1
@@ -284,7 +526,7 @@ __fn cmd_player_prepare_endgame $playerid $vic_or_def {
 }
 
 // you can quit mission by pressing [TAB] after this function executed
-__fn cmd_mission_set_end_flag {
+__fn cmd_mission_set_end_flag { //Cmd.mission.allowToQuit
 	@pic[PicID_VicDef].move {
 	    .pos LEGV_ConstScreenCenterY, LEGV_ConstScreenCenterY .center
 	    .scale 100
