@@ -20,21 +20,6 @@ function deblog(text) {
 }
 
 
-
-// UI types set
-const UIOBJ_undefined = 0,
-	UIOBJ_checkbox = 1,
-	UIOBJ_simplebutton = 2,
-	UIOBJ_simplesprite = 3,
-	UIOBJ_strpic = 4,
-	UIOBJ_radiobutton = 5;
-
-// UI render order
-const PICCMD_Keep = 0,
-	PICCMD_Refresh = 1,
-	PICCMD_Erase = 2,
-	PICCMD_Genstr = 3;
-
 // RM var types
 const RMvar = 1,
 	RMswitch = 2,
@@ -99,6 +84,8 @@ DIS = { // DIS fundamental components
 		lines.forEach(line => {
 			parse_DISid(line)
 		});
+
+		// now you can use troopID by writing like this: trp["TRP_sushi_kensei"] 
 		
 	},
 },
@@ -149,20 +136,29 @@ DIS.string = {
 // DIS Command Object
 // ------------------------------------------------
 
-// DIS Command types
+// DIS Command types -> module_Game_scripts_functions.tpc
 const CTYP_MAP = 1,
-	CTYP_SND = 2;
+	CTYP_SND = 2,
+	CTYP_MISSION = 3,
+	CTYP_GAME = 4,
+	CTYP_AGENT = 5,
+	CTYP_PLAYER = 6,
+	CTYP_END = 999;
 
-// -> Game_scripts_general.tpc
+
+// -> module_Game_scripts_general.tpc
 const adr_RMbool_RUN_CMD = 132,
 	adr_RMStr_CmdOrder = 795;
 
 // DIS Command Object
+// (Almost) all command functions in objects in the Cmd module will be executed on RM interpreter, not on js process.
 var Cmd = {
 	// DIS command
 	CmdQueue: "",
 
-	setCmstr: function(typ,name,ord){
+	bool_SpawnCmdCalled: false,
+
+	Qset: function(typ,name,ord){
 		Cmd.CmdQueue += (typ + "," + name + "," + ord + ";");
 	},
 
@@ -172,29 +168,133 @@ var Cmd = {
 		if (this.CmdQueue != "") {
 			// give raw cmd as string to RPGMaker
 			sett(adr_RMStr_CmdOrder,this.CmdQueue);
-			// turn on RM switch to run interpreter
+			// turn on RM switch to run interpreter as cev
 			sets(adr_RMbool_RUN_CMD,1);
 			
 			this.CmdOrder = ""; // initialize Command Order
+			this.bool_SpawnCmdCalled = false; // init this flag
 		}
 	},
+	
+	//Cmd.game
+	game: {
+		CmdType: CTYP_GAME,
 
+		exec: function(jsfile) { // execute js file
+			Cmd.Qset(this.CmdType,"exec",`${jsfile}`);
+		},
+
+		wait: function(RMwaittime) { // RMwaittime: 10 = 1sec, 0 = 1f, -n = {n}f. 
+			Cmd.Qset(this.CmdType,"wait",`${RMwaittime}`);
+		},
+
+		eval: function(jsSentence) { // eval(jsSentence) on the DISCmd interpreter. might be dangerous 
+			Cmd.Qset(this.CmdType,"eval",`${jsSentence}`);
+		},
+
+		gotoRMmap: function(RMmapid,tilepos) { //
+			tilepos = tilepos || [0,0]
+			Cmd.Qset(this.CmdType,"gotoRMmap",`${RMmapid},${tilepos[0]},${tilepos[1]}`);
+		}
+		// turnSon:1,
+
+
+	},
+
+	//Cmd.map
 	map: {
 		CmdType: CTYP_MAP,
 
+		agentGenPtrPos: 0, // 
 
-		spawnAgent: function(troopid,x,y) {
-			Cmd.Qset(this.CTYP_MAP,"spawnAgent",`${troopid},${x},${y}`);
+		/* spawnerInfoUpdate: ()=> {
+			if (Cmd.bool_SpawnCmdCalled == false){}
+		} need to consider well */ 
+
+
+		spawnAgent: function(troopid,tilepos,team,cohort,dir,stance){ // {int}, array[x,y]
+			cohort = cohort || 0; // ok?
+			dir = dir || 0; // ok?
+			stance = stance || 0; // ok?
+			
+			Cmd.Qset(this.CmdType,"spawnAgent",`${troopid},${tilepos[0]},${tilepos[1]},${team},${cohort},${dir},${stance}`);
+			return {address: 4545, uniqueID: 114514}; // kari
 		},
 
-	},
-
-	snd: {
-		CmdType: CTYP_SND, 
-			playGlobalSE: function(file,vol,tempo,bal) { // "cmd_play_global_sound"
+		spawnStatic: function(staticID,tilepos,team,cohort){
+			cohort = cohort || 0; // ok?
+			Cmd.Qset(this.CmdType,"spawnStatic",`${staticID},${tilepos[0]},${tilepos[1]},${team},${cohort}`);
+			return {address: 4545, uniqueID: 114514}; // kari
 			
 		},
 
+		spawnPalisade: function(team,tilepos){
+			Cmd.Qset(this.CmdType,"spawnPalisade",`${team},${tilepos[0]},${tilepos[1]}`);
+		}, // you need to wait 1f
+
+		spawnWall: function(team,tilepos){
+			Cmd.Qset(this.CmdType,"spawnWall",`${team},${tilepos[0]},${tilepos[1]}`);
+		}, // you need to wait 1f
+
+	},
+
+	//Cmd.snd
+	snd: {
+		CmdType: CTYP_SND, 
+		playGlobalSE: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
+			Cmd.Qset(this.CmdType,"playGSE",`${file},${vol},${tempo},${ballance}`);
+		},
+
+		playBGM: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
+			Cmd.Qset(this.CmdType,"playBGM",`${file},${vol},${tempo},${ballance}`);
+		},
+		
+	},
+
+	// -------------
+	// Cmd.mission 
+	// -------------
+	mission: {
+		CmdType: CTYP_MISSION, 
+		
+		
+		endMission: function(consequence) { // 1 = def, 2 = vic
+			Cmd.Qset(this.CmdType,"endGame",`${consequence}`);
+		},
+
+		allowToQuit: function() {
+			Cmd.Qset(this.CmdType,"setQuit","");
+		},
+
+	},
+	
+	// -------------
+	// Cmd.agent 
+	// -------------
+	agent: {
+		CmdType: CTYP_MISSION,
+		
+		setName: function(agentAddr, name) {
+			Cmd.Qset(this.CmdType,"setName",`${agentAddr},${name}`);
+		},
+
+	
+	},
+
+	// -------------
+	// Cmd.player 
+	// -------------
+	
+	player: {
+		CmdType: CTYP_PLAYER,
+
+		revealMap: function(playerid){
+			Cmd.Qset(this.CmdType,"revealMap",`${playerid}`);
+		},
+
+		moveCamera: function(tilepos){
+			Cmd.Qset(this.CmdType,"moveCamera",`${tilepos[0]},${tilepos[1]}`);
+		},
 
 	},
 
@@ -215,6 +315,25 @@ let mouseState = {
 	Rdrag: 0,
 	Mdrag: 0,
 }
+
+
+
+// UI SYSTEM
+
+
+// UI types set
+const UIOBJ_undefined = 0,
+	UIOBJ_checkbox = 1,
+	UIOBJ_simplebutton = 2,
+	UIOBJ_simplesprite = 3,
+	UIOBJ_strpic = 4,
+	UIOBJ_radiobutton = 5;
+
+// UI render order
+const PICCMD_Keep = 0,
+	PICCMD_Refresh = 1,
+	PICCMD_Erase = 2,
+	PICCMD_Genstr = 3;
 
 
 /*
@@ -252,7 +371,6 @@ let NsGUImgr = {
 	runPresen: function() {
 
 		let UIorderstr = "";
-		let SSCmdOrderstr = "";
 
 		this.controlUpdate() // get mouse vars
 		for (let PRESEN of this.presentations) {
@@ -506,7 +624,7 @@ class Radiobutton extends UI_object {
 
 // init load
 {
-	Cmd.map.spawnAgent(1,42,41);
+	Cmd.map.spawnAgent(1,[114,514],0,0,1,0);
 	deblog(Cmd.CmdQueue);
 	deblog("TRP_merc_mob = " + trp["TRP_merc_mob"])
 }

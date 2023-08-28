@@ -35,7 +35,8 @@ __fn ShellCommandLib $LINKstr $md $i $given_v_or_str $flags {
 		)},
 
 		//Turn on Node shell mode (experimental)
-		{SScommand($LINKstr, $md, $i, void,"js",nargs_nolimit,[0],[{/*coming soon*/},{SSreturn_string("Start running Virtual (and incomplete) js shell")}])},
+		{SScommand($LINKstr, $md, $i, void,"js",nargs_nolimit,[0],[{@js .run SSargs0},{SSreturn_string("")}])},
+		{SScommand($LINKstr, $md, $i, void,"exec",nargs_nolimit,[0],[{execute_js(SSargs0)},{SSreturn_string("execute js file")}])},
 	])
 }
 

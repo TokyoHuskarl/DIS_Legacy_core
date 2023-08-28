@@ -1,0 +1,219 @@
+// Garbage, no source file includes this file, so erase whenever if you feel like doing it.
+
+
+
+
+//Check RAW script
+
+__fn SScmdPackage_ExecMode_parsing $LINKstr $md $given_command_string $delimiter {
+
+	//Temporary this expects only call mode 
+
+	//args type check won't be done here, just check syntax error
+
+	//t[__id($given_v_or_str)] .split($delimiter, SScmd, SSnargs)//nargs?
+	def SScmdPk_ExeMd_CmdStr = t[__id($given_command_string)]
+
+	deft SScmdPk_ExeMd_Save = __id(str_SS_partsave)
+
+
+
+	defv SScmdPk_ExeMd_Index = __id(SSvar1)
+	defv SScmdPk_ExeMd_PosChar = __id(SSvar2)
+	defv SScmdPk_ExeMd_Temp = __id(SSvar3)
+
+	//get the end point of the command
+	//SScmdPk_ExeMd_CmdStr.exinStr("$", SScmdPk_ExeMd_EOC,)
+
+	//test 
+	$ckStr = SScmdPk_ExeMd_CmdStr
+
+	$index = SScmdPk_ExeMd_Index
+	$charpos = SScmdPk_ExeMd_PosChar
+	$temp = SScmdPk_ExeMd_Temp
+
+	defv parse_pointer = __id(SSvar4)
+	$expected_nargv = SSvar5
+	
+
+
+	def macro_parse_checkloop_goto_next_try = {
+		t[parse_pointer].asg str_SS_partsave
+		SSnargs += 1 //++
+		parse_pointer += 1
+		$index = $charpos
+	}
+
+	def macro_copy_from_got_range_in_loop_strSave = {
+		SScmdPk_ExeMd_Temp = SScmdPk_ExeMd_PosChar - 1 
+		SScmdPk_ExeMd_Save.asg .subs($ckStr, $index, $temp)
+	}
+
+
+
+	SScmdPk_ExeMd_Index = 0
+	SSnargs = -1
+	
+
+	//init pointer
+	parse_pointer = __id(SScmd) 
+
+/*
+	@loop bl {
+		SScmdPk_ExeMd_CmdStr.inStr($delimiter, SScmdPk_ExeMd_PosChar,.beg(SScmdPk_ExeMd_Index))
+		@if SScmdPk_ExeMd_PosChar < 0{ //found delimiter!
+			@if SScmdPk_ExeMd_Index == 0{ //if this is the first delimiter
+				//This must be a Command... so
+				macro_copy_from_got_range_in_loop_strSave
+
+				//check it and save its Cmdid assigned in the pack to SScmd
+				SSLink_search_cmd(SScmd,str_SS_partsave,$LINKstr,0)
+
+				@if SSreg1 != -1{ //yes it's commandpars
+					$func_amount += 1
+					SScmd.split($delimiter, parsSScmd, $expected_nargv) //throw prototype to parsSScmd 
+					macro_parse_checkloop_goto_next_try
+
+				}.else bl{ //damn it, the command is undefined!
+					@break
+				}
+
+			}.else bl{ //another demiliter found! 
+				//set pointer to check?
+
+				//copy to see what is in side...
+				macro_copy_from_got_range_in_loop_strSave
+
+				//get first char
+				str_get_char(str_SSreg2,str_SS_partsave,0)
+				
+				//Start checking what the char is
+				@if str_SSreg2.eq """" { //this looks like string!
+
+					//insert check fundtion to check if str is expected in that args
+					
+					//Try to get the end of given string
+					$temp = $charpos + 1
+					SScmdPk_ExeMd_CmdStr.inStr("""", $temp, .beg($temp))
+					@if $temp == -1{ // illegal string found. - need final "
+
+						@break
+					}.elif $temp > $charpos { // the demiliter that found the last process seems just something inside string block.
+						//so try hard to reach actual demiliter...
+						$charpos = $temp
+						@loop bl {
+							SScmdPk_ExeMd_CmdStr.inStr($delimiter, $charpos, .beg($charpos))
+							@if $charpos == -1 { //This string seems the last args.. 
+								@break 2 //so break all loop inside this function
+							}.elif $temp <= $charpos { // finally out of the string.
+								//so we will go to the next loop to check next argv!
+								macro_parse_checkloop_goto_next_try
+								@breaka // break this loop.
+							}
+						}
+					}.else bl { //the string doesn't contain delimiter within it
+						macro_parse_checkloop_goto_next_try
+					}
+
+
+				}.elif str_SSreg2.eq "$"{ //at least not string. check if It's Global var.
+
+
+
+				}.else bl{ //not global nor string.
+
+
+					//ACHTUNG! VARIABLE can be put here... but after completion of var design in scale script
+					
+
+					//Check if there's function
+					str_SS_partsave.inStr("(", $temp, .beg($index) ) //check if this argv has ( - token of function
+
+					@if $temp == -1 { //no function seemingly
+						//then this must be number or whatever. why worry 
+						macro_parse_checkloop_goto_next_try
+
+					}.else  bl{ 
+						// oh shit, it's going to be hassle.
+						$charpos += 1
+						//$temp is ( position
+						//use SSvar8 as char number
+                                                SSvar8 = $temp - $charpos
+						SSvar8 -= 1SS
+						
+						//Check the function id
+						str_SS_partsave.asg .subs($ckStr, $index, SSvar8)
+						SSLink_search_cmd(SScmd,str_SS_partsave,$LINKstr,0)
+						@if SSreg1 != -1{ //yes it's commandpars
+							//then replace func string with @FUNCID
+							SScmd.split($delimiter, parsSScmd, $expected_nargv) //throw prototype to parsSScmd
+
+							//save backup to buffer 
+
+							SScmd.asg .cat("@",parsSScmd,"")
+							SScmdPk_ExeMd_CmdStr.asg .ins(SScmdPk_ExeMd_CmdStr, str_SS_partsave, SScmd)
+							macro_parse_checkloop_goto_next_try
+							//and just go next..
+
+						}.else bl{ //damn it, the command is undefined!
+							@break
+						}
+
+
+
+					}
+				}
+
+
+
+			}
+			
+		}.else bl{ //no more demiliter found, finish the loop 
+			@break
+		}
+
+	}
+
+	
+	//afterthat...
+	//$func_amount = SSvar6 
+	
+	SScmdPk_ExeMd_CmdStr.split("@", SSstrBuffer0, SSvar6)
+
+	SSvar8 = SSvar6 + __id(SSstrBuffer0)
+	t[SSvar8].split(")", parsSScmd, SSvar7)
+	SSvar7 += __id(parsSScmd)
+	SSvar8 = __id(SSstrBuffer0)
+	@loop SSvar6 {
+
+	}
+	
+
+
+	//ACHTUNG - 
+	//MAYBE THIS PART SHOULD BE PARTED FROM the LOOP, Count up functions and disintegrate them into string buffers 
+	//then process in string buffers in turn
+
+	//Command will just get what is already digested by the Package in any circumstance..
+	//Well it will be like... 
+	//count up ( and ), check folded and how many funcs inside >> n  
+	//then pick up most nested function, then replace it with some link, push the function to string buffer[n]
+	//then n-- and do the same thing until n == 0
+
+	//after that, convert into SS obj code ->set into each argv :D
+	//msg(argv,func(1,fung(241))
+	//@CMD:nargv,2,3(@CMD,1,Z2@CMD,241Z2,;
+	//"@"in static string temporary replace with "\@" in obj code 
+	//{fn}@:
+
+	//FN{Funcs amount within Cmd}
+	//FN2@echo:1,1!@return_combine!3,114514,2!@nothing!0,"fugg:D"
+	//!{n}!@ -> split ! -> remove n! (@~) last demiliter -> push to buffer -> in buffer... set 
+	//retarded 
+
+
+
+
+	
+*/
+}

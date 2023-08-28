@@ -283,8 +283,15 @@ struct("agent",{
 	//Perks1
 
 
+	
+	// erase all agent_ prefix eventually 
+	
 	agent_PerkFlagBits1_FLAG_Pathfinder = 128
+	PerkFlagBits1_FLAG_Pathfinder = 128
+	PerkFlagBits1_FLAG_Strider = 8192
 
+	//Agent bits
+	AgentBits_horse_in_forest = 8
 	AgentBits_Inertia = 16
 
 	AgentBits_Collided_Other_Agent = 64
@@ -307,6 +314,8 @@ struct("agent",{
 	AgentBits_FLAG_Pushed_by_terrain = 536870912
 	AgentBits_FLAG_Drawn_in_screen = 1073741824//31bit
 
+
+	MoveTypeBits_Flying = 1
 	
 	//AI decision bits for combat units
 	//swap series
@@ -372,6 +381,8 @@ struct("agent",{
 	BaseObjBit_FLAG_Invincible = 1073741824
 
 	//ExMotions
+
+	ExMotionFlags_FLAG_no_fatigue = 2048
 	agent_ExMotionFlags_FLAG_horseback = 16777216
 
 
