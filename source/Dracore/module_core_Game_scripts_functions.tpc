@@ -52,16 +52,19 @@ __fn DIS_Cmd_PackTree $chosenobj $md $counter $given_v_or_str $flags {
 	@if $chosenobj == CTYP_MAP { // Cmd.map
 		DIS_Cmd_map(str_link_Cmd_map,$md,$counter,$given_v_or_str,$flags)
 
+	}.elif $chosenobj == CTYP_SND { // Cmd.snd
+		DIS_Cmd_snd(str_link_Cmd_snd,$md,$counter,$given_v_or_str,$flags)
+
 	}.elif $chosenobj == CTYP_MISSION { // Cmd.mission
 		DIS_Cmd_mission(str_link_Cmd_mission,$md,$counter,$given_v_or_str,$flags)
 
 	}.elif $chosenobj == CTYP_GAME { // Cmd.game
 		DIS_Cmd_game(str_link_Cmd_game,$md,$counter,$given_v_or_str,$flags)
 
-	}.elif $chosenobj == CTYP_AGENT { // Cmd.game
+	}.elif $chosenobj == CTYP_AGENT { // Cmd.agent
 		DIS_Cmd_agent(str_link_Cmd_agent,$md,$counter,$given_v_or_str,$flags)
 
-	}.elif $chosenobj == CTYP_PLAYER { // Cmd.game
+	}.elif $chosenobj == CTYP_PLAYER { // Cmd.player
 		DIS_Cmd_player(str_link_Cmd_player,$md,$counter,$given_v_or_str,$flags)
 
 	}
@@ -156,9 +159,15 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 		{NsCmd($LINKstr, $md, $i, "exec",{execute_js(SSargs0)})}, // <- NsLib_js
 		{NsCmd($LINKstr, $md, $i, "wait",{@wait (SSargs0)})},
 		{NsCmd($LINKstr, $md, $i, "eval",{@js .run SSargs0})},
-		{NsCmd($LINKstr, $md, $i, "gotoRMmap",{/*@wait (SSargs0)*/
-			
+		{NsCmd($LINKstr, $md, $i, "gotoRMmap",{
+			t2v(SSargs0,var1)
+			t2v(SSargs1,var2)
+			t2v(SSargs2,var3)
+			@map[var1].setPlayerPos .pos var2, var3
 		})},
+		{NsCmd($LINKstr, $md, $i, "msg",{func_show_msg(SSargs0)})},
+
+		
 
 	])
 }
@@ -197,9 +206,12 @@ __fn DIS_player_methods $LINKstr $md $i $given_v_or_str $flags {
 // "cmd_play_global_sound(soundfilename,v1,v2,v3)"
 // no reg
 __fn cmd_play_global_sound $filename $volume $tempo $balance {
-    var1 = $volume
+    /*var1 = $volume
     var2 = $tempo
-    var3 = $balance
+    var3 = $balance*/
+		t2v($volume,var1)
+		t2v($tempo,var2)
+		t2v($balance,var3)
     @cmd 11550, $filename, .args var1, 3
     
 }
@@ -207,7 +219,10 @@ __fn cmd_play_global_sound $filename $volume $tempo $balance {
 // "#play_global_music(soundfilename,v1,v2,v3)"
 // no reg
 __fn cmd_play_global_music $filename $volume $tempo $balance {
-    var1 = divmul($volume, 100, LEGV_Global_BGM_Volume)
+		t2v($volume,var1)
+		t2v($tempo,var2)
+		t2v($balance,var3)
+    var1 = divmul(var1, 100, LEGV_Global_BGM_Volume)
     @bgm.play $filename .opt 0, var1, $tempo, $balance
     Current_BGMFile .asg $filename
 }
@@ -511,7 +526,7 @@ __fn cmd_player_change_view $playerid $tileX $tileY {
 
 //$vic_or_def 1 = def, 2 = vic 
 __fn cmd_player_prepare_endgame $playerid $vic_or_def { // Cmd.mission.endMission
-	var1 = $vic_or_def
+	t2v($vic_or_def,var1)
 	@if var1 == 1 { // victory
 		v[2820] = var1
 		@call .cev 2135 //wut?

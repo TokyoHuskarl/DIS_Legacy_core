@@ -36,3 +36,9 @@ __fn macro_ck_if_given_rel_coord_is_inside_map $X $Y {
 
 }
 
+
+// convert t[] to v[]
+__fn t2v $t $v {
+	t[__id($t)].toNum $v
+}
+

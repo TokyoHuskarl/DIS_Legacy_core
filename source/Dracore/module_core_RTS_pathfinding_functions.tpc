@@ -235,10 +235,12 @@ __fn func_pathfinding_open_Node(){
 		v[380] = 1
 		Temp11 += 40000
 		// "compare cost"
-		@if v[Temp11] > v[20] {
-		    v[Temp11] = v[20]
-		    v[v[4600] + var9 - 1] = v[4590]
+		@if v[Temp11] > var10 {
+		    v[Temp11] = var10
+		    // v[v[4600] + var9 - 1] = v[4590]
+		    v[PF_Const_NodesLink_MINUS1 + var9] = v[4590]
 		    
+
 		}
 		@break
 		
@@ -246,39 +248,6 @@ __fn func_pathfinding_open_Node(){
 	    
 	}
 
-	/*
-	@if s[1] .isOn() {
-	    @while Temp9 <= Temp10 {
-		//opt 28.4.23
-		//Temp11 = (Temp9 + Temp10) / 2
-		Temp11 = (Temp9 + Temp10) 
-		Temp11 /= 2
-		@if v[Temp11] == var9 {
-		    v[380] = 1
-		    Temp11 += 40000
-		    // "compare cost"
-		    @if v[Temp11] > v[20] {
-			v[Temp11] = v[20]
-			
-		    }
-		    @break
-		    
-		} .else bl {
-		    @if v[Temp11] < var9 {
-			Temp9 = Temp11 + 1
-			
-		    } .else bl {
-			Temp10 = Temp11 - 1
-			
-		    }
-		    
-		}
-		
-	    }
-	    
-	    
-	}
-	*/
 
 	Temp10 = v[4583]
 	Temp9 = v[4567]
@@ -307,13 +276,17 @@ __fn func_pathfinding_open_Node(){
 
 	@if v[380] == 0 {
 	    v[v[4568] + v[4582]] = var9
-	    v[v[4555] + v[4582]] = v[20]
-	    v[v[4600] + var9 - 1] = v[4590]
+	    v[v[4555] + v[4582]] = var10
+
+	    // v[v[4600] + var9 - 1] = v[4590]
+			v[PF_Const_NodesLink_MINUS1 + var9] = v[4590]
 	    v[4582] += 1
 	    
 	}
 }
 
+
+// this function seems unused I guess?
 // WHAT THE FUCK IS Temp11?
 __fn func_pathfinding_remove_OpenNode(){
 	Temp10 = v[4582]
@@ -324,7 +297,8 @@ __fn func_pathfinding_remove_OpenNode(){
 	    Temp11 = (Temp9 + Temp10) 
 	    Temp11 /= 2
 	    @if v[Temp11] == var9 {
-		//ugh this one seem brutal
+		//ugh this one looks brutal
+		// 
 		v[0] = v[Temp11..v[4568] + v[4582]] = v[Temp11 + 1..v[4568] + v[4582] + 1]
 		v[0] = v[Temp11 + 200..v[4555] + v[4582]] = v[Temp11 + 201..v[4555] + v[4582] + 1]
 		v[4582] -= 1

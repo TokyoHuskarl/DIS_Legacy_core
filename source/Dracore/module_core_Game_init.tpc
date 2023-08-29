@@ -24,12 +24,9 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 
 	
 
-	// DIS SS Cmd Packages init
-	@loop CTYP_END .dst TT1 { // <- module_Game_scripts_functions 
-		DIS_Cmd_PackTree(TT1,SScmd_Mode_Construct_Link,SScmdDynCounter,var2,0)
-	}
 
-	t[510] .asg  .file "..\Data\version_info", .sjis
+
+	t[510] .asg  .file "..\Data\version_info", .utf8
 	t[510] .split " /", t[3000], TT1
 	t[520] .asg t[3000]
 
@@ -474,6 +471,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[4555] = v[4568] + 200 * 200 + 1
 	v[4567] = v[4555] + 200 * 200 + 1
 	v[4600] = v[4567] + 200 * 200 + 1
+	v[4594] = v[4600] - 1
 	@comment "#BattlePartyList"
 	v[1270] = v[4600] + 200 * 200 + 1
 	v[1271] = 8
@@ -862,6 +860,11 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	*/
 
 
+	// DIS SS Cmd Packages init
+	@loop CTYP_END .dst TT1 { // <- module_Game_scripts_functions 
+		DIS_Cmd_PackTree(TT1,SScmd_Mode_Construct_Link,SScmdDynCounter,var2,0)
+	}
+
 }
 
 
@@ -889,8 +892,7 @@ t[3105] .toNum v[4511]
 }
 t[528] .asg "\t[3101]\" .extract
 t[526] .asg "_\t[3101]" .extract
-@comment "########################
- LOAD DATABASE"
+@comment "######################## LOAD DATABASE"
 t[527] .asg """
  "
 v[1211] = 3001
@@ -926,10 +928,11 @@ t[510] .asg  .file t[510], .utf8, .extract
 t[510] .split "*/", t[509], TT1
 t[510] .split t[525], t[v[1213]], TT1
 v[1206] = 5000
-t[510] .asg  .file "..\data\data_weapons", .sjis
+t[510] .asg  .file "..\data\data_weapons", .utf8
 t[510] .split "*/", t[509], TT1
 t[510] .split t[525], t[v[1206]], TT1
 t[801] .asg ""
+t[3001] .asg ""
 @if t[511] .eq "" {
     @loop TT1 .dst var1 {
         var2 = v[1206] + var1
@@ -1001,10 +1004,12 @@ t[511] .asg  .file t[511], .sjis, .extract
     
 }
 v[1207] = 6000
-t[510] .asg  .file "..\data\data_shields", .sjis
+t[510] .asg  .file "..\data\data_shields", .utf8
 t[510] .split "*/", t[509], TT1
 t[510] .split t[525], t[v[1207]], TT1
 t[801] .asg ""
+t[3001] .asg ""
+t[511] .asg ""
 @if t[511] .eq "" {
     @loop TT1 .dst var1 {
         var2 = v[1207] + var1
@@ -1076,10 +1081,12 @@ t[511] .asg  .file t[511], .sjis, .extract
     
 }
 v[1208] = 7000
-t[510] .asg  .file "..\data\data_armors", .sjis
+t[510] .asg  .file "..\data\data_armors", .utf8
 t[510] .split "*/", t[509], TT1
 t[510] .split t[525], t[v[1208]], TT1
 t[801] .asg ""
+t[3001] .asg ""
+t[511] .asg ""
 @if t[511] .eq "" {
     @loop TT1 .dst var1 {
         var2 = v[1208] + var1
@@ -1151,10 +1158,12 @@ t[511] .asg  .file t[511], .sjis, .extract
     
 }
 v[1209] = 8000
-t[510] .asg  .file "..\data\data_helms", .sjis
+t[510] .asg  .file "..\data\data_helms", .utf8
 t[510] .split "*/", t[509], TT1
 t[510] .split t[525], t[v[1209]], TT1
 t[801] .asg ""
+t[3001] .asg ""
+t[511] .asg ""
 @if t[511] .eq "" {
     @loop TT1 .dst var1 {
         var2 = v[1209] + var1
@@ -1162,7 +1171,8 @@ t[801] .asg ""
         t[var2] .split ",", t[3000], TT2
         @if t[3001] .neq "" {
             t[801] .cat "HEL_"
-            t[3001] .asg  .rep t[3001], " ", "_"
+            //t[3001] .asg  .rep t[3001], " ", "_"
+
             t[801] .cat t[3000]
             t[801] .cat "="
             t[801] .cat var1
@@ -1226,10 +1236,12 @@ t[511] .asg  .file t[511], .sjis, .extract
     
 }
 v[1210] = 9000
-t[510] .asg  .file "..\data\data_accessories", .sjis
+t[510] .asg  .file "..\data\data_accessories", .utf8
 t[510] .split "*/", t[509], TT1
 t[510] .split t[525], t[v[1210]], TT1
 t[801] .asg ""
+t[3001] .asg ""
+t[511] .asg ""
 @if t[511] .eq "" {
     @loop TT1 .dst var1 {
         var2 = v[1210] + var1
@@ -1237,7 +1249,7 @@ t[801] .asg ""
         t[var2] .split ",", t[3000], TT2
         @if t[3001] .neq "" {
             t[801] .cat "ACC_"
-            t[3001] .asg  .rep t[3001], " ", "_"
+            //t[3001] .asg  .rep t[3001], " ", "_"
             t[801] .cat t[3000]
             t[801] .cat "="
             t[801] .cat var1
@@ -1311,6 +1323,7 @@ t[806] .asg  .file "..\scripts\const_armors_id", .utf8
 t[807] .asg  .file "..\scripts\const_helms_id", .utf8
 t[808] .asg  .file "..\scripts\const_accessories_id", .utf8
 t[803] .split t[525], t[v[1219]], v[505]
+
 @loop v[505] .dst v[506] {
     var1 = v[1219] + v[506]
     t[var1] .split "=", t[3000], TT1
@@ -1395,6 +1408,7 @@ t[808] .split t[525], t[v[1219]], v[505]
 }
 
 t[510] .split t[525], t[v[1215]], TT1
+
 @if s[1] .isOn() {
     t[801] .asg ""
     @loop TT1 .dst var1 {
@@ -1407,11 +1421,12 @@ t[510] .split t[525], t[v[1215]], TT1
     t[801] .toFile "DEBUG_char", .utf8
     
 }
+
 t[3000..3500] .asg ""
 t[511] .asg "..\Languages\" .extract
 t[511] .cat t[528]
 t[511] .cat "lang_minions"
-t[511] .asg  .file t[511], .sjis, .extract
+t[511] .asg  .file t[511], .utf8 , .extract
 @if t[511] .neq "" {
     t[511] .split "*/", t[509], TT3
     t[511] .split t[525], t[1000], TT3
@@ -1525,15 +1540,15 @@ t[510] .asg  .file t[510], .utf8, .extract
 t[510] .split "*/", t[509], TT1
 t[510] .split t[525], t[v[4520]], TT1
 v[1239] = 18500
-t[510] .asg  .file "def\definition_terrains", .sjis, .extract
+t[510] .asg  .file "def\definition_terrains", .utf8, .extract
 t[510] .split "*/", t[509], TT1
 t[510] .split t[525], t[v[1239]], TT1
 v[1217] = 18600
-t[510] .asg  .file "..\data\data_races", .sjis, .extract
+t[510] .asg  .file "..\data\data_races", .utf8, .extract
 t[510] .split "*/", t[509], TT1
 t[510] .split t[525], t[v[1217]], TT1
 v[4574] = 18700
-t[510] .asg  .file "..\data\data_factiontemplates", .sjis, .extract
+t[510] .asg  .file "..\data\data_factiontemplates", .utf8, .extract
 t[510] .split "*/", t[509], TT1
 @if t[511] .eq "" {
     @loop TT3 .dst var1 {
@@ -1562,7 +1577,7 @@ t[3000..3500] .asg ""
 t[511] .asg "..\Languages\" .extract
 t[511] .cat t[528]
 t[511] .cat "lang_factions"
-t[511] .asg  .file t[511], .sjis, .extract
+t[511] .asg  .file t[511], .utf8, .extract
 @if t[511] .neq "" {
     t[511] .split "*/", t[509], TT3
     t[511] .split t[525], t[1000], TT3
@@ -1597,7 +1612,7 @@ t[510] .asg  .file t[510], .utf8, .extract
 t[510] .split "*/", t[509], TT1
 t[510] .split t[525], t[v[4557]], TT1
 v[1214] = 19000
-t[510] .asg  .file "def\definition_perks", .sjis, .extract
+t[510] .asg  .file "def\definition_perks", .utf8 , .extract
 t[510] .split "*/", t[509], TT1
 t[510] .split t[525], t[v[1214]], TT1
 
@@ -1786,7 +1801,7 @@ cev .id(2120), .name("Game:Boot"),{
 	}
 	@if v[2300] == 0 {
 	    s[38].on
-	    t[510] .asg  .file "..\\config\language_config", .sjis
+	    t[510] .asg  .file "..\\config\language_config", .utf8
 	    t[510] .split t[525], t[2999], var2
 	    v[21] = 2
 	    v[22] = 2
