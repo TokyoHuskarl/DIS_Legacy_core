@@ -1,6 +1,8 @@
 
 
-defv PF_ID_holder = 4594
+defv PF_Const_NodesLink_MINUS1 = 4594
+vname[4594], "PF_Const_NodesLink_MINUS1"
+
 
 __fn refresh_deployed_agent_data {
 	v[Pathfinding_AgentData_head_ptr].copy Head_of_Agent_Buffer_PF, 64
@@ -953,7 +955,8 @@ __fn func_pathfinding_retarded() {
 				v[316] += v[317] * 2
 				v[v[316]].copy v[2851], 2
 				v[2961].copy v[2861], 15
-				@call .cev 1771
+				// @call .cev 1771
+				func_pathfinding_move()
 				
 			    }
 			    
@@ -981,7 +984,8 @@ __fn func_pathfinding_retarded() {
 	    v[317] = max(v[v[317]], 0)
 	    v[316] += v[317] * 2
 	    v[v[316]].copy v[2851], 2
-	    @call .cev 1771
+	    // @call .cev 1771
+			func_pathfinding_move()
 	    v[Pathfinding_AgentData_head_ptr + 34] |= 4096
 	    v[Pathfinding_AgentData_head_ptr + 34] &= ~8388608
 	    v[Pathfinding_AgentData_head_ptr + 34] &= ~32768

@@ -5,7 +5,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 	var_allocatedmapsize = v[2061] * v[2062]
 
 		//@comment "#########Tile Generation########"
-		@if v[2055] == 1 {
+		@if v[2055] == 1 { // this one is shit
 			t[510] .asg "..\Maps\"
 			t[510] .cat t[750]
 			t[510] .cat "\"

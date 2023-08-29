@@ -3,6 +3,8 @@
 */
 
 const DEBUG = 1;
+const SINGLEPLAY = true;
+
 
 // in order not to cause error when you test on Node.js
 var setv = setv || function(){};
@@ -88,6 +90,10 @@ DIS = { // DIS fundamental components
 		// now you can use troopID by writing like this: trp["TRP_sushi_kensei"] 
 		
 	},
+
+	reload: function(){
+		this.initID(); // restore ID 
+	}
 },
 
 
@@ -95,11 +101,11 @@ DIS = { // DIS fundamental components
 DIS.log = {
 	
 	// ??
-	RMaddr_ShLog: 782, // same as Shell Log address 
+	Adrt_ShLog: 782, // same as Shell Log address 
 	
 	
 	pushLog: function(text) { // test
-		sett(gett(this.RMaddr_ShLog) + "\n" + text)
+		sett(gett(this.Adrt_ShLog) + "\n" + text)
 	},
 	
 	
@@ -121,16 +127,202 @@ DIS.string = {
 
 	// return string
 	getQstr: function(id) {
-		const RMstr_Qstr_Head = 20000; // QuickString array starts from this number in DIS
-		var string = gett(RMstr_Qstr_Head + id);
+		const Adrt_Qstr_Head = 20000; // QuickString array starts from this number in DIS
+		var string = gett(Adrt_Qstr_Head + id);
 		return string;
 	},
 
-	getMapStr: function(id) { // ?
-		// coming soon
-	}
+	getMapstr: function(id) { // ?
+		const Adrt_mapstr_head = 40000
+		var string = gett(Adrt_mapstr_head + id);
+		return string;
+	},
 
 }
+
+DIS.agent = {
+
+	
+	setName: function(agentid,name) {
+		
+	},
+
+}
+
+
+// ------------------------------------------------
+// DIS RTS manager
+// ------------------------------------------------
+
+// The goal of DIS RTS manager system on Quickjs is just to make the game system more flexible, but not to control everything of DIS with it.
+// Why? Because js is too slow to handle everything of DIS system (and stuff of RM2k3).
+// All these system is just a help helper for developers.
+
+// Particularly, restoration process shouldn't be too big to handle.
+// The game itself must be able to go on even without management system on Quickjs if possible. I guess.. - TokyoHuskarl
+
+
+//
+if (SINGLEPLAY){
+	const TEAM_GAIA = -1,
+		TEAM_PLAYER = 0,
+		TEAM_ENEMY = 1,
+		TEAM_NEUTRAL = 2,
+		TEAM_ALLY = 3;
+};
+
+// DIS system component classes - these class objs usually work as component under RTS objects.
+
+class DISmission {
+	constructor(missionid,mapid){
+		this.missionid = missionid; // usually string
+		this.mapid = mapid; // if 0, open custom map
+	};
+
+	essential = { // these elements must be restored when you reload the game via save/load.
+		passedFrame: 0, //  if DIS game is reloaded, then reload from RM var. 
+		players: [],
+		difficulty: 0,
+		isSightSystemOn: true,
+		weatherType: 0,
+	};
+
+	reload = function(){
+		
+	};
+
+	// mission.run() - this one is called in every frame.
+	run = function(){ // called on RM per 1f
+		this.passedFrame++; // + 1 frame  
+		this.triggers.runTriggers() // check simple triggers
+	};
+
+	triggers = {
+		
+		runTriggers: function(){
+			// but how?
+			for (let TRIGGER of this.queue) {
+			
+			
+			};
+		
+		},
+
+		queue: [],
+	};
+
+	func = { // mission.func - DIS players should touch call only these functions under the mission obj.
+
+		setPlayer: function(id,faction){ // set player in mission.
+			this.players[id] = new RTSplayer(id,faction); // push to players array
+			if (id == 0 && SINGLEPLAY) { // DIS LEGACY - single player only.
+				this.players[id].isHuman = true; // then player0 is always considered human.
+			};
+		},
+
+	};
+
+};
+
+
+// RTS map class
+class RTSmap {
+	constructor(mapdeffile){
+		this.source = mapdeffile || "editmode";
+		this.size = [50,50]; // temp
+		this.isGenerated = false;
+		this.hasTerrainData = false;
+		this.hasPresetHeightMap = false;
+		this.originalTileSet = 1; // RM tile set - if it's not defined, at least try to load 1.
+	}
+	
+
+	build(){ // this function called through mission init process, after loading mapdef.js.txt.
+		
+		if (this.init() != NULL){ // call init process..
+			
+			
+		} else { // if RTS.map.init() is not overridden, it's a leagcy map without any js empowerment.
+			
+			
+		};
+		
+		this.isGenerated = true; // generate process finished.
+	};
+	
+	init(){return NULL;}; // override me. written in mapdef.js.txt.
+
+	
+	generate(){return NULL;}; // overload me. written in mapdef.js.txt.
+	
+};
+
+
+class RTSplayer {
+	constructor(id,factionid){
+		this.id = id;
+		this.faction = factionid;
+		this.isHuman = false;
+	};
+
+};
+
+
+// RTStrigger - old simple trigger.
+// maybe you need to build up restoring processes for mission and triggers.
+// both creation and deletion of the simple triggers must be memorized in RMvar (or str) just for restoring save data. After all.
+class RTStrigger {
+	constructor(cond){ // if you give any condition that returns bool as a arg0, it becomes condition of the new trigger.
+		
+		this.condition = cond || function(){return true;}; // return bool. can be overridden later.
+
+	}
+
+	run = function(){
+		const CONTINUE = true; // if this function returns false, then erase from triggers.
+	
+		if (this.condition()){ // you might need to reconsider later but temporary 
+			this.effect();
+			return this.isLoop; // if this trigger set to keep looping, then return true. 
+		};
+		
+		return CONTINUE;
+
+	};
+
+	effect = ()=>{ /* override me later in missiondef file! */ }; 
+	timer = 0; // ++ in mission trigger run function.
+	isLoop = false; // whether this trigger will be called even after fulfilling condition once.
+
+};
+
+//
+
+
+// ------------------------------------------------
+// DIS RTS module
+// ------------------------------------------------
+let RTS = {
+	isRTSmode: false,
+	mission: new DISmission(),
+
+	initMission: function(){this.mission = new DISmission();},
+	openMission: function(missionid,mapid){ // "openmap" command in the old DISshell.
+		this.mission = new DISmission(missionid,mapid);
+		
+	},
+
+	reload: function(){ // call this function whenever player loads RMsavedata. reload all datas from RM memories.
+		
+	},
+
+
+
+
+};
+
+
+
 
 // ------------------------------------------------
 // DIS Command Object
@@ -156,10 +348,23 @@ var Cmd = {
 	// DIS command
 	CmdQueue: "",
 
-	bool_SpawnCmdCalled: false,
+	reload: function(){
+		this.runFlags.initAll();
+	},
+
 
 	Qset: function(typ,name,ord){
 		Cmd.CmdQueue += (typ + "," + name + "," + ord + ";");
+	},
+	
+	runFlags: {
+		initAll: function() {
+			SpawnDetect = false;
+			RMwaitDetect = false;
+		},
+
+		SpawnDetect: false, // init this flag
+		RMwaitDetect: false, //
 	},
 
 
@@ -171,8 +376,8 @@ var Cmd = {
 			// turn on RM switch to run interpreter as cev
 			sets(adr_RMbool_RUN_CMD,1);
 			
+			this.runFlags.initAll();
 			this.CmdOrder = ""; // initialize Command Order
-			this.bool_SpawnCmdCalled = false; // init this flag
 		}
 	},
 	
@@ -186,6 +391,7 @@ var Cmd = {
 
 		wait: function(RMwaittime) { // RMwaittime: 10 = 1sec, 0 = 1f, -n = {n}f. 
 			Cmd.Qset(this.CmdType,"wait",`${RMwaittime}`);
+			Cmd.runFlags.RMwaitDetect = true;
 		},
 
 		eval: function(jsSentence) { // eval(jsSentence) on the DISCmd interpreter. might be dangerous 
@@ -195,7 +401,21 @@ var Cmd = {
 		gotoRMmap: function(RMmapid,tilepos) { //
 			tilepos = tilepos || [0,0]
 			Cmd.Qset(this.CmdType,"gotoRMmap",`${RMmapid},${tilepos[0]},${tilepos[1]}`);
-		}
+		},
+
+		// log series
+		log: function(txt){
+			Cmd.Qset(this.CmdType,"msg",`${txt}`);
+		},
+
+		log_error: function(txt){
+			Cmd.Qset(this.CmdType,"msg",`\\C[17]ERROR:${txt}`);
+		},
+
+		log_debug: function(txt){
+			Cmd.Qset(this.CmdType,"msg",`\\C[5]DEBUG:${txt}`);
+		},	
+		
 		// turnSon:1,
 
 
@@ -205,10 +425,13 @@ var Cmd = {
 	map: {
 		CmdType: CTYP_MAP,
 
+		
 		agentGenPtrPos: 0, // 
 
+
+		
 		/* spawnerInfoUpdate: ()=> {
-			if (Cmd.bool_SpawnCmdCalled == false){}
+			if (Cmd.bl_SpawnCmdCalled == false){}
 		} need to consider well */ 
 
 
@@ -274,8 +497,8 @@ var Cmd = {
 	agent: {
 		CmdType: CTYP_MISSION,
 		
-		setName: function(agentAddr, name) {
-			Cmd.Qset(this.CmdType,"setName",`${agentAddr},${name}`);
+		setName: function(agentAdr, name) {
+			Cmd.Qset(this.CmdType,"setName",`${agentAdr},${name}`);
 		},
 
 	
@@ -301,8 +524,6 @@ var Cmd = {
 
 
 };
-
-
 
 
 

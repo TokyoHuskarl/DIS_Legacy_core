@@ -15,7 +15,7 @@ IF NOT DEFINED build (
 )
 
 set target=module_core_Game_init
-echo Compiling Mission functions. - %target%
+echo Compiling init functions. - %target%
 call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
 echo; 
 
