@@ -1,16 +1,27 @@
 // I actually wanted to define those defvs like "agent.brabrabra = n" but in TPC syntax it's invalid, sadly.
 
-def{
+def {
+	DIS_MAPHOMEPATH = "../Maps/"
+}
+
+
+// Mission
+deft {
+	Str_MissionPath = 749
+	RTSmap_MissionDirectory = 750 // The great separation of mission and map is beginning. Almost all legacy strs with the prefix "Map" will be changed like this
+	RTSmission_MissionName = 752
 }
 
 struct("DISmap",{
 
-	defs {
-		DISmap_MapDirectory = 750
+	deft { // YOU NEED TO CHANGE ALL NAMES LATER!!!
+			DISmap_MapDirectory = 750 // erase later
 		DISmap_MapID = 751
-		DISmap_MapName = 752
+			DISmap_MapName = 752 // erase later
 		DISmap_AIscriptfile = 753
 		DISmap_TileName = 754
+
+		RTSmap_MapdefDir = 755
 
 	}
 	
