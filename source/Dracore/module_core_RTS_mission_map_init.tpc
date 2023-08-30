@@ -1,124 +1,1161 @@
+// loaded by mission_general?
 
-cev .id(1800), .name("Mission:MapInit"), {
+
+sname[130], "loadedJsConfig"
+defs loadedJsConfig = 130
 
 
-	var_allocatedmapsize = v[2061] * v[2062]
 
-		//@comment "#########Tile Generation########"
-		@if v[2055] == 1 { // this one is shit
-			t[510] .asg "..\Maps\"
-			t[510] .cat t[750]
-			t[510] .cat "\"
-			t[510] .cat "tilegen"
-			t[501] .asg  .file t[510], .utf8
-			@if t[501] .neq "" {
-				t[3000..4999] .asg ""
-				t[501] .split "upper", t[502], v[341]
-				t[502] .split t[525], t[3000], v[341]
-				@loop v[2062] .dst v[2064] {
-					t[4001..4999] .asg ""
-					v[341] = 3001 + v[2064]
-					t[v[341]] .split ",", t[4001], v[341]
-					@loop v[2061] .dst v[2065] {
-						v[341] = v[2065] + v[69]
-						v[342] = v[2064] + v[70]
-						v[343] = 4001 + v[2065]
-						t[v[343]] .toNum v[343]
-						@map.rewrite .lower .single v[343] .xywh v[341], v[342], 1, 1
-						
-					}
-					
-					
-				}
-				
-				t[3000..4999] .asg ""
-				t[503] .split t[525], t[3000], v[341]
-				@loop v[2062] .dst v[2064] {
-					t[4001..4999] .asg ""
-					v[341] = 3001 + v[2064]
-					t[v[341]] .split ",", t[4001], v[341]
-					@loop v[2061] .dst v[2065] {
-						v[341] = v[2065] + v[69]
-						v[342] = v[2064] + v[70]
-						v[343] = 4001 + v[2065]
-						t[v[343]] .toNum v[343]
-						@map.rewrite .upper .single v[343] .xywh v[341], v[342], 1, 1
-						
-					}
-					
-					
-				}
-				
+// INIT MISSION - this one is called whenever you open new mission
+__fn CEV_MISSION_INIT {
+	v[1080] = v[1012]
+	s[18].off
+	s[43].on
+	@sys.gameOpt .runWhenInactive
+	@comment "init map id"
+	t[751] .asg ""
+	t[752] .asg ""
+	@comment "init BGM string"
+	Current_BGMFile .asg ""
+	v[216574..1548949] = 0
+	@call .cev 1926
+	@call .cev 2130
+	v[154] = 0
+	v[522] = 0
+	s[37].off
+	@call .cev 1922
+	TT1 = actor[1].level
+	TT1 -= 1
+	@actor[1].level .sub TT1
+	TT1 = actor[1].mhp
+	TT1 -= 1
+	@actor[1].param .hp .sub TT1
+	@comment "初期化"
+	s[309].off
+	s[401..500].off
+	s[470].off
+	@if s[7] .isOn() {
+		@comment "EASY"
+		@if v[2401] == 0 {
+			v[1144] = 1
+			v[1141] = 500
+			v[1142] = 615
+			v[1143] = 90
+			
+		}
+		@comment "NORMAL"
+		@if v[2401] == 1 {
+			v[1144] = 15
+			v[1141] = 450
+			v[1142] = 565
+			v[1143] = 120
+			
+		}
+		@comment "HARD"
+		@if v[2401] >= 2 {
+			v[2057] += 2
+			v[1144] = 25
+			v[1141] = 400
+			v[1142] = 495
+			v[1143] = 140
+			
+		}
+		@comment "VERY HARD"
+		@if v[2401] >= 3 {
+			v[1144] = 35
+			v[1141] = 360
+			v[1142] = 480
+			v[1143] = 150
+			
+		}
+		@if v[2401] >= 4 {
+			v[1144] = 35
+			v[1141] = 360
+			v[1142] = 480
+			v[1143] = 175
+			
+		}
+		v[1141..1142] *= 48 / 45
+		@comment "#DEBUG"
+		v[2403] = v[2223]
+		v[2402] = v[2224]
+		@if v[2403] == 999 {
+			v[2403] = [3, 8, 9, 12, 1][rnd(0, 4)]
+			@comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+			@if v[2403] == 3 {
+				@comment "＃＃＃＃＃＃＃＃＃＃＃＃"
+				v[2402] = rnd(1, 3)
 				
 			}
 			
-		}.elif v[2055] == 2 { //new
-			t[510] .asg "..\Maps\"
-			t[510] .cat t[750]
-			t[510] .cat "\"
-			t[510] .cat "mapdata"
-		        @pic[2599].show {
-			t[510] 
-			.pos -111, -111 .center
+		}
+		@if v[2403] == 0 {
+			v[2403] = 3
+			
+		}
+		
+	}
+	s[1..300].off
+	s[6].on
+	v[1..46] = 0
+	v[1021..1036] = 0
+	v[53..1000] = 0
+	v[2001..2080] = 0
+	v[2406..2418] = 0
+	@comment "#########"
+	v[2800..4400] = 0
+	v[5000..200000] = 0
+	v[225001..735946] = 0
+	@comment "#########"
+	s[501..1000].off
+	v[95] = v[1240]
+	v[2501..2504] = 0
+	v[2520] = 0
+	v[198] = 100
+	v[2510] = s[309] == 1 ? -88888 : 0
+	@comment "Experimental Cache"
+	v[4801] = v[4807]
+	@comment "ui"
+	inputstr .asg  .file "..\\Picture\ui\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
+	@loop v[505] .dst v[506] {
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
+		@if v[321] == -1 {
+			@if inputstr .neq "" {
+				str1 .asg "ui\"
+				str1 .cat inputstr
+				@pic[v[4801]].show {
+					str1
+					.pos -10000, -10000 .center
+					.chromakey 1
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+				}
+				v[4801] += 1
+				
+			}
+			
+		}
+		
+	}
+
+	@comment "num"
+	inputstr .asg  .file "..\\Picture\num\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
+	@loop v[505] .dst v[506] {
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
+		@if v[321] == -1 {
+			@if inputstr .neq "" {
+				str1 .asg "num\"
+				str1 .cat inputstr
+				@pic[v[4801]].show {
+					str1
+					.pos -10000, -10000 .center
+					.chromakey 1
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+				}
+				v[4801] += 1
+				
+			}
+			
+		}
+		
+	}
+
+	@comment "Effects"
+	inputstr .asg  .file "..\\Picture\effects\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
+	@loop v[505] .dst v[506] {
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
+		@comment "#""//""Comment out"
+		@if v[321] == -1 {
+			@if inputstr .neq "" {
+				str1 .asg "effects\"
+				str1 .cat inputstr
+				@pic[v[4801]].show {
+					str1
+					.pos -10000, -10000 .center
+					.chromakey 1
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+				}
+				v[4801] += 1
+				
+			}
+			
+		}
+		
+	}
+
+	@comment "popstrings"
+	inputstr .asg  .file "..\\Picture\popstrings\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
+	@loop v[505] .dst v[506] {
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
+		@comment "#""//""Comment out"
+		@if v[321] == -1 {
+			@if inputstr .neq "" {
+				str1 .asg "popstrings\"
+				str1 .cat inputstr
+				@pic[v[4801]].show {
+					str1
+					.pos -10000, -10000 .center
+					.chromakey 1
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+				}
+				v[4801] += 1
+				
+			}
+			
+		}
+		
+	}
+
+	@comment "Arrows"
+	inputstr .asg  .file "..\\Picture\arrows\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
+	@loop v[505] .dst v[506] {
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
+		@comment "#""//""Comment out"
+		@if v[321] == -1 {
+			@if inputstr .neq "" {
+				str1 .asg "arrows\"
+				str1 .cat inputstr
+				@pic[v[4801]].show {
+					str1
+					.pos -10000, -10000 .center
+					.chromakey 1
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+				}
+				v[4801] += 1
+				
+			}
+			
+		}
+		
+	}
+
+	@comment "Projectiles"
+	inputstr .asg  .file "..\\Picture\projectile\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
+	@loop v[505] .dst v[506] {
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
+		@comment "#""//""Comment out"
+		@if v[321] == -1 {
+			@if inputstr .neq "" {
+				str1 .asg "projectile\"
+				str1 .cat inputstr
+				@pic[v[4801]].show {
+					str1
+					.pos -10000, -10000 .center
+					.chromakey 1
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+				}
+				v[4801] += 1
+				
+			}
+			
+		}
+		
+	}
+
+	@comment "Stamps"
+	inputstr .asg  .file "..\\Picture\stamp\preload_setting", .utf8
+	inputstr .split LF, t[1], v[505]
+	@loop v[505] .dst v[506] {
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
+		@comment "#""//""Comment out"
+		@if v[321] == -1 {
+			@if inputstr .neq "" {
+				str1 .asg "stamp\"
+				str1 .cat inputstr
+				@pic[v[4801]].show {
+					str1
+					.pos -10000, -10000 .center
+					.chromakey 1
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+				}
+				v[4801] += 1
+				
+			}
+			
+		}
+		
+	}
+	
+
+	// UI setting
+	@comment "Env"
+	v[2901] = v[1001] / 2
+	v[2902] = v[1002] / 2
+	@comment "######################"
+	@pic[974].show {
+		"UI\Basic_UI"
+		.pos v[1115], v[1002] .bottom
+		.chromakey 1
+		.scale 100
+		.trans 100
+		.rgbs 100, 100, 100, 100
+		.mapLayer 8
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+	}
+	@pic[974].show {
+		"UI\Basic_UI"
+		.pos v[1301], v[1002] .bottomLeft
+		.chromakey 1
+		.scale 100
+		.trans 100
+		.rgbs 100, 100, 100, 100
+		.mapLayer 8
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+	}
+	@pic[974].getInfo .ltrb .baseRect TT1, TT2, TT3, TT3
+	LEGV_ConstBuffIconsStartX = TT1 + 254
+	LEGV_ConstBuffIconsStartY = v[1286]
+	TT1 += 502
+	TT1 += 84
+	TT2 = v[1286] + 3
+	@pic[1790].show {
+		"UI\minimapui_0"
+		.pos v[1001], v[1002] .bottomRight
+		.chromakey 1
+		.scale 100
+		.trans 0
+		.rgbs 100, 100, 100, 100
+		.mapLayer 9
+		.eraseWhenTransfer
+	}
+	@pic[1774].show {
+		"ui\switch_idle_worker"
+		.pos TT1, TT2 .topLeft
+		.chromakey 1
+		.scale 100
+		.trans 35
+		.rgbs 100, 100, 100, 100
+		.grid 1, 2 .cell 1
+		.mapLayer 8
+		.eraseWhenTransfer
+	}
+	TT2 += 16
+	@if v[231] == 3 {
+		@pic[1775].show {
+			"ui\switch_log"
+			.pos TT1, TT2 .topLeft
 			.chromakey 1
 			.scale 100
-			.trans 0
+			.trans 35
 			.rgbs 100, 100, 100, 100
+			.grid 1, 2 .cell 1
+			.mapLayer 8
+			.eraseWhenTransfer
+		}
+		
+	} .else bl {
+		@pic[1775].show {
+			"ui\switch_log"
+			.pos TT1, TT2 .topLeft
+			.chromakey 1
+			.scale 100
+			.trans 35
+			.rgbs 100, 100, 100, 100
+			.grid 1, 2 .cell 2
+			.mapLayer 8
+			.eraseWhenTransfer
+		}
+		
+	}
+	@comment "######################"
+	@pic[1770].strpic {
+		""
+		.pos v[1001], v[1301] .topRight
+		.size 48, 22    .chromakey 1
+		.scale 100
+		.trans 20
+		.rgbs 100, 100, 100, 100
+		.font "", 12
+		.spacing 0, 0
+		.skin "SystemSwitch" .stretch .noPadding
+		.mapLayer 8
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+	}
+	TT1 = v[1001] - 4
+	TT2 = 0 + 4
+	@pic[1771].show {
+		"ui\switch_esc"
+		.pos TT1, TT2 .topRight
+		.chromakey 1
+		.scale 100
+		.trans 20
+		.rgbs 100, 100, 100, 100
+		.mapLayer 8
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+	}
+	TT1 -= 14
+	TT2 = 0 + 4
+	@if v[2401] < 5 {
+		@pic[1772].show {
+			"ui\switch_ff"
+			.pos TT1, TT2 .topRight
+			.chromakey 1
+			.scale 100
+			.trans 20
+			.rgbs 100, 100, 100, 100
+			.grid 1, 2 .cell 2
+			.mapLayer 8
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+		}
+		
+	}
+	TT1 -= 14
+	TT2 = 0 + 4
+	@if v[2401] < 5 {
+		@pic[1773].show {
+			"ui\switch_pause"
+			.pos TT1, TT2 .topRight
+			.chromakey 1
+			.scale 100
+			.trans 20
+			.rgbs 100, 100, 100, 100
+			.grid 1, 2 .cell 2
+			.mapLayer 8
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+		}
+		
+	}
+	@comment "######################"
+	s[2].off
+	s[18].on
+	@comment "＃＃＃＃＃UI Picture Preload＃＃＃＃＃＃"
+	@comment "AItoggle"
+	TT1 = v[4556]
+	@loop 4 {
+		TT1 += 1
+		@pic[TT1].show {
+			"StaticIcon"
+			.pos Temp5, Temp6 .center
+			.scrollWithMap
+			.chromakey 1
+			.scale 100
+			.trans 100
+			.rgbs 100, 100, 100, 100
+			.grid 8, 1 .cell 8
+			.mapLayer 9
+			.affectedByFlash
+			.affectedByShake
+		}
+		
+	}
+
+	@comment "Markers"
+	TT1 = v[1196]
+	@loop v[1203] {
+		TT1 += 1
+		@pic[TT1].show {
+			"marker"
+			.pos Temp5, Temp6 .center
+			.scrollWithMap
+			.chromakey 1
+			.scale 100
+			.trans 100
+			.rgbs 100, 100, 100, 100
+			.grid 1, 5 .cell v[321]
+			.mapLayer 4
+			.affectedByFlash
+			.affectedByShake
+		}
+		
+	}
+
+	@comment "#Particles"
+	TT1 = v[1164]
+	@loop v[1163] .dst TT2 {
+		TT1 += 1
+		@pic[TT1].show {
+			"effects\sprite_fresheffects"
+			.pos v[1119], TT3 .right
+			.chromakey 1
+			.scale 100
+			.trans 100
+			.rgbs 100, 100, 100, 100
+			.mapLayer 2
+			.affectedByShake
+		}
+		
+	}
+
+	@comment "#Particles"
+	s[144].off
+	@if v[2215] > 0 {
+		s[144].on
+		TT1 = v[1200]
+		@loop v[2215] .dst TT2 {
+			TT1 += 1
+			@pic[TT1].show {
+				"effects\particles"
+				.pos v[1119], TT3 .right
+				.chromakey 1
+				.scale 100
+				.trans 100
+				.rgbs 100, 100, 100, 100
+				.grid 11, 10 .cell 1
+				.mapLayer 7
+				.affectedByShake
+			}
+			
+		}
+		
+		
+	}
+	@comment "#Buffs"
+	v[1127] = 18
+	@loop 8 .dst v[235] {
+		v[235] += 987
+		@pic[v[235]].show {
+			"ui\bufficon"
+			.pos v[1119], TT3 .right
+			.chromakey 1
+			.scale 100
+			.trans 100
+			.rgbs 100, 100, 100, 100
+			.grid 8, 5 .cell 1
+			.mapLayer 9
+			.affectedByShake
+		}
+		
+	}
+
+	@comment "#Side HP bar"
+	v[1121] = 4001
+	v[1118] = 1181
+	TT1 = 10 + v[1118]
+	@loop 10 .dst TT2 {
+		TT3 = 21 * TT2
+		TT3 += v[1120]
+		TT2 += 1
+		TT2 %= 10
+		@pic[TT1].show {
+			"ui\HP_bar_side_0" .repl 1 TT2
+			.pos v[1119], TT3 .right
+			.chromakey 1
+			.scale 100
+			.trans 100
+			.rgbs 100, 100, 100, 100
+			.grid 1, 20 .cell 20
+			.mapLayer 8
+			.eraseWhenTransfer
+			.affectedByShake
+		}
+		TT1 += 1
+		
+	}
+
+	@comment "Markers"
+	TT1 = 921
+	TT2 = 1
+	@loop 6 {
+		@pic[TT1].show {
+			"pointer_waypoint"
+			.pos 160, 120 .center
+			.chromakey 1
+			.scale 100
+			.trans 100
+			.rgbs 100, 100, 100, 100
+			.grid 6, 1 .cell TT2
+			.mapLayer 8
+			.eraseWhenTransfer
+			.affectedByShake
+		}
+		v[341..342] += 1
+		
+	}
+
+	@comment "num"
+	TT1 = 1201
+	@loop 30 {
+		@pic[TT1].show {
+			"num\ord"
+			.pos v[221], v[222] .center
+			.scrollWithMap
+			.chromakey 1
+			.scale 100
+			.trans 100
+			.rgbs 100, 180, 100, 100
 			.mapLayer 7
 			.eraseWhenTransfer
 			.affectedByFlash
 			.affectedByShake
-		        }
-		        @pic[2599].getInfo .pixel 0, 0, v[2061], v[2062] .dst Memory_MapInfo
-			//var_allocatedmapsize
-			@loop v[2062] .dst v[2064] {
-				@loop v[2061] .dst v[2065] {
-					TT1 = v[2065] + v[69]
-					TT2 = v[2064] + v[70]
-					TT3 = v[2065] + v[2064]  * v[2061] + v[1182]
-					TT4 = v[TT3] & 0x000000FF 
-					@map.rewrite .lower .single TT4 .xywh v[341], v[342], 1, 1
-					TT5 = (v[TT3] & 0x0000FF00) >> 8
-					@map.rewrite .upper .single TT5 .xywh v[341], v[342], 1, 1
-					TT6 = (v[TT3] & 0xff000000) >> 24
-					@map.getTerrain .pos v[341], v[342] .dst(reg10)
-					//set info
-					v[TT3] = TT6*100000000 + TT5*100000 + TT4 * 100 + reg10
+		}
+		TT1 += 1
+		
+	}
+
+	v[143] = 0
+	v[142] = 100
+	v[421] = 100
+	@comment "＃＃＃＃＃＃This part might cause some gaps minimap, so achtung"
+	v[2056] = 0
+	v[501] = player.mapId
+	v[2080] = 2301
+	Map_LimitCoordX_min = ev[3].x
+	Map_LimitCoordY_min = ev[3].y
+	@comment "*get map config*"
+
+	// ---------------------------
+	// Check map list
+	// ---------------------------
+	Is_SightSystem_On.on
+	@sys.getInfo .tilesetId  .dst v[2060]
+	@if t[751] .eq "" {
+		t[751] .asg "\v[501]" .extract
+		
+	}
+	str1 .asg  .file "../Maps/define_maps", .utf8
+	str2 .asg ".*="
+	str2 .cat t[751]
+	str1.exMatch {
+		str2
+		str1
+		TT1
+		.beg 0
+		.extract
+	}
+	@if str1 .neq "" {
+		str1 .split "=", str1, TT1
+		t[750] .asg str1
+		
+	}
+
+	
+	// ---------------------------
+	// Legacy map config
+	// ---------------------------
+	loadedJsConfig.off
+
+	// LEGACY - remove this part after js management system completion
+	
+	getMissionPath()
+	loadMissionDef()
+
+	@if loadedJsConfig.isOff() {
+		inputstr .asg "..\Maps\"
+		inputstr .cat t[750]
+		inputstr .cat "\\config"
+		inputstr .asg  .file inputstr, .utf8, .extract
+		inputstr .split LF, t[v[1219]], v[505]
+		@loop v[505] .dst v[506] {
+			var1 = v[1219] + v[506]
+			inputstr .asg t[var1]
+			@call .cev 1796
+			t[3000..3300] .asg ""
+			
+		}
+	}
+	
+
+
+	Map_LimitCoordX_max = ev[4].x
+	Map_LimitCoordY_max = ev[4].y
+	v[411] = (Map_LimitCoordX_max + Map_LimitCoordX_min) / 2
+	v[412] = (Map_LimitCoordY_max + Map_LimitCoordY_min) / 2
+	v[413] = (Map_LimitCoordX_max - Map_LimitCoordX_min) / v[1277] + 1
+	v[416] = (Map_LimitCoordY_max - Map_LimitCoordY_min) / v[1276] + 1
+	v[430] = muldiv(Map_LimitCoordX_max - Map_LimitCoordX_min, 100, v[1277])
+	v[431] = muldiv(Map_LimitCoordY_max - Map_LimitCoordY_min, 100, v[1276])
+	var_Map_Width = Map_LimitCoordX_max - Map_LimitCoordX_min
+	var_Map_Height = Map_LimitCoordY_max - Map_LimitCoordY_min
+	v[2061..2062] += 1
+	v[165] = player.x
+	v[166] = player.y
+	v[165].copy v[161], 2
+	v[161..162] *= 16
+	v[162] -= 8
+	v[161] = max(v[161], v[1115])
+	v[162] = max(v[162], v[1116])
+	// @comment "＃＃＃＃＃＃Camera Set Up"
+	@map.getPlayerPos v[68] TT11 TT12
+	// @map[v[68]].setVehiclePos .pos Map_LimitCoordX_min, Map_LimitCoordY_min .retain
+	@map[v[68]].setPlayerPos .pos Map_LimitCoordX_min Map_LimitCoordY_min
+	
+	@loop v[1276] .dst TT4 {
+		v[v[4802] + TT4] = (muldiv(TT4, v[431], 100) + Map_LimitCoordY_min) / 5
+		
+	}
+
+	@loop v[1277] .dst TT3 {
+		v[v[4803] + TT3] = (muldiv(TT3, v[430], 100) + Map_LimitCoordX_min) / 5
+		
+	}
+
+	@wait 0
+	@comment "FoW"
+	v[2925] = ev[3].scrx
+	v[2926] = ev[3].scry
+	@comment "#四分木用"
+	Map_LimitCoordX_max = ev[4].scrx
+	Map_LimitCoordX_max -= ev[3].scrx
+	Map_LimitCoordY_max = ev[4].scry
+	Map_LimitCoordY_max -= ev[3].scry
+	v[74] = Map_LimitCoordX_max / 32
+	v[75] = Map_LimitCoordY_max / 32
+	@if v[74] >= 64 {
+		s[297].on
+		
+	} .else bl {
+		s[297].off
+		
+	}
+	v[78] = Map_LimitCoordX_max / 2
+	v[79] = Map_LimitCoordY_max / 2
+	Map_LimitCoordX_min = ev[3].x
+	Map_LimitCoordY_min = ev[3].y
+	Map_LimitCoordX_max = ev[4].x
+	Map_LimitCoordY_max = ev[4].y
+	@comment "#四分木用End"
+	v[517] = ev[3].scrx
+	v[517] += v[1001] / 2 + 16
+	v[518] = ev[3].scry
+	v[518] += v[1002] / 2
+	v[519] = ev[4].scrx
+	v[519] -= v[1001] / 2 - 16
+	v[520] = ev[4].scry
+	v[520] -= v[1002] / 2
+
+
+	v[161] = max(v[161], v[517])
+	v[162] = max(v[162], v[518])
+	v[0] = v[165..166] = [v[161] / 16, v[162] / 16]
+
+	//@comment "#########################"
+	//v[0] = v[472..477] = [7, 17, 161, 162, 6, 0]
+	//@comment "#########################"
+	//v[471] = 11060
+	//@comment "#########################"
+	// @comment "#Safety"
+	// @cmd v[471], "", .args v[472], 6
+	func_general_camera_move(v[161],v[162])
+
+
+
+	@comment "Camera Set Up End＃＃＃＃＃"
+	v[53] = 0
+	v[54] = 0
+	@wait 0
+	v[53] = 0
+	v[54] = 0
+	v[55..56] = 0
+	@comment "＃＃＃＃＃CPU Tactics AI＃＃＃＃＃＃"
+	@if s[310] .isOn() {
+		s[305].on
+		
+	} .else bl {
+		s[305].off
+		
+	}
+	s[80].on
+	s[39].on
+	s[35].on
+	s[2].on
+	s[20].on
+	v[2875] = 0
+	@comment "＃＃＃＃＃＃Setting＃＃＃＃＃＃"
+	s[72].off
+	@if s[314] .isOn() {
+		s[72].on
+		
+	}
+	v[390] = 2000
+	@comment "+Logs+"
+	v[239] = 100
+	v[231] = 12
+	v[239] = 5
+	v[231] = 3
+	@pic[1775].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+	@if v[231] == 3 {
+		@pic[1775].show {
+			"ui\switch_log"
+			.pos InvVar2, InvVar3 .center
+			.chromakey 1
+			.scale 100
+			.trans 35
+			.rgbs 100, 100, 100, 100
+			.grid 1, 2 .cell 1
+			.mapLayer 8
+			.eraseWhenTransfer
+		}
+		
+	} .else bl {
+		@pic[1775].show {
+			"ui\switch_log"
+			.pos InvVar2, InvVar3 .center
+			.chromakey 1
+			.scale 100
+			.trans 35
+			.rgbs 100, 100, 100, 100
+			.grid 1, 2 .cell 2
+			.mapLayer 8
+			.eraseWhenTransfer
+		}
+		
+	}
+	@comment "test"
+	s[38].off
+	s[18].off
+	s[43].on
+	@comment "EXP"
+	v[2701] = 0
+	@sys.skin "Odinscall_system" .stretch .gothic
+	v[45] = v[143]
+	v[142] = 100
+	v[2507..2509] = -1
+	@comment "#########Weather########"
+	s[298].off
+
+
+
+	@comment "#########terrain########" 
+	v[4505] = 4400
+	v[4505] = 273901
+	@comment "#Forest"
+	v[v[4505] + 2] |= 8
+	@comment "#Dense Forest"
+	v[v[4505] + 5] |= 4
+	v[v[4505] + 5] |= 8
+	@comment "#Snow"
+	v[v[4505] + 7] |= 32
+	@comment "#Ice"
+	v[v[4505] + 10] |= 16
+	@comment "#Road"
+	v[v[4505] + 11] |= 64
+	@comment "#Bush"
+	v[v[4505] + 17] |= 4
+	@comment "#Shallow Water"
+	v[v[4505] + 18] |= 1
+	@comment "#Deep Water"
+	v[v[4505] + 22] |= 1
+	@comment "#For faster calculation"
+	v[432] = v[1182] - Map_LimitCoordX_min
+	@comment "#Wave adjustment"
+	@if s[7] .isOn() {
+		v[2057] = 6
+		v[2058] = 0
+		v[2059] = 0
+		
+	}
+
+
+
+	@comment "FACTION TEMPLATES"
+	t[3000..3300] .asg ""
+	v[300001..300004] = v[1130]
+	v[300001..300002] -= 30
+	v[300003..300004] -= 80
+	@if s[1] .isOn() {
+		@comment "*get map config*"
+		@sys.getInfo .tilesetId  .dst v[2060]
+		@if t[751] .eq "" {
+			t[751] .asg "\v[501]" .extract
+			
+		}
+		str1 .asg  .file "../Maps/define_maps", .utf8
+		str2 .asg ".*="
+		str2 .cat t[751]
+		str1.exMatch {
+			str2
+			str1
+			TT1
+			.beg 0
+			.extract
+		}
+		str1 .split "=", str1, TT1
+		t[750] .asg str1
+		inputstr .asg "..\Maps\"
+		inputstr .cat t[750]
+		inputstr .cat "\\config"
+		inputstr .asg  .file inputstr, .utf8, .extract
+		inputstr .split LF, t[v[1219]], v[505]
+		@loop v[505] .dst v[506] {
+			var1 = v[1219] + v[506]
+			inputstr .asg t[var1]
+			@call .cev 1796
+			t[3000..3300] .asg ""
+			
+		}
+		
+		
+	}
+	@if s[7] .isOn() {
+		v[2280 + v[2403]] += 1
+		
+	}
+	@comment "*faction template load*"
+	@comment "PL"
+	var1 = v[4574] + v[2403]
+	t[var1] .split ",", t[2998], v[505]
+	@loop 36 .dst v[506] {
+		var1 = 3001 + v[506]
+		var2 = v[4575] + v[506] + 5
+		t[var1] .toNum v[31]
+		v[var2] = v[31]
+		
+	}
+
+	@comment "EN"
+	var1 = v[4574] + v[2404]
+	t[var1] .split ",", t[2998], v[505]
+	@loop 36 .dst v[506] {
+		var1 = 3001 + v[506]
+		var2 = v[4575] + 40 + v[506] + 5
+		t[var1] .toNum v[31]
+		v[var2] = v[31]
+		
+	}
+
+	v[2481] = 150
+	v[2482] = 160
+	v[2483] = 210
+	v[2484] = 25
+	v[2485] = 30
+	v[2486] = 42
+	@comment "#Imperials"
+	v[v[4580] + 0] = 5
+	@if v[2403] == 1 {
+		v[300001..300004] += 100
+		@comment "#Imperial Age"
+		v[2409] |= pow(2, 28)
+		@comment "#Town Watch"
+		v[2409] |= pow(2, 24)
+		
+	}
+	@if v[2403] == 3 {
+		v[v[4580] + 0] = v[1012]
+		@if v[2402] == 3 {
+			v[300004] *= 2
+			
+		}
+		v[1129] = 100
+		@if v[2402] == 1 {
+			v[1129] += 25
+			v[2481] = 130
+			v[2482] = 140
+			v[2483] = 200
+			v[2484] = 30
+			v[2485] = 35
+			v[2486] = 50
+			
+		}
+		
+	}
+	@if s[400] .isOn() {
+		@if .testPlay {
+			v[300001..300004] += 10000
+			
+		}
+		s[471].on
+		
+	}
+	v[438] = 100
+	str1 .asg  .file "../Maps/define_maps", .utf8
+	@if t[750] .eq "" {
+		str2 .asg ".*="
+		str2 .cat t[751]
+		str1.exMatch {
+			str2
+			str1
+			TT1
+			.beg 0
+			.extract
+		}
+		str1 .split "=", str1, TT1
+		t[750] .asg str1
+		
+	} .else bl {
+		str2 .asg t[750]
+		str2 .cat "@.*"
+		str1.exMatch {
+			str2
+			str1
+			TT1
+			.beg 0
+			.extract
+		}
+		str1 .split "=", str1, TT1
+		str2 .toNum TT1
+		@comment "need to load tilegen.txt"
+		@if TT1 == 0 {
+			Mapgentype = Mapgentype == 0 ? 1 : Mapgentype
+			
+		}
+		
+	}
+
+	// generate Agent Extra Array Buffer as a picture
+	// construct_picture_buffer(PicID_AgentExBuffer,AgentExtraBuffer_ArraySize,AgentExtraBuffer_ArrayAmount) obsolete
+	
+}
+
+
+
+// 
+__fn CEV_MISSION_MAP_INIT {
+	var_allocatedmapsize = var_Map_Width * var_Map_Height
+	
+
+	// mapdef.js.txt file won't be loaded when the game didn't load missiondef.js.txt.
+	@if loadedJsConfig.isOn() {
+		loadMapDef()
+		run_RTSmapGeneration()
+		@map.tileset v[2060]
+	}
+
+	//@comment "#########Tile Generation########"
+	@if v[2055] == 1 { // this one is shit
+		inputstr .asg "..\Maps\"
+		inputstr .cat DISmap_MapDirectory
+		inputstr .cat "\"
+		inputstr .cat "tilegen"
+		str1 .asg  .file inputstr, .utf8
+		@if str1 .neq "" {
+			t[3000..4999] .asg ""
+			str1 .split "upper", str2, TT1
+			str2 .split LF, t[3000], TT1
+			@loop var_Map_Height .dst v[2064] {
+				t[4001..4999] .asg ""
+				TT1 = 3001 + v[2064]
+				t[TT1] .split ",", t[4001], TT1
+				@loop var_Map_Width .dst v[2065] {
+					TT1 = v[2065] + Map_LimitCoordX_min
+					TT2 = v[2064] + Map_LimitCoordY_min
+					TT3 = 4001 + v[2065]
+					t[TT3] .toNum TT3
+					@map.rewrite .lower .single TT3 .xywh TT1, TT2, 1, 1
+					
 				}
 				
 				
 			}
-		
+			
+			t[3000..4999] .asg ""
+			str3 .split LF, t[3000], TT1
+			@loop var_Map_Height .dst v[2064] {
+				t[4001..4999] .asg ""
+				TT1 = 3001 + v[2064]
+				t[TT1] .split ",", t[4001], TT1
+				@loop var_Map_Width .dst v[2065] {
+					TT1 = v[2065] + Map_LimitCoordX_min
+					TT2 = v[2064] + Map_LimitCoordY_min
+					TT3 = 4001 + v[2065]
+					t[TT3] .toNum TT3
+					@map.rewrite .upper .single TT3 .xywh TT1, TT2, 1, 1
+					
+				}
+				
+				
+			}
+			
 			
 		}
+		
+	}.elif v[2055] == 2 { //new
+		inputstr .asg DIS_MAPHOMEPATH
+		inputstr .cat RTSmap_MapdefDir
+		inputstr .cat "\"
+		inputstr .cat "mapdata"
+		generateTileMapFromPicfile(inputstr)
+	}
 	
 
 	@comment "#########Sight System########"
-	@if s[300] .isOff() {
+	@if Is_SightSystem_On .isOff() {
 	    s[2001..2500].on
 	    s[299].on
 	    
 	} .else bl {
 	    s[299].off
 	    v[562447..572446] = 0
-	    v[2927] = v[2061] / 5
-	    v[2927] += v[2061] % 5 > 0 ? 1 : 0
-	    v[2928] = v[2062] / 5
-	    v[2928] += v[2062] % 5 > 0 ? 1 : 0
+	    v[2927] = var_Map_Width / 5
+	    v[2927] += var_Map_Width % 5 > 0 ? 1 : 0
+	    v[2928] = var_Map_Height / 5
+	    v[2928] += var_Map_Height % 5 > 0 ? 1 : 0
 	    v[4526] = 96
 	    v[4526] = (v[1001] / 80 + 2) * (v[1002] / 80 + 2)
 	    @comment "temp"
 	    v[4526] = min(v[4526], 156)
-	    v[345] = 80
-	    v[346] = 80
-	    @loop v[4526] .dst v[341] {
-		v[342] = v[4525] + v[341]
-		v[343] = 80 * (v[341] % 12) - 40
-		v[344] = 80 * (v[341] / 12) - 40
-		@pic[v[342]].strpic {
+	    TT5 = 80
+	    TT6 = 80
+	    @loop v[4526] .dst TT1 {
+		TT2 = v[4525] + TT1
+		TT3 = 80 * (TT1 % 12) - 40
+		TT4 = 80 * (TT1 / 12) - 40
+		@pic[TT2].strpic {
 		    ""
-		    .pos v[343], v[344] .center
-		    .size v[345], v[346]            .chromakey 1
+		    .pos TT3, TT4 .center
+		    .size TT5, TT6            .chromakey 1
 		    .scale 100
 		    .trans 0
 		    .rgbs 100, 100, 100, 100
@@ -135,52 +1172,56 @@ cev .id(1800), .name("Mission:MapInit"), {
 	    
 	    
 	}
+
+
 	@if s[1] .isOn() {
-	    t[501] .asg  .file "../Maps/define_maps", .utf8
-	    @if t[750] .eq "" {
-		t[502] .asg ".*="
-		t[502] .cat t[751]
-		t[501].exMatch {
-		    t[502]
-		    t[501]
-		    v[341]
+	    str1 .asg  .file "../Maps/define_maps", .utf8
+	    @if DISmap_MapDirectory .eq "" {
+		str2 .asg ".*="
+		str2 .cat t[751]
+		str1.exMatch {
+		    str2
+		    str1
+		    TT1
 		    .beg 0
 		    .extract
 		}
-		t[501] .split "=", t[501], v[341]
-		t[750] .asg t[501]
+		str1 .split "=", str1, TT1
+		DISmap_MapDirectory .asg str1
 		
 	    } .else bl {
-		t[502] .asg t[750]
-		t[502] .cat "=.*"
-		t[501].exMatch {
-		    t[502]
-		    t[501]
-		    v[341]
+		str2 .asg DISmap_MapDirectory
+		str2 .cat "=.*"
+		str1.exMatch {
+		    str2
+		    str1
+		    TT1
 		    .beg 0
 		    .extract
 		}
-		t[501] .split "=", t[501], v[341]
-		t[502] .toNum v[341]
+		str1 .split "=", str1, TT1
+		str2 .toNum TT1
 		@comment "need to load mapgen.txt"
-		@if v[341] == 0 {
+		@if TT1 == 0 {
 		    
 		}
 		
 	    }
 	    
 	}
+
+	
 	@comment "*init map str*"
 	t[40000..45000] .asg ""
 	@comment "*get map str*"
-	t[510] .asg "..\Maps\"
-	t[510] .cat t[750]
-	t[510] .cat "\\"
-	t[510] .cat "strings"
-	t[510] .cat t[526]
-	t[510] .asg  .file t[510], .utf8, .extract
-	t[510] .split "*/", t[509], v[341]
-	t[510] .split t[525], t[40000], v[341]
+	inputstr .asg "..\Maps\"
+	inputstr .cat DISmap_MapDirectory
+	inputstr .cat "\\"
+	inputstr .cat "strings"
+	inputstr .cat Str_LanguageToken
+	inputstr .asg  .file inputstr, .utf8, .extract
+	inputstr .split "*/", str9, TT1
+	inputstr .split LF, t[40000], TT1
 	@comment "*Weather Init*"
 	@if s[312] .isOff() {
 	    @call .cev 1798
@@ -188,24 +1229,24 @@ cev .id(1800), .name("Mission:MapInit"), {
 	}
 	@comment "*MAP INIT*"
 	v[v[v[4569]]..v[v[4569] + v[4564] * 200 * 200]] = 0
-	v[0] = [v[286]..v[286] + 160000] = 0
-	v[2063] = v[2061] * v[2062]
+	v[0] = [Ptr6..Ptr6 + 160000] = 0
+	v[2063] = var_Map_Width * var_Map_Height
 	v[504] = 3
 	@if  v[2055] == 2 { //new mapdata loaded
-	    @loop v[2062] .dst v[2064] {
-		    v[286] = v[2061] * v[2064] + v[4529]
-		    v[287] = v[2061] * v[2064] + v[1182]
-		    @loop v[2061] .dst v[2065] {
-			v[341] = v[2065] + v[69]
-			v[342] = v[2064] + v[70]
+	    @loop var_Map_Height .dst v[2064] {
+		    Ptr6 = var_Map_Width * v[2064] + v[4529]
+		    Ptr7 = var_Map_Width * v[2064] + v[1182]
+		    @loop var_Map_Width .dst v[2065] {
+			TT1 = v[2065] + Map_LimitCoordX_min
+			TT2 = v[2064] + Map_LimitCoordY_min
 			@comment "if elevation was not set"
-			@if v[v[287]]<100000000{
-				v[v[287]] += 300000000
+			@if v[Ptr7]<100000000{
+				v[Ptr7] += 300000000
 				@comment "lower water height"
-				v[v[287]] -= (v[v[4505] + v[30]] & 1) > 0 ? 100000000 : 0
+				v[Ptr7] -= (v[v[4505] + reg10] & 1) > 0 ? 100000000 : 0
 				}
 			@comment "#TileFuncPushFlag"
-			v[v[286]] |= v[v[287]]%100 >= 20 ? 1 : 0
+			v[Ptr6] |= v[Ptr7]%100 >= 20 ? 1 : 0
 			v[286..287] += 1
 			
 		    }
@@ -213,20 +1254,20 @@ cev .id(1800), .name("Mission:MapInit"), {
 
 	}.else{
 
-		@loop v[2062] .dst v[2064] {
-		    v[286] = v[2061] * v[2064] + v[4529]
-		    v[287] = v[2061] * v[2064] + v[1182]
-		    @loop v[2061] .dst v[2065] {
-			v[341] = v[2065] + v[69]
-			v[342] = v[2064] + v[70]
-			@map.getTerrain .pos v[341], v[342] .dst v[30]
-			v[v[287]] = v[30]
+		@loop var_Map_Height .dst v[2064] {
+		    Ptr6 = var_Map_Width * v[2064] + v[4529]
+		    Ptr7 = var_Map_Width * v[2064] + v[1182]
+		    @loop var_Map_Width .dst v[2065] {
+			TT1 = v[2065] + Map_LimitCoordX_min
+			TT2 = v[2064] + Map_LimitCoordY_min
+			@map.getTerrain .pos TT1, TT2 .dst reg10
+			v[Ptr7] = reg10
 			@comment "HEIGHT LEVEL 1"
-			v[v[287]] += 300000000
+			v[Ptr7] += 300000000
 			@comment "lower water height"
-			v[v[287]] -= (v[v[4505] + v[30]] & 1) > 0 ? 100000000 : 0
+			v[Ptr7] -= (v[v[4505] + reg10] & 1) > 0 ? 100000000 : 0
 			@comment "#TileFuncPushFlag"
-			v[v[286]] |= v[30] >= 20 ? 1 : 0
+			v[Ptr6] |= reg10 >= 20 ? 1 : 0
 			v[286..287] += 1
 			
 		    }
@@ -237,13 +1278,13 @@ cev .id(1800), .name("Mission:MapInit"), {
 
 	@comment "set v[2060]-> cev (mission init)"
 	@comment "*Load Tile Config*"
-	t[510] .asg "..\\Chipset\\tiledata\\tileconf_"
-	t[510] .cat "\v[2060]" .extract
-	t[510] .asg  .file t[510], .utf8, .extract
-	t[510] .split t[525], t[v[1219]], v[505]
+	inputstr .asg "..\\Chipset\\tiledata\\tileconf_"
+	inputstr .cat "\v[2060]" .extract
+	inputstr .asg  .file inputstr, .utf8, .extract
+	inputstr .split LF, t[v[1219]], v[505]
 	@loop v[505] .dst v[506] {
-	    v[11] = v[1219] + v[506]
-	    t[510] .asg t[v[11]]
+	    var1 = v[1219] + v[506]
+	    inputstr .asg t[var1]
 	    @call .cev 1820
 	    t[3000..3300] .asg ""
 	    
@@ -251,36 +1292,36 @@ cev .id(1800), .name("Mission:MapInit"), {
 
 	@comment "*map tile check*"
 	@if v[2055] != 2 { 
-		@loop v[2062] .dst v[2064] {
-		    v[286] = v[2061] * v[2064] + v[4529]
-		    v[287] = v[2061] * v[2064] + v[1182]
-		    @loop v[2061] .dst v[2065] {
-			v[341] = v[2065] + v[69]
-			v[342] = v[2064] + v[70]
-			@sys.getInfo .tiles v[341], v[342], 1, 1 .lower .dst v[30]
+		@loop var_Map_Height .dst v[2064] {
+		    Ptr6 = var_Map_Width * v[2064] + v[4529]
+		    Ptr7 = var_Map_Width * v[2064] + v[1182]
+		    @loop var_Map_Width .dst v[2065] {
+			TT1 = v[2065] + Map_LimitCoordX_min
+			TT2 = v[2064] + Map_LimitCoordY_min
+			@sys.getInfo .tiles TT1, TT2, 1, 1 .lower .dst reg10
 			@comment "Set LowerChipID"
-			v[v[287]] += v[30] * 100
+			v[Ptr7] += reg10 * 100
 			@comment "Highgroundset"
 			v[371] = 0
-			@loop v[701] .dst v[345] {
-			    v[371] += v[30] == v[v[345] + 702] && v[30] != 0 ? 1 : 0
+			@loop v[701] .dst TT5 {
+			    v[371] += reg10 == v[TT5 + 702] && reg10 != 0 ? 1 : 0
 			    
 			}
 			
-			v[v[287]] += v[371] >= 1 ? 100000000 : 0
+			v[Ptr7] += v[371] >= 1 ? 100000000 : 0
 			@comment "CliffCheck"
 			v[371] = 0
-			@loop v[751] .dst v[345] {
-			    v[371] += v[30] == v[v[345] + 752] && v[30] != 0 ? 1 : 0
+			@loop v[751] .dst TT5 {
+			    v[371] += reg10 == v[TT5 + 752] && reg10 != 0 ? 1 : 0
 			    
 			}
 			
 			@if v[371] >= 1 {
-			    v[289] = v[287]
-			    @while v[289] >= v[1182] {
+			    Ptr9 = Ptr7
+			    @while Ptr9 >= v[1182] {
 				@comment "HEIGHT LEVEL UP"
-				v[v[289]] += 100000000
-				v[289] -= v[2061]
+				v[Ptr9] += 100000000
+				Ptr9 -= var_Map_Width
 				
 			    }
 			    
@@ -288,33 +1329,33 @@ cev .id(1800), .name("Mission:MapInit"), {
 			}
 			@comment "CliffEndCheck"
 			v[371] = 0
-			@loop v[801] .dst v[345] {
-			    v[371] += v[30] == v[v[345] + 802] && v[30] != 0 ? 1 : 0
+			@loop v[801] .dst TT5 {
+			    v[371] += reg10 == v[TT5 + 802] && reg10 != 0 ? 1 : 0
 			    
 			}
 			
 			@if v[371] >= 1 {
-			    v[289] = v[287]
-			    @while v[289] >= v[1182] {
+			    Ptr9 = Ptr7
+			    @while Ptr9 >= v[1182] {
 				@comment "HEIGHT LEVEL DOWN"
-				v[v[289]] -= 100000000
-				v[289] -= v[2061]
+				v[Ptr9] -= 100000000
+				Ptr9 -= var_Map_Width
 				
 			    }
 			    
 			    
 			}
-			@sys.getInfo .tiles v[341], v[342], 1, 1 .upper .dst v[30]
+			@sys.getInfo .tiles TT1, TT2, 1, 1 .upper .dst reg10
 			@comment "Set UpperChipID"
-			v[v[287]] += v[30] * 100000
+			v[Ptr7] += reg10 * 100000
 			@comment "#TileFuncPushFlag"
 			v[371] = 0
-			@loop v[601] .dst v[345] {
-			    v[371] += v[30] == v[v[345] + 602] && v[30] != 0 ? 1 : 0
+			@loop v[601] .dst TT5 {
+			    v[371] += reg10 == v[TT5 + 602] && reg10 != 0 ? 1 : 0
 			    
 			}
 			
-			v[v[286]] |= v[371] >= 1 ? 1 : 0
+			v[Ptr6] |= v[371] >= 1 ? 1 : 0
 			v[286..287] += 1
 			
 		    }
@@ -325,79 +1366,79 @@ cev .id(1800), .name("Mission:MapInit"), {
 
 	@wait 0
 	@comment "set mapnodes"
-	v[433] = (v[71] - v[69]) / 2
-	@if `(v[71] - v[69]) % 2 == 1 {
+	v[433] = (Map_LimitCoordX_max - Map_LimitCoordX_min) / 2
+	@if `(Map_LimitCoordX_max - Map_LimitCoordX_min) % 2 == 1 {
 	    v[433] += 1
 	    
 	}
-	v[434] = (v[72] - v[70]) / 2
-	@if `(v[72] - v[70]) % 2 == 1 {
+	v[434] = (Map_LimitCoordY_max - Map_LimitCoordY_min) / 2
+	@if `(Map_LimitCoordY_max - Map_LimitCoordY_min) % 2 == 1 {
 	    v[434] += 1
 	    
 	}
 	@loop v[434] .dst v[2064] {
-	    v[286] = v[4564] * v[433] * v[2064] + v[4569]
+	    Ptr6 = v[4564] * v[433] * v[2064] + v[4569]
 	    @loop v[433] .dst v[2065] {
-		v[341] = v[2065] * 2 + v[69]
-		v[342] = v[2064] * 2 + v[70]
-		v[341].copy v[v[286]], 2
+		TT1 = v[2065] * 2 + Map_LimitCoordX_min
+		TT2 = v[2064] * 2 + Map_LimitCoordY_min
+		TT1.copy v[Ptr6], 2
 
 		@comment "tile check #detect init static"
 		// 100 = neutral
-		v[v[286] + 2] += 100
+		v[Ptr6 + 2] += 100
 		@comment "Road Counter"
-		v[316] = 0
+		Temp16 = 0
 		@loop 2 .dst v[2066] {
-		    v[344] = v[342] + v[2066]
+		    TT4 = TT2 + v[2066]
 		    @loop 2 .dst v[2067] {
-			v[343] = v[341] + v[2067]
-			v[313] = v[v[1182] + v[343] - v[69] + (v[344] - v[70]) * v[2061]]
-			v[314] = v[313] % 100
+			TT3 = TT1 + v[2067]
+			Temp13 = v[v[1182] + TT3 - Map_LimitCoordX_min + (TT4 - Map_LimitCoordY_min) * var_Map_Width]
+			Temp14 = Temp13 % 100
 			@comment "Evaluate Cost"
-			v[315] = 0
+			Temp15 = 0
 			@comment "DENSE FOREST"
-			@if v[314] == 5 {
-			    v[315] = 1
+			@if Temp14 == 5 {
+			    Temp15 = 1
 			    
 			}
 			@comment "Stone Road"
-			@if v[314] == 11 {
-			    v[316] += 2
-			    @if v[316] >= 5 {
-				v[315] = -3
+			@if Temp14 == 11 {
+			    Temp16 += 2
+			    @if Temp16 >= 5 {
+				Temp15 = -3
 				
 			    }
 			    
 			}
 			@comment "Dirt Road"
-			@if v[314] == 12 {
-			    v[316] += 1
-			    @if v[316] >= 2 {
-				v[315] = -2
+			@if Temp14 == 12 {
+			    Temp16 += 1
+			    @if Temp16 >= 2 {
+				Temp15 = -2
 				
 			    }
 			    
 			}
 			@comment "WATER"
-			@if v[314] == 18 {
-			    v[315] = 1
+			@if Temp14 == 18 {
+			    Temp15 = 1
 			    
 			}
-			@if v[314] >= 21 {
-			    v[315] = 4
+			@if Temp14 >= 21 {
+			    Temp15 = 4
 			    
 			}
-			v[v[286] + 2] += v[315]
-			v[v[286] + 2] += v[v[4529] + v[343] - v[69] + (v[344] - v[70]) * v[2061]] & 1
-			v[v[286] + 7] += v[313] / 100000000
+			v[Ptr6 + 2] += Temp15
+			v[Ptr6 + 2] += v[v[4529] + TT3 - Map_LimitCoordX_min + (TT4 - Map_LimitCoordY_min) * var_Map_Width] & 1
+			v[Ptr6 + 7] += Temp13 / 100000000
 			
 		    }
 		    
 		    
 		}
 		
-		v[v[286] + 7] /= 4
-		v[286] += v[4564]
+		v[Ptr6 + 7] /= 4
+		Ptr6 += v[4564]
 		
 	    }
 	    
@@ -405,14 +1446,14 @@ cev .id(1800), .name("Mission:MapInit"), {
 	}
 
 	@wait 0
-	@comment "Make Link"
-	v[301] = 0
+	@comment "Make Node Link"
+	Temp1 = 0
 	@loop v[434] .dst v[2064] {
-	    v[286] = v[4564] * v[433] * v[2064] + v[4569] - 1
+	    Ptr6 = v[4564] * v[433] * v[2064] + v[4569] - 1
 	    @loop v[433] .dst v[2065] {
 		@comment "init"
-		v[287] = v[286] + 12
-		v[v[287]..v[287] + 7] = -1
+		Ptr7 = Ptr6 + 12
+		v[Ptr7..Ptr7 + 7] = -1
 		v[371..374] = 0
 		@comment "X=0"
 		@if v[2065] == 0 {
@@ -435,17 +1476,17 @@ cev .id(1800), .name("Mission:MapInit"), {
 		@comment "##"
 		@if v[372] != 1 {
 		    @if v[371] != 1 {
-			v[288] = v[286] - v[4564] - v[433] * v[4564] + 1
-			v[302] = 1
+			Ptr8 = Ptr6 - v[4564] - v[433] * v[4564] + 1
+			Temp2 = 1
 			@call .cev 1793
 			
 		    }
-		    v[288] = v[286] - v[433] * v[4564] + 1
-		    v[302] = 2
+		    Ptr8 = Ptr6 - v[433] * v[4564] + 1
+		    Temp2 = 2
 		    @call .cev 1793
 		    @if v[371] != 2 {
-			v[288] = v[286] + v[4564] - v[433] * v[4564] + 1
-			v[302] = 3
+			Ptr8 = Ptr6 + v[4564] - v[433] * v[4564] + 1
+			Temp2 = 3
 			@call .cev 1793
 			
 		    }
@@ -453,42 +1494,42 @@ cev .id(1800), .name("Mission:MapInit"), {
 		}
 		@comment "##"
 		@if v[371] != 1 {
-		    v[288] = v[286] - v[4564] + 1
-		    v[302] = 8
+		    Ptr8 = Ptr6 - v[4564] + 1
+		    Temp2 = 8
 		    @call .cev 1793
 		    
 		}
 		@if v[371] != 2 {
-		    v[288] = v[286] + v[4564] + 1
-		    v[302] = 4
+		    Ptr8 = Ptr6 + v[4564] + 1
+		    Temp2 = 4
 		    @call .cev 1793
 		    
 		}
 		@comment "##"
 		@if v[372] != 2 {
 		    @if v[371] != 1 {
-			v[288] = v[286] - v[4564] + v[433] * v[4564] + 1
-			v[302] = 7
+			Ptr8 = Ptr6 - v[4564] + v[433] * v[4564] + 1
+			Temp2 = 7
 			@call .cev 1793
 			
 		    }
-		    v[288] = v[286] + v[433] * v[4564] + 1
-		    v[302] = 6
+		    Ptr8 = Ptr6 + v[433] * v[4564] + 1
+		    Temp2 = 6
 		    @call .cev 1793
 		    @if v[371] != 2 {
-			v[288] = v[286] + v[4564] + v[433] * v[4564] + 1
-			v[302] = 5
+			Ptr8 = Ptr6 + v[4564] + v[433] * v[4564] + 1
+			Temp2 = 5
 			@call .cev 1793
 			
 		    }
 		    
 		}
 		@comment "Add Setup Static cost"
-		v[v[286] + 3] += v[v[286] + 4]
-		v[v[286] + 4] = 0
+		v[Ptr6 + 3] += v[Ptr6 + 4]
+		v[Ptr6 + 4] = 0
 		@comment "1"
-		v[286] += v[4564]
-		v[301] += 1
+		Ptr6 += v[4564]
+		Temp1 += 1
 		
 	    }
 	    
@@ -496,21 +1537,26 @@ cev .id(1800), .name("Mission:MapInit"), {
 	}
 
 	@wait 0
-	@comment "*Map script load*"
-	t[510] .asg "..\Maps\"
-	t[510] .cat t[750]
-	t[510] .cat "\"
-	t[510] .cat "init"
-	t[510] .asg  .file t[510], .utf8, .extract
-	@call .cev 1840
-	func_convert_str_into_map_script(510)
-	t[510] .split t[525], t[v[1219]], v[505]
-	@loop v[505] .dst v[506] {
-	    v[11] = v[1219] + v[506]
-	    t[510] .asg t[v[11]]
-	    @call .cev 1821
-	    t[3000..3300] .asg ""
-	    
+	@if loadedJsConfig.isOff() { // LEGACY script. will be erased
+		@comment "*Map script load*"
+		inputstr .asg "..\Maps\"
+		inputstr .cat DISmap_MapDirectory
+		inputstr .cat "\"
+		inputstr .cat "init"
+		inputstr .asg  .file inputstr, .utf8, .extract
+		@call .cev 1840
+		func_convert_str_into_map_script(510)
+		inputstr .split LF, t[v[1219]], v[505]
+		@loop v[505] .dst v[506] {
+				var1 = v[1219] + v[506]
+				inputstr .asg t[var1]
+				@call .cev 1821
+				t[3000..3300] .asg ""
+				
+		}
+	
+	}.else bl{ // Jsconfig is loaded!
+		startupMission()
 	}
 
 	@wait 0
@@ -521,7 +1567,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 	@comment "################"
 	@pic[2200].show {
 	    "ui\cameraicon"
-	    .pos v[341], v[342] .center
+	    .pos TT1, TT2 .center
 	    .chromakey 1
 	    .scale 100
 	    .trans 100
@@ -530,12 +1576,12 @@ cev .id(1800), .name("Mission:MapInit"), {
 	    .eraseWhenTransfer
 	    .affectedByShake
 	}
-	v[341] = divmul(5000, 800, v[1001]) / v[430]
-	v[342] = divmul(2800, 450, v[1002]) / v[431]
+	TT1 = divmul(5000, 800, v[1001]) / v[430]
+	TT2 = divmul(2800, 450, v[1002]) / v[431]
 	@pic[2200].strpic {
 	    ""
-	    .pos v[341], v[342] .center
-	    .size v[341], v[342]    .chromakey 1
+	    .pos TT1, TT2 .center
+	    .size TT1, TT2    .chromakey 1
 	    .scale 100
 	    .trans 100
 	    .rgbs 0, 200, 200, 100
@@ -548,32 +1594,32 @@ cev .id(1800), .name("Mission:MapInit"), {
 	s[78].on
 	@comment "*Map triggers load*"
 	v[507] = 0
-	v[287] = v[4577]
-	t[510] .asg "..\Maps\"
-	t[510] .cat t[750]
-	t[510] .cat "\\"
-	t[510] .cat "simple_triggers"
-	t[510] .asg  .file t[510], .utf8
+	Ptr7 = v[4577]
+	inputstr .asg "..\Maps\"
+	inputstr .cat DISmap_MapDirectory
+	inputstr .cat "\\"
+	inputstr .cat "simple_triggers"
+	inputstr .asg  .file inputstr, .utf8
 	@call .cev 1840
 	func_convert_str_into_map_script(510)
 	@if .testPlay() {
-	    t[510] .toFile "debug_simpletriggers", .utf8
+	    inputstr .toFile "debug_simpletriggers", .utf8
 	    
 	}
-	t[510] .split t[525], t[v[1219]], v[505]
+	inputstr .split LF, t[v[1219]], v[505]
 
 	@call .cev 1818
 	@comment "*AI script load*"
-	t[510] .asg "..\\Scripts\\ai"
-	t[510] .cat "\\"
-	t[510] .cat t[753]
-	t[754] .asg t[510]
-	t[510] .asg  .file t[510], .utf8
-	@if t[510].neq ""{
+	inputstr .asg "..\\Scripts\\ai"
+	inputstr .cat "\\"
+	inputstr .cat t[753]
+	t[754] .asg inputstr
+	inputstr .asg  .file inputstr, .utf8
+	@if inputstr.neq ""{
 		@call .cev 1840
 		func_convert_str_into_map_script(510)
-		t[755] .asg t[510]
-		t[510] .split t[525], t[v[1219]], v[505]
+		t[755] .asg inputstr
+		inputstr .split LF, t[v[1219]], v[505]
 		@call .cev 1818
 	}
 	s[290].off
@@ -584,28 +1630,28 @@ cev .id(1800), .name("Mission:MapInit"), {
 	@comment "#TRY"
 	@if v[2404] >= 1 {
 	    t[1..100] .asg ""
-	    v[12] = 0
-	    t[510] .asg "..\Maps\"
-	    t[510] .cat t[750]
-	    t[510] .cat "\\"
-	    t[510] .cat "map_faction_party_template_"
-	    t[510] .cat v[2404]
-	    t[510] .asg  .file t[510], .sjis
+	    var2 = 0
+	    inputstr .asg "..\Maps\"
+	    inputstr .cat DISmap_MapDirectory
+	    inputstr .cat "\\"
+	    inputstr .cat "map_faction_party_template_"
+	    inputstr .cat v[2404]
+	    inputstr .asg  .file inputstr, .utf8
 	    @call .cev 1840
 	    @if .testPlay() {
-		t[510] .toFile "debug_template", .utf8
+		inputstr .toFile "debug_template", .utf8
 		
 	    }
-	    t[510] .split "*/", t[509], v[341]
-	    t[510] .split t[525], t[3100], v[301]
-	    @loop v[301] .dst v[320] {
+	    inputstr .split "*/", str9, TT1
+	    inputstr .split LF, t[3100], Temp1
+	    @loop Temp1 .dst Temp20 {
 		t[3001..3100] .asg ""
-		v[302] = 3101 + v[320]
-		t[v[302]] .split ",", t[3000], v[341]
-		t[3001] .toNum v[341]
-		v[303] = 1 + 10 * (v[341] - 1) + v[2740 + v[341]]
-		t[v[303]] .asg t[v[302]]
-		v[2740 + v[341]] += 1
+		Temp2 = 3101 + Temp20
+		t[Temp2] .split ",", t[3000], TT1
+		t[3001] .toNum TT1
+		Temp3 = 1 + 10 * (TT1 - 1) + v[2740 + TT1]
+		t[Temp3] .asg t[Temp2]
+		v[2740 + TT1] += 1
 		
 	    }
 	    
@@ -613,9 +1659,9 @@ cev .id(1800), .name("Mission:MapInit"), {
 	}
 	@if s[308] .isOff() {
 	    @comment "#########	NEED CONVERTING#########"
-	    v[341] = muldiv(100, v[1001], 800)
+	    TT1 = muldiv(100, v[1001], 800)
 	    @if v[1001] > 800 {
-		v[341] += 5
+		TT1 += 5
 		
 	    }
 	    @if v[2403] == 1 {
@@ -623,7 +1669,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 		    "shade_twilight"
 		    .pos v[1115], v[1116] .center
 		    .chromakey 0
-		    .scale v[341]
+		    .scale TT1
 		    .trans 50
 		    .rgbs 100, 100, 100, 100
 		    .overlay
@@ -637,7 +1683,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 		    "shade_16ex"
 		    .pos v[1115], v[1116] .center
 		    .chromakey 0
-		    .scale v[341]
+		    .scale TT1
 		    .trans 50
 		    .rgbs 100, 100, 100, 100
 		    .overlay
@@ -652,7 +1698,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 		    "shade_twilight"
 		    .pos v[1115], v[1116] .center
 		    .chromakey 0
-		    .scale v[341]
+		    .scale TT1
 		    .trans 35
 		    .rgbs 100, 100, 100, 100
 		    .overlay
@@ -669,19 +1715,19 @@ cev .id(1800), .name("Mission:MapInit"), {
 	
 	__if DIS_EXPERIMENTAL == 1 {
 
-		v[341] = ev[3].scrx
-		v[342] = ev[3].scry
+		TT1 = ev[3].scrx
+		TT2 = ev[3].scry
 		v[341..342] -= 8
-		v[342] -= 10
-		v[343] = ev[4].scrx - ev[3].scrx
-		v[344] = ev[4].scry - ev[3].scry
+		TT2 -= 10
+		TT3 = ev[4].scrx - ev[3].scrx
+		TT4 = ev[4].scry - ev[3].scry
 
 
 		// This shouldn't be implemented yet
 		/*@pic[PicID_Map_base].strpic {
 		    ""
-		    .pos v[341], v[342] .topLeft
-		    .size v[343], v[344]    .scrollWithMap
+		    .pos TT1, TT2 .topLeft
+		    .size TT3, TT4    .scrollWithMap
 		    .chromakey 1
 		    .scale 100
 		    .trans 0
@@ -698,8 +1744,8 @@ cev .id(1800), .name("Mission:MapInit"), {
 
 		@pic[PicID_elevation_add].strpic {
 		    ""
-		    .pos v[341], v[342] .topLeft
-		    .size v[343], v[344]    .scrollWithMap
+		    .pos TT1, TT2 .topLeft
+		    .size TT3, TT4    .scrollWithMap
 		    .chromakey 1
 		    .scale 100
 		    .trans 60
@@ -716,8 +1762,8 @@ cev .id(1800), .name("Mission:MapInit"), {
 		}
 		@pic[PicID_elevation_multi].strpic {
 		    ""
-		    .pos v[341], v[342] .topLeft
-		    .size v[343], v[344]    .scrollWithMap
+		    .pos TT1, TT2 .topLeft
+		    .size TT3, TT4    .scrollWithMap
 		    .chromakey 1
 		    .scale 100
 		    .trans 0
@@ -740,20 +1786,20 @@ cev .id(1800), .name("Mission:MapInit"), {
 	    
 	} .else bl {
 	    @if v[2056] == 1 {
-		t[501] .asg "../Maps/"
-		t[501] .cat t[750]
-		t[502..503] .asg t[501]
-		t[502] .cat "/heightmap_light"
-		t[503] .cat "/heightmap_dark"
-		v[341] = ev[3].scrx
-		v[342] = ev[3].scry
+		str1 .asg "../Maps/"
+		str1 .cat DISmap_MapDirectory
+		t[502..503] .asg str1
+		str2 .cat "/heightmap_light"
+		str3 .cat "/heightmap_dark"
+		TT1 = ev[3].scrx
+		TT2 = ev[3].scry
 		v[341..342] -= 8
-		v[342] -= 10
-		v[343] = ev[4].scrx - ev[3].scrx
-		v[344] = ev[4].scry - ev[3].scry
+		TT2 -= 10
+		TT3 = ev[4].scrx - ev[3].scrx
+		TT4 = ev[4].scry - ev[3].scry
 		@pic[PicID_elevation_add].show {
-		    t[502]
-		    .pos v[341], v[342] .topLeft
+		    str2
+		    .pos TT1, TT2 .topLeft
 		    .scrollWithMap
 		    .chromakey 1
 		    .scale 100
@@ -767,8 +1813,8 @@ cev .id(1800), .name("Mission:MapInit"), {
 		    .affectedByShake
 		}
 		@pic[PicID_elevation_multi].show {
-		    t[503]
-		    .pos v[341], v[342] .topLeft
+		    str3
+		    .pos TT1, TT2 .topLeft
 		    .scrollWithMap
 		    .chromakey 1
 		    .scale 100
@@ -789,16 +1835,16 @@ cev .id(1800), .name("Mission:MapInit"), {
 	@if s[1] .isOn() {
 	    @if s[316] .isOn() {
 		v[v[1068]..v[1068] + 500 * 500] = 0
-		v[341] = ev[3].scrx
-		v[342] = ev[3].scry
+		TT1 = ev[3].scrx
+		TT2 = ev[3].scry
 		v[341..342] -= 8
-		v[342] -= 8
-		v[343] = ev[4].scrx - ev[3].scrx
-		v[344] = ev[4].scry - ev[3].scry
+		TT2 -= 8
+		TT3 = ev[4].scrx - ev[3].scrx
+		TT4 = ev[4].scry - ev[3].scry
 		@pic[1].strpic {
 		    ""
-		    .pos v[341], v[342] .topLeft
-		    .size v[343], v[344]            .scrollWithMap
+		    .pos TT1, TT2 .topLeft
+		    .size TT3, TT4            .scrollWithMap
 		    .chromakey 1
 		    .scale 100
 		    .trans 0
@@ -814,8 +1860,8 @@ cev .id(1800), .name("Mission:MapInit"), {
 		}
 		@pic[2].strpic {
 		    ""
-		    .pos v[341], v[342] .topLeft
-		    .size v[343], v[344]            .scrollWithMap
+		    .pos TT1, TT2 .topLeft
+		    .size TT3, TT4            .scrollWithMap
 		    .chromakey 1
 		    .scale 100
 		    .trans 60
@@ -832,8 +1878,8 @@ cev .id(1800), .name("Mission:MapInit"), {
 		}
 		@pic[3].strpic {
 		    ""
-		    .pos v[341], v[342] .topLeft
-		    .size v[343], v[344]            .scrollWithMap
+		    .pos TT1, TT2 .topLeft
+		    .size TT3, TT4            .scrollWithMap
 		    .chromakey 1
 		    .scale 100
 		    .trans 0
@@ -847,21 +1893,21 @@ cev .id(1800), .name("Mission:MapInit"), {
 		    .affectedByFlash
 		    .affectedByShake
 		}
-		v[2063] = v[2061] * v[2062]
-		v[2061].copy v[321], 2
-		v[310] = v[1068]
+		v[2063] = var_Map_Width * var_Map_Height
+		var_Map_Width.copy v[321], 2
+		Temp10 = v[1068]
 		@loop v[322] .dst v[2064] {
-		    v[286] = v[2061] * v[2064] + v[4529]
-		    v[287] = v[2061] * v[2064] + v[1182]
+		    Ptr6 = var_Map_Width * v[2064] + v[4529]
+		    Ptr7 = var_Map_Width * v[2064] + v[1182]
 		    @loop v[321] .dst v[2065] {
-			v[341] = v[2065] + v[69]
-			v[342] = v[2064] + v[70]
-			v[343] = v[v[287]] % 100
-			v[343] = v[v[287]] / 100 % 1000
-			@sys.getInfo .tiles v[341], v[342], 1, 1 .lower .dst v[30]
-			v[v[310]] = v[30]
+			TT1 = v[2065] + Map_LimitCoordX_min
+			TT2 = v[2064] + Map_LimitCoordY_min
+			TT3 = v[Ptr7] % 100
+			TT3 = v[Ptr7] / 100 % 1000
+			@sys.getInfo .tiles TT1, TT2, 1, 1 .lower .dst reg10
+			v[Temp10] = reg10
 			v[286..287] += 1
-			v[310] += 1
+			Temp10 += 1
 			
 		    }
 		    
@@ -869,7 +1915,7 @@ cev .id(1800), .name("Mission:MapInit"), {
 		}
 		
 		@pic[1].drawTile {
-		    .xywh 0, 0, v[2061], v[2062]
+		    .xywh 0, 0, var_Map_Width, var_Map_Height
 		    .range v[v[1068]]
 		    .lower
 		    .tilesetId v[2060]
@@ -883,14 +1929,14 @@ cev .id(1800), .name("Mission:MapInit"), {
 	@if s[1] .isOn() {
 	    v[v[1068]..v[1068] + 500 * 500] = 0
 	    @if s[316] .isOn() {
-		v[341] = ev[3].scrx
-		v[342] = ev[3].scry
-		v[343] = ev[4].scrx - ev[3].scrx
-		v[344] = ev[4].scry - ev[3].scry
+		TT1 = ev[3].scrx
+		TT2 = ev[3].scry
+		TT3 = ev[4].scrx - ev[3].scrx
+		TT4 = ev[4].scry - ev[3].scry
 		@pic[1].strpic {
 		    ""
-		    .pos v[341], v[342] .topLeft
-		    .size v[343], v[344]            .scrollWithMap
+		    .pos TT1, TT2 .topLeft
+		    .size TT3, TT4            .scrollWithMap
 		    .chromakey 1
 		    .scale 100
 		    .trans 0
@@ -906,8 +1952,8 @@ cev .id(1800), .name("Mission:MapInit"), {
 		}
 		@pic[2].strpic {
 		    ""
-		    .pos v[341], v[342] .topLeft
-		    .size v[343], v[344]            .scrollWithMap
+		    .pos TT1, TT2 .topLeft
+		    .size TT3, TT4            .scrollWithMap
 		    .chromakey 1
 		    .scale 100
 		    .trans 60
@@ -924,8 +1970,8 @@ cev .id(1800), .name("Mission:MapInit"), {
 		}
 		@pic[3].strpic {
 		    ""
-		    .pos v[341], v[342] .topLeft
-		    .size v[343], v[344]            .scrollWithMap
+		    .pos TT1, TT2 .topLeft
+		    .size TT3, TT4            .scrollWithMap
 		    .chromakey 1
 		    .scale 100
 		    .trans 0
@@ -939,55 +1985,55 @@ cev .id(1800), .name("Mission:MapInit"), {
 		    .affectedByFlash
 		    .affectedByShake
 		}
-		v[2063] = v[2061] * v[2062]
-		v[2061].copy v[321], 2
+		v[2063] = var_Map_Width * var_Map_Height
+		var_Map_Width.copy v[321], 2
 		@loop v[322] .dst v[2064] {
-		    v[286] = v[2061] * v[2064] + v[4529]
-		    v[287] = v[2061] * v[2064] + v[1182]
+		    Ptr6 = var_Map_Width * v[2064] + v[4529]
+		    Ptr7 = var_Map_Width * v[2064] + v[1182]
 		    @loop v[321] .dst v[2065] {
-			v[341] = v[2065] + v[69]
-			v[342] = v[2064] + v[70]
-			v[343] = v[v[287]] % 100
-			@if v[343] < 21 {
-			    v[343] = v[v[287]] / 100 % 1000
-			    @sys.getInfo .tiles v[341], v[342], 1, 1 .lower .dst v[30]
-			    v[345] = v[2065] * 16
-			    v[346] = v[2064] * 16
+			TT1 = v[2065] + Map_LimitCoordX_min
+			TT2 = v[2064] + Map_LimitCoordY_min
+			TT3 = v[Ptr7] % 100
+			@if TT3 < 21 {
+			    TT3 = v[Ptr7] / 100 % 1000
+			    @sys.getInfo .tiles TT1, TT2, 1, 1 .lower .dst reg10
+			    TT5 = v[2065] * 16
+			    TT6 = v[2064] * 16
 			    @pic[1].drawTile {
-				.xywh v[345], v[346], 1, 1
-				.single v[343]
+				.xywh TT5, TT6, 1, 1
+				.single TT3
 				.lower
 				.tilesetId v[2060]
 				.pattern -1
 	}
-			    v[343] = v[v[287]] / 100000 % 1000
-			    @sys.getInfo .tiles v[341], v[342], 1, 1 .upper .dst v[30]
-			    @if v[30] >= 1 {
+			    TT3 = v[Ptr7] / 100000 % 1000
+			    @sys.getInfo .tiles TT1, TT2, 1, 1 .upper .dst reg10
+			    @if reg10 >= 1 {
 				@pic[1].drawTile {
-				    .xywh v[345], v[346], 1, 1
-				    .single v[343]
+				    .xywh TT5, TT6, 1, 1
+				    .single TT3
 				    .upper
 				    .tilesetId v[2060]
 				    .pattern 0
 	}
 				@pic[2].drawTile {
-				    .xywh v[345], v[346], 1, 1
-				    .single v[343]
+				    .xywh TT5, TT6, 1, 1
+				    .single TT3
 				    .upper
 				    .tilesetId v[2060]
 				    .pattern 0
 	}
 				@pic[3].drawTile {
-				    .xywh v[345], v[346], 1, 1
-				    .single v[343]
+				    .xywh TT5, TT6, 1, 1
+				    .single TT3
 				    .upper
 				    .tilesetId v[2060]
 				    .pattern 0
 	}
 				
 			    }
-			    v[343] = v[v[287]] % 100
-			    @if `v[343] == 5 || v[343] == 2 {
+			    TT3 = v[Ptr7] % 100
+			    @if `TT3 == 5 || TT3 == 2 {
 				
 			    }
 			    
@@ -1009,16 +2055,110 @@ cev .id(1800), .name("Mission:MapInit"), {
 
 
 // link
-cev .id(1793), .name("set NodesLink"), {
-	v[303] = (v[288] - v[4569]) / 20 + 1
-	v[304] = v[v[288] + 3]
-	@comment "kari"
+__fn CEV_SET_NODELINK {
+	Temp3 = (Ptr8 - v[4569]) / 20 + 1
+	Temp4 = v[Ptr8 + 3]
 	// 87 seems magic number
-	@if v[304] <= 87 {
-	v[v[287]] = v[303] * 10 + v[302]
-	v[287] += 1
+	@if Temp4 <= 87 {
+	v[Ptr7] = Temp3 * 10 + Temp2
+	Ptr7 += 1
 
 	} .else bl { // ?
 
 	}
 }
+
+__fn getMissionPath {
+	Str_MissionPath.asg "..\Maps\"
+	Str_MissionPath.cat t[750]
+	Str_MissionPath.cat "\"
+}
+
+// setup JS management mission system
+__fn loadMissionDef $missionpath {
+	inputstr .asg Str_MissionPath
+	inputstr .cat "\\missiondef.js"
+	inputstr .asg .file inputstr, .utf8
+	@if inputstr.neq "" { // there's missiondef.js
+		@js .run "RTS.setupMission(gett(752),getv(501))" // t[752],v[501]
+		eval_js(inputstr) // execute missiondef.js.txt
+		loadedJsConfig.on
+		@js .run "RTS.setupMapLoading(RTS.mission.essential.mapDataDirectory)" // terrainData check
+	}
+	
+}
+
+
+// JS map terrain setup management system
+__fn loadMapDef $missionpath {
+	str1 .asg DIS_MAPHOMEPATH
+	str1 .cat RTSmap_MapdefDir
+	str1 .cat "\\mapdef.js"
+	inputstr .asg .file str1, .utf8
+	@if inputstr .neq "" { // there's mapdef.js
+		@js .run "RTS.openMissionMapData()" // set new RTSmap into RTS module
+		eval_js(inputstr) // execute mapdef.js.txt
+	}.else bl {
+		str1 .asg, .cat("Couldn't open Map terrain file!", " filepath is: ~/text", str1)//
+		func_errlog(str1)
+	}
+
+}
+
+__fn run_RTSmapGeneration {@js .run "RTS.map.build()"}
+
+__fn generateTileMapFromPicfile $filepath {
+		inputstr .asg $filepath
+					@pic[2599].show {
+		inputstr 
+		.pos -111, -111 .center
+		.chromakey 1
+		.scale 100
+		.trans 0
+		.rgbs 100, 100, 100, 100
+		.mapLayer 7
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+					}
+					@pic[2599].getInfo .pixel 0, 0, var_Map_Width, var_Map_Height .dst Memory_MapInfo
+		//var_allocatedmapsize
+		@loop var_Map_Height .dst v[2064] {
+			@loop var_Map_Width .dst v[2065] {
+				TT1 = v[2065] + Map_LimitCoordX_min
+				TT2 = v[2064] + Map_LimitCoordY_min
+				TT3 = v[2065] + v[2064]  * var_Map_Width + v[1182]
+				TT4 = v[TT3] & 0x000000FF 
+				@map.rewrite .lower .single TT4 .xywh TT1, TT2, 1, 1
+				TT5 = (v[TT3] & 0x0000FF00) >> 8
+				@map.rewrite .upper .single TT5 .xywh TT1, TT2, 1, 1
+				TT6 = (v[TT3] & 0xff000000) >> 24
+				@map.getTerrain .pos TT1, TT2 .dst(reg10)
+				//set info
+				v[TT3] = TT6*100000000 + TT5*100000 + TT4 * 100 + reg10
+			}
+			
+			
+		}
+	
+}
+
+
+
+
+// Call start up Mission
+
+def JSCMD_STARTUP = "
+RTS.mission.startup();
+Cmd.run();
+"
+
+__fn startupMission {
+	Str_CmdQueue.asg "" // clean up
+	@js .run JSCMD_STARTUP // 
+	@loop bl { // wait until Command is executed
+		@if BOOL_CMD_RUN.isOff(){@break}
+		@wait 0
+	}
+}
+

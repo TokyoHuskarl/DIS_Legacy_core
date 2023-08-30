@@ -1615,8 +1615,11 @@ v[1214] = 19000
 t[510] .asg  .file "def\definition_perks", .utf8 , .extract
 t[510] .split "*/", t[509], TT1
 t[510] .split t[525], t[v[1214]], TT1
-
 }
+
+
+
+
 //Boot Process
 cev .id(2120), .name("Game:Boot"),{
 	@gsave.open
@@ -1935,6 +1938,7 @@ cev .id(2120), .name("Game:Boot"),{
 		    
 		}
 		
+
 		@wait 0
 		
 	    }

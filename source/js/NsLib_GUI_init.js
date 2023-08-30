@@ -8,11 +8,11 @@ const SINGLEPLAY = true;
 
 // in order not to cause error when you test on Node.js
 var setv = setv || function(){};
-var getv = getv || function(){};
+var getv = getv || function(){return 0};
 var sett = sett || function(){};
-var gett = gett || function(){};
+var gett = gett || function(){return ""};
 var sets = sets || function(){};
-var gets = gets || function(){};
+var gets = gets || function(){return true};
 
 
 function deblog(text) {
@@ -63,6 +63,10 @@ const adr_RMstr_UIorder = 731; // -> NsLib_GUI_functions.tpc -> Str_UI_ORDER
 const adr_RMbool_RUN_RENDER = 131; // -> NsLib_GUI_functions.tpc -> Str_UI_ORDER
 
 
+const adr_DISreg1 = 21;
+
+const adr_DISstr1 = 501;
+
 // ------------------------------------------------
 // DIS objects
 // ------------------------------------------------
@@ -91,7 +95,7 @@ DIS = { // DIS fundamental components
 		
 	},
 
-	reload: function(){
+	restore: function(){
 		this.initID(); // restore ID 
 	}
 },
@@ -171,31 +175,82 @@ if (SINGLEPLAY){
 		TEAM_ALLY = 3;
 };
 
+
 // DIS system component classes - these class objs usually work as component under RTS objects.
 
-class DISmission {
+
+class nonvolatileVar { // nvVar
+	constructor(type, address){
+		this.type = type;
+		this.address = address;
+		this.value = getv(address);
+	};
+
+	refresh(){this.value = getv(address);};
+	get(){return this.value;};
+	set(num){this.value = num; setv(this.address,num);};
+	refget(){this.refresh();return this.value;};;
+
+};
+
+
+// RTSmission Object
+//
+class RTSmission {
 	constructor(missionid,mapid){
+		if (missionid == ""){missionid = "mapgentest";};
 		this.missionid = missionid; // usually string
 		this.mapid = mapid; // if 0, open custom map
+		this.allocVarAmount = 0;
+		this.essential.mapDataDirectory = missionid; // initially set the same as mission
 	};
 
-	essential = { // these elements must be restored when you reload the game via save/load.
-		passedFrame: 0, //  if DIS game is reloaded, then reload from RM var. 
-		players: [],
-		difficulty: 0,
-		isSightSystemOn: true,
-		weatherType: 0,
+	createMissionVar = function(){
+		const Adr_MissionVarMemoryHead = 2001; // ACHTUNG
+		const VarmemoryLimit = 20; // ?
+		let allocated = Adr_MissionVarMemoryHead + this.allocVarAmount;
+		if (this.allocVarAmount < VarmemoryLimit){
+			this.allocVarAmount += 1;
+			return new nonvolatileVar(RMvar,allocated);
+		} else {
+			Cmd.game.log_error(("Too many mission variables are declared! Current limit is: " + VarmemoryLimit))
+			return NULL;
+		}
 	};
 
-	reload = function(){
+		conf = {
+			isLEGACYmission: false,
+			isSightSystemOn: true,
+			
+		};
+		
+
+		essential = { // these elements must be restored when you reload the game via save/load.
+			passedFrame: 0, //  if DIS game is reloaded, then reload from RM var. 
+			players: [],
+			difficulty: 0,
+			weatherType: 0,
+			mapDataDirectory: this.mapDataDirectory, // set in constructor
+		};
+
+	restore = function(){
 		
 	};
 
 	// mission.run() - this one is called in every frame.
 	run = function(){ // called on RM per 1f
 		this.passedFrame++; // + 1 frame  
-		this.triggers.runTriggers() // check simple triggers
+		this.triggers.runTriggers(); // check simple triggers
 	};
+
+	// mission.startup()... always called when the mission starts.
+	startup = () => {/*OVERRIDE ME!*/}; 
+
+	/*
+	StartupWrapper = function(){
+		this.startup()
+	}; //DO NOT OVERRIDE THISONE!
+	*/
 
 	triggers = {
 		
@@ -209,54 +264,71 @@ class DISmission {
 		},
 
 		queue: [],
+		
+
 	};
 
-	func = { // mission.func - DIS players should touch call only these functions under the mission obj.
+	setMapData = function(mapdir){ // {string}
+		this.essential.mapDataDirectory = mapdir;
+	};
 
-		setPlayer: function(id,faction){ // set player in mission.
-			this.players[id] = new RTSplayer(id,faction); // push to players array
-			if (id == 0 && SINGLEPLAY) { // DIS LEGACY - single player only.
-				this.players[id].isHuman = true; // then player0 is always considered human.
-			};
-		},
+	setTrigger = function(trig){ // {RTStrigger}
+		this.triggers.queue.push(trig);
+	};
 
+	setPlayer = function(id,faction){ // set player in mission.
+		this.essential.players[id] = new RTSplayer(id,faction); // push to players array
+		if (id == 0 && SINGLEPLAY) { // DIS LEGACY - single player only.
+			this.essential.players[id].isHuman = true; // then player0 is always considered human.
+		};
 	};
 
 };
 
 
 // RTS map class
+const MAPGEN_nomapgen = 0,
+	MAPGEN_loadPictureData = 2,
+	MAPGEN_script = 3;
+
 class RTSmap {
 	constructor(mapdeffile){
-		this.source = mapdeffile || "editmode";
+		mapdeffile = mapdeffile || "editmode";
+		this.source = mapdeffile;
 		this.size = [50,50]; // temp
 		this.isGenerated = false;
-		this.hasTerrainData = false;
-		this.hasPresetHeightMap = false;
-		this.originalTileSet = 1; // RM tile set - if it's not defined, at least try to load 1.
+		this.hasPresetHeightPic = false;
+		this.Tileset = 1; // RM tile set - if it's not defined, at least try to load 1.
+		this.terrainSource = "mapdata.png"; // png?
 	}
 	
-
-	build(){ // this function called through mission init process, after loading mapdef.js.txt.
-		
-		if (this.init() != NULL){ // call init process..
-			
-			
-		} else { // if RTS.map.init() is not overridden, it's a leagcy map without any js empowerment.
-			
-			
-		};
-		
-		this.isGenerated = true; // generate process finished.
+	
+	build(){ // this function called through mission init process, after RTS.openMissionMapDataloading() done after mapdef.js.txt is read.
+		const Adr_TileID = 2060;
+		setv(Adr_TileID,this.defaultTileset);
+		this.generate();
 	};
 	
-	init(){return NULL;}; // override me. written in mapdef.js.txt.
+	
+	init(){return NULL;}; // override me. can be written in mapdef.js.txt.
 
 	
-	generate(){return NULL;}; // overload me. written in mapdef.js.txt.
+	generate(){ // if you don't override this function, this object tries to load this.terrainSource unless the map is LEGACYmission - I mean using RMmap.
 	
+		if (!RTS.mission.conf.isLEGACYmission){
+			const Adr_mapTerrainSourceType = 2055;
+			setv(Adr_mapTerrainSourceType,2)
+			let filename = this.terrainSource.split(".")[0]; // ignore extention
+			sett(adr_DISstr1,filename) // return to t[501]
+		}
+	
+	};
+
+	gensync(){
+	
+	};
 };
-
+	
 
 class RTSplayer {
 	constructor(id,factionid){
@@ -276,7 +348,7 @@ class RTStrigger {
 		
 		this.condition = cond || function(){return true;}; // return bool. can be overridden later.
 
-	}
+	};
 
 	run = function(){
 		const CONTINUE = true; // if this function returns false, then erase from triggers.
@@ -302,18 +374,68 @@ class RTStrigger {
 // ------------------------------------------------
 // DIS RTS module
 // ------------------------------------------------
+
 let RTS = {
 	isRTSmode: false,
-	mission: new DISmission(),
+	mission: new RTSmission(),
+	map: new RTSmap(),
+	lc: {}, // local space - RTS.lc.your_var = whatyouwanttosaveinvar;
 
-	initMission: function(){this.mission = new DISmission();},
+
+	clearMission: function(){
+		this.mission = new RTSmission();
+		this.map = new RTSmap();
+		this.isRTSmode = false;
+		this.lc = {};
+
+	},
+
 	openMission: function(missionid,mapid){ // "openmap" command in the old DISshell.
-		this.mission = new DISmission(missionid,mapid);
+		this.mission = new RTSmission(missionid,mapid);
+		this.isRTSmode = true;
 		
 	},
 
-	reload: function(){ // call this function whenever player loads RMsavedata. reload all datas from RM memories.
+	setupMission: function(missionid,mapid){ //
+		if (!this.isRTSmode){ // if the isRTSmode flag is not yet set (legacy maps) reopen DISmission
+			//this.mission = new RTSmission(missionid,mapid);
+			this.isRTSmode = true;
+		}
+
+		if (this.mission.mapid == 0) { // NOT RPG maker legacy map
+			// then we're gonna open custom map.
+		} else { // RPG maker legacy map. 
+			// so be it.
+			this.mission.conf.isLEGACYmission = true;
+		}
+		sett(20,"nayyaaa")
+		return "nayyaaa";
+	},
+
+	setupMapLoading: function(mapdir){ // will be called after this.setupMission().
+		// sightsystem setting
+		const Is_SightSystem_On = 300; // <- header_common.tpc
+		sets(Is_SightSystem_On,this.mission.conf.isSightSystemOn);
 		
+		// set map name into RMstr
+		const Adr_mapdirectory = 755;
+		sett(Adr_mapdirectory,mapdir);
+		deblog(`${mapdir} will be loaded. (t[${Adr_mapdirectory}])`)
+		
+	},
+
+	openMissionMapData: function(){ // you can call this only after successfully load missiondef.js.txt..
+		this.map = new RTSmap(this.mission.essential.mapDataDirectory)
+		
+	},
+
+	
+
+	restore: function(){ // call this function whenever player loads RMsavedata. reload all datas from RM memories.
+		
+		// restore mission 
+
+		// restore map
 	},
 
 
@@ -348,12 +470,12 @@ var Cmd = {
 	// DIS command
 	CmdQueue: "",
 
-	reload: function(){
+	restore: function(){ // call this function when the game loads savedata
 		this.runFlags.initAll();
 	},
 
 
-	Qset: function(typ,name,ord){
+	Qset: function(typ,name,ord){ // quick queue set
 		Cmd.CmdQueue += (typ + "," + name + "," + ord + ";");
 	},
 	
@@ -381,6 +503,8 @@ var Cmd = {
 		}
 	},
 	
+
+	// actual command objects start 
 	//Cmd.game
 	game: {
 		CmdType: CTYP_GAME,
@@ -426,8 +550,13 @@ var Cmd = {
 		CmdType: CTYP_MAP,
 
 		
-		agentGenPtrPos: 0, // 
-
+		
+		generationStuff: {
+			genPtrPos: 0, // mounemui
+			checkGenInfo: () => {if (Cmd){}; }, // ACG<S-Del>HTUNG no return sentence?
+			
+		},
+		
 
 		
 		/* spawnerInfoUpdate: ()=> {
@@ -441,7 +570,8 @@ var Cmd = {
 			stance = stance || 0; // ok?
 			
 			Cmd.Qset(this.CmdType,"spawnAgent",`${troopid},${tilepos[0]},${tilepos[1]},${team},${cohort},${dir},${stance}`);
-			return {address: 4545, uniqueID: 114514}; // kari
+			return 4545 // kari
+			// return {address: 4545, uniqueID: 114514}; // kari
 		},
 
 		spawnStatic: function(staticID,tilepos,team,cohort){
@@ -845,7 +975,9 @@ class Radiobutton extends UI_object {
 
 // init load
 {
+	deblog(RTS.setupMission("121",412));
 	Cmd.map.spawnAgent(1,[114,514],0,0,1,0);
 	deblog(Cmd.CmdQueue);
 	deblog("TRP_merc_mob = " + trp["TRP_merc_mob"])
 }
+

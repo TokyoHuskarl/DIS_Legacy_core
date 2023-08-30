@@ -26,3 +26,4 @@ echo;
 
 echo All compile process finished. Es ist vorbei.
 pause
+
