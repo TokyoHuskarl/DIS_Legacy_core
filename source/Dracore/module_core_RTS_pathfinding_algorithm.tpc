@@ -143,8 +143,9 @@ __fn func_pathfinding_Astar() {
 		v[ptr_null].copy v[4582],4
 		var1.copy PF_start_Node, 2
 		
-		//ACHTUNG - need to change into .copy proc
-		v[v[4568]..v[4600] + 40000] = 0
+		v[ptr_null].copy v[v[4568]], PF_init_Range 
+		// v[v[4568]..v[4600] + 40000] = 0
+
 
 		// check from start node
 		PF_current_checking_Node = PF_start_Node

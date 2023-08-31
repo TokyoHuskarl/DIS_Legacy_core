@@ -10,6 +10,25 @@ __if LOAD_HEADER_AGENT != 1 {
 #include "./../Dracore/module_core_Game_items_functions.tpc"
 
 
+
+
+
+defv ptr_SpawnArray = 201
+defv {
+	spawnSet_Team = 251
+	spawnSet_x = 252
+	spawnSet_y = 253
+	spawnSet_TroopID = 254
+	spawnSet_ParentAgent = 255
+	spawnSet_Cohort = 258
+}
+
+
+
+
+
+
+
 //cev 2007 Skill Cooldown check macro.
 //reg1 Current CD Timer Ptr
 //reg2 Skill CoolDown
@@ -27,6 +46,8 @@ __fn macro_SkillCDck $agent $skillno {
 	//reg2 = v[($agent * 300 + 4828)+($skillno * 20)]
 
 }
+
+
 
 // abandoned since AEAB has fatal bug
 /*

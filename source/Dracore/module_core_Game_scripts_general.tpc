@@ -18,23 +18,8 @@ cev[2041], .name("DIS command interpriter"), .parallel , .cond(__id(BOOL_CMD_RUN
 	@loop bl  {
 		@if guiVar7 <= guiVar1 {@break} //
 
-		//t[guiVar8].split(",", Str_Parsing, reg1)
-		// - CUT -
-		//Str_Parsing.toNum(guiVar2)
-
-		// CHECK objtype 'n shiiiet
+		// CHECK objtype and execute actual cmd
 		DIS_Cmd_callPackageTree(SScmdDynCounter,guiVar8)
-
-		//DIS_Cmd_map(DISmapCmdLink,SScmd_Mode_Exec,SScmdDynCounter,t[510],0)
-
-		/* @if UIT == UIOBJ_checkbox { // simple checkbox
-			UIT_checkbox_Render()
-
-		}.elif ObjID == UIOBJ_simplesprite { // 
-
-		}.elif ObjID == UIOBJ_strpic { // 
-			UIT_strpic_Render()
-		} */
 
 		guiVar1 += 1
 		guiVar8 += 1  // get current shit
@@ -44,6 +29,11 @@ cev[2041], .name("DIS command interpriter"), .parallel , .cond(__id(BOOL_CMD_RUN
 	BOOL_CMD_RUN.off
 }
 
+
+
+
+
+// LEGACY
 
 cev .id(1821), .name("*MapScriptGeneral*"), {
 	/*
