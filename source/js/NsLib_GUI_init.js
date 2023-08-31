@@ -6,7 +6,7 @@ const DEBUG = 1;
 const SINGLEPLAY = true;
 
 
-// in order not to cause error when you test on Node.js
+// these lines are written in order not to cause error when you test this file on Node.js
 var setv = setv || function(){};
 var getv = getv || function(){return 0};
 var sett = sett || function(){};
@@ -97,9 +97,17 @@ DIS = { // DIS fundamental components
 
 	restore: function(){
 		this.initID(); // restore ID 
-	}
+	},
+
+	initialConsts: {
+		RTSFPS: 48, // can be changed 
+		
+	},
 },
 
+DIS.macro = {
+	timeToFrame: (h,m,s) => ((h * 3600 + m * 60 + s) * DIS.initialConsts.RTSFPS), 
+};
 
 
 DIS.log = {
@@ -159,10 +167,10 @@ DIS.agent = {
 // ------------------------------------------------
 
 // The goal of DIS RTS manager system on Quickjs is just to make the game system more flexible, but not to control everything of DIS with it.
-// Why? Because js is too slow to handle everything of DIS system (and stuff of RM2k3).
+// Why? Because js is too slow to handle everything in DIS system (and stuff of RM2k3).
 // All these system is just a help helper for developers.
 
-// Particularly, restoration process shouldn't be too big to handle.
+// Particularly, the restoration process shouldn't be too big to handle with.
 // The game itself must be able to go on even without management system on Quickjs if possible. I guess.. - TokyoHuskarl
 
 
@@ -203,6 +211,7 @@ class RTSmission {
 		this.mapid = mapid; // if 0, open custom map
 		this.allocVarAmount = 0;
 		this.essential.mapDataDirectory = missionid; // initially set the same as mission
+		this.passedFrame = 0; //  if DIS game is reloaded, then reload from RM var. 
 	};
 
 	createMissionVar = function(){
@@ -218,29 +227,31 @@ class RTSmission {
 		}
 	};
 
-		conf = {
-			isLEGACYmission: false,
-			isSightSystemOn: true,
-			
-		};
+	conf = {
+		isLEGACYmission: false,
+		isSightSystemOn: true,
 		
+	};
+	
 
-		essential = { // these elements must be restored when you reload the game via save/load.
-			passedFrame: 0, //  if DIS game is reloaded, then reload from RM var. 
-			players: [],
-			difficulty: 0,
-			weatherType: 0,
-			mapDataDirectory: this.mapDataDirectory, // set in constructor
-		};
+	essential = { // these elements must be restored when you reload the game via save/load.
+		players: [],
+		difficulty: 0,
+		weatherType: 0,
+		mapDataDirectory: this.mapDataDirectory, // set in constructor
+	};
 
 	restore = function(){
 		
 	};
 
 	// mission.run() - this one is called in every frame.
-	run = function(){ // called on RM per 1f
-		this.passedFrame++; // + 1 frame  
-		this.triggers.runTriggers(); // check simple triggers
+	run = function(){ // called on RM per 1f -> Dracore/module_core_RTS_mission_general.tpc
+		this.passedFrame++; // + 1 frame
+
+		// check simple triggers. if any trigger cond is fulfilled, then send signal to execute Commands
+		if(this.triggers.runTriggers()){Cmd.run();};
+
 	};
 
 	// mission.startup()... always called when the mission starts.
@@ -254,19 +265,50 @@ class RTSmission {
 
 	triggers = {
 		
-		runTriggers: function(){
+		runTriggers: function(){ // return if any trigger condition is fulfilled
 			// but how?
+			let newQue = this.queue;
+			let isTriggered = 0b0;
+
 			for (let TRIGGER of this.queue) {
-			
-			
+				let result = TRIGGER.run(); // run the trigger!
+				if (result & 0b10){ // if end flag is TRUE
+					newQue.splice(newQue.indexOf(TRIGGER),1); // remove the called trigger from newQue
+				};
+				isTriggered |= result;
 			};
-		
+
+			if (isTriggered & 1){ // there was at least one trigger that fulfilled condition
+				this.queue = newQue; // then renew queue
+				return true; // there was at least one trigger effect called
+			};
+
+			return false;
 		},
-
-		queue: [],
 		
-
+		queue: [],
+	
 	};
+
+	
+	createSimpleTrigger_Loop = function(frame) { // make a looping trigger executed by every {frame} 
+		let Trig = new RTStrigger();
+		Trig.isLoop = true;
+		Trig.condition = function(){
+			this.timer++;
+			if (this.timer >= frame){this.timer = 0; return true;}else{return false;};
+		};
+		return Trig; // return RTStrigger
+	}
+
+	createSimpleTrigger_Timer = function(h,m,s) { // if the set time passed, then execute effect
+		let Trig = new RTStrigger();
+		let goalFrame = DIS.macro.timeToFrame(h,m,s)
+		Trig.condition = function(){
+			if (RTS.mission.passedFrame >= goalFrame){return true;}else{return false;};
+		};
+		return Trig;
+	}
 
 	setMapData = function(mapdir){ // {string}
 		this.essential.mapDataDirectory = mapdir;
@@ -344,24 +386,22 @@ class RTSplayer {
 // maybe you need to build up restoring processes for mission and triggers.
 // both creation and deletion of the simple triggers must be memorized in RMvar (or str) just for restoring save data. After all.
 class RTStrigger {
-	constructor(cond){ // if you give any condition that returns bool as a arg0, it becomes condition of the new trigger.
+	constructor(){ // if you give any condition that returns bool as a arg0, it becomes condition of the new trigger.
 		
-		this.condition = cond || function(){return true;}; // return bool. can be overridden later.
-
 	};
 
-	run = function(){
-		const CONTINUE = true; // if this function returns false, then erase from triggers.
-	
-		if (this.condition()){ // you might need to reconsider later but temporary 
+	run = function(){ // if this function returns true, then erase from triggers.
+		let result =0b00; // bit1 - triggered flag, bit2 - kill this trigger flag
+		if (result |= this.condition()){ // check the condition - if it's true 0b01
 			this.effect();
-			return this.isLoop; // if this trigger set to keep looping, then return true. 
+			return result | (!(this.isLoop) << 1); // if this trigger set to keep looping, then return 0b11. 
 		};
 		
-		return CONTINUE;
+		return result;
 
 	};
 
+	condition = function(){return true;}; // return bool. override me.
 	effect = ()=>{ /* override me later in missiondef file! */ }; 
 	timer = 0; // ++ in mission trigger run function.
 	isLoop = false; // whether this trigger will be called even after fulfilling condition once.
@@ -398,7 +438,7 @@ let RTS = {
 
 	setupMission: function(missionid,mapid){ //
 		if (!this.isRTSmode){ // if the isRTSmode flag is not yet set (legacy maps) reopen DISmission
-			//this.mission = new RTSmission(missionid,mapid);
+			this.mission = new RTSmission(missionid,mapid);
 			this.isRTSmode = true;
 		}
 
@@ -408,8 +448,6 @@ let RTS = {
 			// so be it.
 			this.mission.conf.isLEGACYmission = true;
 		}
-		sett(20,"nayyaaa")
-		return "nayyaaa";
 	},
 
 	setupMapLoading: function(mapdir){ // will be called after this.setupMission().
@@ -469,7 +507,6 @@ const adr_RMbool_RUN_CMD = 132,
 var Cmd = {
 	// DIS command
 	CmdQueue: "",
-
 	restore: function(){ // call this function when the game loads savedata
 		this.runFlags.initAll();
 	},
@@ -490,17 +527,16 @@ var Cmd = {
 	},
 
 
+	// Cmd.run()
 	// give signal to run DIS commands 
 	run: function() {
-		if (this.CmdQueue != "") {
-			// give raw cmd as string to RPGMaker
-			sett(adr_RMStr_CmdOrder,this.CmdQueue);
-			// turn on RM switch to run interpreter as cev
-			sets(adr_RMbool_RUN_CMD,1);
-			
-			this.runFlags.initAll();
-			this.CmdOrder = ""; // initialize Command Order
-		}
+		// give raw cmd as string to RPGMaker
+		sett(adr_RMStr_CmdOrder,this.CmdQueue);
+		// turn on RM switch to run interpreter as cev
+		sets(adr_RMbool_RUN_CMD,1);
+		
+		Cmd.CmdQueue = ""; // initialize Command Order
+		this.runFlags.initAll();
 	},
 	
 
@@ -553,7 +589,7 @@ var Cmd = {
 		
 		generationStuff: {
 			genPtrPos: 0, // mounemui
-			checkGenInfo: () => {if (Cmd){}; }, // ACG<S-Del>HTUNG no return sentence?
+			checkGenInfo: () => {if (Cmd){}; }, // ACHTUNG no return sentence?
 			
 		},
 		
@@ -975,9 +1011,6 @@ class Radiobutton extends UI_object {
 
 // init load
 {
-	deblog(RTS.setupMission("121",412));
-	Cmd.map.spawnAgent(1,[114,514],0,0,1,0);
-	deblog(Cmd.CmdQueue);
-	deblog("TRP_merc_mob = " + trp["TRP_merc_mob"])
+	DIS.initID();
 }
 

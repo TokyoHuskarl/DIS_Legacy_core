@@ -5,6 +5,7 @@
 sname[213], "Remove some agent", bl
 defs CallDeathManager = 213
 defv DeathPtr = 4841
+
 cev .id(cevID_Agent_Remove_Manager), .name("AgentDeathManager") ,.parallel, .cond(__id(CallDeathManager)),{
 
 	// "Land Units"

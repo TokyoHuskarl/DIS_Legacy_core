@@ -1,10 +1,6 @@
 // loaded by mission_general?
 
 
-sname[130], "loadedJsConfig"
-defs loadedJsConfig = 130
-
-
 
 // INIT MISSION - this one is called whenever you open new mission
 __fn CEV_MISSION_INIT {
@@ -1777,6 +1773,10 @@ __fn CEV_MISSION_MAP_INIT {
 		    .affectedByFlash
 		    .affectedByShake
 		}
+
+
+
+		
 	}
 
 
@@ -2051,6 +2051,11 @@ __fn CEV_MISSION_MAP_INIT {
 	}
 	v[2511] = 0
 	@wait 0
+	
+	// boot js mission manager 
+	@if loadedJsConfig.isOn() {
+		RUN_js_MissionManager.on // -> RTS_mission_general.tpc
+	}
 }
 
 
