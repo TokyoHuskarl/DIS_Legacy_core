@@ -99,14 +99,14 @@ DIS = { // DIS fundamental components
 		this.initID(); // restore ID 
 	},
 
-	initialConsts: {
-		RTSFPS: 48, // can be changed 
-		
-	},
+
+	// DIS game consts - never touch here blease?
+	RTSFPS: 48, // can be changed 
+	AgentsLimit: getv(1004), // v[1004]
 },
 
 DIS.macro = {
-	timeToFrame: (h,m,s) => ((h * 3600 + m * 60 + s) * DIS.initialConsts.RTSFPS), 
+	timeToFrame: (h,m,s) => ((h * 3600 + m * 60 + s) * DIS.RTSFPS), 
 };
 
 
@@ -152,9 +152,43 @@ DIS.string = {
 
 }
 
+const Adr_ptr_spawnAgent = 201; //v[201]
+
 DIS.agent = {
 
 	
+	genPtrPos: 0,
+
+
+
+	// Search Empry Space function - this function searches a blank space for an agent in the agent data space.
+	// BUT, it has several problems:
+	// 1. It must be very slow.
+	// 2. How can it sync the result after inserting some Cmd.game.wait(n)?
+	// so this will need improvement anyway...
+
+	searchEmptySpace: function(){ // this must be fugging slow. just experimental 
+
+
+
+		// if spawn cmd is not called yet in this frame, getptr.
+		if(!Cmd.runFlags.SpawnDetect){this.genPtrPos = getv(Adr_ptr_spawnAgent); Cmd.runFlags.SpawnDetect = true;}
+		let emptyspaceID = -1; // if the AgentSpace is full, return -1
+
+		for (let i = 0; i < DIS.AgentsLimit; i++){
+			let p = 5001
+			this.genPtrPos += 1;
+			this.genPtrPos %= DIS.AgentsLimit; // compared to ternary operator, which is faster?
+			p += this.genPtrPos * 300
+			if (getv(p) <= 0){
+				emptyspaceID = this.genPtrPos;
+				break;
+			};
+		};
+
+		return emptyspaceID;
+	},
+
 	setName: function(agentid,name) {
 		
 	},
@@ -587,13 +621,6 @@ var Cmd = {
 		CmdType: CTYP_MAP,
 
 		
-		
-		generationStuff: {
-			genPtrPos: 0, // mounemui
-			checkGenInfo: () => {if (Cmd){}; }, // ACHTUNG no return sentence?
-			
-		},
-		
 
 		
 		/* spawnerInfoUpdate: ()=> {
@@ -601,14 +628,26 @@ var Cmd = {
 		} need to consider well */ 
 
 
-		spawnAgent: function(troopid,tilepos,team,cohort,dir,stance){ // {int}, array[x,y]
-			cohort = cohort || 0; // ok?
-			dir = dir || 0; // ok?
-			stance = stance || 0; // ok?
+		spawnAgent: function(troopid,tilepos,team,cohort,dir,stance,flag){ // {int}, array[x,y]
+			cohort = cohort || 0;
+			dir = dir || 0;
+			stance = stance || 0;
+			flag = flag || 0;
 			
 			Cmd.Qset(this.CmdType,"spnAg",`${troopid},${tilepos[0]},${tilepos[1]},${team},${cohort},${dir},${stance}`);
-			return 4545 // kari
+			return DIS.agent.searchEmptySpace(); // kari
 			// return {address: 4545, uniqueID: 114514}; // kari
+		},
+
+		spawnAgentgroup: function(troopid,tilepos,team,delta,amount,cohort,dir,stance,flag){
+			// temp
+			let pos = tilepos
+			let agentslist = [];
+			for (let i = 0; i < amount; i++){ // this one is too slow 
+				agentslist[i] = this.spawnAgent(troopid,pos,team,cohort,dir,stance,flag);				
+				for (let p = 0; p < 2; p++){pos[p] += delta[p];}; // add delta
+			};
+			return agentslist;
 		},
 
 		spawnStatic: function(staticID,tilepos,team,cohort){
@@ -619,11 +658,11 @@ var Cmd = {
 		},
 
 		spawnPalisade: function(team,tileposbeg,tileposend){
-			Cmd.Qset(this.CmdType,"spawnPalisade",`${team},${tileposbeg[0]},${tileposbeg[1]}`);
+			Cmd.Qset(this.CmdType,"spnPali",`${team},${tileposbeg[0]},${tileposbeg[1]}`);
 		}, // you need to wait 1f
 
-		spawnWall: function(team,tilepos){
-			Cmd.Qset(this.CmdType,"spawnWall",`${team},${tilepos[0]},${tilepos[1]}`);
+		spawnWall: function(team,tileposbeg,tileposend){
+			Cmd.Qset(this.CmdType,"spnWall",`${team},${tileposbeg[0]},${tileposbeg[1]}`);
 		}, // you need to wait 1f
 
 	},
