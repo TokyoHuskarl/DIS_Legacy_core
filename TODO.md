@@ -7,14 +7,18 @@
 - Perks are also needed to be renewed, tbh tbqh
 - 詳細画面表記をQstringに移す(to solve font problem)
 
+## ディレクトリ整理
+- FaceSetはけす
+- CharSetも消せるのでは..?
+- Moduleにつっこむ？
 
 # ゲーム要素アイデア
 
 ## js導入
-- js
-- Scale Script System is to be abandoned and integreted into the NsLib
+- js導入開始
 
 ## 修正
+- 説明とLoreの分離
 - 壁にぶち当たったときの処理をどうするのかを決める必要がある
 - NeedWPtoReachObjがどこで起きてるのかを突き止めて、Main側でチェックするフラグとなりうるようにしないと、敵検索壁ぶつかりからのあれでRayを飛ばさない
 - 予後、アリーナの指示は経路探索中のユニットに出さないようにする?
@@ -47,6 +51,7 @@
   - 一応直している。これはログとして残しておくべきか？
 - 専用の領域を割り当ててあげて、経路探索をさらに高速化する
   - だめです　あんまり効果なさそう
+  - ScaleScriptはNsLibへ統合
 
 ## 雑多
 - 980まで最大Agent数を上げる  
@@ -156,7 +161,6 @@
 
 # 既知の問題
 STATICデータ登録簡略化が動作してない  
-tpcrepコマンドが動作してない  
 クルシラのAI  
 変な骨が出る？（落ち着いたら聞く）  
 
@@ -188,7 +192,6 @@ tpcrepコマンドが動作してない
 
 ### 素材
 - Aftermathのタイトル絵
-- その他の絵（金がまったくない）
 
 ### 権利(可能な範囲で)
 - タイトル絵著作財産権（Skeb規定から個別の交渉が必須。Aftermathタイトルと選択的関係）

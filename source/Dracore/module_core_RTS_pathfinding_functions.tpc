@@ -275,11 +275,14 @@ __fn func_pathfinding_open_Node(){
 	}
 
 	@if v[380] == 0 {
-	    v[v[4568] + v[4582]] = var9
-	    v[v[4555] + v[4582]] = var10
+			TT1 = v[4568] + v[4582]
+	    v[TT1] = var9
+			TT1 = v[4555] + v[4582]
+	    v[TT1] = var10
 
 	    // v[v[4600] + var9 - 1] = v[4590]
-			v[PF_Const_NodesLink_MINUS1 + var9] = v[4590]
+			TT1 = PF_Const_NodesLink_MINUS1 + var9
+			v[TT1] = v[4590]
 	    v[4582] += 1
 	    
 	}

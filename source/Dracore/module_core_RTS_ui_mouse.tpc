@@ -14,10 +14,13 @@ def macro_extract_selecting_unit_param = {
 
 }
 
+
+def tempstrcat_colour = __str(":\c[\v[", __id(var1), "]]" )
+
 __fn macro_strcat_adjustment $str1 $var $colour {
 	t[3000].cat $str1
 	var1 = $colour
-	t[3000].cat ":\c[\var1]" .extract
+	t[3000].cat tempstrcat_colour .extract // ":\c[\v[11]]" .extract
 	t[3000].cat $var
 }
 

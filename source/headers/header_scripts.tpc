@@ -10,11 +10,10 @@ deft Str_CmdQueue = 795
 __if LOAD_HEADER_AGENT != 1{
 #include "./../headers/header_agent.tpc"
 }
-
 #include "./../NsLib/module_scalescript_main.tpc"
 
 
-
+// actual script commands here
 #include "./../Dracore/module_core_Game_scripts_functions.tpc"
 
 
@@ -29,11 +28,6 @@ __fn macro_script_split{
 }
 
 
-
-/*
-TODO:
-	スイッチのデバッグ画像表示を消す
-*/
 
 __fn macro_split_function_str $ptr_str {
         t[$ptr_str] .split "(", t[3000], v[341]

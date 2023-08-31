@@ -8,6 +8,7 @@ def {
 	CTYP_GAME = 4
 	CTYP_AGENT = 5
 	CTYP_PLAYER = 6
+	CTYP_GROUP = 7
 	
 	CTYP_END
 }
@@ -19,6 +20,7 @@ deft {
 	str_link_Cmd_game
 	str_link_Cmd_agent
 	str_link_Cmd_player
+	str_link_Cmd_group
 
 }
 
@@ -67,6 +69,8 @@ __fn DIS_Cmd_PackTree $chosenobj $md $counter $given_v_or_str $flags {
 	}.elif $chosenobj == CTYP_PLAYER { // Cmd.player
 		DIS_Cmd_player(str_link_Cmd_player,$md,$counter,$given_v_or_str,$flags)
 
+	}.elif $chosenobj == CTYP_GROUP { // Cmd.player
+		DIS_Cmd_group(str_link_Cmd_group,$md,$counter,$given_v_or_str,$flags)
 	}
 
 }
@@ -78,40 +82,47 @@ __fn DIS_Cmd_PackTree $chosenobj $md $counter $given_v_or_str $flags {
 
 
 __fn DIS_Cmd_map $LINKstr $md $counter $given_v_or_str $flags {
-	SScmdPackage_Build("Cmd.map",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+	SScmdPackage_Build("mp",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
 		DIS_map_methods($LINKstr $md $counter $given_v_or_str $flags)
 	})
 }
 
 __fn DIS_Cmd_snd $LINKstr $md $counter $given_v_or_str $flags {
-	SScmdPackage_Build("Cmd.snd",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+	SScmdPackage_Build("sn",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
 		DIS_snd_methods($LINKstr $md $counter $given_v_or_str $flags)
 	})
 }
 
 __fn DIS_Cmd_mission $LINKstr $md $counter $given_v_or_str $flags {
-	SScmdPackage_Build("Cmd.mission",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+	SScmdPackage_Build("mi",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
 		DIS_mission_methods($LINKstr $md $counter $given_v_or_str $flags)
 	})
 }
 
 __fn DIS_Cmd_game $LINKstr $md $counter $given_v_or_str $flags {
-	SScmdPackage_Build("Cmd.game",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+	SScmdPackage_Build("ga",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
 		DIS_game_methods($LINKstr $md $counter $given_v_or_str $flags)
 	})
 }
 
 __fn DIS_Cmd_agent $LINKstr $md $counter $given_v_or_str $flags {
-	SScmdPackage_Build("Cmd.agent",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+	SScmdPackage_Build("ag",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
 		DIS_agent_methods($LINKstr $md $counter $given_v_or_str $flags)
 	})
 }
 
 __fn DIS_Cmd_player $LINKstr $md $counter $given_v_or_str $flags {
-	SScmdPackage_Build("Cmd.player",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+	SScmdPackage_Build("pl",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
 		DIS_player_methods($LINKstr $md $counter $given_v_or_str $flags)
 	})
 }
+
+__fn DIS_Cmd_group $LINKstr $md $counter $given_v_or_str $flags {
+	SScmdPackage_Build("gr",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+		DIS_group_methods($LINKstr $md $counter $given_v_or_str $flags)
+	})
+}
+
 
 // ---------------------------------------------
 // Scale Script Command libraries
@@ -120,11 +131,11 @@ __fn DIS_Cmd_player $LINKstr $md $counter $given_v_or_str $flags {
 
 // Cmd.map
 __fn DIS_map_methods $LINKstr $md $i $given_v_or_str $flags {
-	SScmdLib_Build("mapmethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+	SScmdLib_Build("map", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		// let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "spawnAgent",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})},
-		{NsCmd($LINKstr, $md, $i, "spawnStatic",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})},
+		{NsCmd($LINKstr, $md, $i, "spnAg",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})}, // map.spawnAgent
+		{NsCmd($LINKstr, $md, $i, "spnSt",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})}, // map.spawnStatic
 		
 
 	])
@@ -132,11 +143,11 @@ __fn DIS_map_methods $LINKstr $md $i $given_v_or_str $flags {
 
 // Cmd.snd
 __fn DIS_snd_methods $LINKstr $md $i $given_v_or_str $flags {
-	SScmdLib_Build("sndmethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+	SScmdLib_Build("snd", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		// let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "playGSE",{cmd_play_global_sound(SSargs0,SSargs1,SSargs2,SSargs3)})}, // snd.playGlobalSE
-		{NsCmd($LINKstr, $md, $i, "playBGM",{cmd_play_global_music(SSargs0,SSargs1,SSargs2,SSargs3)})}, // snd.playBGM
+		{NsCmd($LINKstr, $md, $i, "pGSE",{cmd_play_global_sound(SSargs0,SSargs1,SSargs2,SSargs3)})}, // snd.playGlobalSE
+		{NsCmd($LINKstr, $md, $i, "pBGM",{cmd_play_global_music(SSargs0,SSargs1,SSargs2,SSargs3)})}, // snd.playBGM
 		
 
 	])
@@ -144,7 +155,7 @@ __fn DIS_snd_methods $LINKstr $md $i $given_v_or_str $flags {
 
 // Cmd.mission
 __fn DIS_mission_methods $LINKstr $md $i $given_v_or_str $flags {
-	SScmdLib_Build("missionmethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+	SScmdLib_Build("msn", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
 		{NsCmd($LINKstr, $md, $i, "endGame",{cmd_player_prepare_endgame(0,SSargs0)})},
@@ -153,7 +164,7 @@ __fn DIS_mission_methods $LINKstr $md $i $given_v_or_str $flags {
 }
 
 __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
-	SScmdLib_Build("gamemethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+	SScmdLib_Build("game", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
 		{NsCmd($LINKstr, $md, $i, "exec",{execute_js(SSargs0)})}, // <- NsLib_js
@@ -173,7 +184,7 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 }
 
 __fn DIS_agent_methods $LINKstr $md $i $given_v_or_str $flags {
-	SScmdLib_Build("agentmethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+	SScmdLib_Build("ag", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
 		{NsCmd($LINKstr, $md, $i, "setName",{
@@ -184,11 +195,23 @@ __fn DIS_agent_methods $LINKstr $md $i $given_v_or_str $flags {
 }
 
 __fn DIS_player_methods $LINKstr $md $i $given_v_or_str $flags {
-	SScmdLib_Build("playermethods", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+	SScmdLib_Build("plyr", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "revealMap",{cmd_reveal_map()})}, // revealMap
-		{NsCmd($LINKstr, $md, $i, "moveCamera",{cmd_player_change_view(SSargs0,SSargs1,SSargs2)})}, 
+		{NsCmd($LINKstr, $md, $i, "rvMap",{cmd_reveal_map()})}, // revealMap
+		{NsCmd($LINKstr, $md, $i, "mvCam",{cmd_player_change_view(SSargs0,SSargs1,SSargs2)})}, // moveCamera 
+		{NsCmd($LINKstr, $md, $i, "tgPaus",{
+			@if SSargs0.eq "1" {s[2].on}.else bl{s[2].off}})
+		}, // togglePause
+
+
+	])
+
+__fn DIS_group_methods $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("grp", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+
+		//let javascript interpreter execute what is written in file
+		{NsCmd($LINKstr, $md, $i, "??",{/*insert here*/})}, //
 
 	])
 }
@@ -515,6 +538,8 @@ def {
 	DIS_playerid_singleplay = 0
 
 }
+
+
 __fn cmd_player_change_view $playerid $tileX $tileY {
 	t[__id($tileX)].toNum var1 
 	t[__id($tileY)].toNum var2 

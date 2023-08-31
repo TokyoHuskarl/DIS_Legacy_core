@@ -442,7 +442,7 @@ let RTS = {
 			this.isRTSmode = true;
 		}
 
-		if (this.mission.mapid == 0) { // NOT RPG maker legacy map
+		if (this.mission.mapid == 0 || this.mission.mapid == 60 || this.mission.mapid == 61) { // NOT RPG maker legacy map
 			// then we're gonna open custom map.
 		} else { // RPG maker legacy map. 
 			// so be it.
@@ -495,6 +495,7 @@ const CTYP_MAP = 1,
 	CTYP_GAME = 4,
 	CTYP_AGENT = 5,
 	CTYP_PLAYER = 6,
+	CTYP_GROUP = 7,
 	CTYP_END = 999;
 
 
@@ -605,20 +606,20 @@ var Cmd = {
 			dir = dir || 0; // ok?
 			stance = stance || 0; // ok?
 			
-			Cmd.Qset(this.CmdType,"spawnAgent",`${troopid},${tilepos[0]},${tilepos[1]},${team},${cohort},${dir},${stance}`);
+			Cmd.Qset(this.CmdType,"spnAg",`${troopid},${tilepos[0]},${tilepos[1]},${team},${cohort},${dir},${stance}`);
 			return 4545 // kari
 			// return {address: 4545, uniqueID: 114514}; // kari
 		},
 
 		spawnStatic: function(staticID,tilepos,team,cohort){
 			cohort = cohort || 0; // ok?
-			Cmd.Qset(this.CmdType,"spawnStatic",`${staticID},${tilepos[0]},${tilepos[1]},${team},${cohort}`);
+			Cmd.Qset(this.CmdType,"spnSt",`${staticID},${tilepos[0]},${tilepos[1]},${team},${cohort}`);
 			return {address: 4545, uniqueID: 114514}; // kari
 			
 		},
 
-		spawnPalisade: function(team,tilepos){
-			Cmd.Qset(this.CmdType,"spawnPalisade",`${team},${tilepos[0]},${tilepos[1]}`);
+		spawnPalisade: function(team,tileposbeg,tileposend){
+			Cmd.Qset(this.CmdType,"spawnPalisade",`${team},${tileposbeg[0]},${tileposbeg[1]}`);
 		}, // you need to wait 1f
 
 		spawnWall: function(team,tilepos){
@@ -631,11 +632,11 @@ var Cmd = {
 	snd: {
 		CmdType: CTYP_SND, 
 		playGlobalSE: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
-			Cmd.Qset(this.CmdType,"playGSE",`${file},${vol},${tempo},${ballance}`);
+			Cmd.Qset(this.CmdType,"pGSE",`${file},${vol},${tempo},${ballance}`);
 		},
 
 		playBGM: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
-			Cmd.Qset(this.CmdType,"playBGM",`${file},${vol},${tempo},${ballance}`);
+			Cmd.Qset(this.CmdType,"pBGM",`${file},${vol},${tempo},${ballance}`);
 		},
 		
 	},
@@ -677,13 +678,28 @@ var Cmd = {
 	player: {
 		CmdType: CTYP_PLAYER,
 
-		revealMap: function(playerid){
-			Cmd.Qset(this.CmdType,"revealMap",`${playerid}`);
+		revealMap: function(playerid){ 
+			Cmd.Qset(this.CmdType,"rvMap",`${playerid}`);
 		},
 
 		moveCamera: function(tilepos){
-			Cmd.Qset(this.CmdType,"moveCamera",`${tilepos[0]},${tilepos[1]}`);
+			Cmd.Qset(this.CmdType,"mvCam",`${tilepos[0]},${tilepos[1]}`);
 		},
+
+		togglePause: function(bool){
+			let sw = Number(bool)
+			Cmd.Qset(this.CmdType,"tgPaus",`${sw}`);
+		},
+
+	},
+
+
+	
+	// -------------
+	// Cmd.group
+	// -------------
+
+	group: { // ?
 
 	},
 
