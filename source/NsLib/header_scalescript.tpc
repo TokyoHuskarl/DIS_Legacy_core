@@ -126,25 +126,25 @@ def setaddress = $getadd
 //SS buffer setting
 
 // ACHTUNG!!!!! 
-// After picture memory bug after save/load has been revealed, picture buffer system is basically to be abandoned.
+// After picture memory bug after save/load has been revealed, picture buffer system is basically abandoned.
 // if should MP's picture editting system get stable in future, these Legacy structures may be a valid option again.
 // On the other hand, unless it happens these systems are literal legacies that are not used in any process.
 
 def {
 	//ATTENTION!
 	// If you just want to use SS just as a developement support tool, 
-	//IT'S HIGHLY RECOMMENDED NOT TO CHANGE THESE CONSTS.
+	// IT'S HIGHLY RECOMMENDED NOT TO CHANGE THESE CONSTS.
 
-	//Also, the most important const (SS_buffer_picID) that decides which picture ID SS uses as a buffer is not here.
+	// Also, the most important const (SS_buffer_picID) that decides which picture ID SS uses as a buffer is not here.
 
 
-	SS_buffer_array_amount = 30 //You can expand if you need to store some datas in SSbuffer
+	SS_buffer_array_amount = 30 // You can expand if you need to store some datas in SSbuffer
 
-	SS_buffer_array_Size = 256 //array size shouldn't be changed if you don't understand what comments below saying. 
+	SS_buffer_array_Size = 256 // array size shouldn't be changed if you don't understand what comments below saying. 
 
 
 	SS_buffer_array_address_index = 0 // SS will basically use the first n byte of each array[n][0] as an index for the array.
-	SS_buffer_index_mask = SS_buffer_array_Size - 1 //in the first setting, mask is set as 0xFF 
+	SS_buffer_index_mask = SS_buffer_array_Size - 1 // in the first setting, mask is set as 0xFF 
 	// Thus if you change array size for some purpose, you should consider about those hex matters.
 
 	// I don't think the further expantion of the array size of SS would be necessary in a regular RM2003 project.
@@ -391,15 +391,15 @@ __fn SScmdLib_Build $LibName $LINKstr $md $i $given_v_or_str $flags $cmdList { /
 
 
 	//Link Construct Mode
-	__if $md == SScmd_Mode_Construct_Link {//SS command library construction mode - in this Mode $given_v_or_str work as just temp var to count down and save command amount 
-		__loop $cmdList $block {//just let them create link
+	__if $md == SScmd_Mode_Construct_Link { // SS command library construction mode - in this Mode $given_v_or_str work as just temp var to count down and save command amount 
+		__loop $cmdList $block { // just let them create link
 			v[__id($i)] += 1
 			$block
 			v[__id($given_v_or_str)]+=1
 		}
 
-		//Save amount of commands registered to the link str
-		//in the first line of the link str
+		// Save amount of commands registered to the link str
+		// in the first line of the link str
 		str_SSreg1.asg v[__id($given_v_or_str)]
 		t[__id($LINKstr)].asg .cat(str_SSreg1, ">", t[__id($LINKstr)]) // use < as a header token - temporary 
 
@@ -407,11 +407,11 @@ __fn SScmdLib_Build $LibName $LINKstr $md $i $given_v_or_str $flags $cmdList { /
 
 
 
-	//Execute Mode
-	}.elif $md == SScmd_Mode_Exec {//$given_v_or_str work as converted str id:argv[0],argv[1]...
+	// Execute Mode
+	}.elif $md == SScmd_Mode_Exec { // $given_v_or_str work as converted str id:argv[0],argv[1]...
 
 
-		//can this really faster than the old DIS script?
+		// can this really faster than the old DIS script?
 		__loop $cmdList $block {
 			v[__id($i)] += 1
 			@if SScmdnum == v[__id($i)] {
@@ -422,8 +422,8 @@ __fn SScmdLib_Build $LibName $LINKstr $md $i $given_v_or_str $flags $cmdList { /
 
 
 
-	//Script convert mode
-	//cmdname(var arg0,v:mapev1...etc) -> cmdname=cmdid,arg0,arg1
+	// Script convert mode
+	// cmdname(var arg0,v:mapev1...etc) -> cmdname=cmdid,arg0,arg1
 	}.elif $md == SScmd_Mode_Convert {
 		__loop $cmdList $block {
 			v[__id($i)] += 1
@@ -433,10 +433,11 @@ __fn SScmdLib_Build $LibName $LINKstr $md $i $given_v_or_str $flags $cmdList { /
 
 
 
-	//Execute Mode
-	}.elif $md == SScmd_Mode_Call {//$given_v_or_str work as converted str id:argv[0],argv[1]...
+	// Execute Mode
+	}.elif $md == SScmd_Mode_Call { // $given_v_or_str work as converted str id:argv[0],argv[1]...
 
-		//can this really faster than the old DIS script?
+		// can this really faster than the old DIS script?
+		 
 		__loop $cmdList $block {
 			v[__id($i)] += 1
 			@if SScmdnum == v[__id($i)] {
@@ -450,13 +451,13 @@ __fn SScmdLib_Build $LibName $LINKstr $md $i $given_v_or_str $flags $cmdList { /
 }
 
 SS_funcgroup("SScommand functions",{
-	//Command type function 
+	// Command type function 
 	def nargs_nolimit = -1
 	
 	// Much more simple one
 	__fn NsCmd $LINKstr $mode $ID $NAME $func {
 
-		//Construct Link
+		// Construct Link
 		__if $mode == SScmd_Mode_Construct_Link {
 			t[__id($LINKstr)].cat $NAME
 			t[__id($LINKstr)].cat "="

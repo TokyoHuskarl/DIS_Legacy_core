@@ -21,6 +21,36 @@ defv Mapgentype = 2055
 def moduletitle="module_core_RTS_mission_general.tpc"
 
 
+// ------------------------------------------------
+// JS mission manager BEGIN
+// ------------------------------------------------
+
+
+def CEV_JS_MANAGER_RESTORE = "
+RTS.restore();
+"
+
+def CEV_JS_MANAGER_RUN_PER_FRAME = "
+RTS.mission.run();
+"
+// actual functions are written in js file.
+// this cev just call run() functions of objects under RTS module.
+
+cev .id(1830), .name("JS MissionManager"),.parallel , .cond(__id(RUN_js_MissionManager)), {
+	@if .rightAfterLoad() {
+		eval_js(CEV_JS_MANAGER_RESTORE) // call restore function is the game noticed 
+	}
+	@if s[2].isOff(){ // pause
+		eval_js(CEV_JS_MANAGER_RUN_PER_FRAME)
+	}
+}
+
+// ------------------------------------------------
+// JS mission manager END
+// ------------------------------------------------
+
+
+
 //Mission Init
 //#Loading Cache, Map Data Load, faction template load, 
 //#etc etc
@@ -130,16 +160,19 @@ cev .id(1800), .name("Mission:MapInit"), {
 
 
 
+
+
+
 cev .id(1793), .name("set NodesLink"), {
 	CEV_SET_NODELINK()
 }
 
 
 def{
-	game_result_ally_signs=200
-	game_result_ally_x=24
-	game_result_enemy_signs=v[1001]-280
-	game_result_enemy_x=v[1001]-456
+	game_result_ally_signs = 200
+	game_result_ally_x = 24
+	game_result_enemy_signs = v[1001]-280
+	game_result_enemy_x = v[1001]-456
 
 }
 //battle result
@@ -484,7 +517,7 @@ cev .id(1804),.name("mission:gen_elevationmap"),{
 }
 
 
-#include "./module_core_RTS_mission_simpletrigger.tpc"
+// #include "./module_core_RTS_mission_simpletrigger.tpc"
 
 #include "./module_core_RTS_mission_weather_general.tpc" 
 
