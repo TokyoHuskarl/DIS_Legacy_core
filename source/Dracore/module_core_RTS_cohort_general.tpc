@@ -6,14 +6,14 @@
 
 def moduletitle="module_core_RTS_cohort_general.tpc"
 
-def transparency=45
+def transparency = 45
 //Cohort manager
 cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode), {
 	@comment moduletitle
 	@if LEGV_Selected_Cohort_Number < 1 {
 	    @pic[v[4811]].show {
 		"ui\mmcircle"
-		.pos v[344], v[345] .center
+		.pos TT4, TT5 .center
 		.chromakey 1
 		.scale 100
 		.trans 100
@@ -33,56 +33,56 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		s[223].off
 		
 	    }
-	    v[360] = TT2
-	    v[351] = LEGV_Selected_Cohort_Number - 1
-	    v[350] = TT2
-	    v[202] = 40 * v[360] 
+	    TT20 = TT2
+	    TT11 = LEGV_Selected_Cohort_Number - 1
+	    TT10 = TT2
+	    v[202] = 40 * TT20 
 	    v[202] += v[4524] //ptr to cohort member list
 	    TT1 = 10 + v[1118] 
-	    TT1 += v[360]
+	    TT1 += TT20
 	    @if v[v[202]] >= 1 {
 		//@comment "#"
 		v[302..304] = 0
 
 		//opt 27.4.23
-		//CohortArrayPtr = v[4530] + v[360] * 20
+		//CohortArrayPtr = v[4530] + TT20 * 20
 		defv CohortArrayPtr = __id(Temp10)
 		CohortArrayPtr = v[4530] 
-		CohortArrayPtr += v[360] * 20
+		CohortArrayPtr += TT20 * 20
 		Ptr2=CohortArrayPtr+1
 		v[Ptr2].copy cohort_LeaderID,20//extract cohort data into v[581]~
 
-		v[313] = CohortArrayPtr + 7
-		v[1301].copy v[v[313]], 2
-		v[314] = 0
-		v[320] = CohortArrayPtr + 9
-		v[1301].copy v[v[320]], 2
+		Temp13 = CohortArrayPtr + 7
+		v[1301].copy v[Temp13], 2
+		Temp14 = 0
+		Temp20 = CohortArrayPtr + 9
+		v[1301].copy v[Temp20], 2
 		s[201..202].off
 		v[330] = 0
-		@while v[v[202]] != 0 .dst v[20] {
-		    @if v[20] >= 40 {
+		@while v[v[202]] != 0 .dst var10 {
+		    @if var10 >= 40 {
 			@break
 			
 		    }
-		    v[301] = v[v[202]] * 300 
-		    v[301] += v[1005] - 300
-		    Ptr1 = v[301]+1
+		    Temp1 = v[v[202]] * 300 
+		    Temp1 += v[1005] - 300
+		    Ptr1 = Temp1+1
 		    v[Ptr1].copy agent_ObjectType, 300 //extract data
 		    //@comment "Have max hp?"
 		    @if agent_TeamID == 0 {
-			@if `agent_Cohort_ID == v[360] + 1 {
+			@if `agent_Cohort_ID == TT20 + 1 {
 			    @if agent_MaxHP >= 1 {
-				v[302] += 1
+				Temp2 += 1
 				//@comment "Get current HP"
-				v[303] += agent_MaxHP
+				Temp3 += agent_MaxHP
 				@if agent_ObjectType >= 1 {
-				    v[304] += agent_HP
+				    Temp4 += agent_HP
 				    @if agent_Morale < 3 {
-					v[314] += 1
-					//v[316] = v[301] + 26
-					v[v[313]] .add agent_MapX, 2
-					//v[316] = v[301] + 7
-					v[v[320]] .add agent_RelativeX, 2
+					Temp14 += 1
+					//Temp16 = Temp1 + 26
+					v[Temp13] .add agent_MapX, 2
+					//Temp16 = Temp1 + 7
+					v[Temp20] .add agent_RelativeX, 2
 					@if s[201] .isOff() {
 					    @if agent_StanceOrder == 0 {
 						@if agent_TargetAgentID > 0 {
@@ -128,32 +128,32 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		    
 		}
 		
-		v[CohortArrayPtr + 6] = v[314]
+		v[CohortArrayPtr + 6] = Temp14
 		@if s[202] .isOn() {
-		    v[202] = 40 * v[360] 
+		    v[202] = 40 * TT20 
 		    v[202] += v[4524]
 		    v[v[202]].sortDescending 40
 		    
 		}
-		v[315] = v[314]
-		v[v[313]] .div v[314], 2
-		v[v[320]] .div v[314], 2
+		Temp15 = Temp14
+		v[Temp13] .div Temp14, 2
+		v[Temp20] .div Temp14, 2
 		//@comment "やっぱりちょっと危険な気がする"
 		@if cohort_CohortType == cohort_CohortType_TYPE_normal {//0 = normalunits
 		    @if s[201] .isOn() {
 			//@comment "Alert and fighting"
 			@if cohort_StanceOrder == 0 {
 			    @if v[330] > 0 {
-				v[202] = 40 * v[360] 
+				v[202] = 40 * TT20 
 				v[202] += v[4524]
-				@while v[v[202]] != 0 .dst v[20] {
-				    @if v[20] >= 40 {
+				@while v[v[202]] != 0 .dst var10 {
+				    @if var10 >= 40 {
 					@break
 					
 				    }
-				    v[301] = v[v[202]] * 300 
-				    v[301] += v[1005] - 300
-				    Ptr1 = v[301]+1
+				    Temp1 = v[v[202]] * 300 
+				    Temp1 += v[1005] - 300
+				    Ptr1 = Temp1+1
 				    v[Ptr1].copy agent_ObjectType, 300 //extract data
 				    @if agent_ObjectType >= 1 {
 					@if agent_MovementOrder <= 2 {
@@ -188,17 +188,17 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 			//@comment "Fighting end"
 			@if `cohort_StateFlag & cohort_StateFlag_FLAG_fighting {
 			    @if v[330] == 0 {
-				v[202] = 40 * v[360] 
+				v[202] = 40 * TT20 
 				v[202] += v[4524]
 				s[202].off
-				@while v[v[202]] != 0 .dst v[20] {
-				    @if v[20] >= 40 {
+				@while v[v[202]] != 0 .dst var10 {
+				    @if var10 >= 40 {
 					@break
 					
 				    }
-				    v[301] = v[v[202]] * 300 
-				    v[301] += v[1005] - 300
-		    		    v[301].copy Address_agent_array_head, 300 //extract data
+				    Temp1 = v[v[202]] * 300 
+				    Temp1 += v[1005] - 300
+		    		    Temp1.copy Address_agent_array_head, 300 //extract data
 				    @if agent_ObjectType >= 1 {
 					@if agent_Morale < 3 {
 					    @if agent_MovementOrder > 1 {
@@ -217,9 +217,9 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 				    v[CohortArrayPtr + 20] = cohort_StanceOrder == 2 ? 0 : cohort_StanceOrder
 				    v[CohortArrayPtr + 4] &= -5//~4
 				   //@comment "try restore formation"
-				    v[12] = v[360]
-				    v[13] = 0
-				    v[14] = v[314]
+				    var2 = TT20
+				    var3 = 0
+				    var4 = Temp14
 				    @call .cev 2155//call reform line event - this can be improved 
 				    
 				}
@@ -232,18 +232,18 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		    
 		}
 		TT1 = 10 + v[1118] 
-		TT1 += v[360]
+		TT1 += TT20
 		//@comment "Check if the resistered units destroyed"
-		@if v[304] == 0 {
+		@if Temp4 == 0 {
 		    //@comment "Completely wiped out"
 		    @pic[TT1].show {
 			"ui\HP_bar_side_0" .repl 1 TT2
-			.pos v[1119], v[343] .right
+			.pos v[1119], TT3 .right
 			.chromakey 1
 			.scale 100
 			.trans 100
 			.rgbs 100, 100, 100, 100
-			.grid 1, 20 .cell v[306]
+			.grid 1, 20 .cell Temp6
 			.mapLayer 8
 			.eraseWhenTransfer
 			.affectedByFlash
@@ -251,15 +251,15 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		    }
 		    TT1 -= 10
 		    @pic[TT1].move {
-			.pos v[305], v[306] .center
+			.pos Temp5, Temp6 .center
 			.scale 100
 			.trans 100
 			.time 0
 			.rgbs 100, 100, 100, 100
 		    }
-		    v[346] = v[360] + v[4809]
-		    @pic[v[346]].move {
-			.pos v[305], v[306] .center
+		    TT6 = TT20 + v[4809]
+		    @pic[TT6].move {
+			.pos Temp5, Temp6 .center
 			.scale 100
 			.trans 100
 			.time 0
@@ -272,7 +272,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 			    @call .cev 1924
 			    TT1 = 2
 			    v[601] = 1
-			    v[11] = v[360] + 1
+			    var1 = TT20 + 1
 			    @pic[v[1155]].strpic {
 				t[20443]
 				.pos TT1, v[1126] .bottomLeft
@@ -280,7 +280,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 				.scale 100
 				.trans 30
 				.rgbs 100, 100, 100, 100
-				.font t[530], v[4511]
+				.font Font_UI, Font_UI_size
 				.spacing 0, 4
 				.skin "" .nobg .noframe .noPadding
 				.mapLayer 8
@@ -296,92 +296,92 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		    
 		} .else bl {
 		    //@comment "損耗率計算"
-		    v[306] = v[304] * 100
+		    Temp6 = Temp4 * 100
 		    //@comment "#0除算防止"
-		    v[305] = max(v[303], 1)
-		    v[306] /= v[305]
-		    v[307] = v[306]
-		    v[306] = max(v[306] / 5, 1)
+		    Temp5 = max(Temp3, 1)
+		    Temp6 /= Temp5
+		    Temp7 = Temp6
+		    Temp6 = max(Temp6 / 5, 1)
 		    //@comment ""
-		    v[343] = 24 * v[350] 
-		    v[343] += v[1120]
+		    TT3 = 24 * TT10 
+		    TT3 += v[1120]
 		    TT2 += 1
 		    TT2 %= 10
-		    v[355] = v[350] == v[351] ? 0 : transparency
+		    TT15 = TT10 == TT11 ? 0 : transparency
 		    @pic[TT1].show {
 			"ui\HP_bar_side_0" .repl 1 TT2
-			.pos v[1119], v[343] .right
+			.pos v[1119], TT3 .right
 			.chromakey 1
 			.scale 100
-			.trans v[355]
+			.trans TT15
 			.rgbs 100, 100, 100, 100
-			.grid 1, 20 .cell v[306]
+			.grid 1, 20 .cell Temp6
 			.mapLayer 8
 			.eraseWhenTransfer
 			.affectedByFlash
 			.affectedByShake
 		    }
 		    TT1 -= 10
-		    v[305] = v[1119] - 10
-		    v[306] = v[343] + 20 
-		    v[306] -= 32
+		    Temp5 = v[1119] - 10
+		    Temp6 = TT3 + 20 
+		    Temp6 -= 32
 		    @pic[TT1].move {
-			.pos v[305], v[306] .center
+			.pos Temp5, Temp6 .center
 			.scale 100
-			.trans v[355]
+			.trans TT15
 			.time 0
 			.rgbs 100, 100, 100, 100
 		    }
 		    //@comment ""
-		    @if v[314] > 0 {
-			v[344] = muldiv(v[v[313]], 100, v[430])
-			v[345] = muldiv(v[v[313] + 1], 100, v[431])
-			v[344] = v[1282] + v[344]
-			v[345] = v[1283] + v[345]
-			v[346] = v[360] + v[4809]
-			TT2 = v[360] + 1
+		    @if Temp14 > 0 {
+			TT4 = muldiv(v[Temp13], 100, v[430])
+			TT5 = muldiv(v[Temp13 + 1], 100, v[431])
+			TT4 = v[1282] + TT4
+			TT5 = v[1283] + TT5
+			TT6 = TT20 + v[4809]
+			TT2 = TT20 + 1
 			@if s[296] .isOn() {
 			    v[356..359] = 0
-			    v[357] = 160
-			    v[355] += 5
+			    TT17 = 160
+			    TT15 += 5
 			    
 			} .else bl {
 			    v[356..359] = 100
 			    
 			}
-			@pic[v[346]].show {
+			@pic[TT6].show {
 			    "ui\latin_num"
-			    .pos v[344], v[345] .center
+			    .pos TT4, TT5 .center
 			    .chromakey 1
 			    .scale 100
-			    .trans v[355]
-			    .rgbs v[356], v[357], v[358], v[359]
+			    .trans TT15
+			    .rgbs TT16, TT17, TT18, TT19
 			    .grid 1, 10 .cell TT2
 			    .mapLayer 10
 			    .eraseWhenTransfer
 			}
-			@if v[355] < 45 {
-			    v[355] += 20
+			@if TT15 < 45 {
+			    TT15 += 20
 			    @pic[v[4811]].show {
 				"ui\mmcircle"
-				.pos v[344], v[345] .center
+				.pos TT4, TT5 .center
 				.chromakey 1
 				.scale 100
-				.trans v[355]
+				.trans TT15
 				.rgbs 100, 100, 100, 100
 				.mapLayer 10
 				.eraseWhenTransfer
 			    }
-			    v[355] -= 20
+			    TT15 -= 20
 			    v[429] -= 1
 			    s[222].on
 			    
 			}
 			
 		    } .else bl {
-			v[346] = v[360] + v[4809]
-			@pic[v[346]].move {
-			    .pos TT2, v[343] .center
+			TT6 = TT20 + v[4809]
+			@pic[TT6].move {
+			    .pos TT2, TT3 .center
 			    .scale 100
 			    .trans 100
 			    .time 0
@@ -399,12 +399,12 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		//@comment "Not Registered"
 		@pic[TT1].show {
 		    "ui\HP_bar_side_0" .repl 1 TT2
-		    .pos v[1119], v[343] .right
+		    .pos v[1119], TT3 .right
 		    .chromakey 1
 		    .scale 100
 		    .trans 100
 		    .rgbs 100, 100, 100, 100
-		    .grid 1, 20 .cell v[306]
+		    .grid 1, 20 .cell Temp6
 		    .mapLayer 8
 		    .eraseWhenTransfer
 		    .affectedByFlash
@@ -412,15 +412,15 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		}
 		TT1 -= 10
 		@pic[TT1].move {
-		    .pos v[305], v[306] .center
+		    .pos Temp5, Temp6 .center
 		    .scale 100
 		    .trans 100
 		    .time 0
 		    .rgbs 100, 100, 100, 100
 		}
-		v[346] = v[360] + v[4809]
-		@pic[v[346]].move {
-		    .pos v[305], v[306] .center
+		TT6 = TT20 + v[4809]
+		@pic[TT6].move {
+		    .pos Temp5, Temp6 .center
 		    .scale 100
 		    .trans 100
 		    .time 0
@@ -429,30 +429,30 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		s[222].off
 		
 	    }
-	    TT1 = v[4513] + v[360]
+	    TT1 = v[4513] + TT20
 	    @if s[222] .isOn() {
-		v[v[320]].copy v[320], 2
-		@if v[355] < transparency {
-		    v[355] = 30
+		v[Temp20].copy Temp20, 2
+		@if TT15 < transparency {
+		    TT15 = 30
 		    @if v[944] == 1 {
-			v[355] -= 30
+			TT15 -= 30
 			
 		    }
 		    @if s[223] .isOn() {
 			@pic[TT1].move {
-			    .pos v[320], v[321] .bottom
+			    .pos Temp20, v[321] .bottom
 			    .scale 100
-			    .trans v[355]
+			    .trans TT15
 			    .time 0
 			    .rgbs 100, 100, 100, 100
 			}
 			
 		    } .else bl {
-			v[355] = min(100, 100 - v[429] * 15)
+			TT15 = min(100, 100 - v[429] * 15)
 			@pic[TT1].move {
-			    .pos v[320], v[321] .bottom
+			    .pos Temp20, v[321] .bottom
 			    .scale 100
-			    .trans v[355]
+			    .trans TT15
 			    .time 0
 			    .rgbs 100, 100, 100, 100
 			}
@@ -461,37 +461,37 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		    
 		} .else bl {
 		    @if s[223] .isOn() {
-			v[355] = 60
+			TT15 = 60
 			@if v[944] == 1 {
-			    v[355] -= 35
+			    TT15 -= 35
 			    
 			}
 			@pic[TT1].move {
-			    .pos v[320], v[321] .bottom
+			    .pos Temp20, v[321] .bottom
 			    .scale 100
-			    .trans v[355]
+			    .trans TT15
 			    .time 0
 			    .rgbs 100, 100, 100, 100
 			}
 			
 		    } .else bl {
-			v[355] = 100
+			TT15 = 100
 			
 		    }
 		    
 		}
 		TT1 += 10
 		v[321] -= 50
-		v[360] += 1
+		TT20 += 1
 		@pic[TT1].show {
 		    "ui\cohor_bannernum_latin"
-		    .pos v[320], v[321] .bottom
+		    .pos Temp20, v[321] .bottom
 		    .scrollWithMap
 		    .chromakey 1
 		    .scale 100
-		    .trans v[355]
+		    .trans TT15
 		    .rgbs 100, 100, 100, 100
-		    .grid 1, 10 .cell v[360]
+		    .grid 1, 10 .cell TT20
 		    .mapLayer 8
 		    .eraseWhenTransfer
 		    .affectedByFlash
@@ -500,7 +500,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		
 	    } .else bl {
 		@pic[TT1].move {
-		    .pos v[320], v[321] .bottom
+		    .pos Temp20, v[321] .bottom
 		    .scale 100
 		    .trans 100
 		    .time 0
@@ -508,7 +508,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		}
 		TT1 += 10
 		@pic[TT1].move {
-		    .pos v[320], v[321] .bottom
+		    .pos Temp20, v[321] .bottom
 		    .scale 100
 		    .trans 100
 		    .time 0
@@ -530,38 +530,38 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 
 	@comment moduletitle
 	@loop 10 .dst TT2 {
-		v[360] = TT2
-		v[351] = LEGV_Selected_Cohort_Number - 1
+		TT20 = TT2
+		TT11 = LEGV_Selected_Cohort_Number - 1
 		TT1 = 10 
 		TT1 += v[1118] + TT2
-		v[350] = TT2
+		TT10 = TT2
 		v[202] = 40 * TT2 
 		v[202] += v[4524]
 		@if v[v[202]] >= 1 {
 			//@comment "#"
 			v[302..304] = 0
 			CohortArrayPtr = v[4530] + TT2 * 20
-			v[313] = CohortArrayPtr + 7
-			v[1301].copy v[v[313]], 2
-			v[320] = CohortArrayPtr + 9
-			v[1301].copy v[v[320]], 2
-			v[314] = 0
+			Temp13 = CohortArrayPtr + 7
+			v[1301].copy v[Temp13], 2
+			Temp20 = CohortArrayPtr + 9
+			v[1301].copy v[Temp20], 2
+			Temp14 = 0
 			@while v[v[202]] != 0 {
-				v[301] = v[v[202]] * 300 
-				v[301] += v[1005] - 300
+				Temp1 = v[v[202]] * 300 
+				Temp1 += v[1005] - 300
 				//@comment "Have max hp?"
-				@if `v[v[301] + 105] >= 1 {
-					v[302] += 1
+				@if `v[Temp1 + 105] >= 1 {
+					Temp2 += 1
 					//@comment "Get current HP"
-					v[303] += v[v[301] + 105]
-					v[304] += v[v[301] + 1] > 0 ? v[v[301] + 106] : 0
-					@if `v[v[301] + 260] < 3 {
-						@if `v[v[301] + 1] >= 1 {
-							v[314] += 1
-							v[316] = v[301] + 26
-							v[v[313]] .add v[v[316]], 2
-							v[316] = v[301] + 7
-							v[v[320]] .add v[v[316]], 2
+					Temp3 += v[Temp1 + 105]
+					Temp4 += v[Temp1 + 1] > 0 ? v[Temp1 + 106] : 0
+					@if `v[Temp1 + 260] < 3 {
+						@if `v[Temp1 + 1] >= 1 {
+							Temp14 += 1
+							Temp16 = Temp1 + 26
+							v[Temp13] .add v[Temp16], 2
+							Temp16 = Temp1 + 7
+							v[Temp20] .add v[Temp16], 2
 							
 						}
 						
@@ -573,16 +573,16 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 			}
 			
 			//@comment "Check if the resistered units destroyed"
-			@if v[304] == 0 {
+			@if Temp4 == 0 {
 				//@comment "Completely wiped out"
 				@pic[TT1].show {
 					"ui\HP_bar_side_0" .repl 1 TT2
-					.pos v[1119], v[343] .right
+					.pos v[1119], TT3 .right
 					.chromakey 1
 					.scale 100
 					.trans 100
 					.rgbs 100, 100, 100, 100
-					.grid 1, 20 .cell v[306]
+					.grid 1, 20 .cell Temp6
 					.mapLayer 8
 					.eraseWhenTransfer
 					.affectedByFlash
@@ -590,15 +590,15 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 				}
 				TT1 -= 10
 				@pic[TT1].move {
-					.pos v[305], v[306] .center
+					.pos Temp5, Temp6 .center
 					.scale 100
 					.trans 100
 					.time 0
 					.rgbs 100, 100, 100, 100
 				}
-				v[346] = v[360] + v[4809]
-				@pic[v[346]].move {
-					.pos v[305], v[306] .center
+				TT6 = TT20 + v[4809]
+				@pic[TT6].move {
+					.pos Temp5, Temp6 .center
 					.scale 100
 					.trans 100
 					.time 0
@@ -608,78 +608,78 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 				
 			} .else bl {
 				//@comment "損耗率計算"
-				v[306] = v[304] * 100
+				Temp6 = Temp4 * 100
 				//@comment "#0除算防止"
-				v[305] = max(v[303], 1)
-				v[306] /= v[305]
-				v[307] = v[306]
-				v[306] = max(v[306] / 5, 1)
+				Temp5 = max(Temp3, 1)
+				Temp6 /= Temp5
+				Temp7 = Temp6
+				Temp6 = max(Temp6 / 5, 1)
 				//@comment ""
-				v[343] = 24 * v[350] + v[1120]
+				TT3 = 24 * TT10 + v[1120]
 				TT2 += 1
 				TT2 %= 10
-				v[351] = 12
-				v[355] = v[350] == v[351] ? 0 : transparency
+				TT11 = 12
+				TT15 = TT10 == TT11 ? 0 : transparency
 				@pic[TT1].show {
 					"ui\HP_bar_side_0" .repl 1 TT2
-					.pos v[1119], v[343] .right
+					.pos v[1119], TT3 .right
 					.chromakey 1
 					.scale 100
-					.trans v[355]
+					.trans TT15
 					.rgbs 100, 100, 100, 100
-					.grid 1, 20 .cell v[306]
+					.grid 1, 20 .cell Temp6
 					.mapLayer 8
 					.eraseWhenTransfer
 					.affectedByFlash
 					.affectedByShake
 				}
 				TT1 -= 10
-				v[305] = v[1119] - 10
-				v[306] = v[343] 
-				v[306] += 20 - 32
+				Temp5 = v[1119] - 10
+				Temp6 = TT3 
+				Temp6 += 20 - 32
 				@pic[TT1].move {
-					.pos v[305], v[306] .center
+					.pos Temp5, Temp6 .center
 					.scale 100
-					.trans v[355]
+					.trans TT15
 					.time 0
 					.rgbs 100, 100, 100, 100
 				}
 				//@comment ""
-				@if v[314] > 0 {
+				@if Temp14 > 0 {
 					v[356..359] = 100
-					v[315] = v[314]
-					v[v[313]] .div v[314], 2
-					v[344] = muldiv(v[v[313]], 100, v[430])
-					v[345] = muldiv(v[v[313] + 1], 100, v[431])
-					v[344] = v[1282] + v[344]
-					v[345] = v[1283] + v[345]
-					v[346] = v[360] + v[4809]
-					TT2 = v[360] + 1
+					Temp15 = Temp14
+					v[Temp13] .div Temp14, 2
+					TT4 = muldiv(v[Temp13], 100, v[430])
+					TT5 = muldiv(v[Temp13 + 1], 100, v[431])
+					TT4 = v[1282] + TT4
+					TT5 = v[1283] + TT5
+					TT6 = TT20 + v[4809]
+					TT2 = TT20 + 1
 					@if s[296] .isOn() {
 						v[356..359] = 0
-						v[357] = 160
-						v[355] += 5
+						TT17 = 160
+						TT15 += 5
 						
 					} .else bl {
 						v[356..359] = 100
 						
 					}
-					@pic[v[346]].show {
+					@pic[TT6].show {
 						"ui\latin_num"
-						.pos v[344], v[345] .center
+						.pos TT4, TT5 .center
 						.chromakey 1
 						.scale 100
-						.trans v[355]
-						.rgbs v[356], v[357], v[358], v[359]
+						.trans TT15
+						.rgbs TT16, TT17, TT18, TT19
 						.grid 1, 10 .cell TT2
 						.mapLayer 10
 						.eraseWhenTransfer
 					}
 					
 				} .else bl {
-					v[346] = v[360] + v[4809]
-					@pic[v[346]].move {
-						.pos v[305], v[306] .center
+					TT6 = TT20 + v[4809]
+					@pic[TT6].move {
+						.pos Temp5, Temp6 .center
 						.scale 100
 						.trans 100
 						.time 0
@@ -696,12 +696,12 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 			//@comment "Not Registered"
 			@pic[TT1].show {
 				"ui\HP_bar_side_0" .repl 1 TT2
-				.pos v[1119], v[343] .right
+				.pos v[1119], TT3 .right
 				.chromakey 1
 				.scale 100
 				.trans 100
 				.rgbs 100, 100, 100, 100
-				.grid 1, 20 .cell v[306]
+				.grid 1, 20 .cell Temp6
 				.mapLayer 8
 				.eraseWhenTransfer
 				.affectedByFlash
@@ -709,15 +709,15 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 			}
 			TT1 -= 10
 			@pic[TT1].move {
-				.pos v[305], v[306] .center
+				.pos Temp5, Temp6 .center
 				.scale 100
 				.trans 100
 				.time 0
 				.rgbs 100, 100, 100, 100
 			}
-			v[346] = v[360] + v[4809]
-			@pic[v[346]].move {
-				.pos v[305], v[306] .center
+			TT6 = TT20 + v[4809]
+			@pic[TT6].move {
+				.pos Temp5, Temp6 .center
 				.scale 100
 				.trans 100
 				.time 0
@@ -732,10 +732,10 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 	v[45] %= v[45] == 10 ? 20 : 10
 	TT1 = v[1118] 
 	TT1 += (v[45] - 1)
-	v[305] = v[1119] - 10
-	v[343] = 24 * (v[45] - 1) + v[1120]
-	v[306] = v[343] + 20 
-	v[306] -= 32
+	Temp5 = v[1119] - 10
+	TT3 = 24 * (v[45] - 1) + v[1120]
+	Temp6 = TT3 + 20 
+	Temp6 -= 32
 	LEGV_Selected_Cohort_Number = v[45]
 	v[45] -= 1
 	v[45] *= 40
@@ -745,7 +745,7 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 	s[27].off
 	@if v[v[45]] > 0 {
 		@pic[TT1].move {
-			.pos v[305], v[306] .center
+			.pos Temp5, Temp6 .center
 			.scale 100
 			.trans 0
 			.time 0
@@ -753,7 +753,7 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 		}
 		TT1 += 10
 		@pic[TT1].move {
-			.pos v[1119], v[343] .right
+			.pos v[1119], TT3 .right
 			.scale 100
 			.trans 0
 			.time 0
@@ -763,15 +763,15 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 		v[472] = divmul(70, 100, v[2216])
 		@se.play "ui\clock01" .opt v[472], 100, 50
 		//@comment "#########################"
-		v[351] = v[45]
+		TT11 = v[45]
 		//@comment "############################################敵とCohort指定されてないやつが間に入ってたら整理############################################"
-		@loop 40 .dst v[350] {
-			v[352] = v[351] + v[350]
-			@if v[v[352]] > 0 {
+		@loop 40 .dst TT10 {
+			TT12 = TT11 + TT10
+			@if v[TT12] > 0 {
 				//@comment "Found not assigned unit"
-				v[302] = v[v[352]] * v[1117] + 4700
-				@if `v[v[302] + 100] != 0 || v[v[302] + 35] != LEGV_Selected_Cohort_Number {
-					v[v[352]] = 0
+				Temp2 = v[TT12] * v[1117] + 4700
+				@if `v[Temp2 + 100] != 0 || v[Temp2 + 35] != LEGV_Selected_Cohort_Number {
+					v[TT12] = 0
 					
 				}
 				
@@ -782,17 +782,17 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 		v[v[45]].sortDescending 40
 		v[v[45]].copy v[101], 40
 		@comment "マーカーの色調整"
-		@loop v[1004] .dst v[301] {
-			v[302] = v[301] * v[1117]
-			v[302] += 5001
-			@if v[v[302]] > 0 {
-				CohortArrayPtr = v[302] + 23
-				v[320] = v[302] + 99
-				@if v[v[320]] == 0 {
+		@loop v[1004] .dst Temp1 {
+			Temp2 = Temp1 * v[1117]
+			Temp2 += 5001
+			@if v[Temp2] > 0 {
+				CohortArrayPtr = Temp2 + 23
+				Temp20 = Temp2 + 99
+				@if v[Temp20] == 0 {
 					v[CohortArrayPtr] = 1
 					
 				}
-				@if v[v[320]] == 1 {
+				@if v[Temp20] == 1 {
 					v[CohortArrayPtr] = 2
 					
 				}
@@ -820,10 +820,10 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 				
 			}
 			@comment "配列ゲット"
-			v[301] = v[v[202]] * 300 
-			v[301] += 4700
+			Temp1 = v[v[202]] * 300 
+			Temp1 += 4700
 			@comment "選択した集団の最大ＨＰを取得"
-			v[327] = v[301] + 105
+			v[327] = Temp1 + 105
 			v[98] += v[v[327]]
 			v[327] -= 81
 			v[v[327]] = 0
@@ -831,7 +831,7 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 			@comment "違う種類混じってるか見る"
 			v[330] = v[101] * 300 
 			v[330] += 4801
-			v[329] = v[301] + 101
+			v[329] = Temp1 + 101
 			@comment "民間人？"
 			v[701] = 1 + v[329]
 			v[375] = v[v[701]] != 9 ? 0 : v[375]
@@ -840,7 +840,7 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 				
 			}
 			@comment "ObjIDも見る"
-			@if `v[v[301] + 1] == 11 {
+			@if `v[Temp1 + 1] == 11 {
 				@comment "STATICだったら"
 				s[27].on
 				v[100] = v[v[202]]
@@ -867,7 +867,7 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 		@call .cev 1924
 		TT1 = 2
 		v[601] = 1
-		v[11] = v[45]
+		var1 = v[45]
 		@pic[v[1155]].strpic {
 		    t[20442]
 		    .pos TT1, v[1126] .bottomLeft
@@ -875,7 +875,7 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 		    .scale 100
 		    .trans 30
 		    .rgbs 100, 100, 100, 100
-		    .font t[530], v[4511]
+		    .font Font_UI, Font_UI_size
 		    .spacing 0, 4
 		    .skin "" .nobg .noframe .noPadding
 		    .mapLayer 8
@@ -918,10 +918,10 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 	v[45] += v[1077]
 	v[101].copy v[v[45]], 40
 	TT1 = 100
-	v[345] = LEGV_Selected_Cohort_Number - 1
-	v[302] = v[1118] + v[345]
-	v[305] = v[1119] - 10
-	v[306] = 24 * v[345] + v[1120] - 12
+	TT5 = LEGV_Selected_Cohort_Number - 1
+	Temp2 = v[1118] + TT5
+	Temp5 = v[1119] - 10
+	Temp6 = 24 * TT5 + v[1120] - 12
 	v[335] = 100
 	@loop 40 {
 	    v[335] += 1
@@ -930,9 +930,9 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 		@if v[TT1] <= 0 {
 		    TT2 = v[101] * 300 + 4702
 		    CohortArrayPtr = v[TT2]
-		    @pic[v[302]].show {
+		    @pic[Temp2].show {
 			"minions\spr_minions_1" .repl 1 Temp10
-			.pos v[305], v[306] .center
+			.pos Temp5, Temp6 .center
 			.chromakey 1
 			.scale 100
 			.trans 0
@@ -959,9 +959,9 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 		v[4101..4110] = v[463]
 		v[4107] = v[726] & 512 ? 7 : 5
 		v[463] = v[4107]
-		@pic[v[302]].show {
+		@pic[Temp2].show {
 		    "minions\spr_minions_1" .repl 1 Temp10
-		    .pos v[305], v[306] .center
+		    .pos Temp5, Temp6 .center
 		    .chromakey 1
 		    .scale 100
 		    .trans 0
@@ -979,9 +979,9 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 		@comment "HERO Found"
 		TT2 += 100
 		Temp10 = v[TT2]
-		@pic[v[302]].show {
+		@pic[Temp2].show {
 		    "heroes\spr_heroes_1" .repl 1 Temp10
-		    .pos v[305], v[306] .center
+		    .pos Temp5, Temp6 .center
 		    .chromakey 1
 		    .scale 100
 		    .trans 0
@@ -1000,11 +1000,11 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 		@if s[1] .isOff() {
 		    @comment "Count Picture Layer Array"
 		    v[899] = v[v[TT1] * 300 + 4999]
-		    v[345] = v[899]
+		    TT5 = v[899]
 		    @comment "#get damaged variation"
 		    //v[604] = v[v[TT1] * 300 + 4704]
 		    //v[0] = v[343..352] = [v[604] % 10, v[604] / 10 % 10, v[604] / 100 % 10]
-		    @pic[v[302]].strpic {
+		    @pic[Temp2].strpic {
 			""
 			.pos -166, -166 .center
 			.size 64, 64                .chromakey 1
@@ -1032,21 +1032,21 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 		    v[4124] = v[726] & 134217728 ? 2 : 1
 		    v[4121] = [1, 2][(v[725] & 1)]
 
-		    v[350] = (v[TT1]-1)*10
-		    v[350] = Const_str_agent_pictures_strings_start+v[350]
+		    TT10 = (v[TT1]-1)*10
+		    TT10 = Const_str_agent_pictures_strings_start+TT10
 		    @while v[899] >= 1 {
 			TT1 = v[899] % 10
-			v[286] = TT1 + v[350]
+			Ptr6 = TT1 + TT10
 			v[463] = v[4100 + TT1]
 			v[464] = v[4120 + TT1]
-			v[891] = v[314] + 291
+			v[891] = Temp14 + 291
 			TT1 = (TT1 - 1) % 6
-			//v[320] = v[(v[v[335]] - 1) * 6 + TT1 + v[1185]]
-			@comment "Strings = t[v[286]]"
-			v[11] = v[302]
+			//Temp20 = v[(v[v[335]] - 1) * 6 + TT1 + v[1185]]
+			@comment "Strings = t[Ptr6]"
+			var1 = Temp2
 			v[12..13] = 32
 			@pic[2599].show {
-			    t[v[286]] 
+			    t[Ptr6] 
 			    .pos -111, -111 .center
 			    .chromakey 1
 			    .scale 100
@@ -1058,21 +1058,21 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 			    .affectedByFlash
 			    .affectedByShake
 			}
-			@pic[2599].getInfo .cewh .currentRect v[360], v[360], v[355], v[356]
-			@pic[2599].getInfo .pixel 0, 0, v[355], v[356] .dst 550445
-			v[18] = 550445
-			@loop v[356] .dst v[15] {
-			    @loop v[355] .dst v[16] {
-				v[17] = v[v[18]]
-				@if `(v[17] & 0xFF000000) == 0xFF000000 {
-				    v[358] = v[12] + v[16]
-				    v[359] = v[13] + v[15]
-				    v[358] -= v[355] / 2
-				    v[359] -= v[356] / 2
-				    @pic[v[11]].setPixel .xywh v[358], v[359], 1, 1 .src v[17]
+			@pic[2599].getInfo .cewh .currentRect TT20, TT20, TT15, TT16
+			@pic[2599].getInfo .pixel 0, 0, TT15, TT16 .dst 550445
+			var8 = 550445
+			@loop TT16 .dst var5 {
+			    @loop TT15 .dst var6 {
+				var7 = v[var8]
+				@if `(var7 & 0xFF000000) == 0xFF000000 {
+				    TT18 = var2 + var6
+				    TT19 = var3 + var5
+				    TT18 -= TT15 / 2
+				    TT19 -= TT16 / 2
+				    @pic[var1].setPixel .xywh TT18, TT19, 1, 1 .src var7
 				    
 				}
-				v[18] += 1
+				var8 += 1
 				
 			    }
 			    
@@ -1087,7 +1087,7 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 		}
 		@if s[1] .isOn() {
 		    @if .testPlay() {
-			@img.save .pic v[11] .static .dst "user\debug"
+			@img.save .pic var1 .static .dst "user\debug"
 			
 		    }
 		    
@@ -1105,9 +1105,9 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 		v[4101..4110] = v[463]
 		v[463] = v[4107]
 		v[463] = v[726] & 512 ? 7 : 5
-		@pic[v[302]].show {
+		@pic[Temp2].show {
 		    "minions\spr_minions_1" .repl 1 Temp10
-		    .pos v[305], v[306] .center
+		    .pos Temp5, Temp6 .center
 		    .chromakey 1
 		    .scale 100
 		    .trans 0
@@ -1136,9 +1136,9 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 		v[4101..4110] = v[463]
 		v[463] = v[4107]
 		v[463] = v[726] & 512 ? 7 : 5
-		@pic[v[302]].show {
-		    "minions\spr_minions_1" .repl 1 Temp10
-		    .pos v[305], v[306] .center
+		@pic[Temp2].show {
+		    PATH_spr_minion .repl 1 Temp10
+		    .pos Temp5, Temp6 .center
 		    .chromakey 1
 		    .scale 100
 		    .trans 0
@@ -1182,11 +1182,11 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 	generate cohort banner"
 	TT1 = v[4513] + (LEGV_Selected_Cohort_Number - 1)
 	TT2 = 30 * (LEGV_Selected_Cohort_Number - 1) + 120
-	v[343] = 120
+	TT3 = 120
 	@if v[2403] == 1 {
 	    @pic[TT1].show {
 		"ui/cohortflagbase1"
-		.pos TT2, v[343] .center
+		.pos TT2, TT3 .center
 		.scrollWithMap
 		.chromakey 1
 		.scale 100
@@ -1201,7 +1201,7 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 	} .else bl {
 	    @pic[TT1].show {
 		"ui/cohortflagbase0"
-		.pos TT2, v[343] .center
+		.pos TT2, TT3 .center
 		.scrollWithMap
 		.chromakey 1
 		.scale 100
@@ -1214,27 +1214,27 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 	    }
 	    
 	}
-	@pic[v[302]].getInfo .cewh .currentRect v[360], v[360], v[355], v[356]
-	@pic[v[302]].getInfo .pixel 0, 0, v[355], v[356] .dst 550445
-	v[18] = 550445
-	v[12] = 15
-	v[13] = 29
-	@loop v[356] .dst v[15] {
-	    @if v[15] >= 46 {
+	@pic[Temp2].getInfo .cewh .currentRect TT20, TT20, TT15, TT16
+	@pic[Temp2].getInfo .pixel 0, 0, TT15, TT16 .dst 550445
+	var8 = 550445
+	var2 = 15
+	var3 = 29
+	@loop TT16 .dst var5 {
+	    @if var5 >= 46 {
 		@break
 		
 	    }
-	    @loop v[355] .dst v[16] {
-		v[17] = v[v[18]]
-		@if `(v[17] & 0xFF000000) == 0xFF000000 {
-		    v[358] = v[12] + v[16]
-		    v[359] = v[13] + v[15]
-		    v[358] -= v[355] / 2
-		    v[359] -= v[356] / 2
-		    @pic[TT1].setPixel .xywh v[358], v[359], 1, 1 .src v[17]
+	    @loop TT15 .dst var6 {
+		var7 = v[var8]
+		@if `(var7 & 0xFF000000) == 0xFF000000 {
+		    TT18 = var2 + var6
+		    TT19 = var3 + var5
+		    TT18 -= TT15 / 2
+		    TT19 -= TT16 / 2
+		    @pic[TT1].setPixel .xywh TT18, TT19, 1, 1 .src var7
 		    
 		}
-		v[18] += 1
+		var8 += 1
 		
 	    }
 	    
@@ -1243,3 +1243,27 @@ cev .id(1905) ,.name("CohortFunc:Register Units"), {
 
 
 }
+
+// LEGACY cev
+cev .id(1906), .name("set player cohort"), {
+	Ptr_PreRegisterPlayerCohort += 1
+	v[Ptr_PreRegisterPlayerCohort] = reg1
+}
+
+__fn set_agent_to_player_cohort $agentid $cohort {
+
+}
+
+/* this one might worth to salvage
+cev .id(1924), .name("cev1924"), {
+	v[341] = v[1136] + v[1155]
+	@pic[v[341]].erase
+	@loop v[1136] .dst v[342] {
+			v[343] = v[341] - 1
+			@pic[v[343]].setId .move v[341], 1 .ignoreError
+			v[341] -= 1
+			
+	}
+
+}
+*/

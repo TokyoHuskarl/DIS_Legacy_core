@@ -1,3 +1,10 @@
+__fn macro_scalescript_split_args $targetstr $exportstradd $velemcount {
+	$addincrement = $exportstradd + 1
+	t[__id($targetstr)] .split "(", t[$exportstradd], $velemcount
+	t[$addincrement] .split ",", t[$addincrement], $velemcount
+}
+
+
 /*
 
    @pic.strpic

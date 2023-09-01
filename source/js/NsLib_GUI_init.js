@@ -18,6 +18,7 @@ var gets = gets || function(){return true};
 function deblog(text) {
 	if (DEBUG == 1) {
 		console.log(text);
+		Cmd.game.log_debug(text);
 	}
 }
 
@@ -67,6 +68,13 @@ const adr_DISreg1 = 21;
 
 const adr_DISstr1 = 501;
 
+
+// macros
+function parse_DISid(line,myArray) {
+	const [key, value] = line.split('=');
+	myArray[key] = parseInt(value,10);
+};
+
 // ------------------------------------------------
 // DIS objects
 // ------------------------------------------------
@@ -78,17 +86,13 @@ const trp = {}; // troop ID table
 DIS = { // DIS fundamental components
 	initID: function(){ // this must be called every after DIS game id is loaded on the game
 
-		// macro (man there must be more better way to make macro but idk js very well)
-		let parse_DISid = function(line) {
-			const [key, value] = line.split('=');
-			trp[key] = parseInt(value,10);
-		};
+
 
 		// starts from troop ID
 		let TroopIDstr = gett(801); // get scripts/const_troops.txt
 		let lines = TroopIDstr.trim().split('\n');
 		lines.forEach(line => {
-			parse_DISid(line)
+			parse_DISid(line,trp);
 		});
 
 		// now you can use troopID by writing like this: trp["TRP_sushi_kensei"] 
@@ -335,7 +339,7 @@ class RTSmission {
 		return Trig; // return RTStrigger
 	}
 
-	createSimpleTrigger_Timer = function(h,m,s) { // if the set time passed, then execute effect
+	createSimpleTrigger_Timer = function(h,m,s) { // if the set time passed, then call effect()
 		let Trig = new RTStrigger();
 		let goalFrame = DIS.macro.timeToFrame(h,m,s)
 		Trig.condition = function(){
@@ -343,6 +347,16 @@ class RTSmission {
 		};
 		return Trig;
 	}
+
+	createSimpleTrigger_FrameTimer = function(f) { // if the set frame has passed since the trigger set, then call effect()
+		let Trig = new RTStrigger();
+		Trig.condition = function(){
+			this.timer++;
+			return (this.timer >= f);
+		};
+		return Trig;
+	}
+
 
 	setMapData = function(mapdir){ // {string}
 		this.essential.mapDataDirectory = mapdir;
@@ -357,6 +371,20 @@ class RTSmission {
 		if (id == 0 && SINGLEPLAY) { // DIS LEGACY - single player only.
 			this.essential.players[id].isHuman = true; // then player0 is always considered human.
 		};
+	};
+
+
+	// save and load will destroy this function's objective.
+	setTimeout = function(func,delayframe){
+		// make an instant trigger whose effect is arg function
+		let Trig = new RTStrigger();
+		Trig.isLoop = false;
+		Trig.condition = function(){
+			this.timer++;
+			if (this.timer >= delayframe){this.timer = 0; return true;}else{return false;};
+		};
+		Trig.effect = func;
+		this.setTrigger(Trig)
 	};
 
 };
@@ -453,8 +481,10 @@ let RTS = {
 	isRTSmode: false,
 	mission: new RTSmission(),
 	map: new RTSmap(),
-	lc: {}, // local space - RTS.lc.your_var = whatyouwanttosaveinvar;
-
+	Mtrig: {}, // mission triggers
+	Mvar: {}, // mission vars
+	Mbool: {}, // mission switch
+	Mstr: {}, // mission strings
 
 	clearMission: function(){
 		this.mission = new RTSmission();
@@ -533,9 +563,21 @@ const CTYP_MAP = 1,
 	CTYP_END = 999;
 
 
+// DIS Command string container <- module_Game_scripts_functions.tpc
+const LINKSTR_map = 771,
+	LINKSTR_snd = 772,
+	LINKSTR_mission = 773,
+	LINKSTR_game = 774,
+	LINKSTR_agent = 775,
+	LINKSTR_player = 776,
+	LINKSTR_group = 777,
+	LINKSTR_END = 778; // footer
+
+
 // -> module_Game_scripts_general.tpc
 const adr_RMbool_RUN_CMD = 132,
 	adr_RMStr_CmdOrder = 795;
+
 
 // DIS Command Object
 // (Almost) all command functions in objects in the Cmd module will be executed on RM interpreter, not on js process.
@@ -546,21 +588,40 @@ var Cmd = {
 		this.runFlags.initAll();
 	},
 
+	CmCon: {}, // command name associative array
+
 
 	Qset: function(typ,name,ord){ // quick queue set
-		Cmd.CmdQueue += (typ + "," + name + "," + ord + ";");
+		let cmdid = Cmd.CmCon[name];
+		Cmd.CmdQueue += (typ + "," + cmdid + "," + ord + ";");
 	},
 	
 	runFlags: {
 		initAll: function() {
 			SpawnDetect = false;
 			RMwaitDetect = false;
+			this.group.cgrp = [];
 		},
 
 		SpawnDetect: false, // init this flag
 		RMwaitDetect: false, //
 	},
 
+	// Cmd.init()
+	// make up associative array for commands
+	init: function() {
+		// start from LINKSTR_map 
+
+		for (let i = LINKSTR_map;i < LINKSTR_END;i++){
+			let container = gett(i); // get scripts/const_troops.txt
+			container = container.replace(/<.*?>/g, "");
+			let lines = container.trim().split(";");
+			lines.forEach(line => {
+					parse_DISid(line,this.CmCon);
+			});
+		}
+
+	},
 
 	// Cmd.run()
 	// give signal to run DIS commands 
@@ -608,7 +669,7 @@ var Cmd = {
 		},
 
 		log_debug: function(txt){
-			Cmd.Qset(this.CmdType,"msg",`\\C[5]DEBUG:${txt}`);
+			Cmd.Qset(this.CmdType,"msg",`\\C[5]JS DEBUG:${txt}`);
 		},	
 		
 		// turnSon:1,
@@ -653,17 +714,19 @@ var Cmd = {
 		spawnStatic: function(staticID,tilepos,team,cohort){
 			cohort = cohort || 0; // ok?
 			Cmd.Qset(this.CmdType,"spnSt",`${staticID},${tilepos[0]},${tilepos[1]},${team},${cohort}`);
-			return {address: 4545, uniqueID: 114514}; // kari
+			return DIS.agent.searchEmptySpace();
 			
 		},
 
-		spawnPalisade: function(team,tileposbeg,tileposend){
-			Cmd.Qset(this.CmdType,"spnPali",`${team},${tileposbeg[0]},${tileposbeg[1]}`);
-		}, // you need to wait 1f
+		spawnPalisade: function(tileposbeg,tileposend,team){
+			Cmd.Qset(this.CmdType,"spawnPalisade",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
+			return DIS.agent.searchEmptySpace();
+		},
 
-		spawnWall: function(team,tileposbeg,tileposend){
-			Cmd.Qset(this.CmdType,"spnWall",`${team},${tileposbeg[0]},${tileposbeg[1]}`);
-		}, // you need to wait 1f
+		spawnWall: function(tileposbeg,tileposend,team){
+			Cmd.Qset(this.CmdType,"spawnWall",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
+			return DIS.agent.searchEmptySpace();
+		},
 
 	},
 
@@ -684,9 +747,14 @@ var Cmd = {
 	// Cmd.mission 
 	// -------------
 	mission: {
-		CmdType: CTYP_MISSION, 
+		CmdType: CTYP_MISSION,
 		
-		
+		victory:  function(){
+			Cmd.Qset(this.CmdType,"endGame",`2`);
+		},
+		defeat:  function(){
+			Cmd.Qset(this.CmdType,"endGame",`1`);
+		},
 		endMission: function(consequence) { // 1 = def, 2 = vic
 			Cmd.Qset(this.CmdType,"endGame",`${consequence}`);
 		},
@@ -715,6 +783,7 @@ var Cmd = {
 	// -------------
 	
 	player: {
+
 		CmdType: CTYP_PLAYER,
 
 		revealMap: function(playerid){ 
@@ -730,6 +799,14 @@ var Cmd = {
 			Cmd.Qset(this.CmdType,"tgPaus",`${sw}`);
 		},
 
+		giveResource: function(playerid,resource,amount){ // not done
+			Cmd.Qset(this.CmdType,"giveRs",`${playerid},${resource},${amount}`);
+		},
+
+		giveTech: function(playerid,tech){ // not done
+			Cmd.Qset(this.CmdType,"giveTech",`${playerid},${tech[0]},${tech[1]}`);
+		},
+
 	},
 
 
@@ -738,7 +815,24 @@ var Cmd = {
 	// Cmd.group
 	// -------------
 
-	group: { // ?
+	group: { 
+		CmdType: CTYP_GROUP,
+		cgrp: [],
+
+		setCgrp: function(grp){
+			let agentlist = "";
+			for (let elm in grp) {
+				agentlist += elm + "|";
+			};
+			Cmd.Qset(this.CmdType,"setCgrp",agentlist);
+			this.cgrp = grp;
+		},
+
+		checkCurrentGroup: function(grp){
+			if(grp != this.cgrp){this.setCgrp(grp);};
+		},
+
+		
 
 	},
 
@@ -802,7 +896,7 @@ let NsGUImgr = {
 		this.mouseState.y = getv(RM_MousePointer.y);
 		this.mouseState.click = getv(RM_MousePointer.click);
 		this.mouseState.Ldrag = getv(RM_MousePointer.click) == 1005 ? this.mouseState.Ldrag + 1 : 0; // if == 1, it's clicked.
-
+		
 	},
 
 
@@ -1067,5 +1161,6 @@ class Radiobutton extends UI_object {
 // init load
 {
 	DIS.initID();
+	Cmd.init();
 }
 

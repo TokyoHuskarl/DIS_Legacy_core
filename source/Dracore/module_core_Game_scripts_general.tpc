@@ -9,8 +9,7 @@
 
 
 cev[2041], .name("DIS command interpriter"), .parallel , .cond(__id(BOOL_CMD_RUN)), {
-	
-	
+	BOOL_CMD_CALLING.on
 	// split ORDER string given from js UI manager object 
 	Str_CmdQueue.split(";", Str_Deploy_head, guiVar7)
 	guiVar8 = __id(Str_Deploy_head)
@@ -27,6 +26,7 @@ cev[2041], .name("DIS command interpriter"), .parallel , .cond(__id(BOOL_CMD_RUN
 	}
 	Str_CmdQueue.asg "" // init 
 	BOOL_CMD_RUN.off
+	BOOL_CMD_CALLING.off
 }
 
 

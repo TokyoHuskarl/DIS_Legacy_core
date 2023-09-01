@@ -6,6 +6,7 @@ __if __defined(LOAD_HEADER_SCRIPT) == false {
 defs BOOL_CMD_RUN = 132
 deft Str_CmdQueue = 795
 
+defs BOOL_CMD_CALLING = 261 // this flag is for checking whether a building is built by worker or other script
 
 __if LOAD_HEADER_AGENT != 1{
 #include "./../headers/header_agent.tpc"

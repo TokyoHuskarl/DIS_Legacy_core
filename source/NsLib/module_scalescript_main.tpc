@@ -4,11 +4,6 @@
 
 def SS_maintpc_loaded = 1 
 
-__fn macro_scalescript_split_args $targetstr $exportstradd $velemcount {
-	$addincrement = $exportstradd + 1
-	t[__id($targetstr)] .split "(", t[$exportstradd], $velemcount
-	t[$addincrement] .split ",", t[$addincrement], $velemcount
-}
 
 //USER MACROS
 def SS_func_popup_USER = 0

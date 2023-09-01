@@ -3,15 +3,6 @@
 __if LOAD_HEADER_AGENT != 1 {
 // you need to clean up mess of header files tbh
 
-#include "./../Dracore/module_core_RTS_agent_misc_functions.tpc"
-//Agent Generate Functions
-#include "./../Dracore/module_core_RTS_agent_generate_basic.tpc"
-
-#include "./../Dracore/module_core_Game_items_functions.tpc"
-
-
-
-
 
 defv ptr_SpawnAgentMainSpace_Head = 201
 defv gl_lastSpawnedAgent = 436
@@ -22,7 +13,28 @@ defv {
 	spawnSet_TroopID = 254
 	spawnSet_ParentAgent = 255
 	spawnSet_Cohort = 258
+	spawnSet_Direction = 280
+	spawnSet_Stance = 277
+
+
 }
+defs{
+	bool_SpawnSystemLegacy = 152
+	bool_GenOnehandedWeapon = 154
+	bool_GenHeadCovered = 155
+	bool_Gen_CohortSet = 156
+	bool_Gen_NoListAssigningFlag = 157
+	bool_Gen_DelHead = 158
+	bool_Gen_ArmArmored = 159
+	bool_Gen_bigheadflag = 160
+}
+
+#include "./../Dracore/module_core_RTS_agent_misc_functions.tpc"
+//Agent Generate Functions
+#include "./../Dracore/module_core_RTS_agent_generate_basic.tpc"
+
+#include "./../Dracore/module_core_Game_items_functions.tpc"
+
 
 
 

@@ -1,4 +1,5 @@
-// actual functions for scale script commands of DIS:Legacy here - it's bit weird since header/header_rmsh_scalescript.tpc refers this meanwhile this is in /module/ Directory
+// actual functions for scale script commands of DIS:Legacy here 
+// it's bit weird since header/header_rmsh_scalescript.tpc refers this meanwhile this is in /module/ Directory
 
 
 def {
@@ -135,7 +136,9 @@ __fn DIS_map_methods $LINKstr $md $i $given_v_or_str $flags {
 
 		// let javascript interpreter execute what is written in file
 		{NsCmd($LINKstr, $md, $i, "spnAg",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})}, // map.spawnAgent
-		{NsCmd($LINKstr, $md, $i, "spnSt",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})}, // map.spawnStatic
+		{NsCmd($LINKstr, $md, $i, "spnSt",{cmd_spawnStatic(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // map.spawnStatic
+		{NsCmd($LINKstr, $md, $i, "spawnPalisade",{cmd_spawnPalisade(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnPalisade
+		{NsCmd($LINKstr, $md, $i, "spawnWall",{cmd_spawnWall(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnWall
 		
 
 	])
@@ -158,7 +161,7 @@ __fn DIS_mission_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("msn", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "endGame",{cmd_player_prepare_endgame(0,SSargs0)})},
+		{NsCmd($LINKstr, $md, $i, "endGame",{cmd_player_prepare_endgame(0,SSargs0)})}, // victory or defeat
 
 	])
 }
@@ -203,15 +206,18 @@ __fn DIS_player_methods $LINKstr $md $i $given_v_or_str $flags {
 		{NsCmd($LINKstr, $md, $i, "tgPaus",{
 			@if SSargs0.eq "1" {s[2].on}.else bl{s[2].off}})
 		}, // togglePause
+		{NsCmd($LINKstr, $md, $i, "giveRs",{cmd_team_give_resource(SSargs0,SSargs1,SSargs2)})}, // Rs 
+		{NsCmd($LINKstr, $md, $i, "giveTech",{cmd_team_give_tech_flag(SSargs0,SSargs1,SSargs2)})}, // js incomplete 
 
 
 	])
+}
 
 __fn DIS_group_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("grp", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "??",{/*insert here*/})}, //
+		{NsCmd($LINKstr, $md, $i, "endGamefsafsa",{cmd_player_prepare_endgame(0,SSargs0)})},
 
 	])
 }
@@ -262,31 +268,30 @@ __fn cmd_play_global_music $filename $volume $tempo $balance {
 
 // spawn_Unit(var TroopID,var TileX,var TileY,var TeamID,var CohortID,bool Direction,var Stance)
 __fn cmd_spawn_agent $troop_id $TileX $TileY $TeamID $CohortID $Dir $Stance {
-	t[__id($troop_id)] .toNum v[254]
+	t[__id($troop_id)] .toNum spawnSet_TroopID
 	t[__id($TileX)] .toNum TT1
 	t[__id($TileY)] .toNum TT2
-	t[__id($TeamID)] .toNum v[251]
-	t[__id($CohortID)] .toNum v[258]
+	t[__id($TeamID)] .toNum spawnSet_Team
+	t[__id($CohortID)] .toNum spawnSet_Cohort
 	//lmao retarded
-	s[156].off
-	@if v[258] >= 1 {
-		s[156].on
+	bool_Gen_CohortSet.off
+	@if spawnSet_Cohort >= 1 {
+		bool_Gen_CohortSet.on
 	}
-	t[__id($Dir)] .toNum v[280]
-	t[__id($Stance)] .toNum v[277]
+	t[__id($Dir)] .toNum spawnSet_Direction
+	t[__id($Stance)] .toNum spawnSet_Stance
 	//@call .cev 2001
-	macro_convert_maptileXY_into_relativeXY(TT1,TT2,v[252],v[253])
-	//reg2.copy v[252], 2
+	macro_convert_maptileXY_into_relativeXY(TT1,TT2,spawnSet_x,spawnSet_y)
+	//reg2.copy spawnSet_x, 2
 
-	s[152].on
+	bool_SpawnSystemLegacy.on
 	//call fn
 	@call .cev 300
-	//func_generate_agent()
 
-	@if v[251] == 0 {
+	@if spawnSet_Team == 0 {
 		//Was?
-		@if s[156] .isOn() {
-		    @call .cev 1906
+		@if bool_Gen_CohortSet .isOn() {
+		    @call .cev 1906 // -> cohort_general.tpc
 		    
 		}
 
@@ -296,11 +301,11 @@ __fn cmd_spawn_agent $troop_id $TileX $TileY $TeamID $CohortID $Dir $Stance {
 
 // koreha hidoi
 __fn cmd_spawnStatic $staticID $x $y $team $cohort {
-	t[__id($staticID)] .toNum v[254]
-	v[254] += 800
+	t[__id($staticID)] .toNum spawnSet_TroopID
+	spawnSet_TroopID += 800
 	s[177..180].off
 	s[151].on
-	@call .cev v[254]
+	@call .cev spawnSet_TroopID
 	s[151].off
 	@if s[179] .isOn() {
 		t[__id($x)] .toNum TT11
@@ -316,7 +321,7 @@ __fn cmd_spawnStatic $staticID $x $y $team $cohort {
 		TT15 = (TT11 + TT13 + Map_LimitCoordX_min % 2) / 2
 		TT16 = (TT12 + TT14 + Map_LimitCoordY_min % 2) / 2
 		@call .cev 2001
-		reg2.copy v[252], 2
+		reg2.copy spawnSet_x, 2
 		TT13.copy TT1, 2
 		@call .cev 2001
 		// "############"
@@ -355,9 +360,9 @@ __fn cmd_spawnStatic $staticID $x $y $team $cohort {
 				reg3 -= 16
 				
 		}
-		reg2.copy v[252], 2
-		t[__id($team)] .toNum v[251]
-		t[__id($cohort)] .toNum v[258]
+		reg2.copy spawnSet_x, 2
+		t[__id($team)] .toNum spawnSet_Team
+		t[__id($cohort)] .toNum spawnSet_Cohort
 		s[177..180].off
 	
 	} .else bl {
@@ -365,17 +370,27 @@ __fn cmd_spawnStatic $staticID $x $y $team $cohort {
 		t[__id($y)] .toNum TT2
 		@call .cev 2001
 		reg3 += 8
-		reg2.copy v[252], 2
-		t[__id($team)] .toNum v[251]
-		t[__id($cohort)] .toNum v[258]
+		reg2.copy spawnSet_x, 2
+		t[__id($team)] .toNum spawnSet_Team
+		t[__id($cohort)] .toNum spawnSet_Cohort
 		
 		}
-	t[__id($staticID)] .toNum v[254]
-	v[254] += 800
-	@call .cev v[254]
+	t[__id($staticID)] .toNum spawnSet_TroopID
+	spawnSet_TroopID += 800
+	@call .cev spawnSet_TroopID
 		
 }
 
+__fn cmd_spawnPalisade $begX $begY $endX $endY $team {
+	generateWall_preparation($begX,$begY,$endX,$endY,$team)
+	@call .cev 835
+	
+}
+__fn cmd_spawnWall $begX $begY $endX $endY $team {
+	generateWall_preparation($begX,$begY,$endX,$endY,$team)
+	@call .cev 834
+	
+}
 
 //##########################
 //map and sight system functions
@@ -488,14 +503,14 @@ __fn cmd_team_set_faction $teamID $factionID {
 //cmd_team_give_resource
 // reg1 = resource amount after this cmd
 // reg2 = ptr to the resource indicated in this cmd
-__fn cmd_team_give_resource $teamID $resourceID $amount {
-
-	v[__id($teamID)] = max($teamID, 0)
-	v[__id($teamID)] = min($teamID, 4)
-	// ?
-
-	reg2 = LEGV_Team_Address_Resource_Array_Start + min($resourceID, 4) + Team_Variables_Array_Size * $teamID
-	reg1 = max(v[reg2] + $amount, 0)
+__fn cmd_team_give_resource {
+	t2v(SSargs0,var1)
+	t2v(SSargs1,var2)
+	t2v(SSargs2,var3)
+	var1 = max(var1, 0)
+	var1 = min(var1, 4)
+	reg2 = LEGV_Team_Address_Resource_Array_Start + min(var2, 4) + Team_Variables_Array_Size * var1
+	reg1 = max(v[reg2] + var2, 0)
 	v[reg2] = reg1
 
 }
@@ -506,23 +521,19 @@ def {
 
 }
 
-__fn cmd_team_give_tech_flag $teamID $tech_group $tech_flag $cmdflags {
-
+__fn cmd_team_give_tech_flag $teamID $tech_group $tech_flag {
+	t2v(SSargs0,var1) // teamID
+	t2v(SSargs1,var2) // tech slot
+	t2v(SSargs2,var3) // this must be hex
+	
 	// this might seem retarded kek
-	var1 = $teamID
-	var2 = $tech_group
-	var1 = max($teamID, 0)
-	var1 = min($teamID, 3)
+	var1 = max(var1, 0)
+	var1 = min(var1, 3)
 	var2 = max(var2, 1)
 	var2 = min(var2, 3)
 	var2 -= 1
 
-	__if $cmdflags & cmd_FLAG_Use_hex_argv { // if given the hex parameter, just use it straightly
-		v[Const_Team_Address_Tech_Array_Head + var1 + Team_Tech_Array_Size * var2] |= $tech_flag
-
-	}.else bl { //otherwise use pow()
-		v[Const_Team_Address_Tech_Array_Head + var1 + Team_Tech_Array_Size * var2] |= pow(2, $tech_flag - 1)
-	}
+	v[Const_Team_Address_Tech_Array_Head + var1 + Team_Tech_Array_Size * var2] |= var3
 
 }
 

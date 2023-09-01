@@ -242,6 +242,7 @@ deft Current_BGMFile = 760
 
 deft StrConst_LF = 525
 deft LF = 525
+def RAWSTR_LF = __str("\t[", __id(LF), "]")
 
 deft Str_LanguageToken = 526
 
@@ -550,5 +551,29 @@ __fn getQstr $quickstring_id {
 	v[1961] = v[1213] + $quickstring_id
 	string_buffer .asg .rep(t[v[1961]],"^",LF) .extract
 }
+
+
+// file path setting
+def {
+
+	PATH_pictureHome = ""
+
+		PATH_spr_armor = __str(PATH_pictureHome,"parts\armor\spr_armor_0")
+		PATH_spr_head = __str(PATH_pictureHome,"parts\bodyset\set\spr_head_0")
+		PATH_spr_helm = __str(PATH_pictureHome,"parts\helm\spr_helm_0")
+		PATH_spr_weapon = __str(PATH_pictureHome,"parts\weapons\spr_cweapons_1")
+		PATH_spr_misc = __str(PATH_pictureHome,"parts\misc\spr_misc_0")
+		PATH_spr_minion = __str(PATH_pictureHome,"minions\spr_minions_1")
+		PATH_spr_static = __str(PATH_pictureHome,"static\spr_static_1")
+		PATH_spr_hair = __str(PATH_pictureHome,"parts\hair\spr_hair_0")
+		PATH_spr_armor_damaged = __str(PATH_pictureHome,"parts\armor\damaged\spr_damaged_armor_0")
+		PATH_spr_head_damaged = __str(PATH_pictureHome,"parts\bodyset\set\damaged\spr_damaged_head_0")
+		PATH_spr_minion_damaged = __str(PATH_pictureHome,"minions\damaged\spr_damaged_minions_0")
+
+
+
+
+}
+
 
 $DIS_h_common_included = 1

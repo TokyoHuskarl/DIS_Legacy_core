@@ -87,3 +87,10 @@ cev .id(2008), .name("CkIfSklCall v1v2 r1") ,  {
 	func_CkIfSklCall(var1 var2)
 }
 
+
+
+// generate Wall
+
+cev[2160], .name("GenWallprep"), {
+	generateWall_preparation(t[3000],t[3001],t[3002],t[3003],t[3004])
+}
