@@ -16,6 +16,11 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	//set LF   
 	StrConst_LF .asg "
 "
+	// DIS SS Cmd Packages init
+	@loop CTYP_END .dst TT1 { // <- module_Game_scripts_functions 
+		DIS_Cmd_PackTree(TT1,SScmd_Mode_Construct_Link,SScmdDynCounter,var2,0)
+	}
+
 	v[__id(Const_2_combi)..__id(Const_2_combi) + 1] = 2
 	@comment "module_core_Game_init.tpc"
 
@@ -93,17 +98,18 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	@comment "Preload"
 	@comment "StringConsts"
 	v[1183] = 911
-	t[901] .asg "parts\armor\spr_armor_0"
-	t[902] .asg "parts\bodyset\set\spr_head_0"
-	t[903] .asg "parts\helm\spr_helm_0"
-	t[904..905] .asg "parts\weapons\spr_cweapons_1"
-	t[906] .asg "parts\misc\spr_misc_0"
-	t[907] .asg "minions\spr_minions_1"
-	t[908] .asg "static\spr_static_1"
-	t[909] .asg "parts\hair\spr_hair_0"
-	t[911] .asg "parts\armor\damaged\spr_damaged_armor_0"
-	t[912] .asg "parts\bodyset\set\damaged\spr_damaged_head_0"
-	t[917] .asg "minions\damaged\spr_damaged_minions_0"
+	t[901] .asg PATH_spr_armor
+	t[902] .asg PATH_spr_head
+	t[903] .asg PATH_spr_helm
+	t[904..905] .asg PATH_spr_weapon
+	t[906] .asg PATH_spr_misc
+	t[907] .asg PATH_spr_minion
+	t[908] .asg PATH_spr_static
+	t[909] .asg PATH_spr_hair
+	t[911] .asg PATH_spr_armor_damaged
+	t[912] .asg PATH_spr_head_damaged
+	t[917] .asg PATH_spr_minion_damaged
+
 	@comment "#USER DIRECTORY"
 	t[941] .asg "..\user\parts\armor\spr_armor_0"
 	t[942] .asg "..\user\parts\bodyset\set\spr_head_0"
@@ -112,29 +118,6 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	t[946] .asg "..\user\parts\misc\spr_misc_0"
 	t[947] .asg "..\user\minions\spr_minions_1"
 	t[949] .asg "..\user\parts\hair\spr_hair_0"
-	@comment "文字列変数: T[0526] = ""\c[\TT1]\t[\v[340]]\c[0]
-
-
-
-
-	R-Hand:
-	L-Hand:
-	Armor:
-	Helm:
-	Acc.:
-	R-Sub:
-	L-Sub:
-	Lv.\v[704]
-	\c[1]HP:\c[0]\v[706]/\v[705]\c[0] \c[10]SP:\c[0]\v[708]/\v[707]\c[0]
-	$A\c[17]Attack Damage:\c[0]\v[709]\c[5] Attack Speed:\c[0]\v[719]
-	   \c[5]Attack Range:\c[0]\v[345]\c[0] \c[5]H it:\c[0]\v[713] 
-	   Base Melee H it:\v[836] Base Ranged H it:\v[837]
-	   \c[14]Critical:\c[0]\v[715]%
-	$B\c[3]Armor\c[0]:\v[711]/\v[738] \c[3]Avoid:\c[0]\v[714]
-	   Critical Chance Reduction:-\v[839]%
-	   Critical Damage Reduction:-\v[840]%
-	$C\c[16]Ability Power:\c[0]\v[710] \c[6]Magic Resist:\c[0]\v[712] 
-	$DMove Speed:\v[716] \c[0]Will:\c[0]\v[739]"", 0字, opt(ext, )"
 	@comment "Set Const"
 	v[4580] = 2438
 	v[1266] = 1500001
@@ -863,10 +846,6 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	*/
 
 
-	// DIS SS Cmd Packages init
-	@loop CTYP_END .dst TT1 { // <- module_Game_scripts_functions 
-		DIS_Cmd_PackTree(TT1,SScmd_Mode_Construct_Link,SScmdDynCounter,var2,0)
-	}
 
 }
 
@@ -1649,6 +1628,7 @@ cev .id(2120), .name("Game:Boot"),{
 	    file_output_cooldown()
 	    t[510].toFile "../Config/boot_config", .utf8
 	}
+
 	@comment "*Load Config*"
 	t[510] .split t[525], t[1], v[505]
 	@loop v[505] .dst v[506] {
@@ -1693,6 +1673,7 @@ cev .id(2120), .name("Game:Boot"),{
 		@sys.gameOpt .fatal 60, 2, 1
 		s[316].on
 	}
+	
 	//Check if user_custom_config.txt is generated
 	t[510] .asg  .file "..\User\user_custom_config", .utf8
 	@if t[510] .eq ""{
@@ -1836,7 +1817,7 @@ cev .id(2120), .name("Game:Boot"),{
 	    }
 	    
 	    @pic[800].strpic {
-		"SELECT LANGUAGE BY LEFT MOUSE"
+		"Click to Select Language."
 		.pos v[1115], v[1116] .center
 		.size 0, 0        .chromakey 1
 		.scale 100

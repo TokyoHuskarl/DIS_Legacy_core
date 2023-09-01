@@ -342,14 +342,8 @@ __fn SScmdPackage_Build $pkName $LINKstr $md $counter $given_v_or_str $flags $bl
 
 
 	}.elif $md == SScmd_Mode_Exec { // for DIS Cmd with js, that has several object tree. basically large size package containing multiple command libraries expected.
-		NsLink_search_cmd(parsSScmd,SScmd,$LINKstr,0)
-		@if parsSScmd.neq ""{
-			// parsSScmd.split(",", parsSScmd, SSvar2)
-			
-			parsSScmd.toNum(SScmdnum)
-		}.else bl{//NULL
-			SScmdnum = -1
-		}
+		SScmd.toNum(SScmdnum) // already numberfied by js associative array
+
 
 
 	}.elif $md == SScmd_Mode_Call { // for console/simple use. this is slower and expects head element of string order as a name of command which will be called.
