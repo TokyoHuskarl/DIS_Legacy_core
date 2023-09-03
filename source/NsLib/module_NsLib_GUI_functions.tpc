@@ -87,9 +87,9 @@ __fn NsGUI_CEV_UI_RENDERING_MANAGEMENT {
 		@if UIT == UIOBJ_checkbox { // simple checkbox
 			UIT_checkbox_Render()
 
-		}.elif ObjID == UIOBJ_simplesprite { // 
+		}.elif UIT == UIOBJ_simplesprite { // 
 
-		}.elif ObjID == UIOBJ_strpic { // 
+		}.elif UIT == UIOBJ_strpic { // 
 			UIT_strpic_Render()
 		}
 

@@ -2088,6 +2088,48 @@ __fn GenAgent_Horse_Setting {
 
 }
 
+
+// leg cev 1928 - not replaced with meta func yet
+__fn GenAgent_Perk_WeaponMastery {
+	v[1942] = v[1901] % 100
+	v[1943] = 8 * pow(2, v[1942])
+	v[1941] = v[666] & v[1943]
+	@if v[1941] >= 1 {
+			@comment "Crit+1%"
+			v[1906] += 1
+			@comment "AS+10%"
+			v[1910] = muldiv(v[1910], 11, 10)
+			@comment "Cost-20%"
+			v[1912] = muldiv(v[1912], 8, 10)
+			@comment "#Dagger"
+			@if v[1943] == 1024 {
+					@comment "AS+50%"
+					v[1910] = muldiv(v[1910], 150, 100)
+					
+			}
+			@comment "#Throw"
+			@if v[1943] == 2048 {
+					@comment "AD+25%"
+					v[1902] = muldiv(v[1902], 125, 100)
+					
+			}
+			@comment "#Bow"
+			@if v[1943] == 16384 {
+					@comment "Range+35000"
+					v[1908] += 35000
+					
+			}
+			@comment "#Crossbow"
+			@if v[1943] == 32768 {
+					@comment "Pen+25%"
+					v[1904] += 25
+					
+			}
+			
+	}
+}
+
+
 // cev_2160
 // make wall to be built fit to the map pathfinding node system
 __fn generateWall_preparation $begX $begY $endX $endY $team {
@@ -2138,3 +2180,4 @@ __fn generateWall_preparation $begX $begY $endX $endY $team {
 	t[__id($team)] .toNum spawnSet_Team
 
 }
+

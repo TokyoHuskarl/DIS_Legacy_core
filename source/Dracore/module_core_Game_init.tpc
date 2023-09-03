@@ -48,7 +48,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1166] = 2600
 	v[1167] = 1799
 	v[1168] = v[1166] + v[1167]
-	v[1201] = v[1168]+1
+	v[1201] = v[1168] + 1
 	v[2299] = v[1201] + Agents_Limit * Const_layer_amount
 	v[1202] = v[1201] - Const_layer_amount
 	@sys.gameOpt .picLimit v[2299]
@@ -64,7 +64,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	@msg.opt {
 	    .opaq
 	    .bottom
-	    .size 480, 80
+	    .size 480, 100
 	    .font "", 0
 	}
 	v[4575] = 300000
@@ -382,8 +382,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1250] = 220
 	v[1253] = v[1249] + 24
 	v[1254] = v[1250] + 14
-	@comment "#視界
-#小さめに"
+	@comment "#視界#小さめに"
 	v[1019] = 62500
 	v[1133] = 275000
 	v[1053] = 200
@@ -441,8 +440,8 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	//Effects begin
 	v[1018] = v[1075] + v[4559] * 100//!?
 	v[4840] = v[1018] + 1 
-	@comment "##OBJ数拡張する場合ここもいじる必要あり"
-	@comment "#Pathfinding"
+	// "##OBJ数拡張する場合ここもいじる必要あり"
+	// "#Pathfinding"
 
 	// NODE DATA ADDRESS SETTING
 	RMconst_Node_Array_Address_Start = v[1018] + v[1017] * 100 //
@@ -465,10 +464,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1273] = 4
 	v[1274] = v[1272] + 400 * v[1273] + 1
 	v[1275] = v[1274] + 4001
-	@comment "#TT5=00110011 (51) prepared for masking
-#TT6=01010101 (85)
-	TT5=1100110011 (204) prepared for masking
-	TT6=0101010101 (341)"
+	@comment "#TT5=00110011 (51) prepared for masking #TT6=01010101 (85) TT5=1100110011 (204) prepared for masking TT6=0101010101 (341)"
 	v[4539] = 3276
 	v[4540] = 1365
 	v[4579] = v[1275] + 4001
@@ -852,751 +848,848 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 
 cev .id(1790), .name("@Init Database") , {
 
-@comment "*failsafe*"
-@if t[522] .eq "" {
-    t[522] .asg "map_pointer"
-    
-}
-@comment "##################"
-t[510] .asg  .file "..\\config\\language_config", .sjis
-t[510] .split t[525], t[2999], TT1
-v[1] = v[2201] + 3000
-t[v[1]] .split ",", t[3100], TT1
-t[529] .asg t[3102]
-t[3103] .toNum v[4510]
-t[530] .asg t[3104]
-t[3105] .toNum v[4511]
-@msg.opt {
-    .opaq
-    .bottom
-    .size 0, 0
-    .font t[529], v[4510]
-}
-t[528] .asg "\t[3101]\" .extract
-t[526] .asg "_\t[3101]" .extract
-@comment "######################## LOAD DATABASE"
-t[527] .asg """
- "
-v[1211] = 3001
-t[510] .asg  .file "..\\config\preload_pictures", .sjis
-t[510] .split t[525], t[v[1211]], TT1
-@loop TT1 .dst TT2 {
-    TT2 += v[1211]
-    @pic[1].show {
-        t[TT2]
-        .pos 160, 120 .center
-        .chromakey 1
-        .scale 100
-        .trans 100
-        .rgbs 100, 100, 100, 100
-        .mapLayer 7
-        .eraseWhenTransfer
-        .affectedByFlash
-        .affectedByShake
-    }
-    t[TT2] .asg ""
-    
-}
+	@comment "*failsafe*"
+	@if t[522] .eq "" {
+			t[522] .asg "map_pointer"
+			
+	}
+	@comment "##################"
+	t[510] .asg  .file "..\\config\\language_config", .utf8
+	t[510] .split LF, t[2999], TT1
+	v[1] = v[2201] + 3000
+	t[v[1]] .split ",", t[3100], TT1
+	t[529] .asg t[3102]
+	t[3103] .toNum v[4510]
+	t[530] .asg t[3104]
+	t[3105] .toNum v[4511]
+	@msg.opt {
+			.opaq
+			.bottom
+			.size 0, 0
+			.font t[529], v[4510]
+	}
+	Str_LanguagePath .asg "\t[3101]\" .extract
+	t[526] .asg "_\t[3101]" .extract
+	// @comment "######################## LOAD DATABASE"
+	t[527] .asg """
+	 "
+	v[1211] = 3001
+	t[510] .asg  .file "..\\config\preload_pictures", .utf8
+	t[510] .split LF, t[v[1211]], TT1
+	@loop TT1 .dst TT2 {
+			TT2 += v[1211]
+			@pic[1].show {
+					t[TT2]
+					.pos 160, 120 .center
+					.chromakey 1
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 7
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+			}
+			t[TT2] .asg ""
+			
+	}
 
-v[4517] = 4000
-v[1216] = 4001
-v[1216] = 530345
-@comment "##############"
-v[1213] = 20000
-t[510] .asg "..\Languages\" .extract
-t[510] .cat t[528]
-t[510] .cat "lang_quick_strings"
-t[510] .asg  .file t[510], .utf8, .extract
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[1213]], TT1
-v[1206] = 5000
-t[510] .asg  .file "..\data\data_weapons", .utf8
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[1206]], TT1
-t[801] .asg ""
-t[3001] .asg ""
-@if t[511] .eq "" {
-    @loop TT1 .dst var1 {
-        var2 = v[1206] + var1
-        var10 = var2
-        t[var2] .split ",", t[3000], TT2
-        @if t[3001] .neq "" {
-            t[801] .cat "WEP_"
-            // t[3001] .asg  .rep t[3001], " ", "_"
-            t[801] .cat t[3000] //t[3001]
-            t[801] .cat "="
-            t[801] .cat var1 //t[3000]
-            t[801] .cat t[525]
-            
-        }
-        t[3001] .asg ""
-        
-    }
-    
-    t[511] .asg  .file "..\scripts\const_weapons_id", .utf8
-    @if t[511] .neq t[801] {
-        @loop .inf() {
-            @if .canOutput() {
-                @break
-                
-            }
-            @wait 0
-            
-        }
-        
-        t[801] .toFile "..\scripts\const_weapons_id", .utf8
-        
-    }
-    @wait 0
-    
-}
-t[3000..3500] .asg ""
-t[511] .asg "..\Languages\" .extract
-t[511] .cat t[528]
-t[511] .cat "lang_weapons"
-t[511] .asg  .file t[511], .sjis, .extract
-@if t[511] .neq "" {
-    t[511] .split "*/", t[510], TT3
-    t[511] .split t[525], t[1000], TT3
-    @loop TT3 .dst var1 {
-        var2 = v[1206] + var1
-        var10 = var2
-        t[var2] .split ",", t[3000], TT2
-        var2 = 1000 + var1
-        t[var2] .split ",", t[3300], TT4
-        @if t[3300] .neq "" {
-            t[3000] .asg "\t[3000],\t[3300],\t[3301]" .extract
-            
-        } .else bl {
-            t[3000] .asg "\t[3000],\t[3001],\t[3002]" .extract
-            
-        }
-        TT2 -= 3
-        @loop TT2 .dst var2 {
-            t[3000] .cat ","
-            var2 = 3003 + var2
-            t[3000] .cat t[var2]
-            
-        }
-        
-        t[var10] .asg t[3000]
-        
-    }
-    
-    
-}
-v[1207] = 6000
-t[510] .asg  .file "..\data\data_shields", .utf8
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[1207]], TT1
-t[801] .asg ""
-t[3001] .asg ""
-t[511] .asg ""
-@if t[511] .eq "" {
-    @loop TT1 .dst var1 {
-        var2 = v[1207] + var1
-        var10 = var2
-        t[var2] .split ",", t[3000], TT2
-        @if t[3001] .neq "" {
-            t[801] .cat "SHD_"
-            //t[3001] .asg  .rep t[3001], " ", "_"
-            t[801] .cat t[3000]
-            t[801] .cat "="
-            t[801] .cat var1
-            t[801] .cat t[525]
-            
-        }
-        t[3001] .asg ""
-        
-    }
-    
-    t[511] .asg  .file "..\scripts\const_shields_id", .utf8
-    @if t[511] .neq t[801] {
-        @loop .inf() {
-            @if .canOutput() {
-                @break
-                
-            }
-            @wait 0
-            
-        }
-        
-        t[801] .toFile "..\scripts\const_shields_id", .utf8
-        
-    }
-    @wait 1
-    
-}
-t[3000..3500] .asg ""
-t[511] .asg "..\Languages\" .extract
-t[511] .cat t[528]
-t[511] .cat "lang_shields"
-t[511] .asg  .file t[511], .sjis, .extract
-@if t[511] .neq "" {
-    t[511] .split "*/", t[510], TT3
-    t[511] .split t[525], t[1000], TT3
-    @loop TT3 .dst var1 {
-        var2 = v[1207] + var1
-        var10 = var2
-        t[var2] .split ",", t[3000], TT2
-        var2 = 1000 + var1
-        t[var2] .split ",", t[3300], TT4
-        @if t[3300] .neq "" {
-            t[3000] .asg "\t[3000],\t[3300],\t[3301]" .extract
-            
-        } .else bl {
-            t[3000] .asg "\t[3000],\t[3001],\t[3002]" .extract
-            
-        }
-        TT2 -= 3
-        @loop TT2 .dst var2 {
-            t[3000] .cat ","
-            var2 = 3003 + var2
-            t[3000] .cat t[var2]
-            
-        }
-        
-        t[var10] .asg t[3000]
-        
-    }
-    
-    
-}
-v[1208] = 7000
-t[510] .asg  .file "..\data\data_armors", .utf8
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[1208]], TT1
-t[801] .asg ""
-t[3001] .asg ""
-t[511] .asg ""
-@if t[511] .eq "" {
-    @loop TT1 .dst var1 {
-        var2 = v[1208] + var1
-        var10 = var2
-        t[var2] .split ",", t[3000], TT2
-        @if t[3001] .neq "" {
-            t[801] .cat "AMR_"
-            //t[3001] .asg  .rep t[3001], " ", "_"
-            t[801] .cat t[3000]
-            t[801] .cat "="
-            t[801] .cat var1
-            t[801] .cat t[525]
-            
-        }
-        t[3001] .asg ""
-        
-    }
-    
-    t[511] .asg  .file "..\scripts\const_armors_id", .utf8
-    @if t[511] .neq t[801] {
-        @loop .inf() {
-            @if .canOutput() {
-                @break
-                
-            }
-            @wait 0
-            
-        }
-        
-        t[801] .toFile "..\scripts\const_armors_id", .utf8
-        
-    }
-    @wait 0
-    
-}
-t[3000..3500] .asg ""
-t[511] .asg "..\Languages\" .extract
-t[511] .cat t[528]
-t[511] .cat "lang_armors"
-t[511] .asg  .file t[511], .sjis, .extract
-@if t[511] .neq "" {
-    t[511] .split "*/", t[510], TT3
-    t[511] .split t[525], t[1000], TT3
-    @loop TT3 .dst var1 {
-        var2 = v[1208] + var1
-        var10 = var2
-        t[var2] .split ",", t[3000], TT2
-        var2 = 1000 + var1
-        t[var2] .split ",", t[3300], TT4
-        @if t[3300] .neq "" {
-            t[3000] .asg "\t[3000],\t[3300],\t[3301]" .extract
-            
-        } .else bl {
-            t[3000] .asg "\t[3000],\t[3001],\t[3002]" .extract
-            
-        }
-        TT2 -= 3
-        @loop TT2 .dst var2 {
-            t[3000] .cat ","
-            var2 = 3003 + var2
-            t[3000] .cat t[var2]
-            
-        }
-        
-        t[var10] .asg t[3000]
-        
-    }
-    
-    
-}
-v[1209] = 8000
-t[510] .asg  .file "..\data\data_helms", .utf8
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[1209]], TT1
-t[801] .asg ""
-t[3001] .asg ""
-t[511] .asg ""
-@if t[511] .eq "" {
-    @loop TT1 .dst var1 {
-        var2 = v[1209] + var1
-        var10 = var2
-        t[var2] .split ",", t[3000], TT2
-        @if t[3001] .neq "" {
-            t[801] .cat "HEL_"
-            //t[3001] .asg  .rep t[3001], " ", "_"
+	v[4517] = 4000
+	v[1216] = 4001
+	v[1216] = 530345
+	// @comment "##############"
+	v[1213] = 20000
+	t[510] .asg PATH_language .extract
+	t[510] .cat Str_LanguagePath
+	t[510] .cat "lang_quick_strings"
+	t[510] .asg  .file t[510], .utf8, .extract
+	// readLangFile(t[510],t[510])
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[1213]], TT1
+	v[1206] = 5000
+	t[510] .asg  .file "..\data\data_weapons", .utf8
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[1206]], TT1
+	t[801] .asg ""
+	t[3001] .asg ""
+	@if t[511] .eq "" {
+			@loop TT1 .dst var1 {
+					var2 = v[1206] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					@if t[3001] .neq "" {
+							t[801] .cat "WEP_"
+							// t[3001] .asg  .rep t[3001], " ", "_"
+							t[801] .cat t[3000] //t[3001]
+							t[801] .cat "="
+							t[801] .cat var1 //t[3000]
+							t[801] .cat LF
+							
+					}
+					t[3001] .asg ""
+					
+			}
+			
+			t[511] .asg  .file "..\scripts\const_weapons_id", .utf8
+			@if t[511] .neq t[801] {
+					@loop .inf() {
+							@if .canOutput() {
+									@break
+									
+							}
+							@wait 0
+							
+					}
+					
+					t[801] .toFile "..\scripts\const_weapons_id", .utf8
+					
+			}
+			@wait 0
+			
+	}
+	t[3000..3500] .asg ""
+	t[511] .asg PATH_language .extract
+	t[511] .cat Str_LanguagePath
+	t[511] .cat "lang_weapons"
+	// t[511] .asg  .file t[511], .sjis, .extract
+	readLangFile(t[511],t[511])
+	@if t[511] .neq "" {
+			t[511] .split "*/", t[510], TT3
+			t[511] .split LF, t[1000], TT3
+			@loop TT3 .dst var1 {
+					var2 = v[1206] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					var2 = 1000 + var1
+					t[var2] .split ",", t[3300], TT4
+					@if t[3300] .neq "" {
+							t[3000] .asg "\t[3000],\t[3300],\t[3301]" .extract
+							
+					} .else bl {
+							t[3000] .asg "\t[3000],\t[3001],\t[3002]" .extract
+							
+					}
+					TT2 -= 3
+					@loop TT2 .dst var2 {
+							t[3000] .cat ","
+							var2 = 3003 + var2
+							t[3000] .cat t[var2]
+							
+					}
+					
+					t[var10] .asg t[3000]
+					
+			}
+			
+			
+	}
+	v[1207] = 6000
+	t[510] .asg  .file "..\data\data_shields", .utf8
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[1207]], TT1
+	t[801] .asg ""
+	t[3001] .asg ""
+	t[511] .asg ""
+	@if t[511] .eq "" {
+			@loop TT1 .dst var1 {
+					var2 = v[1207] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					@if t[3001] .neq "" {
+							t[801] .cat "SHD_"
+							//t[3001] .asg  .rep t[3001], " ", "_"
+							t[801] .cat t[3000]
+							t[801] .cat "="
+							t[801] .cat var1
+							t[801] .cat LF
+							
+					}
+					t[3001] .asg ""
+					
+			}
+			
+			t[511] .asg  .file "..\scripts\const_shields_id", .utf8
+			@if t[511] .neq t[801] {
+					@loop .inf() {
+							@if .canOutput() {
+									@break
+									
+							}
+							@wait 0
+							
+					}
+					
+					t[801] .toFile "..\scripts\const_shields_id", .utf8
+					
+			}
+			@wait 1
+			
+	}
+	t[3000..3500] .asg ""
+	t[511] .asg PATH_language .extract
+	t[511] .cat Str_LanguagePath
+	t[511] .cat "lang_shields"
+	// t[511] .asg  .file t[511], .sjis, .extract
+	readLangFile(t[511],t[511])
+	@if t[511] .neq "" {
+			t[511] .split "*/", t[510], TT3
+			t[511] .split LF, t[1000], TT3
+			@loop TT3 .dst var1 {
+					var2 = v[1207] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					var2 = 1000 + var1
+					t[var2] .split ",", t[3300], TT4
+					@if t[3300] .neq "" {
+							t[3000] .asg "\t[3000],\t[3300],\t[3301]" .extract
+							
+					} .else bl {
+							t[3000] .asg "\t[3000],\t[3001],\t[3002]" .extract
+							
+					}
+					TT2 -= 3
+					@loop TT2 .dst var2 {
+							t[3000] .cat ","
+							var2 = 3003 + var2
+							t[3000] .cat t[var2]
+							
+					}
+					
+					t[var10] .asg t[3000]
+					
+			}
+			
+			
+	}
+	v[1208] = 7000
+	t[510] .asg  .file "..\data\data_armors", .utf8
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[1208]], TT1
+	t[801] .asg ""
+	t[3001] .asg ""
+	t[511] .asg ""
+	@if t[511] .eq "" {
+			@loop TT1 .dst var1 {
+					var2 = v[1208] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					@if t[3001] .neq "" {
+							t[801] .cat "AMR_"
+							//t[3001] .asg  .rep t[3001], " ", "_"
+							t[801] .cat t[3000]
+							t[801] .cat "="
+							t[801] .cat var1
+							t[801] .cat LF
+							
+					}
+					t[3001] .asg ""
+					
+			}
+			
+			t[511] .asg  .file "..\scripts\const_armors_id", .utf8
+			@if t[511] .neq t[801] {
+					@loop .inf() {
+							@if .canOutput() {
+									@break
+									
+							}
+							@wait 0
+							
+					}
+					
+					t[801] .toFile "..\scripts\const_armors_id", .utf8
+					
+			}
+			@wait 0
+			
+	}
+	t[3000..3500] .asg ""
+	t[511] .asg PATH_language .extract
+	t[511] .cat Str_LanguagePath
+	t[511] .cat "lang_armors"
+	readLangFile(t[511],t[511])
+	@if t[511] .neq "" {
+			t[511] .split "*/", t[510], TT3
+			t[511] .split LF, t[1000], TT3
+			@loop TT3 .dst var1 {
+					var2 = v[1208] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					var2 = 1000 + var1
+					t[var2] .split ",", t[3300], TT4
+					@if t[3300] .neq "" {
+							t[3000] .asg "\t[3000],\t[3300],\t[3301]" .extract
+							
+					} .else bl {
+							t[3000] .asg "\t[3000],\t[3001],\t[3002]" .extract
+							
+					}
+					TT2 -= 3
+					@loop TT2 .dst var2 {
+							t[3000] .cat ","
+							var2 = 3003 + var2
+							t[3000] .cat t[var2]
+							
+					}
+					
+					t[var10] .asg t[3000]
+					
+			}
+			
+			
+	}
+	v[1209] = 8000
+	t[510] .asg  .file "..\data\data_helms", .utf8
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[1209]], TT1
+	t[801] .asg ""
+	t[3001] .asg ""
+	t[511] .asg ""
+	@if t[511] .eq "" {
+			@loop TT1 .dst var1 {
+					var2 = v[1209] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					@if t[3001] .neq "" {
+							t[801] .cat "HEL_"
+							//t[3001] .asg  .rep t[3001], " ", "_"
 
-            t[801] .cat t[3000]
-            t[801] .cat "="
-            t[801] .cat var1
-            t[801] .cat t[525]
-            
-        }
-        t[3001] .asg ""
-        
-    }
-    
-    t[511] .asg  .file "..\scripts\const_helms_id", .utf8
-    @if t[511] .neq t[801] {
-        @loop .inf() {
-            @if .canOutput() {
-                @break
-                
-            }
-            @wait 0
-            
-        }
-        
-        t[801] .toFile "..\scripts\const_helms_id", .utf8
-        @wait 0
-        
-    }
-    
-}
-t[3000..3500] .asg ""
-t[511] .asg "..\Languages\" .extract
-t[511] .cat t[528]
-t[511] .cat "lang_helms"
-t[511] .asg  .file t[511], .sjis, .extract
-@if t[511] .neq "" {
-    t[511] .split "*/", t[510], TT3
-    t[511] .split t[525], t[1000], TT3
-    @loop TT3 .dst var1 {
-        var2 = v[1209] + var1
-        var10 = var2
-        t[var2] .split ",", t[3000], TT2
-        var2 = 1000 + var1
-        t[var2] .split ",", t[3300], TT4
-        @if t[3300] .neq "" {
-            t[3000] .asg "\t[3000],\t[3300],\t[3301]" .extract
-            
-        } .else bl {
-            t[3000] .asg "\t[3000],\t[3001],\t[3002]" .extract
-            
-        }
-        TT2 -= 3
-        @loop TT2 .dst var2 {
-            t[3000] .cat ","
-            var2 = 3003 + var2
-            t[3000] .cat t[var2]
-            
-        }
-        
-        t[var10] .asg t[3000]
-        
-    }
-    
-    
-}
-v[1210] = 9000
-t[510] .asg  .file "..\data\data_accessories", .utf8
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[1210]], TT1
-t[801] .asg ""
-t[3001] .asg ""
-t[511] .asg ""
-@if t[511] .eq "" {
-    @loop TT1 .dst var1 {
-        var2 = v[1210] + var1
-        var10 = var2
-        t[var2] .split ",", t[3000], TT2
-        @if t[3001] .neq "" {
-            t[801] .cat "ACC_"
-            //t[3001] .asg  .rep t[3001], " ", "_"
-            t[801] .cat t[3000]
-            t[801] .cat "="
-            t[801] .cat var1
-            t[801] .cat t[525]
-            
-        }
-        t[3001] .asg ""
-        
-    }
-    
-    @wait 0
-    t[511] .asg  .file "..\scripts\const_accessories_id", .utf8
-    @if t[511] .neq t[801] {
-        @loop .inf() {
-            @if .canOutput() {
-                @break
-                
-            }
-            @wait 0
-            
-        }
-        
-        t[801] .toFile "..\scripts\const_accessories_id", .utf8
-        @wait 0
-        
-    }
-    
-}
-t[3000..3500] .asg ""
-t[511] .asg "..\Languages\" .extract
-t[511] .cat t[528]
-t[511] .cat "lang_accessories"
-t[511] .asg  .file t[511], .sjis, .extract
-@if t[511] .neq "" {
-    t[511] .split "*/", t[510], TT3
-    t[511] .split t[525], t[1000], TT3
-    @loop TT3 .dst var1 {
-        var2 = v[1210] + var1
-        var10 = var2
-        t[var2] .split ",", t[3000], TT2
-        var2 = 1000 + var1
-        t[var2] .split ",", t[3300], TT4
-        @if t[3300] .neq "" {
-            t[3000] .asg "\t[3000],\t[3300],\t[3301]" .extract
-            
-        } .else bl {
-            t[3000] .asg "\t[3000],\t[3001],\t[3002]" .extract
-            
-        }
-        TT2 -= 3
-        @loop TT2 .dst var2 {
-            t[3000] .cat ","
-            var2 = 3003 + var2
-            t[3000] .cat t[var2]
-            
-        }
-        
-        t[var10] .asg t[3000]
-        
-    }
-    
-    
-}
-v[1215] = 10000
-t[510] .asg  .file "..\data\data_minions", .utf8, .extract //this was once sjis so this might cause some trouble
-t[510] .split "*/", t[509], TT1
-t[803] .asg  .file "..\scripts\const_factions_id", .utf8
-t[804] .asg  .file "..\scripts\const_weapons_id", .utf8
-t[805] .asg  .file "..\scripts\const_shields_id", .utf8
-t[806] .asg  .file "..\scripts\const_armors_id", .utf8
-t[807] .asg  .file "..\scripts\const_helms_id", .utf8
-t[808] .asg  .file "..\scripts\const_accessories_id", .utf8
-t[803] .split t[525], t[v[1219]], v[505]
+							t[801] .cat t[3000]
+							t[801] .cat "="
+							t[801] .cat var1
+							t[801] .cat LF
+							
+					}
+					t[3001] .asg ""
+					
+			}
+			
+			t[511] .asg  .file "..\scripts\const_helms_id", .utf8
+			@if t[511] .neq t[801] {
+					@loop .inf() {
+							@if .canOutput() {
+									@break
+									
+							}
+							@wait 0
+							
+					}
+					
+					t[801] .toFile "..\scripts\const_helms_id", .utf8
+					@wait 0
+					
+			}
+			
+	}
+	t[3000..3500] .asg ""
+	t[511] .asg PATH_language .extract
+	t[511] .cat Str_LanguagePath
+	t[511] .cat "lang_helms"
+	readLangFile(t[511],t[511])
+	@if t[511] .neq "" {
+			t[511] .split "*/", t[510], TT3
+			t[511] .split LF, t[1000], TT3
+			@loop TT3 .dst var1 {
+					var2 = v[1209] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					var2 = 1000 + var1
+					t[var2] .split ",", t[3300], TT4
+					@if t[3300] .neq "" {
+							t[3000] .asg "\t[3000],\t[3300],\t[3301]" .extract
+							
+					} .else bl {
+							t[3000] .asg "\t[3000],\t[3001],\t[3002]" .extract
+							
+					}
+					TT2 -= 3
+					@loop TT2 .dst var2 {
+							t[3000] .cat ","
+							var2 = 3003 + var2
+							t[3000] .cat t[var2]
+							
+					}
+					
+					t[var10] .asg t[3000]
+					
+			}
+			
+			
+	}
+	v[1210] = 9000
+	t[510] .asg  .file "..\data\data_accessories", .utf8
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[1210]], TT1
+	t[801] .asg ""
+	t[3001] .asg ""
+	t[511] .asg ""
+	@if t[511] .eq "" {
+			@loop TT1 .dst var1 {
+					var2 = v[1210] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					@if t[3001] .neq "" {
+							t[801] .cat "ACC_"
+							//t[3001] .asg  .rep t[3001], " ", "_"
+							t[801] .cat t[3000]
+							t[801] .cat "="
+							t[801] .cat var1
+							t[801] .cat LF
+							
+					}
+					t[3001] .asg ""
+					
+			}
+			
+			@wait 0
+			t[511] .asg  .file "..\scripts\const_accessories_id", .utf8
+			@if t[511] .neq t[801] {
+					@loop .inf() {
+							@if .canOutput() {
+									@break
+									
+							}
+							@wait 0
+							
+					}
+					
+					t[801] .toFile "..\scripts\const_accessories_id", .utf8
+					@wait 0
+					
+			}
+			
+	}
+	t[3000..3500] .asg ""
+	t[511] .asg PATH_language .extract
+	t[511] .cat Str_LanguagePath
+	t[511] .cat "lang_accessories"
+	readLangFile(t[511],t[511])
+	@if t[511] .neq "" {
+			t[511] .split "*/", t[510], TT3
+			t[511] .split LF, t[1000], TT3
+			@loop TT3 .dst var1 {
+					var2 = v[1210] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					var2 = 1000 + var1
+					t[var2] .split ",", t[3300], TT4
+					@if t[3300] .neq "" {
+							t[3000] .asg "\t[3000],\t[3300],\t[3301]" .extract
+							
+					} .else bl {
+							t[3000] .asg "\t[3000],\t[3001],\t[3002]" .extract
+							
+					}
+					TT2 -= 3
+					@loop TT2 .dst var2 {
+							t[3000] .cat ","
+							var2 = 3003 + var2
+							t[3000] .cat t[var2]
+							
+					}
+					
+					t[var10] .asg t[3000]
+					
+			}
+			
+			
+	}
+	v[1215] = 10000
+	t[510] .asg  .file "..\data\data_minions", .utf8, .extract //this was once sjis so this might cause some trouble
+	t[510] .split "*/", t[509], TT1
+	t[803] .asg  .file "..\scripts\const_factions_id", .utf8
+	t[804] .asg  .file "..\scripts\const_weapons_id", .utf8
+	t[805] .asg  .file "..\scripts\const_shields_id", .utf8
+	t[806] .asg  .file "..\scripts\const_armors_id", .utf8
+	t[807] .asg  .file "..\scripts\const_helms_id", .utf8
+	t[808] .asg  .file "..\scripts\const_accessories_id", .utf8
+	t[803] .split LF, t[v[1219]], v[505]
 
-@loop v[505] .dst v[506] {
-    var1 = v[1219] + v[506]
-    t[var1] .split "=", t[3000], TT1
-    @if TT1 == 2 {
-        @if t[3000] .neq "" {
-            t[510] .asg  .rep t[510], t[3000], t[3001]
-            
-        }
-        
-    }
-    
-}
+	@loop v[505] .dst v[506] {
+			var1 = v[1219] + v[506]
+			t[var1] .split "=", t[3000], TT1
+			@if TT1 == 2 {
+					@if t[3000] .neq "" {
+							t[510] .asg  .rep t[510], t[3000], t[3001]
+							
+					}
+					
+			}
+			
+	}
 
-t[804] .split t[525], t[v[1219]], v[505]
-@loop v[505] .dst v[506] {
-    var1 = v[1219] + v[506]
-    t[var1] .split "=", t[3000], TT1
-    @if TT1 == 2 {
-        @if t[3000] .neq "" {
-            t[510] .asg  .rep t[510], t[3000], t[3001]
-            
-        }
-        
-    }
-    
-}
+	t[804] .split LF, t[v[1219]], v[505]
+	@loop v[505] .dst v[506] {
+			var1 = v[1219] + v[506]
+			t[var1] .split "=", t[3000], TT1
+			@if TT1 == 2 {
+					@if t[3000] .neq "" {
+							t[510] .asg  .rep t[510], t[3000], t[3001]
+							
+					}
+					
+			}
+			
+	}
 
-t[805] .split t[525], t[v[1219]], v[505]
-@loop v[505] .dst v[506] {
-    var1 = v[1219] + v[506]
-    t[var1] .split "=", t[3000], TT1
-    @if TT1 == 2 {
-        @if t[3000] .neq "" {
-            t[510] .asg  .rep t[510], t[3000], t[3001]
-            
-        }
-        
-    }
-    
-}
+	t[805] .split LF, t[v[1219]], v[505]
+	@loop v[505] .dst v[506] {
+			var1 = v[1219] + v[506]
+			t[var1] .split "=", t[3000], TT1
+			@if TT1 == 2 {
+					@if t[3000] .neq "" {
+							t[510] .asg  .rep t[510], t[3000], t[3001]
+							
+					}
+					
+			}
+			
+	}
 
-t[806] .split t[525], t[v[1219]], v[505]
-@loop v[505] .dst v[506] {
-    var1 = v[1219] + v[506]
-    t[var1] .split "=", t[3000], TT1
-    @if TT1 == 2 {
-        @if t[3000] .neq "" {
-            t[510] .asg  .rep t[510], t[3000], t[3001]
-            
-        }
-        
-    }
-    
-}
+	t[806] .split LF, t[v[1219]], v[505]
+	@loop v[505] .dst v[506] {
+			var1 = v[1219] + v[506]
+			t[var1] .split "=", t[3000], TT1
+			@if TT1 == 2 {
+					@if t[3000] .neq "" {
+							t[510] .asg  .rep t[510], t[3000], t[3001]
+							
+					}
+					
+			}
+			
+	}
 
-t[807] .split t[525], t[v[1219]], v[505]
-@loop v[505] .dst v[506] {
-    var1 = v[1219] + v[506]
-    t[var1] .split "=", t[3000], TT1
-    @if TT1 == 2 {
-        @if t[3000] .neq "" {
-            t[510] .asg  .rep t[510], t[3000], t[3001]
-            
-        }
-        
-    }
-    
-}
+	t[807] .split LF, t[v[1219]], v[505]
+	@loop v[505] .dst v[506] {
+			var1 = v[1219] + v[506]
+			t[var1] .split "=", t[3000], TT1
+			@if TT1 == 2 {
+					@if t[3000] .neq "" {
+							t[510] .asg  .rep t[510], t[3000], t[3001]
+							
+					}
+					
+			}
+			
+	}
 
-t[808] .split t[525], t[v[1219]], v[505]
-@loop v[505] .dst v[506] {
-    var1 = v[1219] + v[506]
-    t[var1] .split "=", t[3000], TT1
-    @if TT1 == 2 {
-        @if t[3000] .neq "" {
-            t[510] .asg  .rep t[510], t[3000], t[3001]
-            
-        }
-        
-    }
-    
-}
+	t[808] .split LF, t[v[1219]], v[505]
+	@loop v[505] .dst v[506] {
+			var1 = v[1219] + v[506]
+			t[var1] .split "=", t[3000], TT1
+			@if TT1 == 2 {
+					@if t[3000] .neq "" {
+							t[510] .asg  .rep t[510], t[3000], t[3001]
+							
+					}
+					
+			}
+			
+	}
 
-t[510] .split t[525], t[v[1215]], TT1
+	t[510] .split LF, t[v[1215]], TT1
 
-@if s[1] .isOn() {
-    t[801] .asg ""
-    @loop TT1 .dst var1 {
-        var2 = v[1215] + var1
-        t[801] .cat t[var2]
-        t[801] .cat t[525]
-        
-    }
-    
-    t[801] .toFile "DEBUG_char", .utf8
-    
-}
+	@if s[1] .isOn() {
+			t[801] .asg ""
+			@loop TT1 .dst var1 {
+					var2 = v[1215] + var1
+					t[801] .cat t[var2]
+					t[801] .cat LF
+					
+			}
+			
+			t[801] .toFile "DEBUG_char", .utf8
+			
+	}
 
-t[3000..3500] .asg ""
-t[511] .asg "..\Languages\" .extract
-t[511] .cat t[528]
-t[511] .cat "lang_minions"
-t[511] .asg  .file t[511], .utf8 , .extract
-@if t[511] .neq "" {
-    t[511] .split "*/", t[509], TT3
-    t[511] .split t[525], t[1000], TT3
-    @loop TT3 .dst var1 {
-        var2 = v[1215] + var1
-        var10 = var2
-        t[var2] .split ",", t[3000], TT2
-        var2 = 1000 + var1
-        t[var2] .split ",", t[3300], TT4
-        @if t[3300] .neq "" {
-            t[3001] .asg t[3300]
-            
-        }
-        @if t[3302] .neq "" {
-            t[3082] .asg t[3302]
-            
-        }
-        TT2 -= 1
-        t[3000] .cat ","
-        @loop TT2 .dst var2 {
-            var2 = 3001 + var2
-            t[3000] .cat t[var2]
-            t[3000] .cat ","
-            
-        }
-        
-        t[var10] .asg t[3000]
-        
-    }
-    
-    
-}
-t[801] .asg ""
-@loop TT1 .dst var1 {
-    var2 = v[1215] + var1
-    var10 = var2
-    t[var2] .split ",", t[3000], TT2
-    @if t[3000] .neq "" {
-        t[801] .cat "TRP_"
-        t[801] .cat t[3000]
-        t[801] .cat "="
-	var3 = var1
-        t[801] .cat var3
-        t[801] .cat t[525]
-        
-    }
-    
-}
+	t[3000..3500] .asg ""
+	t[511] .asg PATH_language .extract
+	t[511] .cat Str_LanguagePath
+	t[511] .cat "lang_minions"
+	// t[511] .asg  .file t[511], .utf8 , .extract
+	readLangFile(t[511],t[511])
+	@if t[511] .neq "" {
+			t[511] .split "*/", t[509], TT3
+			t[511] .split LF, t[1000], TT3
+			@loop TT3 .dst var1 {
+					var2 = v[1215] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					var2 = 1000 + var1
+					t[var2] .split ",", t[3300], TT4
+					@if t[3300] .neq "" {
+							t[3001] .asg t[3300]
+							
+					}
+					@if t[3302] .neq "" {
+							t[3082] .asg t[3302]
+							
+					}
+					TT2 -= 1
+					t[3000] .cat ","
+					@loop TT2 .dst var2 {
+							var2 = 3001 + var2
+							t[3000] .cat t[var2]
+							t[3000] .cat ","
+							
+					}
+					
+					t[var10] .asg t[3000]
+					
+			}
+			
+			
+	}
+	t[801] .asg ""
+	@loop TT1 .dst var1 {
+			var2 = v[1215] + var1
+			var10 = var2
+			t[var2] .split ",", t[3000], TT2
+			@if t[3000] .neq "" {
+					t[801] .cat "TRP_"
+					t[801] .cat t[3000]
+					t[801] .cat "="
+		var3 = var1
+					t[801] .cat var3
+					t[801] .cat LF
+					
+			}
+			
+	}
 
-t[800] .asg  .file "..\scripts\const_misc", .utf8
-TT1 = v[4575] + 28
-t[800] .cat "UNIT_PL_SCOUT=\v["
-t[800] .cat "\TT1" .extract
-t[800] .cat "]" .extract
-t[800] .cat t[525]
-TT1 = v[4575] + 5
-t[800] .cat "UNIT_PL_WORKER@\v["
-t[800] .cat "\TT1" .extract
-t[800] .cat "]" .extract
-t[800] .cat t[525]
-t[511] .asg  .file "..\scripts\const_troops_id", .utf8
-@if t[511] .eq "" {
-    @if t[511] .neq t[801] {
-        @loop .inf() {
-            @if .canOutput() {
-                @break
-                
-            }
-            @wait 0
-            
-        }
-        
-        t[801] .toFile "..\scripts\const_troops_id", .utf8
-        @wait 0
-        
-    }
-    @wait 0
-    
-}
-@comment "set id"
-t[802] .asg  .file "..\scripts\const_statics_id", .utf8
-v[4573] = 16000
-t[510] .asg "..\Languages\" .extract
-t[510] .cat t[528]
-t[510] .cat "lang_buffs"
-t[510] .asg  .file t[510], .utf8, .extract
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[4573]], TT1
-v[4519] = 17000
-t[510] .asg  .file "..\Languages\lang_skills", .utf8, .extract
-t[510] .asg "..\Languages\" .extract
-t[510] .cat t[528]
-t[510] .cat "lang_skills"
-t[510] .asg  .file t[510], .utf8, .extract
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[4519]], TT1
-v[4576] = 18200
-t[510] .asg  .file "..\Languages\lang_statics", .utf8, .extract
-t[510] .asg "..\Languages\" .extract
-t[510] .cat t[528]
-t[510] .cat "lang_statics"
-t[510] .asg  .file t[510], .utf8, .extract
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[4576]], TT1
-v[4520] = 18300
-t[510] .asg  .file "..\Languages\lang_techs", .utf8, .extract
-t[510] .asg "..\Languages\" .extract
-t[510] .cat t[528]
-t[510] .cat "lang_techs"
-t[510] .asg  .file t[510], .utf8, .extract
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[4520]], TT1
-v[1239] = 18500
-t[510] .asg  .file "def\definition_terrains", .utf8, .extract
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[1239]], TT1
-v[1217] = 18600
-t[510] .asg  .file "..\data\data_races", .utf8, .extract
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[1217]], TT1
-v[4574] = 18700
-t[510] .asg  .file "..\data\data_factiontemplates", .utf8, .extract
-t[510] .split "*/", t[509], TT1
-@if t[511] .eq "" {
-    @loop TT3 .dst var1 {
-        var2 = 3000 + var1
-        t[var2] .split ",", t[3301], TT2
-        @if t[3301] .contains "=" {
-            t[803] .cat "FAC_"
-            t[803] .cat t[3301]
-            t[803] .cat t[525]
-            
-        }
-        
-    }
-    
-    t[511] .asg  .file "..\scripts\const_factions_id", .utf8
-    @if t[511] .neq t[803] {
-        t[803] .toFile "..\scripts\const_factions_id", .utf8
-        @wait 0
-        
-    }
-    @wait 0
-    
-}
-t[510] .split t[525], t[v[4574]], TT1
-t[3000..3500] .asg ""
-t[511] .asg "..\Languages\" .extract
-t[511] .cat t[528]
-t[511] .cat "lang_factions"
-t[511] .asg  .file t[511], .utf8, .extract
-@if t[511] .neq "" {
-    t[511] .split "*/", t[509], TT3
-    t[511] .split t[525], t[1000], TT3
-    @loop TT3 .dst var1 {
-        var2 = v[4574] + var1
-        var10 = var2
-        t[var2] .split ",", t[3000], TT2
-        var2 = 1000 + var1
-        t[var2] .split ",", t[3300], TT4
-        t[3001] .asg t[3300]
-        TT2 -= 1
-        t[3000] .cat ","
-        @loop TT2 .dst var2 {
-            var2 = 3001 + var2
-            t[3000] .cat t[var2]
-            t[3000] .cat ","
-            
-        }
-        
-        t[var10] .asg t[3000]
-        
-    }
-    
-    
-}
-v[4557] = 18800
-t[510] .asg  .file "..\Languages\lang_passives", .utf8
-t[510] .asg "..\Languages\" .extract
-t[510] .cat t[528]
-t[510] .cat "lang_passives"
-t[510] .asg  .file t[510], .utf8, .extract
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[4557]], TT1
-v[1214] = 19000
-t[510] .asg  .file "def\definition_perks", .utf8 , .extract
-t[510] .split "*/", t[509], TT1
-t[510] .split t[525], t[v[1214]], TT1
+	t[800] .asg  .file "..\scripts\const_misc", .utf8
+	TT1 = v[4575] + 28
+	t[800] .cat "UNIT_PL_SCOUT=\v["
+	t[800] .cat "\TT1" .extract
+	t[800] .cat "]" .extract
+	t[800] .cat LF
+	TT1 = v[4575] + 5
+	t[800] .cat "UNIT_PL_WORKER@\v["
+	t[800] .cat "\v[341]" .extract
+	t[800] .cat "]" .extract
+	t[800] .cat LF
+	t[511] .asg  .file "..\scripts\const_troops_id", .utf8
+	@if t[511] .eq "" {
+			@if t[511] .neq t[801] {
+					@loop .inf() {
+							@if .canOutput() {
+									@break
+									
+							}
+							@wait 0
+							
+					}
+					
+					t[801] .toFile "..\scripts\const_troops_id", .utf8
+					@wait 0
+					
+			}
+			@wait 0
+			
+	}
+
+
+	@comment "set id"
+	t[802] .asg  .file "..\scripts\const_statics_id", .utf8
+	v[4573] = 16000
+	t[510] .asg PATH_language .extract
+	t[510] .cat Str_LanguagePath
+	t[510] .cat "lang_buffs"
+	// t[510] .asg  .file t[510], .utf8, .extract
+	readLangFile(t[510],t[510])
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[4573]], TT1
+
+	v[4519] = 17000
+	t[510] .asg PATH_language .extract
+	t[510] .cat Str_LanguagePath
+	t[510] .cat "lang_skills"
+	// t[510] .asg  .file t[510], .utf8, .extract
+	readLangFile(t[510],t[510])
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[4519]], TT1
+
+	v[4576] = 18200
+	t[510] .asg PATH_language .extract
+	t[510] .cat Str_LanguagePath
+	t[510] .cat "lang_statics"
+	// t[510] .asg  .file t[510], .utf8, .extract
+	readLangFile(t[510],t[510])
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[4576]], TT1
+
+
+	// LOAD TECH LANG FILE
+	v[4520] = 18300
+	t[510] .asg  .file "..\Languages\lang_techs", .utf8, .extract
+	t[510] .asg PATH_language .extract
+	t[510] .cat Str_LanguagePath
+	t[510] .cat "lang_techs"
+	// t[510] .asg  .file t[510], .utf8, .extract
+	readLangFile(t[510],t[510])
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[4520]], TT1
+
+
+	// LOAD TERRAIN FILE
+	v[1239] = Adrt_terraindata_head
+	Const_save_var_AdrTerrainBitsHead = Adr_terrainbits_head // this var might be needless after TPC
+	t[510] .asg  .file "..\data\data_terrains", .utf8, .extract
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[1239]], TT1
+	t[511] .asg PATH_language .extract
+	t[511] .cat Str_LanguagePath
+	t[511] .cat "lang_terrains"
+	readLangFile(t[511],t[511])
+	@if t[511] .neq "" {
+			t[511] .split "*/", t[509], TT3
+			t[511] .split LF, t[1000], TT3
+			@loop TT3 .dst var1 {
+					var2 = v[1239] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					var2 = 1000 + var1
+					t[var2] .split ",", t[3300], TT4
+					t[3001] .asg t[3300]
+					TT2 -= 1
+					t[3000] .cat ","
+					@loop TT2 .dst var2 {
+							var2 = 3001 + var2
+							t[3000] .cat t[var2]
+							t[3000] .cat ","
+							
+					}
+					
+					t[var10] .asg t[3000]
+					
+			}
+			
+			
+	}
+
+
+
+
+
+
+
+
+	t[511] .asg PATH_language .extract
+	t[511] .cat Str_LanguagePath
+	t[511] .cat "lang_weapons"
+	// t[511] .asg  .file t[511], .sjis, .extract
+	readLangFile(t[511],t[511])
+	@if t[511] .neq "" {
+			t[511] .split "*/", t[510], TT3
+			t[511] .split LF, t[1000], TT3
+			@loop TT3 .dst var1 {
+					var2 = v[1206] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					var2 = 1000 + var1
+					t[var2] .split ",", t[3300], TT4
+					@if t[3300] .neq "" {
+							t[3000] .asg "\t[3000],\t[3300],\t[3301]" .extract
+							
+					} .else bl {
+							t[3000] .asg "\t[3000],\t[3001],\t[3002]" .extract
+							
+					}
+					TT2 -= 3
+					@loop TT2 .dst var2 {
+							t[3000] .cat ","
+							var2 = 3003 + var2
+							t[3000] .cat t[var2]
+							
+					}
+					
+					t[var10] .asg t[3000]
+					
+			}
+			
+			
+	}
+
+	// LOAD RACE FILE
+	v[1217] = 18600
+	t[510] .asg  .file "..\data\data_races", .utf8, .extract
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[1217]], TT1
+
+
+	// LOAD FACTION TEMPLATE
+	v[4574] = 18700
+	t[510] .asg  .file "..\data\data_factiontemplates", .utf8, .extract
+	t[510] .split "*/", t[509], TT1
+	@if t[511] .eq "" {
+			@loop TT3 .dst var1 {
+					var2 = 3000 + var1
+					t[var2] .split ",", t[3301], TT2
+					@if t[3301] .contains "=" {
+							t[803] .cat "FAC_"
+							t[803] .cat t[3301]
+							t[803] .cat LF
+							
+					}
+					
+			}
+			
+			t[511] .asg  .file "..\scripts\const_factions_id", .utf8
+			@if t[511] .neq t[803] {
+					t[803] .toFile "..\scripts\const_factions_id", .utf8
+					@wait 0
+					
+			}
+			@wait 0
+			
+	}
+	t[510] .split LF, t[v[4574]], TT1
+	t[3000..3500] .asg ""
+	t[511] .asg PATH_language .extract
+	t[511] .cat Str_LanguagePath
+	t[511] .cat "lang_factions"
+	// t[511] .asg  .file t[511], .utf8, .extract
+	readLangFile(t[511],t[511])
+	@if t[511] .neq "" {
+			t[511] .split "*/", t[509], TT3
+			t[511] .split LF, t[1000], TT3
+			@loop TT3 .dst var1 {
+					var2 = v[4574] + var1
+					var10 = var2
+					t[var2] .split ",", t[3000], TT2
+					var2 = 1000 + var1
+					t[var2] .split ",", t[3300], TT4
+					t[3001] .asg t[3300]
+					TT2 -= 1
+					t[3000] .cat ","
+					@loop TT2 .dst var2 {
+							var2 = 3001 + var2
+							t[3000] .cat t[var2]
+							t[3000] .cat ","
+							
+					}
+					
+					t[var10] .asg t[3000]
+					
+			}
+			
+			
+	}
+
+	v[4557] = 18800
+	t[510] .asg  .file "..\Languages\lang_passives", .utf8
+	t[510] .asg PATH_language .extract
+	t[510] .cat Str_LanguagePath
+	t[510] .cat "lang_passives"
+	// t[510] .asg  .file t[510], .utf8, .extract
+	readLangFile(t[510],t[510])
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[4557]], TT1
+	v[1214] = 19000
+	t[510] .asg  .file "def\definition_perks", .utf8 , .extract
+	t[510] .split "*/", t[509], TT1
+	t[510] .split LF, t[v[1214]], TT1
 }
 
 
@@ -1613,61 +1706,61 @@ cev .id(2120), .name("Game:Boot"),{
 	s[38].on
 	s[317].off
 	s[316].off
-	t[525] .asg "
+	LF .asg "
 "
 
 	//Check if boot_config.txt is generated
 	t[510] .asg  .file "..\config\boot_config", .utf8
 	@if t[510] .eq ""{
-	    //There's no boot_config.txt, so going to generate it.
-	    t[510].asg "//Generated in DraCore version - "
-	    t[510].cat DraCore_version
-	    t[510].cat StrConst_LF
-	    //from header_config_files.tpc
-	    t[510].cat Gen_BootConfig
-	    file_output_cooldown()
-	    t[510].toFile "../Config/boot_config", .utf8
+			//There's no boot_config.txt, so going to generate it.
+			t[510].asg "//Generated in DraCore version - "
+			t[510].cat DraCore_version
+			t[510].cat StrConst_LF
+			//from header_config_files.tpc
+			t[510].cat Gen_BootConfig
+			file_output_cooldown()
+			t[510].toFile "../Config/boot_config", .utf8
 	}
 
 	@comment "*Load Config*"
-	t[510] .split t[525], t[1], v[505]
+	t[510] .split LF, t[1], v[505]
 	@loop v[505] .dst v[506] {
-	    var1 = 1 + v[506]
-	    t[510] .asg t[var1]
-	    t[510] .inStr "//", 321,  .beg 0
-	    //@comment "#""//""Comment out"
-	    @if v[321] == -1 {
+			var1 = 1 + v[506]
+			t[510] .asg t[var1]
+			t[510] .inStr "//", 321,  .beg 0
+			//@comment "#""//""Comment out"
+			@if v[321] == -1 {
 		@if t[510] .contains "autosave" {
-		    t[510] .split "=", t[3000], TT1
-		    t[3001] .toNum TT1
-		    @if TT1 == 0 {
+				t[510] .split "=", t[3000], TT1
+				t[3001] .toNum TT1
+				@if TT1 == 0 {
 			s[317].on
 			
-		    }
-		    
+				}
+				
 		}
 		@if t[510] .contains "devmode" {
-		    t[510] .split "=", t[3000], TT1
-		    t[3001] .toNum TT1
-		    @if TT1 >= 1 {
+				t[510] .split "=", t[3000], TT1
+				t[3001] .toNum TT1
+				@if TT1 >= 1 {
 			@sys.gameOpt .fatal 60, 2, 1
 			
-		    }
-		    @if TT1 == 114514 {
+				}
+				@if TT1 == 114514 {
 			s[316].on
 			
-		    }
-		    
+				}
+				
 		}
 		@if t[510] .contains "particle_amount" {
-		    t[510] .split "=", t[3000], TT1
-		    t[3001] .toNum TT1
-		    v[2215] = max(0, min(400, TT1))
-		    
+				t[510] .split "=", t[3000], TT1
+				t[3001] .toNum TT1
+				v[2215] = max(0, min(400, TT1))
+				
 		}
 		
-	    }
-	    
+			}
+			
 	}
 	__if DEBUG_BUILD == 1{ //if it's debug build, force debug mode
 		@sys.gameOpt .fatal 60, 2, 1
@@ -1677,37 +1770,37 @@ cev .id(2120), .name("Game:Boot"),{
 	//Check if user_custom_config.txt is generated
 	t[510] .asg  .file "..\User\user_custom_config", .utf8
 	@if t[510] .eq ""{
-	    //There's no boot_config.txt, so going to generate it.
-	    t[510].asg "//Generated in DraCore version - "
-	    t[510].cat  DraCore_version
-	    t[510].cat StrConst_LF
-	    //from header_config_files.tpc
-	    t[510].cat Gen_user_custom_config
-	    file_output_cooldown()
-	    t[510] .toFile "..\User\user_custom_config", .utf8
+			//There's no boot_config.txt, so going to generate it.
+			t[510].asg "//Generated in DraCore version - "
+			t[510].cat  DraCore_version
+			t[510].cat StrConst_LF
+			//from header_config_files.tpc
+			t[510].cat Gen_user_custom_config
+			file_output_cooldown()
+			t[510] .toFile "..\User\user_custom_config", .utf8
 	}
 
 	@comment "*Load User Custom Config*"
-	t[510] .split t[525], t[1], v[505]
+	t[510] .split LF, t[1], v[505]
 	t[522] .asg "map_pointer"
 	@loop v[505] .dst v[506] {
-	    var1 = 1 + v[506]
-	    t[510] .asg t[var1]
-	    t[510] .inStr "//", 321,  .beg 0
-	    @comment "#""//""Comment out"
-	    @if v[321] == -1 {
+			var1 = 1 + v[506]
+			t[510] .asg t[var1]
+			t[510] .inStr "//", 321,  .beg 0
+			@comment "#""//""Comment out"
+			@if v[321] == -1 {
 		@if t[510] .contains "custom_cursor" {
-		    t[510] .split "=", t[3000], TT1
-		    t[3001] .split """", t[3000], TT1
-		    @if t[3001] .eq "" {
+				t[510] .split "=", t[3000], TT1
+				t[3001] .split """", t[3000], TT1
+				@if t[3001] .eq "" {
 			t[522] .asg "map_pointer"
 			
-		    } .else bl {
+				} .else bl {
 			t[522] .asg "..//user/userui/"
 			t[522] .cat t[3001]
 			
-		    }
-		    @pic[1].show {
+				}
+				@pic[1].show {
 			t[522]
 			.pos 160, 120 .center
 			.chromakey 1
@@ -1718,12 +1811,12 @@ cev .id(2120), .name("Game:Boot"),{
 			.eraseWhenTransfer
 			.affectedByFlash
 			.affectedByShake
-		    }
-		    
+				}
+				
 		}
 		
-	    }
-	    
+			}
+			
 	}
 
 	t[1..100] .asg ""
@@ -1732,25 +1825,25 @@ cev .id(2120), .name("Game:Boot"),{
 	v[1115] = v[1001] / 2
 	v[1116] = v[1002] / 2 - 8
 	@if s[1] .isOn() {
-	    @if s[314] .isOn() {
+			@if s[314] .isOn() {
 		@pic[1].strpic {
-		    "NOW LOADING..."
-		    .pos v[1115], v[1116] .center
-		    .size 0, 0            .chromakey 1
-		    .scale 100
-		    .trans 0
-		    .rgbs 100, 100, 100, 100
-		    .font "", 12
-		    .spacing 0, 4
-		    .skin "" .stretch .noframe
-		    .mapLayer 10
-		    .eraseWhenTransfer
-		    .affectedByFlash
-		    .affectedByShake
+				"NOW LOADING..."
+				.pos v[1115], v[1116] .center
+				.size 0, 0            .chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.font "", 12
+				.spacing 0, 4
+				.skin "" .stretch .noframe
+				.mapLayer 10
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
 		}
 		@loop 10000 .dst TT1 {
-		    t[3000] .asg "num\\num_\TT1" .extract
-		    @pic[2].show {
+				t[3000] .asg "num\\num_\TT1" .extract
+				@pic[2].show {
 			t[3000]
 			.pos 160, 120 .center
 			.chromakey 1
@@ -1761,13 +1854,13 @@ cev .id(2120), .name("Game:Boot"),{
 			.eraseWhenTransfer
 			.affectedByFlash
 			.affectedByShake
-		    }
-		    
+				}
+				
 		}
 		
 		@loop 10000 .dst TT1 {
-		    t[3000] .asg "num\\num_ex_\TT1" .extract
-		    @pic[2].show {
+				t[3000] .asg "num\\num_ex_\TT1" .extract
+				@pic[2].show {
 			t[3000]
 			.pos 160, 120 .center
 			.chromakey 1
@@ -1778,45 +1871,45 @@ cev .id(2120), .name("Game:Boot"),{
 			.eraseWhenTransfer
 			.affectedByFlash
 			.affectedByShake
-		    }
-		    
+				}
+				
 		}
 		
 		
-	    }
-	    
+			}
+			
 	}
 	@if v[2300] == 0 {
-	    s[38].on
-	    t[510] .asg  .file "..\\config\language_config", .utf8
-	    t[510] .split t[525], t[2999], var2
-	    v[21] = 2
-	    v[22] = 2
-	    @loop var2 .dst v[10] {
+			s[38].on
+			t[510] .asg  .file "..\\config\language_config", .utf8
+			t[510] .split LF, t[2999], var2
+			v[21] = 2
+			v[22] = 2
+			@loop var2 .dst v[10] {
 		v[1] = 3000 + v[10]
 		t[v[1]] .split ",", t[3100], TT1
 		v[3] = 1 + v[10]
 		t[v[3]] .asg t[3100]
 		@pic[v[3]].strpic {
-		    t[v[3]]
-		    .pos v[21], v[22] .topLeft
-		    .size 0, 0            .chromakey 1
-		    .scale 100
-		    .trans 0
-		    .rgbs 100, 100, 100, 100
-		    .font "k8x12S", 12 .noShadow
-		    .spacing 0, 4
-		    .skin "" .nobg .noframe .noGradation .noPadding
-		    .mapLayer 7
-		    .eraseWhenTransfer
-		    .affectedByFlash
-		    .affectedByShake
+				t[v[3]]
+				.pos v[21], v[22] .topLeft
+				.size 0, 0            .chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.font "k8x12S", 12 .noShadow
+				.spacing 0, 4
+				.skin "" .nobg .noframe .noGradation .noPadding
+				.mapLayer 7
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
 		}
 		v[22] += 12
 		
-	    }
-	    
-	    @pic[800].strpic {
+			}
+			
+			@pic[800].strpic {
 		"Click to Select Language."
 		.pos v[1115], v[1116] .center
 		.size 0, 0        .chromakey 1
@@ -1830,108 +1923,108 @@ cev .id(2120), .name("Game:Boot"),{
 		.eraseWhenTransfer
 		.affectedByFlash
 		.affectedByShake
-	    }
-	    @loop .inf() {
+			}
+			@loop .inf() {
 		@if s[39] .isOff() {
-		    @mouse.getPos v[49], v[50]
-		    
+				@mouse.getPos v[49], v[50]
+				
 		}
 		v[49].copy v[51], 2
 		v[51..52] -= 3
 		v[52..52] += 1
 		@if v[47] > 0 {
-		    v[41] = v[49] - 1
-		    v[48] = v[50] - 1
-		    v[47] -= 1
-		    
+				v[41] = v[49] - 1
+				v[48] = v[50] - 1
+				v[47] -= 1
+				
 		} .else bl {
-		    v[41] = v[49]
-		    v[48] = v[50]
-		    
+				v[41] = v[49]
+				v[48] = v[50]
+				
 		}
 		@pic[1000].show {
-		    t[522]
-		    .pos v[41], v[48] .center
-		    .chromakey 1
-		    .scale 100
-		    .trans 0
-		    .rgbs 100, 100, 100, 100
-		    .mapLayer 10
-		    .eraseWhenTransfer
-		    .affectedByFlash
-		    .affectedByShake
+				t[522]
+				.pos v[41], v[48] .center
+				.chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.mapLayer 10
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
 		}
 		@if s[2] .isOn() {
-		    @if s[4] .isOn() {
+				@if s[4] .isOn() {
 			@pic[1000].show {
-			    t[522]
-			    .pos v[41], v[48] .center
-			    .chromakey 1
-			    .scale 100
-			    .trans 0
-			    .rgbs 200, 60, 60, 50
-			    .mapLayer 10
-			    .eraseWhenTransfer
-			    .affectedByFlash
-			    .affectedByShake
+					t[522]
+					.pos v[41], v[48] .center
+					.chromakey 1
+					.scale 100
+					.trans 0
+					.rgbs 200, 60, 60, 50
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
 			}
 			
-		    }
-		    
+				}
+				
 		}
 		@key.input .dst v[43] {
-		    .decision
-		    .number
-		    .lclick
-		    .rclick
-		    .wheelDown
-		    .wheelUp
+				.decision
+				.number
+				.lclick
+				.rclick
+				.wheelDown
+				.wheelUp
 		}
 		@loop var2 .dst v[10] {
-		    v[347] = 1 + v[10]
-		    @comment "#Resume"
-		    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-		    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
+				v[347] = 1 + v[10]
+				@comment "#Resume"
+				@pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
+				@if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
 			@pic[v[347]].move {
-			    .pos v[1952], v[1953] .center
-			    .scale 100
-			    .trans 0
-			    .time -2
-			    .rgbs 0, 200, 0, 100
+					.pos v[1952], v[1953] .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 0, 200, 0, 100
 			}
 			@if v[43] == 1005 {
-			    @if s[11] .isOff() {
+					@if s[11] .isOff() {
 				s[11].on
 				v[2201] = v[347] - 1
 				@break .level 2
 				
-			    }
-			    
+					}
+					
 			}
 			
-		    } .else bl {
+				} .else bl {
 			@pic[v[347]].move {
-			    .pos v[1952], v[1953] .center
-			    .scale 100
-			    .trans 0
-			    .time -2
-			    .rgbs 100, 100, 100, 100
+					.pos v[1952], v[1953] .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 100, 100, 100, 100
 			}
 			
-		    }
-		    
+				}
+				
 		}
 		
 
 		@wait 0
 		
-	    }
-	    
-	    @pic.erase .all
-	    @gsave.open
-	    gv[1].copyFrom v[2201], 1
-	    @gsave.saveAndClose
-	    
+			}
+			
+			@pic.erase .all
+			@gsave.open
+			gv[1].copyFrom v[2201], 1
+			@gsave.saveAndClose
+			
 	}
 	@map[4].setPlayerPos .pos 9, 1 .retain
 

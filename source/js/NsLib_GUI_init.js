@@ -78,6 +78,10 @@ function parse_DISid(line,myArray) {
 // ------------------------------------------------
 // DIS objects
 // ------------------------------------------------
+//
+// DIS object is basically container for fundamental datas of DIS on quickjs.
+// Whenever you want to access DIS game data, the DIS object serves you as a way to get/set the data..
+//
 
 var DIS = DIS || {};
 
@@ -120,9 +124,6 @@ DIS.log = {
 	Adrt_ShLog: 782, // same as Shell Log address 
 	
 	
-	pushLog: function(text) { // test
-		sett(gett(this.Adrt_ShLog) + "\n" + text)
-	},
 	
 	
 	
@@ -173,8 +174,6 @@ DIS.agent = {
 
 	searchEmptySpace: function(){ // this must be fugging slow. just experimental 
 
-
-
 		// if spawn cmd is not called yet in this frame, getptr.
 		if(!Cmd.runFlags.SpawnDetect){this.genPtrPos = getv(Adr_ptr_spawnAgent); Cmd.runFlags.SpawnDetect = true;}
 		let emptyspaceID = -1; // if the AgentSpace is full, return -1
@@ -198,6 +197,12 @@ DIS.agent = {
 	},
 
 }
+
+
+DIS.player = {
+	
+}
+
 
 
 // ------------------------------------------------
@@ -265,9 +270,11 @@ class RTSmission {
 		}
 	};
 
-	conf = {
+	conf = { // these matter only at the setting up mission part
 		isLEGACYmission: false,
 		isSightSystemOn: true,
+		isMoraleSystemOn: true,
+		isLevelSystemOn: false, // not yet
 		
 	};
 	
@@ -490,7 +497,11 @@ let RTS = {
 		this.mission = new RTSmission();
 		this.map = new RTSmap();
 		this.isRTSmode = false;
-		this.lc = {};
+		this.Mtrig = {}; // mission triggers
+		this.Mvar = {}; // mission vars
+		this.Mbool = {}; // mission switch
+		this.Mstr = {}; // mission strings
+
 
 	},
 
@@ -560,6 +571,7 @@ const CTYP_MAP = 1,
 	CTYP_AGENT = 5,
 	CTYP_PLAYER = 6,
 	CTYP_GROUP = 7,
+	CTYP_UI = 8,
 	CTYP_END = 999;
 
 
@@ -769,7 +781,7 @@ var Cmd = {
 	// Cmd.agent 
 	// -------------
 	agent: {
-		CmdType: CTYP_MISSION,
+		CmdType: CTYP_AGENT,
 		
 		setName: function(agentAdr, name) {
 			Cmd.Qset(this.CmdType,"setName",`${agentAdr},${name}`);
@@ -832,7 +844,18 @@ var Cmd = {
 			if(grp != this.cgrp){this.setCgrp(grp);};
 		},
 
-		
+	},
+
+
+	// -------------
+	// Cmd.ui
+	// -------------
+
+	//radio dialog
+	//
+	ui: { 
+		CmdType: CTYP_UI,
+
 
 	},
 
@@ -963,12 +986,12 @@ class Ns_Presentation {
 
 		
 		
-	}
+	};
 
 	add = function(component) {
 		this.UI_components.push(component); // push to components array
 		this.alloc_pid += component.set_to_presen(this.alloc_pid); // the presentation allocates pid to the object and its children
-	}
+	};
 
 }
 

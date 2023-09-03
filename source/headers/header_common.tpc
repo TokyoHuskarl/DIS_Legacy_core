@@ -72,7 +72,7 @@ def {
 
 	Const_Map_Allocate_Limit = 160000 // which part of the map mem allocated???
 
-	Agents_Limit = 845
+	Agents_Limit = 890 // 845
 	Effects_Limit = 120
 	Effects_Additional_Cap = 65
 	PicID_Effects_Begin = 801
@@ -90,6 +90,7 @@ defv {
 	Const_save_var_Effects_PicID_Begin = 1220
 	//Const_save_var_Address_Effects_Array_PlusOne = 4840 No need, remove this from init
 	Const_save_var_Address_Effects_Array_Begin=1018
+	Const_save_var_AdrTerrainBitsHead = 4505
 	Const_save_var_Projefctiles_Limit = 4559
 
 
@@ -135,10 +136,6 @@ __fn macro_get_agent_slot_ptr $pointer $agent $slot{
 	def consttoslot = 4700+$slot //idk if this def is possible
 	$pointer = $agent * 300 + consttoslot
 }*/
-
-//basic structures definitions
-#include "./define_structures_agent.tpc"
-#include "./define_structures_map.tpc"
 
 //cev 2004 GetParaNow v1v2 r1
 def {
@@ -245,6 +242,8 @@ deft LF = 525
 def RAWSTR_LF = __str("\t[", __id(LF), "]")
 
 deft Str_LanguageToken = 526
+
+deft Str_LanguagePath = 528
 
 
 //Fundamental Switches
@@ -420,9 +419,118 @@ deft{
 	str8 = 508
 	str9 = 509
 	inputstr = 510
-	strreg1=1 // are you serious?
+	strreg1 = 1 // are you serious?
+	regs1 = 1
+
+
+	strAr0 = 3000
+	strAr1 = 3001
+	strAr2 = 3002
+	strAr3 = 3003
+	strAr4 = 3004
+	strAr5 = 3005
+	strAr6 = 3006
+	strAr7 = 3007
+	strAr8 = 3008
+	strAr9 = 3009
+	strAr10 = 3010
+	strAr11 = 3011
+	strAr12 = 3012
+	strAr13 = 3013
+	strAr14 = 3014
+	strAr15 = 3015
+	strAr16 = 3016
+	strAr17 = 3017
+	strAr18 = 3018
+	strAr19 = 3019
+	strAr20 = 3020
+	strAr21 = 3021
+	strAr22 = 3022
+	strAr23 = 3023
+	strAr24 = 3024
+	strAr25 = 3025
+	strAr26 = 3026
+	strAr27 = 3027
+	strAr28 = 3028
+	strAr29 = 3029
+	strAr30 = 3030
+	strAr31 = 3031
+	strAr32 = 3032
+	strAr33 = 3033
+	strAr34 = 3034
+	strAr35 = 3035
+	strAr36 = 3036
+	strAr37 = 3037
+	strAr38 = 3038
+	strAr39 = 3039
+	strAr40 = 3040
+	strAr41 = 3041
+	strAr42 = 3042
+	strAr43 = 3043
+	strAr44 = 3044
+	strAr45 = 3045
+	strAr46 = 3046
+	strAr47 = 3047
+	strAr48 = 3048
+	strAr49 = 3049
+	strAr50 = 3050
+	strAr51 = 3051
+	strAr52 = 3052
+	strAr53 = 3053
+	strAr54 = 3054
+	strAr55 = 3055
+	strAr56 = 3056
+	strAr57 = 3057
+	strAr58 = 3058
+	strAr59 = 3059
+	strAr60 = 3060
+	strAr61 = 3061
+	strAr62 = 3062
+	strAr63 = 3063
+	strAr64 = 3064
+	strAr65 = 3065
+	strAr66 = 3066
+	strAr67 = 3067
+	strAr68 = 3068
+	strAr69 = 3069
+	strAr70 = 3070
+	strAr71 = 3071
+	strAr72 = 3072
+	strAr73 = 3073
+	strAr74 = 3074
+	strAr75 = 3075
+	strAr76 = 3076
+	strAr77 = 3077
+	strAr78 = 3078
+	strAr79 = 3079
+	strAr80 = 3080
+	strAr81 = 3081
+	strAr82 = 3082
+	strAr83 = 3083
+	strAr84 = 3084
+	strAr85 = 3085
+	strAr86 = 3086
+	strAr87 = 3087
+	strAr88 = 3088
+	strAr89 = 3089
+	strAr90 = 3090
+	strAr91 = 3091
+	strAr92 = 3092
+	strAr93 = 3093
+	strAr94 = 3094
+	strAr95 = 3095
+	strAr96 = 3096
+	strAr97 = 3097
+	strAr98 = 3098
+	strAr99 = 3099
 
 }
+
+
+//basic structures definitions
+#include "./define_structures_agent.tpc"
+#include "./define_structures_map.tpc"
+
 
 
 def EXTRACT_FLAG_Data_extracted = 0x1
@@ -556,7 +664,25 @@ __fn getQstr $quickstring_id {
 // file path setting
 def {
 
+	PATH_language = "../Languages/"
+
+	PATH_module = "/Module/Legacy/"
+		
+		PATH_moduleLang = __str("../",PATH_module,"Languages/")
+
+	PATH_gui_setting = __str("../",PATH_module,"gui/") // new gui setting put in module directory
+
+	PATH_core_data = "..\data\"
+	
+
 	PATH_pictureHome = ""
+
+		// UI asset path
+		PATH_Legacy_UI_passive_icon = __str(PATH_pictureHome,"\passive_icon\")
+
+
+		
+		// minions parts path
 
 		PATH_spr_armor = __str(PATH_pictureHome,"parts\armor\spr_armor_0")
 		PATH_spr_head = __str(PATH_pictureHome,"parts\bodyset\set\spr_head_0")
@@ -574,6 +700,26 @@ def {
 
 
 }
+
+__fn readLangFile $loadfile $savestr {
+	@if Str_LanguageToken.eq "_jp" {
+		t[__id($savestr)] .asg  .file $loadfile, .sjis , .extract
+		
+	}.else bl {
+		t[__id($savestr)] .asg  .file $loadfile, .utf8 , .extract
+		
+	}
+}
+
+// Address setting
+def {
+	Adr_terrainbits_head = 463616
+
+	Adrt_terraindata_head = 18500
+
+}
+
+
 
 
 $DIS_h_common_included = 1

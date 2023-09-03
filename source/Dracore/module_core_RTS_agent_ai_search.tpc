@@ -5,14 +5,14 @@ def Const_AgentMetaTeam_beginMINUSONE = Const_AgentMetaTeam_begin -1
 __fn agent_AI_check_current_target {
 	//If the agent has target agent initially
 	@if v[Ptr20] > 0 {
-	    //If the unit has cohort order flag
+			//If the unit has cohort order flag
 
-	    //Temp8 = Temp16
-	    @if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AICohortGatheringAttack {
+			//Temp8 = Temp16
+			@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AICohortGatheringAttack {
 		//if the target is set by cohort order, then agent's sight radius is considered 2.5 times bigger than actual in this process. Besides if the agent has a target already, the sight radius gets halved..
 		Temp8 *= 5
 		
-	    }
+			}
 
 		//Try checking if current target is in sight radius  
 		Temp11 = v[Ptr20] * v[1117] 
@@ -23,16 +23,16 @@ __fn agent_AI_check_current_target {
 		Temp4 .mul Temp4, 2
 		v[Temp6] = Temp4 + Temp5 + v[Temp11 + 276]
 		@if v[Temp6] < Temp8 {
-		    //and if it's in the agent's sight, let it keep following to the target.
-		    v[v[534] + Temp7] = v[Temp6] * 1000 + v[Ptr20] //+ v[4001 + min(v[Temp1 + 95], 29)] this part is needless, cuz the agent has no other possible target
-		    v[306..307] += 1
-		    
+				//and if it's in the agent's sight, let it keep following to the target.
+				v[v[534] + Temp7] = v[Temp6] * 1000 + v[Ptr20] //+ v[4001 + min(v[Temp1 + 95], 29)] this part is needless, cuz the agent has no other possible target
+				v[306..307] += 1
+				
 		}.else bl{
 			//If the target is out of agent sight, then break cohort order flag and wait new cohort order
 			v[agent_AI_routine_bits] &= -129//~128
 		}
 		
-	    }
+			}
 }
 
 
@@ -53,479 +53,480 @@ v[4035..4036] = v[205]
 v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 
 @while v[v[536]] != 0 {
-    v[212] = v[v[536]] * 300 
-    v[212] += 4700
-    v[v[212]].copy v[600], 301
-    //Check agent timer to run search AI
-    @if `(v[900] + v[535]) % v[533] == 0 {//9.5.23
-    	v[211] = v[v[536]] - 1
-        AgentIDholder = v[v[536]] 
-        v[v[212] + 3] &= -134217729//~134217728
+		v[212] = v[v[536]] * 300 
+		v[212] += 4700
+		v[v[212]].copy v[600], 301
+		//Check agent timer to run search AI
+		@if `(v[900] + v[535]) % v[533] == 0 {//9.5.23
+			v[211] = v[v[536]] - 1
+				AgentIDholder = v[v[536]] 
+				v[v[212] + 3] &= -134217729//~134217728
 	//If worker AI flag is on
-        @if `agent_AgentBits & AgentBits_FLAG_EnableCivAI {
-            @if `agent_AgentBits & AgentBits_FLAG_walldetected {
-                @if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_tracing_flag) {
-                    s[280].on
-                    v[v[212] + 34] |= AI_routine_bits_FLAG_PATHFINDING
-                    
-                }
-                
-            }
-            
-        } .else bl {
-            @if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI {//9.5.23
-                agent_AI_routine_bits = v[212] + 34
-                @if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AIskip {
-                    v[agent_AI_routine_bits] &= -2097153//~2097152
-                    
-                } .else bl {
-                    Ptr20 = v[212] + 18
-                    v[299] = v[212] + 241
-		    //get team ID
-                    Temp1 = v[212] + 100
+				@if `agent_AgentBits & AgentBits_FLAG_EnableCivAI {
+						@if `agent_AgentBits & AgentBits_FLAG_walldetected {
+								@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_tracing_flag) {
+										s[280].on
+										TT1 = v[212] + 34
+										v[TT1] |= AI_routine_bits_FLAG_PATHFINDING
+										
+								}
+								
+						}
+						
+				} .else bl {
+						@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI {//9.5.23
+								agent_AI_routine_bits = v[212] + 34
+								@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AIskip {
+										v[agent_AI_routine_bits] &= -2097153//~2097152
+										
+								} .else bl {
+										Ptr20 = v[212] + 18
+										v[299] = v[212] + 241
+				//get team ID
+										Temp1 = v[212] + 100
 
-		    //team ID % 3
-		    //opt 28.4.23
-		    //Temp14 = v[Const_AgentMetaTeam_begin+v[211]] //v[Temp1] % 3
-		    __if DIS_EXPERIMENTAL == -1 {
-		    	//macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14)
-                	get_AEAB_element_wo_ptr(AgentIDholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
-		    }.else bl {
-		    	Temp14 = Const_AgentMetaTeam_begin + v[211]
-		    	Temp14 = v[Temp14]
-		    }
+				//team ID % 3
+				//opt 28.4.23
+				//Temp14 = v[Const_AgentMetaTeam_begin+v[211]] //v[Temp1] % 3
+				__if DIS_EXPERIMENTAL == -1 {
+					//macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14)
+									get_AEAB_element_wo_ptr(AgentIDholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
+				}.else bl {
+					Temp14 = Const_AgentMetaTeam_begin + v[211]
+					Temp14 = v[Temp14]
+				}
 
-                    Temp9 = v[212] + 7
-                    //Temp8 = v[4034 + Temp14]
-		    Temp8 = 4034 + Temp14
-		    Temp8 = v[Temp8]
-                    //Temp2 = v[4031 + Temp14]
+										Temp9 = v[212] + 7
+										//Temp8 = v[4034 + Temp14]
+				Temp8 = 4034 + Temp14
+				Temp8 = v[Temp8]
+										//Temp2 = v[4031 + Temp14]
 
-                    //v[4001..4030] = 100000000
+										//v[4001..4030] = 100000000
 
-            __if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
-                get_AEAB_array(AgentIDholder,4001,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
+						__if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
+								get_AEAB_array(AgentIDholder,4001,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
 
-            }.else bl {
+						}.else bl {
 
-                Temp7 = v[agent_AI_routine_bits]
+								Temp7 = v[agent_AI_routine_bits]
 		v[4101].copy v[4001],30
 
 		// Common_Switch5 serves checking if the agent has bias to prioritize the enemy by its type, if it's on, it means the agent has the bias
-                LEGS_Common_Switch5.off
-                @if `Temp7 & 1 {
-                    v[4001..4029] += 700000000
-                    v[4011] -= 750000000
-                    LEGS_Common_Switch5.on
-                    
-                }
-                @if `Temp7 & 2 {
-                    v[4002] -= 50000000
-                    LEGS_Common_Switch5.on
-                    
-                }
-                @if `Temp7 & 4 {
-                    v[4005] -= 50000000
-                    LEGS_Common_Switch5.on
-                    
-                }
-            }
+								LEGS_Common_Switch5.off
+								@if `Temp7 & 1 {
+										v[4001..4029] += 700000000
+										v[4011] -= 750000000
+										LEGS_Common_Switch5.on
+										
+								}
+								@if `Temp7 & 2 {
+										v[4002] -= 50000000
+										LEGS_Common_Switch5.on
+										
+								}
+								@if `Temp7 & 4 {
+										v[4005] -= 50000000
+										LEGS_Common_Switch5.on
+										
+								}
+						}
 
-            Temp7 = 0
-            //v[3401..3600] = 999999999
-		    v[3401] = 999999999
-		    v[3401].copy v[3402], 199
-                    v[534] = v[4579] + (v[1012] + 2) * v[211]
-                    v[v[534]] = 0
+						Temp7 = 0
+						//v[3401..3600] = 999999999
+				v[3401] = 999999999
+				v[3401].copy v[3402], 199
+										v[534] = v[4579] + (v[1012] + 2) * v[211]
+										v[v[534]] = 0
 
-		    //Temp8 = v[212] + 230 9.5.23
-                    Temp8 = v[830]
-                    //@comment "##############"
+				//Temp8 = v[212] + 230 9.5.23
+										Temp8 = v[830]
+										//@comment "##############"
 
-            // get sight range root
-                    __if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
+						// get sight range root
+										__if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
 
-			    get_AEAB_element_wo_ptr(AgentIDholder,__id(v[315]),AgentExBuffer_SLOT_BaseSight_Root)
+					get_AEAB_element_wo_ptr(AgentIDholder,__id(v[315]),AgentExBuffer_SLOT_BaseSight_Root)
 
-		    }.else bl {
+				}.else bl {
 
-			    v[315] = v[211] + v[4806]
-			    v[315] = v[v[315]]
- 		    }
+					v[315] = v[211] + v[4806]
+					v[315] = v[v[315]]
+				}
 
-		    //If the agent has target agent
-		    //Temp16 = Temp15  
-                    @if v[Ptr20] >= 1 {
+				//If the agent has target agent
+				//Temp16 = Temp15  
+										@if v[Ptr20] >= 1 {
 			//then halve search radius
-                        v[315] /= 2
+												v[315] /= 2
 			//If it's in melee combat, 
-                        @if agent_MeleeFightTimer >= 1 {
-			    //AND melee unit
-                            @if agent_AAType == 0 {//9.5.23
+												@if agent_MeleeFightTimer >= 1 {
+					//AND melee unit
+														@if agent_AAType == 0 {//9.5.23
 				//then halve search radius once more
-                                v[315] /= 2 //9.5.23
-                                
-                            }
-                            
-                        }
-                        
-                    }
+																v[315] /= 2 //9.5.23
+																
+														}
+														
+												}
+												
+										}
 
-                    /*@comment "#########################		    #2002 Crd->Mort V1V2 reg1		    ##########################"*/
-                    v[Temp9].copy TT1, 2
-                    v[341..342] -= v[315]
-                    TT1 .add v[53], 2
-                    TT1 .sub v[76], 2
-                    TT1 .div v[74], 2
-                    TT1 = max(TT1, 0)
-                    TT2 = max(TT2, 0)
+										/*@comment "#########################		    #2002 Crd->Mort V1V2 reg1		    ##########################"*/
+										v[Temp9].copy TT1, 2
+										v[341..342] -= v[315]
+										TT1 .add v[53], 2
+										TT1 .sub v[76], 2
+										TT1 .div v[74], 2
+										TT1 = max(TT1, 0)
+										TT2 = max(TT2, 0)
 
-                    /*@comment "TT1=MortX
-		   TT2=MortY
-		   ビット演算して処理するよ"*/
-                    TT1 = (TT1 | TT1 << 8) & 0xFF00FF
-                    TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
-                    TT1 = (TT1 | TT1 << 2) & 0x33333333
-                    TT1 = (TT1 | TT1 << 1) & 0x55555555
-                    TT2 = (TT2 | TT2 << 8) & 0xFF00FF
-                    TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
-                    TT2 = (TT2 | TT2 << 2) & 0x33333333
-                    TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
+										/*@comment "TT1=MortX
+			 TT2=MortY
+			 ビット演算して処理するよ"*/
+										TT1 = (TT1 | TT1 << 8) & 0xFF00FF
+										TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
+										TT1 = (TT1 | TT1 << 2) & 0x33333333
+										TT1 = (TT1 | TT1 << 1) & 0x55555555
+										TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+										TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+										TT2 = (TT2 | TT2 << 2) & 0x33333333
+										TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
 
-                    //@comment "yは1bitシフトで終わり"
-                    //TT2 <<= 1
-                    //@comment "最後にTT1 OR TT2"
-		    //opt 28.4.23
-                    //v[21] = TT1 | TT2
-                    /*@comment "#########################		   #2002 Crd->Mort V1V2 reg1 end		   ##########################"*/
-                    v[351] = TT1 | TT2
+										//@comment "yは1bitシフトで終わり"
+										//TT2 <<= 1
+										//@comment "最後にTT1 OR TT2"
+				//opt 28.4.23
+										//v[21] = TT1 | TT2
+										/*@comment "#########################		   #2002 Crd->Mort V1V2 reg1 end		   ##########################"*/
+										v[351] = TT1 | TT2
 
-                    /*@comment "##########################2002 Crd->Mort V1V2 reg1##########################"*/
-                    v[Temp9].copy TT1, 2
-                    v[341..342] += v[315]
-                    TT1 .add v[53], 2
-                    TT1 .sub v[76], 2
-                    TT1 .div v[74], 2
-                    TT1 = min(TT1, 31)
-                    TT2 = min(TT2, 31)
+										/*@comment "##########################2002 Crd->Mort V1V2 reg1##########################"*/
+										v[Temp9].copy TT1, 2
+										v[341..342] += v[315]
+										TT1 .add v[53], 2
+										TT1 .sub v[76], 2
+										TT1 .div v[74], 2
+										TT1 = min(TT1, 31)
+										TT2 = min(TT2, 31)
 
-                    /*@comment "TT1=MortX
-		    TT2=MortY
-	 	    ビット演算して処理するよ"*/
-                    TT1 = (TT1 | TT1 << 8) & 0xFF00FF
-                    TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
-                    TT1 = (TT1 | TT1 << 2) & 0x33333333
-                    TT1 = (TT1 | TT1 << 1) & 0x55555555
-                    TT2 = (TT2 | TT2 << 8) & 0xFF00FF
-                    TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
-                    TT2 = (TT2 | TT2 << 2) & 0x33333333
-                    TT2 = ((TT2 | TT2 << 1) & 0x55555555) << 1
-                    //@comment "yは1bitシフトで終わり"
-                    //TT2 <<= 1
-                    //@comment "最後にTT1 OR TT2"
+										/*@comment "TT1=MortX
+				TT2=MortY
+				ビット演算して処理するよ"*/
+										TT1 = (TT1 | TT1 << 8) & 0xFF00FF
+										TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
+										TT1 = (TT1 | TT1 << 2) & 0x33333333
+										TT1 = (TT1 | TT1 << 1) & 0x55555555
+										TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+										TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+										TT2 = (TT2 | TT2 << 2) & 0x33333333
+										TT2 = ((TT2 | TT2 << 1) & 0x55555555) << 1
+										//@comment "yは1bitシフトで終わり"
+										//TT2 <<= 1
+										//@comment "最後にTT1 OR TT2"
 
-		    //opt 28.4.23
-                    //v[21] = TT1 | TT2
-		    TT2 = TT1 | TT2
-                    TT1 = v[351]
-                    //TT2 = v[21]
-                    /*@comment "TT1 = upper left morton
+				//opt 28.4.23
+										//v[21] = TT1 | TT2
+				TT2 = TT1 | TT2
+										TT1 = v[351]
+										//TT2 = v[21]
+										/*@comment "TT1 = upper left morton
 			TT2 = bottom right morton
 			TT5 = shift num"*/
-                    TT3 = TT1 ^ TT2
-                    //@comment "#mask with 11000000"
-                    //@comment "#mask with 110000"
-                    //@comment "#mask with 001100"
-                    //@comment "#mask with 000011"
+										TT3 = TT1 ^ TT2
+										//@comment "#mask with 11000000"
+										//@comment "#mask with 110000"
+										//@comment "#mask with 001100"
+										//@comment "#mask with 000011"
 
-		    //If the morton space where you're gonna check is the root space...
-                    @if `TT3 & 768 {
+				//If the morton space where you're gonna check is the root space...
+										@if `TT3 & 768 {
 
 			Temp2 = 4031 + Temp14
 			Temp2 = v[Temp2]
 
 			//then just check team agent list - but this seemingly not good design (also kinda buggy), so maybe I need to change this later
-                        Temp6 = 3601
+												Temp6 = 3601
 
-                        @if LEGS_Common_Switch5 .isOn() { // NOT EXPERIMENTAL
-                        //@if `v[agent_AI_routine_bits] & 7 { // EXPERIMENTAL
-                            @doWhile v[Temp2] != 0 {
-                                v[Temp9].copy Temp4, 2
-                                //optimizing 25.4.23
+												@if LEGS_Common_Switch5 .isOn() { // NOT EXPERIMENTAL
+												//@if `v[agent_AI_routine_bits] & 7 { // EXPERIMENTAL
+														@doWhile v[Temp2] != 0 {
+																v[Temp9].copy Temp4, 2
+																//optimizing 25.4.23
 				//Temp1 = v[Temp2] * 300 + 4707
 				Temp1 = v[Temp2] * 300 
 				Temp1 += 4707
-                                Temp4 .sub v[Temp1], 2
-                                Temp4 .mul Temp4, 2
-                                v[Temp6] = Temp4 + Temp5 + v[v[Temp2] * 300 + 4976]
+																Temp4 .sub v[Temp1], 2
+																Temp4 .mul Temp4, 2
+																v[Temp6] = Temp4 + Temp5 + v[v[Temp2] * 300 + 4976]
 
-                                @if v[Temp6] < Temp8 {
-                                    v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp2] + v[4001 + min(v[Temp1 + 95], ClassType_Amount)]
-                                    v[306..307] += 1
-                                    
-                                }
-                                Temp2 += 1
-                                
-                            }
-                            
-                            
-                        } .else bl {
-                            @doWhile v[Temp2] != 0 {
-                                v[Temp9].copy Temp4, 2
-                                //optimizing 25.4.23
+																@if v[Temp6] < Temp8 {
+																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp2] + v[4001 + min(v[Temp1 + 95], ClassType_Amount)]
+																		v[306..307] += 1
+																		
+																}
+																Temp2 += 1
+																
+														}
+														
+														
+												} .else bl {
+														@doWhile v[Temp2] != 0 {
+																v[Temp9].copy Temp4, 2
+																//optimizing 25.4.23
 				//Temp1 = v[Temp2] * 300 + 4707
 				Temp1 = v[Temp2] * 300 
 				Temp1 += 4707
-                                Temp4 .sub v[Temp1], 2
-                                Temp4 .mul Temp4, 2
-                                v[Temp6] = Temp4 + Temp5 + v[v[Temp2] * 300 + 4976]
+																Temp4 .sub v[Temp1], 2
+																Temp4 .mul Temp4, 2
+																v[Temp6] = Temp4 + Temp5 + v[v[Temp2] * 300 + 4976]
 
-                                @if v[Temp6] < Temp8 {
-                                    v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp2]
-                                    v[306..307] += 1
-                                    
-                                }
+																@if v[Temp6] < Temp8 {
+																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp2]
+																		v[306..307] += 1
+																		
+																}
 
-                                Temp2 += 1
-                                
-                            }
-                            
-                            
-                        }
+																Temp2 += 1
+																
+														}
+														
+														
+												}
 
 
-                    } .else bl {
-                        //@comment "#TT6 = morton id"
+										} .else bl {
+												//@comment "#TT6 = morton id"
 			//Isn't this formula retarded? 8.Mar
-                        TT5 = TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
-                        TT6 = TT2 >> TT5
-                        //@comment "#mask end"
-                        v[340] = v[4546 - TT5 / 2] + TT6 * v[1004]
-                        v[327] = v[v[4552 - TT5 / 2] + TT6]
-                        agent_TeamID = [1, 0, -2][(Temp14)] /*v[Temp1] % 3*/
-                        Temp6 = 3601
+												TT5 = TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
+												TT6 = TT2 >> TT5
+												//@comment "#mask end"
+												v[340] = v[4546 - TT5 / 2] + TT6 * v[1004]
+												v[327] = v[v[4552 - TT5 / 2] + TT6]
+												agent_TeamID = [1, 0, -2][(Temp14)] /*v[Temp1] % 3*/
+												Temp6 = 3601
 
-                        @loop v[327] .dst v[310] {
-                            v[312] = v[340] + v[310]
+												@loop v[327] .dst v[310] {
+														v[312] = v[340] + v[310]
 
 
-			    __if DIS_EXPERIMENTAL == -1 {
-				    macro_get_agent_MetaTeam_into_var(v[v[312]],TT1) // AEBA
-			    }.else bl {
-				    TT1 = Const_AgentMetaTeam_beginMINUSONE + v[v[312]]
-			    }
+					__if DIS_EXPERIMENTAL == -1 {
+						macro_get_agent_MetaTeam_into_var(v[v[312]],TT1) // AEBA
+					}.else bl {
+						TT1 = Const_AgentMetaTeam_beginMINUSONE + v[v[312]]
+					}
 
-                            // @if  agent_TeamID == TT1 { // EXPERIMENTAL - IF YOU USE AEBA  
-                            @if  agent_TeamID == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA
+														// @if  agent_TeamID == TT1 { // EXPERIMENTAL - IF YOU USE AEBA  
+														@if  agent_TeamID == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA
 
-                                Temp11 = v[v[312]] * v[1117] 
+																Temp11 = v[v[312]] * v[1117] 
 				Temp11 += 4700
-                                v[Temp9].copy Temp4, 2
-                                Temp1 = Temp11 + 7
-                                Temp4 .sub v[Temp1], 2
-                                Temp4 .mul Temp4, 2
-                                v[Temp6] = Temp4 + Temp5 + v[Temp11 + 276]
+																v[Temp9].copy Temp4, 2
+																Temp1 = Temp11 + 7
+																Temp4 .sub v[Temp1], 2
+																Temp4 .mul Temp4, 2
+																v[Temp6] = Temp4 + Temp5 + v[Temp11 + 276]
 				
 
-                                @if v[Temp6] < Temp8 {
-                                    v[v[534] + Temp7] = v[Temp6] * 1000 + v[v[312]] + v[4001 + min(v[Temp1 + 95], ClassType_Amount)]
-                                    v[306..307] += 1
-                                    
-                                }
-                                
-                            }
-                            
-                        }
-                        
-                        
-                    }
+																@if v[Temp6] < Temp8 {
+																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[v[312]] + v[4001 + min(v[Temp1 + 95], ClassType_Amount)]
+																		v[306..307] += 1
+																		
+																}
+																
+														}
+														
+												}
+												
+												
+										}
 
-		    //Has more than 16 enemies in the search radius
-                    @if Temp7 >= 16 {
+				//Has more than 16 enemies in the search radius
+										@if Temp7 >= 16 {
 			//set next search skip flag 
-                        v[agent_AI_routine_bits] |= agent_AAType == 0 ? AI_routine_bits_FLAG_AIskip : 0 //v[v[212] + 103] == 0 ? 2097152 : 0
-                        //break the flag
+												v[agent_AI_routine_bits] |= agent_AAType == 0 ? AI_routine_bits_FLAG_AIskip : 0 //v[v[212] + 103] == 0 ? 2097152 : 0
+												//break the flag
 			v[agent_AI_routine_bits] &= -129 //~128
-                        
-                    } .else bl {
+												
+										} .else bl {
 			//found none in the radius
-                        @if Temp7 == 0 {
+												@if Temp7 == 0 {
 
-		    		agent_AI_check_current_target()
-                            
-                        } .else bl {
-                            //break the flag
-                            v[agent_AI_routine_bits] &= -129//~128
-                            
-                        }
-                        
-                    }
-                    v[v[534]].sort Temp7
-                    @if `agent_AgentBits & AgentBits_FLAG_walldetected { //v[v[212] + 3] & 8388608 {
-                        //TT2 = v[212] + 26
-                        //v[TT2].copy Temp11, 2
+						agent_AI_check_current_target()
+														
+												} .else bl {
+														//break the flag
+														v[agent_AI_routine_bits] &= -129//~128
+														
+												}
+												
+										}
+										v[v[534]].sort Temp7
+										@if `agent_AgentBits & AgentBits_FLAG_walldetected { //v[v[212] + 3] & 8388608 {
+												//TT2 = v[212] + 26
+												//v[TT2].copy Temp11, 2
 			agent_MapX.copy Temp11,2
-                        //TT2 = v[212] + 21
-                        //v[TT2].copy Temp3, 2
+												//TT2 = v[212] + 21
+												//v[TT2].copy Temp3, 2
 			v[621].copy Temp3,2
-                        @if Temp4 < -30 {
-                            v[312] -= 1
-                            
-                        } .else bl {
-                            @if Temp4 > 30 {
-                                v[312] += 1
-                                
-                            }
-                            
-                        }
-                        @if Temp3 > 30 {
-                            Temp11 += 1
-                            
-                        } .else bl {
-                            @if Temp3 < -30 {
-                                Temp11 -= 1
-                                
-                            }
-                            
-                        }
+												@if Temp4 < -30 {
+														v[312] -= 1
+														
+												} .else bl {
+														@if Temp4 > 30 {
+																v[312] += 1
+																
+														}
+														
+												}
+												@if Temp3 > 30 {
+														Temp11 += 1
+														
+												} .else bl {
+														@if Temp3 < -30 {
+																Temp11 -= 1
+																
+														}
+														
+												}
 
-                        v[286] = v[4529] + Temp11 - v[69] + (v[312] - v[70]) * v[2061]
+												v[286] = v[4529] + Temp11 - v[69] + (v[312] - v[70]) * v[2061]
 
-                        @if v[v[286]] > 0 {
-                            @if `v[v[286]] / 10000 % 10 == 1 {
-                                Temp2 = v[v[286]] / 100000
-                                Temp1 = Temp2 * 300 
+												@if v[v[286]] > 0 {
+														@if `v[v[286]] / 10000 % 10 == 1 {
+																Temp2 = v[v[286]] / 100000
+																Temp1 = Temp2 * 300 
 				Temp1 += 4701
 
-                                @if v[Temp1] == 11 {
-                                    v[agent_AI_routine_bits] &= -193 // ~192//(64 + 128)
+																@if v[Temp1] == 11 {
+																		v[agent_AI_routine_bits] &= -193 // ~192//(64 + 128)
 
-                                    @if `v[Temp1 + 99] != v[v[212] + 100] {
-                                        @if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_Pathblocked { // v[v[212] + 34] & 8388608 {
-                                            v[v[534]] = Temp2
+																		@if `v[Temp1 + 99] != v[v[212] + 100] {
+																				@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_Pathblocked { // v[v[212] + 34] & 8388608 {
+																						v[v[534]] = Temp2
 
-					    def AIFLAG_SkipAndPF = AI_routine_bits_FLAG_AIskip + AI_routine_bits_FLAG_PATHFINDING
-                                            v[agent_AI_routine_bits] |= AIFLAG_SkipAndPF // 2097152+16384
-                                            Temp7 += 1
-                                            
-                                        } .else bl {
+							def AIFLAG_SkipAndPF = AI_routine_bits_FLAG_AIskip + AI_routine_bits_FLAG_PATHFINDING
+																						v[agent_AI_routine_bits] |= AIFLAG_SkipAndPF // 2097152+16384
+																						Temp7 += 1
+																						
+																				} .else bl {
 
-                                            @if `v[agent_AI_routine_bits]  & 1 { //v[v[212] + 34] & 1 {
-                                                v[agent_StanceOrder] = 2
-                                                v[v[534]] = Temp2
-                                                v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_AIskip
-                                                Temp7 += 1
-                                                v[v[212] + 3] |= 37748736//33554432 + 4194304
-                                                
-                                            } .else bl {
-                                                //@comment "stuck"
-                                                @if agent_AAType == 0 { //v[v[212] + 103] == 0 {
-                                                    TT1 = v[v[212] + 100] != 0 ? rnd(0, 99) : 100
-                                                    @if TT1 <= 20 {
-                                                        v[v[534]] = Temp2
-                                                        v[v[212] + 34] |= AI_routine_bits_FLAG_AIskip
-                                                        Temp7 += 1
-                                                        
-                                                    } .else bl {
-                                                        v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
-                                                        v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
-                                                        
-                                                    }
-                                                    
-                                                } .else bl {
-                                                    v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
-                                                    v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
-                                                    
-                                                }
-                                                
-                                            }
-                                            
-                                        }
-                                        
-                                    } .else bl {
-                                        v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
-                                        v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
-                                        
-                                    }
-                                    
-                                }
-                                
-                            } .else bl {
-                                @if `!(v[agent_AI_routine_bits] & AI_routine_bits_FLAG_tracing_flag) {
-                                    v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
-                                    v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
-                                    
-                                }
-                                
-                            }
-                            
-                        } .else bl { 
-			    def KILL_AI_routine_bits_FLAG_tracing_flag = ~AI_routine_bits_FLAG_tracing_flag
-                            v[agent_AI_routine_bits] &= KILL_AI_routine_bits_FLAG_tracing_flag //-4097//~4096
-                            
-                        }
-                        
-                    }
-                    @if v[v[534]] < 999999999 {
-                        v[v[534]..v[534] + Temp7 - 1] %= 1000
-                        v[Ptr20] = v[v[534]]
+																						@if `v[agent_AI_routine_bits]  & 1 { //v[v[212] + 34] & 1 {
+																								v[agent_StanceOrder] = 2
+																								v[v[534]] = Temp2
+																								v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_AIskip
+																								Temp7 += 1
+																								v[v[212] + 3] |= 37748736//33554432 + 4194304
+																								
+																						} .else bl {
+																								//@comment "stuck"
+																								@if agent_AAType == 0 { //v[v[212] + 103] == 0 {
+																										TT1 = v[v[212] + 100] != 0 ? rnd(0, 99) : 100
+																										@if TT1 <= 20 {
+																												v[v[534]] = Temp2
+																												v[v[212] + 34] |= AI_routine_bits_FLAG_AIskip
+																												Temp7 += 1
+																												
+																										} .else bl {
+																												v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
+																												v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
+																												
+																										}
+																										
+																								} .else bl {
+																										v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
+																										v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
+																										
+																								}
+																								
+																						}
+																						
+																				}
+																				
+																		} .else bl {
+																				v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
+																				v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
+																				
+																		}
+																		
+																}
+																
+														} .else bl {
+																@if `!(v[agent_AI_routine_bits] & AI_routine_bits_FLAG_tracing_flag) {
+																		v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
+																		v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
+																		
+																}
+																
+														}
+														
+												} .else bl { 
+					def KILL_AI_routine_bits_FLAG_tracing_flag = ~AI_routine_bits_FLAG_tracing_flag
+														v[agent_AI_routine_bits] &= KILL_AI_routine_bits_FLAG_tracing_flag //-4097//~4096
+														
+												}
+												
+										}
+										@if v[v[534]] < 999999999 {
+												v[v[534]..v[534] + Temp7 - 1] %= 1000
+												v[Ptr20] = v[v[534]]
 			def KILL_AI_routine_bits_FLAG_IdleAfterEnemySearch = ~AI_routine_bits_FLAG_IdleAfterEnemySearch
-                        v[agent_AI_routine_bits] &= KILL_AI_routine_bits_FLAG_IdleAfterEnemySearch //-65//~64
-                        
-                    } .else bl {
-                        Temp7 = 0
-                        
-                    }
-                    Temp6 = 0
-                    TT1 = v[534] + v[1012]
-                    Temp6.copy v[TT1], 2
+												v[agent_AI_routine_bits] &= KILL_AI_routine_bits_FLAG_IdleAfterEnemySearch //-65//~64
+												
+										} .else bl {
+												Temp7 = 0
+												
+										}
+										Temp6 = 0
+										TT1 = v[534] + v[1012]
+										Temp6.copy v[TT1], 2
 
-                    @if v[Ptr20] == 0 {
-                        v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_IdleAfterEnemySearch
+										@if v[Ptr20] == 0 {
+												v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_IdleAfterEnemySearch
 
-                        @if agent_StanceOrder == 3 {//`v[v[212] + 241] == 3 {
-                            @if agent_MovementOrder != -2 {//`v[v[212] + 242] != -2 {
+												@if agent_StanceOrder == 3 {//`v[v[212] + 241] == 3 {
+														@if agent_MovementOrder != -2 {//`v[v[212] + 242] != -2 {
 				// ?
-                                @if agent_MilPixMoveOrderedPointDist > 11000 {//`v[v[212] + 23] > 11000 {
-                                    v[v[212] + 245] = 0
-                                    
-                                }
-                                
-                            }
-                            
-                        }
+																@if agent_MilPixMoveOrderedPointDist > 11000 {//`v[v[212] + 23] > 11000 {
+																		v[v[212] + 245] = 0
+																		
+																}
+																
+														}
+														
+												}
 
-                        @if agent_InCombatTimer <= -5000 { //`v[v[212] + 80] <= -5000 {
+												@if agent_InCombatTimer <= -5000 { //`v[v[212] + 80] <= -5000 {
 
-                            v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_AIskip
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        
-    }
-    v[536] += 1
-    
+														v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_AIskip
+														
+												}
+												
+										}
+										
+								}
+								
+						}
+						
+				}
+				
+		}
+		v[536] += 1
+		
 }
 
 // These processes missing comments, so idk wtf is going lmao
 @if s[2] .isOff() {
 
-    //ACTION TIMER MANAGEMENT AND SO ON
-    v[536] = v[4532]
-    @while v[v[536]] != 0 {
+		//ACTION TIMER MANAGEMENT AND SO ON
+		v[536] = v[4532]
+		@while v[v[536]] != 0 {
 
 	Ptr1 = v[v[536]] * 300
 	Ptr1 += 4701
 	v[Ptr1].copy agent_ObjectType,300
 
-        @if agent_ActionTimer <= 0 {
+				@if agent_ActionTimer <= 0 {
 
 		agent_ActionTimer = v[1195] //init ActionTimer
 
@@ -553,22 +554,22 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 						v[296] = v[534] + v[v[297]]
 						v[371] = 0
 						@loop Temp2 {
-						    @if `0 < v[v[v[296]] * 300 + 4701] {
+								@if `0 < v[v[v[296]] * 300 + 4701] {
 							agent_TargetAgentID = v[v[296]]
 							v[371] = 1
 							@break
 							
-						    }
-						    v[v[297]] += 1
-						    v[296] += 1
-						    
+								}
+								v[v[297]] += 1
+								v[296] += 1
+								
 						}
 						
 						@if v[371] == 0 {
-						    agent_TargetAgentID = 0
-						    
+								agent_TargetAgentID = 0
+								
 						}
-			     
+					 
 
 					}
 				}
@@ -580,96 +581,98 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 		
 	}
 	v[536] += 1
-        
-    }
+				
+		}
 
 
-    //STATIC AI
-    v[536] = v[4533]
-    v[4031] = v[1146]
-    v[4032..4033] = v[1145]
-    v[4034] = v[206]
-    v[4035..4036] = v[205]
+		//STATIC AI
+		v[536] = v[4533]
+		v[4031] = v[1146]
+		v[4032..4033] = v[1145]
+		v[4034] = v[206]
+		v[4035..4036] = v[205]
 
-    @while v[v[536]] != 0 {
+		@while v[v[536]] != 0 {
 
-        v[683] = v[v[536]] * 300 
+				v[683] = v[v[536]] * 300 
 	v[683] += 4784
-        v[211] = v[v[536]] - 1
-        v[212] = v[211] * 300 
+				v[211] = v[v[536]] - 1
+				v[212] = v[211] * 300 
 	v[212] += 5000
 
-        @if v[v[683]] <= 0 {
-            v[v[683]] = v[1195] * 2
+				@if v[v[683]] <= 0 {
+						v[v[683]] = v[1195] * 2
 
-            @if `v[v[212] + 3] & 1048576 {
-                Ptr20 = v[212] + 18
-                v[299] = v[212] + 241
-                Temp1 = v[212] + 100
+						@if `v[v[212] + 3] & 1048576 {
+								Ptr20 = v[212] + 18
+								v[299] = v[212] + 241
+								Temp1 = v[212] + 100
 
 		__if DIS_EXPERIMENTAL == -1 {
 			macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEBA
 		}.else bl {
-			Temp14 = v[Const_AgentMetaTeam_begin+v[211]] //v[Temp1] % 3
+			Temp14 = Const_AgentMetaTeam_begin + v[211]
+			Temp14 = v[Temp14] //v[Temp1] % 3
 		}
 
-                Temp2 = v[4031 + Temp14] //v[Temp1] % 3
-                Temp7 = Temp2
-                Temp9 = v[212] + 7
-                Temp8 = v[4034 + Temp14] //v[Temp1] % 3
-                v[4001..4030] = 0
-                Temp7 = 0
-                Temp8 = v[v[212] + 230]
-                v[3401..3600] = 999999999
-                @doWhile v[Temp2] != 0 {
-                    Temp6 = Temp7 + 3601
-                    Temp1 = v[Temp2] * 300 
-		    Temp1 += 4701
-                    v[350] = v[Temp1]
-                    Temp1 += 6
-                    v[Temp9].copy Temp4, 2
-                    Temp4 .sub v[Temp1], 2
-                    Temp4 .mul Temp4, 2
-                    v[Temp6] = Temp4 + Temp5 + v[v[Temp2] * 300 + 4976]
-                    @if v[Temp6] < Temp8 {
-                        TT1 = 3401 + Temp7
-                        v[TT1] = v[Temp6] * 1000 + v[Temp2]
-                        Temp7 += 1
-                        
-                    }
-                    Temp2 += 1
-                    
-                }
-                
-                v[3401].sort Temp7
-                v[Ptr20] = v[3401] < 999999999 ? v[3401] % 1000 : 0
-                
-            }
-            
-        }
-        @if `v[v[212] + 3] & 32768 {
-            Temp1 = v[212] + 170
-            @if v[Temp1] <= 0 {
-                @call .cev 1748
-                var1 = v[v[536]]
-                @call .cev 1747
+								Temp2 = v[4031 + Temp14] //v[Temp1] % 3
+								Temp7 = Temp2
+								Temp9 = v[212] + 7
+								Temp8 = v[4034 + Temp14] //v[Temp1] % 3
+								v[4001..4030] = 0
+								Temp7 = 0
+								Temp8 = v[212] + 230
+								Temp8 = v[Temp8]
+								v[3401..3600] = 999999999
+								@doWhile v[Temp2] != 0 {
+										Temp6 = Temp7 + 3601
+										Temp1 = v[Temp2] * 300 
+				Temp1 += 4701
+										v[350] = v[Temp1]
+										Temp1 += 6
+										v[Temp9].copy Temp4, 2
+										Temp4 .sub v[Temp1], 2
+										Temp4 .mul Temp4, 2
+										v[Temp6] = Temp4 + Temp5 + v[v[Temp2] * 300 + 4976]
+										@if v[Temp6] < Temp8 {
+												TT1 = 3401 + Temp7
+												v[TT1] = v[Temp6] * 1000 + v[Temp2]
+												Temp7 += 1
+												
+										}
+										Temp2 += 1
+										
+								}
+								
+								v[3401].sort Temp7
+								v[Ptr20] = v[3401] < 999999999 ? v[3401] % 1000 : 0
+								
+						}
+						
+				}
+				@if `v[v[212] + 3] & 32768 {
+						Temp1 = v[212] + 170
+						@if v[Temp1] <= 0 {
+								@call .cev 1748
+								var1 = v[v[536]]
+								@call .cev 1747
 		var1 = v[212]+213
-                var1 = v[var1]
-                @if var1 >= 1 {
-                    @call .cev 1730
-                    @call .cev 1748
-                    
-                } .else bl {
-                    v[v[212] + 3] &= -32769//~32768
-                    
-                }
-                
-            }
-            
-        }
-        v[536] += 1
-        
-    }
-    
-    
+								var1 = v[var1]
+								@if var1 >= 1 {
+										@call .cev 1730
+										@call .cev 1748
+										
+								} .else bl {
+										v[v[212] + 3] &= -32769//~32768
+										
+								}
+								
+						}
+						
+				}
+				v[536] += 1
+				
+		}
+		
+		
 }

@@ -42,3 +42,21 @@ __fn t2v $t $v {
 	t[__id($t)].toNum $v
 }
 
+
+
+
+__fn splitStrData $str {
+		t[2998] .asg $str
+		t[2998] .split ",", t[3000], reg1
+}
+
+__fn convertStrBitsTable_to_r1 $str {
+	t[__id($str)] .split "|", t[3200], var1
+	reg1 = 0
+	@loop var1 .dst var5 {
+	    var2 = 3200 + var5
+	    t[var2] .toNum var4
+	    reg1 |= pow(2, var4 - 1)
+	}
+	
+}

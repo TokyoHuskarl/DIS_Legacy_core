@@ -340,15 +340,12 @@ cev .id(395), .name("!Weapon DataLoad") , {
 	}
 
 	t[3001..3040] .asg ""
-	@comment "###################
-	Set Variation"
+	@comment "###################	Set Variation"
 	//safety for ID collapse crash
 	var2 = max(var2,-1)
 	v[1930] += v[12] == -1 ? rnd(0, v[1928]) * 100000 : min(v[12], v[1928]) * 100000
 	@comment "###################"
-	@comment "###################
-	Adjustment
-###################"
+	@comment "###################	Adjustment###################"
 	@if v[1901] >= 1 {
 	    @comment "1H"
 	    @if v[1901] < 100 {
@@ -381,9 +378,7 @@ cev .id(395), .name("!Weapon DataLoad") , {
 	    v[1909] = v[1909] <= 0 ? -999999 : v[1909]
 	    
 	}
-	@comment "###################
-	Explain Str
-###################"
+	@comment "###################	Explain Str###################"
 	t[504] .asg ""
 	@if v[1901] >= 200 {
 	    
