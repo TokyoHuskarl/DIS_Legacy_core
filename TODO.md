@@ -2,9 +2,7 @@
 
 
 ## 翻訳
-- 勢力ストリング化
-- terrain bits and terrain strings also need to be modernized
-- Perks are also needed to be renewed, tbh tbqh
+- Perks to be renewed, tbh tbqh
 - 詳細画面表記をQstringに移す(to solve font problem)
 
 ## ディレクトリ整理
@@ -18,6 +16,9 @@
 - js導入開始
 
 ## 修正
+- インタプリタ変数衝突の回避
+- 無理やりチーム限界数以上のユニットを生成しようとすると落ちる
+- 味方コホートのセットで40体上限を超えると落ちる
 - 説明とLoreの分離
 - 壁にぶち当たったときの処理をどうするのかを決める必要がある
 - NeedWPtoReachObjがどこで起きてるのかを突き止めて、Main側でチェックするフラグとなりうるようにしないと、敵検索壁ぶつかりからのあれでRayを飛ばさない
@@ -56,13 +57,17 @@
 ## 雑多
 - 980まで最大Agent数を上げる  
 要処理  
-273901~274000 TerrainBits  
+- どかせる  
+273901-274000 TerrainBits  
 274001~274500 MapSimpleTriggersConditions 500  
-274501~275000 MapSimpleTriggersVar 500  
-275001~280000 ParticleEffecter  
+274501~275000 MapSimpleTriggersVar 500
+- どっかに置く  
+275001~280000 ParticleEffecter
+- ???
 280001~290000 ObjSort  
 290001~300000 ObjSortsave  
 
+- 遠投投石機
 
 - アーキンバリッジ  
 - ブラスター  
@@ -71,7 +76,6 @@
 - 投げ物リロードの仕様  
 - 戦術スコア？
 - ポテチリメイク
-
 - Denys氏提案のでかいメイス振り回しボーイのヒーロー化（枠はどこに？）
 
 - パッシブの範囲 alt機能

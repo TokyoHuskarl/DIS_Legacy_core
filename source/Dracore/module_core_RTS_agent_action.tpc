@@ -16,7 +16,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 		    //@comment "Set Timer"
 		    v[v[210] + 84] = 3
 		    //@comment "Auto Attack"
-		    v[300] = v[210] + 18
+		    Ptr20 = v[210] + 18
 		    v[340] = 34 + agent_AAType
 		    //Legacy - give 843 Ptr
 		    agent_ActionState = v[210] + 243
@@ -30,22 +30,22 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 			//Access18 = SkillDataPtr"
 			//cast skill!
 			@if agent_ActionState <= 10 {
-			    v[299] = v[v[536]]
-			    v[297..298] = 300 * v[299]
-			    //v[298] += 4821
+			    Ptr19 = v[v[536]]
+			    v[297..298] = 300 * Ptr19
+			    //Ptr18 += 4821
 			    //agent_CastSkillOrder = v[210] + 246
 			    skill_Slot_in_agent = agent_ActionState - 3
 			    //action frame
 			    Ptr8 = v[210] + 29
 			    
-			    //v[298] += skill_Slot_in_agent * 20 
-			    //v[298] += 4821
-			    //v[v[298]].copy v[581], 20
-			    func_extract_skill_data_from_agent_slot(v[299],skill_Slot_in_agent,EXTRACT_FLAG_Data_extracted)
+			    //Ptr18 += skill_Slot_in_agent * 20 
+			    //Ptr18 += 4821
+			    //v[Ptr18].copy v[581], 20
+			    func_extract_skill_data_from_agent_slot(Ptr19,skill_Slot_in_agent,EXTRACT_FLAG_Data_extracted)
 			    @if agent_CastSkillOrder > 0 {
 				//@comment "#スキル番号取得ついでにCDセット"
-				//v[11] = v[299]
-				//v[12] = skill_Slot_in_agent
+				//var1 = Ptr19
+				//var2 = skill_Slot_in_agent
 				//@call .cev 2007
 				macro_SkillCD_set_data_already_extracted(skill_Slot_in_agent)
 				//@comment "#CDセット End"
@@ -53,16 +53,16 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 				//v[Ptr8] = 0
 				agent_AttackFrame=0
 				//@comment "#Spend Cost"
-				//v[v[297]+4808] -= v[587]
+				//v[Ptr17+4808] -= v[587]
 				agent_SP -= skill_Cost
 				//@comment "#Spend Cost END"
 				//@comment "#Set SkillOrder 0"
-				//v[297] += 138
-				//v[v[297]+4946] = 0
+				//Ptr17 += 138
+				//v[Ptr17+4946] = 0
 				agent_CastSkillOrder = 0
 				@if `v[599] & 1 {
 				    s[114].on
-				    //v[341] = v[210] + 7
+				    //TT1 = v[210] + 7
 				    v[590] .add agent_RelativeX, 2
 				    //Temporary Save changes
 				    agent_ObjectType.copy v[Ptr1],agent_Basic_Array_size
@@ -93,7 +93,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 				skill_MainFunction = skill_MainFunction > 0 ? skill_MainFunction : Const_Function_do_nothing
 				//@comment "よびだすv197=continuous or not"
 				v[197] = 0
-				//v[341] = v[210] + 7
+				//TT1 = v[210] + 7
 				v[590] .add agent_RelativeX, 2
 
 				func_devlog("Troop Casted Skill, cev called - id:\v[611]")
@@ -106,24 +106,24 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 					@if s[313] .isOn() {
 					    @if v[2218] <= 1 {
 						@call .cev 1924
-						v[341] = 2
+						TT1 = 2
 						v[601] = 1
-						v[11] = skill_MainFunction - 1200
+						var1 = skill_MainFunction - 1200
 						@call .cev 1102
-						v[355] = v[210] + 101
-						v[701] = v[v[355]]
+						TT15 = v[210] + 101
+						v[701] = v[TT15]
 						@call .cev 200
-						v[700] = v[355] - 1
-						v[342] = v[v[700]] == 1 ? 5 : 10
+						v[700] = TT15 - 1
+						TT2 = v[v[700]] == 1 ? 5 : 10
 						v[330] = v[4562] + v[v[536]]
 						@pic[v[1155]].strpic {
-						    "\c[\v[342]]\t[\v[330]\c[0]は[\n[3]]を使った"
-						    .pos v[341], v[1126] .bottomLeft
+						    "\c[\TT2]\t[\v[330]\c[0]は[\n[3]]を使った"
+						    .pos TT1, v[1126] .bottomLeft
 						    .size 0, 0                                            .chromakey 1
 						    .scale 100
 						    .trans 30
 						    .rgbs 100, 100, 100, 100
-						    .font t[530], v[4511]
+						    .font Font_UI, Font_UI_size
 						    .spacing 0, 4
 						    .skin "" .nobg .noframe .noPadding
 						    .mapLayer 8
@@ -207,7 +207,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 		    //@comment "Auto Attack"
 		    //v[703] = v[210] + 103
 		    agent_ObjectType.copy v[Ptr1], 300
-		    v[300] = v[210] + 18
+		    Ptr20 = v[210] + 18
 		    v[340] = 34 + v[703]
 		    @call .cev v[340]
 		    
@@ -226,7 +226,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 		    v[v[210] + 84] = 3
 		    //@comment "Auto Attack"
 		    v[703] = v[210] + 103
-		    v[300] = v[210] + 18
+		    Ptr20 = v[210] + 18
 		    v[340] = 34 + v[v[703]]
 		    @call .cev v[340]
 		    

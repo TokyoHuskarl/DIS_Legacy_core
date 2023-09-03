@@ -18,8 +18,9 @@ __fn func_get_stringid_from_numid $numid $DISdict {
 		strreg1.split("=",strreg1,var1) 
 	}.else bl{
 		reg1 = $numid
-		func_errlog( __str("Couldn't get string ID match with \v[21] from the dictionary t[" __id($DISdict) "].") )
+		func_errlog( __str("Couldn't get string ID match with \reg1 from the dictionary t[" __id($DISdict) "].") )
 		strreg1.asg "NULL"
 	}
 
 }
+

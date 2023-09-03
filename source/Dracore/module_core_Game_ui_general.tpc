@@ -180,6 +180,10 @@ cev[2101] .name("UI:JS UI order interpreter"), .parallel, .cond(ADR_CALL_UI_REND
 	Bool_RUN_UI_ORDER.off
 }
 
+cev[2130] .name ("UI:Show nowloading"), {
+	func_ui_show_noloading()
+}
+
 cev[2131] .name("UI:Pick_faction") {
 	func_ui_start_pick_faction_window()
 }

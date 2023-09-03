@@ -8,7 +8,7 @@
 
 
 
-cev[2041], .name("DIS command interpriter"), .parallel , .cond(__id(BOOL_CMD_RUN)), {
+cev[2041], .name("Script:DIS command interpriter"), .parallel , .cond(__id(BOOL_CMD_RUN)), {
 	BOOL_CMD_CALLING.on
 	// split ORDER string given from js UI manager object 
 	Str_CmdQueue.split(";", Str_Deploy_head, guiVar7)
@@ -30,6 +30,15 @@ cev[2041], .name("DIS command interpriter"), .parallel , .cond(__id(BOOL_CMD_RUN
 }
 
 
+// dialog manager
+cev .id(2087), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_Dialog)), {
+	RadioDialogTimer -= Is_Paused == 1 ? 0 : 1
+	@if RadioDialogTimer <= 0 {
+			@pic[1767..1769].erase
+			RUN_Radio_Dialog.off
+			
+	}
+}
 
 
 

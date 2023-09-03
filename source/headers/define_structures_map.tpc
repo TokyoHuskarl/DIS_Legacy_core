@@ -3,6 +3,30 @@
 def {
 	DIS_MAPHOMEPATH = "../Maps/"
 }
+struct("Terrain",{
+	def {
+		STRING_undefined_terrain = __str("selected terrain is not defined!")
+
+	}
+	
+	// str get series basically return result to str1
+	__fn getTerrainElm $id $elm {
+		var2 = Adrt_terraindata_head + $id
+		splitStrData(t[var2])
+
+		@if strAr0.neq "" { // terrainId exists
+			var1 = __id(strAr0) + $elm
+			regs1.asg t[var1]
+
+		}.else bl{
+			func_errlog(STRING_undefined_terrain)
+			regs1.asg "NULL"
+		}
+	}
+
+})
+
+
 
 
 // Mission

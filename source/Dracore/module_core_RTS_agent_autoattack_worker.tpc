@@ -161,7 +161,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 				TT2 += TT3 < reg2 ? 3 : 0
 				TT2 *= v[243] < v[1124] ? 1 : 0
 				@if TT2 >= 8 {
-				    v[372] = (v[Ptr20 * 300 + 4840] & 4096) == 4096 ? 1 : 0
+				    v[372] = (v[Ptr20 * 300 + 4840] & 4096) ? 1 : 0
 				    s[141].on
 				    @call .cev 111
 				    
@@ -770,10 +770,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 		    // "ADを取得"
 		    v[709] = v[843] - 134
 		    Temp1 = v[v[709]]
-		    /* "Access19 = AttackerObjectID 1~ +4700
-	Access20 = TargetObjectID 1~ +4700
-	Access18 = ObjTypeチェックPtr
-	temp1 = 建築量"*/
+		    /* "Access19 = AttackerObjectID 1~ +4700 	Access20 = TargetObjectID 1~ +4700	Access18 = ObjTypeチェックPtr	temp1 = 建築量"*/
 		    v[305..306] = Ptr20 * 300
 		    Temp6 += 4805
 		    Temp5 += 4806
@@ -859,12 +856,12 @@ cev .id(32), .name("AgentAct:Worker"), {
 				    v[204] -= 1
 				    
 				}
-				v[305..305] = Ptr20 * 300
-				v[305..305] += 4707
+				v[305] = Ptr20 * 300
+				v[305] += 4707
 				v[Temp5].copy v[252], 2
-				v[305..305] += 93
+				v[305] += 93
 				v[251] = v[Temp5]
-				v[305..305] += 180
+				v[305] += 180
 				v[378] = 0
 				@if v[Temp5] >= 1 {
 				    TT17 = v[Temp5]

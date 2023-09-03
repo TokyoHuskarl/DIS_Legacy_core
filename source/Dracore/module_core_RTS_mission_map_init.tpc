@@ -873,27 +873,40 @@ __fn CEV_MISSION_INIT {
 	s[298].off
 
 
+	// -----------------------------------
+	// loading terrain bits
+	// -----------------------------------
+	@loop 99 .dst TT1 { // 99 is magic numba - string buffer amount
+		TT2 = Adrt_terraindata_head + TT1
+		splitStrData(t[TT2])
+		@if strAr0.neq "" { // terrainId exists
+			convertStrBitsTable_to_r1(strAr3)
+			v[Adr_terrainbits_head + TT1] |= reg1
+		}
+	}
 
-	@comment "#########terrain########" 
-	v[4505] = 4400
-	v[4505] = 273901
+	/*
 	@comment "#Forest"
-	v[v[4505] + 2] |= 8
+	v[Const_save_var_AdrTerrainBitsHead + 2] |= 8
 	@comment "#Dense Forest"
-	v[v[4505] + 5] |= 4
-	v[v[4505] + 5] |= 8
+	v[Const_save_var_AdrTerrainBitsHead + 5] |= 4
+	v[Const_save_var_AdrTerrainBitsHead + 5] |= 8
 	@comment "#Snow"
-	v[v[4505] + 7] |= 32
+	v[Const_save_var_AdrTerrainBitsHead + 7] |= 32
 	@comment "#Ice"
-	v[v[4505] + 10] |= 16
+	v[Const_save_var_AdrTerrainBitsHead + 10] |= 16
 	@comment "#Road"
-	v[v[4505] + 11] |= 64
+	v[Const_save_var_AdrTerrainBitsHead + 11] |= 64
 	@comment "#Bush"
-	v[v[4505] + 17] |= 4
+	v[Const_save_var_AdrTerrainBitsHead + 17] |= 4
 	@comment "#Shallow Water"
-	v[v[4505] + 18] |= 1
+	v[Const_save_var_AdrTerrainBitsHead + 18] |= 1
 	@comment "#Deep Water"
-	v[v[4505] + 22] |= 1
+	v[Const_save_var_AdrTerrainBitsHead + 22] |= 1
+	*/
+
+
+	//
 	@comment "#For faster calculation"
 	v[432] = v[1182] - Map_LimitCoordX_min
 	@comment "#Wave adjustment"
@@ -1239,7 +1252,7 @@ __fn CEV_MISSION_MAP_INIT {
 			@if v[Ptr7]<100000000{
 				v[Ptr7] += 300000000
 				@comment "lower water height"
-				v[Ptr7] -= (v[v[4505] + reg10] & 1) > 0 ? 100000000 : 0
+				v[Ptr7] -= (v[Const_save_var_AdrTerrainBitsHead + reg10] & 1) > 0 ? 100000000 : 0
 				}
 			@comment "#TileFuncPushFlag"
 			v[Ptr6] |= v[Ptr7]%100 >= 20 ? 1 : 0
@@ -1261,7 +1274,7 @@ __fn CEV_MISSION_MAP_INIT {
 			@comment "HEIGHT LEVEL 1"
 			v[Ptr7] += 300000000
 			@comment "lower water height"
-			v[Ptr7] -= (v[v[4505] + reg10] & 1) > 0 ? 100000000 : 0
+			v[Ptr7] -= (v[Const_save_var_AdrTerrainBitsHead + reg10] & 1) > 0 ? 100000000 : 0
 			@comment "#TileFuncPushFlag"
 			v[Ptr6] |= reg10 >= 20 ? 1 : 0
 			v[286..287] += 1
@@ -2167,3 +2180,76 @@ __fn startupMission {
 	}
 }
 
+
+__fn LEGACY_OLD_MAP_CONF_temporary {
+	t[510] .inStr "//", 321,  .beg 0
+	@comment "#""//""Comment out"
+	@if v[321] == -1 {
+			@if t[510] .contains "factions(" {
+					t[510] .split "(", t[3000], v[341]
+					t[3001] .split ",", t[3001], v[601]
+					t[3001] .toNum v[2403]
+					t[3002] .toNum v[2404]
+					t[3003] .toNum v[2405]
+					
+			}
+			@if t[510] .contains "AI_script=" {
+					t[510] .split """", t[3000], v[341]
+					t[753] .asg t[3001]
+					
+			}
+			@if t[510] .contains "turnoff_moralesystem(" {
+					s[470].on
+					
+			}
+			@if t[510] .contains "set_weather" {
+					t[510] .split "=", t[3000], v[341]
+					t[3001] .toNum v[2420]
+					
+			}
+			@if t[510] .contains "set_initial_maptile(" {
+					t[510] .split "(", t[3000], v[341]
+					t[3001] .toNum v[2060]
+					@map.tileset v[2060]
+					
+			}
+			@if t[510] .contains "set_map_size(" {
+					t[510] .split "(", t[3000], v[341]
+					t[3001] .split ",", t[3001], v[601]
+					t[3001] .toNum v[341]
+					t[3002] .toNum v[342]
+					v[341] .add v[69], 2
+					@ev[4].setPos .pos v[341], v[342]
+					
+			}
+			@if t[510] .contains "use_sight_system" {
+					t[510] .split "=", t[3000], v[341]
+					t[3001] .toNum v[341]
+					@if v[341] == 0 {
+							s[300].off
+							
+					}
+					@if v[341] == 1 {
+							s[300].on
+							
+					}
+					
+			}
+			@if t[510] .contains "use_height_map" {
+					t[510] .split "=", t[3000], v[341]
+					t[3001] .toNum v[2056]
+					
+			}
+			@if t[510] .contains "use_mapgen" {
+					t[510] .split "=", t[3000], v[341]
+					t[3001] .toNum v[2055]
+					
+			}
+			@if t[510] .contains "use_advanced_tile_system(" {
+					s[238].on
+					
+			}
+			
+
+	}
+}

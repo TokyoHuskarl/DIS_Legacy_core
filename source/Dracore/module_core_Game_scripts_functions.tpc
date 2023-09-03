@@ -4,12 +4,13 @@
 
 def {
 	CTYP_MAP = 1
-	CTYP_SND = 2
+	CTYP_SND = 2 // should be integrateed into Game
 	CTYP_MISSION = 3
 	CTYP_GAME = 4
 	CTYP_AGENT = 5
 	CTYP_PLAYER = 6
 	CTYP_GROUP = 7
+	CTYP_UI = 8
 	
 	CTYP_END
 }
@@ -22,6 +23,7 @@ deft {
 	str_link_Cmd_agent
 	str_link_Cmd_player
 	str_link_Cmd_group
+	str_link_Cmd_ui
 
 }
 
@@ -70,8 +72,12 @@ __fn DIS_Cmd_PackTree $chosenobj $md $counter $given_v_or_str $flags {
 	}.elif $chosenobj == CTYP_PLAYER { // Cmd.player
 		DIS_Cmd_player(str_link_Cmd_player,$md,$counter,$given_v_or_str,$flags)
 
-	}.elif $chosenobj == CTYP_GROUP { // Cmd.player
+	}.elif $chosenobj == CTYP_GROUP { // Cmd.group
 		DIS_Cmd_group(str_link_Cmd_group,$md,$counter,$given_v_or_str,$flags)
+
+	}.elif $chosenobj == CTYP_UI { // Cmd.ui
+		DIS_Cmd_ui(str_link_Cmd_group,$md,$counter,$given_v_or_str,$flags)
+
 	}
 
 }
@@ -124,6 +130,11 @@ __fn DIS_Cmd_group $LINKstr $md $counter $given_v_or_str $flags {
 	})
 }
 
+__fn DIS_Cmd_ui $LINKstr $md $counter $given_v_or_str $flags {
+	SScmdPackage_Build("ui",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+		DIS_ui_methods($LINKstr $md $counter $given_v_or_str $flags)
+	})
+}
 
 // ---------------------------------------------
 // Scale Script Command libraries
@@ -218,6 +229,15 @@ __fn DIS_group_methods $LINKstr $md $i $given_v_or_str $flags {
 
 		//let javascript interpreter execute what is written in file
 		{NsCmd($LINKstr, $md, $i, "endGamefsafsa",{cmd_player_prepare_endgame(0,SSargs0)})},
+
+	])
+}
+
+__fn DIS_ui_methods $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("ui", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+
+		//let javascript interpreter execute what is written in file
+		{NsCmd($LINKstr, $md, $i, "queDialog",{cmd_player_prepare_endgame(0,SSargs0)})},
 
 	])
 }
@@ -427,11 +447,53 @@ __fn cmd_map_randomise_height_legacy $tileXmin $tileYmin $tileXmax $tileYmax $am
 //##########################
 //Dialogs and messages
 //##########################
-__fn cmd_show_radio_dialog {
+
+	defs RUN_Radio_Dialog = 100 // if this switch is on, then dialog manager runs -> game_scripts_general.tpc
+	defv RadioDialogTimer = 367
+
+__fn cmd_ui_dialog_set_legacy {
+
+	RadioDialogTimer = 235
+	TT1 = v[1115]
+	TT2 = 3
+	@pic[PicID_Radio_Dialog_Back].strpic {
+			""
+			.pos TT1, TT2 .top
+			.size 240, 64    .chromakey 1
+			.scale 100
+			.trans 50
+			.rgbs 100, 100, 100, 100
+			.font "", 12
+			.spacing 0, 4
+			.skin "system5" .stretch
+			.mapLayer 9
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+	}
+	TT1 -= 118
+	TT2 += 2
+	@pic[PicID_Radio_Dialog_Text].strpic {
+			t[3000]
+			.pos TT1, TT2 .topLeft
+			.size 0, 0    .chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.font Font_Common, v[4510]
+			.spacing 0, 4
+			.skin "" .nobg .noframe .noPadding
+			.mapLayer 9
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+	}
+
+	RUN_Radio_Dialog.on
 
 }
 
-//##########################
+//#########################
 // AI commands
 //##########################
 
@@ -589,6 +651,324 @@ __fn cmd_mission_set_end_flag { //Cmd.mission.allowToQuit
 
 }
 
+
+
+
+
+// toriaezu matometeru dake
+__fn cmd_editmap_zatta {
+		@if t[v[523]] .contains "genmappic" { // map picture
+		    @call .cev 1854
+		    
+		}
+		@if t[v[523]] .contains "gentilemap" {
+		    @call .cev 1853
+		    
+		}
+
+	// generate height map 
+	@call .cev 1804
+	t[510] .asg "\Maps\"
+	t[510] .cat t[750]
+	t[510] .cat "\"
+	t[501] .asg t[510]
+	t[501] .cat "heightmap_light"
+	@img.save .pic PicID_elevation_add .static .dst t[501]
+	t[501] .asg t[510]
+	t[501] .cat "heightmap_dark"
+	@img.save .pic PicID_elevation_multi .static .dst t[501]
+
+		@if t[v[523]] .eq "editmap export" {
+		    t[509] .asg ""
+		    @loop v[1004] .dst v[341] {
+			v[202] = v[341] + 1
+			@comment "配列ゲット"
+			v[300] = v[202]
+			v[298] = v[202] * 300 + 4700
+			v[601] = v[298] + 1
+			@if v[v[601]] >= 1 {
+			    @comment "ordinary unit"
+			    @if v[v[601]] != 11 {
+				v[254] = v[v[298] + 101]
+				v[251] = v[v[298] + 100]
+				v[280] = v[v[298] + 244]
+				v[277] = v[v[298] + 241]
+				v[258] = v[v[298] + 35]
+				v[341] = v[298] + 26
+				v[v[341]].copy v[341], 2
+				v[342] -= 1
+				t[509] .cat "spawn_unit(\v[254],\v[341],\v[342],\v[251],\v[258],\v[280],\v[277])" .extract
+				t[509] .cat t[525]
+				
+			    } .else bl {
+				@comment "#spawnStatic"
+				@if v[v[601]] == 11 {
+				    v[254] = v[v[298] + 102]
+				    @if v[v[254]] != 107 {
+					v[254] = v[v[298] + 101]
+					@if v[254] > 0 {
+					    v[251] = v[v[298] + 100]
+					    v[258] = v[v[298] + 35]
+					    v[341] = v[298] + 26
+					    v[v[341]].copy v[341], 2
+					    v[342] -= 1
+					    t[509] .cat "spawn_static(\v[254],\v[341],\v[342],\v[251],\v[258])" .extract
+					    t[509] .cat t[525]
+					    
+					}
+					
+				    } .else bl {
+					
+				    }
+				    
+				}
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		    @comment "*get map str*"
+		    t[510] .asg "..\Maps\map_"
+		    t[510] .cat t[751]
+		    t[510] .cat "\\"
+		    t[510] .cat "export"
+		    t[509] .toFile t[510], .utf8 //not sjis
+		    
+		}
+	
+
+		// export unit icon
+		@if t[v[523]] .eq "export unit" {
+		    @se.play "decide1" .opt 90, 100, 50
+		    v[45] %= v[45] == 10 ? 20 : 10
+		    v[302] = 100
+		    v[335] = 101
+		    v[341] = 101
+		    @comment "User"
+		    @if s[1] .isOff() {
+			v[342] = v[v[341]] * 300
+			v[342] += 4701
+			@comment "Count Picture Layer Array"
+			v[899] = v[v[v[341]] * 300 + 4999]
+			v[345] = v[899]
+			@comment "#get damaged variation"
+			v[604] = v[v[v[341]] * 300 + 4704]
+			v[0] = v[343..352] = [v[604] % 10, v[604] / 10 % 10, v[604] / 100 % 10]
+			@pic[v[302]].strpic {
+			    ""
+			    .pos -166, -166 .center
+			    .size 64, 64            .chromakey 1
+			    .scale 100
+			    .trans 100
+			    .rgbs 100, 100, 100, 100
+			    .font "", 12 .noShadow
+			    .spacing 0, 4
+			    .skin "" .nobg .noframe .noGradation .noPadding
+			    .mapLayer 8
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			v[463] = 5
+			v[464] = 1
+			v[726] = v[v[v[341]] * 300 + 4826]
+			v[4101..4110] = v[463]
+			v[4106] = v[726] & 16777216 ? 7 : 5
+			v[4107] = v[726] & 512 ? 7 : 5
+			v[4101] = v[726] & 512 ? 7 : 5
+			v[4121..4130] = 1
+			v[4124] = v[726] & 134217728 ? 2 : 1
+			v[725] = v[v[341]] * 300 + 4825
+			v[4121] = [1, 2][(v[v[725]] & 1)]
+			@while v[899] >= 1 {
+			    v[341] = v[899] % 10
+			    v[286] = 900 + v[341] + 10 * v[v[341] + 342]
+			    v[463] = v[4100 + v[341]]
+			    v[464] = v[4120 + v[341]]
+			    @comment "#########################
+		Layer own Setting"
+			    v[891] = v[314] + 291
+			    v[341] = (v[341] - 1) % 6
+			    @comment "Layer own Setting END
+#########################"
+			    v[320] = v[(v[v[335]] - 1) * 6 + v[341] + v[1185]]
+			    @comment "Strings = t[v[286]]"
+			    v[11] = v[302]
+			    v[12..13] = 32
+			    @pic[2599].show {
+				t[v[286]] .repl 1 v[320]
+				.pos -111, -111 .center
+				.chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.grid v[463], v[464] .cell 2
+				.mapLayer 7
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    @pic[2599].getInfo .cewh .currentRect v[360], v[360], v[355], v[356]
+			    @pic[2599].getInfo .pixel 0, 0, v[355], v[356] .dst 550445
+			    v[18] = 550445
+			    @loop v[356] .dst v[15] {
+				@loop v[355] .dst v[16] {
+				    v[17] = v[v[18]]
+				    @if `(v[17] & 0xFF000000) == 0xFF000000 {
+					v[358] = v[12] + v[16]
+					v[359] = v[13] + v[15]
+					v[358] -= v[355] / 2
+					v[359] -= v[356] / 2
+					@pic[v[11]].setPixel .xywh v[358], v[359], 1, 1 .src v[17]
+					
+				    }
+				    v[18] += 1
+				    
+				}
+				
+				
+			    }
+			    
+			    v[899] /= 10
+			    
+			}
+			
+			
+		    }
+		    @img.save .pic v[11] .static .dst "user\debug"
+		    
+		}
+
+		//opens a map
+		@if t[v[523]] .contains "openmap" {
+		    @call .cev 3
+		    v[523] = 511
+		    v[501] = 0
+		    t[v[523]] .split " ", t[501], v[342]
+		    t[501] .asg  .file "../Maps/define_maps", .utf8
+		    t[503] .asg "\t[502]@.*" .extract
+		    t[501].exMatch {
+			t[503]
+			t[501]
+			v[341]
+			.beg 0
+			.extract
+		    }
+		    t[750] .asg t[502]
+		    @if t[501] .neq "" {
+			t[501] .split "=", t[501], v[341]
+			t[502] .toNum v[501]
+			
+		    }
+		    @map[62].setPlayerPos .pos 12, 6 .retain
+		    @wait 0
+		    @if v[501] != 0 {
+			v[341] = 0
+			@map[v[501]].setPlayerPos .pos v[341] v[341]
+			
+		    } .else bl {
+			@map[60].setPlayerPos .pos 0, 0 .retain
+			
+		    }
+		    s[2].off
+		    
+		}
+
+
+
+	// "#show_msg_dialog(strv)"
+	@if inputstr .contains "show_msg_dialog(" {
+	    inputstr .split "(", t[3000], TT1
+	    t[3001] .split ")", t[3000], TT1
+	    @if t[3000] .contains "T:" {
+		t[3000] .split "T:", t[2999], TT1
+		
+	    } .else bl {
+		@if t[3000] .contains """" {
+		    t[3000] .split """", t[2999], TT1
+		    
+		} .else bl {
+		    t[3000] .toNum var1
+		    var1 = v[1218] + var1
+		    t[3000] .asg t[var1]
+		    
+		}
+		
+	    }
+	    // "#######################"
+	    @call .cev 1924
+	    var2 = 2
+	    v[601] = 1
+	    @pic[v[1155]].strpic {
+		t[3000]
+		.pos var2, v[1126] .bottomLeft
+		.size 0, 0                .chromakey 1
+		.scale 100
+		.trans 30
+		.rgbs 100, 100, 100, 100
+		.font Font_UI, Font_UI_size
+		.spacing 0, 4
+		.skin "" .nobg .noframe .noPadding
+		.mapLayer 8
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+	    }
+	    @call .cev 1925
+	    // "#######################"
+	    @break
+	    
+	}
+	// "#show_radio_dialog(str)"
+	@if inputstr .contains "show_radio_dialog(" {
+	    inputstr .split "(", t[3000], TT1
+	    t[3001] .split ")", t[3000], TT1
+	    t[3000] .toNum var1
+	    @call .cev 1889
+	    @call .cev 2088
+	    // "#########################"
+	    @loop .inf() {
+		@if v[367] <= v[4570] {
+		    @break
+		    
+		}
+		@wait 0
+		
+	    }
+	    
+	    @break
+	    
+	}
+	// "#show_dialog_icon(str,gridx,gridy,cell)"
+	@if inputstr .contains "show_dialog_icon(" {
+	    inputstr .split "(", t[3000], TT1
+	    t[3001] .split ",", t[3000], TT1
+	    t[3001] .toNum var1
+	    t[3002] .toNum var2
+	    t[3003] .toNum var3
+	    TT1 = muldiv(v[1115], 3, 5)
+	    TT2 = 32
+	    @pic[1769].show {
+		t[3000]
+		.pos TT1, TT2 .center
+		.chromakey 1
+		.scale 100
+		.trans 0
+		.rgbs 100, 100, 100, 100
+		.grid var1, var2 .cell var3
+		.mapLayer 9
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+	    }
+	    // "#########################"
+	    
+	}
+
+
+}
 
 
 

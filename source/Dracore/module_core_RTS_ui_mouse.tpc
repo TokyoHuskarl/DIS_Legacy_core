@@ -1648,7 +1648,7 @@ __fn UI_CEV_MOUSE_OBSERVER {
 				// "######################"
 				TT1 = v[21]
 				TT2 = v[22]
-				@call .cev 2001
+				@call .cev 2001 // 
 				v[344] = 63
 				@if Var_MouseMode != MODE_Elevation {
 					@pic[PicID_pointer_sub].show {
