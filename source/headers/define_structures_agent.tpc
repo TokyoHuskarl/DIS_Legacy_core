@@ -288,7 +288,17 @@ struct("agent",{
 	
 	agent_PerkFlagBits1_FLAG_Pathfinder = 128
 	PerkFlagBits1_FLAG_Pathfinder = 128
+	PerkFlagBits1_FLAG_Fearsome = 256
+	PerkFlagBits1_FLAG_Ninelives = 2048
+	PerkFlagBits1_FLAG_Backstab = 4096
 	PerkFlagBits1_FLAG_Strider = 8192
+	PerkFlagBits1_FLAG_UnseenThreat = 32768
+
+	PerkFlagBits1_FLAG_Indomitable = 131072
+
+	PerkFlagBits2_FLAG_KillingFrenzy = 1
+	PerkFlagBits2_FLAG_BattleFlow = 2
+	PerkFlagBits2_FLAG_Berserk = 4
 
 	//Agent bits
 	AgentBits_horse_in_forest = 8
@@ -367,13 +377,18 @@ struct("agent",{
 	AI_routine_bits_FLAG_1secDelay_PF = 134217728
 
 	//ObjBits
+	BaseObjBit_FLAG_Ambushing = 1
 	BaseObjBit_FLAG_Immune_to_Knock_back = 8
+	BaseObjBit_FLAG_RangedDamageResist = 32
+	BaseObjBit_FLAG_HalveAllDamage = 64
+	BaseObjBit_FLAG_Immune_to_MeleePenalty = 128
 	BaseObjBit_FLAG_No_mind = 256
 	BaseObjBit_FLAG_Fleeing = 512
 	BaseObjBit_FLAG_Immune_to_bleed = 4096
-
+	BaseObjBit_FLAG_ShieldBash = 8192
 
 	BaseObjBit_FLAG_Immune_to_stun = 65536
+	BaseObjBit_FLAG_Duelist_Activated = 131072
 	BaseObjBit_FLAG_big_unit=524288
 	BaseObjBit_FLAG_Standard_Bearer = 1048576
 	BaseObjBit_FLAG_Explosive = 2097152
@@ -382,6 +397,7 @@ struct("agent",{
 
 	//ExMotions
 
+	ExMotionFlags_FLAG_have_AA_CD_Spr = 1
 	ExMotionFlags_FLAG_no_fatigue = 2048
 	agent_ExMotionFlags_FLAG_horseback = 16777216
 
@@ -429,6 +445,28 @@ struct("agent",{
 	AgentType_Simple_Agent = 1
 	AgentType_Layered_Agent = 3
 	AgentType_Static_Agent = 11
+
+
+	// AA bits
+	// AAbits = 124 #BITS: 1 = AntiInf,2 = AntiArcher, 4 = AntiCav, 8= AntiMagi, 16 = AntiSiege,32 = reserved, 64= AntiCiv, 128=AntiStatic, 256=SlayStatic, 512=NOTantiStatic, 1024 = ShieldCracking, 2048 = DevastatingStrikes , 4096 = Trample 
+	AABits_FLAG_AntiInf = 1
+	AABits_FLAG_AntiArcher = 2
+	AABits_FLAG_AntiCav = 4
+	AABits_FLAG_AntiMage = 8
+	AABits_FLAG_AntiSiege = 16
+	AABits_FLAG_AntiCiv = 64
+	AABits_FLAG_AntiBuilding = 128
+	AABits_FLAG_AntiBuilding_SUPER = 256 // for Siege Ram
+	AABits_FLAG_NOT_AntiBuilding = 512 // ???????????????????????????????????????
+	AABits_FLAG_CrackingShield = 1024
+	AABits_FLAG_DevastatingStrikes = 2048
+	AABits_FLAG_Trample = 4096
+	AABits_FLAG_AntiHero = 8192
+	AABits_FLAG_AntiDragon = 16384
+	AABits_FLAG_AntiAir = 65536
+	AABits_FLAG_CrackingShieldBONUS = 131072
+	AABits_FLAG_BladeDance = 262144 
+
 
 	//Stances
 	DIR_RIGHT=1

@@ -3,17 +3,17 @@
 __fn agent_autoattack_melee {
 
 	def {
-	shieldbash_time=16
-	bladedance_time=48
-	shieldcrack_time=1344
-	parry_time=5
-	least_crit_melee = 2
+		shieldbash_time=16
+		bladedance_time=48
+		shieldcrack_time=1344
+		parry_time=5
+		least_crit_melee = 2
 	}
 
 	// "Access19 = AttackerObjectID Access20 = TargetObjectID"
 
-	v[299] = v[207] + 1
-	v[300] = v[v[300]]
+	Ptr19 = v[207] + 1
+	Ptr20 = v[Ptr20]
 	//Ptr10 = Ptr20 * 300
 	//Ptr9 = Ptr19 * 300
 	Ptr10 = Ptr20*300
@@ -31,871 +31,800 @@ __fn agent_autoattack_melee {
 	v[v[629]] += 1
 	v[v[896]] += [1, -1][v[v[844]]]
 	// "ObjTypeチェック"
-	v[298] = 300 * v[300] 
-	v[298] += 4701
+	Ptr18 = 300 * Ptr20 
+	Ptr18 += 4701
 	// "Melee "
-	@if `v[v[629]] == 1 && v[v[298]] > 0 {
+	@if `v[v[629]] == 1 && v[Ptr18] > 0 {
 
 		//extract Attacker's parameters
-	    v[v[210]].copy Address_agent_array_head, 301
+			v[v[210]].copy Address_agent_array_head, 301
+			s[167].off
 
-	    s[167].off
-	    @if `v[Ptr10 + 4701] == 11 { // the enemy is STATIC Type
-		s[167].on
+			@if `v[Ptr10 + 4701] == 11 { // the enemy is STATIC Type
+				s[167].on
 		
-	    }
-	    // "#################交戦デバフを付与################"
-	    // "#Combat Penalty Resist"
-	    v[Ptr10 + 4781] = v[Ptr10 + 4974] & 128 ? 0 : Const_Melee_Fight_Time_by_Melee_Attack//defined in header_common.tpc
-	    v[Ptr10 + 4780] = v[1240] * v[4571]
-	    // "############↓?"
-	    v[720] = v[210] + 120
-	    v[629] = v[210] + 29
-	    v[874] = v[210] + 274
-	    // "############Melee Auto Attack################"
-	    // "Log"
-	    // "Auto Attack SP Cost"
-	    v[708] = v[708] - v[721]
-	    v[v[210] + 108] = max(v[708], 0)
-	    /* "Access19 = AttackerObjectID 0~
-	Access20 = TargetObjectID 1~
-	Access18 = ObjTypeチェックPtr"*/
-	    v[711] = Ptr10
-	    v[607] = v[711] + 4707
-	    v[v[607]].copy v[607], 2
-	    // "Effect"
-	    v[376] = 0
-	    s[166].off
-	    @if `s[v[300] + 500] == 1 {
-		s[166].on
-		v[376] = 4
-		v[181] += 1
-		@if v[181] <= 6 {
-		    v[844] = Ptr9 
-		    v[844] += 4944
-		    @loop v[1017] .dst v[320] {
-			v[244] %= v[1199]
-			v[351] = v[244] * 50 
-			v[351] += v[1198]
-			@if v[v[351]] <= 1 {
-			    // "まず清掃"
-			    v[1301].copy v[v[351]], 50
-			    // "ポインタセット開始"
-			    // "設定"
-			    v[v[351]] = 1
-			    // "F"
-			    v[345] = v[351] + 49
-			    v[v[345]] = 8
-			    // "Set itself"
-			    v[345] = v[351] + 3
-			    v[v[345]] = 121 + agent_AAElement //v[Ptr9 + 4823]
-			    // "Set size"
-			    v[v[351] + 26] = max(100, 75 + agent_ProcessAD>>2) //v[Ptr9 + 4809] / 4)
-			    // "Set Dire"
-			    v[345] = v[351] + 27
-			    v[v[345]] = 13 + v[v[844]] * 6
-			    // "けす処理をLinkedFuncに入れる"
-			    v[345] = v[351] + 10
-			    // "XY set"
-			    v[357] = v[351] + 6
-			    v[607].copy v[361], 2
-			    v[361] += rnd(-3, 3)
-			    v[362] += rnd(-5, 5)
-			    v[361].copy v[v[357]], 2
-			    // "仕上げに登録消す"
-			    v[244] += 1
-			    @break
-			    
 			}
-			v[244] += 1
-			
-		    }
-		    
-		    
-		}
-		@if v[182] <= 0 {
-		    @if v[522] < 30 {
-			v[182] += 1
-			// "#Get melee weapon effect"
-			v[329] = v[Ptr9 + 4829] / 10000
-			// "#########################"
-			v[472] = divmul(65, 100, v[2216])
-			v[473] = rnd(80, 105)
-			v[474] = divmul(v[607] + v[1001], v[1281], 50)
-			t[510] .asg "weapons\swing"
-			t[510] .cat v[329]
-			v[341] = 510
-			// "Strings = t[v[341]]"
-			@cmd 11550, t[v[341]], .args v[472], 3
-			// "#########################"
-			
-		    }
-		    
-		}
-		
-	    }
-	    @if s[167] .isOff() {
-		//v[11] = v[299]
-		func_bs_melee_hit_check(v[299] v[300])
-		v[607] = Ptr10 + 4707
-		v[v[607]].copy v[607], 2
-	    } .else bl {
-		v[21] = 1 //if target is STATIC, won't miss
-	    }
-	    // At least in Melee AA, agent parameters remain via hitcheck
-	    @if v[21] == 1 {
-		// "Hit!"
-		@if s[167] .isOff() {
-		    /*// "###########Shield Bash###########"*/
-		    @if `agent_ProcessObjBit & 8192 {//v[Ptr9 + 4974] & 8192 {
-			// "#発動処理"
-			// "#バフ番号指定"
-			//v[11] = 1196
-			//v[12] = v[300]
-			//@call .cev 1911
-			//v[v[22]] = v[22] >= 0 ? 16 : v[v[22]]
-			func_bs_register_buff_with_time(1196 v[300] shieldbash_time)
-			// "Give V vector"
-			@if v[v[22]] == shieldbash_time {
-			    // "#Set Dash/Knockback"
-			    v[Ptr10 + 4942] = 4
-			    v[Ptr10 + 4949] = v[v[22]]
-			    /*// "###############
-			    速度べくとるを作る
-			    ###############"*/
-			    v[341] = Ptr9 
-			    v[341] += 4707
-			    v[v[341]].copy v[11], 2
-			    v[607].copy v[13], 2
-			    // "@> イベントの呼び出し: [V0Gen V1~4 reg1,2,3]"
-			    // "#単位ベクトルできた"
-			    v[13] -= v[11]
-			    // "T9 = TT5 = 差を保存x"
-			    v[345] = v[13]
-			    v[13] = pow(v[13], 2)
-			    // "#######"
-			    v[14] -= v[12]
-			    // "T10 = TT6 = 差を保存x"
-			    v[346] = v[14]
-			    v[14] = pow(v[14], 2)
-			    v[13] += v[14]
-			    // "Set Object[23]"
-			    v[23] = sqrt(v[13], 1000)
-			    v[348] = v[23]
-			    // "Set V0x"
-			    v[21] = v[345] * 100000
-			    v[21] /= v[348]
-			    // "Set V0y"
-			    v[22] = v[346] * 100000
-			    v[22] /= v[348]
-			    // "#速度へ代入"
-			    v[21..22] *= 440
-			    // "@> イベントの呼び出し: [V0Gen V1~4 reg1,2,3]END"
-			    v[341] = Ptr10 + 4712
-			    v[21].copy v[v[341]], 2
-			    
-			}
-			
-		    }
-		    /* "###########Shield Bash End###########"*/
-		    // "#SP damage#A hit causes 4 SP loss"
-		    v[Ptr10 + 4808] = max(v[Ptr10 + 4808] - 4, 0)
-		    // "#CheckCrit"
-		    // "Var1 = Obj 1~V[421] = ダメージ倍率"
-		    v[11] = v[299]
-		    //v[15] = Ptr10 
-		    //v[15] += 4700
-		    // "#Crit率ゲット+least_crit_melee-CritReduction"
-		    v[342] = agent_ProcessCrit + least_crit_melee - v[Ptr10 + 4939]
-		    v[341] = rnd(0, 99)
-		    // "#CritDamageReduction#(450-[Reduction])%"
-		    v[343] = 450 - v[Ptr10 + 4940]
-		    // "#[Crit]%でフラグ"
-		    @if v[342] >= v[341] {
-			// "Set jump Timer"
-			v[Ptr9 + 4785] = 6
-			v[421] = v[343]
-			
-		    } .else bl {
-			v[421] = 100 + (agent_PerkFlagBits1 & 4096 && agent_Direction == v[Ptr10 + 4944] ? 40 : 0) + (agent_PerkFlagBits1 & 32768 && agent_ProcessObjBit & 1 ? 70 : 0)//BackStabber and Ambush
-			
-		    }
-		    
-		} .else bl {
-		    v[421] = 100
-		    
-		}
-		// "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃ここそのうち用意した関数に置き換える＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"
-		// "ADを取得"
-		/*v[11] = v[299]
-		v[12] = 1
-		@call .cev 2004*/
-		//macro_get_agent_slot_to_r1(v[299] SLOT_CURRENT_AD)
-		v[301] = agent_ProcessAD
-		//opt 25.4.23
-		// "ARかMRか取得"
-		//v[302] = v[v[843] - 121]
-		//v[302]=Ptr9+4822
-		//v[302]=v[v[302]]
-		// "Element"
-		//v[303] = v[v[843] - 120]
-		//v[303]=Ptr9+4823
-		//v[303]=v[v[303]]
-		v[302]= agent_AA_ARorMR
-		v[303]= agent_AAElement
-		// "AABits"
-		v[19] = agent_AABits & ~v[4812]
-		v[422] = 0
-		//9.3.23
-		//@call .cev 40
-		func_damage_calculation()
-		//You need to re-extract agent parameters!
-		// "############"
-		// "Effect"
-		@if s[166] .isOn() {
-		    v[342] = v[Ptr10 + 4974] & 4096 ? 999999 : v[1138]
-		    @if v[22] >= v[342] {
-			v[342] = v[v[874]] & 4096 ? 999999 : v[1138]
-			// "Blood stain on 1h weapon"
-			v[342] = Ptr9 
-			v[342] += 4959
-			@if `!(v[v[874]] & 1048576) {
-			    v[v[342] + 26] = min(v[v[342] + 26] + 1, 12)
-			    
-			}
-			s[141].on
-			@if v[181] <= 4 {
-			    v[711] = Ptr10
-			    v[607] = v[711] + 4707
-			    v[v[607]].copy v[607], 2
-			    v[607].copy v[361], 2
-			    v[182] += 1
-			    // "#Get melee weapon effect"
-			    v[829] = v[Ptr9 + 4829] % 10000
-			    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-			    @loop 1 {
-				// "Common"
-				@if v[829] == 0 {
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(50, 110)
-				    @cmd 11550, "重いパンチ2", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
+			// "#################交戦デバフを付与################"
+			// "#Combat Penalty Resist"
+			v[Ptr10 + 4781] = v[Ptr10 + 4974] & BaseObjBit_FLAG_Immune_to_MeleePenalty ? 0 : Const_Melee_Fight_Time_by_Melee_Attack // defined in header_common.tpc
+			v[Ptr10 + 4780] = v[1240] * v[4571]
+			// "############↓?"
+			v[720] = v[210] + 120
+			v[629] = v[210] + 29
+			v[874] = v[210] + 274
+			// "############Melee Auto Attack################"
+			// "Log"
+			// "Auto Attack SP Cost"
+			v[708] = v[708] - v[721]
+			TT1 = v[210] + 108
+			v[TT1] = max(v[708], 0)
+
+			/* Access19 = AttackerObjectID 0~
+			Access20 = TargetObjectID 1~
+			Access18 = ObjTypeチェックPtr*/
+			v[711] = Ptr10
+			v[607] = v[711] + 4707
+			v[v[607]].copy v[607], 2
+			// Effect
+			v[376] = 0
+			s[166].off
+			TT1 = Ptr20 + 500
+			@if s[TT1] .isOn() {
+				s[166].on
+				v[376] = 4
+				v[181] += 1
+				@if v[181] <= 6 {
+						v[844] = Ptr9 
+						v[844] += 4944
+						@loop v[1017] .dst Temp20 {
+							v[244] %= v[1199]
+							TT11 = v[244] * 50 
+							TT11 += v[1198]
+							@if v[TT11] <= 1 {
+									// "まず清掃"
+									v[1301].copy v[TT11], 50
+									// "ポインタセット開始"
+									// "設定"
+									v[TT11] = 1
+									// "F"
+									TT5 = TT11 + 49
+									v[TT5] = 8
+									// "Set itself"
+									TT5 = TT11 + 3
+									v[TT5] = 121 + agent_AAElement //v[Ptr9 + 4823]
+									// "Set size"
+									v[TT11 + 26] = max(100, 75 + agent_ProcessAD >> 2) //v[Ptr9 + 4809] / 4)
+									// "Set Dire"
+									TT5 = TT11 + 27
+									v[TT5] = 13 + v[v[844]] * 6
+									// "けす処理をLinkedFuncに入れる"
+									TT5 = TT11 + 10
+									// "XY set"
+									TT17 = TT11 + 6
+									v[607].copy v[361], 2
+									v[361] += rnd(-3, 3)
+									v[362] += rnd(-5, 5)
+									v[361].copy v[TT17], 2
+									// "仕上げに登録消す"
+									v[244] += 1
+									@break
+									
+							}
+							v[244] += 1
+							
+						}
+						
+						
 				}
-				// "Swords"
-				@if v[829] == 1 {
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(80, 120)
-				    // "need moar metalic features within the sound"
-				    @cmd 11550, "weapons\sword_slash_body_nenetei", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
-				}
-				// "Axe/Cleavers"
-				@if v[829] == 2 {
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(50, 75)
-				    @cmd 11550, "重いパンチ2", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
-				}
-				// "Spear/Piercing"
-				@if v[829] == 3 {
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(83, 110)
-				    @cmd 11550, "weapons\Spear_stab_body_nenetei", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
-				}
-				// "Pike"
-				@if v[829] == 4 {
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(72, 82)
-				    @cmd 11550, "weapons\pike_stab_1", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
-				}
-				// "Siege Ram"
-				@if v[829] == 100 {
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(83, 100)
-				    @cmd 11550, "RTP\earth5", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
+				@if v[182] <= 0 {
+						@if v[522] < 30 {
+							v[182] += 1
+							// "#Get melee weapon effect"
+							v[329] = v[Ptr9 + 4829] / 10000
+							// "#########################"
+							v[472] = divmul(65, 100, v[2216])
+							v[473] = rnd(80, 105)
+							v[474] = divmul(v[607] + v[1001], v[1281], 50)
+							inputstr .asg "weapons\swing"
+							inputstr .cat v[329]
+							TT1 = 510
+							// "Strings = t[TT1]"
+							@cmd 11550, t[TT1], .args v[472], 3
+							// "#########################"
+							
+						}
+						
 				}
 				
-			    }
-			    
-			    // "Get MaxHP of the victim"
-			    v[343] = v[Ptr10 + 4805] / 10
-			    v[342] = rnd(0, 9)
-			    // "if the damage amount is higher than 10% of max HP of the victim more likely bleed effect happens"
-			    v[342] += v[343] < v[22] ? 3 : 0
-			    v[342] *= v[243] < v[1124] ? 1 : 0
-			    @if v[342] >= 8 {
-				v[372] = (v[Ptr10 + 4840] & 4096) ? 1 : 0
-				//s[141].on
-				//@call .cev 111
-				//set blood variation - mini_blood_damage_threshold is defined in module_core_RTS_main_effects_gib_functions.tpc 
-				v[14] = v[22] >= mini_blood_damage_threshold ? 0 : 1
-				func_call_mini_blood_f_effect(v[361] v[362] v[372] v[14])
-				
-			    }
-			    
 			}
-			
-		    } .else bl {
-			@if v[181] <= 4 {
-			    v[182] += 1
-			    // "#Get melee weapon effect"
-			    v[829] = v[Ptr9 + 4829] % 10000
-				// "Common"
-				@if v[829] == 0 {
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(115, 170)
-				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				    @cmd 11550, "重いパンチ2", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
-				
-				// "Swords"
-				}.elif v[829] == 1 {
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(90, 110)
-				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				    @cmd 11550, "weapons\Sword_Slash_01", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
-				
-				// "Axe/Cleavers"
-				}.elif v[829] == 2 {
-				    // "i don't like this, maybe change later"
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(90, 110)
-				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				    @cmd 11550, "weapons\Sword_heavy_slash_01", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
-				
-				// "Spear/Piercing"
-				}.elif v[829] == 3 {
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(90, 110)
-				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				    @cmd 11550, "weapons\Spear_stab_armor", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
-				
-				// "Pike"
-				}.elif v[829] == 4 {
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(90, 100)
-				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				    @cmd 11550, "weapons\pike_stab_armor", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
-				
-				// "Siege Ram"
-				}.elif v[829] == 100 {
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(83, 100)
-				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				    @cmd 11550, "RTP\earth5", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
-				}
-				
-			    
-			    
-			}
-			
-		    }
-		    
-		}
-		// "##################"
-		// "Trample Damage"
-		@if `v[Ptr9 + 4824] & 4096 {
-		    s[162].on
-		    @if v[217] < v[4559] {
-			v[217] += 1
-			@loop v[4559] .dst v[320] {
-			    v[216] %= v[4559]
-			    v[301] = v[216] * 100 
-			    v[301] += v[1076]
-			    v[295] = v[301] + 1
-			    @if v[v[295]] == 0 {
-				// "Access17 = AttackerObjチェックPtr"
-				v[297] = Ptr9 
-				v[297] += 4700
-				// "まず清掃"
-				v[1301].copy v[601], 100
-				v[1301].copy v[v[295]], 100
-				// "ParentObjセット"
-				v[609] = v[299]
-				// "出る場所セット"
-				v[341] = v[297] + 7
-				v[v[341]].copy v[605], 2
-				v[605..606] *= 10000
-				v[v[341]].copy v[607], 2
-				// "Projectile team"
-				v[618] = v[v[297] + 100]
-				// "パラメータ等入力begin"
-				// "#Pic"
-				v[602] = 1
-				// "#ProjectileType"
-				v[601] = 2
-				// "#あたり判定"
-				v[610..611] = v[v[297] + 117] / 1000
-				// "#威力"
-				/*v[11] = v[299]
-				v[12] = 1
-				@call .cev 2004*/
-				macro_get_agent_slot_to_r1(v[299] SLOT_CURRENT_AD)
-				// "[AD]*25%"
-				v[21] = muldiv(v[21], 20, 100)
-				v[621] = v[21]
-				// "#ARMRと属性"
-				v[622] = 0
-				v[623] = v[v[297] + 123]
-				// "#Nopic"
-				v[628] |= 8
-				// "#Timer"
-				v[700] = 1
-				// "パラメータ等入力end"
-				v[601].copy v[v[295]], 100
-				// "演出"
-				@break
-				
-			    }
-			    v[216] += 1
-			    
-			}
-			
-			
-		    }
-		    
-		}
-		// "Trample Damage"
-		@if `v[Ptr9 + 4824] & 4096 {
-		    s[162].on
-		    @if v[217] < v[4559] {
-			v[217] += 1
-			@loop v[4559] .dst v[320] {
-			    v[216] %= v[4559]
-			    v[301] = v[216] * 100 
-			    v[301] += v[1076]
-			    v[295] = v[301] + 1
-			    @if v[v[295]] == 0 {
-				// "Access17 = AttackerObjチェックPtr"
-				v[297] = Ptr9 
-				v[297] += 4700
-				// "まず清掃"
-				v[1301].copy v[601], 100
-				v[1301].copy v[v[295]], 100
-				// "ParentObjセット"
-				v[609] = v[299]
-				// "出る場所セット"
-				v[341] = v[297] + 7
-				v[v[341]].copy v[605], 2
-				v[605..606] *= 10000
-				v[v[341]].copy v[607], 2
-				// "Projectile team"
-				v[618] = v[v[297] + 100]
-				// "パラメータ等入力begin"
-				// "#Pic"
-				v[602] = 1
-				// "#ProjectileType"
-				v[601] = 2
-				// "#あたり判定"
-				v[610..611] = v[v[297] + 117] / 1000
-				// "#威力"
-				/*v[11] = v[299]
-				v[12] = 1
-				@call .cev 2004*/
-				macro_get_agent_slot_to_r1(v[299] SLOT_CURRENT_AD)
-				// "[AD]*25%"
-				v[21] = muldiv(v[21], 20, 100)
-				v[621] = v[21]
-				// "#ARMRと属性"
-				v[622] = 0
-				v[623] = v[v[297] + 123]
-				// "#Nopic"
-				v[628] |= 8
-				// "#Timer"
-				v[700] = 1
-				// "パラメータ等入力end"
-				v[601].copy v[v[295]], 100
-				// "演出"
-				@break
-				
-			    }
-			    v[216] += 1
-			    
-			}
-			
-			
-		    }
-		    
-		}
-		// "Blade Dance"
-		@if `v[Ptr9 + 4824] & 262144 {
-		    v[11] = 1243
-		    v[12] = v[299]
-		    /*@call .cev 1911
-		    @if v[22] >= 0 {
-			v[v[22]] = 48
-			
-		    }*/
-		    func_bs_register_buff_with_time(1243 v[299] bladedance_time)
-		    
-		}
-		// "################"
-		v[295] = 300 * v[299] 
-		v[295] += 4700
-		// "#試作#Functionを呼ぶ"
-		v[730] = v[295] + 130
-		@if v[v[730]] >= 1 {
-		    v[341] = v[295] + 7
-		    v[v[341]].copy v[590], 2
-		    @call .cev v[v[730]]
-		    
-		}
-		
-	    } .else bl {
-		// "Miss!"
-		// "#SP damage#Evading costs 2 SP"
-		v[350] = Ptr10 
-		v[350] += 4808
-		v[v[350]] = max(v[v[350]] - 2, 0)
-		v[607].copy v[221], 2
-		@if v[22] == 1 {
-		    // "Shield Blocked!"
-		    // "##############CheckBits##############"
-		    // "Shield Cracking"
-		    v[824] = v[Ptr9 + 4824]
-		    v[23] = 0
-		    @if `v[824] & 1024 {
-			// "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"
-			v[341] = v[Ptr10 + 4934]
-			@if `v[Ptr10 + 4765] & 1 {
-			    v[341] = muldiv(v[341], 130, 100)
-			    
-			}
-			// "＃＃＃＃＃＃＃＃＃＃Chance Roll＃＃＃＃＃＃＃＃＃＃"
-			v[342] = Ptr9
-			v[342] += 4960
-			// "#そのうち処理作る"
-			v[342] += 1
-			v[21] = v[v[342]] / 3
-			@if `v[824] & 131072 {
-			    v[21] *= 2
-			    
-			}
-			v[824] = v[Ptr9 + 4824]
-			// "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"
-			v[343] = rnd(0, v[21])
-			@if v[343] >= v[341] {
-			    v[23] = 1
-			    // "#バフ番号指定"
-			    v[11] = 1258
-			    v[12] = v[300]
-			    
-			    func_bs_register_buff_with_time(1258 v[300] shieldcrack_time)
-			    
-			}
-			
-		    }
-		    @if s[166] .isOn() {
-			// "Set ShieldMotion Timer"
-			v[Ptr10 + 4783] = 6
-			@if v[23] == 0 {
-			    @if v[182] <= 2 {
-				// "#########################"
-				v[472] = divmul(60, 100, v[2216])
-				v[473] = rnd(115, 120)
-				v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				@cmd 11550, "weapons/shield_hit", .args v[472], 3
-				// "#########################"
-				
-			    }
-			    
+			@if s[167] .isOff() {
+				//var1 = Ptr19
+				func_bs_melee_hit_check(Ptr19 Ptr20)
+				v[607] = Ptr10 + 4707
+				v[v[607]].copy v[607], 2
 			} .else bl {
-			    // "#Dust Particle Effect"
-			    @loop v[1017] .dst v[320] {
-				v[244] %= v[1199]
-				v[351] = v[244] * 50 
-				v[351] += v[1198]
-				@if v[v[351]] <= 0 {
-				    // "まず清掃"
-				    v[1301].copy v[v[351]], 50
-				    // "ポインタセット開始"
-				    // "設定"
-				    v[v[351]] = 1
-				    v[v[351] + 49] = 3
-				    v[v[351] + 3] = 160
-				    v[341] = v[351] + 6
-				    v[607].copy v[v[341]], 2
-				    v[244] += 1
-				    @break
-				    
-				}
-				v[244] += 1
-				
-			    }
-			    
-			    @if v[182] <= 3 {
-				// "#########################"
-				v[472] = divmul(78, 100, v[2216])
-				v[473] = rnd(87, 100)
-				v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				@cmd 11550, "weapons/shield_cracked01", .args v[472], 3
-				// "#########################"
-				
-			    }
-			    
+				reg1 = 1 //if target is STATIC, won't miss
 			}
-			// "Call Shield"
-			v[342] = Ptr10 + 4952
-			v[v[342] + 32] = v[v[342]] > 0 ? 4 : 0
-			// "#Shield Motion"
-			v[342] = Ptr10 
-			v[342] += 4943
-			@if v[v[342]] != 1 {
-			    v[v[342]] = 2
-			    v[342] -= 215
-			    v[v[342]] += v[v[342]] < 1 ? 140 : 0
-			    
-			}
-			@if s[307] .isOff() {
-			    @if `v[183] < v[4572] / 2 {
-				// "#描画範囲内か？"
-				v[220] %= 30
-				v[220] += 1201
-				v[220] += 1
-				v[223] = v[220]
-				v[221] += rnd(-6, 6)
-				v[222] += rnd(-3, 3)
-				v[222] += s[162] == 1 ? 10 : 0
-				// "#サイズは最低100%"
-				v[225] = 100
-				// "AR"
-				v[341] = v[1204] - 10
-				@pic[v[223]].show {
-				    "num\num_block"
-				    .pos v[221], v[222] .center
-				    .scrollWithMap
-				    .chromakey 1
-				    .scale v[225]
-				    .trans v[341]
-				    .rgbs 100, 100, 100, 100
-				    .mapLayer 7
-				    .eraseWhenTransfer
-				    .affectedByFlash
-				    .affectedByShake
+			// At least in Melee AA, agent parameters remain via hitcheck
+			@if reg1 == 1 {
+				// "Hit!"
+				@if s[167] .isOff() { // to Movable Agents
+						/*// "###########Shield Bash###########"*/
+						@if `agent_ProcessObjBit & BaseObjBit_FLAG_ShieldBash {
+							// "#発動処理"
+							// "#バフ番号指定"
+							//var1 = 1196
+							//var2 = Ptr20
+							//@call .cev 1911
+							//v[reg2] = reg2 >= 0 ? 16 : v[reg2]
+							func_bs_register_buff_with_time(1196 Ptr20 shieldbash_time)
+							// "Give V vector"
+							@if v[reg2] == shieldbash_time {
+									// "#Set Dash/Knockback"
+									v[Ptr10 + 4942] = 4
+									v[Ptr10 + 4949] = v[reg2]
+									/*// "###############
+									速度べくとるを作る
+									###############"*/
+									TT1 = Ptr9 + 4707
+									v[TT1].copy var1, 2
+									v[607].copy var3, 2
+									// "@> イベントの呼び出し: [V0Gen V1~4 reg1,2,3]"
+									// "#単位ベクトルできた"
+									var3 -= var1
+									// "T9 = TT5 = 差を保存x"
+									TT5 = var3
+									var3 = pow(var3, 2)
+									// "#######"
+									var4 -= var2
+									// "T10 = TT6 = 差を保存x"
+									TT6 = var4
+									var4 = pow(var4, 2)
+									var3 += var4
+									// "Set Object[23]"
+									reg3 = sqrt(var3, 1000)
+									TT8 = reg3
+									// "Set V0x"
+									reg1 = TT5 * 100000
+									reg1 /= TT8
+									// "Set V0y"
+									reg2 = TT6 * 100000
+									reg2 /= TT8
+									// "#速度へ代入"
+									v[21..22] *= 440
+									// "@> イベントの呼び出し: [V0Gen V1~4 reg1,2,3]END"
+									TT1 = Ptr10 + 4712
+									reg1.copy v[TT1], 2
+									
+							}
+							
+						}
+						/* "###########Shield Bash End###########"*/
+						// "#SP damage#A hit causes 4 SP loss"
+						v[Ptr10 + 4808] = max(v[Ptr10 + 4808] - 4, 0)
+						// "#CheckCrit"
+						// "Var1 = Obj 1~V[421] = ダメージ倍率"
+						var1 = Ptr19
+						//var5 = Ptr10 
+						//var5 += 4700
+						// "#Crit率ゲット+least_crit_melee-CritReduction"
+						TT2 = agent_ProcessCrit + least_crit_melee - v[Ptr10 + 4939]
+						TT1 = rnd(0, 99)
+						// "#CritDamageReduction#(450-[Reduction])%"
+						TT3 = 450 - v[Ptr10 + 4940]
+						// "#[Crit]%でフラグ"
+						@if TT2 >= TT1 {
+							// "Set jump Timer"
+							v[Ptr9 + 4785] = 6
+							v[421] = TT3
+					
+						} .else bl {
+							v[421] = 100 + (agent_PerkFlagBits1 & PerkFlagBits1_FLAG_Backstab && agent_Direction == v[Ptr10 + 4944] ? 40 : 0) + (agent_PerkFlagBits1 & PerkFlagBits1_FLAG_UnseenThreat && agent_ProcessObjBit & BaseObjBit_FLAG_Ambushing ? 70 : 0) //BackStabber and Ambush
+					
+						}
+						
+				} .else bl { // to buildings
+						v[421] = 100
+						
 				}
-				v[222] = v[608] - 24
-				v[222] += s[162] == 1 ? 10 : 0
-				@pic[v[223]].move {
-				    .pos v[221], v[222] .center
-				    .scale v[225]
-				    .trans 100
-				    .time 12
-				    .rgbs 100, 100, 100, 100
+				// "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃ここそのうち用意した関数に置き換える＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"
+				// get Atker AA parameters
+				Temp1 = agent_ProcessAD
+				Temp2= agent_AA_ARorMR
+				Temp3= agent_AAElement
+				// "AABits"
+				var9 = agent_AABits & ~v[4812]
+				v[422] = 0
+				func_damage_calculation()
+
+				// ################################################
+				//You need to re-extract agent parameters!
+				// ################################################
+
+				// "Effect"
+				@if s[166] .isOn() {
+						v[874] = v[210] + 274
+						TT2 = v[v[874]] & BaseObjBit_FLAG_Immune_to_bleed ? 999999 : v[1138]
+						@if reg2 >= TT2 {
+							// "Blood stain on 1h weapon"
+							TT2 = Ptr9 
+							TT2 += 4959
+							@if `!(v[v[874]] & BaseObjBit_FLAG_Standard_Bearer) { // not Standard bearer
+									v[TT2 + 26] = min(v[TT2 + 26] + 1, 12)
+									
+							}
+							s[141].on
+							@if v[181] <= 4 {
+									v[711] = Ptr10
+									v[607] = v[711] + 4707
+									v[v[607]].copy v[607], 2
+									v[607].copy v[361], 2
+									v[182] += 1
+									// "#Get melee weapon effect"
+									v[829] = v[Ptr9 + 4829] % 10000
+									v[474] = divmul(v[607] + v[1001], v[1281], 50)
+									@loop 1 {
+								// "Common"
+								@if v[829] == 0 {
+										// "#########################"
+										v[472] = divmul(70, 100, v[2216])
+										v[473] = rnd(50, 110)
+										@cmd 11550, "重いパンチ2", .args v[472], 3
+										// "#########################"
+										@break
+										
+								}
+								// "Swords"
+								@if v[829] == 1 {
+										// "#########################"
+										v[472] = divmul(70, 100, v[2216])
+										v[473] = rnd(80, 120)
+										// "need moar metalic features within the sound"
+										@cmd 11550, "weapons\sword_slash_body_nenetei", .args v[472], 3
+										// "#########################"
+										@break
+										
+								}
+								// "Axe/Cleavers"
+								@if v[829] == 2 {
+										// "#########################"
+										v[472] = divmul(70, 100, v[2216])
+										v[473] = rnd(50, 75)
+										@cmd 11550, "重いパンチ2", .args v[472], 3
+										// "#########################"
+										@break
+										
+								}
+								// "Spear/Piercing"
+								@if v[829] == 3 {
+										// "#########################"
+										v[472] = divmul(70, 100, v[2216])
+										v[473] = rnd(83, 110)
+										@cmd 11550, "weapons\Spear_stab_body_nenetei", .args v[472], 3
+										// "#########################"
+										@break
+										
+								}
+								// "Pike"
+								@if v[829] == 4 {
+										// "#########################"
+										v[472] = divmul(70, 100, v[2216])
+										v[473] = rnd(72, 82)
+										@cmd 11550, "weapons\pike_stab_1", .args v[472], 3
+										// "#########################"
+										@break
+										
+								}
+								// "Siege Ram"
+								@if v[829] == 100 {
+										// "#########################"
+										v[472] = divmul(70, 100, v[2216])
+										v[473] = rnd(83, 100)
+										@cmd 11550, "RTP\earth5", .args v[472], 3
+										// "#########################"
+										@break
+										
+								}
+								
+									}
+									
+									// "Get MaxHP of the victim"
+									TT3 = Ptr10 + 4805
+									TT3 = v[TT3] / 10
+									TT2 = rnd(0, 9)
+									// "if the damage amount is higher than 10% of max HP of the victim more likely bleed effect happens"
+									TT2 += TT3 < reg2 ? 3 : 0
+									TT2 *= v[243] < v[1124] ? 1 : 0
+									@if TT2 >= 8 {
+										v[372] = Ptr10 + 4840
+										v[372] = (v[v[372]] & 4096) ? 1 : 0
+										//s[141].on
+										//@call .cev 111
+										//set blood variation - mini_blood_damage_threshold is defined in module_core_RTS_main_effects_gib_functions.tpc 
+										var4 = reg2 >= mini_blood_damage_threshold ? 0 : 1
+										func_call_mini_blood_f_effect(v[361] v[362] v[372] var4)
+										
+									}
+									
+							}
+							
+						} .else bl {
+					@if v[181] <= 4 {
+							v[182] += 1
+							// "#Get melee weapon effect"
+							v[829] = v[Ptr9 + 4829] % 10000
+						// "Common"
+						@if v[829] == 0 {
+								// "#########################"
+								v[472] = divmul(70, 100, v[2216])
+								v[473] = rnd(115, 170)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
+								@cmd 11550, "重いパンチ2", .args v[472], 3
+								// "#########################"
+								@break
+								
+						
+						// "Swords"
+						}.elif v[829] == 1 {
+								// "#########################"
+								v[472] = divmul(70, 100, v[2216])
+								v[473] = rnd(90, 110)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
+								@cmd 11550, "weapons\Sword_Slash_01", .args v[472], 3
+								// "#########################"
+								@break
+								
+						
+						// "Axe/Cleavers"
+						}.elif v[829] == 2 {
+								// "i don't like this, maybe change later"
+								// "#########################"
+								v[472] = divmul(70, 100, v[2216])
+								v[473] = rnd(90, 110)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
+								@cmd 11550, "weapons\Sword_heavy_slash_01", .args v[472], 3
+								// "#########################"
+								@break
+								
+						
+						// "Spear/Piercing"
+						}.elif v[829] == 3 {
+								// "#########################"
+								v[472] = divmul(70, 100, v[2216])
+								v[473] = rnd(90, 110)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
+								@cmd 11550, "weapons\Spear_stab_armor", .args v[472], 3
+								// "#########################"
+								@break
+								
+						
+						// "Pike"
+						}.elif v[829] == 4 {
+								// "#########################"
+								v[472] = divmul(70, 100, v[2216])
+								v[473] = rnd(90, 100)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
+								@cmd 11550, "weapons\pike_stab_armor", .args v[472], 3
+								// "#########################"
+								@break
+								
+						
+						// "Siege Ram"
+						}.elif v[829] == 100 {
+								// "#########################"
+								v[472] = divmul(70, 100, v[2216])
+								v[473] = rnd(83, 100)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
+								@cmd 11550, "RTP\earth5", .args v[472], 3
+								// "#########################"
+								@break
+								
+						}
+						
+							
+							
+					}
+					
+						}
+						
 				}
-				v[183] += v[184] >= v[1128] ? 2 : 1
+				// "##################"
+				// "Trample Damage"
+				@if `v[Ptr9 + 4824] & AABits_FLAG_Trample {
+						s[162].on
+						@if v[217] < v[4559] {
+							v[217] += 1
+							@loop v[4559] .dst Temp20 {
+									v[216] %= v[4559]
+									Temp1 = v[216] * 100 
+									Temp1 += v[1076]
+									Ptr15 = Temp1 + 1
+									@if v[Ptr15] == 0 {
+								// "Access17 = AttackerObjチェックPtr"
+								Ptr17 = Ptr9 
+								Ptr17 += 4700
+								// "まず清掃"
+								v[1301].copy v[601], 100
+								v[1301].copy v[Ptr15], 100
+								// "ParentObjセット"
+								v[609] = Ptr19
+								// "出る場所セット"
+								TT1 = Ptr17 + 7
+								v[TT1].copy v[605], 2
+								v[605..606] *= 10000
+								v[TT1].copy v[607], 2
+								// "Projectile team"
+								v[618] = v[Ptr17 + 100]
+								// "パラメータ等入力begin"
+								// "#Pic"
+								v[602] = 1
+								// "#ProjectileType"
+								v[601] = 2
+								// "#あたり判定"
+								v[610..611] = v[Ptr17 + 117] / 1000
+								// "#威力"
+								/*var1 = Ptr19
+								var2 = 1
+								@call .cev 2004*/
+								macro_get_agent_slot_to_r1(Ptr19 SLOT_CURRENT_AD)
+								// "[AD]*25%"
+								reg1 = muldiv(reg1, 20, 100)
+								v[621] = reg1
+								// "#ARMRと属性"
+								v[622] = 0
+								v[623] = v[Ptr17 + 123]
+								// "#Nopic"
+								v[628] |= 8
+								// "#Timer"
+								v[700] = 1
+								// "パラメータ等入力end"
+								v[601].copy v[Ptr15], 100
+								// "演出"
+								@break
+								
+									}
+									v[216] += 1
+									
+							}
+							
+							
+						}
+						
+				}
+				// "Blade Dance"
+				@if `v[Ptr9 + 4824] & AABits_FLAG_BladeDance {
+						var1 = 1243
+						var2 = Ptr19
+						func_bs_register_buff_with_time(1243 Ptr19 bladedance_time)
+						
+				}
+				// "################"
+				Ptr15 = 300 * Ptr19 
+				Ptr15 += 4700
+				// "#試作#Functionを呼ぶ"
+				v[730] = Ptr15 + 130
+				@if v[v[730]] >= 1 {
+						TT1 = Ptr15 + 7
+						v[TT1].copy v[590], 2
+						@call .cev v[v[730]]
+						
+				}
 				
-			    }
-			    
+			} .else bl {
+				// "Miss!"
+				// "#SP damage#Evading costs 2 SP"
+				TT10 = Ptr10 
+				TT10 += 4808
+				v[TT10] = max(v[TT10] - 2, 0)
+				v[607].copy v[221], 2
+				@if reg2 == 1 {
+						// "Shield Blocked!"
+						// "##############CheckBits##############"
+						// "Shield Cracking"
+						v[824] = Ptr9 + 4824
+						v[824] = v[v[824]]
+						reg3 = 0
+						@if `v[824] & AABits_FLAG_CrackingShield {
+							// "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"
+							TT1 = v[Ptr10 + 4934]
+							@if `v[Ptr10 + 4765] & 1 {
+									TT1 = muldiv(TT1, 130, 100)
+									
+							}
+							// "＃＃＃＃＃＃＃＃＃＃Chance Roll＃＃＃＃＃＃＃＃＃＃"
+							TT2 = Ptr9
+							TT2 += 4960
+							// "#そのうち処理作る"
+							TT2 += 1
+							reg1 = v[TT2] / 3
+							reg1 *= v[824] & AABits_FLAG_CrackingShieldBONUS ? 2 : 1
+							
+							v[824] = v[Ptr9 + 4824]
+							// "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"
+							TT3 = rnd(0, reg1)
+							@if TT3 >= TT1 {
+									reg3 = 1
+									// "#バフ番号指定"
+									var1 = 1258
+									var2 = Ptr20
+									
+									func_bs_register_buff_with_time(1258 Ptr20 shieldcrack_time)
+									
+							}
+							
+						}
+						@if s[166] .isOn() {
+							// "Set ShieldMotion Timer"
+							TT1 = Ptr10 + 4783
+							v[TT1] = 6
+							@if reg3 == 0 {
+									@if v[182] <= 2 {
+								// "#########################"
+								v[472] = divmul(60, 100, v[2216])
+								v[473] = rnd(115, 120)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
+								@cmd 11550, "weapons/shield_hit", .args v[472], 3
+								// "#########################"
+								
+									}
+									
+							} .else bl {
+									// "#Dust Particle Effect"
+									@loop v[1017] .dst Temp20 {
+										v[244] %= v[1199]
+										TT11 = v[244] * 50 
+										TT11 += v[1198]
+										@if v[TT11] <= 0 {
+												// "まず清掃"
+												v[1301].copy v[TT11], 50
+												// "ポインタセット開始"
+												// "設定"
+												v[TT11] = 1
+												v[TT11 + 49] = 3
+												v[TT11 + 3] = 160
+												TT1 = TT11 + 6
+												v[607].copy v[TT1], 2
+												v[244] += 1
+												@break
+												
+										}
+										v[244] += 1
+										
+									}
+									
+									@if v[182] <= 3 {
+										// "#########################"
+										v[472] = divmul(78, 100, v[2216])
+										v[473] = rnd(87, 100)
+										v[474] = divmul(v[607] + v[1001], v[1281], 50)
+										@cmd 11550, "weapons/shield_cracked01", .args v[472], 3
+										// "#########################"
+										
+									}
+									
+							}
+							// "Call Shield"
+							TT2 = Ptr10 + 4952
+							v[TT2 + 32] = v[TT2] > 0 ? 4 : 0
+							// "#Shield Motion"
+							TT2 = Ptr10 
+							TT2 += 4943
+							@if v[TT2] != 1 {
+									v[TT2] = 2
+									TT2 -= 215
+									v[TT2] += v[TT2] < 1 ? 140 : 0
+									
+							}
+							@if s[307] .isOff() {
+									@if `v[183] < v[4572] / 2 {
+										// "#描画範囲内か？"
+										v[220] %= 30
+										v[220] += 1201
+										v[220] += 1
+										v[223] = v[220]
+										v[221] += rnd(-6, 6)
+										v[222] += rnd(-3, 3)
+										v[222] += s[162] == 1 ? 10 : 0
+										// "#サイズは最低100%"
+										v[225] = 100
+										// "AR"
+										TT1 = v[1204] - 10
+										@pic[v[223]].show {
+												PATH_pic_numdir_block
+												.pos v[221], v[222] .center
+												.scrollWithMap
+												.chromakey 1
+												.scale v[225]
+												.trans TT1
+												.rgbs 100, 100, 100, 100
+												.mapLayer 7
+												.eraseWhenTransfer
+												.affectedByFlash
+												.affectedByShake
+										}
+										v[222] = v[608] - 24
+										v[222] += s[162] == 1 ? 10 : 0
+										@pic[v[223]].move {
+												.pos v[221], v[222] .center
+												.scale v[225]
+												.trans 100
+												.time 12
+												.rgbs 100, 100, 100, 100
+										}
+										v[183] += v[184] >= v[1128] ? 2 : 1
+										
+									}
+									
+							}
+							
+						}
+						
+				} .else bl {
+						@if reg2 == 2 {
+							@if s[166] .isOn() {
+									// "Set ShieldMotion Timer"
+									v[Ptr10 + 4783] = 6
+									@if v[182] <= 3 {
+										// "#########################"
+										@if v[522] < 50 {
+												v[329] = rnd(1, 4)
+												// "#########################"
+												v[472] = divmul(60, 100, v[2216])
+												v[473] = rnd(100, 130)
+												v[474] = divmul(v[607] + v[1001], v[1281], 50)
+												inputstr .asg "weapons\sword_clash_"
+												inputstr .cat v[329]
+												TT1 = 510
+												// "Strings = t[TT1]"
+												@cmd 11550, t[TT1], .args v[472], 3
+												
+										}
+										
+									}
+									@if s[307] .isOff() {
+										@if `v[183] < v[4572] / 2 {
+												// "#描画範囲内か？"
+												v[220] %= 30
+												v[220] += 1201
+												v[220] += 1
+												v[223] = v[220]
+												v[221] += rnd(-6, 6)
+												v[222] += rnd(-3, 3)
+												v[222] += s[162] == 1 ? 10 : 0
+												// "#サイズは最低100%"
+												v[225] = 100
+												// "AR"
+												TT1 = v[1204] - 10
+												@pic[v[223]].show {
+													PATH_pic_numdir_block
+													.pos v[221], v[222] .center
+													.scrollWithMap
+													.chromakey 1
+													.scale v[225]
+													.trans TT1
+													.rgbs 100, 100, 100, 100
+													.mapLayer 7
+													.eraseWhenTransfer
+													.affectedByFlash
+													.affectedByShake
+												}
+												v[222] = v[608] - 24
+												v[222] += s[162] == 1 ? 10 : 0
+												@pic[v[223]].move {
+													.pos v[221], v[222] .center
+													.scale v[225]
+													.trans 100
+													.time 12
+													.rgbs 100, 100, 100, 100
+												}
+												v[183] += v[184] >= v[1128] ? 2 : 1
+												
+										}
+										
+									}
+									// "#"
+									@if `v[Ptr10 + 4974] & BaseObjBit_FLAG_Duelist_Activated { // Duelist
+										// "#バフ番号指定"
+										func_bs_register_buff_with_time(1243 Ptr20 bladedance_time)
+								
+									}
+									// "#バフ番号指定"
+									func_bs_register_buff_with_time(1171 Ptr20 parry_time)
+									
+							}
+							
+						} .else bl {
+							// "Set Dodge Timer"
+							v[Ptr10 + 4785] = 8
+							@if s[166] .isOn() {
+									@if v[181] <= 1 {
+										@if v[522] < 25 {
+												// "#########################"
+												v[472] = divmul(25, 100, v[2216])
+												v[473] = rnd(80, 120)
+												v[474] = divmul(v[607] + v[1001], v[1281], 50)
+												@cmd 11550, "evade2", .args v[472], 3
+												// "#########################"
+												
+										}
+								
+									}
+									@if s[307] .isOff() {
+										@if `v[183] < v[4572] / 2 {
+												// "#描画範囲内か？"
+												v[220] %= 30
+												v[220] += 1201
+												v[220] += 1
+												v[223] = v[220]
+												v[221] += rnd(-6, 6)
+												v[222] += rnd(-3, 3)
+												v[222] += s[162] == 1 ? 10 : 0
+												// "#サイズは最低100%"
+												v[225] = 100
+												// "AR"
+												TT1 = v[1204] - 10
+												@pic[v[223]].show {
+													PATH_pic_numdir_miss
+													.pos v[221], v[222] .center
+													.scrollWithMap
+													.chromakey 1
+													.scale v[225]
+													.trans TT1
+													.rgbs 100, 100, 100, 100
+													.mapLayer 7
+													.eraseWhenTransfer
+													.affectedByFlash
+													.affectedByShake
+												}
+												v[222] = v[608] - 24
+												v[222] += s[162] == 1 ? 10 : 0
+												@pic[v[223]].move {
+													.pos v[221], v[222] .center
+													.scale v[225]
+													.trans 100
+													.time 12
+													.rgbs 100, 100, 100, 100
+												}
+												v[183] += v[184] >= v[1128] ? 2 : 1
+												
+										}
+								
+									}
+									
+							}
+							
+						}
+						
+				}
+				
 			}
+			// "Attacker Combat Timer"
+			TT1 = v[210] + 80
+			v[TT1] = v[1240] * v[4571]
+			s[202..203].off
 			
-		    }
-		    
-		} .else bl {
-		    @if v[22] == 2 {
-			@if s[166] .isOn() {
-			    // "Set ShieldMotion Timer"
-			    v[Ptr10 + 4783] = 6
-			    @if v[182] <= 3 {
-				// "#########################"
-				@if v[522] < 50 {
-				    v[329] = rnd(1, 4)
-				    // "#########################"
-				    v[472] = divmul(60, 100, v[2216])
-				    v[473] = rnd(100, 130)
-				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				    t[510] .asg "weapons\sword_clash_"
-				    t[510] .cat v[329]
-				    v[341] = 510
-				    // "Strings = t[v[341]]"
-				    @cmd 11550, t[v[341]], .args v[472], 3
-				    
-				}
-				
-			    }
-			    @if s[307] .isOff() {
-				@if `v[183] < v[4572] / 2 {
-				    // "#描画範囲内か？"
-				    v[220] %= 30
-				    v[220] += 1201
-				    v[220] += 1
-				    v[223] = v[220]
-				    v[221] += rnd(-6, 6)
-				    v[222] += rnd(-3, 3)
-				    v[222] += s[162] == 1 ? 10 : 0
-				    // "#サイズは最低100%"
-				    v[225] = 100
-				    // "AR"
-				    v[341] = v[1204] - 10
-				    @pic[v[223]].show {
-					"num\num_block"
-					.pos v[221], v[222] .center
-					.scrollWithMap
-					.chromakey 1
-					.scale v[225]
-					.trans v[341]
-					.rgbs 100, 100, 100, 100
-					.mapLayer 7
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
-				    }
-				    v[222] = v[608] - 24
-				    v[222] += s[162] == 1 ? 10 : 0
-				    @pic[v[223]].move {
-					.pos v[221], v[222] .center
-					.scale v[225]
-					.trans 100
-					.time 12
-					.rgbs 100, 100, 100, 100
-				    }
-				    v[183] += v[184] >= v[1128] ? 2 : 1
-				    
-				}
-				
-			    }
-			    // "#"
-			    @if `v[Ptr10 + 4974] & 131072 {
-				// "#バフ番号指定"
-				func_bs_register_buff_with_time(1243 v[300] bladedance_time)
-				
-			    }
-			    // "#バフ番号指定"
-			    func_bs_register_buff_with_time(1171 v[300] parry_time)
-			    
-			}
-			
-		    } .else bl {
-			// "Set Dodge Timer"
-			v[Ptr10 + 4785] = 8
-			@if s[166] .isOn() {
-			    @if v[181] <= 1 {
-				@if v[522] < 25 {
-				    // "#########################"
-				    v[472] = divmul(25, 100, v[2216])
-				    v[473] = rnd(80, 120)
-				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				    @cmd 11550, "evade2", .args v[472], 3
-				    // "#########################"
-				    
-				}
-				
-			    }
-			    @if s[307] .isOff() {
-				@if `v[183] < v[4572] / 2 {
-				    // "#描画範囲内か？"
-				    v[220] %= 30
-				    v[220] += 1201
-				    v[220] += 1
-				    v[223] = v[220]
-				    v[221] += rnd(-6, 6)
-				    v[222] += rnd(-3, 3)
-				    v[222] += s[162] == 1 ? 10 : 0
-				    // "#サイズは最低100%"
-				    v[225] = 100
-				    // "AR"
-				    v[341] = v[1204] - 10
-				    @pic[v[223]].show {
-					"num\num_miss"
-					.pos v[221], v[222] .center
-					.scrollWithMap
-					.chromakey 1
-					.scale v[225]
-					.trans v[341]
-					.rgbs 100, 100, 100, 100
-					.mapLayer 7
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
-				    }
-				    v[222] = v[608] - 24
-				    v[222] += s[162] == 1 ? 10 : 0
-				    @pic[v[223]].move {
-					.pos v[221], v[222] .center
-					.scale v[225]
-					.trans 100
-					.time 12
-					.rgbs 100, 100, 100, 100
-				    }
-				    v[183] += v[184] >= v[1128] ? 2 : 1
-				    
-				}
-				
-			    }
-			    
-			}
-			
-		    }
-		    
+	} .else bl {
+		TT1 = v[210] + 274
+		v[TT1] &= -2//~1
+
+		// "アクションに2F分余韻を…"
+		@if `v[v[629]] > v[v[720]] + 1 {
+			v[843] = v[210] + 243
+			// "AAクールタイムモーション"
+			v[726] = v[210] + 126
+			// "ビット見る"
+			v[v[843]] = v[v[726]] & ExMotionFlags_FLAG_have_AA_CD_Spr ? 2 : 0
+			// "AAモーション初期化"
+			v[v[629]] = 0
+			v[v[896]] = 0
+			TT1 = v[210] + 245 
+			v[TT1] = 0
+			// "Initialize AI Timer"
+			TT1 = v[210] + 80 
+			v[TT1] = v[1240] * v[4571]
+	
 		}
 		
-	    }
-	    // "Attacker Combat Timer"
-	    v[v[210] + 80] = v[1240] * v[4571]
-	    s[202..203].off
-	    
-	} .else bl {
-	    v[v[210] + 274] &= -2//~1
-	    // "アクションに2F分余韻を…"
-	    @if `v[v[629]] > v[v[720]] + 1 {
-		v[843] = v[210] + 243
-		// "AAクールタイムモーション"
-		v[726] = v[210] + 126
-		// "ビット見る"
-		v[341] = v[v[726]] & 1
-		v[v[843]] = v[341] == 1 ? 2 : 0
-		// "AAモーション初期化"
-		v[v[629]] = 0
-		v[v[896]] = 0
-		v[v[210] + 245] = 0
-		// "Initialize AI Timer"
-		v[v[210] + 80] = v[1240] * v[4571]
-		
-	    }
-	    
 	}
 }
 
@@ -904,411 +833,414 @@ __fn agent_autoattack_melee {
 //cev .id(36), .name("AgentAct:RangedAA_Shot"), {
 __fn agent_autoattack_ranged {
 	// "Access19 = AttackerObjectIDAccess20 = TargetObjectID"
-	v[299] = v[207] + 1
-	v[300] = v[v[300]]
+	Ptr19 = v[207] + 1
+	Ptr20 = v[Ptr20]
 	// "対象Objがある"
-	@if v[300] >= 1 {
-	    // "ObjTypeチェック"
-	    v[298] = 300 * v[300] 
-	    v[298] += 4701
-	    // "攻撃モーション処理"
-	    v[629] = v[210] + 29
-	    v[726] = v[210] + 126
-	    v[v[726]] |= (v[v[726]] & 50331648) == 50331648 ? 67108864 : 0
-	    //v[v[726]] |= (v[v[726]] & 50331648) == 50331648 ? 67108864 : 0
-	    // "ObjTypeチェック"
-	    s[202..203].off
-	    @if v[v[298]] > 0 {
-	    	v[720] = v[210] + 120
-		@if v[v[629]] >= v[v[720]] {
-		    @if v[243] < v[1017] {
-			// "射撃成功！"
-			// "#Auto Attack SP Cost"
-			Ptr1 = v[210] + 1
-			v[Ptr1].copy agent_ObjectType, 300 //deploy atk agent para
-			//v[0] = v[v[210] + 108] = max(v[v[210] + 108] - v[v[210] + 121], 0)
-			var1 = agent_SP - agent_AACost
-			agent_SP = max(var1,0)
-			agent_ObjectType.copy v[Ptr1], 300//save, never change atker agent parameters after this
+	@if Ptr20 >= 1 {
+			// "ObjTypeチェック"
+			Ptr18 = 300 * Ptr20 
+			Ptr18 += 4701
+			// "攻撃モーション処理"
+			v[629] = v[210] + 29
+			v[726] = v[210] + 126
+			v[v[726]] |= (v[v[726]] & 50331648) == 50331648 ? 67108864 : 0
+			//v[v[726]] |= (v[v[726]] & 50331648) == 50331648 ? 67108864 : 0
+			// "ObjTypeチェック"
+			s[202..203].off
+			@if v[Ptr18] > 0 {
+						v[720] = v[210] + 120
+				@if v[v[629]] >= v[v[720]] {
+						@if v[243] < v[1017] {
+					// "射撃成功！"
+					// "#Auto Attack SP Cost"
+					Ptr1 = v[210] + 1
+					v[Ptr1].copy agent_ObjectType, 300 //deploy atk agent para
+					var1 = agent_SP - agent_AACost
+					agent_SP = max(var1,0)
+					agent_ObjectType.copy v[Ptr1], 300//save, never change atker agent parameters after this
+					
+					// "#親Objと対象Objをセット"
+					//v[609] = Ptr19
+					//v[623] = Ptr20
+					// "#始点を設定"
+					//v[607] = v[210] + 7
+					//v[v[607]].copy v[607], 2
+					// "#終点を設定"
+					v[624] = Ptr18 + 6
+					v[v[624]].copy v[624], 2
+
+
+					// "#diffusionf: y=x (x)/(-240)+30"
+					//TT10 = max(pow(v[v[210] + 265], 2) / -240 + 30, 0)
+					TT10 = max(pow(agent_ProcessHIT, 2) / -225 + 32, 0)
+
+					v[624] += rnd(-TT10, TT10)
+					v[625] += rnd(-TT10, TT10)
+
+					// this seems what had been breaking arrow and camera relation
+					//v[624].add v[53], 2
+
+					// "#フレーム数を設定"
+					//v[700] = v[v[210] + 128]
+					//v[603] = v[700] - 1
 			
-			// "#親Objと対象Objをセット"
-			//v[609] = v[299]
-			//v[623] = v[300]
-			// "#始点を設定"
-			//v[607] = v[210] + 7
-			//v[v[607]].copy v[607], 2
-			// "#終点を設定"
-			v[624] = v[298] + 6
-			v[v[624]].copy v[624], 2
+					//v[729] = v[210] + 129
+					agent_AASfx = agent_AASfx > 90 ? agent_AASfx : 91
+					//v[637] = v[v[210] + 244]
+					s[141].on
+					v[624].copy v[361], 2
 
-
-			// "#diffusionf: y=x (x)/(-240)+30"
-			//v[350] = max(pow(v[v[210] + 265], 2) / -240 + 30, 0)
-			v[350] = max(pow(agent_ProcessHIT, 2) / -225 + 32, 0)
-
-			//v[0] = v[624..625] += [rnd(-v[350], v[350]), rnd(-v[350], v[350])]
-			v[624] += rnd(-v[350], v[350])
-			v[625] += rnd(-v[350], v[350])
-
-			// this seems what had been breaking arrow and camera relation
-			//v[624].add v[53], 2
-
-			// "#フレーム数を設定"
-			//v[700] = v[v[210] + 128]
-			//v[603] = v[700] - 1
-	
-			//v[729] = v[210] + 129
-			agent_AASfx = agent_AASfx > 90 ? agent_AASfx : 91
-			//v[637] = v[v[210] + 244]
-			s[141].on
-			v[624].copy v[361], 2
-
-			@call .cev agent_AASfx
-			//after this...
-			//Restore Ptr
-			Ptr1 = v[210] + 1
-			v[Ptr1].copy agent_ObjectType, 300 //deploy atk agent para
-			//v[842] = v[210] + 242
-			//v[v[842]] = 0
-			agent_MovementOrder = 0
-			//v[843] = v[210] + 243
-			// "AAクールタイムモーション"
-			//v[726] = v[210] + 126
-			// "ビット見る"
-			//v[341] = v[v[726]] & 1
-			//v[v[843]] = v[341] == 1 ? 2 : 0
-			agent_ActionState = agent_ExMotionFlags & 1 ? 2 : 0
-			// "AAモーション初期化"
-			//v[629] = v[210] + 29
-			//v[v[629]] = 0
-			agent_AttackFrame = 0
-			// "Initialize AI Timer"
-			//v[v[210] + 84] = v[v[210] + 300] % v[1195]
-			agent_ActionTimer = agent_generated_ID % v[1195]
-			//v[v[210] + 80] = v[1240] * v[4571] / 2
-			agent_InCombatTimer = v[1240] * v[4571]
-			agent_InCombatTimer /= 2
-			agent_ObjectType.copy v[Ptr1], 300//save
-			
-		    } .else bl {
-			s[202].on
-			s[203].off
-			
-		    }
-		    
-		} .else bl {
-		    v[v[629]] += 1
-		    
-		}
+					@call .cev agent_AASfx
+					//after this...
+					//Restore Ptr
+					Ptr1 = v[210] + 1
+					v[Ptr1].copy agent_ObjectType, 300 //deploy atk agent para
+					//v[842] = v[210] + 242
+					//v[v[842]] = 0
+					agent_MovementOrder = 0
+					//v[843] = v[210] + 243
+					// "AAクールタイムモーション"
+					//v[726] = v[210] + 126
+					// "ビット見る"
+					agent_ActionState = agent_ExMotionFlags & ExMotionFlags_FLAG_have_AA_CD_Spr ? 2 : 0
+					// "AAモーション初期化"
+					//v[629] = v[210] + 29
+					//v[v[629]] = 0
+					agent_AttackFrame = 0
+					// "Initialize AI Timer"
+					//v[v[210] + 84] = v[v[210] + 300] % v[1195]
+					agent_ActionTimer = agent_generated_ID % v[1195]
+					//v[v[210] + 80] = v[1240] * v[4571] / 2
+					agent_InCombatTimer = v[1240] * v[4571]
+					agent_InCombatTimer /= 2
+					agent_ObjectType.copy v[Ptr1], 300//save
+					
+						} .else bl {
+					s[202].on
+					s[203].off
+					
+						}
+						
+				} .else bl {
+						v[v[629]] += 1
+						
+				}
+				
+			} .else bl {
+				s[202].on
+				s[203].off
 		
-	    } .else bl {
-		s[202].on
-		s[203].off
-		
-	    }
-	    
+			}
+			
 	} .else bl {
-	    s[202].on
-	    s[203].on
-	    
+			s[202].on
+			s[203].on
+			
 	}
 	@if s[202] .isOn() {
-	    @if s[203] .isOn() {
-		v[v[210] + 242] = 0
+			@if s[203] .isOn() {
+				TT1 = v[210] + 242
+				v[TT1] = 0
 		
-	    }
-	    v[v[210] + 243] = 0 
-	    // "#AAタイマー初期化"
-	    v[v[210] + 28] = 0
-	    
+			}
+			TT1 = v[210] + 243
+			v[TT1] = 0 
+			// "#AAタイマー初期化"
+			TT1 = v[210] + 28
+			v[TT1] = 0
+			
 	}
 }
+
+
+
+
+
+
+
 
 // This is obsolete and unused... 18.5.23
 //because arrow effects independently deals with the same hit check process after arrow remake
 cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
-
-
-
 	// "Leave Arrow Picture"
-	v[v[301]] = 1
+	v[Temp1] = 1
 	// "エフェクト処理から呼び出される"
-	v[341] = v[301] + 8
-	v[342] = v[301] + 22
+	TT1 = Temp1 + 8
+	TT2 = Temp1 + 22
 	/* "Access19 = AttackerObjectID
 	Access20 = TargetObjectID
 	Access18 = TargetObjTypeチェックPtr"*/
-	v[299] = v[v[341]]
-	v[300] = v[v[342]]
+	Ptr19 = v[TT1]
+	Ptr20 = v[TT2]
 	Ptr10 = Ptr20*300
 	Ptr9 = Ptr19*300
-	v[298] = Ptr10 + 4701
+	Ptr18 = Ptr10 + 4701
 	// "TargetObjが存在している"
-	@if v[v[298]] >= 1 {
-	    // "処理開始"
-	    v[607] = v[301] + 6
-	    // "#着弾点ゲット"
-	    v[v[607]].copy v[607], 2
-	    // "#対象のx,y,width,heightゲット"
-	    v[310] = v[298] + 6
-	    v[v[310]].copy v[310], 2
-	    v[312] = v[298] + 9
-	    v[v[312]].copy v[312], 2
-	    // "#当たり判定チェック"
-	    @if `between(v[607], v[310] - v[312], v[310] + v[312]) && between(v[608], v[311] - v[313], v[311] + v[313]) {
+	@if v[Ptr18] >= 1 {
+			// "処理開始"
+			v[607] = Temp1 + 6
+			// "#着弾点ゲット"
+			v[v[607]].copy v[607], 2
+			// "#対象のx,y,width,heightゲット"
+			Temp10 = Ptr18 + 6
+			v[Temp10].copy Temp10, 2
+			Temp12 = Ptr18 + 9
+			v[Temp12].copy Temp12, 2
+			// "#当たり判定チェック"
+			@if `between(v[607], Temp10 - Temp12, Temp10 + Temp12) && between(v[608], Temp11 - Temp13, Temp11 + Temp13) {
 		s[167].off
 		@if `v[Ptr10 + 4701] == UNIT_CLASS_STATIC {
-		    s[167].on
-		    
+				s[167].on
+				
 		}
 		v[Ptr10 + 4780] = v[1240] * v[4571]
 		// "Get difference of elevationTemp20"
-		v[320] = v[Ptr9 + 4757] - v[v[298] + 56]
-		v[11] = v[299]
+		Temp20 = v[Ptr9 + 4757] - v[Ptr18 + 56]
+		var1 = Ptr19
 		// "Get Dir"
 		@if s[167] .isOff() {
-		    //9.3.23
-		    v[13] = v[v[301] + 36]
-		    //@call .cev 43
-		    func_bs_ranged_hit_check(v[299] v[300] v[13])
-		    v[607] = Ptr10 + 4707
-		    v[v[607]].copy v[607],2
+				//9.3.23
+				var3 = v[Temp1 + 36]
+				//@call .cev 43
+				func_bs_ranged_hit_check(Ptr19 Ptr20 var3)
+				v[607] = Ptr10 + 4707
+				v[v[607]].copy v[607],2
 		} .else bl {
-		    v[21] = 1
-		    
+				reg1 = 1
+				
 		}
-		@if v[21] == 1 {
-		    // "Hit!"
-		    // "#CheckCrit"
-		    // "Var1 = Obj 1~V[421] = ダメージ倍率"
-		    @if s[167] .isOff() {
-			v[11] = v[299]
-			v[15] = Ptr10 + 4700
+		@if reg1 == 1 {
+				// "Hit!"
+				// "#CheckCrit"
+				// "Var1 = Obj 1~V[421] = ダメージ倍率"
+				@if s[167] .isOff() {
+			var1 = Ptr19
+			var5 = Ptr10 + 4700
 			// "#Crit率ゲット"
 			// "#3-CritReduction"
-			v[342] = v[v[11] * 300 + 4815] + 2 - v[v[15] + 239]
-			v[341] = rnd(0, 99)
+			TT2 = v[var1 * 300 + 4815] + 2 - v[var5 + 239]
+			TT1 = rnd(0, 99)
 			// "#CritDamageReduction#(450-[Reduction])%"
-			v[343] = 450 - v[v[15] + 240]
+			TT3 = 450 - v[var5 + 240]
 			// "#[Crit]%でフラグ"
-			v[421] = v[342] >= v[341] ? v[343] : 100
+			v[421] = TT2 >= TT1 ? TT3 : 100
 			
-		    } .else bl {
+				} .else bl {
 			v[421] = 100
 			
-		    }
-		    // "#Elevation Bonus"
-		    v[421] += 10 * v[320]
-		    /* "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+				}
+				// "#Elevation Bonus"
+				v[421] += 10 * Temp20
+				/* "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
 	ここそのうち用意した関数に置き換える
 	＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"*/
-		    // "ADを取得"
-		    /*v[11] = v[299]
-		    v[12] = 1
-		    @call .cev 2004*/
-		    macro_get_agent_slot_to_r1(v[299] SLOT_CURRENT_AD)
-		    v[301] = v[21]
-		    // "ARかMRか取得"
-		    v[722] = Ptr9
-		    v[722] += 4822
-		    v[302] = v[v[722]]
-		    // "射撃属性"
-		    v[303] = 1
-		    // "AABits"
-		    v[19] = v[722] + 2
-		    v[19] = v[v[19]]
-		    //@call .cev 40
-		    func_damage_calculation()
-		    // "############"
-		    // "Effect"
-		    // "#あたったので演出チェック"
-		    @if `s[v[300] + 500] == 1 {
-			@if v[21] == v[22] {
-			    // "Red Flash"
-			    v[376] += v[182] < 5 ? 1 : 0
-			    @if v[376] >= 2 {
+				// "ADを取得"
+				/*var1 = Ptr19
+				var2 = 1
+				@call .cev 2004*/
+				macro_get_agent_slot_to_r1(Ptr19 SLOT_CURRENT_AD)
+				Temp1 = reg1
+				// "ARかMRか取得"
+				v[722] = Ptr9
+				v[722] += 4822
+				Temp2 = v[v[722]]
+				// "射撃属性"
+				Temp3 = 1
+				// "AABits"
+				var9 = v[722] + 2
+				var9 = v[var9]
+				//@call .cev 40
+				func_damage_calculation()
+				// "############"
+				// "Effect"
+				// "#あたったので演出チェック"
+				@if `s[Ptr20 + 500] == 1 {
+			@if reg1 == reg2 {
+					// "Red Flash"
+					v[376] += v[182] < 5 ? 1 : 0
+					@if v[376] >= 2 {
 				v[182] += 1
 				v[329] = rnd(0, 2)
 				// "#########################"
 				v[472] = divmul(60, 100, v[2216])
 				v[473] = rnd(90, 110)
 				v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				t[510] .asg "arrow_hit_body_"
-				t[510] .cat v[329]
-				v[341] = 510
-				// "Strings = t[v[341]]"
-				@cmd 11550, t[v[341]], .args v[472], 3
+				inputstr .asg "arrow_hit_body_"
+				inputstr .cat v[329]
+				TT1 = 510
+				// "Strings = t[TT1]"
+				@cmd 11550, t[TT1], .args v[472], 3
 				// "#########################"
 				// "Get MaxHP of the victim"
-                   		v[343] = v[v[342] = Ptr10 + 4805] / 10
-				v[342] = rnd(0, 9)
+											TT3 = v[TT2 = Ptr10 + 4805] / 10
+				TT2 = rnd(0, 9)
 				// "if the damage amount is higher than 10% of max HP of the victim more likely bleed effect happens"
-				v[342] += v[343] < v[22] ? 3 : 0
-				v[342] *= v[243] < v[1124] ? 1 : 0
-				@if v[342] >= 8 {
-				    v[711] = Ptr10
-				    v[607] = v[711] + 4707
-				    v[v[607]].copy v[607], 2
-				    //s[141].on
-				    v[372] = v[Ptr10 + 4840] & 4096 ? 1 : 0
-				    //@call .cev 111
-				    v[14] = v[22] >= mini_blood_damage_threshold ? 0 : 1
-				    func_call_mini_blood_f_effect(v[361] v[362] v[372] v[14])
-				    
+				TT2 += TT3 < reg2 ? 3 : 0
+				TT2 *= v[243] < v[1124] ? 1 : 0
+				@if TT2 >= 8 {
+						v[711] = Ptr10
+						v[607] = v[711] + 4707
+						v[v[607]].copy v[607], 2
+						//s[141].on
+						v[372] = v[Ptr10 + 4840] & 4096 ? 1 : 0
+						//@call .cev 111
+						var4 = reg2 >= mini_blood_damage_threshold ? 0 : 1
+						func_call_mini_blood_f_effect(v[361] v[362] v[372] var4)
+						
 				}
 				
-			    }
-			    
+					}
+					
 			} .else bl {
-			    // "#########################"
-			    v[472] = divmul(45, 100, v[2216])
-			    v[473] = rnd(80, 95)
-			    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-			    @cmd 11550, "arrow_hit_armor", .args v[472], 3
-			    // "#########################"
-			    
+					// "#########################"
+					v[472] = divmul(45, 100, v[2216])
+					v[473] = rnd(80, 95)
+					v[474] = divmul(v[607] + v[1001], v[1281], 50)
+					@cmd 11550, "arrow_hit_armor", .args v[472], 3
+					// "#########################"
+					
 			}
 			
-		    }
-		    // "Remove Arrow Picture"
-		    v[310] = v[241] + v[1220]
-		    @pic[v[310]].erase
-		    // "#試作#Functionを呼ぶ"
-		    v[295] = Ptr9
-		    v[295] += 4700
-		    v[730] = v[295] + 130
-		    @if v[v[730]] >= 1200 {
-			v[341] = v[295] + 7
-			v[v[341]].copy v[590], 2
+				}
+				// "Remove Arrow Picture"
+				Temp10 = v[241] + v[1220]
+				@pic[Temp10].erase
+				// "#試作#Functionを呼ぶ"
+				Ptr15 = Ptr9
+				Ptr15 += 4700
+				v[730] = Ptr15 + 130
+				@if v[v[730]] >= 1200 {
+			TT1 = Ptr15 + 7
+			v[TT1].copy v[590], 2
 			@call .cev v[v[730]]
 			
-		    }
-		    
-		} .else bl {
-		    // "Miss!"
-		    v[607].copy v[221], 2
-		    @if `s[v[300] + 500] == 1 {
-			@if v[22] == 1 {
-			    // "Shield Blocked!"
-			    // "#########################"
-			    v[472] = divmul(60, 100, v[2216])
-			    v[473] = rnd(115, 120)
-			    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-			    @cmd 11550, "重いパンチ2", .args v[472], 3
-			    // "#########################"
-			    // "Call Shield"
-			    v[342] = Ptr10 + 4952
-			    // "NOT siege ram"
-			    @if `v[v[342] - 123] != 100 {
-				v[v[342] + 32] = v[v[342]] > 0 ? 4 : 0
-				// "#Shield Motion"
-				v[342] = Ptr10 
-				v[342] += 4943
-				@if v[v[342]] != 1 {
-				    v[v[342]] = 2
-				    v[342] -= 215
-				    v[v[342]] += v[v[342]] < 300 ? 900 : 0
-				    
 				}
 				
-			    }
-			    @if s[307] .isOff() {
+		} .else bl {
+				// "Miss!"
+				v[607].copy v[221], 2
+				@if `s[Ptr20 + 500] == 1 {
+			@if reg2 == 1 {
+					// "Shield Blocked!"
+					// "#########################"
+					v[472] = divmul(60, 100, v[2216])
+					v[473] = rnd(115, 120)
+					v[474] = divmul(v[607] + v[1001], v[1281], 50)
+					@cmd 11550, "重いパンチ2", .args v[472], 3
+					// "#########################"
+					// "Call Shield"
+					TT2 = Ptr10 + 4952
+					// "NOT siege ram"
+					@if `v[TT2 - 123] != 100 {
+				v[TT2 + 32] = v[TT2] > 0 ? 4 : 0
+				// "#Shield Motion"
+				TT2 = Ptr10 
+				TT2 += 4943
+				@if v[TT2] != 1 {
+						v[TT2] = 2
+						TT2 -= 215
+						v[TT2] += v[TT2] < 300 ? 900 : 0
+						
+				}
+				
+					}
+					@if s[307] .isOff() {
 				@if `v[183] < v[4572] / 2 {
-				    // "#描画範囲内か？"
-				    v[220] = ((v[220]+1)%30)+1201
-				    //9.3.23
-				    //v[220] += 1201
-				    //v[220] += 1
-				    v[223] = v[220]
-				    v[221] += rnd(-6, 6)
-				    v[222] += rnd(-3, 3)
-				    v[222] += s[162] == 1 ? 10 : 0
-				    // "#サイズは最低100%"
-				    v[225] = 100
-				    // "AR"
-				    v[341] = v[1204] - 10
-				    @pic[v[223]].show {
+						// "#描画範囲内か？"
+						v[220] = ((v[220]+1)%30)+1201
+						//9.3.23
+						//v[220] += 1201
+						//v[220] += 1
+						v[223] = v[220]
+						v[221] += rnd(-6, 6)
+						v[222] += rnd(-3, 3)
+						v[222] += s[162] == 1 ? 10 : 0
+						// "#サイズは最低100%"
+						v[225] = 100
+						// "AR"
+						TT1 = v[1204] - 10
+						@pic[v[223]].show {
 					"num\num_block"
 					.pos v[221], v[222] .center
 					.scrollWithMap
 					.chromakey 1
 					.scale v[225]
-					.trans v[341]
+					.trans TT1
 					.rgbs 100, 100, 100, 100
 					.mapLayer 7
 					.eraseWhenTransfer
 					.affectedByFlash
 					.affectedByShake
-				    }
-				    v[222] = v[608] - 24
-				    v[222] += s[162] == 1 ? 10 : 0
-				    @pic[v[223]].move {
+						}
+						v[222] = v[608] - 24
+						v[222] += s[162] == 1 ? 10 : 0
+						@pic[v[223]].move {
 					.pos v[221], v[222] .center
 					.scale v[225]
 					.trans 100
 					.time 12
 					.rgbs 100, 100, 100, 100
-				    }
-				    v[183] += v[184] >= v[1128] ? 2 : 1
-				    
+						}
+						v[183] += v[184] >= v[1128] ? 2 : 1
+						
 				}
 				
-			    }
-			    // "Remove Arrow Picture"
-			    v[310] = v[241] + v[1220]
-			    @pic[v[310]].erase
-			    
+					}
+					// "Remove Arrow Picture"
+					Temp10 = v[241] + v[1220]
+					@pic[Temp10].erase
+					
 			} .else bl {
-			    @if s[307] .isOff() {
+					@if s[307] .isOff() {
 				@if `v[183] < v[4572] / 2 {
-				    // "#描画範囲内か？"
-				    v[220] %= 30
-				    v[220] += 1201
-				    v[220] += 1
-				    v[223] = v[220]
-				    v[221] += rnd(-6, 6)
-				    v[222] += rnd(-3, 3)
-				    v[222] += s[162] == 1 ? 10 : 0
-				    // "#サイズは最低100%"
-				    v[225] = 100
-				    // "AR"
-				    v[341] = v[1204] - 10
-				    @pic[v[223]].show {
+						// "#描画範囲内か？"
+						v[220] %= 30
+						v[220] += 1201
+						v[220] += 1
+						v[223] = v[220]
+						v[221] += rnd(-6, 6)
+						v[222] += rnd(-3, 3)
+						v[222] += s[162] == 1 ? 10 : 0
+						// "#サイズは最低100%"
+						v[225] = 100
+						// "AR"
+						TT1 = v[1204] - 10
+						@pic[v[223]].show {
 					"num\num_miss"
 					.pos v[221], v[222] .center
 					.scrollWithMap
 					.chromakey 1
 					.scale v[225]
-					.trans v[341]
+					.trans TT1
 					.rgbs 100, 100, 100, 100
 					.mapLayer 7
 					.eraseWhenTransfer
 					.affectedByFlash
 					.affectedByShake
-				    }
-				    v[222] = v[608] - 24
-				    v[222] += s[162] == 1 ? 10 : 0
-				    @pic[v[223]].move {
+						}
+						v[222] = v[608] - 24
+						v[222] += s[162] == 1 ? 10 : 0
+						@pic[v[223]].move {
 					.pos v[221], v[222] .center
 					.scale v[225]
 					.trans 100
 					.time 12
 					.rgbs 100, 100, 100, 100
-				    }
-				    v[183] += v[184] >= v[1128] ? 2 : 1
-				    
+						}
+						v[183] += v[184] >= v[1128] ? 2 : 1
+						
 				}
 				
-			    }
-			    
+					}
+					
 			}
 			
-		    }
-		    
+				}
+				
 		}
 		
-	    }
-	    
+			}
+			
 	}
 	s[141].off
 
