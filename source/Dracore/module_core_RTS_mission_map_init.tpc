@@ -1,6 +1,12 @@
 // loaded by mission_general?
 
 
+def {
+	PATH_cache_ui = __str("..\\Picture\",PATH_ui_dir,"preload_setting")
+	PATH_cache_numbers = __str("..\\Picture\",PATH_pic_numdir,"preload_setting")
+
+}
+
 
 // INIT MISSION - this one is called whenever you open new mission
 __fn CEV_MISSION_INIT {
@@ -91,6 +97,7 @@ __fn CEV_MISSION_INIT {
 		}
 		
 	}
+	// hidosugiru
 	s[1..300].off
 	s[6].on
 	v[1..46] = 0
@@ -98,11 +105,11 @@ __fn CEV_MISSION_INIT {
 	v[53..1000] = 0
 	v[2001..2080] = 0
 	v[2406..2418] = 0
-	@comment "#########"
+	// @comment "#########"
 	v[2800..4400] = 0
 	v[5000..200000] = 0
 	v[225001..735946] = 0
-	@comment "#########"
+	// @comment "#########"
 	s[501..1000].off
 	v[95] = v[1240]
 	v[2501..2504] = 0
@@ -112,7 +119,7 @@ __fn CEV_MISSION_INIT {
 	@comment "Experimental Cache"
 	v[4801] = v[4807]
 	@comment "ui"
-	inputstr .asg  .file "..\\Picture\ui\preload_setting", .utf8
+	inputstr .asg  .file PATH_cache_ui, .utf8
 	inputstr .split LF, t[1], v[505]
 	@loop v[505] .dst v[506] {
 		var1 = 1 + v[506]
@@ -120,7 +127,7 @@ __fn CEV_MISSION_INIT {
 		inputstr .inStr "//", 321,  .beg 0
 		@if v[321] == -1 {
 			@if inputstr .neq "" {
-				str1 .asg "ui\"
+				str1 .asg PATH_ui_dir
 				str1 .cat inputstr
 				@pic[v[4801]].show {
 					str1
@@ -143,7 +150,7 @@ __fn CEV_MISSION_INIT {
 	}
 
 	@comment "num"
-	inputstr .asg  .file "..\\Picture\num\preload_setting", .utf8
+	inputstr .asg  .file PATH_cache_numbers, .utf8
 	inputstr .split LF, t[1], v[505]
 	@loop v[505] .dst v[506] {
 		var1 = 1 + v[506]
@@ -151,7 +158,7 @@ __fn CEV_MISSION_INIT {
 		inputstr .inStr "//", 321,  .beg 0
 		@if v[321] == -1 {
 			@if inputstr .neq "" {
-				str1 .asg "num\"
+				str1 .asg PATH_pic_numdir
 				str1 .cat inputstr
 				@pic[v[4801]].show {
 					str1
@@ -635,7 +642,7 @@ __fn CEV_MISSION_INIT {
 	TT1 = 1201
 	@loop 30 {
 		@pic[TT1].show {
-			"num\ord"
+			PATH_pic_number
 			.pos v[221], v[222] .center
 			.scrollWithMap
 			.chromakey 1

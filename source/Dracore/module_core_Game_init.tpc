@@ -533,97 +533,6 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 
 
 	@comment "####################DEBUG"
-	/*
-	@if s[1] .isOn() {
-	    @sys.gameOpt .runWhenInactive
-	    @pic[1].strpic {
-		"BLOCK!"
-		.pos v[221], v[222] .center
-		.size 0, 0        .scrollWithMap
-		.chromakey 1
-		.scale 100
-		.trans 0
-		.rgbs 100, 100, 100, 100
-		.font "", 10
-		.spacing 0, 4
-		.skin "" .nobg .noframe .noGradation .noPadding
-		.mapLayer 7
-		.eraseWhenTransfer
-		.affectedByFlash
-		.affectedByShake
-	    }
-	    t[3000] .asg "picture\num\"
-	    t[3000] .cat "num_block" .extract
-	    @img.save .pic 1 .static .dst t[3000]
-	    @pic[1].strpic {
-		"miss"
-		.pos v[221], v[222] .center
-		.size 0, 0        .scrollWithMap
-		.chromakey 1
-		.scale 100
-		.trans 0
-		.rgbs 100, 100, 100, 100
-		.font "", 10
-		.spacing 0, 4
-		.skin "" .nobg .noframe .noGradation .noPadding
-		.mapLayer 7
-		.eraseWhenTransfer
-		.affectedByFlash
-		.affectedByShake
-	    }
-	    t[3000] .asg "picture\num\"
-	    t[3000] .cat "num_miss" .extract
-	    @img.save .pic 1 .static .dst t[3000]
-	    @loop 10000 .dst v[1] {
-		@pic[1].strpic {
-		    "\v[1]!"
-		    .pos v[221], v[222] .center
-		    .size 0, 0            .scrollWithMap
-		    .chromakey 1
-		    .scale v[225]
-		    .trans TT1
-		    .rgbs 200, 100, 200, 100
-		    .font "k8x12S", 10
-		    .spacing 1, 4
-		    .skin "" .nobg .noframe .noGradation
-		    .mapLayer 7
-		    .eraseWhenTransfer
-		    .affectedByFlash
-		    .affectedByShake
-		}
-		t[3000] .asg "picture\num\exout\"
-		t[3000] .cat "num_ex_\v[1]" .extract
-		@img.save .pic 1 .static .dst t[3000]
-		@pic[2].show {
-		    "pointer_flag"
-		    .pos 160, 120 .center
-		    .chromakey 1
-		    .scale 100
-		    .trans 0
-		    .rgbs 100, 100, 100, 100
-		    .grid 3, 1 .anim 6 .repeat
-		    .mapLayer 6
-		    .eraseWhenTransfer
-		    .affectedByFlash
-		    .affectedByShake
-		}
-		@loop .inf() {
-		    @wait 0
-		    @if .canOutput() {
-			@break
-			
-		    } .else bl {
-			
-		    }
-		    
-		}
-		
-		
-	    }
-	    
-	    
-	}
-	*/
 
 	//RPG set up legacy
 	/*
@@ -1859,8 +1768,13 @@ cev .id(2120), .name("Game:Boot"),{
 	t[1..100] .asg ""
 	t[3000..3300] .asg ""
 	@sys.getInfo .winSize  .dst v[1001]
-	v[1115] = v[1001] / 2
-	v[1116] = v[1002] / 2 - 8
+	// v[1115] = v[1001] / 2
+	// v[1116] = v[1002] / 2 - 8
+	v[1001].copy v[1115],2
+	v[1115].div v[Const_2_combi],2
+	v[1116] -= 8
+
+
 	@if s[1] .isOn() {
 			@if s[314] .isOn() {
 		@pic[1].strpic {

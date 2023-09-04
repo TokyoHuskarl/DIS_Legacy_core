@@ -147,9 +147,12 @@ def {
 	Memory_MapInfo = 300317
 
 	//0 = inf, 1 = archer, 2 = cav, 3 = magician, 4 = healer, 5 = siege, 7 = animals, 8=decayable, 9 = civilians, 11 = flying, 21 = ship, 101 = barrack, 102 = no_col_static, 103 = decoy, 104 = basement, 105 = resource, 106 = turret, 107 = terrainchange
-	UNIT_CLASS_INF=0
-	UNIT_CLASS_ARCHER=1
-	UNIT_CLASS_CAV=2
+	UNIT_CLASS_INF = 0
+	UNIT_CLASS_ARCHER = 1
+	UNIT_CLASS_CAV = 2
+	UNIT_CLASS_MAGE = 3
+	UNIT_CLASS_HEAL = 4
+	UNIT_CLASS_SIEGE = 5
 
 	UNIT_CLASS_STATIC=11
 	
@@ -697,6 +700,10 @@ def {
 		PATH_spr_head_damaged = __str(PATH_pictureHome,"parts\bodyset\set\damaged\spr_damaged_head_0")
 		PATH_spr_minion_damaged = __str(PATH_pictureHome,"minions\damaged\spr_damaged_minions_0")
 
+		PATH_pic_numdir = __str(PATH_pictureHome,"\num\" )
+			PATH_pic_numdir_number = __str(PATH_pic_numdir,"ord" )
+			PATH_pic_numdir_block = __str(PATH_pic_numdir,"num_block" )
+			PATH_pic_numdir_miss = __str(PATH_pic_numdir,"num_miss" )
 
 
 
