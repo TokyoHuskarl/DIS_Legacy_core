@@ -12,6 +12,11 @@ deft str_ShLog = 782 // -> NsLib_GUI_init.js
 // GAME INIT
 // -----------------------------------
 
+def {
+	PATH_def_perks = __str(PATH_core_data,"data_perks")
+
+}
+
 cev .id(cevID_Game_Init), .name("@Game Init") , {
 	//set LF   
 	StrConst_LF .asg "
@@ -1687,9 +1692,41 @@ cev .id(1790), .name("@Init Database") , {
 	t[510] .split "*/", t[509], TT1
 	t[510] .split LF, t[v[4557]], TT1
 	v[1214] = 19000
-	t[510] .asg  .file "def\definition_perks", .utf8 , .extract
+	
+	t[510] .asg  .file PATH_def_perks, .utf8 , .extract
 	t[510] .split "*/", t[509], TT1
 	t[510] .split LF, t[v[1214]], TT1
+	t[511] .asg PATH_language .extract
+	t[511] .cat Str_LanguagePath
+	t[511] .cat "lang_perks"
+	readLangFile(t[511],t[511])
+	@if t[511] .neq "" {
+			t[511] .split "*/", t[509], TT3
+			t[511] .split LF, t[1000], TT3
+			@loop TT3 .dst var1 {
+					var10 = v[1214] + var1
+					t[var10] .split ",", t[3000], TT2
+					var2 = 1000 + var1
+					t[var2] .split ",", t[3300], TT4
+					t[3000] .asg t[3300]
+					t[3001] .asg t[3301]
+					TT2 -= 1
+					t[3000] .cat ","
+					@loop TT2 .dst var2 {
+							var2 = 3001 + var2
+							t[3000] .cat t[var2]
+							t[3000] .cat ","
+							
+					}
+					
+					t[var10] .asg t[3000]
+					
+			}
+			
+			
+	}
+
+
 }
 
 

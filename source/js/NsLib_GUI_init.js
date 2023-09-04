@@ -87,6 +87,8 @@ var DIS = DIS || {};
 
 const trp = {}; // troop ID table
 
+const tech = {}; // ["techid",[group,flagbit]]
+
 DIS = { // DIS fundamental components
 	initID: function(){ // this must be called every after DIS game id is loaded on the game
 
@@ -127,17 +129,14 @@ DIS.log = {
 	
 	
 	
-}
+};
 
 DIS.conf = {
 
 	// resolution
-	resolution: {
-		width: getv(adr_RMresolutionX), // DIS only
-		height: getv(adr_RMresolutionY), // DIS only
-	},
+	resolution: [getv(adr_RMresolutionX),getv(adr_RMresolutionY)],
 
-}
+};
 
 // DIS functions around string system
 DIS.string = {
@@ -382,6 +381,7 @@ class RTSmission {
 
 
 	// save and load will destroy this function's objective.
+	// so you should use this rather for adjusting agent parameter or whatever
 	setTimeout = function(func,delayframe){
 		// make an instant trigger whose effect is arg function
 		let Trig = new RTStrigger();

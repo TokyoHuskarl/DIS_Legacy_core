@@ -84,7 +84,7 @@ s[70].off
         s[181].off
         
     }
-    // "#Escape"
+    // "#Quick Mode"
     @pic[1772].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
     @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
         @pic[1772].move {
@@ -120,7 +120,7 @@ s[70].off
                     v[472] = divmul(90, 100, v[2216])
                     @se.play "cursor21" .opt v[472], 100, 50
 										// 
-										getQstr(477)
+										getQstr(487)
                     @pic[v[1155]].strpic {
 												t[3000]
                         .pos TT1, v[1126] .bottomLeft
@@ -153,7 +153,7 @@ s[70].off
                     }
                     v[472] = divmul(90, 100, v[2216])
                     @se.play "cursor19" .opt v[472], 100, 50
-										getQstr(478)
+										getQstr(488)
                     @pic[v[1155]].strpic {
 												t[3000]
                         .pos TT1, v[1126] .bottomLeft
