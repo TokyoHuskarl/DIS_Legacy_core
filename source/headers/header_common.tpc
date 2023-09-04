@@ -216,7 +216,6 @@ def {
 
 __fn macro_get_agent_slot_to_r1 $agent $slot{
 	
-	/*@comment "Var1 = Obj 1~ Var2 = パラメータ番号# 1~9 AD~MS Reg1 = 取得した数値(Process)"*/
 	v[21] = v[$agent * 300 + 4700 + $slot]
 }
 __fn macro_set_agent_slot $agent $slot $setpar{
@@ -678,6 +677,8 @@ def {
 	PATH_pictureHome = ""
 
 		// UI asset path
+		PATH_ui_dir = __str(PATH_pictureHome,"\ui\")
+
 		PATH_Legacy_UI_passive_icon = __str(PATH_pictureHome,"\passive_icon\")
 
 
