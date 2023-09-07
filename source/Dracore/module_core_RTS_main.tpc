@@ -2150,7 +2150,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    // "idle"
 		    //v[842] = Temp1 + 239
 		    //v[v[842]].copy v[842], 6
-		    @if agent_StanceOrder <= 0 {
+		    @if agent_MovementOrder <= 0 {
 			@if agent_ActionState == 0 {
 			    @if agent_worker_JobType == 0 {
 				s[187].on // there's at least one idle worker unit 
