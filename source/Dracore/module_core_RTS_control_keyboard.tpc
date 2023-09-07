@@ -1,7 +1,4 @@
-
-
 __fn CEV_CONTROL_KEYBOARD {
-
 	@if .testPlay() {
 			@key.inputEx .keyCode 122 .dst TT1
 			@if TT1 == 1 {
@@ -17,7 +14,6 @@ __fn CEV_CONTROL_KEYBOARD {
 			}
 			
 	}
-
 	@key.inputEx .keyCode 27 .dst v[1222]
 	@if .rightAfterLoad() {
 			s[18].on
@@ -35,7 +31,6 @@ __fn CEV_CONTROL_KEYBOARD {
 			}
 			
 	}
-
 	@if s[182] .isOff() {
 			@if s[18] .isOn() {
 					@key.inputEx .keyCode 8 .dst v[4508]
@@ -67,6 +62,494 @@ __fn CEV_CONTROL_KEYBOARD {
 							
 					}
 
+
+					// "Ctrlシリーズ"
+					@if GETKEY_Ctrl >= 1 {
+							GETKEY_Ctrl_PRESS += 1
+							@if v[45] >= 1 {
+									@if v[46] == 0 {
+											// "誰か選択している"
+											@if v[101] > 0 {
+													// "部隊登録"
+													v[472] = divmul(80, 100, v[2216])
+													@se.play "ui\UI_Quirky_39" .opt v[472], 85, 50
+													@call .cev 1905
+													
+											}
+											
+									}
+									v[46] += 1
+									
+							} .else bl {
+									v[46] = 0
+									
+							}
+							
+					} .else bl {
+							// "非Ctrl"
+							GETKEY_Ctrl_PRESS = 0
+				//num key >=1 then try selecting assigned cohort
+							@if v[45] >= 1 {
+									@if v[46] == 0 {
+				//If same cohort is selected, then let camera jump to the cohort
+				@if `v[45] % 10 == v[82] || (v[45] == 10 && v[45] == v[82]) {
+						v[202] = 40 * (v[82] - 1) + v[4524]
+						v[313..315] = 0
+						@loop v[1004] .dst v[401] {
+					@if v[v[202]] == 0 {
+							//@comment "とぎれた"
+							@break
+							
+					}
+					@if v[401] > 40 {
+							//@comment "とりあえず40体までしか選択できない"
+							@break
+							
+					}
+					//@comment "配列ゲット"
+					Temp1 = v[v[202]] * v[1117] + 4700
+					Ptr19 = Temp1 + 1
+					//@comment "＃生きてる？"
+					@if v[Ptr19] > 0 {
+						 // @comment "＃Not fleeing"
+							@if `v[Ptr19 + 259] < 3 {
+						Ptr19 = Temp1 + 1
+						Temp15 += 1
+						Ptr20 = Temp1 + 7
+						v[Ptr20].copy Temp11, 2
+						//@comment "処理開始"
+						Temp13 .add Temp11, 2
+						
+							}
+							
+					}
+					v[202] += 1
+					
+						}
+						
+						@if Temp15 > 0 {
+					v[313..314] /= Temp15
+					Temp13.copy var1, 2
+					v[11..12] *= 10000
+					//CrdRe->MAP 
+					@call .cev 1999
+					reg1.copy v[66], 2
+					s[44].on
+					
+						}
+						
+				}
+													// "対応部隊選択"
+				//CohortFunc:Cohort selected
+													@call .cev 1894
+									}
+									v[46] += 1
+									
+							} .else bl {
+									v[46] = 0
+									
+							}
+							@if GETKEY_T >= 1 {
+									@if GETKEY_T_PRESS == 0 {
+											@if s[313] .isOn() {
+													v[472] = divmul(90, 100, v[2216])
+													@se.play "click1" .opt v[472], 100, 50
+													@if v[238] <= 0 {
+															v[239] = s[2] == 1 ? 5 : 15
+															v[231] = v[239] == 5 ? 3 : 10
+															@call .cev 1925
+															
+													} .else bl {
+															v[239] = 100
+															@call .cev 1925
+															v[238] = 0
+															
+													}
+													
+											}
+											
+									}
+									GETKEY_T_PRESS += 1
+									
+							} .else bl {
+									GETKEY_T_PRESS = 0
+									
+							}
+							
+					}
+					@if GETKEY_A >= 1 {
+							@if GETKEY_A_PRESS == 0 {
+									v[472] = divmul(90, 100, v[2216])
+									@se.play "Switch1" .opt v[472], 100, 50
+									@call .cev 62
+									
+							}
+							GETKEY_A_PRESS += 1
+							
+					} .else bl {
+							GETKEY_A_PRESS = 0
+							
+					}
+					@if GETKEY_D >= 1 {
+							@if GETKEY_D_PRESS == 0 {
+									v[472] = divmul(90, 100, v[2216])
+									@se.play "Switch1" .opt v[472], 100, 50
+									@call .cev 64
+									
+							}
+							GETKEY_D_PRESS += 1
+							
+					} .else bl {
+							GETKEY_D_PRESS = 0
+							
+					}
+					@if GETKEY_F >= 1 {
+							@if GETKEY_F_PRESS == 0 {
+									v[472] = divmul(90, 100, v[2216])
+									@se.play "Switch1" .opt v[472], 100, 50
+									@call .cev 65
+									
+							}
+							GETKEY_F_PRESS += 1
+							
+					} .else bl {
+							GETKEY_F_PRESS = 0
+							
+					}
+					@if GETKEY_Q >= 1 {
+							@if GETKEY_Q_PRESS == 0 {
+									v[472] = divmul(90, 100, v[2216])
+									@se.play "Switch1" .opt v[472], 100, 50
+									@call .cev 58
+									
+							}
+							GETKEY_Q_PRESS += 1
+							
+					} .else bl {
+							GETKEY_Q_PRESS = 0
+							
+					}
+					@if GETKEY_W >= 1 {
+							@if GETKEY_W_PRESS == 0 {
+									v[472] = divmul(90, 100, v[2216])
+									@se.play "Switch1" .opt v[472], 100, 50
+									@call .cev 59
+									
+							}
+							GETKEY_W_PRESS += 1
+							
+					} .else bl {
+							GETKEY_W_PRESS = 0
+							
+					}
+					@if GETKEY_E >= 1 {
+							@if GETKEY_E_PRESS == 0 {
+									v[472] = divmul(90, 100, v[2216])
+									@se.play "Switch1" .opt v[472], 100, 50
+									@call .cev 60
+									
+							}
+							GETKEY_E_PRESS += 1
+							
+					} .else bl {
+							GETKEY_E_PRESS = 0
+							
+					}
+					@if GETKEY_R >= 1 {
+							@if GETKEY_R_PRESS == 0 {
+									v[472] = divmul(90, 100, v[2216])
+									@se.play "Switch1" .opt v[472], 100, 50
+									@call .cev 61
+									
+							}
+							GETKEY_R_PRESS += 1
+							
+					} .else bl {
+							GETKEY_R_PRESS = 0
+							
+					}
+					// "Del:自決コマンド"
+					@key.inputEx .keyCode 46 .dst v[1221]
+					@if `v[1221] >= 1 && s[199] == 0 {
+							@if v[101] >= 1 {
+									v[472] = divmul(90, 100, v[2216])
+									@se.play "Slash9" .opt v[472], 100, 50
+									v[202] = 101
+									v[313..314] = 0
+									@loop .inf() {
+											@if v[v[202]] == 0 {
+													// "とぎれた"
+													@break
+													
+											}
+											@if v[202] > v[1007] {
+													// "とりあえず40体までしか選択できない"
+													@break
+													
+											}
+											// "配列ゲット"
+											Ptr20 = v[v[202]]
+											Ptr18 = v[v[202]] * 300
+											v[700] = 4800 + Ptr18
+											// "Safety 味方のみ"
+											@if v[v[700]] == 0 {
+													v[700] += 6
+													// "Safety HPある"
+													@if v[v[700]] > 0 {
+															Ptr18 += 4701
+															v[305..312] = Ptr20 * 300
+															v[701] = Ptr18 + 100
+															v[229] = v[v[701]] == 40 ? 47 : 0
+															s[59].on
+															@if v[v[701]] == 71 {
+																	// "天帝を殺した"
+																	s[440].on
+																	
+															}
+															@if v[2403] == 9 {
+																	@if v[v[701]] == 1 {
+																			@if `v[v[701] - 100] >= 11 {
+																					// "＃＃＃＃＃＃＃＃＃＃＃＃"
+																					v[229] = 28
+																					s[240].on
+																					// "＃＃＃＃＃＃＃＃＃＃＃＃"
+																					
+																			}
+																			
+																	}
+																	
+															}
+															@if v[v[701]] == 125 {
+																	v[229] = 23
+																	s[240].on
+																	
+															}
+															s[34].on
+															v[0] = s[220] = s[Ptr20 + 500]
+															@call .cev 41
+															
+													}
+													
+											}
+											v[202] += 1
+											
+									}
+									
+									s[34].off
+									v[101..140] = 0
+									
+							}
+							s[199].on
+							
+					} .else bl {
+							s[199].off
+							
+					}
+					// "SPACE:カメラワープ"
+					@if GETKEY_SPACE >= 1 {
+							@if s[43] .isOff() {
+									@if GETKEY_SPACE_PRESS == 0 {
+											@if v[101] >= 1 {
+													v[202] = 101
+													v[313..315] = 0
+													@loop .inf() {
+															@if v[v[202]] == 0 {
+																	// "とぎれた"
+																	@break
+																	
+															}
+															@if v[202] > v[1007] {
+																	// "とりあえず40体までしか選択できない"
+																	@break
+																	
+															}
+															// "配列ゲット"
+															Temp1 = v[v[202]] * 300
+															Temp1 += 4700
+															Ptr19 = Temp1 + 1
+															// "＃生きてる？"
+															@if v[Ptr19] > 0 {
+																	Temp15 += 1
+																	Ptr20 = Temp1 + 5
+																	v[Ptr20].copy Temp11, 2
+																	Temp11 += 80000
+																	Temp12 += 240000
+																	Temp11.copy Temp3, 2
+																	v[311..312] /= 10000
+																	// "ずれ計算"
+																	Temp11 .sub v[403], 2
+																	// "ずれおわり"
+																	v[311..312] /= 16
+																	// "処理開始"
+																	Temp13 .add Temp11, 2
+																	
+															}
+															v[202] += 1
+															
+													}
+													
+													
+											}
+											
+									} .else bl {
+											@if GETKEY_SPACE_PRESS >= 4 {
+													// "部隊登録"
+													v[101].copy v[v[1078]], 40
+													s[42].on
+													
+											}
+											
+									}
+									GETKEY_SPACE_PRESS += 1
+									
+							}
+							
+					} .else bl {
+							GETKEY_SPACE_PRESS = 0
+							@if s[43] .isOff() {
+									v[1301].copy v[v[1078]], 40
+									s[42].off
+									
+							}
+							
+					}
+					@if GETKEY_X >= 1 {
+							@if GETKEY_X_PRESS == 0 {
+									@if `between(MousePtr_x, v[1282], v[1284]) && between(MousePtr_y, v[1283], v[1285]) {
+											s[40].on
+											@if s[13] .isOff() {
+													//same camera movement as mouse click, so this can be parted
+													MousePtr_x.copy v[407], 2
+													/* "282 216 左端
+													317 238　右端
+													300 227 中央
+													1どっと4マス？"*/
+													Temp1 = MousePtr_x
+													Temp2 = MousePtr_y
+													Temp1 -= v[1282]
+													Temp2 -= v[1283] + 3
+													v[66] = Map_LimitCoordX_min
+													v[67] = Map_LimitCoordY_min
+													v[66] += muldiv(Temp1, v[430], 100)
+													v[67] += muldiv(Temp2, v[431], 100)
+													v[472] = divmul(90, 100, v[2216])
+													@se.play "click2" .opt v[472], 90, 50
+													Map_LimitCoordX_min = ev[3].x
+													Map_LimitCoordY_min = ev[3].y
+													Map_LimitCoordX_max = ev[4].x
+													Map_LimitCoordY_max = ev[4].y
+													v[66] = min(v[66], Map_LimitCoordX_max)
+													v[66] = max(v[66], Map_LimitCoordX_min)
+													v[67] = min(v[67], Map_LimitCoordY_max)
+													v[67] = max(v[67], Map_LimitCoordY_min)
+													v[68] = player.mapId
+													@ev[2].setPos .pos v[66], v[67]
+													var1 = ev[2].scrx
+													var2 = ev[2].scry
+													var2 -= 16
+													// "煩雑なのでそのうちなおす"
+													@if GETKEY_Shift >= 1 {
+															@call .cev 57
+															
+													} .else bl {
+															s[16].on
+															s[13].on
+															@if s[29] .isOn() {
+																	@call .cev 33
+																	
+															} .else bl {
+																	@call .cev 51
+																	
+															}
+															
+													}
+													
+											}
+											
+									} .else bl {
+											@if GETKEY_Shift >= 1 {
+													@if s[13] .isOff() {
+															@call .cev 57
+															
+													}
+													
+											} .else bl {
+													@if s[15] .isOn() {
+															@if s[13] .isOff() {
+																	s[16].on
+																	@if s[29] .isOn() {
+																			@call .cev 33
+																			
+																	} .else bl {
+																			@call .cev 51
+																			
+																	}
+																	
+															}
+															
+													} .else bl {
+															s[16].on
+															@if s[29] .isOn() {
+																	@call .cev 33
+																	
+															} .else bl {
+																	@call .cev 51
+																	
+															}
+															
+													}
+													
+											}
+											
+									}
+									s[40].off
+									v[47] = 3
+									s[13].on
+									
+							}
+							GETKEY_X_PRESS += 1
+							
+					} .else bl {
+							GETKEY_X_PRESS = 0
+							
+					}
+
+					/*
+					@if s[1] .isOn() {
+							// "Y:テストインベントリ"
+							@if GETKEY_Y >= 1 {
+									@if GETKEY_Y_PRESS == 0 {
+											@if GETKEY_SPACE_PRESS == 0 {
+													@if s[43] .isOn() {
+															@se.play "Buzzer4" .opt 80, 50, 50
+															v[1301].copy v[v[1078]], 40
+															s[42].off
+															
+													} .else bl {
+															@se.play "Sheep" .opt 80, 90, 50
+															// "誰か選択している"
+															@if v[101] > 0 {
+																	// "部隊登録"
+																	v[101].copy v[v[1078]], 40
+																	s[42].on
+																	
+															}
+															
+													}
+													s[43].toggle
+													
+											}
+											
+									}
+									GETKEY_Y_PRESS += 1
+									
+							} .else bl {
+									GETKEY_Y_PRESS = 0
+									
+							}
+							
+					}
+					*/
 					@if GETKEY_I >= 1 {
 							@if GETKEY_I_PRESS == 0 {
 									GETKEY_I_PRESS += 1
@@ -128,8 +611,7 @@ __fn CEV_CONTROL_KEYBOARD {
 									@call .cev 1901
 									@if reg1 > 0 {
 											@if GETKEY_Shift < 1 {
-													TT1 = reg1 * 300 
-													TT1 += 4705
+													TT1 = reg1 * 300 + 4705
 													// "#"
 													v[TT1].copy var1, 2
 													@call .cev 1999
@@ -150,7 +632,6 @@ __fn CEV_CONTROL_KEYBOARD {
 							GETKEY_H_PRESS = 0
 							
 					}
-					
 					// "Vkey"
 					@if GETKEY_V >= 1 {
 							@if GETKEY_V_PRESS == 0 {
@@ -490,5 +971,4 @@ __fn CEV_CONTROL_KEYBOARD {
 			}
 			
 	}
-
 }

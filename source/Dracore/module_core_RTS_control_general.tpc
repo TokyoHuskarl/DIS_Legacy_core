@@ -20,7 +20,7 @@ cev .id(52) ,.name("Control:Keyboard"), .parallel , .cond(Const_Is_RTS_Mode), {
 	CEV_CONTROL_KEYBOARD()
 }
 
-cev .id(51) ,.name("Control:MilMoveOrder"), .parallel , .cond(Const_Is_RTS_Mode), {
+cev .id(51) ,.name("Control:MilMoveOrder"), {
 	func_control_moveorder_mil()
 
 }
@@ -202,9 +202,12 @@ cev .id(2099), .name("cont:Search Worker"), {
 	defv cev2099_SearchHIT = __id(TempFlag1)
 	cev2099_SearchHIT = 0
 	Ptr10 = 101
-	v[141] = 0
-	@loop v[205] {
-			v[141] %= v[1012]
+	@if GETKEY_Ctrl > 0 { // pick just one unit
+		v[141] = 0
+	}
+	Temp11 = v[1012] // loop 
+	@loop Temp11 {
+			v[141] %= Temp11
 			@comment "Check Player Team List"
 			TT1 = v[141] + v[1145]
 			@if v[TT1] >= 1 {
@@ -227,6 +230,7 @@ cev .id(2099), .name("cont:Search Worker"), {
 															@if cev2099_SearchHIT == 0 {
 																v[101..140] = 0
 																v[99] = 0
+																v[98] = 0
 																v[100] = v[TT1]
 																reg1 = v[TT1]
 															}
@@ -235,10 +239,11 @@ cev .id(2099), .name("cont:Search Worker"), {
 															s[26].on
 															v[Ptr10] = v[TT1]
 															v[375] = 1 // civil unit
-															v[141] += 1
+															v[98] += v[v[TT1] * 300 + 4805]
 															v[99] += 1
 															Ptr10 += 1
 															@if GETKEY_Ctrl <= 0 {
+																v[141] += 1
 																@break
 															}
 															@if v[99] >= 40 {
@@ -290,14 +295,22 @@ cev .id(2099), .name("cont:Search Worker"), {
 					}
 					
 			}
+
+
+			// colour change selected ones
+			Temp1 = 101
+			@loop v[99] {
+				TT1 = v[Temp1] * 300
+				TT1 += 4724
+				v[TT1] = 0
+				Temp1 += 1
+			}
+			
 			
 			@if GETKEY_Ctrl <= 0 {
 				// move camera
 				TT1 = v[101] * 300
 				TT1 += 4705
-				TT3 = TT1 + 19
-				v[TT3] = 0
-				@comment "#"
 				v[TT1].copy var1, 2
 				@call .cev 1999
 				reg1.copy v[66], 2
