@@ -692,7 +692,7 @@ var Cmd = {
 	//Cmd.map
 	map: {
 		CmdType: CTYP_MAP,
-
+		
 		
 
 		
@@ -856,6 +856,10 @@ var Cmd = {
 	ui: { 
 		CmdType: CTYP_UI,
 
+		queueDialog: function(diaset){
+			
+		},
+		
 
 	},
 
@@ -1185,5 +1189,6 @@ class Radiobutton extends UI_object {
 {
 	DIS.initID();
 	Cmd.init();
+	
 }
 

@@ -6,7 +6,7 @@ RTS.mission.conf.isSightSystemOn = false;
 RTS.mission.setPlayer(0,1); // player, imperials
 RTS.mission.setPlayer(1,3); // enemy, dragons
 
-// Use petrovka map generation data.
+// Use petrovka map generation data for example.
 // You can set directory name where mapdef.js file of the terrain that you want to use.
 // Otherwise DIS game will try to find the mapdef.js file in same directory as this file exists.
 // If your map is using unique RMmap to configure the mission (I mean Legacy missions like Kushira), setMapData() is meaningless.

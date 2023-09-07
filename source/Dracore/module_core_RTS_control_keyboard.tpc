@@ -1,1041 +1,494 @@
 
-@if .testPlay() {
-    @key.inputEx .keyCode 122 .dst v[341]
-    @if v[341] == 1 {
-        @if s[57] .isOff() {
-            @call .cev 1851
-            
-        } .else bl {
-            @call .cev 1852
-            
-        }
-        @wait 2
-        
-    }
-    
-}
-@key.inputEx .keyCode 27 .dst v[1222]
-@if .rightAfterLoad() {
-    s[18].on
-    v[1222] = 1
-    
-}
-@if .testPlay() {
-    
-} .else bl {
-    @if .active() {
-        
-    } .else bl {
-        v[1222] = 1
-        
-    }
-    
-}
-@if s[182] .isOff() {
-    @if s[18] .isOn() {
-        @key.inputEx .keyCode 8 .dst v[4508]
-        @key.inputEx .keyCode 9 .dst v[185]
-        @key.input .dst v[45] {
-            .number
-            .symbol
-        }
-        @if v[1222] == 1 {
-            @call .cev 2052
-            
-        }
-        @if v[4508] == 1 {
-            @if v[4509] == 0 {
-                @if v[2507] > -1 {
-                    v[472] = divmul(90, 100, v[2216])
-                    @se.play "Switch1" .opt v[472], 70, 50
-                    v[66] = v[69] + muldiv(v[2507], v[430], 100)
-                    v[67] = v[70] + muldiv(v[2508], v[431], 100)
-                    s[44].on
-                    
-                }
-                
-            }
-            v[4509] += 1
-            
-        } .else bl {
-            v[4509] = 0
-            
-        }
-        /*@if s[1] .isOn() {
-            @if v[185] == 1 {
-                @if s[461] .isOff() {
-                    v[472] = divmul(80, 100, v[2216])
-                    @se.play "cursor21" .opt v[472], 150, 50
-                    @if s[2] .isOn() {
-                        s[201].on
-                        
-                    } .else bl {
-                        s[201].off
-                        
-                    }
-                    s[2].on
-                    s[43].on
-                    s[18].off
-                    s[38].on
-                    @pic[996].strpic {
-                        "　　　撤退しますか？
-Y:撤退開始 N:キャンセル"
-                        .pos v[1115], v[1116] .center
-                        .size 0, 0                        .chromakey 1
-                        .scale 100
-                        .trans 0
-                        .rgbs 100, 100, 100, 100
-                        .font "misaki_gothic", 10
-                        .spacing 0, 4
-                        .skin "サイバーシステム2" .stretch
-                        .mapLayer 10
-                        .eraseWhenTransfer
-                        .affectedByFlash
-                        .affectedByShake
-                    }
-                    v[951] = 1
-                    @loop .inf() {
-                        @if v[925] >= 1 {
-                            @break
-                            
-                        }
-                        @if v[914] >= 1 {
-                            @break
-                            
-                        }
-                        @if s[461] .isOn() {
-                            @break
-                            
-                        }
-                        @wait 0
-                        
-                    }
-                    
-                    @pic[996].erase
-                    @if s[201] .isOff() {
-                        s[2].off
-                        
-                    } .else bl {
-                        s[2].on
-                        
-                    }
-                    s[38].off
-                    s[43].off
-                    s[18].on
-                    
-                }
-                
-            }
-            
-        }*/
-        // "Ctrlシリーズ"
-        @if v[943] >= 1 {
-            v[993] += 1
-            @if v[45] >= 1 {
-                @if v[46] == 0 {
-                    // "誰か選択している"
-                    @if v[101] > 0 {
-                        // "部隊登録"
-                        v[472] = divmul(80, 100, v[2216])
-                        @se.play "ui\UI_Quirky_39" .opt v[472], 85, 50
-                        @call .cev 1905
-                        
-                    }
-                    
-                }
-                v[46] += 1
-                
-            } .else bl {
-                v[46] = 0
-                
-            }
-            
-        } .else bl {
-            // "非Ctrl"
-            v[993] = 0
-	    //num key >=1 then try selecting assigned cohort
-            @if v[45] >= 1 {
-                @if v[46] == 0 {
-			//If same cohort is selected, then let camera jump to the cohort
-			@if `v[45] % 10 == v[82] || (v[45] == 10 && v[45] == v[82]) {
-			    v[202] = 40 * (v[82] - 1) + v[4524]
-			    v[313..315] = 0
-			    @loop v[1004] .dst v[401] {
-				@if v[v[202]] == 0 {
-				    //@comment "とぎれた"
-				    @break
-				    
-				}
-				@if v[401] > 40 {
-				    //@comment "とりあえず40体までしか選択できない"
-				    @break
-				    
-				}
-				//@comment "配列ゲット"
-				v[301] = v[v[202]] * v[1117] + 4700
-				v[299] = v[301] + 1
-				//@comment "＃生きてる？"
-				@if v[v[299]] > 0 {
-				   // @comment "＃Not fleeing"
-				    @if `v[v[299] + 259] < 3 {
-					v[299] = v[301] + 1
-					v[315] += 1
-					v[300] = v[301] + 7
-					v[v[300]].copy v[311], 2
-					//@comment "処理開始"
-					v[313] .add v[311], 2
-					
-				    }
-				    
-				}
-				v[202] += 1
-				
-			    }
-			    
-			    @if v[315] > 0 {
-				v[313..314] /= v[315]
-				v[313].copy v[11], 2
-				v[11..12] *= 10000
-				//CrdRe->MAP 
-				@call .cev 1999
-				v[21].copy v[66], 2
-				s[44].on
-				
-			    }
-			    
-			}
-                        // "対応部隊選択"
-			//CohortFunc:Cohort selected
-                        @call .cev 1894
-                }
-                v[46] += 1
-                
-            } .else bl {
-                v[46] = 0
-                
-            }
-            @if v[920] >= 1 {
-                @if v[970] == 0 {
-                    @if s[313] .isOn() {
-                        v[472] = divmul(90, 100, v[2216])
-                        @se.play "click1" .opt v[472], 100, 50
-                        @if v[238] <= 0 {
-                            v[239] = s[2] == 1 ? 5 : 15
-                            v[231] = v[239] == 5 ? 3 : 10
-                            @call .cev 1925
-                            
-                        } .else bl {
-                            v[239] = 100
-                            @call .cev 1925
-                            v[238] = 0
-                            
-                        }
-                        
-                    }
-                    
-                }
-                v[970] += 1
-                
-            } .else bl {
-                v[970] = 0
-                
-            }
-            
-        }
-        @if v[901] >= 1 {
-            @if v[951] == 0 {
-                v[472] = divmul(90, 100, v[2216])
-                @se.play "Switch1" .opt v[472], 100, 50
-                @call .cev 62
-                
-            }
-            v[951] += 1
-            
-        } .else bl {
-            v[951] = 0
-            
-        }
-        @if v[904] >= 1 {
-            @if v[954] == 0 {
-                v[472] = divmul(90, 100, v[2216])
-                @se.play "Switch1" .opt v[472], 100, 50
-                @call .cev 64
-                
-            }
-            v[954] += 1
-            
-        } .else bl {
-            v[954] = 0
-            
-        }
-        @if v[906] >= 1 {
-            @if v[956] == 0 {
-                v[472] = divmul(90, 100, v[2216])
-                @se.play "Switch1" .opt v[472], 100, 50
-                @call .cev 65
-                
-            }
-            v[956] += 1
-            
-        } .else bl {
-            v[956] = 0
-            
-        }
-        @if v[917] >= 1 {
-            @if v[967] == 0 {
-                v[472] = divmul(90, 100, v[2216])
-                @se.play "Switch1" .opt v[472], 100, 50
-                @call .cev 58
-                
-            }
-            v[967] += 1
-            
-        } .else bl {
-            v[967] = 0
-            
-        }
-        @if v[923] >= 1 {
-            @if v[973] == 0 {
-                v[472] = divmul(90, 100, v[2216])
-                @se.play "Switch1" .opt v[472], 100, 50
-                @call .cev 59
-                
-            }
-            v[973] += 1
-            
-        } .else bl {
-            v[973] = 0
-            
-        }
-        @if v[905] >= 1 {
-            @if v[955] == 0 {
-                v[472] = divmul(90, 100, v[2216])
-                @se.play "Switch1" .opt v[472], 100, 50
-                @call .cev 60
-                
-            }
-            v[955] += 1
-            
-        } .else bl {
-            v[955] = 0
-            
-        }
-        @if v[918] >= 1 {
-            @if v[968] == 0 {
-                v[472] = divmul(90, 100, v[2216])
-                @se.play "Switch1" .opt v[472], 100, 50
-                @call .cev 61
-                
-            }
-            v[968] += 1
-            
-        } .else bl {
-            v[968] = 0
-            
-        }
-        // "Del:自決コマンド"
-        @key.inputEx .keyCode 46 .dst v[1221]
-        @if `v[1221] >= 1 && s[199] == 0 {
-            @if v[101] >= 1 {
-                v[472] = divmul(90, 100, v[2216])
-                @se.play "Slash9" .opt v[472], 100, 50
-                v[202] = 101
-                v[313..314] = 0
-                @loop .inf() {
-                    @if v[v[202]] == 0 {
-                        // "とぎれた"
-                        @break
-                        
-                    }
-                    @if v[202] > v[1007] {
-                        // "とりあえず40体までしか選択できない"
-                        @break
-                        
-                    }
-                    // "配列ゲット"
-                    v[300] = v[v[202]]
-                    v[298] = v[v[202]] * 300
-                    v[700] = 4800 + v[298]
-                    // "Safety 味方のみ"
-                    @if v[v[700]] == 0 {
-                        v[700] += 6
-                        // "Safety HPある"
-                        @if v[v[700]] > 0 {
-                            v[298] += 4701
-                            v[305..312] = v[300] * 300
-                            v[701] = v[298] + 100
-                            v[229] = v[v[701]] == 40 ? 47 : 0
-                            s[59].on
-                            @if v[v[701]] == 71 {
-                                // "天帝を殺した"
-                                s[440].on
-                                
-                            }
-                            @if v[2403] == 9 {
-                                @if v[v[701]] == 1 {
-                                    @if `v[v[701] - 100] >= 11 {
-                                        // "＃＃＃＃＃＃＃＃＃＃＃＃"
-                                        v[229] = 28
-                                        s[240].on
-                                        // "＃＃＃＃＃＃＃＃＃＃＃＃"
-                                        
-                                    }
-                                    
-                                }
-                                
-                            }
-                            @if v[v[701]] == 125 {
-                                v[229] = 23
-                                s[240].on
-                                
-                            }
-                            s[34].on
-                            v[0] = s[220] = s[v[300] + 500]
-                            @call .cev 41
-                            
-                        }
-                        
-                    }
-                    v[202] += 1
-                    
-                }
-                
-                s[34].off
-                v[101..140] = 0
-                
-            }
-            s[199].on
-            
-        } .else bl {
-            s[199].off
-            
-        }
 
-	def SPACE_HOLDING_THRESHOLD
-        // "SPACE:カメラワープ"
-        @if LEGV_SPACE >= 1 {
-            @if s[43] .isOff() {
-                @if LEGV_Space_Frame == 0 {
-                    @if v[101] >= 1 {
-                        v[202] = 101
-                        v[313..315] = 0
-                        @loop .inf() {
-                            @if v[v[202]] == 0 {
-                                // "とぎれた"
-                                @break
-                                
-                            }
-                            @if v[202] > v[1007] {
-                                // "とりあえず40体までしか選択できない"
-                                @break
-                                
-                            }
-                            // "配列ゲット"
-                            v[301] = v[v[202]] * 300
-                            v[301] += 4700
-                            v[299] = v[301] + 1
-                            // "＃生きてる？"
-                            @if v[v[299]] > 0 {
-                                v[315] += 1
-                                v[300] = v[301] + 5
-                                v[v[300]].copy v[311], 2
-                                v[311] += 80000
-                                v[312] += 240000
-                                v[311].copy v[303], 2
-                                v[311..312] /= 10000
-                                // "ずれ計算"
-                                v[311] .sub v[403], 2
-                                // "ずれおわり"
-                                v[311..312] /= 16
-                                // "処理開始"
-                                v[313] .add v[311], 2
-                                
-                            }
-                            v[202] += 1
-                            
-                        }
-                        
-                        
-                    }
-                    
-                } .else bl {
-                    @if LEGV_Space_Frame >= 4 {
-                        // "部隊登録"
-                        v[101].copy v[v[1078]], 40
-                        s[42].on
-                        
-                    }
-                    
-                }
-                LEGV_Space_Frame += 1
-                
-            }
-            
-        } .else bl {
-	    // SPACE TAP..
-	    @if LEGV_Space_Frame < 4 {
-		
-	    }
-            LEGV_Space_Frame = 0
-            @if s[43] .isOff() {
-                v[1301].copy v[v[1078]], 40
-                s[42].off
-                
-            }
-            
-        }
-        @if v[924] >= 1 {
-            @if v[974] == 0 {
-                @if `between(v[51], v[1282], v[1284]) && between(v[52], v[1283], v[1285]) {
-                    s[40].on
-                    @if s[13] .isOff() {
-                        //same camera movement as mouse click, so this can be parted
-                        v[51].copy v[407], 2
-                        /* "282 216 左端
-                        317 238　右端
-                        300 227 中央
-                        1どっと4マス？"*/
-                        v[301] = v[51]
-                        v[302] = v[52]
-                        v[301] -= v[1282]
-                        v[302] -= v[1283] + 3
-                        v[66] = v[69]
-                        v[67] = v[70]
-                        v[66] += muldiv(v[301], v[430], 100)
-                        v[67] += muldiv(v[302], v[431], 100)
-                        v[472] = divmul(90, 100, v[2216])
-                        @se.play "click2" .opt v[472], 90, 50
-                        v[69] = ev[3].x
-                        v[70] = ev[3].y
-                        v[71] = ev[4].x
-                        v[72] = ev[4].y
-                        v[66] = min(v[66], v[71])
-                        v[66] = max(v[66], v[69])
-                        v[67] = min(v[67], v[72])
-                        v[67] = max(v[67], v[70])
-                        v[68] = player.mapId
-                        @ev[2].setPos .pos v[66], v[67]
-                        v[11] = ev[2].scrx
-                        v[12] = ev[2].scry
-                        v[12] -= 16
-                        // "煩雑なのでそのうちなおす"
-                        @if v[942] >= 1 {
-                            @call .cev 57
-                            
-                        } .else bl {
-                            s[16].on
-                            s[13].on
-                            @if s[29] .isOn() {
-                                @call .cev 33
-                                
-                            } .else bl {
-                                @call .cev 51
-                                
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                } .else bl {
-                    @if v[942] >= 1 {
-                        @if s[13] .isOff() {
-                            @call .cev 57
-                            
-                        }
-                        
-                    } .else bl {
-                        @if s[15] .isOn() {
-                            @if s[13] .isOff() {
-                                s[16].on
-                                @if s[29] .isOn() {
-                                    @call .cev 33
-                                    
-                                } .else bl {
-                                    @call .cev 51
-                                    
-                                }
-                                
-                            }
-                            
-                        } .else bl {
-                            s[16].on
-                            @if s[29] .isOn() {
-                                @call .cev 33
-                                
-                            } .else bl {
-                                @call .cev 51
-                                
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                }
-                s[40].off
-                v[47] = 3
-                s[13].on
-                
-            }
-            v[974] += 1
-            
-        } .else bl {
-            v[974] = 0
-            
-        }
-        /*@if s[1] .isOn() {
-            // "Y:テストインベントリ"
-            @if v[925] >= 1 {
-                @if v[975] == 0 {
-                    @if LEGV_Space_Frame == 0 {
-                        @if s[43] .isOn() {
-                            @se.play "Buzzer4" .opt 80, 50, 50
-                            v[1301].copy v[v[1078]], 40
-                            s[42].off
-                            
-                        } .else bl {
-                            @se.play "Sheep" .opt 80, 90, 50
-                            // "誰か選択している"
-                            @if v[101] > 0 {
-                                // "部隊登録"
-                                v[101].copy v[v[1078]], 40
-                                s[42].on
-                                
-                            }
-                            
-                        }
-                        s[43].toggle
-                        
-                    }
-                    
-                }
-                v[975] += 1
-                
-            } .else bl {
-                v[975] = 0
-                
-            }
-            
-        }*/
-        @if v[909] >= 1 {
-            @if v[959] == 0 {
-                v[959] += 1
-                @if s[25] .isOff() {
-                    v[341] = v[101]
-                    
-                } .else bl {
-                    v[341] = v[100]
-                    
-                }
-                @if v[341] >= 1 {
-                    v[325] = v[341] * 300 + 4701 //check agent type
-                    v[v[325]].copy v[601], 300
-                    //if it's living obj
-                    @if v[601] >= 1 {
-                        //if not static 
-                        @if v[601] <= 9 {
-                            //then call information window.
-                            v[472] = divmul(90, 100, v[2216])
-                            @se.play "ui/clock01" .opt v[472], 100, 50
-                            @call .cev 85
-                            
-                        }
-                        
-                    }
-                    
-                }
-                v[909] = 1
-                
-            }
-            v[959] += 1
-            
-        } .else bl {
-            v[959] = 0
-            
-        }
-        @if v[944] >= 1 {
-            @if v[994] == 0 {
-                
-            }
-            v[994] += 1
-            
-        } .else bl {
-            v[994] = 0
-            
-        }
-        @if v[942] >= 1 {
-            v[992] += 1
-            
-        } .else bl {
-            v[992] = 0
-            
-        }
-        // "Shortcut to Home"
-        @if v[908] >= 1 {
-            @if v[958] == 0 {
-                v[11] = v[481] > 0 ? v[482] : 1
-                v[12] = v[481] > 0 ? 2 : 11
-                @call .cev 1901
-                @if v[21] > 0 {
-                    @if v[942] < 1 {
-                        v[341] = v[21] * 300 + 4705
-                        // "#"
-                        v[v[341]].copy v[11], 2
-                        @call .cev 1999
-                        v[21].copy v[66], 2
-                        s[44].on
-                        
-                    }
-                    v[472] = divmul(90, 100, v[2216])
-                    @se.play "Switch1" .opt v[472], 70, 50
-                    
-                }
-                
-            }
-            v[958] += 1
-            @wait 0
-            
-        } .else bl {
-            v[958] = 0
-            
-        }
-        // "Vkey"
-        @if v[922] >= 1 {
-            @if v[972] == 0 {
-                @if v[943] >= 1 {
-                    // "Castle"
-                    v[11] = 3
-                    v[12] = 11
-                    @call .cev 1901
-                    @if v[21] > 0 {
-                        @if v[942] < 1 {
-                            v[341] = v[21] * 300 + 4705
-                            // "#"
-                            v[v[341]].copy v[11], 2
-                            @call .cev 1999
-                            v[21].copy v[66], 2
-                            s[44].on
-                            
-                        }
-                        v[472] = divmul(90, 100, v[2216])
-                        @se.play "Switch1" .opt v[472], 70, 50
-                        
-                    }
-                    v[952] += 1
-                    @wait 0
-                    
-                } .else bl {
-                    @if v[2401] < 5 {
-                        @call .cev 2094
-                        
-                    }
-                    
-                }
-                
-            }
-            v[972] += 1
-            
-        } .else bl {
-            v[972] = 0
-            
-        }
-        // "Shortcut to Barrack"
-        @if v[902] >= 1 {
-            @if v[943] >= 1 {
-                @if v[952] == 0 {
-                    @if v[2403] == 3 {
-                        v[11] = 11
-                        
-                    } .else bl {
-                        v[11] = 26
-                        
-                    }
-                    v[12] = 11
-                    @call .cev 1901
-                    @if v[21] > 0 {
-                        @if v[942] < 1 {
-                            v[341] = v[21] * 300 + 4705
-                            // "#"
-                            v[v[341]].copy v[11], 2
-                            @call .cev 1999
-                            v[21].copy v[66], 2
-                            s[44].on
-                            
-                        }
-                        v[472] = divmul(90, 100, v[2216])
-                        @se.play "Switch1" .opt v[472], 70, 50
-                        
-                    }
-                    v[952] += 1
-                    @wait 0
-                    
-                }
-                
-            }
-            
-        } .else bl {
-            v[952] = 0
-            
-        }
-        // "Shortcut to Stable"
-        @if v[912] >= 1 {
-            // "L to show log"
-            @if v[943] >= 1 {
-                @if v[962] == 0 {
-                    v[11] = 25
-                    v[12] = 11
-                    @call .cev 1901
-                    @if v[21] > 0 {
-                        @if v[942] < 1 {
-                            v[341] = v[21] * 300 + 4705
-                            // "#"
-                            v[v[341]].copy v[11], 2
-                            @call .cev 1999
-                            v[21].copy v[66], 2
-                            s[44].on
-                            
-                        }
-                        v[472] = divmul(90, 100, v[2216])
-                        @se.play "Switch1" .opt v[472], 70, 50
-                        
-                    }
-                    v[962] += 1
-                    @wait 0
-                    
-                }
-                
-            } .else bl {
-                @if v[962] == 0 {
-                    @if s[313] .isOn() {
-                        v[472] = divmul(90, 100, v[2216])
-                        @se.play "cursor19" .opt v[472], 100, 50
-                        v[239] = v[239] >= 15 ? 5 : 15
-                        v[231] = v[239] == 5 ? 3 : 10
-                        @pic[1775].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-                        @if v[231] == 3 {
-                            @pic[1775].show {
-                                "ui\switch_log"
-                                .pos v[1952], v[1953] .center
-                                .chromakey 1
-                                .scale 100
-                                .trans 35
-                                .rgbs 100, 100, 100, 100
-                                .grid 1, 2 .cell 1
-                                .mapLayer 8
-                                .eraseWhenTransfer
-                            }
-                            
-                        } .else bl {
-                            @pic[1775].show {
-                                "ui\switch_log"
-                                .pos v[1952], v[1953] .center
-                                .chromakey 1
-                                .scale 100
-                                .trans 35
-                                .rgbs 100, 100, 100, 100
-                                .grid 1, 2 .cell 2
-                                .mapLayer 8
-                                .eraseWhenTransfer
-                            }
-                            
-                        }
-                        @call .cev 1925
-                        
-                    }
-                    
-                }
-                v[962] += 1
-                
-            }
-            
-        } .else bl {
-            v[962] = 0
-            
-        }
-        // "Shortcut to Siege"
-        @if v[911] >= 1 {
-            @if v[943] >= 1 {
-                @if v[961] == 0 {
-                    v[11] = 16
-                    v[12] = 11
-                    @call .cev 1901
-                    @if v[21] > 0 {
-                        @if v[942] < 1 {
-                            v[341] = v[21] * 300 + 4705
-                            // "#"
-                            v[v[341]].copy v[11], 2
-                            @call .cev 1999
-                            v[21].copy v[66], 2
-                            s[44].on
-                            
-                        }
-                        v[472] = divmul(90, 100, v[2216])
-                        @se.play "Switch1" .opt v[472], 70, 50
-                        
-                    }
-                    v[961] += 1
-                    @wait 0
-                    
-                }
-                
-            }
-            
-        } .else bl {
-            v[961] = 0
-            
-        }
-        // "Shortcut to Shrine"
-        @if v[925] >= 1 {
-            @if v[943] >= 1 {
-                @if v[975] == 0 {
-                    @if v[2403] == 3 {
-                        v[11] = 17
-                        
-                    } .else bl {
-                        v[11] = 27
-                        
-                    }
-                    v[12] = 11
-                    @call .cev 1901
-                    @if v[21] > 0 {
-                        @if v[942] < 1 {
-                            v[341] = v[21] * 300 + 4705
-                            // "#"
-                            v[v[341]].copy v[11], 2
-                            @call .cev 1999
-                            v[21].copy v[66], 2
-                            s[44].on
-                            
-                        }
-                        v[472] = divmul(90, 100, v[2216])
-                        @se.play "Switch1" .opt v[472], 70, 50
-                        
-                    }
-                    v[975] += 1
-                    @wait 0
-                    
-                }
-                
-            }
-            
-        } .else bl {
-            v[975] = 0
-            
-        }
-        // "Shortcut to Market"
-        @if v[913] >= 1 {
-            @if v[943] >= 1 {
-                @if v[963] == 0 {
-                    v[11] = 32
-                    v[12] = 11
-                    @call .cev 1901
-                    @if v[21] > 0 {
-                        @if v[942] < 1 {
-                            v[341] = v[21] * 300 + 4705
-                            // "#"
-                            v[v[341]].copy v[11], 2
-                            @call .cev 1999
-                            v[21].copy v[66], 2
-                            s[44].on
-                            
-                        }
-                        v[472] = divmul(90, 100, v[2216])
-                        @se.play "Switch1" .opt v[472], 70, 50
-                        
-                    }
-                    v[963] += 1
-                    @wait 0
-                    
-                }
-                
-            }
-            
-        } .else bl {
-            v[963] = 0
-            
-        }
-        // "Shortcut to Ironforge"
-        @if v[919] >= 1 {
-            @if v[943] >= 1 {
-                @if v[969] == 0 {
-                    v[11] = 15
-                    v[12] = 11
-                    @call .cev 1901
-                    @if v[21] > 0 {
-                        @if v[942] < 1 {
-                            v[341] = v[21] * 300 + 4705
-                            // "#"
-                            v[v[341]].copy v[11], 2
-                            @call .cev 1999
-                            v[21].copy v[66], 2
-                            s[44].on
-                            
-                        }
-                        v[472] = divmul(90, 100, v[2216])
-                        @se.play "Switch1" .opt v[472], 70, 50
-                        
-                    }
-                    v[969] += 1
-                    @wait 0
-                    
-                }
-                
-            } .else bl {
-                @if v[969] == 0 {
-                    v[472] = divmul(90, 100, v[2216])
-                    @se.play "Switch1" .opt v[472], 100, 50
-                    @call .cev 63
-                    
-                }
-                
-            }
-            v[969] += 1
-            
-        } .else bl {
-            v[969] = 0
-            
-        }
-        // "Shortcut to Uni"
-        @if v[921] >= 1 {
-            @if v[943] >= 1 {
-                @if v[971] == 0 {
-                    @if v[2403] == 1 {
-                        v[11] = 23
-                        
-                    } .else bl {
-                        v[11] = 38
-                        
-                    }
-                    v[12] = 11
-                    @call .cev 1901
-                    @if v[21] > 0 {
-                        @if v[942] < 1 {
-                            v[341] = v[21] * 300 + 4705
-                            // "#"
-                            v[v[341]].copy v[11], 2
-                            @call .cev 1999
-                            v[21].copy v[66], 2
-                            s[44].on
-                            
-                        }
-                        v[472] = divmul(90, 100, v[2216])
-                        @se.play "Switch1" .opt v[472], 70, 50
-                        
-                    }
-                    v[971] += 1
-                    @wait 0
-                    
-                }
-                
-            }
-            v[971] += 1
-            
-        } .else bl {
-            v[971] = 0
-            
-        }
-        
-    }
-    
+__fn CEV_CONTROL_KEYBOARD {
+
+	@if .testPlay() {
+			@key.inputEx .keyCode 122 .dst TT1
+			@if TT1 == 1 {
+					@if s[57] .isOff() {
+							@call .cev 1851
+							
+					} .else bl {
+							@call .cev 1852
+							
+					}
+					@wait 2
+					
+			}
+			
+	}
+
+	@key.inputEx .keyCode 27 .dst v[1222]
+	@if .rightAfterLoad() {
+			s[18].on
+			v[1222] = 1
+			
+	}
+	@if .testPlay() {
+			
+	} .else bl {
+			@if .active() {
+					
+			} .else bl {
+					v[1222] = 1
+					
+			}
+			
+	}
+
+	@if s[182] .isOff() {
+			@if s[18] .isOn() {
+					@key.inputEx .keyCode 8 .dst v[4508]
+					@key.inputEx .keyCode 9 .dst v[185]
+					@key.input .dst v[45] {
+							.number
+							.symbol
+					}
+					@if v[1222] == 1 {
+							@call .cev 2052
+							
+					}
+					@if v[4508] == 1 {
+							@if v[4509] == 0 {
+									@if v[2507] > -1 {
+											v[472] = divmul(90, 100, v[2216])
+											@se.play "Switch1" .opt v[472], 70, 50
+											v[66] = Map_LimitCoordX_min + muldiv(v[2507], v[430], 100)
+											v[67] = Map_LimitCoordY_min + muldiv(v[2508], v[431], 100)
+											s[44].on
+											
+									}
+									
+							}
+							v[4509] += 1
+							
+					} .else bl {
+							v[4509] = 0
+							
+					}
+
+					@if GETKEY_I >= 1 {
+							@if GETKEY_I_PRESS == 0 {
+									GETKEY_I_PRESS += 1
+									@if s[25] .isOff() {
+											TT1 = v[101]
+											
+									} .else bl {
+											TT1 = v[100]
+											
+									}
+									@if TT1 >= 1 {
+											v[325] = TT1 * 300 + 4701 //check agent type
+											v[v[325]].copy v[601], 300
+											//if it's living obj
+											@if v[601] >= 1 {
+													//if not static 
+													@if v[601] <= 9 {
+															//then call information window.
+															v[472] = divmul(90, 100, v[2216])
+															@se.play "ui/clock01" .opt v[472], 100, 50
+															@call .cev 85
+															
+													}
+													
+											}
+											
+									}
+									GETKEY_I = 1
+									
+							}
+							GETKEY_I_PRESS += 1
+							
+					} .else bl {
+							GETKEY_I_PRESS = 0
+							
+					}
+					@if GETKEY_Alt >= 1 {
+							@if GETKEY_Alt_PRESS == 0 {
+									
+							}
+							GETKEY_Alt_PRESS += 1
+							
+					} .else bl {
+							GETKEY_Alt_PRESS = 0
+							
+					}
+					@if GETKEY_Shift >= 1 {
+							GETKEY_Shift_PRESS += 1
+							
+					} .else bl {
+							GETKEY_Shift_PRESS = 0
+							
+					}
+					// "Shortcut to Home"
+					@if GETKEY_H >= 1 {
+							@if GETKEY_H_PRESS == 0 {
+									var1 = v[481] > 0 ? v[482] : 1
+									var2 = v[481] > 0 ? 2 : 11
+									@call .cev 1901
+									@if reg1 > 0 {
+											@if GETKEY_Shift < 1 {
+													TT1 = reg1 * 300 
+													TT1 += 4705
+													// "#"
+													v[TT1].copy var1, 2
+													@call .cev 1999
+													reg1.copy v[66], 2
+													s[44].on
+													
+											}
+											v[472] = divmul(90, 100, v[2216])
+											@se.play "Switch1" .opt v[472], 70, 50
+											
+									}
+									
+							}
+							GETKEY_H_PRESS += 1
+							@wait 0
+							
+					} .else bl {
+							GETKEY_H_PRESS = 0
+							
+					}
+					
+					// "Vkey"
+					@if GETKEY_V >= 1 {
+							@if GETKEY_V_PRESS == 0 {
+									@if GETKEY_Ctrl >= 1 {
+											// "Castle"
+											var1 = 3
+											var2 = 11
+											@call .cev 1901
+											@if reg1 > 0 {
+													@if GETKEY_Shift < 1 {
+															TT1 = reg1 * 300 + 4705
+															// "#"
+															v[TT1].copy var1, 2
+															@call .cev 1999
+															reg1.copy v[66], 2
+															s[44].on
+															
+													}
+													v[472] = divmul(90, 100, v[2216])
+													@se.play "Switch1" .opt v[472], 70, 50
+													
+											}
+											GETKEY_B_PRESS += 1
+											@wait 0
+											
+									} .else bl {
+											@if v[2401] < 5 {
+													@call .cev 2094
+													
+											}
+											
+									}
+									
+							}
+							GETKEY_V_PRESS += 1
+							
+					} .else bl {
+							GETKEY_V_PRESS = 0
+							
+					}
+					// "Shortcut to Barrack"
+					@if GETKEY_B >= 1 {
+							@if GETKEY_Ctrl >= 1 {
+									@if GETKEY_B_PRESS == 0 {
+											@if v[2403] == 3 {
+													var1 = 11
+													
+											} .else bl {
+													var1 = 26
+													
+											}
+											var2 = 11
+											@call .cev 1901
+											@if reg1 > 0 {
+													@if GETKEY_Shift < 1 {
+															TT1 = reg1 * 300 + 4705
+															// "#"
+															v[TT1].copy var1, 2
+															@call .cev 1999
+															reg1.copy v[66], 2
+															s[44].on
+															
+													}
+													v[472] = divmul(90, 100, v[2216])
+													@se.play "Switch1" .opt v[472], 70, 50
+													
+											}
+											GETKEY_B_PRESS += 1
+											@wait 0
+											
+									}
+									
+							}
+							
+					} .else bl {
+							GETKEY_B_PRESS = 0
+							
+					}
+					// "Shortcut to Stable"
+					@if GETKEY_L >= 1 {
+							// "L to show log"
+							@if GETKEY_Ctrl >= 1 {
+									@if GETKEY_L_PRESS == 0 {
+											var1 = 25
+											var2 = 11
+											@call .cev 1901
+											@if reg1 > 0 {
+													@if GETKEY_Shift < 1 {
+															TT1 = reg1 * 300 + 4705
+															// "#"
+															v[TT1].copy var1, 2
+															@call .cev 1999
+															reg1.copy v[66], 2
+															s[44].on
+															
+													}
+													v[472] = divmul(90, 100, v[2216])
+													@se.play "Switch1" .opt v[472], 70, 50
+													
+											}
+											GETKEY_L_PRESS += 1
+											@wait 0
+											
+									}
+									
+							} .else bl {
+									@if GETKEY_L_PRESS == 0 {
+											@if s[313] .isOn() {
+													v[472] = divmul(90, 100, v[2216])
+													@se.play "cursor19" .opt v[472], 100, 50
+													v[239] = v[239] >= 15 ? 5 : 15
+													v[231] = v[239] == 5 ? 3 : 10
+													@pic[1775].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+													@if v[231] == 3 {
+															@pic[1775].show {
+																	"ui\switch_log"
+																	.pos InvVar2, InvVar3 .center
+																	.chromakey 1
+																	.scale 100
+																	.trans 35
+																	.rgbs 100, 100, 100, 100
+																	.grid 1, 2 .cell 1
+																	.mapLayer 8
+																	.eraseWhenTransfer
+															}
+															
+													} .else bl {
+															@pic[1775].show {
+																	"ui\switch_log"
+																	.pos InvVar2, InvVar3 .center
+																	.chromakey 1
+																	.scale 100
+																	.trans 35
+																	.rgbs 100, 100, 100, 100
+																	.grid 1, 2 .cell 2
+																	.mapLayer 8
+																	.eraseWhenTransfer
+															}
+															
+													}
+													@call .cev 1925
+													
+											}
+											
+									}
+									GETKEY_L_PRESS += 1
+									
+							}
+							
+					} .else bl {
+							GETKEY_L_PRESS = 0
+							
+					}
+					// "Shortcut to Siege"
+					@if GETKEY_K >= 1 {
+							@if GETKEY_Ctrl >= 1 {
+									@if GETKEY_K_PRESS == 0 {
+											var1 = 16
+											var2 = 11
+											@call .cev 1901
+											@if reg1 > 0 {
+													@if GETKEY_Shift < 1 {
+															TT1 = reg1 * 300 + 4705
+															// "#"
+															v[TT1].copy var1, 2
+															@call .cev 1999
+															reg1.copy v[66], 2
+															s[44].on
+															
+													}
+													v[472] = divmul(90, 100, v[2216])
+													@se.play "Switch1" .opt v[472], 70, 50
+													
+											}
+											GETKEY_K_PRESS += 1
+											@wait 0
+											
+									}
+									
+							}
+							
+					} .else bl {
+							GETKEY_K_PRESS = 0
+							
+					}
+					// "Shortcut to Shrine"
+					@if GETKEY_Y >= 1 {
+							@if GETKEY_Ctrl >= 1 {
+									@if GETKEY_Y_PRESS == 0 {
+											@if v[2403] == 3 {
+													var1 = 17
+													
+											} .else bl {
+													var1 = 27
+													
+											}
+											var2 = 11
+											@call .cev 1901
+											@if reg1 > 0 {
+													@if GETKEY_Shift < 1 {
+															TT1 = reg1 * 300 + 4705
+															// "#"
+															v[TT1].copy var1, 2
+															@call .cev 1999
+															reg1.copy v[66], 2
+															s[44].on
+															
+													}
+													v[472] = divmul(90, 100, v[2216])
+													@se.play "Switch1" .opt v[472], 70, 50
+													
+											}
+											GETKEY_Y_PRESS += 1
+											@wait 0
+											
+									}
+									
+							}
+							
+					} .else bl {
+							GETKEY_Y_PRESS = 0
+							
+					}
+					// "Shortcut to Market"
+					@if GETKEY_M >= 1 {
+							@if GETKEY_Ctrl >= 1 {
+									@if GETKEY_M_PRESS == 0 {
+											var1 = 32
+											var2 = 11
+											@call .cev 1901
+											@if reg1 > 0 {
+													@if GETKEY_Shift < 1 {
+															TT1 = reg1 * 300 + 4705
+															// "#"
+															v[TT1].copy var1, 2
+															@call .cev 1999
+															reg1.copy v[66], 2
+															s[44].on
+															
+													}
+													v[472] = divmul(90, 100, v[2216])
+													@se.play "Switch1" .opt v[472], 70, 50
+													
+											}
+											GETKEY_M_PRESS += 1
+											@wait 0
+											
+									}
+									
+							}
+							
+					} .else bl {
+							GETKEY_M_PRESS = 0
+							
+					}
+					// "Shortcut to Ironforge"
+					@if GETKEY_S >= 1 {
+							@if GETKEY_Ctrl >= 1 {
+									@if GETKEY_S_PRESS == 0 {
+											var1 = 15
+											var2 = 11
+											@call .cev 1901
+											@if reg1 > 0 {
+													@if GETKEY_Shift < 1 {
+															TT1 = reg1 * 300 + 4705
+															// "#"
+															v[TT1].copy var1, 2
+															@call .cev 1999
+															reg1.copy v[66], 2
+															s[44].on
+															
+													}
+													v[472] = divmul(90, 100, v[2216])
+													@se.play "Switch1" .opt v[472], 70, 50
+													
+											}
+											GETKEY_S_PRESS += 1
+											@wait 0
+											
+									}
+									
+							} .else bl {
+									@if GETKEY_S_PRESS == 0 {
+											v[472] = divmul(90, 100, v[2216])
+											@se.play "Switch1" .opt v[472], 100, 50
+											@call .cev 63
+											
+									}
+									
+							}
+							GETKEY_S_PRESS += 1
+							
+					} .else bl {
+							GETKEY_S_PRESS = 0
+							
+					}
+					// "Shortcut to Uni"
+					@if GETKEY_U >= 1 {
+							@if GETKEY_Ctrl >= 1 {
+									@if GETKEY_U_PRESS == 0 {
+											@if v[2403] == 1 {
+													var1 = 23
+													
+											} .else bl {
+													var1 = 38
+													
+											}
+											var2 = 11
+											@call .cev 1901
+											@if reg1 > 0 {
+													@if GETKEY_Shift < 1 {
+															TT1 = reg1 * 300 + 4705
+															// "#"
+															v[TT1].copy var1, 2
+															@call .cev 1999
+															reg1.copy v[66], 2
+															s[44].on
+															
+													}
+													v[472] = divmul(90, 100, v[2216])
+													@se.play "Switch1" .opt v[472], 70, 50
+													
+											}
+											GETKEY_U_PRESS += 1
+											@wait 0
+											
+									}
+									
+							}
+							GETKEY_U_PRESS += 1
+							
+					} .else bl {
+							GETKEY_U_PRESS = 0
+							
+					}
+					
+			}
+			
+	}
+
 }
