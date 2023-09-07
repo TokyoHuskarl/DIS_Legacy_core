@@ -31,6 +31,7 @@ cev[2041], .name("Script:DIS command interpriter"), .parallel , .cond(__id(BOOL_
 
 
 // dialog manager
+deft dialogQueue = 785
 cev .id(2087), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_Dialog)), {
 	RadioDialogTimer -= Is_Paused == 1 ? 0 : 1
 	@if RadioDialogTimer <= 0 {

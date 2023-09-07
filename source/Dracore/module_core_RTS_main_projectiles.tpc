@@ -1,6 +1,7 @@
 // Loaded in "./module_core_RTS_main.tpc"
 
 // need refactoring
+// uh oh
 
 __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
@@ -24,482 +25,471 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 	v[459..461] = 0
 	v[462] = 1
 	v[217] = 0
+
 	@loop v[4559] .dst v[214] {
-	    v[215] = v[214] * 100
-	    //@comment "Access15 = ProjType"
-	    Ptr12 = v[215] + v[1075]
-	    //@comment "弾が存在する"
-	    @if v[Ptr12] >= 1 {
-		//@comment "Access15 = タイマー"
-		Ptr15 = Ptr12 + 99
-		//@comment "タイマーが切れていない"
-		@if v[Ptr15] >= 1 {
-		    v[217] += 1
-		    v[Ptr12].copy v[601], 30
-		   /* @comment "#T2 = Vxのポインタ
-		#T3 = ピクチャ番号
-		#G5 = 詳細位置xPtr
-		#G6 = 詳細位置上yPtr
-		#G7 = xPtr
-		#G8 = yPtr"*/
-		    //@comment "##process delta "
-		    v[605].enum 4, 9
-		    v[605..613] += Ptr12
-		    Temp2 = v[612]
-		    //@comment ""
-		    @if s[2] .isOff() {
-			//@comment "タイマー減らす"
-			v[Ptr15] -= 1
-			@if v[603] >= v[1186] {
-			    //@comment "##If a function is registered in Get3, call it"
-			    s[123].on
-			    @call .cev v[603]
-			    s[123].off
-			    
-			}
-			//@comment "まず加速の処理から"
-			v[Temp2] .add v[615], 2
-			//@comment "次に速度を加える"
-			v[v[605]] .add v[Temp2], 2
-			
-		    }
-		    //@comment "座標セット"
-		    v[v[605]] += v[53] * 10000
-		    v[v[607]] = v[v[605]] / 10000
-		    v[v[606]] += v[54] * 10000
-		    v[v[608]] = v[v[606]] / 10000
-		    //@comment "#範囲攻撃処理分岐#仮置き"
-		    v[v[607]].copy v[381], 2
-		    v[v[610]].copy v[383], 3
-		    @if s[2] .isOff() {
-			//@comment "#Width+Height"
-			TT1 = v[v[610]] + v[v[611]]
-			//@comment "#範囲攻撃処理分岐#0なら当たり判定を持たない"
-			reg10 = 0
-			@if TT1 > 0 {
-			    v[640] = v[607] + 33
-			    v[v[640]] -= 1
-			    @if v[v[640]] <= 0 {
-				v[v[607]].copy var1, 2
-				var1 .sub v[v[610]], 2
-			       /* @comment "#########################
-#2002 Crd->Mort V1V2 reg1
-##########################"*/
-				var1.copy TT1, 2
-				TT1 .add v[53], 2
-				TT1 .sub v[76], 2
-				TT1 .div v[74], 2
-				/*@comment "TT1=MortX
-	TT2=MortY
-	ビット演算して処理するよ"*/
-				TT1 = (TT1 | TT1 << 8) & 0xFF00FF
-				TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
-				TT1 = (TT1 | TT1 << 2) & 0x33333333
-				TT1 = (TT1 | TT1 << 1) & 0x55555555
-				TT2 = (TT2 | TT2 << 8) & 0xFF00FF
-				TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
-				TT2 = (TT2 | TT2 << 2) & 0x33333333
-				TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
-				//@comment "yは1bitシフトで終わり"
-				//TT2 <<= 1
-				//@comment "最後にTT1 OR TT2"
-				reg1 = TT1 | TT2
-				/*@comment "#########################
-#2002 Crd->Mort V1V2 reg1 end
-##########################"*/
-				TT11 = reg1
-				v[v[607]].copy var1, 2
-				var1 .add v[v[610]], 2
-				/*@comment "#########################
-#2002 Crd->Mort V1V2 reg1
-##########################"*/
-				var1.copy TT1, 2
-				TT1 .add v[53], 2
-				TT1 .sub v[76], 2
-				TT1 .div v[74], 2
-				/* @comment "TT1=MortX
-	TT2=MortY
-	ビット演算して処理するよ" */
-				TT1 = (TT1 | TT1 << 8) & 0xFF00FF
-				TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
-				TT1 = (TT1 | TT1 << 2) & 0x33333333
-				TT1 = (TT1 | TT1 << 1) & 0x55555555
-				TT2 = (TT2 | TT2 << 8) & 0xFF00FF
-				TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
-				TT2 = (TT2 | TT2 << 2) & 0x33333333
-				TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
-				//@comment "yは1bitシフトで終わり"
-				//TT2 <<= 1
-				//@comment "最後にTT1 OR TT2"
-				reg1 = TT1 | TT2
-				/*@comment "#########################
-#2002 Crd->Mort V1V2 reg1 end
-##########################"*/
-				TT1 = TT11
-				TT2 = reg1
-				/*@comment "TT1 = upper left morton TT2 = bottom right morton TT5 = shift num"*/
-				TT3 = TT1 ^ TT2
-				/*@comment "#mask with 11000000" "#mask with 110000" @comment "#mask with 001100" @comment "#mask with 000011"*/
-				TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
-				//@comment "#TT6 = morton id"
-				TT6 = TT2 >> TT5
-				//@comment "#mask end"
-				v[340] = v[4546 - TT5 / 2] + TT6 * v[1004]
-				v[424] = 0
-				v[327] = v[v[4552 - TT5 / 2] + TT6]
-				//@comment "Check overcrowded Space"
-				v[v[640]] = v[327] < v[4522] ? v[v[640]] : 2
-				v[424] = v[340]
-				//Projectile Team Save
-				ProjectileTeamSave = v[Ptr12 + 17] % 3
-
-				// start checking morton space
-				@loop v[327] .dst Temp10 {
-				    ProjectileHitChecker = v[424] + Temp10
-
-				    @if `ProjectileTeamSave != v[(Const_AgentMetaTeam_begin+v[ProjectileHitChecker] - 1)] { // this one is retarded - but you have to use this without AEAB
-
-				    // get meta team!
-				    __if DIS_EXPERIMENTAL == -1 {
-					    macro_get_agent_MetaTeam_into_var(v[ProjectileHitChecker],TT10)
-					    // @if ProjectileTeamSave != TT10 { // this agent seems target for the projectile...
-						}
+			v[215] = v[214] * 100
+			//@comment "Access15 = ProjType"
+			Ptr12 = v[215] + v[1075]
+			//@comment "弾が存在する"
+			@if v[Ptr12] >= 1 {
+				//@comment "Access15 = タイマー"
+				Ptr15 = Ptr12 + 99
+				//@comment "タイマーが切れていない"
+				@if v[Ptr15] >= 1 {
+						v[217] += 1
+						v[Ptr12].copy v[601], 30
+					 /* @comment "#T2 = Vxのポインタ
+						#T3 = ピクチャ番号
+						#G5 = 詳細位置xPtr
+						#G6 = 詳細位置上yPtr
+						#G7 = xPtr
+						#G8 = yPtr"*/
+						//@comment "##process delta "
+						v[605].enum 4, 9
+						v[605..613] += Ptr12
+						Temp2 = v[612]
+						//@comment ""
+						@if s[2] .isOff() {
+					//@comment "タイマー減らす"
+					v[Ptr15] -= 1
+					@if v[603] >= v[1186] {
+							//@comment "##If a function is registered in Get3, call it"
+							s[123].on
+							@call .cev v[603]
+							s[123].off
+							
+					}
+					//@comment "まず加速の処理から"
+					v[Temp2] .add v[615], 2
+					//@comment "次に速度を加える"
+					v[v[605]] .add v[Temp2], 2
 					
-					Temp11 = v[ProjectileHitChecker] * v[1117] // let's check it out...
-					Temp11 += 4701
-					//@comment "当たり判定"
-					Temp11 += 6
-					v[Temp11].copy v[327], 5
-					//@comment "とりあえず矩形判定"
-					@if `abs(v[381] - v[327]) < v[383] + v[330] && abs(v[382] - v[328]) < v[384] + v[331] {
-					    //@comment "Hit flag switch v[377]"
-					    v[377] = 1
-					    //@comment "If the projectile is SingleHit Pierce type"
-					    @if v[Ptr12] == 2 {
-						//opt 28.4.23
-						Ptr10 = Ptr12 + 70 
-						Ptr10 += v[ProjectileHitChecker] / 30
-						TT3 = pow(2, (v[ProjectileHitChecker] - 1) % 30)
-						//@comment "Check if already hit the unit or not"
-						v[377] -= v[Ptr10] & TT3 ? 1 : 0
-						v[Ptr10] |= TT3
-						
-					    }
-					    @if v[377] == 1 {
-						//@comment "ＨＩＴ！"
-						/*@comment "Access19 = AttackerObjectID
-						Access20 = TargetObjectID
-						Access18 = ObjTypeチェックPtr
-						temp1 = ダメージ量
-						temp2 = 防御　#0=ARで計算,1=MR
-						#temp3 = 属性 元のダメージ量を減らすべき？"*/
-						Ptr18 = Temp11 - 6
-						Ptr19 = v[Ptr12 + 8]
-						Ptr20 = v[ProjectileHitChecker]
-						//@comment "HITCHECK"
-						v[471] = [44, 43, 42][v[Ptr12 + 26]]
-						var3 = -1
-						@call .cev v[471]
-						v[Ptr12].copy v[601], 100//restore projectile data
-						//@comment "reg10= 0:miss 1:hit 2:blocked"
-						@if reg1 == 1 {
-						   // @comment "Hit!"
-						    //@comment "#Buff"
-						    var1 = v[640] //v[Ptr12 + 40]
-						    @if var1 >= v[1186] {
-							var3 = v[641] //(v[Ptr12 + 41])
-							func_bs_register_buff_with_time(var1 Ptr20 var3)
-							
-						    }
-						    Temp1 = v[621]
-						    Temp2 = v[622]
-						    Temp3 = v[623]
-						    v[327].copy v[607], 2
-						    //@comment "Perk:Grimreaper"
-						    @if `v[Ptr19 * 300 + 4766] & 262144 {
-							//@comment "#CheckCrit"
-							/*@comment "Var1 = Obj 1~V[421] = ダメージ倍率"*/
-							var5 = Ptr20 * 300 
-							var5 += 4700
-							v[421] = v[Ptr19 * 300 + 4815] / 2 + (2 - v[var5 + 239]) >= rnd(0, 99) ? 450 - v[var5 + 240] : 100
-							
-						    }
+						}
+						//@comment "座標セット"
+						v[v[605]] += v[53] * 10000
+						v[v[607]] = v[v[605]] / 10000
+						v[v[606]] += v[54] * 10000
+						v[v[608]] = v[v[606]] / 10000
+						//@comment "#範囲攻撃処理分岐#仮置き"
+						v[v[607]].copy v[381], 2
+						v[v[610]].copy v[383], 3
+						@if s[2] .isOff() {
+					//@comment "#Width+Height"
+					TT1 = v[v[610]] + v[v[611]]
+					//@comment "#範囲攻撃処理分岐#0なら当たり判定を持たない"
+					reg10 = 0
+					@if TT1 > 0 {
+							v[640] = v[607] + 33
+							v[v[640]] -= 1
+							@if v[v[640]] <= 0 {
+						v[v[607]].copy var1, 2
+						var1 .sub v[v[610]], 2
+								 /* @comment "##########################2002 Crd->Mort V1V2 reg1##########################"*/
+						var1.copy TT1, 2
+						TT1 .add v[53], 2
+						TT1 .sub v[76], 2
+						TT1 .div v[74], 2
+						/*@comment "TT1=MortX			TT2=MortY			ビット演算して処理するよ"*/
+						TT1 = (TT1 | TT1 << 8) & 0xFF00FF
+						TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
+						TT1 = (TT1 | TT1 << 2) & 0x33333333
+						TT1 = (TT1 | TT1 << 1) & 0x55555555
+						TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+						TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+						TT2 = (TT2 | TT2 << 2) & 0x33333333
+						TT2 = ((TT2 | TT2 << 1) & 0x55555555 )<< 1
+						//@comment "yは1bitシフトで終わり"
+						//TT2 <<= 1
+						//@comment "最後にTT1 OR TT2"
+						reg1 = TT1 | TT2
+						/*@comment "##########################2002 Crd->Mort V1V2 reg1 end##########################"*/
+						TT11 = reg1
+						v[v[607]].copy var1, 2
+						var1 .add v[v[610]], 2
+						/*@comment "##########################2002 Crd->Mort V1V2 reg1##########################"*/
+						var1.copy TT1, 2
+						TT1 .add v[53], 2
+						TT1 .sub v[76], 2
+						TT1 .div v[74], 2
+						/* @comment "TT1=MortX	TT2=MortY	ビット演算して処理するよ" */
+						TT1 = (TT1 | TT1 << 8) & 0xFF00FF
+						TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
+						TT1 = (TT1 | TT1 << 2) & 0x33333333
+						TT1 = (TT1 | TT1 << 1) & 0x55555555
+						TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+						TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+						TT2 = (TT2 | TT2 << 2) & 0x33333333
+						TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
+						//@comment "yは1bitシフトで終わり"
+						//TT2 <<= 1
+						//@comment "最後にTT1 OR TT2"
+						reg1 = TT1 | TT2
+						/*@comment "#########################2002 Crd->Mort V1V2 reg1 end##########################"*/
+						TT1 = TT11
+						TT2 = reg1
+						/*@comment "TT1 = upper left morton TT2 = bottom right morton TT5 = shift num"*/
+						TT3 = TT1 ^ TT2
+						/*@comment "#mask with 11000000" "#mask with 110000" @comment "#mask with 001100" @comment "#mask with 000011"*/
+						TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
+						//@comment "#TT6 = morton id"
+						TT6 = TT2 >> TT5
+						//@comment "#mask end"
+						v[340] = v[4546 - TT5 / 2] + TT6 * v[1004]
+						v[424] = 0
+						v[327] = v[v[4552 - TT5 / 2] + TT6]
+						//@comment "Check overcrowded Space"
+						v[v[640]] = v[327] < v[4522] ? v[v[640]] : 2
+						v[424] = v[340]
+						//Projectile Team Save
+						ProjectileTeamSave = v[Ptr12 + 17] % 3
 
-						    //@comment "AABits"
-						    var9 = v[624]
-						    v[422] = Ptr12 + 68
-						    v[422] = v[v[422]]
-						    @call .cev 40
-						    reg10 = 1
-						    Ptr20 = v[36]
-						    
-						} .else bl { //@comment "Miss!"
-						    @if `s[Ptr20 + 500] && v[183] < v[4572] {
-							v[381].copy v[221], 2
-							@if reg2 == 1 {
-							    reg10 = 2
-							    //@comment "Shield Blocked!"
-							    reg3 = 0
-							    //@comment "Shield Cracking"
-							    Ptr20 = v[ProjectileHitChecker]
-							    @if `v[624] & 1024 {
-							       /* @comment "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"*/
-								TT1 = v[Ptr20 * 300 + 4934]
-								@if `v[Ptr20 * 300 + 4765] & 1 {
-								    TT1 = muldiv(TT1, 130, 100)
-								    
+						// start checking morton space
+						@loop v[327] .dst Temp10 {
+								ProjectileHitChecker = v[424] + Temp10
+
+								@if `ProjectileTeamSave != v[(Const_AgentMetaTeam_begin+v[ProjectileHitChecker] - 1)] { // this one is retarded - but you have to use this without AEAB
+
+								// get meta team!
+								__if DIS_EXPERIMENTAL == -1 {
+									macro_get_agent_MetaTeam_into_var(v[ProjectileHitChecker],TT10)
+									// @if ProjectileTeamSave != TT10 { // this agent seems target for the projectile...
 								}
-								/*@comment "＃＃＃＃＃＃＃＃＃＃Chance Roll＃＃＃＃＃＃＃＃＃＃"*/
-								reg1 = v[621] / 3
-								@if `v[624] & 131072 {
-								    reg1 *= 2
-								    
-								}
-								/*@comment "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"*/
-								TT3 = rnd(0, reg1)
-								@if TT3 >= TT1 {
-								    //@comment "#バフ番号指定"
-								    /*9.3.23
-								    var1 = 1258
-								    var2 = Ptr20
-								    @call .cev 1911*/
-								    func_bs_register_buff_old(1258 Ptr20)
-								    @if reg2 >= 0 {
-									reg3 = 1
-									//@comment "#Duration24sec"
-									v[reg2] = 1344
+							
+							Temp11 = v[ProjectileHitChecker] * v[1117] // let's check it out...
+							Temp11 += 4701
+							//@comment "当たり判定"
+							Temp11 += 6
+							v[Temp11].copy v[327], 5
+							//@comment "とりあえず矩形判定"
+							@if `abs(v[381] - v[327]) < v[383] + v[330] && abs(v[382] - v[328]) < v[384] + v[331] {
+									//@comment "Hit flag switch v[377]"
+									v[377] = 1
+									//@comment "If the projectile is SingleHit Pierce type"
+									@if v[Ptr12] == 2 {
+										//opt 28.4.23
+										Ptr10 = Ptr12 + 70 
+										Ptr10 += v[ProjectileHitChecker] / 30
+										TT3 = pow(2, (v[ProjectileHitChecker] - 1) % 30)
+										//@comment "Check if already hit the unit or not"
+										v[377] -= v[Ptr10] & TT3 ? 1 : 0
+										v[Ptr10] |= TT3
+								
+									}
+									@if v[377] == 1 {
+								//@comment "ＨＩＴ！"
+								/*@comment "Access19 = AttackerObjectID
+								Access20 = TargetObjectID
+								Access18 = ObjTypeチェックPtr
+								temp1 = ダメージ量
+								temp2 = 防御　#0=ARで計算,1=MR
+								#temp3 = 属性 元のダメージ量を減らすべき？"*/
+								Ptr18 = Temp11 - 6
+								Ptr19 = v[Ptr12 + 8]
+								Ptr20 = v[ProjectileHitChecker]
+								//@comment "HITCHECK"
+								v[471] = [44, 43, 42][v[Ptr12 + 26]]
+								var3 = -1
+								@call .cev v[471]
+								v[Ptr12].copy v[601], 100//restore projectile data
+								//@comment "reg10= 0:miss 1:hit 2:blocked"
+								@if reg1 == 1 {
+									 // @comment "Hit!"
+										//@comment "#Buff"
+										var1 = v[640] //v[Ptr12 + 40]
+										@if var1 >= v[1186] {
+											var3 = v[641] //(v[Ptr12 + 41])
+											func_bs_register_buff_with_time(var1 Ptr20 var3)
 									
-								    }
-								    
+										}
+										Temp1 = v[621]
+										Temp2 = v[622]
+										Temp3 = v[623]
+										v[327].copy v[607], 2
+										//@comment "Perk:Grimreaper"
+										@if `v[Ptr19 * 300 + 4766] & 262144 {
+											//@comment "#CheckCrit"
+											/*@comment "Var1 = Obj 1~V[421] = ダメージ倍率"*/
+											var5 = Ptr20 * 300 
+											var5 += 4700
+											v[421] = v[Ptr19 * 300 + 4815] / 2 + (2 - v[var5 + 239]) >= rnd(0, 99) ? 450 - v[var5 + 240] : 100
+									
+										}
+
+										//@comment "AABits"
+										var9 = v[624]
+										v[422] = Ptr12 + 68
+										v[422] = v[v[422]]
+										@call .cev 40 // call the  damage cal
+										reg10 = 1
+										Ptr20 = v[36]
+										
+								} .else bl { //@comment "Miss!"
+										@if `s[Ptr20 + 500] && v[183] < v[4572] {
+									v[381].copy v[221], 2
+									@if reg2 == 1 {
+											reg10 = 2
+											//@comment "Shield Blocked!"
+											reg3 = 0
+											//@comment "Shield Cracking"
+											Ptr20 = v[ProjectileHitChecker]
+											@if `v[624] & 1024 {
+												 /* @comment "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"*/
+										TT1 = v[Ptr20 * 300 + 4934]
+										@if `v[Ptr20 * 300 + 4765] & 1 {
+												TT1 = muldiv(TT1, 130, 100)
+												
+										}
+										/*@comment "＃＃＃＃＃＃＃＃＃＃Chance Roll＃＃＃＃＃＃＃＃＃＃"*/
+										reg1 = v[621] / 3
+										@if `v[624] & 131072 {
+												reg1 *= 2
+												
+										}
+										/*@comment "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"*/
+										TT3 = rnd(0, reg1)
+										@if TT3 >= TT1 {
+												//@comment "#バフ番号指定"
+												/*9.3.23
+												var1 = 1258
+												var2 = Ptr20
+												@call .cev 1911*/
+												func_bs_register_buff_old(1258 Ptr20)
+												@if reg2 >= 0 {
+											reg3 = 1
+											//@comment "#Duration24sec"
+											v[reg2] = 1344
+											
+												}
+												
+										}
+										
+											}
+											@if reg3 == 0 {
+										@if v[182] <= 2 {
+												//@comment "#########################"
+												v[472] = divmul(60, 100, v[2216])
+												v[473] = rnd(115, 120)
+												v[474] = divmul(v[381] + v[1001], v[1281], 50)
+												@cmd 11550, "weapons/shield_hit", .args v[472], 3
+												//@comment "#########################"
+												
+										}
+										
+											} .else bl {
+										@if v[182] <= 3 {
+												//@comment "#########################"
+												v[472] = divmul(78, 100, v[2216])
+												v[473] = rnd(87, 100)
+												v[474] = divmul(v[381] + v[1001], v[1281], 50)
+												@cmd 11550, "weapons/shield_cracked01", .args v[472], 3
+												//@comment "#########################"
+												
+										}
+										
+											}
+											//@comment "Call Shield"
+											TT2 = Ptr20 * 300 
+											TT2 += 4952
+											v[TT2 + 32] = v[TT2] > 0 ? 4 : 0
+											//@comment "#Shield Motion"
+											TT2 = Ptr20 * 300 
+											TT2 += 4943
+											@if v[TT2] != 1 {
+										v[TT2] = 2
+										TT2 -= 215
+										v[TT2] += v[TT2] < 300 ? 900 : 0
+										
+											}
+											@if s[307] .isOff() {
+										@if `v[183] < v[4572] / 2 {
+												//@comment "#描画範囲内か？"
+												v[220] %= 30
+												v[220] += 1201
+												v[220] += 1
+												v[223] = v[220]
+												v[221] += rnd(-6, 6)
+												v[222] += rnd(-3, 3)
+												v[222] += s[162] == 1 ? 10 : 0
+												//@comment "#サイズは最低100%"
+												v[225] = 100
+												//@comment "AR"
+												TT1 = v[1204] - 10
+												@pic[v[223]].show {
+											PATH_pic_numdir_block
+											.pos v[221], v[222] .center
+											.scrollWithMap
+											.chromakey 1
+											.scale v[225]
+											.trans TT1
+											.rgbs 100, 100, 100, 100
+											.mapLayer 7
+											.eraseWhenTransfer
+											.affectedByFlash
+											.affectedByShake
+												}
+												v[222] = v[382] - 24
+												v[222] += s[162] == 1 ? 10 : 0
+												@pic[v[223]].move {
+											.pos v[221], v[222] .center
+											.scale v[225]
+											.trans 100
+											.time 12
+											.rgbs 100, 100, 100, 100
+												}
+												v[183] += v[184] >= v[1128] ? 2 : 1
+												
+										}
+										
+											}
+											
+									} .else bl {
+											@if s[307] .isOff() {
+										@if `v[183] < v[4572] / 2 {
+												//@comment "#描画範囲内か？"
+												v[220] %= 30
+												v[220] += 1201
+												v[220] += 1
+												v[223] = v[220]
+												v[221] += rnd(-6, 6)
+												v[222] += rnd(-3, 3)
+												v[222] += s[162] == 1 ? 10 : 0
+												//@comment "#サイズは最低100%"
+												v[225] = 100
+												//@comment "AR"
+												TT1 = v[1204] - 10
+												@pic[v[223]].show {
+											PATH_pic_numdir_miss
+											.pos v[221], v[222] .center
+											.scrollWithMap
+											.chromakey 1
+											.scale v[225]
+											.trans TT1
+											.rgbs 100, 100, 100, 100
+											.mapLayer 7
+											.eraseWhenTransfer
+											.affectedByFlash
+											.affectedByShake
+												}
+												v[222] = v[382] - 24
+												v[222] += s[162] == 1 ? 10 : 0
+												@pic[v[223]].move {
+											.pos v[221], v[222] .center
+											.scale v[225]
+											.trans 100
+											.time 12
+											.rgbs 100, 100, 100, 100
+												}
+												v[183] += v[184] >= v[1128] ? 2 : 1
+												
+										}
+										
+											}
+											
+									}
+									
+										}
+										
+								}
+								//@comment "#Parent Agent"
+								Ptr19 = v[v[215] + v[1076] + 9]
+								//@comment "#HitFuncあれば呼ぶ"
+								v[604] = Ptr12 + 3
+								@if v[v[604]] > 0 {
+										v[v[215] + v[1076] + 28] &= -3//~2
+										s[122].on
+										v[423] = v[214]
+										__if DEBUG_BUILD ==1 {
+									@if v[538] != v[604] {
+										func_devlog("Projectile hit and Cev called - ID:\v[\v[604]]")
+										v[538] = v[604]
+									}
+										}
+										@call .cev v[v[604]]
+										v[214] = v[423]
+										s[122].off
+										
+								}
+								//@comment "Hit Limit check"
+								v[Ptr12 + 38] += 1
+								v[Ptr12] = v[Ptr12 + 38] == v[Ptr12 + 28] ? 1 : v[Ptr12]
+								@if v[Ptr12] == 1 {
+										v[Ptr12 + 99] = 0
+										@break
+										
 								}
 								
-							    }
-							    @if reg3 == 0 {
-								@if v[182] <= 2 {
-								    //@comment "#########################"
-								    v[472] = divmul(60, 100, v[2216])
-								    v[473] = rnd(115, 120)
-								    v[474] = divmul(v[381] + v[1001], v[1281], 50)
-								    @cmd 11550, "weapons/shield_hit", .args v[472], 3
-								    //@comment "#########################"
-								    
-								}
-								
-							    } .else bl {
-								@if v[182] <= 3 {
-								    //@comment "#########################"
-								    v[472] = divmul(78, 100, v[2216])
-								    v[473] = rnd(87, 100)
-								    v[474] = divmul(v[381] + v[1001], v[1281], 50)
-								    @cmd 11550, "weapons/shield_cracked01", .args v[472], 3
-								    //@comment "#########################"
-								    
-								}
-								
-							    }
-							    //@comment "Call Shield"
-							    TT2 = Ptr20 * 300 
-							    TT2 += 4952
-							    v[TT2 + 32] = v[TT2] > 0 ? 4 : 0
-							    //@comment "#Shield Motion"
-							    TT2 = Ptr20 * 300 
-							    TT2 += 4943
-							    @if v[TT2] != 1 {
-								v[TT2] = 2
-								TT2 -= 215
-								v[TT2] += v[TT2] < 300 ? 900 : 0
-								
-							    }
-							    @if s[307] .isOff() {
-								@if `v[183] < v[4572] / 2 {
-								    //@comment "#描画範囲内か？"
-								    v[220] %= 30
-								    v[220] += 1201
-								    v[220] += 1
-								    v[223] = v[220]
-								    v[221] += rnd(-6, 6)
-								    v[222] += rnd(-3, 3)
-								    v[222] += s[162] == 1 ? 10 : 0
-								    //@comment "#サイズは最低100%"
-								    v[225] = 100
-								    //@comment "AR"
-								    TT1 = v[1204] - 10
-								    @pic[v[223]].show {
-									PATH_pic_numdir_block
-									.pos v[221], v[222] .center
-									.scrollWithMap
-									.chromakey 1
-									.scale v[225]
-									.trans TT1
-									.rgbs 100, 100, 100, 100
-									.mapLayer 7
-									.eraseWhenTransfer
-									.affectedByFlash
-									.affectedByShake
-								    }
-								    v[222] = v[382] - 24
-								    v[222] += s[162] == 1 ? 10 : 0
-								    @pic[v[223]].move {
-									.pos v[221], v[222] .center
-									.scale v[225]
-									.trans 100
-									.time 12
-									.rgbs 100, 100, 100, 100
-								    }
-								    v[183] += v[184] >= v[1128] ? 2 : 1
-								    
-								}
-								
-							    }
-							    
-							} .else bl {
-							    @if s[307] .isOff() {
-								@if `v[183] < v[4572] / 2 {
-								    //@comment "#描画範囲内か？"
-								    v[220] %= 30
-								    v[220] += 1201
-								    v[220] += 1
-								    v[223] = v[220]
-								    v[221] += rnd(-6, 6)
-								    v[222] += rnd(-3, 3)
-								    v[222] += s[162] == 1 ? 10 : 0
-								    //@comment "#サイズは最低100%"
-								    v[225] = 100
-								    //@comment "AR"
-								    TT1 = v[1204] - 10
-								    @pic[v[223]].show {
-									PATH_pic_numdir_miss
-									.pos v[221], v[222] .center
-									.scrollWithMap
-									.chromakey 1
-									.scale v[225]
-									.trans TT1
-									.rgbs 100, 100, 100, 100
-									.mapLayer 7
-									.eraseWhenTransfer
-									.affectedByFlash
-									.affectedByShake
-								    }
-								    v[222] = v[382] - 24
-								    v[222] += s[162] == 1 ? 10 : 0
-								    @pic[v[223]].move {
-									.pos v[221], v[222] .center
-									.scale v[225]
-									.trans 100
-									.time 12
-									.rgbs 100, 100, 100, 100
-								    }
-								    v[183] += v[184] >= v[1128] ? 2 : 1
-								    
-								}
-								
-							    }
-							    
+									}
+									
 							}
 							
-						    }
-						    
-						}
-						//@comment "#Parent Agent"
-						Ptr19 = v[v[215] + v[1076] + 9]
-						//@comment "#HitFuncあれば呼ぶ"
-						v[604] = Ptr12 + 3
-						@if v[v[604]] > 0 {
-						    v[v[215] + v[1076] + 28] &= -3//~2
-						    s[122].on
-						    v[423] = v[214]
-						    __if DEBUG_BUILD ==1 {
-							@if v[538] != v[604] {
-								func_devlog("Projectile hit and Cev called - ID:\v[\v[604]]")
-								v[538] = v[604]
-							}
-						    }
-						    @call .cev v[v[604]]
-						    v[214] = v[423]
-						    s[122].off
-						    
-						}
-						//@comment "Hit Limit check"
-						v[Ptr12 + 38] += 1
-						v[Ptr12] = v[Ptr12 + 38] == v[Ptr12 + 28] ? 1 : v[Ptr12]
-						@if v[Ptr12] == 1 {
-						    v[Ptr12 + 99] = 0
-						    @break
-						    
+								}
+								
 						}
 						
-					    }
-					    
+						
+							}
+							
 					}
 					
-				    }
-				    
+						}
+						//@comment "ピクチャ番号を考える"
+						Temp3 = v[4560] + v[214]
+						//opt 28.4.23
+						v[628] = Ptr12 + 27
+						v[628] = v[v[628]]
+						@if `!(v[628] & 8) {
+					//@comment "ここおもそう"
+					v[Ptr12].copy v[601], 34
+					TT1 = Ptr12 + 18
+					//@comment "#add angle delta"
+					TT2 = 1
+					@if v[620] != 0 {
+							v[TT1] += s[2] == 0 ? v[620] : 0
+							TT2 = v[612] >= 0 ? 1 : 0
+							
+					}
+					TT1 = v[TT1]
+					//@comment "#MirrorFlag#4096"
+					v[457] = TT2 * 4096
+					//@comment "#Lightening#512"
+					v[457] |= 256 * v[630]
+					//@comment "#Colors"
+					v[449..452] = 100
+					v[449] .add v[631], 4
+					@cmd 11120, "", .args v[441], 22
+					
+						} .else bl {
+					v[604] = v[Ptr12 + 3]
+					
+						}
+						//@comment "時間切れ消滅処理"
+						@if `v[Ptr12 + 99] <= 0 {
+							@pic[Temp3].erase
+							@if v[604] > 0 {
+									@if `v[628] & 2 {
+										s[122].on
+										//@comment "#Parent Agent"
+										Ptr19 = v[v[215] + v[1076] + 9]
+										v[423] = v[214]
+										v[607] = v[Ptr12 + 6]
+										v[608] = v[Ptr12 + 7]
+										func_devlog("Projectile removed and Cev called - ID:\v[604]")
+										@call .cev v[604]
+										v[214] = v[423]
+										s[122].off
+										
+									}
+									
+							}
+							Ptr12 = v[215] + v[1075]
+							v[1301].copy v[Ptr12], 100
+							
+						}
+						
 				}
 				
-				
-			    }
-			    
 			}
 			
-		    }
-		    //@comment "ピクチャ番号を考える"
-		    Temp3 = v[4560] + v[214]
-		    //opt 28.4.23
-		    v[628] = Ptr12 + 27
-		    v[628] = v[v[628]]
-		    @if `!(v[628] & 8) {
-			//@comment "ここおもそう"
-			v[Ptr12].copy v[601], 34
-			TT1 = Ptr12 + 18
-			//@comment "#add angle delta"
-			TT2 = 1
-			@if v[620] != 0 {
-			    v[TT1] += s[2] == 0 ? v[620] : 0
-			    TT2 = v[612] >= 0 ? 1 : 0
-			    
-			}
-			TT1 = v[TT1]
-			//@comment "#MirrorFlag#4096"
-			v[457] = TT2 * 4096
-			//@comment "#Lightening#512"
-			v[457] |= 256 * v[630]
-			//@comment "#Colors"
-			v[449..452] = 100
-			v[449] .add v[631], 4
-			@cmd 11120, "", .args v[441], 22
-			
-		    } .else bl {
-			v[604] = v[Ptr12 + 3]
-			
-		    }
-		    //@comment "時間切れ消滅処理"
-		    @if `v[Ptr12 + 99] <= 0 {
-			@pic[Temp3].erase
-			@if v[604] > 0 {
-			    @if `v[628] & 2 {
-				s[122].on
-				//@comment "#Parent Agent"
-				Ptr19 = v[v[215] + v[1076] + 9]
-				v[423] = v[214]
-				v[607] = v[Ptr12 + 6]
-				v[608] = v[Ptr12 + 7]
-				func_devlog("Projectile removed and Cev called - ID:\v[604]")
-				@call .cev v[604]
-				v[214] = v[423]
-				s[122].off
-				
-			    }
-			    
-			}
-			Ptr12 = v[215] + v[1075]
-			v[1301].copy v[Ptr12], 100
-			
-		    }
-		    
-		}
-		
-	    }
-	    
 	}
 
 

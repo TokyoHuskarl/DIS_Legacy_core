@@ -110,6 +110,7 @@ struct("agent",{
 
 	agent_InCombatTimer = 680
 	agent_MeleeFightTimer = 681 
+	agent_HitMoveTimer = 682
 	agent_ActionTimer = 684
 
 	agent_DodgeTimer = 685
@@ -239,7 +240,8 @@ struct("agent",{
 	agent_ProcessInstantState = 877
 	
 	agent_2hweapon_stain = 885
-	agent_OneTimeOffsetX= 896
+	agent_FlashType = 895
+	agent_OneTimeOffsetX = 896
 	agent_OneTimeOffsetY = 897
 	agent_PictArray = 899
 	agent_generated_ID = 900
@@ -287,6 +289,7 @@ struct("agent",{
 	// erase all agent_ prefix eventually 
 	
 	agent_PerkFlagBits1_FLAG_Pathfinder = 128
+	PerkFlagBits1_FLAG_BattleForged = 4
 	PerkFlagBits1_FLAG_Pathfinder = 128
 	PerkFlagBits1_FLAG_Fearsome = 256
 	PerkFlagBits1_FLAG_Ninelives = 2048
@@ -540,36 +543,109 @@ struct("agent",{
 	}
 
 	def{
-	AgentBits_STATIC_FLAG_No_function = 1024
+		AgentBits_STATIC_FLAG_No_function = 1024
 
 	}
 
 
 	//Victims var for attack check
-	defv{
-	victim_Morale = 580
-	victim_ProcessAD = 581
-	victim_ProcessAP = 582
-	victim_ProcessAR = 583
-	victim_ProcessMR = 584
-	victim_ProcessHIT = 585
-	victim_ProcessEVA = 586
-	victim_ProcessCrit = 587
-	victim_ProcessMS = 588
-	victim_ProcessRange_max = 589
-	victim_ProcessRange_min = 590
-	victim_ProcessAS = 591
-	victim_ProcessHPreg = 592
-	victim_ProcessSPReg = 593
-	victim_ProcessObjBit = 594
-	victim_ProcessWill = 595
-	victim_ProcessCamoValue = 596
-	victim_ProcessInstantState = 597
+	defv{ // use Ptr11 for victim pointer
 
+		address_victim_buffer_head = 740000
+		victim_AgentType = 740001
+		victim_TargetAgentID = 740018
+		victim_MapX = 740026
+		victim_MapY = 740027
+		victim_AI_routine_bits = 740034
+		victim_Cohort_ID = 740035
+		victim_MoveTypeBIts = 740038
+
+		victim_Race = 740064
+		victim_PerkFlagBits1 = 740065
+		victim_PerkFlagBits2 = 740066	
+
+		victim_InCombatTimer = 740080
+		victim_HitMoveTimer = 740082
+
+		victim_TeamID = 740100
+		victim_UnitID = 740101
+		victim_UnitType = 740102
+		victim_AAType = 740103 //0 = melee, 1 = ranged, 2 = point, 3 = shoot, 4 = function
+		victim_Level = 740104
+		victim_MaxHP = 740105
+		victim_HP = 740106
+		victim_MaxSP = 740107
+		victim_SP = 740108
+		victim_BaseAD = 740109
+		victim_BaseAP = 740110
+		victim_MaxAR = 740138
+		victim_BaseAR = 740111
+		victim_BaseMR = 740112
+		victim_BaseHIT = 740113
+		victim_BaseEVA = 740114
+		victim_BaseCrit = 740115
+		victim_BaseMS = 740116
+		victim_BaseRange_max = 740117
+		victim_BaseRange_min = 740118
+		victim_BaseAS = 740119 // (4800 - [AS])
+
+		victim_AAMotion = 740120
+		victim_AACost = 740121
+		victim_AA_ARorMR=740122
+		victim_AAElement=740123
+		victim_AABits=740124
+		victim_AddMotionBits = 740125
+		victim_ExMotionFlags = 740126
+
+		victim_AAamount = 740127
+		victim_AAvelocity = 740127
+		victim_AAtime = 740128
+
+
+		victim_AASfx = 740129
+		victim_AAFunction = 740130
+		victim_BaseRegHP = 740131
+		victim_Shield_Value = 740135
+		victim_AA_AR_effectiveness = 740136
+		victim_AA_AR_penetration = 740137
+		//victim_MaxAR = 740138
+		victim_BaseWill = 740139
+		victim_BaseObjBit = 740140
+
+		victim_TakenDamageMultiplier = 740229
+		victim_StanceOrder = 740241
+		victim_MovementOrder = 740242
+
+		
+
+		victim_Morale = 740260
+		victim_ProcessAD = 740261
+		victim_ProcessAP = 740262
+		victim_ProcessAR = 740263
+		victim_ProcessMR = 740264
+		victim_ProcessHIT = 740265
+		victim_ProcessEVA = 740266
+		victim_ProcessCrit = 740267
+		victim_ProcessMS = 740268
+		victim_ProcessRange_max = 740269
+		victim_ProcessRange_min = 740270
+		victim_ProcessAS = 740271
+		victim_ProcessHPreg = 740272
+		victim_ProcessSPReg = 740273
+		victim_ProcessObjBit = 740274
+		victim_ProcessWill = 740275
+		victim_ProcessCamoValue = 740276
+		victim_ProcessInstantState = 740277
+
+		victim_R = 740291
+		victim_G = 740292
+		victim_B = 740293
+		victim_FlashType = 740295
 	}
 
 	//Skill var for attack check
-	defv{
+	defv{ 
+
 	skill_Slot_in_agent = 580
 	skill_ID = 581
 	skill_MainFunction = 582
@@ -586,6 +662,7 @@ struct("agent",{
 	skill_AutoCastFlags = 600
 
 	}
+
 	def{
 	skill_Array_size = 20
 	Type_PassiveSkl = 0

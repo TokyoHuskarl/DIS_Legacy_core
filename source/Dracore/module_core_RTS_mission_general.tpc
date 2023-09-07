@@ -175,7 +175,13 @@ def{
 	game_result_enemy_x = v[1001]-456
 
 }
+
+
 //battle result
+
+def STRING_greenstr1 = __str("\c[10]","\v[",__id(str1),"]") 
+def STRING_redstr1 = __str("\c[5]","\v[",__id(str1),"]") 
+
 cev .id(2121), .name("Game:Battle Result"),{
 	@comment "To 60FPS"
 	@pic.erase .all
@@ -211,7 +217,9 @@ cev .id(2121), .name("Game:Battle Result"),{
 	}
 	Temp10 = 5
 	Temp12 = 32
-	@comment "Disabled in DIS series"
+
+
+	// @comment "Disabled in DIS series"
 	/*@if s[1] .isOn() {
 	    @comment "Player Heroes"
 	    s[151].on
@@ -232,7 +240,7 @@ cev .id(2121), .name("Game:Battle Result"),{
 			Temp11 = 24
 			Temp11 += 80
 			@pic[Temp10].strpic {
-			    "\c[10]\str1"
+			    STRING_greenstr1
 			    .pos Temp11, Temp12 .left
 			    .size 0, 0                    .chromakey 1
 			    .scale 100
@@ -280,6 +288,7 @@ cev .id(2121), .name("Game:Battle Result"),{
 	    
 	    
 	}*/
+
 	@comment "Player Troops"
 	s[151].on
 	@loop v[1260] .dst TT1 {
@@ -298,7 +307,7 @@ cev .id(2121), .name("Game:Battle Result"),{
 		Temp11 = game_result_ally_x
 		Temp11 += 80
 		@pic[Temp10].strpic {
-		    "\c[10]\str1"
+		    STRING_greenstr1
 		    .pos Temp11, Temp12 .left
 		    .size 0, 0            .chromakey 1
 		    .scale 100
@@ -404,7 +413,7 @@ cev .id(2121), .name("Game:Battle Result"),{
 		Temp11 = game_result_enemy_x
 		Temp11 += 80
 		@pic[Temp10].strpic {
-		    "\c[5]\str1"
+		    STRING_redstr1
 		    .pos Temp11, Temp12 .left
 		    .size 0, 0            .chromakey 1
 		    .scale 100
@@ -489,7 +498,7 @@ cev .id(2121), .name("Game:Battle Result"),{
 		
 	    }
 	    str1 .cat t[3000] .extract
-	    @msg.show "\>\str1"
+	    @msg.show str1
 	    @gsave.open
 	    v[2203] .add v[2513], 3
 	    v[2206] .add v[2521], 8
@@ -522,7 +531,7 @@ cev .id(1804),.name("mission:gen_elevationmap"),{
 #include "./module_core_RTS_mission_weather_general.tpc" 
 
 
-cev .id(67), .name("Combat Detection AI.."),.parallel , .cond(297), {
+cev .id(67), .name("Combat Detection AI.."),.parallel , .cond(1), { // switch 297
 
 	@wait 5
 	@if v[2661] >= 0 {

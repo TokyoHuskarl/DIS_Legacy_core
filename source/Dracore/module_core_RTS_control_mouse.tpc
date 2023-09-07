@@ -1,7 +1,7 @@
 
-def click_waittime = 16 //12
+def click_waittime = 18 //12
 
-@key.inputEx .keybdWithBind .dst v[901]
+@key.inputEx .keybdWithBind .dst GETKEY_A
 
 // save PointerXY to TT1,2
 MousePtr_x.copy TT1, 2
@@ -40,11 +40,11 @@ s[70].off
         .rclick
     }
     @if s[1] .isOn() {
-        @if Common_Control_Ck == 1004 {
+        @if Common_Control_Ck == WheelUp {
             v[438] = 100
             
         }
-        @if Common_Control_Ck == 1001 {
+        @if Common_Control_Ck == WheelDown {
             v[438] = 50
             
         }
@@ -62,7 +62,7 @@ s[70].off
             .rgbs 0, 200, 0, 100
         }
         s[181].on
-        @if Common_Control_Ck == 1005 {
+        @if Common_Control_Ck == LMB {
             @if s[11] .isOff() {
                 s[9].on
                 s[11].on
@@ -95,7 +95,7 @@ s[70].off
             .rgbs 0, 200, 0, 100
         }
         s[185].on
-        @if Common_Control_Ck == 1005 {
+        @if Common_Control_Ck == LMB {
             @if s[11] .isOff() {
                 s[9].on
                 s[11].on
@@ -201,7 +201,7 @@ s[70].off
             .rgbs 0, 200, 0, 100
         }
         s[184].on
-        @if Common_Control_Ck == 1005 {
+        @if Common_Control_Ck == LMB {
             @if s[11] .isOff() {
                 s[11].on
                 s[9].on
@@ -227,9 +227,9 @@ s[70].off
     @pic[1775].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
     @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
         s[186].on
-        @if Common_Control_Ck == 1005 {
+        @if Common_Control_Ck == LMB {
             @if s[11] .isOff() {
-                v[912] = 1
+                GETKEY_L = 1
                 @break
                 
             }
@@ -243,9 +243,9 @@ s[70].off
     // "##############################"
     @if s[57] .isOff() {
         // "##############################"
-        @key.inputEx .keyCode 5 .dst v[1235]
-        @key.inputEx .keyCode 188 .dst v[1237]
-        @if `v[1235] >= 1 || v[1237] >= 1 {
+        @key.inputEx .keyCode 5 .dst GEYKEY_Mouse5
+        @key.inputEx .keyCode 188 .dst GEYKEY_key_comma
+        @if `GEYKEY_Mouse5 >= 1 || GEYKEY_key_comma >= 1 {
             // "v1=UnitIDv2=UnitType"
             @if s[200] .isOff() {
                 @call .cev 2098
@@ -254,15 +254,15 @@ s[70].off
             s[200].on
             
         }
-        @key.inputEx .keyCode 6 .dst v[1236]
-        @key.inputEx .keyCode 190 .dst v[1238]
+        @key.inputEx .keyCode 6 .dst GEYKEY_Mouse4
+        @key.inputEx .keyCode 190 .dst GEYKEY_key_period
         // "#Idle Check"
         @pic[1774].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
         @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
             s[188].on
-            @if Common_Control_Ck == 1005 {
+            @if Common_Control_Ck == LMB {
                 @if s[11] .isOff() {
-                    v[1236] = 1
+                    GEYKEY_Mouse4 = 1
                     
                 }
                 
@@ -272,17 +272,17 @@ s[70].off
             s[188].off
             
         }
-        @if `v[1236] >= 1 || v[1238] >= 1 {
+        @if `GEYKEY_Mouse4 >= 1 || GEYKEY_key_period >= 1 {
             // "v1=UnitID v2=UnitType"
-            @if s[200] .isOff() {
+            @if s[200] .isOff() { 
                 @call .cev 2099
                 
             }
             s[200].on
             
         }
-        @if `v[1235] == 0 && v[1236] == 0 {
-            @if `v[1237] == 0 && v[1238] == 0 {
+        @if `GEYKEY_Mouse5 == 0 && GEYKEY_Mouse4 == 0 {
+            @if `GEYKEY_key_comma == 0 && GEYKEY_key_period == 0 {
                 s[200].off
                 
             }
@@ -335,7 +335,7 @@ s[70].off
 	    }
 
 
-            @if Common_Control_Ck == 1005 {
+            @if Common_Control_Ck == LMB {
                 @if s[11] .isOn() {
 
 
@@ -470,7 +470,7 @@ s[70].off
                                     
                                 }
                                 
-                                @if `v[944] == 1 || s[2] == 1 {
+                                @if `GETKEY_Alt == 1 || s[2] == 1 {
                                     @loop 10 .dst v[340] {
                                         TT1 = v[4513] + v[340]
                                         @pic[TT1].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
@@ -505,42 +505,42 @@ s[70].off
                                 // "UI"
                                 // "＃Qキー"
                                 @if `between(MousePtr_x, v[1037] - v[1291], v[1037] + v[1291]) && between(MousePtr_y, v[1038] - v[1292], v[1038] + v[1292]) {
-                                    v[917] = 1
+                                    GETKEY_Q = 1
                                     
                                 }
                                 // "＃Wキー"
                                 @if `between(MousePtr_x, v[1039] - v[1291], v[1039] + v[1291]) && between(MousePtr_y, v[1040] - v[1292], v[1040] + v[1292]) {
-                                    v[923] = 1
+                                    GETKEY_W = 1
                                     
                                 }
                                 // "＃Eキー"
                                 @if `between(MousePtr_x, v[1041] - v[1291], v[1041] + v[1291]) && between(MousePtr_y, v[1042] - v[1292], v[1042] + v[1292]) {
-                                    v[905] = 1
+                                    GETKEY_E = 1
                                     
                                 }
                                 // "＃Rキー"
                                 @if `between(MousePtr_x, v[1043] - v[1291], v[1043] + v[1291]) && between(MousePtr_y, v[1044] - v[1292], v[1044] + v[1292]) {
-                                    v[918] = 1
+                                    GETKEY_R = 1
                                     
                                 }
                                 // "A"
                                 @if `between(MousePtr_x, v[1045] - v[1291], v[1045] + v[1291]) && between(MousePtr_y, v[1046] - v[1292], v[1046] + v[1292]) {
-                                    v[901] = 1
+                                    GETKEY_A = 1
                                     
                                 }
                                 // "S"
                                 @if `between(MousePtr_x, v[1047] - v[1291], v[1047] + v[1291]) && between(MousePtr_y, v[1048] - v[1292], v[1048] + v[1292]) {
-                                    v[919] = 1
+                                    GETKEY_S = 1
                                     
                                 }
                                 // "D"
                                 @if `between(MousePtr_x, v[1049] - v[1291], v[1049] + v[1291]) && between(MousePtr_y, v[1050] - v[1292], v[1050] + v[1292]) {
-                                    v[904] = 1
+                                    GETKEY_D = 1
                                     
                                 }
                                 // "F"
                                 @if `between(MousePtr_x, v[1051] - v[1291], v[1051] + v[1291]) && between(MousePtr_y, v[1052] - v[1292], v[1052] + v[1292]) {
-                                    v[906] = 1
+                                    GETKEY_F = 1
                                     
                                 }
                                 
@@ -590,7 +590,7 @@ s[70].off
                 @pic[973].erase
                 
             }
-            @if Common_Control_Ck == 1006 {
+            @if Common_Control_Ck == RMB {
                 // "ミニマップ上クリック"
                 @if `between(MousePtr_x, v[1282], v[1284]) && between(MousePtr_y, v[1283], v[1285]) {
                     s[40].on
@@ -622,11 +622,11 @@ s[70].off
                         var2 = ev[2].scry
                         var2 -= 16
                         // "煩雑なのでそのうちなおす"
-                        @if v[942] >= 1 {
+                        @if GETKEY_Shift >= 1 {
                             @call .cev 57
                             
                         } .else bl {
-                            @if v[944] >= 1 {
+                            @if GETKEY_Alt >= 1 {
                                 s[16].on
                                 
                             }
@@ -687,7 +687,7 @@ s[70].off
                     }
                     // "煩雑なのでそのうちなおす"
                     @if s[40] .isOff() {
-                        @if v[942] >= 1 {
+                        @if GETKEY_Shift >= 1 {
                             @if s[13] .isOff() {
                                 @call .cev 57
                                 
@@ -696,7 +696,7 @@ s[70].off
                         } .else bl {
                             @if s[15] .isOn() {
                                 @if s[13] .isOff() {
-                                    @if v[944] >= 1 {
+                                    @if GETKEY_Alt >= 1 {
                                         s[16].on
                                         
                                     }
@@ -711,7 +711,7 @@ s[70].off
                                 }
                                 
                             } .else bl {
-                                @if v[944] >= 1 {
+                                @if GETKEY_Alt >= 1 {
                                     s[16].on
                                     
                                 }
@@ -842,7 +842,7 @@ s[70].off
                     }
                     
                 }
-                @if Common_Control_Ck == 1005 {
+                @if Common_Control_Ck == LMB {
                     @if s[11] .isOn() {
                         @if s[9] .isOff() {
                             v[42] -= 1
@@ -1123,42 +1123,42 @@ s[70].off
                             // "UI"
                             // "＃Qキー"
                             @if `between(MousePtr_x, v[1037] - v[1291], v[1037] + v[1291]) && between(MousePtr_y, v[1038] - v[1292], v[1038] + v[1292]) {
-                                v[917] = 1
+                                GETKEY_Q = 1
                                 
                             }
                             // "＃Wキー"
                             @if `between(MousePtr_x, v[1039] - v[1291], v[1039] + v[1291]) && between(MousePtr_y, v[1040] - v[1292], v[1040] + v[1292]) {
-                                v[923] = 1
+                                GETKEY_W = 1
                                 
                             }
                             // "＃Eキー"
                             @if `between(MousePtr_x, v[1041] - v[1291], v[1041] + v[1291]) && between(MousePtr_y, v[1042] - v[1292], v[1042] + v[1292]) {
-                                v[905] = 1
+                                GETKEY_E = 1
                                 
                             }
                             // "＃Rキー"
                             @if `between(MousePtr_x, v[1043] - v[1291], v[1043] + v[1291]) && between(MousePtr_y, v[1044] - v[1292], v[1044] + v[1292]) {
-                                v[918] = 1
+                                GETKEY_R = 1
                                 
                             }
                             // "A"
                             @if `between(MousePtr_x, v[1045] - v[1291], v[1045] + v[1291]) && between(MousePtr_y, v[1046] - v[1292], v[1046] + v[1292]) {
-                                v[901] = 1
+                                GETKEY_A = 1
                                 
                             }
                             // "S"
                             @if `between(MousePtr_x, v[1047] - v[1291], v[1047] + v[1291]) && between(MousePtr_y, v[1048] - v[1292], v[1048] + v[1292]) {
-                                v[919] = 1
+                                GETKEY_S = 1
                                 
                             }
                             // "D"
                             @if `between(MousePtr_x, v[1049] - v[1291], v[1049] + v[1291]) && between(MousePtr_y, v[1050] - v[1292], v[1050] + v[1292]) {
-                                v[904] = 1
+                                GETKEY_D = 1
                                 
                             }
                             // "F"
                             @if `between(MousePtr_x, v[1051] - v[1291], v[1051] + v[1291]) && between(MousePtr_y, v[1052] - v[1292], v[1052] + v[1292]) {
-                                v[906] = 1
+                                GETKEY_F = 1
                                 
                             }
                             
@@ -1169,7 +1169,7 @@ s[70].off
                 } .else bl {
                     @if s[11] .isOn() {
                         @if s[9] .isOff() {
-                            @if Common_Control_Ck == 1006 {
+                            @if Common_Control_Ck == RMB {
                                 s[9].on
                                 s[13].on
                                 @pic[999].erase
@@ -1195,10 +1195,10 @@ s[70].off
                                         TT1 += v[300004] >= var8 ? 1 : 0
                                         reg1 = TT1 != 4 ? -1 : 0
                                         @if reg1 != 0 {
-                                            v[942] = 0
+                                            GETKEY_Shift = 0
                                             
                                         }
-                                        @if v[942] <= 0 {
+                                        @if GETKEY_Shift <= 0 {
                                             v[87..88] = 0
                                             s[9].on
                                             @pic[999].erase
@@ -1239,7 +1239,7 @@ s[70].off
                     .time 0
                     .rgbs v[4031], v[4032], v[4033], v[4034]
                 }
-                @if Common_Control_Ck == 1006 {
+                @if Common_Control_Ck == RMB {
                     @if s[13] .isOff() {
                         v[87..88] = 0
                         s[13].on
@@ -1366,7 +1366,7 @@ s[70].off
                     
                 }
                 @cmd 11110, "static\spr_static_1", .args v[441], 30
-                @if Common_Control_Ck == 1005 {
+                @if Common_Control_Ck == LMB {
                     @if `MousePtr_y <= v[1286] && !(MousePtr_x <= v[4514] && MousePtr_y >= v[4515]) {
                         @if s[11] .isOff() {
                             s[11].on
@@ -1386,10 +1386,10 @@ s[70].off
                                 TT1 += v[300004] >= var8 ? 1 : 0
                                 reg1 = TT1 != 4 ? -1 : 0
                                 @if reg1 != 0 {
-                                    v[942] = 0
+                                    GETKEY_Shift = 0
                                     
                                 }
-                                @if v[942] <= 0 {
+                                @if GETKEY_Shift <= 0 {
                                     v[87..88] = 0
                                     s[9].on
                                     @pic[999].erase
@@ -1410,42 +1410,42 @@ s[70].off
                         // "UI"
                         // "＃Qキー"
                         @if `between(MousePtr_x, v[1037] - v[1291], v[1037] + v[1291]) && between(MousePtr_y, v[1038] - v[1292], v[1038] + v[1292]) {
-                            v[917] = 1
+                            GETKEY_Q = 1
                             
                         }
                         // "＃Wキー"
                         @if `between(MousePtr_x, v[1039] - v[1291], v[1039] + v[1291]) && between(MousePtr_y, v[1040] - v[1292], v[1040] + v[1292]) {
-                            v[923] = 1
+                            GETKEY_W = 1
                             
                         }
                         // "＃Eキー"
                         @if `between(MousePtr_x, v[1041] - v[1291], v[1041] + v[1291]) && between(MousePtr_y, v[1042] - v[1292], v[1042] + v[1292]) {
-                            v[905] = 1
+                            GETKEY_E = 1
                             
                         }
                         // "＃Rキー"
                         @if `between(MousePtr_x, v[1043] - v[1291], v[1043] + v[1291]) && between(MousePtr_y, v[1044] - v[1292], v[1044] + v[1292]) {
-                            v[918] = 1
+                            GETKEY_R = 1
                             
                         }
                         // "A"
                         @if `between(MousePtr_x, v[1045] - v[1291], v[1045] + v[1291]) && between(MousePtr_y, v[1046] - v[1292], v[1046] + v[1292]) {
-                            v[901] = 1
+                            GETKEY_A = 1
                             
                         }
                         // "S"
                         @if `between(MousePtr_x, v[1047] - v[1291], v[1047] + v[1291]) && between(MousePtr_y, v[1048] - v[1292], v[1048] + v[1292]) {
-                            v[919] = 1
+                            GETKEY_S = 1
                             
                         }
                         // "D"
                         @if `between(MousePtr_x, v[1049] - v[1291], v[1049] + v[1291]) && between(MousePtr_y, v[1050] - v[1292], v[1050] + v[1292]) {
-                            v[904] = 1
+                            GETKEY_D = 1
                             
                         }
                         // "F"
                         @if `between(MousePtr_x, v[1051] - v[1291], v[1051] + v[1291]) && between(MousePtr_y, v[1052] - v[1292], v[1052] + v[1292]) {
-                            v[906] = 1
+                            GETKEY_F = 1
                             
                         }
                         // "UI"
@@ -1474,7 +1474,7 @@ s[70].off
                     s[11].off
                     
                 }
-                @if Common_Control_Ck == 1006 {
+                @if Common_Control_Ck == RMB {
                     v[87..88] = 0
                     s[15].on
                     s[13].on
