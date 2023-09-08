@@ -17,4 +17,6 @@ def {
 
 
 
-
+__fn copyback_victim_data $vptr {
+	victim_AgentType.copy v[$vptr], agent_Basic_Array_size
+}

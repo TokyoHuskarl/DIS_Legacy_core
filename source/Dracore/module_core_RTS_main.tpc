@@ -2215,7 +2215,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							    .scale 100
 							    .trans v[1066]
 							    .rgbs 100, 100, 100, 100
-							    .font Font_UI, 10
+							    .font Font_UI, 11
 							    .spacing 0, 0
 							    .skin "" .nobg .noframe .noGradation .noPadding
 							    .mapLayer 7
@@ -2380,7 +2380,7 @@ __fn func_main_extract_agent_vars {
 }
 
 __fn func_main_save_agent_vars {
-	    v[601].copy v[Ptr1], 300
+	    agent_AgentType.copy v[Ptr1], 300
 }
 
 __fn func_blink_set {

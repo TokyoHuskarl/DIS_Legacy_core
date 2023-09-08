@@ -8,8 +8,8 @@ __fn macro_extract_units_parameters {
 	//TEMPORARY
 	reg1 = Ptr9 + 4701
 	v[reg1].copy agent_ObjectType, 300
-	reg1 = Ptr10 + 4960
-	v[reg1].copy victim_Morale, 20//only 20
+	reg1 = Ptr10 + 4701
+	v[reg1].copy victim_AgentType, 300 //only 20
 
 }
 
@@ -20,7 +20,7 @@ __fn func_bs_melee_hit_check $attacker $victim {
 
 	macro_extract_units_parameters()
 
-	@if `agent_Direction == v[Ptr10 + 4944] {//back attack!
+	@if agent_Direction == victim_Direction {//back attack!
 	    s[164].on
 	    
 	} .else bl {
@@ -33,9 +33,9 @@ __fn func_bs_melee_hit_check $attacker $victim {
 	reg1 = victim_ProcessEVA
 	//@comment "#################GetParaNow v1v2r1 END#################"
 	//@comment "#DodgeMS*12%"
-	reg1 += v[Ptr10 + 4765] & 32 ? victim_ProcessMS>>3:0//muldiv(victim_ProcessMS, 12, 100) : 0
+	reg1 += victim_PerkFlagBits1 & 32 ? victim_ProcessMS >> 3:0//muldiv(victim_ProcessMS, 12, 100) : 0
 	//@comment "＃＃＃＃＃＃＃＃＃＃Elevation Bonus＃＃＃＃＃＃＃＃＃＃"
-	Temp20 = agent_getTerrainElevation - v[Ptr10 + 4757]
+	Temp20 = agent_getTerrainElevation - victim_getTerrainElevation
 	//@comment "＃＃＃＃＃＃＃＃＃＃BackAttack Bonus＃＃＃＃＃＃＃＃＃＃"
 	Temp1 += s[164] == 1 ? 15 : 0
 	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per...10% min5% max95%＃＃＃＃＃＃＃＃＃＃"
@@ -45,17 +45,16 @@ __fn func_bs_melee_hit_check $attacker $victim {
 	Temp3 = rnd(0, 99)
 	reg1 = Temp3 <= Temp1 ? 1 : 0
 	@if reg1 == 0 {
-	    v[843] = Ptr10 + 4803
 	    //@comment "＃＃＃＃＃＃＃＃＃＃Check Shield?	＃＃＃＃＃＃＃＃＃＃"
 	    //@comment "Shieldを取得 302	...ADVに先行で算入されている"
-	    Temp2 = 100 - v[Ptr10 + 4835]//shield value..
+	    Temp2 = 100 - victim_Shield_Value//shield value..
 	    reg2 = Temp3 >= Temp2 ? 1 : 0
 	    @if reg2 == 0 {
 		@if s[164] .isOff() {
 		    //@comment "Parry chance"
 		    //v[874] = Ptr10 + 4974
 		    @if `victim_ProcessObjBit & 16777216 {
-			@if `v[v[843]] == 0 {//not ranged type?
+			@if victim_AAType == 0 {//not ranged type?
 			    reg2 = rnd(0, 99) <= victim_ProcessHIT / (victim_ProcessObjBit & 131072 ? 2 : 3) + 16 ? 2 : 0
 			    
 			}
@@ -76,15 +75,13 @@ bs_hitcheck_FLAG_ArrowMode = 0x1
 }
 
 __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
-	Ptr9 = $attacker *300
-	Ptr10 = $victim *300
+	Ptr9 = $attacker * 300
+	Ptr10 = $victim * 300
 	__if $flags & bs_hitcheck_FLAG_ArrowMode {
 		defv var_funcbs_rhc_arrow_hitbonus = __id(var6)
 		var_funcbs_rhc_arrow_hitbonus = $aux_var //secure - if it's arrow type, load saved arrow hit bonus
 	}
 	macro_extract_units_parameters()
-	//var5 = perk1
-	var5 = v[Ptr10 + 4765]
 	//@comment "HITを取得"
 	//Temp1 = Ptr9 + 4965
 	Temp1 = agent_ProcessHIT//v[Temp1]
@@ -92,33 +89,36 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	//reg1 = Ptr10 + 4966
 	reg1 = victim_ProcessEVA//v[reg1]
 	//@comment "#DodgeMS*12%"
-	reg1 += var5 & 32 ? victim_ProcessMS >> 3 : 0// muldiv(victim_ProcessMS, 12, 100)
+	reg1 += victim_PerkFlagBits1 & 32 ? victim_ProcessMS >> 3 : 0// muldiv(victim_ProcessMS, 12, 100)
 	reg1 /= 4
 	//@comment "##########Perk##########"
 	//@comment "Anticipation"
-	reg1 += var5 & 64 ? 18 + reg1 : 0
+	reg1 += victim_PerkFlagBits1 & 64 ? 18 + reg1 : 0
 	//@comment "＃＃＃＃＃＃＃＃＃＃Elevation Bonus＃＃＃＃＃＃＃＃＃＃"
-	Temp20 = min(agent_getTerrainElevation - v[Ptr10 + 4757], 3)//3 at highest
+	Temp20 = min(agent_getTerrainElevation - victim_getTerrainElevation, 3)//3 at highest
 	Temp1 += 7 * Temp20
 	//@comment "＃＃＃＃＃＃＃＃＃＃Check Shield?＃＃＃＃＃＃＃＃＃＃"
 	//@comment "Shieldを取得 302...ADV/4+302*2"
-	Temp2 = Ptr10 + 4835
-	@if v[Temp2] > 0{//if victim has shield
-		@if `victim_ProcessObjBit & 67108864{//check if blken
+	Temp2 = victim_Shield_Value
+	@if Temp2> 0{ //if victim has shield
+		@if `victim_ProcessObjBit & 67108864 { //check if broken
 			Temp2 = 0
  
-		}.else bl{
-			Temp2 =  v[Ptr10 + 4948] & 6 ?muldiv(v[Temp2], 250, 100) : v[Temp2] * 2
-			//if you're covered with shield wall brother	
+		}.else bl { // not broken
+			Temp2 =  victim_TacticsOrderFlag & 6 ? muldiv(victim_Shield_Value, 250, 100) : victim_Shield_Value * 2
+			//if you're covered with shield wall brother ... then?
+			
 		}
+
 	}.else bl{
 		Temp2 = 0
 	}
+
 	//If you covered by ally's shield, you will gain+8 shield value, even if you don't have any shield
-	Temp2 += victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check?6:0
+	Temp2 += victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check ? 6 : 0
 	//@comment "BackAttack one-thirds evasion chance"
-	reg1 = (reg1 + Temp2) / ($dir == v[Ptr10 + 4944] ? 3 : 1)
-	reg1 += victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check?7:0
+	reg1 = (reg1 + Temp2) / ($dir == victim_Direction ? 3 : 1)
+	reg1 += victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check ? 7 : 0
 
 	Temp3 = rnd(0, 99)
 	reg2 = Temp3 >= 100 - Temp2 ? 1 : 0

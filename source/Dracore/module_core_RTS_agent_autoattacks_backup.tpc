@@ -3,10 +3,10 @@
 __fn agent_autoattack_melee {
 
 	def {
-		shieldbash_time = 16
-		bladedance_time = 48
-		shieldcrack_time = 1344
-		parry_time = 5
+		shieldbash_time=16
+		bladedance_time=48
+		shieldcrack_time=1344
+		parry_time=5
 		least_crit_melee = 2
 	}
 
@@ -14,12 +14,10 @@ __fn agent_autoattack_melee {
 
 	Ptr19 = v[207] + 1
 	Ptr20 = v[Ptr20]
-
-		
 	//Ptr10 = Ptr20 * 300
 	//Ptr9 = Ptr19 * 300
-	Ptr10 = Ptr20 * 300 // attacker
-	Ptr9 = Ptr19 * 300
+	Ptr10 = Ptr20*300
+	Ptr9 = Ptr19*300
 
 
 	// "攻撃モーション処理"
@@ -39,32 +37,34 @@ __fn agent_autoattack_melee {
 	@if `v[v[629]] == 1 && v[Ptr18] > 0 {
 
 		//extract Attacker's parameters
-			v[Ptr18].copy agent_AgentType, agent_Basic_Array_size
-			
-			Ptr11 = Ptr10 + 4701 // Ptr to victim data
-			v[Ptr11].copy victim_AgentType, agent_Basic_Array_size // copy victim data to victim buffer
-
-
+			v[v[210]].copy Address_agent_array_head, 301
 			s[167].off
 
-			@if victim_AgentType == 11 { // the enemy is STATIC Type
+			@if `v[Ptr10 + 4701] == 11 { // the enemy is STATIC Type
 				s[167].on
 		
 			}
-			
 			// "#################交戦デバフを付与################"
 			// "#Combat Penalty Resist"
-			victim_MeleeFightTimer = victim_ProcessObjBit & BaseObjBit_FLAG_Immune_to_MeleePenalty ? 0 : Const_Melee_Fight_Time_by_Melee_Attack // defined in header_common.tpc
-			victim_InCombatTimer = v[1240] * v[4571]
+			v[Ptr10 + 4781] = v[Ptr10 + 4974] & BaseObjBit_FLAG_Immune_to_MeleePenalty ? 0 : Const_Melee_Fight_Time_by_Melee_Attack // defined in header_common.tpc
+			v[Ptr10 + 4780] = v[1240] * v[4571]
+			// "############↓?"
+			v[720] = v[210] + 120
+			v[629] = v[210] + 29
+			v[874] = v[210] + 274
 			// "############Melee Auto Attack################"
-
+			// "Log"
 			// "Auto Attack SP Cost"
-			agent_SP = agent_SP - agent_AACost
-			agent_SP = max(agent_SP, 0)
+			v[708] = v[708] - v[721]
+			TT1 = v[210] + 108
+			v[TT1] = max(v[708], 0)
 
 			/* Access19 = AttackerObjectID 0~
 			Access20 = TargetObjectID 1~
 			Access18 = ObjTypeチェックPtr*/
+			v[711] = Ptr10
+			v[607] = v[711] + 4707
+			v[v[607]].copy v[607], 2
 			// Effect
 			v[376] = 0
 			s[166].off
@@ -74,6 +74,8 @@ __fn agent_autoattack_melee {
 				v[376] = 4
 				v[181] += 1
 				@if v[181] <= 6 {
+						v[844] = Ptr9 
+						v[844] += 4944
 						@loop v[1017] .dst Temp20 {
 							v[244] %= v[1199]
 							TT11 = v[244] * 50 
@@ -94,12 +96,12 @@ __fn agent_autoattack_melee {
 									v[TT11 + 26] = max(100, 75 + agent_ProcessAD >> 2) //v[Ptr9 + 4809] / 4)
 									// "Set Dire"
 									TT5 = TT11 + 27
-									v[TT5] = 13 + agent_Direction * 6
+									v[TT5] = 13 + v[v[844]] * 6
 									// "けす処理をLinkedFuncに入れる"
 									TT5 = TT11 + 10
 									// "XY set"
 									TT17 = TT11 + 6
-									victim_RelativeX.copy v[361], 2
+									v[607].copy v[361], 2
 									v[361] += rnd(-3, 3)
 									v[362] += rnd(-5, 5)
 									v[361].copy v[TT17], 2
@@ -122,7 +124,7 @@ __fn agent_autoattack_melee {
 							// "#########################"
 							v[472] = divmul(65, 100, v[2216])
 							v[473] = rnd(80, 105)
-							v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
+							v[474] = divmul(v[607] + v[1001], v[1281], 50)
 							inputstr .asg "weapons\swing"
 							inputstr .cat v[329]
 							TT1 = 510
@@ -135,10 +137,11 @@ __fn agent_autoattack_melee {
 				}
 				
 			}
-			
 			@if s[167] .isOff() {
 				//var1 = Ptr19
 				func_bs_melee_hit_check(Ptr19 Ptr20)
+				v[607] = Ptr10 + 4707
+				v[v[607]].copy v[607], 2
 			} .else bl {
 				reg1 = 1 //if target is STATIC, won't miss
 			}
@@ -158,8 +161,8 @@ __fn agent_autoattack_melee {
 							// "Give V vector"
 							@if v[reg2] == shieldbash_time {
 									// "#Set Dash/Knockback"
-									victim_MovementOrder = 4
-									victim_KnockBackTimer = v[reg2]
+									v[Ptr10 + 4942] = 4
+									v[Ptr10 + 4949] = v[reg2]
 									/*// "###############
 									速度べくとるを作る
 									###############"*/
@@ -198,7 +201,7 @@ __fn agent_autoattack_melee {
 						}
 						/* "###########Shield Bash End###########"*/
 						// "#SP damage#A hit causes 4 SP loss"
-						victim_SP = max(victim_SP - 4, 0)
+						v[Ptr10 + 4808] = max(v[Ptr10 + 4808] - 4, 0)
 						// "#CheckCrit"
 						// "Var1 = Obj 1~V[421] = ダメージ倍率"
 						var1 = Ptr19
@@ -208,15 +211,15 @@ __fn agent_autoattack_melee {
 						TT2 = agent_ProcessCrit + least_crit_melee - v[Ptr10 + 4939]
 						TT1 = rnd(0, 99)
 						// "#CritDamageReduction#(450-[Reduction])%"
-						TT3 = 450 - victim_CritDamageReduction
+						TT3 = 450 - v[Ptr10 + 4940]
 						// "#[Crit]%でフラグ"
 						@if TT2 >= TT1 {
 							// "Set jump Timer"
-							victim_DodgeTimer = 6
+							v[Ptr9 + 4785] = 6
 							v[421] = TT3
 					
 						} .else bl {
-							v[421] = 100 + (agent_PerkFlagBits1 & PerkFlagBits1_FLAG_Backstab && agent_Direction == victim_Direction ? 40 : 0) + (agent_PerkFlagBits1 & PerkFlagBits1_FLAG_UnseenThreat && agent_ProcessObjBit & BaseObjBit_FLAG_Ambushing ? 70 : 0) //BackStabber and Ambush
+							v[421] = 100 + (agent_PerkFlagBits1 & PerkFlagBits1_FLAG_Backstab && agent_Direction == v[Ptr10 + 4944] ? 40 : 0) + (agent_PerkFlagBits1 & PerkFlagBits1_FLAG_UnseenThreat && agent_ProcessObjBit & BaseObjBit_FLAG_Ambushing ? 70 : 0) //BackStabber and Ambush
 					
 						}
 						
@@ -224,14 +227,11 @@ __fn agent_autoattack_melee {
 						v[421] = 100
 						
 				}
-				
-				// copyback victim data here once
-				copyback_victim_data(Ptr11)
 				// "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃ここそのうち用意した関数に置き換える＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"
 				// get Atker AA parameters
 				Temp1 = agent_ProcessAD
-				Temp2 = agent_AA_ARorMR
-				Temp3 = agent_AAElement
+				Temp2= agent_AA_ARorMR
+				Temp3= agent_AAElement
 				// "AABits"
 				var9 = agent_AABits & ~v[4812]
 				v[422] = 0
@@ -240,29 +240,32 @@ __fn agent_autoattack_melee {
 				// ################################################
 				//You need to re-extract agent parameters!
 				// ################################################
-				v[v[210]].copy Address_agent_array_head, 301 //Atker
-				v[Ptr11].copy victim_AgentType, agent_Basic_Array_size // copy victim data to victim buffer
 
 				// "Effect"
 				@if s[166] .isOn() {
-						TT2 = agent_ProcessObjBit & BaseObjBit_FLAG_Immune_to_bleed ? 999999 : v[1138]
+						v[874] = v[210] + 274
+						TT2 = v[v[874]] & BaseObjBit_FLAG_Immune_to_bleed ? 999999 : v[1138]
 						@if reg2 >= TT2 {
 							// "Blood stain on 1h weapon"
-							@if `!(agent_ProcessObjBit & BaseObjBit_FLAG_Standard_Bearer) { // not Standard bearer
-									agent_2hweapon_stain += 1
-									agent_2hweapon_stain = min(agent_2hweapon_stain, 12)
+							TT2 = Ptr9 
+							TT2 += 4959
+							@if `!(v[v[874]] & BaseObjBit_FLAG_Standard_Bearer) { // not Standard bearer
+									v[TT2 + 26] = min(v[TT2 + 26] + 1, 12)
 									
 							}
 							s[141].on
 							@if v[181] <= 4 {
-									victim_RelativeX.copy v[361], 2
+									v[711] = Ptr10
+									v[607] = v[711] + 4707
+									v[v[607]].copy v[607], 2
+									v[607].copy v[361], 2
 									v[182] += 1
 									// "#Get melee weapon effect"
-									TT1 = agent_AASfx % 10000
-									v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
+									v[829] = v[Ptr9 + 4829] % 10000
+									v[474] = divmul(v[607] + v[1001], v[1281], 50)
 									@loop 1 {
 								// "Common"
-								@if TT1 == 0 {
+								@if v[829] == 0 {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(50, 110)
@@ -272,7 +275,7 @@ __fn agent_autoattack_melee {
 										
 								}
 								// "Swords"
-								@if TT1 == 1 {
+								@if v[829] == 1 {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(80, 120)
@@ -283,7 +286,7 @@ __fn agent_autoattack_melee {
 										
 								}
 								// "Axe/Cleavers"
-								@if TT1 == 2 {
+								@if v[829] == 2 {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(50, 75)
@@ -293,7 +296,7 @@ __fn agent_autoattack_melee {
 										
 								}
 								// "Spear/Piercing"
-								@if TT1 == 3 {
+								@if v[829] == 3 {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(83, 110)
@@ -303,7 +306,7 @@ __fn agent_autoattack_melee {
 										
 								}
 								// "Pike"
-								@if TT1 == 4 {
+								@if v[829] == 4 {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(72, 82)
@@ -313,7 +316,7 @@ __fn agent_autoattack_melee {
 										
 								}
 								// "Siege Ram"
-								@if TT1 == 100 {
+								@if v[829] == 100 {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(83, 100)
@@ -326,13 +329,17 @@ __fn agent_autoattack_melee {
 									}
 									
 									// "Get MaxHP of the victim"
-									TT3 = victim_MaxHP / 10
+									TT3 = Ptr10 + 4805
+									TT3 = v[TT3] / 10
 									TT2 = rnd(0, 9)
 									// "if the damage amount is higher than 10% of max HP of the victim more likely bleed effect happens"
 									TT2 += TT3 < reg2 ? 3 : 0
 									TT2 *= v[243] < v[1124] ? 1 : 0
 									@if TT2 >= 8 {
-										v[372] = (victim_BaseObjBit & 4096) ? 1 : 0
+										v[372] = Ptr10 + 4840
+										v[372] = (v[v[372]] & 4096) ? 1 : 0
+										//s[141].on
+										//@call .cev 111
 										//set blood variation - mini_blood_damage_threshold is defined in module_core_RTS_main_effects_gib_functions.tpc 
 										var4 = reg2 >= mini_blood_damage_threshold ? 0 : 1
 										func_call_mini_blood_f_effect(v[361] v[362] v[372] var4)
@@ -345,64 +352,69 @@ __fn agent_autoattack_melee {
 					@if v[181] <= 4 {
 							v[182] += 1
 							// "#Get melee weapon effect"
-							TT1 = agent_AASfx % 10000
+							v[829] = v[Ptr9 + 4829] % 10000
 						// "Common"
-						v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
-						@if TT1 == 0 {
+						@if v[829] == 0 {
 								// "#########################"
 								v[472] = divmul(70, 100, v[2216])
 								v[473] = rnd(115, 170)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
 								@cmd 11550, "重いパンチ2", .args v[472], 3
 								// "#########################"
 								@break
 								
 						
 						// "Swords"
-						}.elif TT1 == 1 {
+						}.elif v[829] == 1 {
 								// "#########################"
 								v[472] = divmul(70, 100, v[2216])
 								v[473] = rnd(90, 110)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
 								@cmd 11550, "weapons\Sword_Slash_01", .args v[472], 3
 								// "#########################"
 								@break
 								
 						
 						// "Axe/Cleavers"
-						}.elif TT1 == 2 {
+						}.elif v[829] == 2 {
 								// "i don't like this, maybe change later"
 								// "#########################"
 								v[472] = divmul(70, 100, v[2216])
 								v[473] = rnd(90, 110)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
 								@cmd 11550, "weapons\Sword_heavy_slash_01", .args v[472], 3
 								// "#########################"
 								@break
 								
 						
 						// "Spear/Piercing"
-						}.elif TT1 == 3 {
+						}.elif v[829] == 3 {
 								// "#########################"
 								v[472] = divmul(70, 100, v[2216])
 								v[473] = rnd(90, 110)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
 								@cmd 11550, "weapons\Spear_stab_armor", .args v[472], 3
 								// "#########################"
 								@break
 								
 						
 						// "Pike"
-						}.elif TT1 == 4 {
+						}.elif v[829] == 4 {
 								// "#########################"
 								v[472] = divmul(70, 100, v[2216])
 								v[473] = rnd(90, 100)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
 								@cmd 11550, "weapons\pike_stab_armor", .args v[472], 3
 								// "#########################"
 								@break
 								
 						
 						// "Siege Ram"
-						}.elif TT1 == 100 {
+						}.elif v[829] == 100 {
 								// "#########################"
 								v[472] = divmul(70, 100, v[2216])
 								v[473] = rnd(83, 100)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
 								@cmd 11550, "RTP\earth5", .args v[472], 3
 								// "#########################"
 								@break
@@ -416,20 +428,9 @@ __fn agent_autoattack_melee {
 						}
 						
 				}
-
-
-				// save again
-
-					agent_ObjectType.copy v[Ptr1], 300//save, never change atker agent parameters after this
-
-
-
-
-
-
 				// "##################"
 				// "Trample Damage"
-				@if `agent_AABits & AABits_FLAG_Trample {
+				@if `v[Ptr9 + 4824] & AABits_FLAG_Trample {
 						s[162].on
 						@if v[217] < v[4559] {
 							v[217] += 1
@@ -490,9 +491,8 @@ __fn agent_autoattack_melee {
 						}
 						
 				}
-
 				// "Blade Dance"
-				@if `agent_AABits & AABits_FLAG_BladeDance {
+				@if `v[Ptr9 + 4824] & AABits_FLAG_BladeDance {
 						var1 = 1243
 						var2 = Ptr19
 						func_bs_register_buff_with_time(1243 Ptr19 bladedance_time)
@@ -513,47 +513,56 @@ __fn agent_autoattack_melee {
 			} .else bl {
 				// "Miss!"
 				// "#SP damage#Evading costs 2 SP"
-				victim_SP -= 2
-				victim_SP = max(victim_SP, 0)
-
-				// set relX to effect var
-				victim_RelativeX.copy v[221], 2
+				TT10 = Ptr10 
+				TT10 += 4808
+				v[TT10] = max(v[TT10] - 2, 0)
+				v[607].copy v[221], 2
 				@if reg2 == 1 {
 						// "Shield Blocked!"
 						// "##############CheckBits##############"
 						// "Shield Cracking"
+						v[824] = Ptr9 + 4824
+						v[824] = v[v[824]]
 						reg3 = 0
-						@if `agent_AABits & AABits_FLAG_CrackingShield {
+						@if `v[824] & AABits_FLAG_CrackingShield {
 							// "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"
-							@if `victim_PerkFlagBits1 & 1 {
-									TT1 = muldiv(victim_ShieldBreakResistance, 130, 100)
+							TT1 = v[Ptr10 + 4934]
+							@if `v[Ptr10 + 4765] & 1 {
+									TT1 = muldiv(TT1, 130, 100)
 									
 							}
 							// "＃＃＃＃＃＃＃＃＃＃Chance Roll＃＃＃＃＃＃＃＃＃＃"
-							reg1 = agent_ProcessAD / 3
-							reg1 *= agent_AABits & AABits_FLAG_CrackingShieldBONUS ? 2 : 1
+							TT2 = Ptr9
+							TT2 += 4960
+							// "#そのうち処理作る"
+							TT2 += 1
+							reg1 = v[TT2] / 3
+							reg1 *= v[824] & AABits_FLAG_CrackingShieldBONUS ? 2 : 1
 							
+							v[824] = v[Ptr9 + 4824]
 							// "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"
 							TT3 = rnd(0, reg1)
 							@if TT3 >= TT1 {
 									reg3 = 1
 									// "#バフ番号指定"
-									copyback_victim_data(Ptr11)
-									func_bs_register_buff_with_time(1258,Ptr20,shieldcrack_time)
-									v[Ptr11].copy victim_AgentType, agent_Basic_Array_size // copy victim data to victim buffer
+									var1 = 1258
+									var2 = Ptr20
+									
+									func_bs_register_buff_with_time(1258 Ptr20 shieldcrack_time)
 									
 							}
 							
 						}
 						@if s[166] .isOn() {
 							// "Set ShieldMotion Timer"
-							victim_ShieldMotionTimer = 6
+							TT1 = Ptr10 + 4783
+							v[TT1] = 6
 							@if reg3 == 0 {
 									@if v[182] <= 2 {
 								// "#########################"
 								v[472] = divmul(60, 100, v[2216])
 								v[473] = rnd(115, 120)
-								v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
 								@cmd 11550, "weapons/shield_hit", .args v[472], 3
 								// "#########################"
 								
@@ -574,7 +583,7 @@ __fn agent_autoattack_melee {
 												v[TT11 + 49] = 3
 												v[TT11 + 3] = 160
 												TT1 = TT11 + 6
-												victim_RelativeX.copy v[TT1], 2
+												v[607].copy v[TT1], 2
 												v[244] += 1
 												@break
 												
@@ -587,7 +596,7 @@ __fn agent_autoattack_melee {
 										// "#########################"
 										v[472] = divmul(78, 100, v[2216])
 										v[473] = rnd(87, 100)
-										v[474] = divmul(vvictim_RelativeX + v[1001], v[1281], 50)
+										v[474] = divmul(v[607] + v[1001], v[1281], 50)
 										@cmd 11550, "weapons/shield_cracked01", .args v[472], 3
 										// "#########################"
 										
@@ -595,11 +604,15 @@ __fn agent_autoattack_melee {
 									
 							}
 							// "Call Shield"
-							victim_ShieldFlash = victim_MainShieldID > 0 ? 4 : 0
+							TT2 = Ptr10 + 4952
+							v[TT2 + 32] = v[TT2] > 0 ? 4 : 0
 							// "#Shield Motion"
-							@if victim_ActionState != 1 {
-									victim_ActionState = 2
-									victim_AATimer += victim_AATimer < 1 ? 140 : 0
+							TT2 = Ptr10 
+							TT2 += 4943
+							@if v[TT2] != 1 {
+									v[TT2] = 2
+									TT2 -= 215
+									v[TT2] += v[TT2] < 1 ? 140 : 0
 									
 							}
 							@if s[307] .isOff() {
@@ -629,7 +642,7 @@ __fn agent_autoattack_melee {
 												.affectedByFlash
 												.affectedByShake
 										}
-										v[222] = victim_RelativeY - 24
+										v[222] = v[608] - 24
 										v[222] += s[162] == 1 ? 10 : 0
 										@pic[v[223]].move {
 												.pos v[221], v[222] .center
@@ -650,7 +663,7 @@ __fn agent_autoattack_melee {
 						@if reg2 == 2 {
 							@if s[166] .isOn() {
 									// "Set ShieldMotion Timer"
-									victim_ShieldMotionTimer = 6
+									v[Ptr10 + 4783] = 6
 									@if v[182] <= 3 {
 										// "#########################"
 										@if v[522] < 50 {
@@ -658,7 +671,7 @@ __fn agent_autoattack_melee {
 												// "#########################"
 												v[472] = divmul(60, 100, v[2216])
 												v[473] = rnd(100, 130)
-												v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
+												v[474] = divmul(v[607] + v[1001], v[1281], 50)
 												inputstr .asg "weapons\sword_clash_"
 												inputstr .cat v[329]
 												TT1 = 510
@@ -695,7 +708,7 @@ __fn agent_autoattack_melee {
 													.affectedByFlash
 													.affectedByShake
 												}
-												v[222] = victim_RelativeY - 24
+												v[222] = v[608] - 24
 												v[222] += s[162] == 1 ? 10 : 0
 												@pic[v[223]].move {
 													.pos v[221], v[222] .center
@@ -709,11 +722,8 @@ __fn agent_autoattack_melee {
 										}
 										
 									}
-
-									// final save upon using shield
-									copyback_victim_data(Ptr11)
 									// "#"
-									@if `victim_ProcessObjBit & BaseObjBit_FLAG_Duelist_Activated { // Duelist
+									@if `v[Ptr10 + 4974] & BaseObjBit_FLAG_Duelist_Activated { // Duelist
 										// "#バフ番号指定"
 										func_bs_register_buff_with_time(1243 Ptr20 bladedance_time)
 								
@@ -725,21 +735,20 @@ __fn agent_autoattack_melee {
 							
 						} .else bl {
 							// "Set Dodge Timer"
-							victim_DodgeTimer = 8
+							v[Ptr10 + 4785] = 8
 							@if s[166] .isOn() {
 									@if v[181] <= 1 {
 										@if v[522] < 25 {
 												// "#########################"
 												v[472] = divmul(25, 100, v[2216])
 												v[473] = rnd(80, 120)
-												v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
+												v[474] = divmul(v[607] + v[1001], v[1281], 50)
 												@cmd 11550, "evade2", .args v[472], 3
 												// "#########################"
 												
 										}
 								
 									}
-									
 									@if s[307] .isOff() {
 										@if `v[183] < v[4572] / 2 {
 												// "#描画範囲内か？"
@@ -767,7 +776,7 @@ __fn agent_autoattack_melee {
 													.affectedByFlash
 													.affectedByShake
 												}
-												v[222] = victim_RelativeY - 24
+												v[222] = v[608] - 24
 												v[222] += s[162] == 1 ? 10 : 0
 												@pic[v[223]].move {
 													.pos v[221], v[222] .center
@@ -783,7 +792,7 @@ __fn agent_autoattack_melee {
 									}
 									
 							}
-							copyback_victim_data(Ptr11) // save upon dodge
+							
 						}
 						
 				}
@@ -848,7 +857,7 @@ __fn agent_autoattack_ranged {
 					v[Ptr1].copy agent_ObjectType, 300 //deploy atk agent para
 					var1 = agent_SP - agent_AACost
 					agent_SP = max(var1,0)
-					agent_ObjectType.copy v[Ptr1], 300 //save, never change atker agent parameters after this
+					agent_ObjectType.copy v[Ptr1], 300//save, never change atker agent parameters after this
 					
 					// "#親Objと対象Objをセット"
 					//v[609] = Ptr19
@@ -904,7 +913,7 @@ __fn agent_autoattack_ranged {
 					//v[v[210] + 80] = v[1240] * v[4571] / 2
 					agent_InCombatTimer = v[1240] * v[4571]
 					agent_InCombatTimer /= 2
-					agent_ObjectType.copy v[Ptr1], 300 //save
+					agent_ObjectType.copy v[Ptr1], 300//save
 					
 						} .else bl {
 					s[202].on
@@ -1069,6 +1078,9 @@ cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
 				TT2 += TT3 < reg2 ? 3 : 0
 				TT2 *= v[243] < v[1124] ? 1 : 0
 				@if TT2 >= 8 {
+						v[711] = Ptr10
+						v[607] = v[711] + 4707
+						v[v[607]].copy v[607], 2
 						//s[141].on
 						v[372] = v[Ptr10 + 4840] & 4096 ? 1 : 0
 						//@call .cev 111
