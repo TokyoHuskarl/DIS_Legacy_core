@@ -79,7 +79,9 @@ __fn macro_get_agent_MetaTeam_into_var $agentid $getvar {
 
 
 */
-
+__fn copyback_victim_data {
+	victim_AgentType.copy v[Ptr11], agent_Basic_Array_size
+}
 __fn macro_set_agent_AI_decision_Sub_WEP_Type $AAusage  {
 	var1 = $AAusage
 	var1 = [AI_decision_bits_FLAG_Sub_WEP_is_Melee,AI_decision_bits_FLAG_Sub_WEP_is_Ranged,AI_decision_bits_FLAG_Sub_WEP_is_Magic][var1]

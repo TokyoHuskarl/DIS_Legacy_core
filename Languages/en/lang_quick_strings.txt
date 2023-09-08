@@ -57,7 +57,7 @@ Defeat... Press [Tab] key to end the battle.
 LMB:Toggle Description RMB:Unequip
 LMB:Toggle Description RMB:Equip, Ctrl+RMB:Equip to reserve, Alt+RMB:Discard
 This unit cannot take off equipment on the part!
-Open System Menu(Esc)^Unlocking Mouse.
+\c[8]Open System Menu(Esc)^\c[0]Opening system menu unlocks mouse as well.
 LMB:Toggle Description RMB:Toggle AI casting
 LMB:パラメータ成長
 LMB:Toggle　RMB+Alt:Fire [Num]:Assign into the numbering group
@@ -317,7 +317,7 @@ Combined Units
 \c[\v[342]]\t[\v[330]]\c[0] took \v[21]Damage.
 Classic Island
 A little bit random Island
-Fuggin big island
+Super big island
 Insanely big island map.^You must pay attention to control vision, or easily get wrecked!
 Arena
 Build your internal affairs in a fortress surrounded by forests, and withstand the siege attacks.^It's up to you whether to strike out from the walls for further development or continue to hold out.^Enemies come from all sides. The balance may be off against non-Sushinese opponents.^It might be easy depending on your playstyle and chosen faction.^There are (almost) no achievements.^\c[5]Also, it may lag in the end, so if you're not confident in your specs, it's recommended to turn off the overlay setting.
@@ -433,7 +433,7 @@ I'm idle.
 \c[16]Boring..
 \c[1]Gyao Gyao
 \c[8]Select idle worker unit([.] or MOUSE4)^\c[1]There's no idle worker unit.
-\c[8]Select idle worker unit([.] or MOUSE4)^\c[0]Jump to an idle worker unit.
+\c[8]Select idle worker unit([.] or MOUSE4)^\c[0]Jump to an idle worker unit.^You can select all idle worker units by using this command with\c[17]holding down [Ctrl].
 \c[8]Toggle battle log([L])
 Toggle Classic Title
 Condition：Unlock "Merkmal of the late antiquity" achievement
@@ -455,14 +455,14 @@ Construction cancelled.
 Terrain Effect:\c[17]Water Terrain^\c[5]EVA-25%^\c[5]MS-50%
 Terrain Effect:\c[5]Bad Terrain^\c[5]MS-40%
 Terrain Effect:\c[1]Suitable Terrain^\c[1]MS+30%
+Terrain Effect:\c[5]Cavalry in forest^\c[5]MS-40%
 
 
 
 
 
 
-
-
+Do you really restart this stage?
 \c[17]AD\c[0]-\c[17]Attack Damage^\c[0] Mainly affects the physical attack power of a weapon. ^Also related to the damage of physical attack skills. ^Note that it only represents the power of a single hit.
 \c[16]AP\c[0]-\c[16]Ability Power^\c[0]Mainly affects the effectiveness of magic. ^Having higher AP means that your magic is more powerful. ^On the other hand, if the unit does not use magic, it is meaningless no matter how high it is.
 \c[6]MR\c[0]-\c[6]Magic Registance^\c[0] Mainly relates to the reduction rate of magic attacks received. ^Unlike AR, it is not damaged by incoming attacks, but it does not cover HP.
@@ -482,8 +482,19 @@ Terrain Effect:\c[1]Suitable Terrain^\c[1]MS+30%
 \c[10]Tactic\c[0]: Observation Order Possible
 \c[10]Synergy Effect\c[0] - Shield Cover^This unit is protected by the shields of surrounding units.^\c[1]Base EVA+6^\c[1]Gain Ranged Evasion Bonus^\c[2]Further Enhance Shield Wall Effect＊＊
 
-Current Recovery Amount＊＊
-Current Parameter＊＊
+Current Recovery Amount
+Current Parameter
+\c[\v[341]]\t[\v[340]]\c[0]^^^^^R-Hand:^L-Hand:^Armor:^Helm:^Acc.:^R-Sub:^L-Sub:^Lv.\v[704] ^^^\c[1]HP:\c[0]\v[706]/\v[705]\c[0] \c[10]SP:\c[0]\v[708]/\v[707]\c[0]^$A\c[17]Attack Damage:\c[0]\v[709]\c[5] Attack Speed:\c[0]\v[719]^	 \c[5]Attack Range:\c[0]\v[345]\c[0] \c[5]Hit:\c[0]\v[713] ^	 \c[5]AR.Pen.:\c[0]\v[737]% \c[5]AR.Eff.:\c[0]\v[346]%^	 \c[14]Critical Chance:\c[0]\v[715]%^$B\c[3]Armor\c[0]:\v[711]/\v[738] \c[3]Evasion:\c[0]\v[714]^	 Critical Chance Reduction:-\v[839]%^	 Critical Damage Reduction:-\v[840]%^$C\c[16]Ability Power:\c[0]\v[710] \c[6]Magic Resist:\c[0]\v[712] ^$DMove Speed:\v[716] \c[0]Will:\c[0]\v[739]^^^Q:\t[501]^W:\t[502]^E:\t[503]^R:\t[504]
+\c[2]\t[503]\c[0] \t[504]^\c[17]Damage:\c[0]\v[1902] \c[5]AR.Pen.:\c[0]\v[1904]% \c[5]AR.Dam.:\c[0]\v[1943]%^\c[5]Hit:\c[2]+\v[1905]\c[0] \c[14]Crit:\c[2]+\v[1906]%\c[0] \c[5]Range:\c[0]\v[1944]^\c[5]AS:\c[0]\v[1910] \c[10]SpCost:\c[17]\v[1912]\c[0] \c[10]Max.Sp:\c[17]-\v[1919]\c[0]^\c[1]Weapon Skill:\c[0][\t[506]]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]
+\c[2]\t[503]\c[0] \t[504]^\c[3]EVA:\c[2]+\v[1902]\c[0] Durability.:\v[1904]^\c[10]Max.Sp:\c[17]-\v[1919]\c[0]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]^
+\c[2]\t[503]\c[0] \t[504]^\c[0]AR:\c[0]:\c[2]\v[1902]\c[0] \c[6]MR:\c[2]+\v[1903]\c[0]^\c[3]Bonus EVA:\c[2]+\v[1905]\c[0]^\c[10]Max.Sp:\c[17]-\v[1919]\c[0]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]
+\c[2]\t[503]\c[0] \t[504]^CritDamageReduction:\c[2]-\v[1907]%\c[0]^CritChanceReduction:\c[2]-\v[1908]%\c[0]^\c[6]MR:\c[2]+\v[1903]\c[0]^\c[5]Ranged Hit Penalty:\c[17]-\v[1918]\c[0]^\c[10]Max.Sp:\c[17]-\v[1919]\c[0] \c[10]SpReg.Penalty:\c[17]-\v[1920]\c[0]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]
+\c[2]\t[503]\c[0] \t[504]^\c[0]AR:\c[0]:\c[2]\v[1902]\c[0] \c[6]MR:\c[2]+\v[1903]\c[0]^\c[3]Bonus EVA:\c[2]+\v[1905]\c[0]^\c[10]Max.Sp:\c[17]-\v[1919]\c[0]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]
+\c[2]\t[503]\c[0] \t[504]^\c[1]Additional HP:\c[2]+\v[1911]\c[0] \c[3]Additional Armor(AR):\c[2]+\v[1902]\c[0]^Movement Speed Bonus:\c[2]+\v[1913] \c[0] ^\c[3]Avoid Penalty:\c[5]\v[1905]\c[0]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]
+\c[2]\t[503]\c[0] \t[504]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]
+\c[\v[341]]\t[\v[340]]\c[0]^^^^^R-Hand:^L-Hand:^Armor:^Helm:^Acc.:^R-Sub:^L-Sub:^Lv.\v[704] ^Total XP:\v[1957] XP to next Lv:\v[1958]^^\c[1]HP:\c[0]\v[706]/\v[705]\c[0] \c[10]SP:\c[0]\v[708]/\v[707]\c[0]^$A\c[17]Attack Damage:\c[0]\v[709]\c[5] Attack Speed:\c[0]\v[719]^	 \c[5]Attack Range:\c[0]\v[345]\c[0] \c[5]Hit:\c[0]\v[713] ^	 \c[5]AR.Pen.:\c[0]\v[737]% \c[5]AR.Eff.:\c[0]\v[346]%^	 Base Melee Hit:\v[836] Base Ranged Hit:\v[837]^	 \c[14]Critical Chance:\c[0]\v[715]%^$B\c[3]Armor\c[0]:\v[711]/\v[738] \c[3]Evasion:\c[0]\v[714]^	 Critical Chance Reduction:-\v[839]%^	 Critical Damage Reduction:-\v[840]%^$C\c[16]Ability Power:\c[0]\v[710] \c[6]Magic Resist:\c[0]\v[712] ^$DMove Speed:\v[716] \c[0]Will:\c[0]\v[739]^Q:\t[501]^W:\t[502]^E:\t[503]^R:\t[504]
+ [AutoCast]
 \c[2]SYSTEM:\c[0] Quick Mode Started.
 \c[2]SYSTEM:\c[0] Quick Mode Stopped.
-
+Invested Pt. \v[356]
+Perk Pt. \v[356]

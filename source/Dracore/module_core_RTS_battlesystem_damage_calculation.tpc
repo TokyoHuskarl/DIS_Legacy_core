@@ -4,10 +4,6 @@ def  damage_base_morale_check = 15
 #include "./../preset_databases/particles/module_psp_particle_register.tpc"
 
 
-__fn copyback_victim_data {
-	victim_AgentType.copy v[Ptr11], agent_Basic_Array_size
-}
-
 
 __fn func_damage_calculation {
 	/* Access19 = AttackerObjectID 1~ +4700
@@ -62,16 +58,15 @@ __fn func_damage_calculation {
 		v[190] = argv_damage_attribution
 		// "#ダメージポップカラーもみておく"
 		LEGV_PopColour = argv_damage_cal_type
-		Ptr10 = Ptr20 * agent_Basic_Array_size
-		Ptr11 = Ptr10 + 4701
+		Ptr10 = Ptr20 * agent_Basic_Array_size // victimID * 300
+		Ptr11 = Ptr10 + 4701 // Ptr to victim data
 
 		v[Ptr11].copy victim_AgentType, agent_Basic_Array_size // copy victim data to victim buffer
 		
 
-		Ptr9 = Ptr19 * agent_Basic_Array_size
-		v[607] = Ptr10 + 4707
-		v[v[607]].copy v[607],2
-
+		Ptr9 = Ptr19 * agent_Basic_Array_size // attackID * 300
+		Ptr1 = Ptr9 + 4701 // Ptr to atker data
+		v[Ptr1],copy agent_AgentType, agent_Basic_Array_size
 
 		// Temp2 is calculation type
 		@if Temp2 == 2 { // TRUE DAMAGE
@@ -84,7 +79,7 @@ __fn func_damage_calculation {
 			// "102にARかMRを取得"
 			//var1 = Ptr20
 			var2 = SLOT_CURRENT_AR + Temp2
-			macro_get_agent_slot_to_r1(Ptr20 var2)
+			macro_get_agent_slot_to_r1(Ptr20 var2) // can be removed
 			
 			// "#Indomitable"
 			reg1 += victim_PerkFlagBits1 & PerkFlagBits1_FLAG_Indomitable ? victim_ProcessWill : 0
@@ -131,7 +126,7 @@ __fn func_damage_calculation {
 			
 			@if LEGV_PopColour > -1 { // 224 = popcolour
 					// "#Get AReff/pen#if the damage is magical, set both 0"
-					agent_AA_AR_effectiveness = LEGV_PopColour == 0 ? Ptr9 + 4836 : 1301
+					agent_AA_AR_effectiveness = LEGV_PopColour == 0 ? agent_AA_AR_effectiveness : 1301
 					v[agent_AA_AR_effectiveness].copy agent_AA_AR_effectiveness, 2
 					// "#If Crit, AR pen gets amplified"
 					agent_AA_AR_penetration = min(agent_AA_AR_penetration * (damage_multiplier > 200 ? 2 : 1), 100)
@@ -194,7 +189,7 @@ __fn func_damage_calculation {
 				// "#If the victim has no target obj AND is in the alert stance AND not civs nor static, then try to target the attacker"
 						@if victim_TargetAgentID == 0 {
 								@if `!(victim_AI_routine_bits & 1) {
-									victim_TargetAgentID = victim_TeamID != v[Ptr9 + 4800] && victim_StanceOrder == 0 && victim_MovementOrder != 3 ? Ptr19 : 0
+									victim_TargetAgentID = victim_TeamID != agent_TeamID && victim_StanceOrder == 0 && victim_MovementOrder != 3 ? Ptr19 : 0
 							
 								}
 								
@@ -229,7 +224,7 @@ __fn func_damage_calculation {
 		// ----------------------------
 
 		// damage popup
-		v[607].copy v[221], 2
+		victim_RelativeX.copy v[221], 2
 		v[225] = damage_multiplier
 		// "#描画範囲内か？"
 		@if LEGS_DmgCalAtker_can_be_seen .isOn() {
@@ -240,12 +235,7 @@ __fn func_damage_calculation {
 			@if v[2218] == 0 {
 					@call .cev 1924
 					TT1 = 2
-					v[601] = 1
-					TT15 = Ptr20 * 300 
-					TT15 += 4801
-					v[701] = v[TT15]
-					v[700] = TT15 - 1
-					TT2 = [10, 5, 8, 1][v[v[700]]]
+					TT2 = [10, 5, 8, 1][victim_TeamID]
 					v[330] = v[4562] + Ptr20
 					@pic[v[1155]].strpic {
 						t[20307]
@@ -277,7 +267,7 @@ __fn func_damage_calculation {
 			@if `victim_PerkFlagBits1 & PerkFlagBits1_FLAG_Ninelives {
 					victim_PerkFlagBits1 &= -2049 //~2048 - kill ninelives available flag
 					victim_HP = rnd(80, 100) // set random slight HP
-					copyback_victim_data() // copy back to the agent data before setting ninelives buff, since the buff register function below directory add to the data memory array
+					copyback_victim_data(Ptr11) // copy back to the agent data before setting ninelives buff, since the buff register function below directory add to the data memory array
 					func_bs_register_buff_with_time(1173,Ptr20,DIS_Game_FPS*3) // give the buff for 3secs
 
 
@@ -299,7 +289,7 @@ __fn func_damage_calculation {
 								v[v[331] + 9] = Ptr20
 								// "普通にアニメ"
 								TT1 = v[331] + 6
-								v[607].copy v[TT1], 2
+								victim_RelativeX.copy v[TT1], 2
 								// "Colour"
 								v[0] = v[v[331] + 31..v[331] + 38] = [150, 150, 0, 90, 150, 150, 0, 60]
 								// "仕上げに登録消す"
@@ -314,7 +304,7 @@ __fn func_damage_calculation {
 					@if LEGS_DmgCalVictim_can_be_seen .isOn() {
 						v[472] = divmul(85, 100, v[2216])
 						v[473] = 100
-						v[474] = divmul(v[607] + v[1001], v[1281], 50)
+						v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
 						@se.play "Raise3" .opt v[472], v[473], v[474]
 				
 					}
@@ -322,12 +312,10 @@ __fn func_damage_calculation {
 			} .else bl {
 					// "Increment Attacker TroopID KillCount"
 					//if not static
-					@if `v[Ptr19 * 300 + 4800] < 11 {
-						v[v[1259] + (v[Ptr9 + 4801] - 1) * 4 + 1 + v[Ptr9 + 4758] * v[1260] * 4] += 1
+					@if agent_ObjectType < 11 {
+						v[v[1259] + (agent_UnitID - 1) * 4 + 1 + agent_SaveActualTeamID * v[1260] * 4] += 1
 					}
 
-					// "#Get Attacker Perks2"
-					v[665] = Ptr9 + 4766 
 					// "#####################Fatality Check"
 					// "#At least you need 85 dmg to cause fatality"
 					var1 = 0
@@ -335,7 +323,7 @@ __fn func_damage_calculation {
 					@if reg2 >= 85 {
 						TT1 = reg2 / 15
 						// "#Critical Quadruple the possibility#Headhunter gives additional bonus"
-						TT1 *= (v[665] & 8 ? 1 : 0) + (damage_multiplier >= 200 ? 4 : 1)
+						TT1 *= (agent_PerkFlagBits2 & 8 ? 1 : 0) + (damage_multiplier >= 200 ? 4 : 1)
 						// "ROLL!"
 						var1 = TT1 >= rnd(1, 100)// ? 1 : 0 //opt
 						
@@ -344,20 +332,31 @@ __fn func_damage_calculation {
 
 
 					
-					copyback_victim_data() // copy back victim data - this might not be needed in near future
+					copyback_victim_data(Ptr11) // copy back victim data - this might not be needed in near future
 
-					// "Element"
-					var2 = v[190]
-					// "#####################Call Command Preparation"
-					v[472] = 0
-					v[473] = 41
-					v[474] = 16
-					v[471] = 12330
-					@cmd v[471], "", .args v[472], 3 // call kill event via @cmd 
+					// before killing!
+					@if agent_PerkFlagBits2 > 0 { //atker perk2
 
-					@if v[v[665]] > 0 {
+						// "Battle Flow"
+						@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_BattleFlow {
+								// "#gain 18% WeaponSkill CD per kill"
+								agent_Skill1CDtimer -= divmul(agent_Skill1_CD, 100, 18)
+								
+						}
+						// "Berserk"
+						@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_Berserk {
+								// "#regain SP*20% per kill#THIS MIGHT BE TOO STRONG be careful to adjust"
+								agent_SP = min(agent_MaxSP, agent_SP + muldiv(agent_MaxSP, 20, 100))
+								// "#regain HP*8% per kill#THIS MIGHT BE TOO STRONG be careful to adjust"
+								agent_HP = min(agent_MaxHP, agent_HP + muldiv(agent_MaxHP, 8, 100))
+								
+						}
+
+						// refresh atker data
+						func_main_save_agent_vars()
+						// perk checks after re-inserting atker data 
 						// "Killing Frenzy"
-						@if `v[v[665]] & PerkFlagBits2_FLAG_KillingFrenzy {
+						@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_KillingFrenzy {
 								// "#Gain Rage for about 5sec "
 								func_bs_register_buff_with_time(1181 Ptr19 250)
 								// "KF Particle"
@@ -390,27 +389,20 @@ __fn func_damage_calculation {
 								}
 								
 								
-						}
-						// "Battle Flow"
-						@if `v[v[665]] & PerkFlagBits2_FLAG_BattleFlow {
-								// "#gain 18% WeaponSkill CD per kill"
-								v[Ptr9 + 4795] -= divmul(v[Ptr9 + 4848], 100, 18)
-								
-						}
-						// "Berserk"
-						@if `v[v[665]] & PerkFlagBits2_FLAG_Berserk {
-								TT1 = Ptr9 + 4807 
-								v[TT1].copy TT2, 2
-								// "#regain SP*20% per kill#THIS MIGHT BE TOO STRONG be careful to adjust"
-								v[TT1 + 1] = min(v[TT1], v[TT1 + 1] + muldiv(v[TT1], 20, 100))
-								TT1 = Ptr9 + 4805 
-								v[TT1].copy TT2, 2
-								// "#regain SP*20% per kill#THIS MIGHT BE TOO STRONG be careful to adjust"
-								v[TT1 + 1] = min(v[TT1], v[TT1 + 1] + muldiv(v[TT1], 8, 100))
-								
-						}
-						
+						}	
 					}
+
+
+					// "Element"
+					var2 = v[190]
+					// "#####################Call Command Preparation"
+					v[472] = 0
+					v[473] = 41
+					v[474] = 16
+					v[471] = 12330
+					@cmd v[471], "", .args v[472], 3 // call kill event via @cmd 
+
+
 					
 			}
 			
@@ -447,7 +439,7 @@ __fn func_damage_calculation {
 					
 			}
 			// copy back victim data since it's not ovah
-			copyback_victim_data()
+			copyback_victim_data(Ptr11)
 
 
 
@@ -515,7 +507,7 @@ __fn dmg_popup {
 						}
 						reg1 *= -1
 						v[221] += rnd(-14, 14)
-						v[222] = v[608] + rnd(18, 24) - [0, 10][s[162]]
+						v[222] = victim_RelativeY + rnd(18, 24) - [0, 10][s[162]]
 						TT1 = v[225] - 40
 						@pic[v[223]].move {
 								.pos v[221], v[222] .center
@@ -539,7 +531,7 @@ __fn dmg_popup {
 						//var2 = 0
 						//v[607].copy v[361], 2
 						//@call .cev 119
-						set_particle_simple(119 v[607] var1 2)
+						set_particle_simple(119,victim_RelativeX,var1,2)
 						s[141].off
 						
 					}
@@ -609,7 +601,7 @@ __fn dmg_popup {
 								
 						}
 						v[221] += rnd(-14, 14)
-						v[222] = v[608] + rnd(18, 24) - [0, 10][s[162]]
+						v[222] = victim_RelativeY + rnd(18, 24) - [0, 10][s[162]]
 						TT1 = v[225] - 40
 						@pic[v[223]].move {
 							.pos v[221], v[222] .center
@@ -631,10 +623,10 @@ __fn dmg_popup {
 									var1 = min(var1, 30)
 									@if `victim_ProcessObjBit & BaseObjBit_FLAG_Immune_to_bleed {
 										//metal chips
-												set_particle_simple(118 v[607] var1 3)
+												set_particle_simple(118 victim_RelativeX var1 3)
 									}.else{
 										//blood particle
-												set_particle_simple(117 v[607] var1 2)
+												set_particle_simple(117 victim_RelativeX var1 2)
 									}
 									
 								}
@@ -647,7 +639,7 @@ __fn dmg_popup {
 								//v[607].copy v[361], 2
 								//@call .cev 118
 								//Set metal chips 
-								set_particle_simple(118 v[607] var1 3)
+								set_particle_simple(118 victim_RelativeX var1 3)
 								
 						}
 						s[141].off
@@ -697,7 +689,7 @@ __fn dmg_popup {
 								
 						}
 						v[221] += rnd(-14, 14)
-						v[222] = v[608] + rnd(18, 24) - [0, 10][s[162]]
+						v[222] = victim_RelativeY + rnd(18, 24) - [0, 10][s[162]]
 						TT1 = v[225] - 40
 						@pic[v[223]].move {
 								.pos v[221], v[222] .center
@@ -752,7 +744,7 @@ __fn dmg_popup {
 								
 						}
 						v[221] += rnd(-14, 14)
-						v[222] = v[608] + rnd(18, 24) - [0, 10][s[162]]
+						v[222] = victim_RelativeY + rnd(18, 24) - [0, 10][s[162]]
 						TT1 = v[225] - 40
 						@pic[v[223]].move {
 								.pos v[221], v[222] .center

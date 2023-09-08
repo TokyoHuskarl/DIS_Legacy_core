@@ -111,6 +111,7 @@ struct("agent",{
 	agent_InCombatTimer = 680
 	agent_MeleeFightTimer = 681 
 	agent_HitMoveTimer = 682
+	agent_ShieldMotionTimer = 683
 	agent_ActionTimer = 684
 
 	agent_DodgeTimer = 685
@@ -156,7 +157,7 @@ struct("agent",{
 	agent_AACost = 721
 	agent_AA_ARorMR=722
 	agent_AAElement=723
-	agent_AABits=724
+	agent_AABits = 724
 	agent_AddMotionBits = 725
 	agent_ExMotionFlags = 726
 
@@ -174,6 +175,8 @@ struct("agent",{
 	//agent_MaxAR = 738
 	agent_BaseWill = 739
 	agent_BaseObjBit = 740
+	agent_Qskill_CD = 748
+
 
 
 	agent_Passive_Text = 821 // this maybe can be relocated into AEBA
@@ -190,6 +193,7 @@ struct("agent",{
 	agent_Ammo = 832 //0x00(Max Ammo of Sub Weapon)0x00(CurrentAmmo of Sub Weapon)0x00(Max Ammo of Current Weapon)0x00(current Ammo of Sub Weapon) 
 	agent_ShieldType = 833
 	agent_ShieldBreakResistance = 834
+	agent_RHitAndMHit = 836
 
 	agent_CritChanceReduction = 839
 	agent_CritDamageReduction = 840
@@ -239,6 +243,7 @@ struct("agent",{
 	agent_ProcessCamoValue = 876
 	agent_ProcessInstantState = 877
 	
+	agent_ShieldFlash = 884
 	agent_2hweapon_stain = 885
 	agent_FlashType = 895
 	agent_OneTimeOffsetX = 896
@@ -553,19 +558,25 @@ struct("agent",{
 
 		address_victim_buffer_head = 740000
 		victim_AgentType = 740001
+		victim_RelativeX = 740007
+		victim_RelativeY = 740008
 		victim_TargetAgentID = 740018
 		victim_MapX = 740026
 		victim_MapY = 740027
+		victim_AATimer = 740028
 		victim_AI_routine_bits = 740034
 		victim_Cohort_ID = 740035
 		victim_MoveTypeBIts = 740038
-
+		victim_getTerrainElevation = 740064
 		victim_Race = 740064
 		victim_PerkFlagBits1 = 740065
 		victim_PerkFlagBits2 = 740066	
 
 		victim_InCombatTimer = 740080
+		victim_MeleeFightTimer = 740081
 		victim_HitMoveTimer = 740082
+		victim_ShieldMotionTimer = 740083
+		victim_DodgeTimer = 740085
 
 		victim_TeamID = 740100
 		victim_UnitID = 740101
@@ -613,10 +624,17 @@ struct("agent",{
 		victim_BaseObjBit = 740140
 
 		victim_TakenDamageMultiplier = 740229
+		victim_ShieldBreakResistance = 740234
+		victim_CritDamageReduction = 740240
 		victim_StanceOrder = 740241
 		victim_MovementOrder = 740242
-
+		victim_MovementOrder = 740242
+		victim_ActionState = 740243
+		victim_Direction = 740244
+		victim_TacticsOrderFlag = 740248
+		victim_KnockBackTimer = 740249
 		
+		victim_MainShieldID = 740252
 
 		victim_Morale = 740260
 		victim_ProcessAD = 740261
@@ -636,7 +654,7 @@ struct("agent",{
 		victim_ProcessWill = 740275
 		victim_ProcessCamoValue = 740276
 		victim_ProcessInstantState = 740277
-
+		victim_ShieldFlash = 740284
 		victim_R = 740291
 		victim_G = 740292
 		victim_B = 740293
