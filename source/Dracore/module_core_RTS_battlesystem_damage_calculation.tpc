@@ -66,7 +66,7 @@ __fn func_damage_calculation {
 
 		Ptr9 = Ptr19 * agent_Basic_Array_size // attackID * 300
 		Ptr1 = Ptr9 + 4701 // Ptr to atker data
-		v[Ptr1],copy agent_AgentType, agent_Basic_Array_size
+		v[Ptr1].copy agent_AgentType, agent_Basic_Array_size
 
 		// Temp2 is calculation type
 		@if Temp2 == 2 { // TRUE DAMAGE
@@ -125,8 +125,8 @@ __fn func_damage_calculation {
 
 			
 			@if LEGV_PopColour > -1 { // 224 = popcolour
-					// "#Get AReff/pen#if the damage is magical, set both 0"
-					agent_AA_AR_effectiveness = LEGV_PopColour == 0 ? agent_AA_AR_effectiveness : 1301
+					// "#Get AReff/pen #if the damage is magical, set both 0"
+					agent_AA_AR_effectiveness = LEGV_PopColour == 0 ? __id(agent_AA_AR_effectiveness) : 1301
 					v[agent_AA_AR_effectiveness].copy agent_AA_AR_effectiveness, 2
 					// "#If Crit, AR pen gets amplified"
 					agent_AA_AR_penetration = min(agent_AA_AR_penetration * (damage_multiplier > 200 ? 2 : 1), 100)
@@ -340,7 +340,7 @@ __fn func_damage_calculation {
 						// "Battle Flow"
 						@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_BattleFlow {
 								// "#gain 18% WeaponSkill CD per kill"
-								agent_Skill1CDtimer -= divmul(agent_Skill1_CD, 100, 18)
+								agent_Skill1CDtimer -= divmul(agent_skill1_CD, 100, 18)
 								
 						}
 						// "Berserk"
@@ -353,7 +353,7 @@ __fn func_damage_calculation {
 						}
 
 						// refresh atker data
-						func_main_save_agent_vars()
+						save_agent_vars(Ptr1)
 						// perk checks after re-inserting atker data 
 						// "Killing Frenzy"
 						@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_KillingFrenzy {
@@ -400,8 +400,9 @@ __fn func_damage_calculation {
 					v[473] = 41
 					v[474] = 16
 					v[471] = 12330
-					@cmd v[471], "", .args v[472], 3 // call kill event via @cmd 
-
+					@cmd v[471], "", .args v[472], 3 // call kill event via @cmd! 
+					v[Ptr1].copy agent_AgentType, agent_Basic_Array_size
+					
 
 					
 			}
@@ -413,11 +414,11 @@ __fn func_damage_calculation {
 					// "#below 50%"
 					@if `victim_HP > victim_MaxHP / 2 { // recover to normal sprite variation
 						@if `(victim_ExMotionFlags & 98304) == 98304 {
-							victim_ExMotionFlags &= -65536//~65536
+							victim_ExMotionFlags &= ~ExMotionFlags_FLAG_HeadNotYetDamaged 
 							
 						}
 						@if `(victim_ExMotionFlags & 24576) == 24576 {
-							victim_ExMotionFlags &= -16385//~16384
+							victim_ExMotionFlags &= ~ExMotionFlags_FLAG_ArmorNotYetDamaged
 							
 						}
 						
@@ -426,12 +427,12 @@ __fn func_damage_calculation {
 			} .else bl { // recover to normal sprite variation
 					// "#upper 50%"
 					@if `victim_HP > victim_MaxHP / 2 {
-						@if `(victim_ExMotionFlags & 98304) == 32768 {
-								victim_ExMotionFlags |= 65536
+						@if `(victim_ExMotionFlags & 98304) == 32768 { // body (head part) damaged..
+								victim_ExMotionFlags |= ExMotionFlags_FLAG_HeadNotYetDamaged
 								
 						}
-						@if `(victim_ExMotionFlags & 24576) == 8192 {
-								victim_ExMotionFlags |= 16384
+						@if `(victim_ExMotionFlags & 24576) == 8192 { // armor damaged...
+								victim_ExMotionFlags |= ExMotionFlags_FLAG_ArmorNotYetDamaged
 								
 						}
 				
@@ -454,7 +455,7 @@ __fn func_damage_calculation {
 			var2 *= v[Ptr9 + 4974] & 2048 ? 2 : 1
 			*/
 
-			var2 = min((((reg2 / 8) + damage_base_morale_check) * v[Ptr9 + 4974] & PerkFlagBits1_FLAG_Fearsome ? 2 : 1), 100)
+			var2 = min((((reg2 / 8) + damage_base_morale_check) * agent_ProcessObjBit & BaseObjBit_FLAG_Cause_Demoralizing ? 2 : 1), 100)
 			func_bs_morale_check(Ptr20 var2)
 			// "Morale Check End################"
 		}
@@ -617,7 +618,7 @@ __fn dmg_popup {
 						v[247] += 1
 						@if reg2 >= 1 {
 								// "#Not Magical Element"
-								@if Temp3 < 3 {
+								@if argv_damage_attribution < 3 {
 									// "#Blood"
 									var1 = reg2 / 15
 									var1 = min(var1, 30)

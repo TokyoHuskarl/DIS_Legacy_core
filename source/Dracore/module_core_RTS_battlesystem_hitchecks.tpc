@@ -13,12 +13,20 @@ __fn macro_extract_units_parameters {
 
 }
 
-
+// common
 __fn func_bs_melee_hit_check $attacker $victim {
 	Ptr9 = $attacker * 300
 	Ptr10 = $victim * 300
 
 	macro_extract_units_parameters()
+
+	func_bs_melee_hit_check_wo_prep()
+
+}
+
+
+// already got agent datas on agent buffer/victim buffer
+__fn func_bs_melee_hit_check_wo_prep {
 
 	@if agent_Direction == victim_Direction {//back attack!
 	    s[164].on

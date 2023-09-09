@@ -51,9 +51,9 @@ struct("agent",{
 	agent_AttackDelay = 630
 	agent_LastTarget = 631
 	agent_TileLink = 632
-	agent_AI_decision_bits=633
-	agent_AI_routine_bits=634
-	agent_Cohort_ID=635
+	agent_AI_decision_bits = 633
+	agent_AI_routine_bits = 634
+	agent_Cohort_ID = 635
 
 
 	agent_SpriteX = 636
@@ -175,7 +175,7 @@ struct("agent",{
 	//agent_MaxAR = 738
 	agent_BaseWill = 739
 	agent_BaseObjBit = 740
-	agent_Qskill_CD = 748
+	agent_skill1_CD = 748
 
 
 
@@ -392,6 +392,7 @@ struct("agent",{
 	BaseObjBit_FLAG_Immune_to_MeleePenalty = 128
 	BaseObjBit_FLAG_No_mind = 256
 	BaseObjBit_FLAG_Fleeing = 512
+	BaseObjBit_FLAG_Cause_Demoralizing = 2048
 	BaseObjBit_FLAG_Immune_to_bleed = 4096
 	BaseObjBit_FLAG_ShieldBash = 8192
 
@@ -407,6 +408,9 @@ struct("agent",{
 
 	ExMotionFlags_FLAG_have_AA_CD_Spr = 1
 	ExMotionFlags_FLAG_no_fatigue = 2048
+	ExMotionFlags_FLAG_ArmorNotYetDamaged = 16384
+	ExMotionFlags_FLAG_HeadNotYetDamaged = 65536
+	ExMotionFlags_FLAG_horseback = 16777216
 	agent_ExMotionFlags_FLAG_horseback = 16777216
 
 
@@ -558,25 +562,45 @@ struct("agent",{
 
 		address_victim_buffer_head = 740000
 		victim_AgentType = 740001
+		victim_AgentBits = 740003
 		victim_RelativeX = 740007
 		victim_RelativeY = 740008
+		victim_Morton = 740009
+		victim_Width = 740010
+		victim_Height = 740011
+		victim_MilPixVx = 740012
+		victim_MilPixVy = 740013
+		victim_MilPixVab = 740014
+
 		victim_TargetAgentID = 740018
 		victim_MapX = 740026
 		victim_MapY = 740027
 		victim_AATimer = 740028
 		victim_AI_routine_bits = 740034
 		victim_Cohort_ID = 740035
-		victim_MoveTypeBIts = 740038
-		victim_getTerrainElevation = 740064
+		victim_MoveTypeBits = 740038
+		victim_ColDimension = 740039
+		victim_getTerrainElevation = 740057
+		victim_SaveActualTeamID = 740058
+		victim_Skin = 740063 // 0=Rtpian, 1=Nord, 2= Azghazi, 6= female ...This parameter is for UserCharactors
 		victim_Race = 740064
 		victim_PerkFlagBits1 = 740065
 		victim_PerkFlagBits2 = 740066	
+
+		victim_Buff1 = 740071
+
+		victim_BuffAmount = 740079
+
+
+
+
 
 		victim_InCombatTimer = 740080
 		victim_MeleeFightTimer = 740081
 		victim_HitMoveTimer = 740082
 		victim_ShieldMotionTimer = 740083
 		victim_DodgeTimer = 740085
+		victim_BuffTimer1 = 740086
 
 		victim_TeamID = 740100
 		victim_UnitID = 740101
@@ -602,7 +626,7 @@ struct("agent",{
 
 		victim_AAMotion = 740120
 		victim_AACost = 740121
-		victim_AA_ARorMR=740122
+		victim_AA_ARorMR = 740122
 		victim_AAElement=740123
 		victim_AABits=740124
 		victim_AddMotionBits = 740125
@@ -622,18 +646,19 @@ struct("agent",{
 		//victim_MaxAR = 740138
 		victim_BaseWill = 740139
 		victim_BaseObjBit = 740140
-
+		victim_Culture_Icon = 740222
 		victim_TakenDamageMultiplier = 740229
 		victim_ShieldBreakResistance = 740234
+		victim_CritChanceReduction =  740239
 		victim_CritDamageReduction = 740240
 		victim_StanceOrder = 740241
-		victim_MovementOrder = 740242
 		victim_MovementOrder = 740242
 		victim_ActionState = 740243
 		victim_Direction = 740244
 		victim_TacticsOrderFlag = 740248
 		victim_KnockBackTimer = 740249
 		
+		victim_ForceSprite = 740250
 		victim_MainShieldID = 740252
 
 		victim_Morale = 740260
@@ -646,6 +671,7 @@ struct("agent",{
 		victim_ProcessCrit = 740267
 		victim_ProcessMS = 740268
 		victim_ProcessRange_max = 740269
+
 		victim_ProcessRange_min = 740270
 		victim_ProcessAS = 740271
 		victim_ProcessHPreg = 740272
@@ -655,10 +681,17 @@ struct("agent",{
 		victim_ProcessCamoValue = 740276
 		victim_ProcessInstantState = 740277
 		victim_ShieldFlash = 740284
+		victim_2hweapon_stain = 740285
+		victim_LastPictureIndex = 740290 
 		victim_R = 740291
 		victim_G = 740292
 		victim_B = 740293
 		victim_FlashType = 740295
+		victim_PictArray = 740299
+
+
+		victim_DEAD_beheadTimerEnd = 740288
+		victim_DEAD_HeadAngleV = 740289
 	}
 
 	//Skill var for attack check
