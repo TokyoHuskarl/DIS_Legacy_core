@@ -35,10 +35,50 @@ cev .id(40) .name("BattleSystemFunc:Damage Cal"){
 //kill/retreat/disband agent
 #include "./module_core_RTS_battlesystem_remove_agent.tpc"
 
+sname[213], "Remove some agent", bl
+defs CallDeathManager = 213
+defv DeathPtr = 4841
+
+
+cev .id(cevID_Agent_Remove_Manager), .name("AgentDeathManager") ,.parallel, .cond(__id(CallDeathManager)),{
+
+	// "Land Units"
+
+	// maybe you should rather make death list I guess..
+	// MAKE UP DEAD MEN'S INFO!
+	DeathPtr = v[4532] 
+	@while v[DeathPtr] != 0 {
+	    Temp1 = v[DeathPtr] * v[1117] 
+	    Temp1 += 4701
+	    v[Temp1].copy v[601], 300
+	    @if `v[603] & AgentBits_FLAG_KILLED {
+		//v[603] &= ~AgentBits_FLAG_KILLED
+		// Damage Amount - 
+		//
+		//
+		//
+		Ptr20 = v[DeathPtr]
+		Kill_Agent()
+		
+	    }
+	    //"++"
+	    DeathPtr += 1
+	    
+	}
+	CallDeathManager.off
+}
+
+//Kill
+cev .id(41), .name("BattleSystemFunc:Kill Agent"),{
+	Kill_Agent()
+}
+
+
 //Morales
 cev .id(1192) .name("BS_MoraleFunc:Morale Recover"),{
 	func_bs_morale_recover(var1 var2)
 }
+
 cev .id(1193) .name("BS_MoraleFunc:Morale Check"),{
 	func_bs_morale_check(var1 var2)
 }

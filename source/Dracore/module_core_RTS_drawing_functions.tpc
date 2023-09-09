@@ -31,17 +31,30 @@ __fn function_set_agent_picture $agentid $stringvar $slot {
 	t[TT2].asg t[__id($stringvar)]
 }
 
+// victim_ExMotionFlags victim_AddMotionBits
 __fn fuction_drawing_set_grid {
-//in this function you can use v[725] and v[726] pointer to get bits flag 
+	/*
 	v[4102] = Const_head_spr_gridX //grid X
 	v[4122] = Const_head_spr_gridY //grid Y
-	@if `v[726] & 512 {
+	@if `agent_ExMotionFlags & 512 {
 		v[4101] = 7
 		v[4107] = 7 // this one can be removed everywhere not drawing sector - use meta if
 	}
-	v[4121] = v[725] & 1 ? 2 : 1
-}
+	v[4121] = agent_AddMotionBits & 1 ? 2 : 1
+	*/
 
+	drawing_set_grid_raw(agent_ExMotionFlags,agent_AddMotionBits)
+}
+__fn drawing_set_grid_raw $Exmotion $Addmotion {
+	//in this function you can use v[725] and v[726] pointer to get bits flag 
+	v[4102] = Const_head_spr_gridX //grid X
+	v[4122] = Const_head_spr_gridY //grid Y
+	@if `$Exmotion & 512 {
+		v[4101] = 7
+		v[4107] = 7 // this one can be removed everywhere not drawing sector - use meta if
+	}
+	v[4121] = $Addmotion & 1 ? 2 : 1
+}
 
 __fn function_agent_init_set_picture_strs{
 	var1 = Const_str_agent_pictures_strings_start + v[201] * 10

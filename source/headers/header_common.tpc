@@ -54,10 +54,11 @@ def {
 
 
 //Entity General Const Setting
+
+defv Team_Player_ResourcesHead = 300001
 def {
 
 	//Array_Head = Array[0] has element, Array_Start = Array[0] doesn't have actual element (design flaw!)
-
 	Team_Variables_Array_Size = 40
 	Const_Team_Address_FactionID_Array_Head = 2403
 
@@ -99,6 +100,9 @@ defv {
 //load old switches and variables name as defv or defs 
 #include "./id_project_defs.tpc"
 #include "./id_project_defv.tpc"
+//you can use TRP_ consts as well
+#include "./id_project_troops.tpc"
+
 
 
 #include "./header_log.tpc"
@@ -207,7 +211,7 @@ def {
 
 
 
-
+	Adr_PixelBufferHead = 550445
 
 
 

@@ -1533,33 +1533,41 @@ cev .id(1790), .name("@Init Database") , {
 
 
 	// LOAD FACTION TEMPLATE
+	t[803].asg ""
 	v[4574] = 18700
 	t[510] .asg  .file "..\data\data_factiontemplates", .utf8, .extract
 	t[510] .split "*/", t[509], TT1
-	@if t[511] .eq "" {
-			@loop TT3 .dst var1 {
-					var2 = 3000 + var1
-					t[var2] .split ",", t[3301], TT2
-					@if t[3301] .contains "=" {
-							t[803] .cat "FAC_"
-							t[803] .cat t[3301]
-							t[803] .cat LF
-							
-					}
-					
-			}
+	@if t[510] .neq "" {
+		t[510] .split LF, t[v[4574]], TT3
+		@loop TT3 .dst var1 {
+				var2 = v[4574] + var1
+				t[var2] .split ",", t[3301], TT2
+				@if t[3301] .neq "" { // id found
+						t[803] .cat "FAC_"
+						t[803] .cat t[3301]
+						t[803] .cat "="
+						TT1 = var1
+						t[803] .cat TT1
+						t[803] .cat LF
+						
+				}
+				
+		}
+		
+		t[511] .asg  .file "..\scripts\const_factions_id", .utf8
+		@if t[511] .neq t[803] {
+				t[803] .toFile "..\scripts\const_factions_id", .utf8
+				@wait 0
+				
+		}
+		@wait 0
 			
-			t[511] .asg  .file "..\scripts\const_factions_id", .utf8
-			@if t[511] .neq t[803] {
-					t[803] .toFile "..\scripts\const_factions_id", .utf8
-					@wait 0
-					
-			}
-			@wait 0
-			
+	}.else bl {
+		func_errlog("Faction templates missing.")	
 	}
-	t[510] .split LF, t[v[4574]], TT1
 	t[3000..3500] .asg ""
+
+	// set faction languages
 	t[511] .asg PATH_language .extract
 	t[511] .cat Str_LanguagePath
 	t[511] .cat "lang_factions"
