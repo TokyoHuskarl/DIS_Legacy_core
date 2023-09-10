@@ -32,7 +32,7 @@ __fn macro_parabolic_projectile_cal_angle $v $l {
 		TT7 = TT6 + TT5
 		TT8 = TT6 - TT5
 
-		//TT6 =  360000000 + v[348]
+		//TT6 =  360000000 + TT8
 		//TT6 = TT5 - TT2 
 		func_math_pseud_arctan(TT8)
 		reg1 += 90000000
@@ -41,7 +41,7 @@ __fn macro_parabolic_projectile_cal_angle $v $l {
 		//cannot reach the goal with given parameters!
 		reg2 = -1
 	}
-	func_devlog("cal proc: v1:\v[341] v2:\v[342]  v4:\v[344] v5:\v[345] v6 chosen:\v[346], (\v[347],\v[348])")
+	func_devlog("cal proc: v1:\TT1 v2:\TT2  v4:\TT4 v5:\TT5 v6 chosen:\TT6, (\TT7,\TT8)")
 
 
 
@@ -61,8 +61,8 @@ __fn func_effect_arrow_init $selfid {
 	    // "描画終了時イベント番号設定"
 	    effect_LinkedFunc = cevid_func_erase_effect
 	    // set parents and targets - these vars handed down from ranged_shoot function
-	    effect_ParentObject = Ptr19//v[299]
-	    effect_TargetObject = Ptr20//v[300]
+	    effect_ParentObject = Ptr19//Ptr19
+	    effect_TargetObject = Ptr20//Ptr20
 	    effect_DirWhenShot = agent_Direction//v[637]
 	    
 	    effect_Timer = 400 //Arrows can exist only for 400 frames... just in case if the gravity won't work well
@@ -105,21 +105,21 @@ __fn func_effect_arrow_init $selfid {
 		effect_HitBonus = arrow_base_hit
 	    }
 	    effect_Distance_to_goal /=1000 
-	    func_devlog("cal return: Distance: \v[4020]pix Angle: \v[21]mildegree vz:\v[4042]")
+	    func_devlog("cal return: Distance: \v[4020]pix Angle: \reg1mildegree vz:\v[4042]")
 
 	    effect_2DAngle = atan2(effect_milPixVy,effect_milPixVx,1000)
 	    TT2 = muldiv(effect_milPixVab,cos(effect_Angle,1000000,1000),1000)
 	    effect_milPixVx = muldiv(TT2,cos(effect_2DAngle,1000,1000),1000)
 	    effect_milPixVy = muldiv(TT2,sin(effect_2DAngle,1000,1000),1000)
-	    func_devlog("XY 2d vector: v0:\v[4014] vx:\v[4012] vy:\v[4013] angle:\v[341]")
+	    func_devlog("XY 2d vector: v0:\v[4014] vx:\v[4012] vy:\v[4013] angle:\TT1")
 
-	    effect_EffectType.copy v[v[301]], EffectArraySize
+	    effect_EffectType.copy v[Temp1], EffectArraySize
 }
 
 __fn func_effect_arrow_proc $arrowPictString {
 
 
-    v[v[301]].copy effect_EffectType, EffectArraySize
+    v[Temp1].copy effect_EffectType, EffectArraySize
     effect_RelativeX.copy effect_SavedPositionX,2
     @if effect_Timer > 1 {
 
@@ -139,7 +139,7 @@ __fn func_effect_arrow_proc $arrowPictString {
 	    effect_RelativeX.copy TT1,2
 	    TT1.sub effect_SavedPositionX,2
 	    TT1.sub v[53],2 //angle  cal without cam diff 
-	    effect_Angle = atan2(v[342], v[341], 1000) +360000
+	    effect_Angle = atan2(TT2, TT1, 1000) +360000
 
 
 
@@ -159,10 +159,10 @@ __fn func_effect_arrow_proc $arrowPictString {
 	    v[__id(effect_RelativeX)..__id(effect_RelativeY)] /= 1000
     }
 
-    effect_EffectType.copy v[v[301]], EffectArraySize
+    effect_EffectType.copy v[Temp1], EffectArraySize
 	// "Draw"
-	v[310] = v[241] + v[1220]
-	@pic[v[310]].show {
+	Temp10 = v[241] + v[1220]
+	@pic[Temp10].show {
 	    $arrowPictString
 	    .pos effect_RelativeX, effect_RelativeY .center
 	    .scrollWithMap
@@ -186,115 +186,115 @@ __fn func_effect_arrow_proc $arrowPictString {
 __fn func_effect_arrow_hit $WeaponType {
 
 	// "Leave Arrow Picture"
-	//v[v[301]] = 1
+	//v[Temp1] = 1
 	// "エフェクト処理から呼び出される"
-	//v[341] = v[301] + 8
-	//v[342] = v[301] + 22
+	//TT1 = Temp1 + 8
+	//TT2 = Temp1 + 22
 	/* "Access19 = AttackerObjectID	Access20 = TargetObjectID Access18 = TargetObjTypeチェックPtr"*/
 	Ptr20 = effect_TargetObject
 	Ptr10 = Ptr20*300
-	v[298] = Ptr10 + 4701
+	Ptr18 = Ptr10 + 4701
 	// "TargetObjが存在している"
-	@if v[v[298]] >= 1 {
+	@if v[Ptr18] >= 1 {
 	    // "処理開始"
 	    // "#着弾点ゲット"
 	    //ignore Z
 	    effect_ArrowHitX.copy v[607], 2
 
 	    // "#対象のx,y,width,heightゲット"
-	    v[310] = v[298] + 6
-	    v[v[310]].copy TT1, 2
+	    Temp10 = Ptr18 + 6
+	    v[Temp10].copy TT1, 2
 	    TT1.copy TT3, 2
-	    v[312] = v[298] + 9
-	    v[v[312]].copy TT5, 2
+	    Temp12 = Ptr18 + 9
+	    v[Temp12].copy TT5, 2
 	    TT1.sub TT5,2
 	    TT3.add TT5,2
 
 	    // "#当たり判定チェック"
 	    //`between(v[607], TT1, TT3) && between(v[608], TT2, TT4)
-	    @if v[607]>=TT1{ @if v[607]<=TT3{ @if v[608]>=TT2{ @if v[608]<=TT4{//just box check
+	    @if v[607]>=TT1{ @if v[607]<=TT3{ @if v[608]>=TT2{ @if v[608]<=TT4{ //just box check. This looks awful but faster in RM proc 
 		Ptr19 = effect_ParentObject
-		Ptr9 = Ptr19*300
+		Ptr9 = Ptr19 * 300
 		s[167].off
 		@if `v[Ptr10 + 4701] == UNIT_CLASS_STATIC {
 		    s[167].on
 		    
 		}
 		//set EffFlag
-		TT1 = v[301]+69
+		TT1 = Temp1 + 69
 		v[TT1] |= Arrow_Flag_Checked
 		v[TT1] &= -2//~Arrow_Flag_Check_Hit
 
 		v[Ptr10 + 4780] = v[1240] * v[4571]
 		// "Get difference of elevationTemp20"
-		v[320] = v[Ptr9 + 4757] - v[v[298] + 56]
-		v[11] = v[299]
+		Temp20 = v[Ptr9 + 4757] - v[Ptr18 + 56]
+		var1 = Ptr19
 		// "Get Dir"
 		@if s[167] .isOff() {
 		    //9.3.23
 
 		    //get effect_DirectionWhenShoot
-		    var3 = v[301] + 36
+		    var3 = Temp1 + 36
 		    var3 = v[var3]
 		    //get effect_HitBonus
-		    var4 = v[301] + 97
+		    var4 = Temp1 + 97
 		    var4 = v[var4]
 		    //@call .cev 43
-		    func_bs_ranged_hit_check(v[299] v[300] var3 bs_hitcheck_FLAG_ArrowMode var4)
+		    func_bs_ranged_hit_check(Ptr19 Ptr20 var3 bs_hitcheck_FLAG_ArrowMode var4)
 		    v[607] = Ptr10 + 4707
 		    v[v[607]].copy v[607],2
 		} .else bl {
-		    v[21] = 1
+		    reg1 = 1
 		    
 		}
-		@if v[21] == 1 {
+		@if reg1 == 1 {
 		    Var_bs_WeaponType = $WeaponType //arrow
 		    // "Hit!"
 		    // "#CheckCrit"
 		    // "Var1 = Obj 1~V[421] = ダメージ倍率"
 		    @if s[167] .isOff() {
-			v[11] = v[299]
-			v[15] = Ptr10 + 4700
+			var1 = Ptr19
+			var5 = Ptr10 + 4700
 			// "#Crit率ゲット"
 			// "#3-CritReduction"
-			v[342] = v[v[11] * 300 + 4815] + 2 - v[v[15] + 239]
-			v[341] = rnd(0, 99)
+			TT2 = v[var1 * 300 + 4815] + 2 - v[var5 + 239]
+			TT1 = rnd(0, 99)
 			// "#CritDamageReduction#(450-[Reduction])%"
-			v[343] = 450 - v[v[15] + 240]
+			TT3 = 450 - v[var5 + 240]
 			// "#[Crit]%でフラグ"
-			v[421] = v[342] >= v[341] ? v[343] : 100
+			v[421] = TT2 >= TT1 ? TT3 : 100
 			
 		    } .else bl {
 			v[421] = 100
 			
 		    }
 		    // "#Elevation Bonus"
-		    v[421] += 10 * v[320]
+		    v[421] += 10 * Temp20
 		    /* "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
 	ここそのうち用意した関数に置き換える
 	＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"*/
 		    // "ADを取得"
-		    /*v[11] = v[299]
-		    v[12] = 1
+		    /*var1 = Ptr19
+		    var2 = 1
 		    @call .cev 2004*/
-		    macro_get_agent_slot_to_r1(v[299] SLOT_CURRENT_AD)
-		    v[301] = v[21]
+		    macro_get_agent_slot_to_r1(Ptr19 SLOT_CURRENT_AD)
+		    Temp1 = reg1
 		    // "ARかMRか取得"
 		    v[722] = Ptr9
 		    v[722] += 4822
-		    v[302] = v[v[722]]
+		    Temp2 = v[v[722]]
 		    // "射撃属性"
-		    v[303] = 1
+		    Temp3 = 1
 		    // "AABits"
-		    v[19] = v[722] + 2
-		    v[19] = v[v[19]]
+		    var9 = v[722] + 2
+		    var9 = v[var9]
 		    //@call .cev 40
 		    func_damage_calculation()
 		    // "############"
 		    // "Effect"
 		    // "#あたったので演出チェック"
-		    @if `s[v[300] + 500] == 1 {
-			@if v[21] == v[22] {
+		    @if `s[Ptr20 + 500] == 1 {
+			@if reg1 == reg2 {
 			    // "Red Flash"
 			    v[376] += v[182] < 5 ? 1 : 0
 			    @if v[376] >= 2 {
@@ -304,27 +304,27 @@ __fn func_effect_arrow_hit $WeaponType {
 				v[472] = divmul(60, 100, v[2216])
 				v[473] = rnd(90, 110)
 				v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				t[510] .asg "arrow_hit_body_"
-				t[510] .cat v[329]
-				v[341] = 510
-				// "Strings = t[v[341]]"
-				@cmd 11550, t[v[341]], .args v[472], 3
+				inputstr .asg "arrow_hit_body_"
+				inputstr .cat v[329]
+				TT1 = 510
+				// "Strings = t[TT1]"
+				@cmd 11550, t[TT1], .args v[472], 3
 				// "#########################"
 				// "Get MaxHP of the victim"
-                   		v[343] = v[v[342] = Ptr10 + 4805] / 10
-				v[342] = rnd(0, 9)
+                   		TT3 = v[TT2 = Ptr10 + 4805] / 10
+				TT2 = rnd(0, 9)
 				// "if the damage amount is higher than 10% of max HP of the victim more likely bleed effect happens"
-				v[342] += v[343] < v[22] ? 3 : 0
-				v[342] *= v[243] < v[1124] ? 1 : 0
-				@if v[342] >= 8 {
+				TT2 += TT3 < reg2 ? 3 : 0
+				TT2 *= v[243] < v[1124] ? 1 : 0
+				@if TT2 >= 8 {
 				    v[711] = Ptr10
 				    v[607] = v[711] + 4707
 				    v[v[607]].copy v[607], 2
 				    //s[141].on
 				    v[372] = v[Ptr10 + 4840] & 4096 ? 1 : 0
 				    //@call .cev 111
-				    v[14] = v[22] >= mini_blood_damage_threshold ? 0 : 1
-				    func_call_mini_blood_f_effect(v[361] v[362] v[372] v[14])
+				    var4 = reg2 >= mini_blood_damage_threshold ? 0 : 1
+				    func_call_mini_blood_f_effect(v[361] v[362] v[372] var4)
 				    
 				}
 				
@@ -342,17 +342,17 @@ __fn func_effect_arrow_hit $WeaponType {
 			
 		    }
 		    // "Remove Arrow Picture"
-		    //v[310] = v[241] + v[1220]
-		    //@pic[v[310]].erase
+		    //Temp10 = v[241] + v[1220]
+		    //@pic[Temp10].erase
 		    var1 = v[241] + 1
 		    func_erase_effect(var1)
 		    // "#試作#Functionを呼ぶ"
-		    v[295] = Ptr9
-		    v[295] += 4700
-		    v[730] = v[295] + 130
+		    Ptr15 = Ptr9
+		    Ptr15 += 4700
+		    v[730] = Ptr15 + 130
 		    @if v[v[730]] >= 1200 {
-			v[341] = v[295] + 7
-			v[v[341]].copy v[590], 2
+			TT1 = Ptr15 + 7
+			v[TT1].copy v[590], 2
 			@call .cev v[v[730]]
 			
 		    }
@@ -360,8 +360,8 @@ __fn func_effect_arrow_hit $WeaponType {
 		} .else bl {
 		    // "Miss!"
 		    v[607].copy v[221], 2
-		    @if `s[v[300] + 500] == 1 {
-			@if v[22] == 1 {
+		    @if `s[Ptr20 + 500] == 1 {
+			@if reg2 == 1 {
 			    // "Shield Blocked!"
 			    // "#########################"
 			    v[472] = divmul(60, 100, v[2216])
@@ -369,66 +369,70 @@ __fn func_effect_arrow_hit $WeaponType {
 			    v[474] = divmul(v[607] + v[1001], v[1281], 50)
 			    @cmd 11550, "重いパンチ2", .args v[472], 3
 			    // "#########################"
-			    // "Call Shield"
-			    v[342] = Ptr10 + 4952
-			    // "NOT siege ram"
-			    @if `v[v[342] - 123] != 100 {
-				v[v[342] + 32] = v[v[342]] > 0 ? 4 : 0
-				// "#Shield Motion"
-				v[342] = Ptr10 
-				v[342] += 4943
-				@if v[v[342]] != 1 {
-				    v[v[342]] = 2
-				    v[342] -= 215
-				    v[v[342]] += v[v[342]] < 300 ? 900 : 0
-				    
-				}
-				
-			    }
+
 			    @if s[307] .isOff() {
-				@if `v[183] < v[4572] / 2 {
-				    // "#描画範囲内か？"
-				    v[220] = ((v[220]+1)%30)+1201
-				    //9.3.23
-				    //v[220] += 1201
-				    //v[220] += 1
-				    v[223] = v[220]
-				    v[221] += rnd(-6, 6)
-				    v[222] += rnd(-3, 3)
-				    v[222] += s[162] == 1 ? 10 : 0
-				    // "#サイズは最低100%"
-				    v[225] = 100
-				    // "AR"
-				    v[341] = v[1204] - 10
-				    @pic[v[223]].show {
-					"num\num_block"
-					.pos v[221], v[222] .center
-					.scrollWithMap
-					.chromakey 1
-					.scale v[225]
-					.trans v[341]
-					.rgbs 100, 100, 100, 100
-					.mapLayer 7
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
-				    }
-				    v[222] = v[608] - 24
-				    v[222] += s[162] == 1 ? 10 : 0
-				    @pic[v[223]].move {
-					.pos v[221], v[222] .center
-					.scale v[225]
-					.trans 100
-					.time 12
-					.rgbs 100, 100, 100, 100
-				    }
-				    v[183] += v[184] >= v[1128] ? 2 : 1
-				    
-				}
+						TT2 = Ptr10 + 4984
+						@if v[TT2] < 1 { 
+							@if `v[183] < v[4572] / 2 {
+									// "#描画範囲内か？"
+									v[220] = ((v[220] + 1) % 30) + 1201
+									//9.3.23
+									//v[220] += 1201
+									//v[220] += 1
+									v[223] = v[220]
+									v[221] += rnd(-6, 6)
+									v[222] += rnd(-3, 3)
+									v[222] += s[162] == 1 ? 10 : 0
+									// "#サイズは最低100%"
+									v[225] = 100
+									// "AR"
+									TT1 = v[1204] - 10
+									@pic[v[223]].show {
+										PATH_pic_numdir_block
+										.pos v[221], v[222] .center
+										.scrollWithMap
+										.chromakey 1
+										.scale v[225]
+										.trans TT1
+										.rgbs 100, 100, 100, 100
+										.mapLayer 7
+										.eraseWhenTransfer
+										.affectedByFlash
+										.affectedByShake
+									}
+									v[222] = v[608] - 24
+									v[222] += s[162] == 1 ? 10 : 0
+									@pic[v[223]].move {
+										.pos v[221], v[222] .center
+										.scale v[225]
+										.trans 100
+										.time 12
+										.rgbs 100, 100, 100, 100
+									}
+									v[183] += v[184] >= v[1128] ? 2 : 1
+									
+							}
+						}
+			    }
+
+			    // "Call Shield"
+			    TT2 = Ptr10 + 4952
+			    // "NOT siege ram"
+			    @if `v[TT2 - 123] != 100 {
+						v[TT2 + 32] = v[TT2] > 0 ? 4 : 0 // shield flash!
+						// "#Shield Motion"
+						TT2 = Ptr10 
+						TT2 += 4943
+						@if v[TT2] != 1 {
+								v[TT2] = 2
+								TT2 -= 215
+								v[TT2] += v[TT2] < 300 ? 900 : 0
+								
+						}
 				
 			    }
 			    // "Remove Arrow Picture"
-		    	    var1 = v[241] + 1
+		    	var1 = v[241] + 1
 			    func_erase_effect(var1)
 			    
 			} .else bl {
@@ -445,14 +449,14 @@ __fn func_effect_arrow_hit $WeaponType {
 				    // "#サイズは最低100%"
 				    v[225] = 100
 				    // "AR"
-				    v[341] = v[1204] - 10
+				    TT1 = v[1204] - 10
 				    @pic[v[223]].show {
-					"num\num_miss"
+					PATH_pic_numdir_miss
 					.pos v[221], v[222] .center
 					.scrollWithMap
 					.chromakey 1
 					.scale v[225]
-					.trans v[341]
+					.trans TT1
 					.rgbs 100, 100, 100, 100
 					.mapLayer 7
 					.eraseWhenTransfer
@@ -483,7 +487,7 @@ __fn func_effect_arrow_hit $WeaponType {
 	    }}}}
 	    
 	}.else bl{ // Target Obj is already dood
-		TT1 = v[301]+69
+		TT1 = Temp1 + 69
 		v[TT1] |= Arrow_Flag_Checked
 		v[TT1] &= -2//~Arrow_Flag_Check_Hit
 	}
@@ -499,26 +503,26 @@ __fn func_effect_arrow_on_ground $ground_picture $WeaponType {
 	@if effect_Timer == 0 {
 	    //v[422] = 1
 	    v[362] += 11
-	    effect_RelativeX.copy v[11], 2
+	    effect_RelativeX.copy var1, 2
 	    @call .cev 2010
 	    // "WATER"
-	    @if `v[v[4505] + v[23]] & 1 {
-		@pic[v[310]].erase
+	    @if `v[v[4505] + reg3] & 1 {
+		@pic[Temp10].erase
 		// "Bubble Particle"
-		@loop v[1017] .dst v[320] {
+		@loop v[1017] .dst Temp20 {
 		    v[244] %= v[1199]
-		    v[351] = v[244] * 50 + v[1198]
-		    @if v[v[351]] <= 1 {
+		    TT11 = v[244] * 50 + v[1198]
+		    @if v[TT11] <= 1 {
 			// "init"
-			v[1301].copy v[v[351]], 50
-			v[v[351]] = 1
+			v[1301].copy v[TT11], 50
+			v[TT11] = 1
 			// "timer"
-			v[v[351] + 49] = 3
+			v[TT11 + 49] = 3
 			// "Set itself"
-			v[v[351] + 3] = 133
+			v[TT11 + 3] = 133
 			// "set pos"
-			v[341] = v[351] + 6
-			v[607].copy v[v[341]], 2
+			TT1 = TT11 + 6
+			v[607].copy v[TT1], 2
 			v[244] += 1
 			@break
 			
@@ -529,12 +533,12 @@ __fn func_effect_arrow_on_ground $ground_picture $WeaponType {
 		
 		
 	    } .else bl {
-		v[314] = effect_milPixVy+24000
-		v[314] = atan2(v[314], effect_milPixVx, 1000)
-		//v[314] += effect_milPixVy <= 0 ? 90000 : 0
-		//v[314] += 90000
-		//v[314] *= v[314] <= 0 ? -1 : 1
-		@pic[v[310]].show {
+		Temp14 = effect_milPixVy+24000
+		Temp14 = atan2(Temp14, effect_milPixVx, 1000)
+		//Temp14 += effect_milPixVy <= 0 ? 90000 : 0
+		//Temp14 += 90000
+		//Temp14 *= Temp14 <= 0 ? -1 : 1
+		@pic[Temp10].show {
 		    $ground_picture
 		    .pos effect_RelativeX, effect_RelativeY .center
 		    .scrollWithMap
@@ -542,16 +546,16 @@ __fn func_effect_arrow_on_ground $ground_picture $WeaponType {
 		    .scale 100
 		    .trans 0
 		    .rgbs 70, 70, 70, 70
-		    .angle v[314], 1000
+		    .angle Temp14, 1000
 		    .mapLayer 3
 		    .eraseWhenTransfer
 		    .affectedByTint
 		    .affectedByFlash
 		    .affectedByShake
 		}
-		//__if DEBUG_BUILD ==0{v[v[301]]=1}
-		//func_devlog("ground angle\v[314]")
-		v[v[301]]=1
+		//__if DEBUG_BUILD ==0{v[Temp1]=1}
+		//func_devlog("ground angle\Temp14")
+		v[Temp1]=1
 		
 	    }
 
@@ -561,14 +565,14 @@ __fn func_effect_arrow_on_ground $ground_picture $WeaponType {
 
 cev .id(cevid_eff_arrow), .name("effect:arrow"), {
 @if s[141] .isOn() {
-    @loop v[1017] .dst v[320] {
+    @loop v[1017] .dst Temp20 {
 	macro_effect_array_increment_ptr(cevid_eff_arrow)
 	@if v[effect_set_ptr] <= 1 {
 	    func_effect_arrow_init(cevid_eff_arrow)
 	    // "ポインタセット開始"
 	    // "画像"
-	    v[310] = v[242] + v[1220]
-	    @pic[v[310]].show {
+	    Temp10 = v[242] + v[1220]
+	    @pic[Temp10].show {
 		"arrows\arrow"
 		.pos v[361], v[362] .center
 		.scrollWithMap
@@ -597,12 +601,12 @@ cev .id(cevid_eff_arrow), .name("effect:arrow"), {
 		    @cmd v[471], "bow_shoot_01", .args v[472], 3
 		    
 		}
-		v[13] = v[v[295]]
-		v[330] = v[301] + 17
-		v[334] = v[301] + 23
-		v[v[330]].copy v[14], 2
-		v[v[334]].copy v[16], 2
-		//v[18] = v[242]
+		var3 = v[Ptr15]
+		v[330] = Temp1 + 17
+		v[334] = Temp1 + 23
+		v[v[330]].copy var4, 2
+		v[v[334]].copy var6, 2
+		//var8 = v[242]
 
 
 		//Arrow Particle SET
@@ -611,23 +615,23 @@ cev .id(cevid_eff_arrow), .name("effect:arrow"), {
 		// "v2=direction -1=right 0=cent 1=left"
 		// "v3=timer"
 		// "v4=parent"
-		@loop v[1017] .dst v[320] {
+		@loop v[1017] .dst Temp20 {
 		    v[244] %= v[1199]
-		    v[351] = v[244] * 50 
-		    v[351] += v[1198]
-		    @if v[v[351]] <= 1 {
+		    TT11 = v[244] * 50 
+		    TT11 += v[1198]
+		    @if v[TT11] <= 1 {
 			// "まず清掃"
-			v[1301].copy v[v[351]], ParticleArraySize
+			v[1301].copy v[TT11], ParticleArraySize
 			v[1301].copy emitter_ParticleType, ParticleArraySize
 			// "ポインタセット開始"
 			// "設定"
 			emitter_ParticleType = 1002 // ignore first frame
 			// "Timer"
-			emitter_Timer = v[13]
+			emitter_Timer = var3
 			// "Set itself"
 			emitter_CallPartFunc = 171 //new arrow shade!
 			// "Set Amount"
-			//emitter_ParticleAmount = v[11]
+			//emitter_ParticleAmount = var1
 			// "Set Dire"
 			emitter_Angle = effect_2DAngle
 			// "Set Pare"
@@ -636,7 +640,7 @@ cev .id(cevid_eff_arrow), .name("effect:arrow"), {
 			effect_milX.copy emitter_MilX, 4
 			effect_milPixVx.copy emitter_milMilPixVx,6
 			// ""
-			emitter_ParticleType.copy v[v[351]], ParticleArraySize
+			emitter_ParticleType.copy v[TT11], ParticleArraySize
 
 			v[244] += 1
 			@break

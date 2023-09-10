@@ -286,40 +286,34 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //Ptr17 = 53
 	    //Ptr15 = Temp1 + 266
 	    //Ptr14 = Temp1 + 265
+
+			// weapon fall
 	    @if v[865] < v[866] {
-		v[864] += g_perFPS //98000 / 48
-		//v[883] = Temp1 + 261
-		//Ptr16 = Temp1 + 263
-		v[861] .add v[863], 2
-		v[867] += v[868]
-		v[865] += 1
+				v[864] += g_perFPS //98000 / 48
+				v[861] .add v[863], 2
+				v[867] += v[868]
+				v[865] += 1
 		
 	    }
-	    //Ptr15 = Temp1 + 281
 	    @if v[881] != 0 {
-		v[881] = muldiv(v[881], 4, 5)
-		v[882] /= 2
-		v[879] = divmul(v[879] ,17500,10000) 
+				v[881] = muldiv(v[881], 4, 5)
+				v[882] /= 2
+				v[879] = divmul(v[879] ,17500,10000) 
 	    }
-	    //Ptr15 = Temp1 + 274
-	    //Ptr14 = Temp1 + 273
+
+			// shield fall
 	    @if v[873] < v[874] {
-		v[872] += g_perFPS //98000 / 48
-		//Ptr16 = Temp1 + 271
-		//v[883] = Temp1 + 269
-		v[869] .add v[871], 2
-		v[875] += v[876]
-		v[873] += 1
+				v[872] += g_perFPS //98000 / 48
+				v[869] .add v[871], 2
+				v[875] += v[876]
+				v[873] += 1
 		
 	    }
-	    //Ptr16 = Temp1 + 285
-	    //Ptr15 = Temp1 + 288
-	    //Ptr14 = Temp1 + 287
+			
 	    @if v[887] < v[888] {
-		v[886] +=  g_perFPS //98000 / 48
-		//v[883] = Temp1 + 283
-		v[883] .add v[885], 2
-		v[887] += 1
+				v[886] +=  g_perFPS //98000 / 48
+				v[883] .add v[885], 2
+				v[887] += 1
 		
 	    } .else bl {
 		v[1301].copy v[885], 2
@@ -2384,7 +2378,6 @@ cev .id(2152), .name("miscfunc:remove dead agent pic"), {
 }
 
 //cev 2006
-
 __fn func_main_extract_agent_vars {
 	    Ptr1 = Temp1 + 1
 	    v[Ptr1].copy v[601], 300

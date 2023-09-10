@@ -1443,7 +1443,7 @@ __fn prepare_deadbody_pictures {
 		} .else bl {
 				// "safety"
 				@if v[188] > 0 {
-					@loop 6 .dst TT2 {
+					@loop Const_layer_amount .dst TT2 {
 							TT2 += v[188]
 							// "Safety"
 							@pic[TT2].erase
@@ -1501,7 +1501,6 @@ __fn prepare_deadbody_pictures {
 				Temp10 = victim_PictArray
 				@while Temp10 >= 1 .dst v[340] {
 					TT1 = Temp10 % 10
-					//Ptr6 = 900 + TT1 + 10 * v[TT1 + 342]
 					Ptr6 = TT1 + v[335]
 					v[463] = 4100 + TT1
 					v[463] = v[v[463]]
@@ -1511,16 +1510,15 @@ __fn prepare_deadbody_pictures {
 					v[321] = v[v[321]]
 					// "#########################Layer own Setting"
 					// "Found Head" 
-					@if `TT1 == 2 || victim_AddMotionBits & 524288 && TT1 == 3 {
+					@if `TT1 == SPR_HEAD || victim_AddMotionBits & 524288 && TT1 == SPR_HELM {
 							v[378] |= 2
 							//If damaged head found-> then check the damaged grid
 							// "Save Head Pic ID"
 							v[379] = v[188]
 							
 					}
-					//TT1 = (TT1 - 1) % 6
-					// "#Decapitated!"
-					@if `victim_DEAD_beheadTimerEnd > 0 && victim_ExMotionFlags & 32 && between(TT1, 1, 2) {
+					// "#Decapitated - head parts check"
+					@if `victim_DEAD_beheadTimerEnd > 0 && victim_ExMotionFlags & 32 && (between(TT1, 2, 3) || TT1 == 9) {
 							v[0] = v[305..306] = [Temp11 + v[Temp14 + 283] / 10000, Temp12 + v[Temp14 + 284] / 10000] // chegg it
 							v[0] = v[453..456] = [3, victim_DEAD_HeadAngleV, v[455], 10000]
 							
@@ -1529,13 +1527,13 @@ __fn prepare_deadbody_pictures {
 							v[0] = v[453..456] = [0, 0, v[455], 0]
 							
 					}
+
 					// "Layer own Setting END#########################"
-					//Temp20 = v[(Ptr20 - 1) * 6 + TT1 + v[1185]]
 					// "Strings = t[Ptr6]"
 					@cmd 11110, t[Ptr6], .args v[441], 30 // wtf lmao
 
-					// "When you found helmet AND already Loaded Head Part, then"
-					@if `(TT1 == 3 || TT1 == 9) && v[378] & 2 {
+					// "When you found (helmet OR hair) AND Head Part is already loaded, then"
+					@if `(TT1 == SPR_HELM || TT1 == SPR_HAIR) && v[378] & 2 {
 							@if `victim_AddMotionBits & 524288 {
 								@pic[v[188]].getInfo .cewh .baseRect TT20, TT20, TT15, TT16
 								@pic[v[188]].getInfo .pixel 0, 0, TT15, TT16 .dst 550445
@@ -1611,15 +1609,23 @@ __fn prepare_deadbody_pictures {
 						
 							}
 
+
+							// if not Fullhelm
 							@if `!(victim_AddMotionBits & 524288) {
-								// "save helm pos"
-								v[339] = v[340]
-								// "don't spend pic cache"
+								
+								@if TT1 == SPR_HELM {
+									// "save helm pos"
+									v[339] = v[340]
+									// "don't spend pic cache"
+								}.else bl { // hair
+									v[338] = v[340]
+								}
+
 								v[186..188] -= 1
 								@pic[2599].erase
-						
+
 							} .else bl {
-								v[339] = 0
+								v[338..339] = 0
 						
 							}
 							
@@ -1627,7 +1633,7 @@ __fn prepare_deadbody_pictures {
 
 					// "######STAMP######"
 					// "#######Armor"
-					@if TT1 == 1 { //0
+					@if TT1 == SPR_ARMOR { //0
 							// "#######Greenskins"
 							@if `between(victim_Race, 1, 2) {
 								@if `(v[378] & 2) == 0 {
@@ -1757,24 +1763,25 @@ __fn prepare_deadbody_pictures {
 							
 					} .else bl {
 							// "#######Head"
-							@if TT1 == 2 { //341
-						@if s[1] .isOn() {
-								@if v[190] == 1 {
-							// "#######Melee Normal"
-							@if v[422] == 0 {
-									str1 .asg "stamp\stabbed"
-									var1 = v[188]
-									var2 = 4 + rnd(-1, 2)
-									var3 = 8 + rnd(-2, 2)
-									var4 = 1
-									func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-									
-							}
-							
+							@if TT1 == SPR_HEAD { //341
+
+								@if s[1] .isOn() {
+									@if v[190] == 1 {
+										// "#######Melee Normal"
+										@if v[422] == 0 {
+												str1 .asg "stamp\stabbed"
+												var1 = v[188]
+												var2 = 4 + rnd(-1, 2)
+												var3 = 8 + rnd(-2, 2)
+												var4 = 1
+												func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
+												
+										}
+										
+									}
+										
 								}
 								
-						}
-						
 							}
 							
 					}
@@ -1786,8 +1793,8 @@ __fn prepare_deadbody_pictures {
 				
 		}
 		// "#####################"
-		@if `(Temp15 & 4096) > 0 {
-				@if `(Temp15 & 8192) > 0 {
+		@if `Temp15 & 4096 {
+				@if `Temp15 & 8192 {
 			@loop v[187] .dst TT1 {
 					TT1 += v[178]
 					@pic[TT1].move {
@@ -1824,7 +1831,7 @@ __fn prepare_deadbody_pictures {
 				}
 				
 		} .else bl {
-				@if `(Temp15 & 8192) > 0 {
+				@if `Temp15 & 8192 {
 			@loop v[187] .dst TT1 {
 					TT1 += v[178]
 					@pic[TT1].move {
@@ -1860,16 +1867,17 @@ __fn prepare_deadbody_pictures {
 				}
 				
 		}
+
 		// "Weapons fall"
 		TT1 = Temp15
 		Temp15 = Temp14 + 261
-		v[1301].copy v[Temp15], 18
+		v[ptr_null].copy v[Temp15], 18
 		// "WP XY"
-		v[0] = v[Temp15..Temp15 + 1] = [rnd(-36000, 36000), v[Kill_pointer + 4711] * -12000 + rnd(-50000, -20000)]
+		v[0] = v[Temp15..Temp15 + 1] = [rnd(-36000, 36000), victim_Height * -12000 + rnd(-50000, -20000)]
 		v[Temp15 + 2] = rnd(-4, 4) * 2250
 		v[Temp15 + 3] = rnd(2, 5) * -450
-		@if `(TT1 & 4096) > 0 {
-				@if `(TT1 & 8192) > 0 {
+		@if `TT1 & 4096 {
+				@if `TT1 & 8192 {
 			v[Temp15 + 6] = -1350000
 			
 				} .else bl {
@@ -1896,9 +1904,10 @@ __fn prepare_deadbody_pictures {
 				v[Temp15 + 5] += rnd(3, 5)
 				
 		}
-		// "Sh XY"
+
+		// Set shield falling
 		Temp15 = Temp14 + 269
-		v[0] = v[Temp15..Temp15 + 1] = [rnd(-28000, 28000), v[Kill_pointer + 4711] * -9500 + rnd(-13000, 0)]
+		v[0] = v[Temp15..Temp15 + 1] = [rnd(-28000, 28000), victim_Height * -9500 + rnd(-13000, 0)]
 		v[Temp15 + 2] = rnd(-3, 3) * rnd(1900, 2250)
 		v[Temp15 + 3] = rnd(0, 2) * -250
 		v[Temp15 + 5] = rnd(11, 14)
@@ -1918,11 +1927,23 @@ __fn prepare_deadbody_pictures {
 
 
 		// "###############Helm found"
+		// - remove helm layer
 		@if v[339] >= 1 {
 				TT1 = pow(10, v[339])
-				v[Kill_pointer + 4999] = victim_PictArray / TT1 / 10 * TT1 + victim_PictArray % TT1
+				victim_PictArray = victim_PictArray / TT1 / 10 * TT1 + victim_PictArray % TT1
+
+				// if helm layer is higher than hair layer I suppose?
+		}
+
+		// "hair found"
+		// - remove hair layer
+		@if v[338] >= 1 {
+				TT1 = pow(10, v[338])
+				victim_PictArray = victim_PictArray / TT1 / 10 * TT1 + victim_PictArray % TT1
 				
 		}
+		// refresh layers
+		v[Kill_pointer + 4999] = victim_PictArray
 		
 	}.elif victim_AgentType == -4 {
 		// "Weapons fall"

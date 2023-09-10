@@ -51,14 +51,14 @@ __fn drawing_set_grid_raw $Exmotion $Addmotion {
 	v[4122] = Const_head_spr_gridY //grid Y
 	@if `$Exmotion & 512 {
 		v[4101] = 7
-		v[4107] = 7 // this one can be removed everywhere not drawing sector - use meta if
+		v[4107] = 7 
 	}
 	v[4121] = $Addmotion & 1 ? 2 : 1
 }
 
 __fn function_agent_init_set_picture_strs{
 	var1 = Const_str_agent_pictures_strings_start + v[201] * 10
-	var2=var1+9
+		var2 = var1 + 9
 	t[var1..var2].asg ""
 	@if v[601] == 3 {
 		t[var2].asg Const_str_hair
