@@ -681,7 +681,7 @@ __fn Kill_Agent {
 											// "Reset Head XY"
 											TT1 = Kill_pointer 
 											TT1 += 4983
-											v[0] = v[TT1..TT1 + 1] = [rnd(-47000, 47000), v[Kill_pointer + 4711] * -12000 + rnd(-15000, 0)]
+											v[0] = v[TT1..TT1 + 1] = [rnd(-47000, 47000), victim_Height * -12000 + rnd(-15000, 0)]
 											v[Kill_pointer + 4985] = rnd(-4, 4) * 2250
 											v[Kill_pointer + 4986] = rnd(1, 4) * -300
 											v[Kill_pointer + 4988] = rnd(13, 16)
@@ -693,6 +693,7 @@ __fn Kill_Agent {
 								
 						}
 
+						// victim_AgentType * -1
 						v[Ptr18] = v[331] * -1
 						// "#Cause Morale Check"
 						// "##Fatality affects morale more heavily"
@@ -872,6 +873,7 @@ __fn Kill_Agent {
 										}
 							 
 								}
+
 								// "##########	Wall##########"
 								@if victim_UnitType == 107 {
 										v[Ptr18] = 0
@@ -1027,6 +1029,7 @@ __fn Kill_Agent {
 								s[175].off
 								
 							}
+
 							// "Remove from UnitList"
 							var1 = Ptr20
 							var2 = v[331]
@@ -1064,9 +1067,10 @@ __fn Kill_Agent {
 									v[Temp9].sortDescending v[1012]
 									@if victim_AgentType > -9 { // this was bugging
 											// "If not STATIC, Count TroopID Death"
-											v[v[1259] + (victim_UnitID - 1) * 4 + 2 + v[victim_SaveActualTeamID * v[1260] * 4]] += 1
+											v[v[1259] + (victim_UnitID - 1) * 4 + 2 + victim_SaveActualTeamID * v[1260] * 4] += 1
 											
 									}
+
 									// "Colなし施設はカウントされてないので引かない"
 									@if Temp8 == 0 {
 											v[205] -= victim_UnitType != 104 && victim_UnitType != 105 && s[174] == 0 ? 1 : 0

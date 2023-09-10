@@ -601,46 +601,50 @@ __fn agent_autoattack_melee {
 									
 							}
 
-							@if s[307] .isOff() {
-									@if `v[183] < v[4572] / 2 {
-										// "#描画範囲内か？"
-										v[220] %= 30
-										v[220] += 1201
-										v[220] += 1
-										v[223] = v[220]
-										v[221] += rnd(-6, 6)
-										v[222] += rnd(-3, 3)
-										v[222] += s[162] == 1 ? 10 : 0
-										// "#サイズは最低100%"
-										v[225] = 100
-										// "AR"
-										TT1 = v[1204] - 10
-										@pic[v[223]].show {
-												PATH_pic_numdir_block
-												.pos v[221], v[222] .center
-												.scrollWithMap
-												.chromakey 1
-												.scale v[225]
-												.trans TT1
-												.rgbs 100, 100, 100, 100
-												.mapLayer 7
-												.eraseWhenTransfer
-												.affectedByFlash
-												.affectedByShake
+
+							// block popup
+							@if victim_ShieldMotionTimer < 0 { // not in shield motion
+								@if s[307] .isOff() {
+										@if `v[183] < v[4572] / 2 {
+											// "#描画範囲内か？"
+											v[220] %= 30
+											v[220] += 1201
+											v[220] += 1
+											v[223] = v[220]
+											v[221] += rnd(-6, 6)
+											v[222] += rnd(-3, 3)
+											v[222] += s[162] == 1 ? 10 : 0
+											// "#サイズは最低100%"
+											v[225] = 100
+											// "AR"
+											TT1 = v[1204] - 10
+											@pic[v[223]].show {
+													PATH_pic_numdir_block
+													.pos v[221], v[222] .center
+													.scrollWithMap
+													.chromakey 1
+													.scale v[225]
+													.trans TT1
+													.rgbs 100, 100, 100, 100
+													.mapLayer 7
+													.eraseWhenTransfer
+													.affectedByFlash
+													.affectedByShake
+											}
+											v[222] = victim_RelativeY - 24
+											v[222] += s[162] == 1 ? 10 : 0
+											@pic[v[223]].move {
+													.pos v[221], v[222] .center
+													.scale v[225]
+													.trans 100
+													.time 12
+													.rgbs 100, 100, 100, 100
+											}
+											v[183] += v[184] >= v[1128] ? 2 : 1
+											
 										}
-										v[222] = victim_RelativeY - 24
-										v[222] += s[162] == 1 ? 10 : 0
-										@pic[v[223]].move {
-												.pos v[221], v[222] .center
-												.scale v[225]
-												.trans 100
-												.time 12
-												.rgbs 100, 100, 100, 100
-										}
-										v[183] += v[184] >= v[1128] ? 2 : 1
 										
-									}
-									
+								}
 							}
 							
 						}
@@ -668,46 +672,49 @@ __fn agent_autoattack_melee {
 										}
 										
 									}
-									@if s[307] .isOff() {
-										@if `v[183] < v[4572] / 2 {
-												// "#描画範囲内か？"
-												v[220] %= 30
-												v[220] += 1201
-												v[220] += 1
-												v[223] = v[220]
-												v[221] += rnd(-6, 6)
-												v[222] += rnd(-3, 3)
-												v[222] += s[162] == 1 ? 10 : 0
-												// "#サイズは最低100%"
-												v[225] = 100
-												// "AR"
-												TT1 = v[1204] - 10
-												@pic[v[223]].show {
-													PATH_pic_numdir_block
-													.pos v[221], v[222] .center
-													.scrollWithMap
-													.chromakey 1
-													.scale v[225]
-													.trans TT1
-													.rgbs 100, 100, 100, 100
-													.mapLayer 7
-													.eraseWhenTransfer
-													.affectedByFlash
-													.affectedByShake
-												}
-												v[222] = victim_RelativeY - 24
-												v[222] += s[162] == 1 ? 10 : 0
-												@pic[v[223]].move {
-													.pos v[221], v[222] .center
-													.scale v[225]
-													.trans 100
-													.time 12
-													.rgbs 100, 100, 100, 100
-												}
-												v[183] += v[184] >= v[1128] ? 2 : 1
-												
+
+									@if victim_ShieldMotionTimer < 1 { // not in shield motion
+										@if s[307] .isOff() {
+											@if `v[183] < v[4572] / 2 {
+													// "#描画範囲内か？"
+													v[220] %= 30
+													v[220] += 1201
+													v[220] += 1
+													v[223] = v[220]
+													v[221] += rnd(-6, 6)
+													v[222] += rnd(-3, 3)
+													v[222] += s[162] == 1 ? 10 : 0
+													// "#サイズは最低100%"
+													v[225] = 100
+													// "AR"
+													TT1 = v[1204] - 10
+													@pic[v[223]].show {
+														PATH_pic_numdir_block
+														.pos v[221], v[222] .center
+														.scrollWithMap
+														.chromakey 1
+														.scale v[225]
+														.trans TT1
+														.rgbs 100, 100, 100, 100
+														.mapLayer 7
+														.eraseWhenTransfer
+														.affectedByFlash
+														.affectedByShake
+													}
+													v[222] = victim_RelativeY - 24
+													v[222] += s[162] == 1 ? 10 : 0
+													@pic[v[223]].move {
+														.pos v[221], v[222] .center
+														.scale v[225]
+														.trans 100
+														.time 12
+														.rgbs 100, 100, 100, 100
+													}
+													v[183] += v[184] >= v[1128] ? 2 : 1
+													
+											}
+											
 										}
-										
 									}
 
 									// save upon parrying
@@ -724,9 +731,9 @@ __fn agent_autoattack_melee {
 							}
 							
 						} .else bl { // dodged!
-							// "Set Dodge Timer"
-							victim_DodgeTimer = 8
-							@if s[166] .isOn() {
+							
+							@if s[166] .isOn() { // in screen
+								@if victim_DodgeTimer < 1 { // not in dodge motion 
 									@if v[181] <= 1 {
 										@if v[522] < 25 {
 												// "#########################"
@@ -782,6 +789,9 @@ __fn agent_autoattack_melee {
 								
 									}
 									
+								}
+								// "Set Dodge Timer"
+								victim_DodgeTimer = 8
 							}
 							copyback_victim_data(Ptr11) // save upon dodge
 						}

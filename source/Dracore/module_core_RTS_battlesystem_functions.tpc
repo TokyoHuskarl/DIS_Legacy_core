@@ -131,7 +131,7 @@ __fn func_bs_register_buff_old $buff_id $agent {
 	TT1 += 4771
 
 	TT4 = TT1 + 203 // get ptr to ProcessObjBit
-	TT4 = v[TT5] // get ProcessObjBit
+	TT4 = v[TT4] // get ProcessObjBit
 
 	reg2 = -1
 	@loop 16 .dst TT10 {
