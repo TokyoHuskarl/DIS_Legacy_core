@@ -928,12 +928,9 @@ v[4815].copy v[4081], 10
             //@comment "DEAD BODY"
             @if v[601] <= 0 {
                 //@comment "#描画範囲内か？"
-                @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//`s[v[340] + 501] {
+                @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //`s[v[340] + 501] {
                     v[461] = 0
                     v[446] = 100
-                    //@comment ""
-                    //Temp3 = Temp1 + 7
-                    //Temp4 = Temp1 + 8
                     //@comment "#描画範囲内"
                     Temp5 = v[607]
                     Temp6 = v[608]
@@ -1056,12 +1053,9 @@ v[4815].copy v[4081], 10
                             v[177] = v[186]
                             v[Temp1 + 290] = v[186]
                             //@comment "Get Picture Layer Array"
-                            //v[899] = v[Temp1 + 299]
                             //@comment "#get damaged variation"
-                            //v[604] = v[Temp1 + 4]
                             v[0] = v[343..352] = [v[604] % 10, v[604] / 10 % 10, v[604] / 100 % 10]
                             v[4041..4050] = Temp11
-                            //v[4141..4151] = 0
 	    		    v[ptr_null].copy v[4141],10
                             @if `v[726] & 4096 {
                                 Temp12 += 18
@@ -1073,6 +1067,8 @@ v[4815].copy v[4081], 10
                             v[4051] += v[882] / 2
                             v[4141] = v[879]
                             //@comment "#"
+
+														// head part
                             @if `v[888] > 0 && v[726] & 32 {
                                 v[4042] += v[883] / 10000
                                 v[4052] += v[884] / 10000
@@ -1090,6 +1086,8 @@ v[4815].copy v[4081], 10
                             v[4045] += v[869] / 10000
                             v[4055] += v[870] / 10000
                             v[4145] = v[875]
+
+														// loop
                             @while v[899] >= 1 {
                                 TT1 = v[899] % 10
 				Temp5 = 4040 + TT1
@@ -1145,7 +1143,7 @@ v[4815].copy v[4081], 10
                             v[188] = v[178] = v[340] * Const_layer_amount + v[1201]
                             v[177] = v[186]
                             v[890] = v[186]
-                            Temp20 = v[v[340] * 6 + v[1185]]//ACHTUNG Legacy system, need to change
+                            Temp20 = v[v[340] * 6 + v[1185]] //ACHTUNG Legacy system, need to change
                             @pic[v[188]].show {
                                 t[Ptr6] .repl 1 Temp20
                                 .pos Temp5, Temp6 .center

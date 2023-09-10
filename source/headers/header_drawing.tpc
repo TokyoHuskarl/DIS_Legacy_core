@@ -19,6 +19,21 @@ def Const_str_static = "static\spr_static_"
 def Const_str_hair = "parts\hair\spr_hair_"
 def Const_str_minion_head = "minions\head\spr_head_"
 
+def {
+	SPR_ARMOR = 1
+	SPR_HEAD
+	SPR_HELM
+	SPR_WEAPON
+	SPR_SHIELD
+	SPR_MISC
+	SPR_MINIONS
+	SPR_STATIC
+	SPR_HAIR
+
+
+	//#1=Armor,2=Head/NewMinions/Newstatic,3=Helm,4=Weapon,5=Shield,6=Misc,7=Minions,8=static,9=Hair ...Up to 8 layers available
+}
+
 #include "./../Dracore/module_core_RTS_drawing_functions.tpc"
 
 def LOAD_HEADER_DRAW = 1

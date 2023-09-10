@@ -91,7 +91,7 @@ __fn func_damage_calculation {
 			@if AttackerAABits > 0 {
 				@if victim_UnitType >= 100 { // static
 					damage_multiplier += AttackerAABits & AABits_FLAG_AntiBuilding ? 200 : 0
-					damage_multiplier += AttackerAABits & AABits_FLAG_AntiBuilding_SUPER >= 100 ? 2300 : 0
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiBuilding_SUPER ? 2300 : 0
 
 				}.elif victim_UnitType == UNIT_CLASS_INF {
 					damage_multiplier += AttackerAABits & AABits_FLAG_AntiInf ? 70 : 0
