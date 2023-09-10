@@ -50,6 +50,7 @@ __fn agent_ref_stats(){
         agent_ProcessMS += agent_ProcessMS >> 2 // muldiv(agent_ProcessMS, 125, 100)
         
     }
+
     // cavalries and terrain effects
     @if `!(agent_MoveTypeBIts & MoveTypeBits_Flying){ // not flying
 	    @if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback {

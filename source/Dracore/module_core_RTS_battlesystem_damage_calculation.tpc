@@ -412,7 +412,7 @@ __fn func_damage_calculation {
 
 					// "#Damaged Flag Check"
 					// "#below 50%"
-					@if `victim_HP > victim_MaxHP / 2 { // recover to normal sprite variation
+					@if `victim_HP < victim_MaxHP / 2 { // recover to normal sprite variation
 						@if `(victim_ExMotionFlags & 98304) == 98304 {
 							victim_ExMotionFlags &= ~ExMotionFlags_FLAG_HeadNotYetDamaged 
 							

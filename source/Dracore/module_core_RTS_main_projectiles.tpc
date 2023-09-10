@@ -222,6 +222,8 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 												@call .cev 40 // call the damage cal
 												reg10 = 1
 												Ptr20 = v[36]
+												v[Ptr12].copy v[601], 34
+
 												
 										} .else bl { //@comment "Miss!"
 												@if `s[Ptr20 + 500] && v[183] < v[4572] {
