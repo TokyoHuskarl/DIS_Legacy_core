@@ -33,12 +33,12 @@ __fn func_generate_agent {
 	    t[2998] .split ",", t[2998], v[1941]
 	    str3 .asg t[2999]
 	    @if spawnSet_Team == 0 {
-		@if v[258] == 0 {
-		    t[3000] .toNum v[258]
-		    
-		}
-		
+				@if v[258] == 0 {
+						t[3000] .toNum v[258]
+						
+				}
 	    }
+
 	    str5 .asg t[3000]
 	    t[2999..3000] .asg ""
 	    str1 .asg str3

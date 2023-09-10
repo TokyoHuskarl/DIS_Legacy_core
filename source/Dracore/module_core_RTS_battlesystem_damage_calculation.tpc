@@ -358,7 +358,7 @@ __fn func_damage_calculation {
 						// "Killing Frenzy"
 						@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_KillingFrenzy {
 								// "#Gain Rage for about 5sec "
-								func_bs_register_buff_with_time(1181 Ptr19 250)
+								func_bs_register_buff_with_time(1181,Ptr19,250)
 								// "KF Particle"
 								@loop v[1017] .dst Temp20 {
 									v[244] %= v[1199]
@@ -456,7 +456,7 @@ __fn func_damage_calculation {
 			*/
 
 			var2 = min((((reg2 / 8) + damage_base_morale_check) * agent_ProcessObjBit & BaseObjBit_FLAG_Cause_Demoralizing ? 2 : 1), 100)
-			func_bs_morale_check(Ptr20 var2)
+			func_bs_morale_check(Ptr20,var2)
 			// "Morale Check End################"
 		}
 
