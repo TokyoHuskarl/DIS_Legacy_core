@@ -663,24 +663,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 		// this part is kinda terrible...
 
-		agent_MilPixVx .add v[615], 2
+		agent_MilPixVx .add agent_MilPixAx, 2
 		@if `agent_MilPixVx != 0 || agent_MilPixVy != 0 {
-
-			/* this was shite.
-			reg3 = atan2(agent_MilPixVy,agent_MilPixVx,1000)
-			Temp17 = cos(reg3,1000,100)
-			Temp18 = sin(reg3,1000,100)
-			Temp17 = Temp17 >= 30 ? 1 : Temp17 <= -30 ? -1 : 0
-			Temp18 = Temp18 >= 30 ? v[2061] : Temp18 <= -30 ? -v[2061] : 0
-			Temp16 = Temp17 + Temp18
-			v[__id(Temp17)..__id(Temp18)] += v[632]
-			*/
-
-			/* this doesn't work with forcemove
-			Temp16 = v[621] >= 7 ? 1 : v[621] <= -7 ? -1 : 0
-			
-			Temp17 = v[622] >= 7 ? v[2061] : v[622] <= -7 ? -v[2061] : 0
-			v[__id(Temp16)..__id(Temp17)] += v[632]*/
 
 			
 			// get TileXY where the agent goes
@@ -727,7 +711,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 					@if `v[reg1] & FLAG_Maptile_Crowded { //if crowded
 						var1.div Const_2_combi,2 //halve speed
-						var1.add v[615], 2 // and add push
+						var1.add agent_MilPixAx, 2 // and add push
 					}
 					agent_ProcessInstantState |= v[Temp20] - Saved_Current_MapTile_Info > 90000000 ? agent_ProcessInstantState_FLAG_climb_hill : 0
 					//@if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback {//horse back}
@@ -771,7 +755,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 					@if `v[reg1] & FLAG_Maptile_Crowded {
 						var1 /= 2 //if crowded, halve speed
-						var1 += v[615]
+						var1 += agent_MilPixAx
 					}
 
 					//@comment "##壁がなければ速度を足す"
@@ -860,7 +844,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 		}
 		
 		// init Ax Ay
-		v[1301].copy v[615], 2
+		v[1301].copy agent_MilPixAx, 2
 
 	    //@comment "Overwrite ActionState "
 	    @if v[846] > 0 {

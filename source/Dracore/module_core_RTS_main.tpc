@@ -533,7 +533,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			@if v[886] <= 0 {
 			    TT1 = v[1179] + v[640] + 20 * v[887]
 			    v[685] = 13
-			    @if `v[638] & 1 {
+			    @if `agent_MoveTypeBIts & 1 {
 				@if v[182] < 1 {
 				    @if v[522] < 32 {
 					v[182] += 1
@@ -751,9 +751,9 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[874] = v[681] >= 1 ? v[874] & ~1 : v[874]
 	    v[898] = v[880]
 	    @if `v[874] & 1 {
-		v[898] = 40 + v[880]
-		v[876] += 38000
-		v[v[4518] + v[401]] = 0
+				v[898] = 40 + v[880]
+				v[876] += 38000
+				v[v[4518] + v[401]] = 0
 		
 	    }
 	    // "##is fleeing?"
@@ -2021,12 +2021,12 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[340] = v[v[340]]
 	    // "#Reset Terrain Flags"
 	    agent_AgentBits &= -1072//~1071 //15 + 32 + 1024
-	    //v[638] = Temp1 + 38
+	    //agent_MoveTypeBIts = Temp1 + 38
 	    // "##Not Flying"
-	    @if `!(v[638] & 1) {
+	    @if `!(agent_MoveTypeBIts & 1) {
 		// "#Water"
 		@if `v[340] & 1 {
-		    agent_AgentBits |= 4 + (v[638] & 64 ? 0 : 1)
+		    agent_AgentBits |= 4 + (agent_MoveTypeBIts & 64 ? 0 : 1)
 		    
 		}
 		// "#Ice"
@@ -2042,27 +2042,39 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		// "#Forest"
 		@if `v[340] & 8 {
 		    // "##Horse or roller"
-		    @if `v[638] & 34 {
-			agent_AgentBits |= 8
-			
+		    @if `agent_MoveTypeBIts & 34 {
+					agent_AgentBits |= 8
+					
 		    }
 		    
 		}
+
 		// "#snow"
 		@if `v[340] & 32 {
 		    // "##movetype ice"
-		    @if `v[638] & 16 {
-			agent_AgentBits |= 2
+		    @if `agent_MoveTypeBIts & 16 {
+					agent_AgentBits |= 2
 			
 		    }
 		    // "##skating"
-		    @if `v[638] & 8 {
-			agent_AgentBits |= 34//32+2
+		    @if `agent_MoveTypeBIts & 8 {
+					agent_AgentBits |= 34//32+2
 			
 		    }
 		    
 		}
-		@if `v[638] & 32 {
+		
+		// "#sand"
+		@if `v[340] & 128 {
+			// sand crawler
+			@if `agent_MoveTypeBIts & 128 {
+				agent_AgentBits |= 2
+			}			
+
+		}
+
+		// roller
+		@if `agent_MoveTypeBIts & 32 {
 		    agent_AgentBits |= 48//32+16
 		    
 		}

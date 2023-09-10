@@ -216,11 +216,11 @@ __fn ColCheck {
 		v[Col_Ptr2AgentBits] |= 64
 		//kabe no naka ni iru!
 		@ev[2].setPos .pos v[626], v[627]
-		v[316] = ev[2].scrx
-		v[317] = ev[2].scry
-		v[317] -= 16
+		Temp16 = ev[2].scrx
+		Temp17 = ev[2].scry
+		Temp17 -= 16
 		v[Ptr18].copy v[321], 2
-		v[321] .sub v[316], 2
+		v[321] .sub Temp16, 2
 		v[321..322] *= 3000
 		v[Ptr20] .add v[321], 2
 		v[Ptr20] += v[Ptr17] * 10000
@@ -237,7 +237,7 @@ __fn ColCheck {
 		//Obj Collision
 
 
-		v[319] = v[401]
+		Temp19 = v[401]
 		
 		//######################
 		//Check Morton Start
@@ -248,7 +248,7 @@ __fn ColCheck {
 		//#########################
 		//#2002 Crd->Mort V1V2 reg1
 		//#########################
-		//v[11].copy TT1, 2
+		//var1.copy TT1, 2
 		TT1 .sub v[76], 2
 		TT1 .div v[74], 2
 		//TT1=MortX
@@ -266,15 +266,15 @@ __fn ColCheck {
 		//TT2 <<= 1
 		//@comment "最後にTT1 OR TT2"
 		//opt 28.4.23
-		//v[21] = TT1 | TT2
-		//v[351] = v[21]
-		v[351] = TT1 | TT2
+		//reg1 = TT1 | TT2
+		//TT11 = reg1
+		TT11 = TT1 | TT2
 		v[607].copy TT1, 2
 		TT1 .add v[610], 2
 		//@comment "#########################
 		//#2002 Crd->Mort V1V2 reg1
 		//##########################"
-		//v[11].copy TT1, 2
+		//var1.copy TT1, 2
 		TT1 .sub v[76], 2
 		TT1 .div v[74], 2
 		//@comment "TT1=MortX
@@ -293,14 +293,14 @@ __fn ColCheck {
 		//@comment "最後にTT1 OR TT2"
 
 		//opt 28.4.23
-		//v[21] = TT1 | TT2
-		//TT1 = v[351]
-		//TT2 = v[21]
+		//reg1 = TT1 | TT2
+		//TT1 = TT11
+		//TT2 = reg1
 		TT2 = TT1 | TT2
 		//@comment "TT1 = upper left morton
 		//TT2 = bottom right morton
 		//TT5 = shift num"
-		TT3 = v[351] ^ TT2
+		TT3 = TT11 ^ TT2
 		//@comment "#mask with 11000000
 		//@comment ""#mask with 110000""
 		//@comment ""#mask with 001100""
@@ -308,15 +308,15 @@ __fn ColCheck {
 		TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
 		v[609] = TT2 >> TT5
 		//@comment "#mask end"
-		v[346] = TT5 / 2
+		TT6 = TT5 / 2
 		//opt 28.4.23
-		//v[340] = v[4546 - v[346]]
-		v[340] = 4546 - v[346]
+		//v[340] = v[4546 - TT6]
+		v[340] = 4546 - TT6
 		v[340] = v[v[340]]
-		v[327] = v[v[4552 - v[346]] + v[609]]
+		v[327] = v[v[4552 - TT6] + v[609]]
 		//@comment "##############"
-		v[294] = Temp1 + 25
-		v[v[294]] = 2 + v[327] / v[4522] + v[610] / 19 - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
+		Ptr14 = Temp1 + 25
+		v[Ptr14] = 2 + v[327] / v[4522] + v[610] / 19 - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
 			//@comment "DisciplineCheck"
 		//opt
 
@@ -367,7 +367,7 @@ __fn ColCheck {
 			
 			      macro_ColCheck_distance()
 
-			      @if `v[322] + v[337] >= abs(v[320]) {
+			      @if `v[322] + v[337] >= abs(Temp20) {
 				  @if `v[323] + v[338] >= abs(v[321]) {
 				    macro_ColCheck_push()
 				}
@@ -386,7 +386,7 @@ __fn ColCheck {
 
 			    macro_ColCheck_distance()
 
-			    @if `v[322] + v[337] >= abs(v[320]) {
+			    @if `v[322] + v[337] >= abs(Temp20) {
 				@if `v[323] + v[338] >= abs(v[321]) {
 				    macro_ColCheck_push()
 				    
@@ -416,12 +416,12 @@ __fn ColCheck {
 
 
 __fn macro_ColCheck_distance {
-	v[320] = v[v[203]] * 300
-	v[320] += 4707
-	//v[320] = v[v[320]] - v[607]
+	Temp20 = v[v[203]] * 300
+	Temp20 += 4707
+	//Temp20 = v[Temp20] - v[607]
 	//v[321] = v[v[321]] - v[608]
-	v[v[320]].copy v[320],2
-	v[320].sub v[607],2
+	v[Temp20].copy Temp20,2
+	Temp20.sub v[607],2
 
 	//get colbox
 	__if DIS_EXPERIMENTAL == -1 { // pixel edit bug
@@ -434,8 +434,8 @@ __fn macro_ColCheck_distance {
 		v[v[322]].copy v[322],2
 	}
 
-	//func_devlog("\v[\v[203]]: \v[322] \v[323] \v[320] \v[321]")
-	//v[320] = v[(v[203] * 300) + v[1607]] - v[607]
+	//func_devlog("\v[\v[203]]: \v[322] \v[323] \Temp20 \v[321]")
+	//Temp20 = v[(v[203] * 300) + v[1607]] - v[607]
 	//v[321] = v[(v[203] * 300) + v[1608]] - v[v[334]]
 
 }
@@ -443,18 +443,18 @@ __fn macro_ColCheck_distance {
 __fn macro_ColCheck_push {
 	//24.4.23
 
-	//v[320].copy v[325], 2
+	//Temp20.copy v[325], 2
 	//v[325..326] *= v[527 + ((v[v[603]] | (v[v[603] + 35] & 2 && v[v[603] + 77] > 0 ? 256 : 0)) & 256) / 256]
 	//v[Ptr19] .add v[325], 2
 
-	//v[320].copy v[325], 2
+	//Temp20.copy v[325], 2
 
 	//opt 11.5.23
 	//v[320..321] *= v[527 + ((v[v[603]] | (v[v[603] + 35] & 2 && v[v[603] + 77] > 0 ? 256 : 0)) & 256) / 256]
 
 	// TT1 = Const_save_var_TileFlags + v[632] // check Tile flag
 	v[320..321] *= (v[527 + ((v[Temp32] | (v[638] & 2 && v[680] > 0 ? 256 : 0)) & 256) / 256]) + (v[Ptr5] & FLAG_Maptile_Crowded ? 1 : 0) // if it's Crowded, push more
-	v[Ptr19] .add v[320], 2
+	v[Ptr19] .add Temp20, 2
 
 	v[Temp32] |= 64
 	@break

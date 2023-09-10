@@ -201,7 +201,7 @@ __fn agent_autoattack_melee {
 									###############"*/
 									agent_RelativeX.copy var1, 2
 									victim_RelativeX.copy var3, 2
-									func_make_unit_vector_from_two_points_atan2(agent_RelativeX,agent_RelativeY,victim_RelativeX,victim_RelativeY,440)
+									func_make_unit_vector_from_two_points_atan2(agent_RelativeX,agent_RelativeY,victim_RelativeX,victim_RelativeY,44000)
 									reg1.copy victim_MilPixVx, 2
 									
 							}
@@ -544,8 +544,6 @@ __fn agent_autoattack_melee {
 						}
 
 						@if s[166] .isOn() {
-							// "Set ShieldMotion Timer"
-							victim_ShieldMotionTimer = 6
 							@if reg3 == 0 {
 									@if v[182] <= 2 {
 								// "#########################"
@@ -603,7 +601,7 @@ __fn agent_autoattack_melee {
 
 
 							// block popup
-							@if victim_ShieldMotionTimer < 0 { // not in shield motion
+							@if victim_ShieldMotionTimer < 1 { // not in shield motion
 								@if s[307] .isOff() {
 										@if `v[183] < v[4572] / 2 {
 											// "#描画範囲内か？"
@@ -646,6 +644,9 @@ __fn agent_autoattack_melee {
 										
 								}
 							}
+							// "Set ShieldMotion Timer"
+							victim_ShieldMotionTimer = 6
+
 							
 						}
 						// refresh vic data
@@ -653,8 +654,6 @@ __fn agent_autoattack_melee {
 				} .else bl { // not shield block 
 						@if reg2 == 2 { // parried!
 							@if s[166] .isOn() {
-									// "Set ShieldMotion Timer"
-									victim_ShieldMotionTimer = 6
 									@if v[182] <= 3 {
 										// "#########################"
 										@if v[522] < 50 {
@@ -716,6 +715,8 @@ __fn agent_autoattack_melee {
 											
 										}
 									}
+									// "Set ShieldMotion Timer"
+									victim_ShieldMotionTimer = 6
 
 									// save upon parrying
 									copyback_victim_data(Ptr11)
