@@ -31,16 +31,16 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 				@se.play "cursor02" .opt v[472], 100, 50
 				//@comment "#######################"
 				@call .cev 1924
-				v[341] = 2
+				TT1 = 2
 				v[601] = 1
 				@pic[v[1155]].strpic {
 				    t[20354]
-				    .pos v[341], v[1126] .bottomLeft
+				    .pos TT1, v[1126] .bottomLeft
 				    .size 0, 0                            .chromakey 1
 				    .scale 100
 				    .trans 30
 				    .rgbs 100, 100, 100, 100
-				    .font t[530], v[4511]
+				    .font Font_UI, Font_UI_size
 				    .spacing 0, 4
 				    .skin "" .nobg .noframe .noPadding
 				    .mapLayer 8
@@ -50,8 +50,8 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 				}
 				@call .cev 1925
 				//@comment "#######################"
-				t[501] .asg "AUTOSAVE"
-				@actor[1].name t[501]
+				str1 .asg "AUTOSAVE"
+				@actor[1].name str1
 				v[v[1067]..v[1079]] = 0
 				/*@if s[1] .isOn() {
 				    v[v[4568]..v[4600]] = 0
@@ -81,28 +81,28 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 		
 	    }
 	    @if s[7] .isOn() {
-		@if v[2403] == 1 {
+		@if v[2403] == FAC_imperial {
 		    @if v[2503] >= 12 {
 			@if `!(v[2412] & 0x80) {
 			    v[472] = divmul(100, 100, v[2216])
 			    @se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
 			    @se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
 			    v[472] = divmul(100, 100, v[2217])
-			    t[760] .asg "[J.R.S. Schattenberg]Aevitas(The Empire in Twilight)"
+			    Current_BGMFile .asg "[J.R.S. Schattenberg]Aevitas(The Empire in Twilight)"
 			    @bgm.play "[J.R.S. Schattenberg]Aevitas(The Empire in Twilight)" .opt 1000, v[472], 100, 50
 			    v[2412] |= 128
 			    //@comment "#######################"
 			    @call .cev 1924
-			    v[341] = 2
+			    TT1 = 2
 			    v[601] = 1
 			    @pic[v[1155]].strpic {
 				t[20326]
-				.pos v[341], v[1126] .bottomLeft
+				.pos TT1, v[1126] .bottomLeft
 				.size 0, 0                        .chromakey 1
 				.scale 100
 				.trans 30
 				.rgbs 100, 100, 100, 100
-				.font t[530], v[4511]
+				.font Font_UI, Font_UI_size
 				.spacing 0, 4
 				.skin "" .nobg .noframe .noPadding
 				.mapLayer 8
@@ -144,9 +144,9 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 			    v[472] = divmul(100, 100, v[2216])
 			    @se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
 			    @se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
-			    @if t[760] .neq "[Soularflair]We Are Legion(Einherjar)" {
+			    @if Current_BGMFile .neq "[Soularflair]We Are Legion(Einherjar)" {
 				v[472] = divmul(100, 100, v[2217])
-				t[760] .asg "[J.R.S. Schattenberg]Metus(Ruina Imperii)"
+				Current_BGMFile .asg "[J.R.S. Schattenberg]Metus(Ruina Imperii)"
 				@bgm.play "[J.R.S. Schattenberg]Metus(Ruina Imperii)" .opt 0, 100, 100, 50
 				
 			    }
@@ -154,16 +154,16 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 			    s[240].on
 			    @comment "#######################"
 			    @call .cev 1924
-			    v[341] = 2
+			    TT1 = 2
 			    v[601] = 1
 			    @pic[v[1155]].strpic {
 				t[20327]
-				.pos v[341], v[1126] .bottomLeft
+				.pos TT1, v[1126] .bottomLeft
 				.size 0, 0                        .chromakey 1
 				.scale 100
 				.trans 30
 				.rgbs 100, 100, 100, 100
-				.font t[530], v[4511]
+				.font Font_UI, Font_UI_size
 				.spacing 0, 4
 				.skin "" .nobg .noframe .noPadding
 				.mapLayer 8
@@ -234,7 +234,7 @@ __fn func_remove_dead_agent_picture $agentid {
 	@if reg1 <= v[2299] {
 	    reg2 = reg1 + v[4516] - 1
 	    @pic[reg1..reg2].erase
-	    //reg1 = (v[11] - 1) 
+	    //reg1 = (var1 - 1) 
 	    //reg1 *= v[4516] + v[1185]
 	    //v[1301].copy v[reg1], v[4516]
 	    

@@ -1462,7 +1462,16 @@ __fn prepare_deadbody_pictures {
 				v[468] = 3
 				v[187] = 0
 				v[379] = 0
+
+				// FLAG CHECKER
+				def {
+					BS_RMAG_PICFLAG_FOUND_HEAD = 2
+					BS_RMAG_PICFLAG_FOUND_WEAPON = 4
+					BS_RMAG_PICFLAG_FOUND_SHIELD = 8
+				}
 				v[378] = 0
+
+
 				v[4101..4110] = v[463] // column
 				v[4121..4130] = 1 // line
 				// v[v[725]].copy v[725],2 - was this needed? idk
@@ -1511,7 +1520,7 @@ __fn prepare_deadbody_pictures {
 					// "#########################Layer own Setting"
 					// "Found Head" 
 					@if `TT1 == SPR_HEAD || victim_AddMotionBits & 524288 && TT1 == SPR_HELM {
-							v[378] |= 2
+							v[378] |= BS_RMAG_PICFLAG_FOUND_HEAD // 
 							//If damaged head found-> then check the damaged grid
 							// "Save Head Pic ID"
 							v[379] = v[188]
@@ -1532,8 +1541,10 @@ __fn prepare_deadbody_pictures {
 					// "Strings = t[Ptr6]"
 					@cmd 11110, t[Ptr6], .args v[441], 30 // wtf lmao
 
+
+
 					// "When you found (helmet OR hair) AND Head Part is already loaded, then"
-					@if `(TT1 == SPR_HELM || TT1 == SPR_HAIR) && v[378] & 2 {
+					@if `(TT1 == SPR_HELM || TT1 == SPR_HAIR) && v[378] & BS_RMAG_PICFLAG_FOUND_HEAD {
 							@if `victim_AddMotionBits & 524288 {
 								@pic[v[188]].getInfo .cewh .baseRect TT20, TT20, TT15, TT16
 								@pic[v[188]].getInfo .pixel 0, 0, TT15, TT16 .dst 550445
@@ -1636,7 +1647,7 @@ __fn prepare_deadbody_pictures {
 					@if TT1 == SPR_ARMOR { //0
 							// "#######Greenskins"
 							@if `between(victim_Race, 1, 2) {
-								@if `(v[378] & 2) == 0 {
+								@if `(v[378] & BS_RMAG_PICFLAG_FOUND_HEAD) == 0 {
 										str1 .asg "stamp\extradeadbody_1"
 										var1 = v[188]
 										var2 = -4
@@ -1648,7 +1659,7 @@ __fn prepare_deadbody_pictures {
 								
 							} .else bl {
 								@if victim_Race == 5 { // skeletons
-										@if `(v[378] & 2) == 0 {
+										@if `(v[378] & BS_RMAG_PICFLAG_FOUND_HEAD) == 0 {
 									str1 .asg "stamp\extradeadbody_2"
 									var1 = v[188]
 									var2 = -4
@@ -1662,7 +1673,7 @@ __fn prepare_deadbody_pictures {
 										
 								}
 								@if victim_Race == 6 { // minotaurs
-										@if `(v[378] & 2) == 0 {
+										@if `(v[378] & BS_RMAG_PICFLAG_FOUND_HEAD) == 0 {
 									str1 .asg "stamp\extradeadbody_3"
 									var1 = v[188]
 									var2 = -4
@@ -1678,113 +1689,99 @@ __fn prepare_deadbody_pictures {
 								
 							}
 							@if v[372] == 0 {
-						// "#######Cut"
-						@if v[190] == 0 {
-								// "#######Melee Normal"
-								@if v[422] == 0 {
-
-									@if v[371] == 0 {
-											str1 .asg "stamp\cut"
-											var1 = v[188]
-											var2 = 12 + rnd(-1, 1)
-											var3 = 24 + rnd(0, 1)
-											var4 = 0
-											func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-											
-									}
-									
-								}
-								
-						}
-
-						// "#######P"
-						@if v[190] == 1 {
-								// "#######Melee Normal"
-								@if v[422] == 0 {
-							str1 .asg "stamp\stabbed"
-							var1 = v[188]
-							var2 = 12 + rnd(-1, 1)
-							var3 = 24 + rnd(-1, 1)
-							var4 = 0
-							func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-							@if s[212] .isOn() {
-									str1 .asg "stamp\guts"
-									var1 = v[188]
-									var2 = 12 + rnd(-1, 1)
-									var3 = 24 + rnd(-1, 1)
-									var4 = 0
-									func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-									
-							}
-							
-								}
-								@if s[212] .isOff() {
-							// "#Arrow"
-							@if v[422] == 1 {
-									str1 .asg "stamp\wound_1"
-									var1 = v[188]
-									var2 = 13 + rnd(-2, 2)
-									var3 = 20 + rnd(-1, 1)
-									var4 = 0
-									func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-									
-							} .else bl {
-									// "#Bolt"
-									@if v[422] == 2 {
-								str1 .asg "stamp\wound_2"
-								var1 = v[188]
-								var2 = 13 + rnd(-2, 2)
-								var3 = 20 + rnd(-1, 1)
-								var4 = 0
-								func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-								
-									} .else bl {
-								@if v[422] == 3 {
-										str1 .asg "stamp\wound_3"
-										var1 = v[188]
-										var2 = 13 + rnd(-2, 2)
-										var3 = 19 + rnd(-1, 1)
-										var4 = 0
-										func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-										
-								}
-								
-									}
-									
-							}
-							
-								}
-								
-						}
-						
-							} .else bl {
-						
-							}
-							
-					} .else bl {
-							// "#######Head"
-							@if TT1 == SPR_HEAD { //341
-
-								@if s[1] .isOn() {
-									@if v[190] == 1 {
+								// "#######Cut"
+								@if v[190] == 0 {
 										// "#######Melee Normal"
 										@if v[422] == 0 {
-												str1 .asg "stamp\stabbed"
-												var1 = v[188]
-												var2 = 4 + rnd(-1, 2)
-												var3 = 8 + rnd(-2, 2)
-												var4 = 1
-												func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-												
+
+											@if v[371] == 0 {
+													str1 .asg "stamp\cut"
+													var1 = v[188]
+													var2 = 12 + rnd(-1, 1)
+													var3 = 24 + rnd(0, 1)
+													var4 = 0
+													func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
+													
+											}
+											
 										}
 										
-									}
+								}
+
+								// "#######P"
+								@if v[190] == 1 {
+										// "#######Melee Normal"
+										@if v[422] == 0 {
+											str1 .asg "stamp\stabbed"
+											var1 = v[188]
+											var2 = 12 + rnd(-1, 1)
+											var3 = 24 + rnd(-1, 1)
+											var4 = 0
+											func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
+											@if s[212] .isOn() {
+													str1 .asg "stamp\guts"
+													var1 = v[188]
+													var2 = 12 + rnd(-1, 1)
+													var3 = 24 + rnd(-1, 1)
+													var4 = 0
+													func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
+													
+											}
+											
+										}
+										@if s[212] .isOff() {
+											// "#Arrow"
+											@if v[422] == 1 {
+													str1 .asg "stamp\wound_1"
+													var1 = v[188]
+													var2 = 13 + rnd(-2, 2)
+													var3 = 20 + rnd(-1, 1)
+													var4 = 0
+													func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
+													
+											} .else bl {
+													// "#Bolt"
+													@if v[422] == 2 {
+														str1 .asg "stamp\wound_2"
+														var1 = v[188]
+														var2 = 13 + rnd(-2, 2)
+														var3 = 20 + rnd(-1, 1)
+														var4 = 0
+														func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
+														
+													} .else bl {
+														@if v[422] == 3 {
+																str1 .asg "stamp\wound_3"
+																var1 = v[188]
+																var2 = 13 + rnd(-2, 2)
+																var3 = 19 + rnd(-1, 1)
+																var4 = 0
+																func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
+																
+														}
+														
+													}
+													
+											}
+											
+										}
 										
 								}
 								
+							} .else bl {
+						
 							}
 							
+					} .elif TT1 == SPR_HEAD { //341
+
+					}.elif TT1 == SPR_WEAPON {
+						v[378] |= BS_RMAG_PICFLAG_FOUND_WEAPON
+
+					}.elif TT1 == SPR_SHIELD {
+						v[378] |= BS_RMAG_PICFLAG_FOUND_SHIELD
+
 					}
+							
 					v[186..188] += 1
 					Temp10 /= 10
 					
@@ -1869,62 +1866,66 @@ __fn prepare_deadbody_pictures {
 		}
 
 		// "Weapons fall"
-		TT1 = Temp15
-		Temp15 = Temp14 + 261
-		v[ptr_null].copy v[Temp15], 18
-		// "WP XY"
-		v[0] = v[Temp15..Temp15 + 1] = [rnd(-36000, 36000), victim_Height * -12000 + rnd(-50000, -20000)]
-		v[Temp15 + 2] = rnd(-4, 4) * 2250
-		v[Temp15 + 3] = rnd(2, 5) * -450
-		@if `TT1 & 4096 {
-				@if `TT1 & 8192 {
-			v[Temp15 + 6] = -1350000
-			
-				} .else bl {
-			v[Temp15 + 6] = 450000
-			
-				}
-				v[Temp15 + 7] = rnd(10000, 50000)
+		@if `v[378] & BS_RMAG_PICFLAG_FOUND_WEAPON {
+			TT1 = Temp15
+			Temp15 = Temp14 + 261
+			v[ptr_null].copy v[Temp15], 18
+			// "WP XY"
+			v[0] = v[Temp15..Temp15 + 1] = [rnd(-36000, 36000), victim_Height * -12000 + rnd(-50000, -20000)]
+			v[Temp15 + 2] = rnd(-4, 4) * 2250
+			v[Temp15 + 3] = rnd(2, 5) * -450
+			@if `TT1 & 4096 {
+					@if `TT1 & 8192 {
+				v[Temp15 + 6] = -1350000
 				
-		} .else bl {
-				@if `(TT1 & 8192) > 0 {
-			v[Temp15 + 6] = 1350000
-			
-				} .else bl {
-			v[Temp15 + 6] = -450000
-			
-				}
-				v[Temp15 + 7] = rnd(-50000, -10000)
+					} .else bl {
+				v[Temp15 + 6] = 450000
 				
-		}
+					}
+					v[Temp15 + 7] = rnd(10000, 50000)
+					
+			} .else bl {
+					@if `(TT1 & 8192) > 0 {
+				v[Temp15 + 6] = 1350000
+				
+					} .else bl {
+				v[Temp15 + 6] = -450000
+				
+					}
+					v[Temp15 + 7] = rnd(-50000, -10000)
+					
+			}
 
-		v[Temp15 + 6] += rnd(-180000, 180000)
-		v[Temp15 + 5] = rnd(14, 18)
-		@if `victim_ExMotionFlags & 16777216 {
-				v[Temp15 + 5] += rnd(3, 5)
-				
+			v[Temp15 + 6] += rnd(-180000, 180000)
+			v[Temp15 + 5] = rnd(14, 18)
+			@if `victim_ExMotionFlags & 16777216 {
+					v[Temp15 + 5] += rnd(3, 5)
+					
+			}
 		}
 
 		// Set shield falling
-		Temp15 = Temp14 + 269
-		v[0] = v[Temp15..Temp15 + 1] = [rnd(-28000, 28000), victim_Height * -9500 + rnd(-13000, 0)]
-		v[Temp15 + 2] = rnd(-3, 3) * rnd(1900, 2250)
-		v[Temp15 + 3] = rnd(0, 2) * -250
-		v[Temp15 + 5] = rnd(11, 14)
-		@if `victim_ExMotionFlags & 16777216 {
-				v[Temp15 + 5] += rnd(3, 5)
-				
-		}
-		v[Temp15 + 6] = TT2 = rnd(120000, 350000) * [-1, 1][rnd(0, 1)]
-		@if TT2 >= 0 {
-				v[Temp15 + 7] = rnd(30000, 50000)
-				
-		} .else bl {
-				v[Temp15 + 7] = rnd(-50000, -30000)
-				
-		}
-		v[Temp15 + 7] = rnd(-60000, 60000)
 
+		@if `v[378] & BS_RMAG_PICFLAG_FOUND_SHIELD {
+			Temp15 = Temp14 + 269
+			v[0] = v[Temp15..Temp15 + 1] = [rnd(-28000, 28000), victim_Height * -9500 + rnd(-13000, 0)]
+			v[Temp15 + 2] = rnd(-3, 3) * rnd(1900, 2250)
+			v[Temp15 + 3] = rnd(0, 2) * -250
+			v[Temp15 + 5] = rnd(11, 14)
+			@if `victim_ExMotionFlags & 16777216 {
+					v[Temp15 + 5] += rnd(3, 5)
+					
+			}
+			v[Temp15 + 6] = TT2 = rnd(120000, 350000) * [-1, 1][rnd(0, 1)]
+			@if TT2 >= 0 {
+					v[Temp15 + 7] = rnd(30000, 50000)
+					
+			} .else bl {
+					v[Temp15 + 7] = rnd(-50000, -30000)
+					
+			}
+			v[Temp15 + 7] = rnd(-60000, 60000)
+		}
 
 		// "###############Helm found"
 		// - remove helm layer

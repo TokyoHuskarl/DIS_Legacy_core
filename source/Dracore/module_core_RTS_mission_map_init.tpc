@@ -662,7 +662,6 @@ __fn CEV_MISSION_INIT {
 	v[142] = 100
 	v[421] = 100
 	@comment "＃＃＃＃＃＃This part might cause some gaps minimap, so achtung"
-	MapHeightMapType = 0
 	v[501] = player.mapId
 	v[2080] = 2301
 	Map_LimitCoordX_min = ev[3].x
@@ -1083,6 +1082,7 @@ __fn CEV_MISSION_MAP_INIT {
 	
 
 	// mapdef.js.txt file won't be loaded when the game didn't load missiondef.js.txt.
+	MapHeightMapType = 0
 	@if loadedJsConfig.isOn() {
 		loadMapDef()
 		run_RTSmapGeneration()
@@ -1806,8 +1806,8 @@ __fn CEV_MISSION_MAP_INIT {
 	    
 	} .else bl {
 	    @if MapHeightMapType == 1 {
-		str1 .asg "../Maps/"
-		str1 .cat DISmap_MapDirectory
+		str1 .asg DIS_MAPHOMEPATH
+		str1 .cat RTSmap_MapdefDir
 		t[502..503] .asg str1
 		str2 .cat "/heightmap_light"
 		str3 .cat "/heightmap_dark"

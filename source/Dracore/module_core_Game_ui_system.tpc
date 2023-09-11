@@ -227,14 +227,16 @@ __fn func_open_y_or_n_menu $picid_begin $str_main $str_y $str_n {
 
 def macro_set_faction_default = {
 
-			v[2223] = 3
+			v[2223] = FAC_dra
 			v[2224] = 1
 
 }
 
 //picking faction window
-def STRING_LegacyGUI_faction_select = __str(PATH_gui_setting,"def_selectable_factions")
-def STRING_LegacyGUI_faction_select_language = "lang_selectable_factions"
+def PATH_LegacyGUI_faction_select = __str(PATH_gui_setting,"def_selectable_factions")
+def PATH_LegacyGUI_faction_select_language = "lang_selectable_factions"
+
+
 
 __fn func_ui_start_pick_faction_window {
 	// @comment "Inventry mode switches end"
@@ -250,13 +252,13 @@ __fn func_ui_start_pick_faction_window {
 	}
 
 	// @comment "Inventry mode switches end"
-	inputstr .asg  .file STRING_LegacyGUI_faction_select, .utf8
+	inputstr .asg  .file PATH_LegacyGUI_faction_select, .utf8
 	inputstr .split "*/", str9, TT1
 	inputstr .split LF, t[0], TT1
 
 	str1 .asg PATH_moduleLang
 	str1 .cat Str_LanguagePath
-	str1 .cat STRING_LegacyGUI_faction_select_language
+	str1 .cat PATH_LegacyGUI_faction_select_language
 	readLangFile(str1,str1)
 	@if str1.neq "" { // have lang file
 		str1 .split LF, t[99], TT2 // split to t[100~]
@@ -660,14 +662,20 @@ __fn func_ui_start_pick_faction_window {
 }
 
 
-__fn func_ui_show_noloading {
+
+def {
+	STRING_TIPS = __str("TIPS:\t[3000]")
+	STRING_NOWLOADING = "　NOW LOADING..."
+}
+
+__fn func_ui_show_nowloading {
 
 	@bgm.stop
 	@call .cev 1915
 	v[342] = 20
 	v[343] = v[1002] - 30
 	@pic[1001].strpic {
-			"TIPS:\t[3000]"
+			STRING_TIPS
 			.pos v[1115], v[342] .center
 			.size 0, 0    .chromakey 1
 			.scale 100
@@ -682,7 +690,7 @@ __fn func_ui_show_noloading {
 			.affectedByShake
 	}
 	@pic[999].strpic {
-			"　NOW LOADING..."
+			STRING_NOWLOADING
 			.pos v[1115], v[343] .center
 			.size 0, 0    .chromakey 1
 			.scale 100
@@ -703,7 +711,7 @@ __fn func_ui_show_noloading {
 	}
 	v[344] = v[1001] / 2
 	v[345] = v[1002] / 2
-	@if v[2223] != 1 {
+	@if v[2223] != FAC_imperial {
 			@pic[997].show {
 					"..\assets\logo"
 					.pos v[344], v[345] .center

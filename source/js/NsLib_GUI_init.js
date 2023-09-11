@@ -183,9 +183,9 @@ DIS.agent = {
 
 		for (let i = 0; i < DIS.AgentsLimit; i++){
 			let p = 5001
-			this.genPtrPos += 1;
 			this.genPtrPos %= DIS.AgentsLimit; // compared to ternary operator, which is faster?
 			p += this.genPtrPos * 300
+			this.genPtrPos++; // this increment position is correct since if it's empty, the actual slot ID is (genPtrPos + 1)
 			if (getv(p) <= 0){
 				emptyspaceID = this.genPtrPos;
 				break;
@@ -407,7 +407,6 @@ const MAPGEN_nomapgen = 0,
 	MAPGEN_script = 3;
 
 
-const Adr_HeightGenType = 2056;
 
 // height gen 
 const HGEN_NOTHING = 0,
@@ -421,14 +420,16 @@ class RTSmap {
 		this.size = [50,50]; // temp
 		this.isGenerated = false;
 		this.heightgenType = HGEN_NOTHING; // 
-		this.Tileset = 1; // RM tile set - if it's not defined, at least try to load 1.
+		this.tileset = 1; // RM tile set - if it's not defined, at least try to load 1.
 		this.terrainSource = "mapdata.png"; // png?
 	}
 	
 	
 	build(){ // this function called through mission init process, after RTS.openMissionMapDataloading() done after mapdef.js.txt is read.
 		const Adr_TileID = 2060;
-		setv(Adr_TileID,this.defaultTileset);
+		const Adr_HeightGenType = 2056;
+
+		setv(Adr_TileID,this.tileset);
 		this.generate();
 		setv(Adr_HeightGenType,this.heightgenType)
 	};
@@ -871,7 +872,7 @@ var Cmd = {
 
 		setCgrp: function(grp){
 			let agentlist = "";
-			for (let elm in grp) {
+			for (let elm of grp) {
 				agentlist += elm + "|";
 			};
 			Cmd.Qset(this.CmdType,"setCgrp",agentlist);
@@ -1247,3 +1248,5 @@ class Radiobutton extends UI_object {
 
 
 // init 2
+//
+

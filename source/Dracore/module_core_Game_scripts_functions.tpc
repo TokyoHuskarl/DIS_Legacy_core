@@ -86,7 +86,7 @@ __fn DIS_Cmd_PackTree $chosenobj $md $counter $given_v_or_str $flags {
 		DIS_Cmd_group(str_link_Cmd_group,$md,$counter,$given_v_or_str,$flags)
 
 	}.elif $chosenobj == CTYP_UI { // Cmd.ui
-		DIS_Cmd_ui(str_link_Cmd_group,$md,$counter,$given_v_or_str,$flags)
+		DIS_Cmd_ui(str_link_Cmd_ui,$md,$counter,$given_v_or_str,$flags)
 
 	}
 
@@ -598,8 +598,8 @@ def {
 __fn cmd_team_give_tech_flag $teamID $tech_group $tech_flag {
 	t2v(SSargs0,var1) // teamID
 	t2v(SSargs1,var2) // tech slot
-	t2v(SSargs2,var3) // this must be hex
-	
+	SSargs2.toNum var3 .hex
+
 	// this might seem retarded kek
 	var1 = max(var1, 0)
 	var1 = min(var1, 3)
@@ -633,6 +633,9 @@ __fn cmd_player_change_view $playerid $tileX $tileY {
 	LEGV_CamWarpy = boat.y
 	LEGS_Call_CameraWarp.on
 }
+
+
+
 
 //$vic_or_def 1 = def, 2 = vic 
 __fn cmd_player_prepare_endgame $playerid $vic_or_def { // Cmd.mission.endMission
