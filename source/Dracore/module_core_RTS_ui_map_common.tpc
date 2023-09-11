@@ -1,130 +1,138 @@
+//kek this one is also fucking horrible
 
 // oh.
 __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
+
+	def {
+		PATH_ui_cohorthpbar = __str(PATH_ui_dir,"\cohortHPbar")
+		PATH_ui_hpbar = __str(PATH_ui_dir,"\HP_bar_united")
+	}
+
+
 	//draw HP bar function
 	def showAR = 1
 	def showHP = 2
 	__fn show_Ally_AR_HP_bar $showwhat {
 			//get HP/AR ratio
-			v[v[303]].copy v[303], 2
-			v[304] -= 16
-			v[341] = 100 - v[v[302] + 260] * 22
-			v[342] = 100
-			v[735] = v[(v[v[301]]*300+4735)]
+			v[Temp3].copy Temp3, 2
+			Temp4 -= 16
+			TT1 = 100 - v[Temp2 + 260] * 22
+			TT2 = 100
+			v[735] = v[(v[Temp1]*300+4735)]
 			//If selected units has Cohort assignment
 			@if `between(v[735],1,10){
-			v[303] -=4
-			v[706] = ((v[706] * 100 / (max(v[705], 1) * 5) * 10)-10+(400 - 200*$showwhat)) + v[735]
-			 @pic[v[310]].show {
-			    "ui\cohortHPbar"
-			    .pos v[303], v[304] .center
-			    .scrollWithMap
-			    .chromakey 1
-			    .scale 100
-			    .rgbs v[342], v[342], v[342], v[341]
-			    .trans 0
-			    .grid 10, 40 .cell v[706]
-			    .mapLayer 7
-			    .eraseWhenTransfer
-			    .affectedByFlash
-			    .affectedByShake
-			}   
+				Temp3 -= 4
+				v[706] = ((v[706] * 100 / (max(v[705], 1) * 5) * 10)-10+(400 - 200*$showwhat)) + v[735]
+				 @pic[Temp10].show {
+						PATH_ui_cohorthpbar
+						.pos Temp3, Temp4 .center
+						.scrollWithMap
+						.chromakey 1
+						.scale 100
+						.rgbs TT2, TT2, TT2, TT1
+						.trans 0
+						.grid 10, 40 .cell v[706]
+						.mapLayer 7
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
+				}   
 			}.else bl{
-			
-			v[706] = max(v[706] * 100 / (max(v[705], 1) * 5) * 3, 3) -$showwhat
-			
-			@pic[v[310]].show {
-			    "ui\HP_bar_united"
-			    .pos v[303], v[304] .center
-			    .scrollWithMap
-			    .chromakey 0
-			    .scale 100
-			    .trans 0
-			    .rgbs v[342], v[342], v[342], v[341]
-			    .grid 3, 20 .cell v[706]
-			    .mapLayer 7
-			    .eraseWhenTransfer
-			    .affectedByFlash
-			    .affectedByShake
-			}   
+				
+				v[706] = max(v[706] * 100 / (max(v[705], 1) * 5) * 3, 3) -$showwhat
+				
+				@pic[Temp10].show {
+						PATH_ui_hpbar
+						.pos Temp3, Temp4 .center
+						.scrollWithMap
+						.chromakey 0
+						.scale 100
+						.trans 0
+						.rgbs TT2, TT2, TT2, TT1
+						.grid 3, 20 .cell v[706]
+						.mapLayer 7
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
+				}   
 			}
 	}
 
 	//Event Start
 	@comment "module_core_RTS_ui_map_common.tpc"
-	v[301] = 101
+	Temp1 = Adr_PlayerSelectList_Head
 	v[372] = 0
-	@doWhile v[301] <= v[1007] .dst v[309] {
-	    v[310] = v[309] + 931
-	    @if v[v[301]] != 0 {
-		v[372] = 1
-		v[711] = v[v[301]] * 300 
-		v[711] += 4811
-		v[371] = v[v[711]] <= 0 ? 1 : v[943]
-		@if v[371] == 0 {
-		    //AR
-		    v[302] = v[v[301]] * 300 
-		    v[302] += 4700
-		    v[303] = v[302] + 7
-		    v[299] = v[302] + 138
-		    v[705] = v[v[299]]
-		    v[706] = v[v[711]]
-		    @if v[706] > 0 {
-			show_Ally_AR_HP_bar(showAR)
-			
-		    } .else bl {
-			@pic[v[310]].show {
-			    "ui\HP_bar_united"
-			    .pos 160, 120 .center
-			    .scrollWithMap
-			    .chromakey 0
-			    .scale 100
-			    .trans 100
-			    .rgbs 100, 100, 100, 100
-			    .grid 1, 20 .cell v[706]
-			    .mapLayer 8
-			    .eraseWhenTransfer
-			    .affectedByFlash
-			    .affectedByShake
-			}
-			
-		    }
-		    
-		} .else bl {
-		    //@comment "AR<=0 && Ctrl==1"
-		    //@comment "HP"
-		    //@comment "配列ゲット"
-		    v[302] = v[v[301]] * 300
-		    v[302] += 4700
-		    v[303] = v[302] + 7
-		    v[300] = v[302] + 105
-		    v[v[300]].copy v[705], 2
-		    @if v[706] > 0 {
-			show_Ally_AR_HP_bar(showHP)
-			
-		    } .else bl {
-			@pic[v[310]].show {
-			    "ui\HP_bar_united"
-			    .pos 160, 120 .center
-			    .scrollWithMap
-			    .chromakey 0
-			    .scale 100
-			    .trans 100
-			    .rgbs 100, 100, 100, 100
-			    .grid 3, 20 .cell v[706]
-			    .mapLayer 8
-			    .eraseWhenTransfer
-			    .affectedByFlash
-			    .affectedByShake
-			}
-			
-		    }
-		    
-		}
-		
+	@doWhile Temp1 <= v[1007] .dst Temp9 {
+	    Temp10 = Temp9 + 931
+	    @if v[Temp1] != 0 {
+				v[372] = 1
+				v[711] = v[Temp1] * 300 
+				v[711] += 4811
+				v[371] = v[v[711]] <= 0 ? 1 : v[943]
+				@if v[371] == 0 {
+						//AR
+						Temp2 = v[Temp1] * 300 
+						Temp2 += 4700
+						Temp3 = Temp2 + 7
+						Ptr19 = Temp2 + 138
+						v[705] = v[Ptr19]
+						v[706] = v[v[711]]
+						@if v[706] > 0 {
+					show_Ally_AR_HP_bar(showAR)
+					
+						} .else bl {
+					@pic[Temp10].show {
+							PATH_ui_hpbar
+							.pos 160, 120 .center
+							.scrollWithMap
+							.chromakey 0
+							.scale 100
+							.trans 100
+							.rgbs 100, 100, 100, 100
+							.grid 1, 20 .cell v[706]
+							.mapLayer 8
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+					
+						}
+						
+				} .else bl {
+						//@comment "AR<=0 && Ctrl==1"
+						//@comment "HP"
+						//@comment "配列ゲット"
+						Temp2 = v[Temp1] * 300
+						Temp2 += 4700
+						Temp3 = Temp2 + 7
+						Ptr20 = Temp2 + 105
+						v[Ptr20].copy v[705], 2
+						@if v[706] > 0 {
+					show_Ally_AR_HP_bar(showHP)
+					
+						} .else bl {
+					@pic[Temp10].show {
+							PATH_ui_hpbar
+							.pos 160, 120 .center
+							.scrollWithMap
+							.chromakey 0
+							.scale 100
+							.trans 100
+							.rgbs 100, 100, 100, 100
+							.grid 3, 20 .cell v[706]
+							.mapLayer 8
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+					
+						}
+						
+				}
+				
 	    } .else bl {
-		@pic[v[310]].show {
-		    "ui\HP_bar_united"
+		@pic[Temp10].show {
+		    PATH_ui_hpbar
 		    .pos 160, 120 .center
 		    .scrollWithMap
 		    .chromakey 0
@@ -139,135 +147,135 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 		}
 		
 	    }
-	    v[301] += 1
+	    Temp1 += 1
 	    
 	}
 
 	@if `v[944] == 1 && v[372] == 0 {
-	    @doWhile v[372] < 40 .dst v[309] {
-		//@comment "Check Depicted List"
-		v[310] = v[372] + 931
-		v[301] = v[1184] + v[309] 
-		v[301] += 1
-		@if v[v[301]] != 0 {
-		    @if `v[v[v[301]] * 300 + 4800] == 0 && v[v[v[301]] * 300 + 4701] > 0 {
-			v[711] = v[v[301]] * 300 
-			v[711] += 4811
-			v[371] = v[v[711]] <= 0 ? 1 : v[943]
-			@if v[371] == 0 {
-			    //@comment "AR"
-			    //@comment "配列ゲット"
-			    v[302] = v[v[301]] * 300 
-			    v[302] += 4700
-			    v[303] = v[302] + 7
-			    v[299] = v[302] + 138
-			    v[705] = v[v[299]]
-			    v[706] = v[v[711]]
-			    @if v[706] > 0 {
-				show_Ally_AR_HP_bar(showAR)
-				
-			    } .else bl {
-				@pic[v[310]].show {
-				    "ui\HP_bar_united"
-				    .pos 160, 120 .center
-				    .scrollWithMap
-				    .chromakey 0
-				    .scale 100
-				    .trans 100
-				    .rgbs 100, 100, 100, 100
-				    .grid 1, 20 .cell v[706]
-				    .mapLayer 8
-				    .eraseWhenTransfer
-				    .affectedByFlash
-				    .affectedByShake
+	    @doWhile v[372] < 40 .dst Temp9 {
+				//@comment "Check Depicted List"
+				Temp10 = v[372] + 931
+				Temp1 = v[1184] + Temp9 
+				Temp1 += 1
+				@if v[Temp1] != 0 {
+						@if `v[v[Temp1] * 300 + 4800] == 0 && v[v[Temp1] * 300 + 4701] > 0 {
+					v[711] = v[Temp1] * 300 
+					v[711] += 4811
+					v[371] = v[v[711]] <= 0 ? 1 : v[943]
+					@if v[371] == 0 {
+							//@comment "AR"
+							//@comment "配列ゲット"
+							Temp2 = v[Temp1] * 300 
+							Temp2 += 4700
+							Temp3 = Temp2 + 7
+							Ptr19 = Temp2 + 138
+							v[705] = v[Ptr19]
+							v[706] = v[v[711]]
+							@if v[706] > 0 {
+						show_Ally_AR_HP_bar(showAR)
+						
+							} .else bl {
+						@pic[Temp10].show {
+								PATH_ui_hpbar
+								.pos 160, 120 .center
+								.scrollWithMap
+								.chromakey 0
+								.scale 100
+								.trans 100
+								.rgbs 100, 100, 100, 100
+								.grid 1, 20 .cell v[706]
+								.mapLayer 8
+								.eraseWhenTransfer
+								.affectedByFlash
+								.affectedByShake
+						}
+						
+							}
+							
+					} .else bl {
+							//@comment "AR<=0 && Ctrl==1"
+							//@comment "HP"
+							//@comment "配列ゲット"
+							Temp2 = v[Temp1] * 300 
+							Temp2 += 4700
+							Temp3 = Temp2 + 7
+							Ptr20 = Temp2 + 105
+							v[Ptr20].copy v[705], 2
+							@if v[706] > 0 {
+						show_Ally_AR_HP_bar(showHP)
+						
+							} .else bl {
+						@pic[Temp10].show {
+								PATH_ui_hpbar
+								.pos 160, 120 .center
+								.scrollWithMap
+								.chromakey 0
+								.scale 100
+								.trans 100
+								.rgbs 100, 100, 100, 100
+								.grid 3, 20 .cell v[706]
+								.mapLayer 8
+								.eraseWhenTransfer
+								.affectedByFlash
+								.affectedByShake
+						}
+						
+							}
+							
+					}
+					v[372] += 1
+					
+						}
+						
+				} .else bl {
+						@pic[Temp10].show {
+					PATH_ui_hpbar
+					.pos 160, 120 .center
+					.scrollWithMap
+					.chromakey 0
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.grid 1, 20 .cell v[706]
+					.mapLayer 8
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+						}
+						v[372] += 1
+						
 				}
 				
-			    }
-			    
-			} .else bl {
-			    //@comment "AR<=0 && Ctrl==1"
-			    //@comment "HP"
-			    //@comment "配列ゲット"
-			    v[302] = v[v[301]] * 300 
-			    v[302] += 4700
-			    v[303] = v[302] + 7
-			    v[300] = v[302] + 105
-			    v[v[300]].copy v[705], 2
-			    @if v[706] > 0 {
-				show_Ally_AR_HP_bar(showHP)
-				
-			    } .else bl {
-				@pic[v[310]].show {
-				    "ui\HP_bar_united"
-				    .pos 160, 120 .center
-				    .scrollWithMap
-				    .chromakey 0
-				    .scale 100
-				    .trans 100
-				    .rgbs 100, 100, 100, 100
-				    .grid 3, 20 .cell v[706]
-				    .mapLayer 8
-				    .eraseWhenTransfer
-				    .affectedByFlash
-				    .affectedByShake
-				}
-				
-			    }
-			    
-			}
-			v[372] += 1
-			
-		    }
-		    
-		} .else bl {
-		    @pic[v[310]].show {
-			"ui\HP_bar_united"
-			.pos 160, 120 .center
-			.scrollWithMap
-			.chromakey 0
-			.scale 100
-			.trans 100
-			.rgbs 100, 100, 100, 100
-			.grid 1, 20 .cell v[706]
-			.mapLayer 8
-			.eraseWhenTransfer
-			.affectedByFlash
-			.affectedByShake
-		    }
-		    v[372] += 1
-		    
-		}
-		
 	    }
 	    
-	    v[315] = v[301] + 1
+	    Temp15 = Temp1 + 1
 	    @comment "Additional HP bar"
 	    //Additional HP bar.. Friendly
 	    v[372] = 0
-	    @doWhile v[372] < 30 .dst v[309] {
+	    @doWhile v[372] < 30 .dst Temp9 {
 		@comment "Check Depicted List"
-		v[310] = v[372] + 1704
-		v[301] = v[315] + v[309]
-		@if v[v[301]] != 0 {
-		    @if `v[v[v[301]] * 300 + 4800] == 0 && v[v[v[301]] * 300 + 4701] > 0 {
-			v[711] = v[v[301]] * 300 
+		Temp10 = v[372] + 1704
+		Temp1 = Temp15 + Temp9
+		@if v[Temp1] != 0 {
+		    @if `v[v[Temp1] * 300 + 4800] == 0 && v[v[Temp1] * 300 + 4701] > 0 {
+			v[711] = v[Temp1] * 300 
 			v[711] += 4811
 			v[371] = v[v[711]] <= 0 ? 1 : v[943]
 			@if v[371] == 0 {
 			    @comment "AR"
 			    @comment "配列ゲット"
-			    v[302] = v[v[301]] * 300 
-			    v[302] += 4700
-			    v[303] = v[302] + 7
-			    v[299] = v[302] + 138
-			    v[705] = v[v[299]]
+			    Temp2 = v[Temp1] * 300 
+			    Temp2 += 4700
+			    Temp3 = Temp2 + 7
+			    Ptr19 = Temp2 + 138
+			    v[705] = v[Ptr19]
 			    v[706] = v[v[711]]
 			    @if v[706] > 0 {
 				show_Ally_AR_HP_bar(showAR)
 				
 			    } .else bl {
-				@pic[v[310]].show {
-				    "ui\HP_bar_united"
+				@pic[Temp10].show {
+				    PATH_ui_hpbar
 				    .pos 160, 120 .center
 				    .scrollWithMap
 				    .chromakey 0
@@ -287,18 +295,18 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 			    @comment "AR<=0 && Ctrl==1"
 			    @comment "HP"
 			    @comment "配列ゲット"
-			    v[302] = v[v[301]] * 300 
-			    v[302] += 4700
-			    v[303] = v[302] + 7
-			    v[300] = v[302] + 105
-			    v[v[300]].copy v[705], 2
+			    Temp2 = v[Temp1] * 300 
+			    Temp2 += 4700
+			    Temp3 = Temp2 + 7
+			    Ptr20 = Temp2 + 105
+			    v[Ptr20].copy v[705], 2
 			    @if v[706] > 0 {
 				show_Ally_AR_HP_bar(showHP)
 				
 				
 			    } .else bl {
-				@pic[v[310]].show {
-				    "ui\HP_bar_united"
+				@pic[Temp10].show {
+				    PATH_ui_hpbar
 				    .pos 160, 120 .center
 				    .scrollWithMap
 				    .chromakey 0
@@ -320,8 +328,8 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 		    }
 		    
 		} .else bl {
-		    @pic[v[310]].show {
-			"ui\HP_bar_united"
+		    @pic[Temp10].show {
+			PATH_ui_hpbar
 			.pos 160, 120 .center
 			.scrollWithMap
 			.chromakey 0
@@ -342,10 +350,10 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 	    
 	    
 	} .else bl {
-	    @loop 30 .dst v[309] {
+	    @loop 30 .dst Temp9 {
 		//@comment "Check Depicted List"
-		v[310] = v[309] + 1704
-		@pic[v[310]].move {
+		Temp10 = Temp9 + 1704
+		@pic[Temp10].move {
 		    .pos -111, -111 .center
 		    .scale 100
 		    .trans 100
@@ -357,166 +365,167 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 	    
 	    
 	}
+
 	@wait 0
 	@if s[38] .isOff() {
-	    @loop 70 .dst v[309] {
-		//@comment "Check Depicted List"
-		v[310] = v[309] + 1231
-		@pic[v[310]].move {
-		    .pos -111, -111 .center
-		    .scale 100
-		    .trans 100
-		    .time 0
-		    .rgbs 100, 100, 100, 100
-		}
-		
+	    @loop limitOfHpBars_in_screen .dst Temp9 {
+				//@comment "Check Depicted List"
+				Temp10 = Temp9 + 1231
+				@pic[Temp10].move {
+						.pos -111, -111 .center
+						.scale 100
+						.trans 100
+						.time 0
+						.rgbs 100, 100, 100, 100
+				}
+				
 	    }
 	    
 	    //Additional HP bars_Enemies
 	    @if v[944] == 1 {
-		v[372] = 0
-		@doWhile v[372] < 70 .dst v[309] {
-		    //@comment "Check Depicted List"
-		    v[310] = v[372] + 1231
-		    v[301] = v[1184] + v[309] 
-		    v[301] += 1
-		    @if v[v[301]] != 0 {
-			@if `v[v[v[301]] * 300 + 4800] != 0 && v[v[v[301]] * 300 + 4701] > 0 {
-			    v[711] = v[v[301]] * 300 
-			    v[711] += 4811
-			    v[371] = v[v[711]] <= 0 ? 1 : v[943]
-			    @if v[371] == 0 {
-				//@comment "AR"
-				//@comment "配列ゲット"
-				v[302] = v[v[301]] * 300 
-				v[302] += 4700
-				v[303] = v[302] + 7
-				v[299] = v[302] + 138
-				v[705] = v[v[299]]
-				v[706] = v[v[711]]
-				@if v[706] > 0 {
-				    v[706] = max(v[706] * 100 / (max(v[705], 1) * 5) * 3, 3) - 1
-				    //@comment "HPバーびよ～ん"
-				    v[v[303]].copy v[303], 2
-				    v[304] -= 16
-				    //@comment "処理終わり"
-				    //@comment "ALT->ARck"
-				    v[344] = 22 + v[v[302] + 260] * 11
-				    v[341] = 100 - v[v[302] + 260] * 22
-				    v[342] = 90
-				    v[343] = 170
-				    @pic[v[310]].show {
-					"ui\HP_bar_united"
-					.pos v[303], v[304] .center
-					.scrollWithMap
-					.chromakey 0
-					.scale 100
-					.trans v[344]
-					.rgbs v[342], v[342], v[343], v[341]
-					.grid 3, 20 .cell v[706]
-					.mapLayer 7
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
-				    }
-				    
-				} .else bl {
-				    @pic[v[310]].show {
-					"ui\HP_bar_united"
-					.pos 160, 120 .center
-					.scrollWithMap
-					.chromakey 0
-					.scale 100
-					.trans 100
-					.rgbs 100, 100, 100, 100
-					.grid 1, 20 .cell v[706]
-					.mapLayer 7
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
-				    }
-				    
+				v[372] = 0
+				@doWhile v[372] < limitOfHpBars_in_screen .dst Temp9 {
+						//@comment "Check Depicted List"
+						Temp10 = v[372] + 1231
+						Temp1 = v[1184] + Temp9 
+						Temp1 += 1
+						@if v[Temp1] != 0 {
+					@if `v[v[Temp1] * 300 + 4800] != 0 && v[v[Temp1] * 300 + 4701] > 0 {
+							v[711] = v[Temp1] * 300 
+							v[711] += 4811
+							v[371] = v[v[711]] <= 0 ? 1 : v[943]
+							@if v[371] == 0 {
+						//@comment "AR"
+						//@comment "配列ゲット"
+						Temp2 = v[Temp1] * 300 
+						Temp2 += 4700
+						Temp3 = Temp2 + 7
+						Ptr19 = Temp2 + 138
+						v[705] = v[Ptr19]
+						v[706] = v[v[711]]
+						@if v[706] > 0 {
+								v[706] = max(v[706] * 100 / (max(v[705], 1) * 5) * 3, 3) - 1
+								//@comment "HPバーびよ～ん"
+								v[Temp3].copy Temp3, 2
+								Temp4 -= 16
+								//@comment "処理終わり"
+								//@comment "ALT->ARck"
+								TT4 = 22 + v[Temp2 + 260] * 11
+								TT1 = 100 - v[Temp2 + 260] * 22
+								TT2 = 90
+								TT3 = 170
+								@pic[Temp10].show {
+							PATH_ui_hpbar
+							.pos Temp3, Temp4 .center
+							.scrollWithMap
+							.chromakey 0
+							.scale 100
+							.trans TT4
+							.rgbs TT2, TT2, TT3, TT1
+							.grid 3, 20 .cell v[706]
+							.mapLayer 7
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+								}
+								
+						} .else bl {
+								@pic[Temp10].show {
+							PATH_ui_hpbar
+							.pos 160, 120 .center
+							.scrollWithMap
+							.chromakey 0
+							.scale 100
+							.trans 100
+							.rgbs 100, 100, 100, 100
+							.grid 1, 20 .cell v[706]
+							.mapLayer 7
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+								}
+								
+						}
+						
+							} .else bl {
+						//@comment "AR<=0 && Ctrl==1"
+						//@comment "HP"
+						//@comment "配列ゲット"
+						Temp2 = v[Temp1] * 300 
+						Temp2 += 4700
+						Temp3 = Temp2 + 7
+						Ptr20 = Temp2 + 105
+						v[Ptr20].copy v[705], 2
+						@if v[706] > 0 {
+								v[706] = max(v[706] * 100 / (max(v[705], 1) * 5) * 3, 3)
+								//@comment "HPバーびよ～ん"
+								v[Temp3].copy Temp3, 2
+								Temp4 -= 16
+								//@comment "処理終わり"
+								//@comment "ALT->ARck"
+								TT4 = 22 + v[Temp2 + 260] * 11
+								TT1 = 100 - v[Temp2 + 260] * 22
+								TT2 = 100
+								@pic[Temp10].show {
+							PATH_ui_hpbar
+							.pos Temp3, Temp4 .center
+							.scrollWithMap
+							.chromakey 0
+							.scale 100
+							.trans TT4
+							.rgbs TT2, TT2, TT2, TT1
+							.grid 3, 20 .cell v[706]
+							.mapLayer 7
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+								}
+								
+						} .else bl {
+								@pic[Temp10].show {
+							PATH_ui_hpbar
+							.pos 160, 120 .center
+							.scrollWithMap
+							.chromakey 0
+							.scale 100
+							.trans 100
+							.rgbs 100, 100, 100, 100
+							.grid 3, 20 .cell v[706]
+							.mapLayer 7
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+								}
+								
+						}
+						
+							}
+							v[372] += 1
+							
+					}
+					
+						} .else bl {
+					@pic[Temp10].show {
+							PATH_ui_hpbar
+							.pos 160, 120 .center
+							.scrollWithMap
+							.chromakey 0
+							.scale 100
+							.trans 100
+							.rgbs 100, 100, 100, 100
+							.grid 1, 20 .cell v[706]
+							.mapLayer 7
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+					v[372] += 1
+					
+						}
+						
 				}
 				
-			    } .else bl {
-				//@comment "AR<=0 && Ctrl==1"
-				//@comment "HP"
-				//@comment "配列ゲット"
-				v[302] = v[v[301]] * 300 
-				v[302] += 4700
-				v[303] = v[302] + 7
-				v[300] = v[302] + 105
-				v[v[300]].copy v[705], 2
-				@if v[706] > 0 {
-				    v[706] = max(v[706] * 100 / (max(v[705], 1) * 5) * 3, 3)
-				    //@comment "HPバーびよ～ん"
-				    v[v[303]].copy v[303], 2
-				    v[304] -= 16
-				    //@comment "処理終わり"
-				    //@comment "ALT->ARck"
-				    v[344] = 22 + v[v[302] + 260] * 11
-				    v[341] = 100 - v[v[302] + 260] * 22
-				    v[342] = 100
-				    @pic[v[310]].show {
-					"ui\HP_bar_united"
-					.pos v[303], v[304] .center
-					.scrollWithMap
-					.chromakey 0
-					.scale 100
-					.trans v[344]
-					.rgbs v[342], v[342], v[342], v[341]
-					.grid 3, 20 .cell v[706]
-					.mapLayer 7
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
-				    }
-				    
-				} .else bl {
-				    @pic[v[310]].show {
-					"ui\HP_bar_united"
-					.pos 160, 120 .center
-					.scrollWithMap
-					.chromakey 0
-					.scale 100
-					.trans 100
-					.rgbs 100, 100, 100, 100
-					.grid 3, 20 .cell v[706]
-					.mapLayer 7
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
-				    }
-				    
-				}
 				
-			    }
-			    v[372] += 1
-			    
-			}
-			
-		    } .else bl {
-			@pic[v[310]].show {
-			    "ui\HP_bar_united"
-			    .pos 160, 120 .center
-			    .scrollWithMap
-			    .chromakey 0
-			    .scale 100
-			    .trans 100
-			    .rgbs 100, 100, 100, 100
-			    .grid 1, 20 .cell v[706]
-			    .mapLayer 7
-			    .eraseWhenTransfer
-			    .affectedByFlash
-			    .affectedByShake
-			}
-			v[372] += 1
-			
-		    }
-		    
-		}
-		
-		
 	    }
 	    
 	}
