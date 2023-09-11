@@ -2,6 +2,7 @@
 
 
 #include "./../headers/header_scripts.tpc"
+#include "./../headers/header_ai.tpc"
 
 // This weird shit will be gone after Scale Script completed
 #include "./../headers/header_scripts_functions.tpc"
@@ -107,9 +108,9 @@ cev .id(1821), .name("*MapScriptGeneral*"), {
 
 cev .id(1840), .name("ScriptPreproc"), {
 
-	t[800] .split t[525], t[v[1219]], v[505]
+	t[800] .split t[525], t[Const_save_var_Adr_ScriptsBufferHead], v[505]
 	@loop v[505] .dst v[506] {
-	    v[11] = v[1219] + v[506]
+	    v[11] = Const_save_var_Adr_ScriptsBufferHead + v[506]
 	    t[v[11]] .split "=", t[3000], v[341]
 	    @if v[341] == 2 {
 		@if t[3000] .neq "" {
@@ -121,9 +122,9 @@ cev .id(1840), .name("ScriptPreproc"), {
 	    
 	}
 
-	t[801] .split t[525], t[v[1219]], v[505]
+	t[801] .split t[525], t[Const_save_var_Adr_ScriptsBufferHead], v[505]
 	@loop v[505] .dst v[506] {
-	    v[11] = v[1219] + v[506]
+	    v[11] = Const_save_var_Adr_ScriptsBufferHead + v[506]
 	    t[v[11]] .split "=", t[3000], v[341]
 	    @if v[341] == 2 {
 		@if t[3000] .neq "" {
@@ -135,9 +136,9 @@ cev .id(1840), .name("ScriptPreproc"), {
 	    
 	}
 
-	t[802] .split t[525], t[v[1219]], v[505]
+	t[802] .split t[525], t[Const_save_var_Adr_ScriptsBufferHead], v[505]
 	@loop v[505] .dst v[506] {
-	    v[11] = v[1219] + v[506]
+	    v[11] = Const_save_var_Adr_ScriptsBufferHead + v[506]
 	    t[v[11]] .split "=", t[3000], v[341]
 	    @if v[341] == 2 {
 		@if t[3000] .neq "" {
@@ -149,9 +150,9 @@ cev .id(1840), .name("ScriptPreproc"), {
 	    
 	}
 
-	t[803] .split t[525], t[v[1219]], v[505]
+	t[803] .split t[525], t[Const_save_var_Adr_ScriptsBufferHead], v[505]
 	@loop v[505] .dst v[506] {
-	    v[11] = v[1219] + v[506]
+	    v[11] = Const_save_var_Adr_ScriptsBufferHead + v[506]
 	    t[v[11]] .split "=", t[3000], v[341]
 	    @if v[341] == 2 {
 		@if t[3000] .neq "" {

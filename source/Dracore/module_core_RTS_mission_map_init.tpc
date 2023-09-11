@@ -662,7 +662,7 @@ __fn CEV_MISSION_INIT {
 	v[142] = 100
 	v[421] = 100
 	@comment "＃＃＃＃＃＃This part might cause some gaps minimap, so achtung"
-	v[2056] = 0
+	MapHeightMapType = 0
 	v[501] = player.mapId
 	v[2080] = 2301
 	Map_LimitCoordX_min = ev[3].x
@@ -1090,7 +1090,7 @@ __fn CEV_MISSION_MAP_INIT {
 	}
 
 	//@comment "#########Tile Generation########"
-	@if v[2055] == 1 { // this one is shit
+	@if Mapgentype == 1 { // this one is shit
 		inputstr .asg "..\Maps\"
 		inputstr .cat DISmap_MapDirectory
 		inputstr .cat "\"
@@ -1137,14 +1137,14 @@ __fn CEV_MISSION_MAP_INIT {
 			
 		}
 		
-	}.elif v[2055] == 2 { //new
+	}.elif Mapgentype == 2 { //new
 		inputstr .asg DIS_MAPHOMEPATH
 		inputstr .cat RTSmap_MapdefDir
 		inputstr .cat "\"
 		inputstr .cat "mapdata"
 		generateTileMapFromPicfile(inputstr)
 	}
-	
+
 
 	@comment "#########Sight System########"
 	@if Is_SightSystem_On .isOff() {
@@ -1248,7 +1248,7 @@ __fn CEV_MISSION_MAP_INIT {
 	v[0] = [Ptr6..Ptr6 + 160000] = 0
 	v[2063] = var_Map_Width * var_Map_Height
 	v[504] = 3
-	@if  v[2055] == 2 { //new mapdata loaded
+	@if  Mapgentype == 2 { //new mapdata loaded
 	    @loop var_Map_Height .dst v[2064] {
 		    Ptr6 = var_Map_Width * v[2064] + v[4529]
 		    Ptr7 = var_Map_Width * v[2064] + v[1182]
@@ -1307,7 +1307,7 @@ __fn CEV_MISSION_MAP_INIT {
 	}
 
 	@comment "*map tile check*"
-	@if v[2055] != 2 { 
+	@if Mapgentype != 2 { 
 		@loop var_Map_Height .dst v[2064] {
 		    Ptr6 = var_Map_Width * v[2064] + v[4529]
 		    Ptr7 = var_Map_Width * v[2064] + v[1182]
@@ -1801,11 +1801,11 @@ __fn CEV_MISSION_MAP_INIT {
 
 
 
-	@if v[2056] == 2 {
+	@if MapHeightMapType == 2 {
 	    @call .cev 1804
 	    
 	} .else bl {
-	    @if v[2056] == 1 {
+	    @if MapHeightMapType == 1 {
 		str1 .asg "../Maps/"
 		str1 .cat DISmap_MapDirectory
 		t[502..503] .asg str1
@@ -2180,11 +2180,8 @@ Cmd.run();
 
 __fn startupMission {
 	Str_CmdQueue.asg "" // clean up
-	@js .run JSCMD_STARTUP // 
-	@loop bl { // wait until Command is executed
-		@if BOOL_CMD_RUN.isOff(){@break}
-		@wait 0
-	}
+	@js .run JSCMD_STARTUP //
+	WAIT_FOR_JSCMD_EXECUTION // just wait. <-module_core_Game_scripts_functions.tpc
 }
 
 
@@ -2244,12 +2241,12 @@ __fn LEGACY_OLD_MAP_CONF_temporary {
 			}
 			@if t[510] .contains "use_height_map" {
 					t[510] .split "=", t[3000], v[341]
-					t[3001] .toNum v[2056]
+					t[3001] .toNum MapHeightMapType
 					
 			}
 			@if t[510] .contains "use_mapgen" {
 					t[510] .split "=", t[3000], v[341]
-					t[3001] .toNum v[2055]
+					t[3001] .toNum Mapgentype
 					
 			}
 			@if t[510] .contains "use_advanced_tile_system(" {

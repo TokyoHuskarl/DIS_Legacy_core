@@ -27,6 +27,16 @@ deft {
 
 }
 
+def WAIT_FOR_JSCMD_EXECUTION = {
+	@loop bl { // wait until Command is executed
+		@if BOOL_CMD_RUN.isOff(){@break}
+		@wait 0
+	}
+}
+
+__fn callDISCmd $js {
+	
+}
 
 
 // Package Tree - only for calling Cmd.obj.method on RPG_RT.exe, you need init process for each of Cmd Packages before you use this function. 
@@ -150,6 +160,7 @@ __fn DIS_map_methods $LINKstr $md $i $given_v_or_str $flags {
 		{NsCmd($LINKstr, $md, $i, "spnSt",{cmd_spawnStatic(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // map.spawnStatic
 		{NsCmd($LINKstr, $md, $i, "spawnPalisade",{cmd_spawnPalisade(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnPalisade
 		{NsCmd($LINKstr, $md, $i, "spawnWall",{cmd_spawnWall(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnWall
+		{NsCmd($LINKstr, $md, $i, "genHeightmap",{cmd_genHeightmap()})}, // genHeightmap
 		
 
 	])
@@ -228,8 +239,9 @@ __fn DIS_group_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("grp", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "endGamefsafsa",{cmd_player_prepare_endgame(0,SSargs0)})},
-
+		{NsCmd($LINKstr, $md, $i, "setCgrp",{cmd_grp_setCgrp()})},
+		{NsCmd($LINKstr, $md, $i, "registerCohort",{})},
+		
 	])
 }
 
@@ -638,6 +650,7 @@ __fn cmd_player_prepare_endgame $playerid $vic_or_def { // Cmd.mission.endMissio
 
 }
 
+
 // you can quit mission by pressing [TAB] after this function executed
 __fn cmd_mission_set_end_flag { //Cmd.mission.allowToQuit
 	@pic[PicID_VicDef].move {
@@ -651,9 +664,33 @@ __fn cmd_mission_set_end_flag { //Cmd.mission.allowToQuit
 
 }
 
+//##########################
+// Group commands
+//##########################
+
+__fn cmd_grp_setCgrp {
+	aiList_clear() // init Cgrp first
+	// then
+	SSargs0.split "|", Str_ScriptsBufferHead, reg1
+	var1 = Const_save_var_Adr_ScriptsBufferHead
+	@loop reg1 {
+		t[var1].toNum var2
+		aiList_push(var2) // push it
+		var1 += 1
+	}
+	
+}
 
 
+//##########################
+// misc commands
+//##########################
 
+
+__fn cmd_genHeightmap {
+	// generate height map.
+	@call .cev 1804
+}
 
 // toriaezu matometeru dake
 __fn cmd_editmap_zatta {

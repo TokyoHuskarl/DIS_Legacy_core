@@ -8,6 +8,10 @@ deft Str_CmdQueue = 795
 
 defs BOOL_CMD_CALLING = 261 // this flag is for checking whether a building is built by worker or other script
 
+
+defv Const_save_var_Adr_ScriptsBufferHead = 1219
+def Str_ScriptsBufferHead = t[Const_save_var_Adr_ScriptsBufferHead]
+
 __if LOAD_HEADER_AGENT != 1{
 #include "./../headers/header_agent.tpc"
 }
@@ -18,8 +22,8 @@ __if LOAD_HEADER_AGENT != 1{
 #include "./../Dracore/module_core_Game_scripts_functions.tpc"
 
 
-def MAPVAR_START =2000
-def MAPSWITCH_START =400
+def MAPVAR_START = 2000
+def MAPSWITCH_START = 400
 
 __fn macro_script_split{
 	//t[510] .split "(", t[2999], v[341]
