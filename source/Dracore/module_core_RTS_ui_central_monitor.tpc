@@ -16,7 +16,7 @@ def {
 __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 	//// "表示なし"
 	@if LEGS_RUN_MAPEDITMODE .isOff() {
-	    @if LEGV_State_of_Central_Monitor == 0 {
+	    @if LEGV_State_of_Central_Monitor == CENTMODE_FREE {
 		LEGS_StatusPage2.off
 		//// "Disable Formation Info"
 		v[341] = LEGV_ConstUnitsFormationIndicatorPicStart
@@ -163,7 +163,7 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 		
 	    }
 	    //// "単体ステータス"
-	    @if LEGV_State_of_Central_Monitor == 1 {
+	    @if LEGV_State_of_Central_Monitor == CENTMODE_ALLY_SINGLE {
 		ally_single_unit_monitor()
 
 	    }
@@ -171,7 +171,7 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 
 
 
-	    @if LEGV_State_of_Central_Monitor == 2 {
+	    @if LEGV_State_of_Central_Monitor == CENTMODE_ALLY_MULTI {
 		v[202] = 101
 		v[302..303] = 0
 		@loop .inf() {
@@ -892,7 +892,7 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 		
 	    }
 	    // "単体ステータス敵"
-	    @if LEGV_State_of_Central_Monitor == 3 {
+	    @if LEGV_State_of_Central_Monitor == CENTMODE_ENEMY_SINGLE {
 		v[341] = v[4556]
 		@loop 4 {
 		    @pic[v[341]].move {
@@ -1394,6 +1394,7 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 		@wait 0
 		
 	    }
+
 	    @if LEGV_State_of_Central_Monitor == 4 {
 		v[341] = v[4556]
 		@loop 4 {

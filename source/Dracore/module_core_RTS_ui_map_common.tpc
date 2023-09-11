@@ -1,74 +1,34 @@
 //kek this one is also fucking horrible
 
-// oh.
-__fn UI_CEV_RTS_SCREEN_MANAGEMENT {
-
 	def {
 		PATH_ui_cohorthpbar = __str(PATH_ui_dir,"\cohortHPbar")
 		PATH_ui_hpbar = __str(PATH_ui_dir,"\HP_bar_united")
 	}
 
 
-	//draw HP bar function
-	def showAR = 1
-	def showHP = 2
-	__fn show_Ally_AR_HP_bar $showwhat {
-			//get HP/AR ratio
-			v[Temp3].copy Temp3, 2
-			Temp4 -= 16
-			TT1 = 100 - v[Temp2 + 260] * 22
-			TT2 = 100
-			v[735] = v[(v[Temp1]*300+4735)]
-			//If selected units has Cohort assignment
-			@if `between(v[735],1,10){
-				Temp3 -= 4
-				v[706] = ((v[706] * 100 / (max(v[705], 1) * 5) * 10)-10+(400 - 200*$showwhat)) + v[735]
-				 @pic[Temp10].show {
-						PATH_ui_cohorthpbar
-						.pos Temp3, Temp4 .center
-						.scrollWithMap
-						.chromakey 1
-						.scale 100
-						.rgbs TT2, TT2, TT2, TT1
-						.trans 0
-						.grid 10, 40 .cell v[706]
-						.mapLayer 7
-						.eraseWhenTransfer
-						.affectedByFlash
-						.affectedByShake
-				}   
-			}.else bl{
-				
-				v[706] = max(v[706] * 100 / (max(v[705], 1) * 5) * 3, 3) -$showwhat
-				
-				@pic[Temp10].show {
-						PATH_ui_hpbar
-						.pos Temp3, Temp4 .center
-						.scrollWithMap
-						.chromakey 0
-						.scale 100
-						.trans 0
-						.rgbs TT2, TT2, TT2, TT1
-						.grid 3, 20 .cell v[706]
-						.mapLayer 7
-						.eraseWhenTransfer
-						.affectedByFlash
-						.affectedByShake
-				}   
-			}
-	}
-
+// oh.
+__fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 	//Event Start
 	@comment "module_core_RTS_ui_map_common.tpc"
+	@if LEGV_State_of_Central_Monitor == CENTMODE_FREE { //tempo, you must fix for pressing Alt
+		showScreenHPbars()
+	}.else bl {
+		showScreenHPbars()
+	}
+}
+
+
+
+__fn showScreenHPbars {
 	Temp1 = Adr_PlayerSelectList_Head
 	v[372] = 0
-	@doWhile Temp1 <= v[1007] .dst Temp9 {
-	    Temp10 = Temp9 + 931
-	    @if v[Temp1] != 0 {
+	@doWhile Temp1 <= Const_save_var_SelectListSize .dst Temp9 {
+			Temp10 = Temp9 + 931 //pic
+			@if v[Temp1] != 0 {
 				v[372] = 1
 				v[711] = v[Temp1] * 300 
 				v[711] += 4811
-				v[371] = v[v[711]] <= 0 ? 1 : v[943]
+				v[371] = v[v[711]] <= 0 ? 1 : GETKEY_Ctrl
 				@if v[371] == 0 {
 						//AR
 						Temp2 = v[Temp1] * 300 
@@ -130,29 +90,29 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 						
 				}
 				
-	    } .else bl {
+			} .else bl {
 		@pic[Temp10].show {
-		    PATH_ui_hpbar
-		    .pos 160, 120 .center
-		    .scrollWithMap
-		    .chromakey 0
-		    .scale 100
-		    .trans 100
-		    .rgbs 100, 100, 100, 100
-		    .grid 1, 20 .cell v[706]
-		    .mapLayer 8
-		    .eraseWhenTransfer
-		    .affectedByFlash
-		    .affectedByShake
+				PATH_ui_hpbar
+				.pos 160, 120 .center
+				.scrollWithMap
+				.chromakey 0
+				.scale 100
+				.trans 100
+				.rgbs 100, 100, 100, 100
+				.grid 1, 20 .cell v[706]
+				.mapLayer 8
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
 		}
 		
-	    }
-	    Temp1 += 1
-	    
+			}
+			Temp1 += 1
+			
 	}
 
-	@if `v[944] == 1 && v[372] == 0 {
-	    @doWhile v[372] < 40 .dst Temp9 {
+	@if `GETKEY_Alt == 1 && v[372] == 0 {
+			@doWhile v[372] < 40 .dst Temp9 {
 				//@comment "Check Depicted List"
 				Temp10 = v[372] + 931
 				Temp1 = v[1184] + Temp9 
@@ -161,7 +121,7 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 						@if `v[v[Temp1] * 300 + 4800] == 0 && v[v[Temp1] * 300 + 4701] > 0 {
 					v[711] = v[Temp1] * 300 
 					v[711] += 4811
-					v[371] = v[v[711]] <= 0 ? 1 : v[943]
+					v[371] = v[v[711]] <= 0 ? 1 : GETKEY_Ctrl
 					@if v[371] == 0 {
 							//@comment "AR"
 							//@comment "配列ゲット"
@@ -246,89 +206,89 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 						
 				}
 				
-	    }
-	    
-	    Temp15 = Temp1 + 1
-	    @comment "Additional HP bar"
-	    //Additional HP bar.. Friendly
-	    v[372] = 0
-	    @doWhile v[372] < 30 .dst Temp9 {
+			}
+			
+			Temp15 = Temp1 + 1
+			@comment "Additional HP bar"
+			//Additional HP bar.. Friendly
+			v[372] = 0
+			@doWhile v[372] < 30 .dst Temp9 {
 		@comment "Check Depicted List"
 		Temp10 = v[372] + 1704
 		Temp1 = Temp15 + Temp9
 		@if v[Temp1] != 0 {
-		    @if `v[v[Temp1] * 300 + 4800] == 0 && v[v[Temp1] * 300 + 4701] > 0 {
+				@if `v[v[Temp1] * 300 + 4800] == 0 && v[v[Temp1] * 300 + 4701] > 0 {
 			v[711] = v[Temp1] * 300 
 			v[711] += 4811
-			v[371] = v[v[711]] <= 0 ? 1 : v[943]
+			v[371] = v[v[711]] <= 0 ? 1 : GETKEY_Ctrl
 			@if v[371] == 0 {
-			    @comment "AR"
-			    @comment "配列ゲット"
-			    Temp2 = v[Temp1] * 300 
-			    Temp2 += 4700
-			    Temp3 = Temp2 + 7
-			    Ptr19 = Temp2 + 138
-			    v[705] = v[Ptr19]
-			    v[706] = v[v[711]]
-			    @if v[706] > 0 {
+					@comment "AR"
+					@comment "配列ゲット"
+					Temp2 = v[Temp1] * 300 
+					Temp2 += 4700
+					Temp3 = Temp2 + 7
+					Ptr19 = Temp2 + 138
+					v[705] = v[Ptr19]
+					v[706] = v[v[711]]
+					@if v[706] > 0 {
 				show_Ally_AR_HP_bar(showAR)
 				
-			    } .else bl {
+					} .else bl {
 				@pic[Temp10].show {
-				    PATH_ui_hpbar
-				    .pos 160, 120 .center
-				    .scrollWithMap
-				    .chromakey 0
-				    .scale 100
-				    .trans 100
-				    .rgbs 100, 100, 100, 100
-				    .grid 1, 20 .cell v[706]
-				    .mapLayer 7
-				    .eraseWhenTransfer
-				    .affectedByFlash
-				    .affectedByShake
+						PATH_ui_hpbar
+						.pos 160, 120 .center
+						.scrollWithMap
+						.chromakey 0
+						.scale 100
+						.trans 100
+						.rgbs 100, 100, 100, 100
+						.grid 1, 20 .cell v[706]
+						.mapLayer 7
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
 				}
 				
-			    }
-			    
+					}
+					
 			} .else bl {
-			    @comment "AR<=0 && Ctrl==1"
-			    @comment "HP"
-			    @comment "配列ゲット"
-			    Temp2 = v[Temp1] * 300 
-			    Temp2 += 4700
-			    Temp3 = Temp2 + 7
-			    Ptr20 = Temp2 + 105
-			    v[Ptr20].copy v[705], 2
-			    @if v[706] > 0 {
+					@comment "AR<=0 && Ctrl==1"
+					@comment "HP"
+					@comment "配列ゲット"
+					Temp2 = v[Temp1] * 300 
+					Temp2 += 4700
+					Temp3 = Temp2 + 7
+					Ptr20 = Temp2 + 105
+					v[Ptr20].copy v[705], 2
+					@if v[706] > 0 {
 				show_Ally_AR_HP_bar(showHP)
 				
 				
-			    } .else bl {
+					} .else bl {
 				@pic[Temp10].show {
-				    PATH_ui_hpbar
-				    .pos 160, 120 .center
-				    .scrollWithMap
-				    .chromakey 0
-				    .scale 100
-				    .trans 100
-				    .rgbs 100, 100, 100, 100
-				    .grid 3, 20 .cell v[706]
-				    .mapLayer 7
-				    .eraseWhenTransfer
-				    .affectedByFlash
-				    .affectedByShake
+						PATH_ui_hpbar
+						.pos 160, 120 .center
+						.scrollWithMap
+						.chromakey 0
+						.scale 100
+						.trans 100
+						.rgbs 100, 100, 100, 100
+						.grid 3, 20 .cell v[706]
+						.mapLayer 7
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
 				}
 				
-			    }
-			    
+					}
+					
 			}
 			v[372] += 1
 			
-		    }
-		    
+				}
+				
 		} .else bl {
-		    @pic[Temp10].show {
+				@pic[Temp10].show {
 			PATH_ui_hpbar
 			.pos 160, 120 .center
 			.scrollWithMap
@@ -341,34 +301,34 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 			.eraseWhenTransfer
 			.affectedByFlash
 			.affectedByShake
-		    }
-		    v[372] += 1
-		    
+				}
+				v[372] += 1
+				
 		}
 		
-	    }
-	    
-	    
+			}
+			
+			
 	} .else bl {
-	    @loop 30 .dst Temp9 {
+			@loop 30 .dst Temp9 {
 		//@comment "Check Depicted List"
 		Temp10 = Temp9 + 1704
 		@pic[Temp10].move {
-		    .pos -111, -111 .center
-		    .scale 100
-		    .trans 100
-		    .time 0
-		    .rgbs 100, 100, 100, 100
+				.pos -111, -111 .center
+				.scale 100
+				.trans 100
+				.time 0
+				.rgbs 100, 100, 100, 100
 		}
 		
-	    }
-	    
-	    
+			}
+			
+			
 	}
 
 	@wait 0
 	@if s[38] .isOff() {
-	    @loop limitOfHpBars_in_screen .dst Temp9 {
+			@loop limitOfHpBars_in_screen .dst Temp9 {
 				//@comment "Check Depicted List"
 				Temp10 = Temp9 + 1231
 				@pic[Temp10].move {
@@ -379,10 +339,10 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 						.rgbs 100, 100, 100, 100
 				}
 				
-	    }
-	    
-	    //Additional HP bars_Enemies
-	    @if v[944] == 1 {
+			}
+			
+			//Additional HP bars_Enemies
+			@if GETKEY_Alt == 1 {
 				v[372] = 0
 				@doWhile v[372] < limitOfHpBars_in_screen .dst Temp9 {
 						//@comment "Check Depicted List"
@@ -393,7 +353,7 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 					@if `v[v[Temp1] * 300 + 4800] != 0 && v[v[Temp1] * 300 + 4701] > 0 {
 							v[711] = v[Temp1] * 300 
 							v[711] += 4811
-							v[371] = v[v[711]] <= 0 ? 1 : v[943]
+							v[371] = v[v[711]] <= 0 ? 1 : GETKEY_Ctrl
 							@if v[371] == 0 {
 						//@comment "AR"
 						//@comment "配列ゲット"
@@ -526,7 +486,59 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 				}
 				
 				
-	    }
-	    
+			}
+			
 	}
+
 }
+
+//draw HP bar function
+def showAR = 1
+def showHP = 2
+__fn show_Ally_AR_HP_bar $showwhat {
+		//get HP/AR ratio
+		v[Temp3].copy Temp3, 2
+		Temp4 -= 16
+		TT1 = 100 - v[Temp2 + 260] * 22
+		TT2 = 100
+		v[735] = v[(v[Temp1] * 300 + 4735)]
+		//If selected units has Cohort assignment
+		@if `between(v[735],1,10){
+			Temp3 -= 4
+			v[706] = ((v[706] * 100 / (max(v[705], 1) * 5) * 10) - 10 + (400 - 200*$showwhat)) + v[735]
+			 @pic[Temp10].show {
+					PATH_ui_cohorthpbar
+					.pos Temp3, Temp4 .center
+					.scrollWithMap
+					.chromakey 1
+					.scale 100
+					.rgbs TT2, TT2, TT2, TT1
+					.trans 0
+					.grid 10, 40 .cell v[706]
+					.mapLayer 7
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+			}   
+		}.else bl{
+			
+			v[706] = max(v[706] * 100 / (max(v[705], 1) * 5) * 3, 3) -$showwhat
+			
+			@pic[Temp10].show {
+					PATH_ui_hpbar
+					.pos Temp3, Temp4 .center
+					.scrollWithMap
+					.chromakey 0
+					.scale 100
+					.trans 0
+					.rgbs TT2, TT2, TT2, TT1
+					.grid 3, 20 .cell v[706]
+					.mapLayer 7
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+			}   
+		}
+}
+
+

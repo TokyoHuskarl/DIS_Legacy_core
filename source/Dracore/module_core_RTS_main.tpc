@@ -19,13 +19,10 @@ def Ptr_worker_on_job_start = 2940
 
 //this is obsolete shite
 __fn macro_HPSPreg $agent $HP_or_SP $amount{
-	/* "Var1 = Obj 1~
+	/* Var1 = Obj 1~
 	Var2 = 0/1# HP/MP
-	Var3 = Amount"*/
-	//TT1 = $HP_or_SP * 2
+	Var3 = Amount*/
 	TT2 = $agent * 300 + 4806 + ($HP_or_SP * 2)
-	//TT3 = TT2 - 1
-	//v[TT2] += $amount
 	// "Min(HealedHP,MaxHP)"
 	v[TT2] = min(v[TT2] + $amount, v[TT2 - 1])
 }
@@ -47,19 +44,10 @@ __fn macro_HPSPreg $agent $HP_or_SP $amount{
 cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {   
 	@comment "module_core_RTS_main.tpc"
 
-	/*@if v[2501] == 0 {
-	    v[522] = 0
-	    
-	} .else bl {
-	    v[522] += v[182]
-	    
-	}*/
 	v[522] = v[2501] == 0 ? 0 : v[522] + v[182]
 	v[ptr_null].copy v[181],4
 	v[191] -= 1
 
-	//v[v[1071]..v[1079]] = 0 
-	//v[v[1071]..v[1079]] >>= Const_var_bit_maniacs
 	v[ptr_null].copy v[v[1071]], Const_var_save_all_morton_memories
 
 	// get Map Origin's ref coord
@@ -88,7 +76,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[401] = v[v[536]] - 1
 	    Temp1 = v[401] * v[1117] 
 	    Temp1 += 5001
-	    v[Temp1].copy v[601], 300
+	    v[Temp1].copy agent_AgentType, 300
 	    @if `!(agent_AgentBits & 2097152) {
 		@if `v[811] & 2 { // there's moving static (vikang ship
 
@@ -157,10 +145,6 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "WPのずれを一括で修正"
 	    v[641] .add v[1021], 2
 	    // "座標ずらし"
-	    //Ptr20 = Temp1 + 5
-	    //Ptr19 = Temp1 + 12 
-	    //Ptr18 = Temp1 + 7
-	    //Ptr17 = 53
 	    // "#壁衝突チェックパート
 	    //#自己x 311
 	    //#自己y 312
@@ -172,13 +156,10 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    Temp11.copy Temp3, 2
 		    
 	    // "######################Get Terrain and Elevation info"
-	    @if `v[811] & 2 { // unless it's moving static, skip getting tile info...
+	    @if `v[811] & 2 { // skip getting tile info unless it's moving static...
 
-		    //v[311..312] /= 10000
 		    // "ずれ計算"
-		    //24.4.23
 		    macro_cord_diff(Temp11 Temp12)
-		    //macro_diff_var311to312()
 	    
 		    Temp13 = v[v[1182] + Temp11 - Map_LimitCoordX_min + (Temp12 - Map_LimitCoordY_min) * var_Map_Width]
 		    v[657] = Temp13 / 100000000
@@ -187,14 +168,10 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "######################"
 	    Temp3 .add v[612], 2
 
-	    //v[303..304] /= 10000
 	    // "ずれ計算"
-	    //24.4.23
 	    macro_cord_diff(Temp3 Temp4)
-	    //macro_diff_var303to304_ev()
 
 	    // "set mapXY"
-	    //Ptr13 = Temp1 + 26
 	    Temp3.copy v[626], 2
 	    // "X座標"
 	    // "#カメラずらして"
@@ -261,7 +238,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    		}
 	    }
 	    TT1 = Temp1 + 1
-	    v[601].copy v[TT1], 300
+	    agent_AgentType.copy v[TT1], 300
 
 	
 	    // "++"
@@ -410,7 +387,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
 					    	s[TT8].on
 					    	// "#"
-					    	v[v[1112] + v[184]] = (v[601] != -9 ? (v[608] + v[611] / 2 + v[1011] + 500) * 1000 : 9999000) + v[401]
+					    	v[v[1112] + v[184]] = (agent_AgentType != -9 ? (v[608] + v[611] / 2 + v[1011] + 500) * 1000 : 9999000) + v[401]
 					    	v[v[1113] + v[184]]=v[401]
 					    	v[184] += 1
 					}
@@ -476,7 +453,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	}
 
 	@wait 0
-	@if s[2] .isOff() {
+	@if Is_Paused .isOff() {
 	    v[536] = v[4532]
 	    @while v[v[536]] != 0 {
 		v[401] = v[v[536]] - 1
@@ -726,7 +703,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    Temp1 += 5000
 	    func_main_extract_agent_vars()
 	    // "Set Dir"
-	    @if s[2] .isOff() {
+	    @if Is_Paused .isOff() {
 		@if `agent_AgentBits & AgentBits_FLAG_DirChange_skip {
 		    @if `v[726] & 8388608 {
 			agent_AgentBits &= -134217729 //~134217728
@@ -776,11 +753,11 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    Temp1 += 5000
 
 	    Ptr19 = Temp1 + 1
-	    v[Ptr19].copy v[601], 300
+	    v[Ptr19].copy agent_AgentType, 300
 		agent_ref_stats()
 		func_blink_progress()
 	    //@call .cev 2020
-	    v[601].copy v[Ptr19], 300    
+	    agent_AgentType.copy v[Ptr19], 300    
 	    // "++"
 	    v[536] += 2
 	    
@@ -795,19 +772,19 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    Temp1 += 5000
 
 	    Ptr19 = Temp1 + 1
-	    v[Ptr19].copy v[601], 300
+	    v[Ptr19].copy agent_AgentType, 300
 
 		agent_ref_stats()
 		func_blink_progress()
 	    //@call .cev 2020
-	    v[601].copy v[Ptr19], 300    
+	    agent_AgentType.copy v[Ptr19], 300    
 	    // "++"
 	    v[536] += 2
 	    
 	}
 
 	@wait 0
-	@if s[2] .isOff() {
+	@if Is_Paused .isOff() {
 	    v[536] = v[4532]
 	    @while v[v[536]] != 0 {
 		v[401] = v[v[536]] - 1
@@ -971,7 +948,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "ＳＴＡＴＩＣタイマー"
 	    //agent_AgentBits = Temp1 + 3
 	    //v[702] = Temp1 + 102
-	    v[370] = (s[2] == 0 ? 1 : -1) + (agent_AgentBits & AgentBits_STATIC_FLAG_No_function ? -1 : 1)
+	    v[370] = (Is_Paused == 0 ? 1 : -1) + (agent_AgentBits & AgentBits_STATIC_FLAG_No_function ? -1 : 1)
 	    // "have function? "
 	    //v[370] += v[agent_AgentBits] & 1024 ? -1 : 1
 	    @if v[370] >= 2 {
@@ -1550,9 +1527,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    v[371] = 0
 		    @loop v[327] .dst TT2 {
 			v[203] = v[v[339] + TT2] - 1
-			v[601] = v[203] * 300 
-			v[601] += 5001
-			@if v[v[601]] <= 9 {
+			agent_AgentType = v[203] * 300 
+			agent_AgentType += 5001
+			@if v[agent_AgentType] <= 9 {
 			    v[324] = v[Const_AgentMetaTeam_begin+v[203]] //v[v[203] * 300 + 5100] % 3
 			    // "対象のColを見る"
 			    // "#UnitID==NoColならとめる"
@@ -1843,7 +1820,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					Ptr17 = Ptr19 * 300
 					Ptr17 += 4700
 					// "まず清掃"
-					v[1301].copy v[601], 100
+					v[1301].copy agent_AgentType, 100
 					v[1301].copy v[Ptr15], 100
 					// "ParentObjセット"
 					v[609] = Ptr19
@@ -1859,7 +1836,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					// "#Pic"
 					v[602] = 1
 					// "#ProjectileType"
-					v[601] = 2
+					agent_AgentType = 2
 					// "#あたり判定"
 					v[610..611] = muldiv(v[Ptr17 + 275], 12, 10)
 					// "#威力"
@@ -1873,7 +1850,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					v[623] = 1
 					v[628] |= 8
 					// "パラメータ等入力end"
-					v[601].copy v[Ptr15], 100
+					agent_AgentType.copy v[Ptr15], 100
 					// "Having no timer passive conflict"
 					@if `!(v[Ptr17 + 223] & 1) {
 					    // "Timer Reset"
@@ -2094,7 +2071,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    //Set tile instants begin
 		//Use Temp2 as ptr to maptile
-		Temp2 = Const_save_var_TileFlags + v[632]
+		Temp2 = Const_save_var_TileFlags + agent_TileLink
 		v[Temp2] |= v[Temp2] & FLAG_Maptile_Occupied ? FLAG_Maptile_Crowded : FLAG_Maptile_Occupied //set occupied flag
 		@if agent_TacticsOrderFlag > 0 {
 			@if `agent_TacticsOrderFlag & 6  { //using shieldwall
@@ -2150,7 +2127,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    Temp1 = v[v[536]] * v[1117] 
 	    Temp1 += 4700
 	    Ptr1 = Temp1 + 1 
-	    v[Ptr1].copy v[601], 300
+	    v[Ptr1].copy agent_AgentType, 300
 
 	    @if `agent_AgentBits & AgentBits_FLAG_EnableCivAI { //Worker AI flag is on
 		// "Escaping time"
@@ -2168,14 +2145,14 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			@if agent_ActionState == 0 {
 			    @if agent_worker_JobType == 0 {
 				s[187].on // there's at least one idle worker unit 
-				@if s[2] .isOff() { // not pause
+				@if Is_Paused .isOff() { // not pause
 				    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen{ //s[500 + v[v[536]]]==1 { 
 					@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { //124 = magic number but maybe 48*3
 					    @if `!(agent_ProcessObjBit & 4096) {
 						//v[607] = Temp1 + 4
 						//v[v[607]].copy v[607], 2
 						agent_RelativeX.copy v[361], 2
-						TT1 = 20422
+						TT1 = 20422 // quote quickstring
 						//v[680] = Temp1 + 77
 
 						//Dragon voice, outdated 
@@ -2289,6 +2266,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    
 	}
+
 	@wait 0
 	//##############
 	// blank place - you can add something if you need
@@ -2314,7 +2292,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    v[Temp2] = 0
 			    v[v[4531] + v[1004]] -= 1
 			    v[v[4531]].sortDescending v[1004]
-			    v[601] = 0
+			    agent_AgentType = 0
 			    @break
 			    
 			}
@@ -2388,7 +2366,7 @@ cev .id(2152), .name("miscfunc:remove dead agent pic"), {
 //cev 2006
 __fn func_main_extract_agent_vars {
 	    Ptr1 = Temp1 + 1
-	    v[Ptr1].copy v[601], 300
+	    v[Ptr1].copy agent_AgentType, 300
 
 }
 
@@ -2398,22 +2376,20 @@ __fn func_main_save_agent_vars {
 
 __fn func_blink_set {
 
-	@if s[2] .isOff()  {
-		@if `!(v[725] & 448) {
+	@if Is_Paused .isOff()  {
+		@if `!(agent_AddMotionBits & 448) {
 			//blink flag?
 			TT1 = v[604] + v[2500] 
-			v[725] |= (TT1 % 200) == 0 ? 64 : 0 //?
+			agent_AddMotionBits |= (TT1 % 200) == 0 ? 64 : 0 //?
 		}
 	}
-
 
 }
 
 __fn func_blink_progress {
-	@if s[2] .isOff()  {
-		//v[725]=Temp1+125
-		@if `v[725] & 448 {
-			v[725] = v[725] & 256 ? v[725] & -449 : (v[725] & 128 ? v[725] | 256 : (v[725] & 64 ? v[725] | 128 : v[725])) //256+128->384 +64 ->448 then ~448 -> -449
+	@if Is_Paused .isOff()  { // not pause
+		@if `agent_AddMotionBits & 448 {
+			agent_AddMotionBits = agent_AddMotionBits & 256 ? agent_AddMotionBits & -449 : (agent_AddMotionBits & 128 ? agent_AddMotionBits | 256 : (agent_AddMotionBits & 64 ? agent_AddMotionBits | 128 : agent_AddMotionBits)) //256+128->384 +64 ->448 then ~448 -> -449
 		}
 	}
 }

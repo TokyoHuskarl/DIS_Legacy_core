@@ -2,6 +2,14 @@
 
 def limitOfHpBars_in_screen = 70
 
+def {
+	CENTMODE_FREE = 0
+	CENTMODE_ALLY_SINGLE
+	CENTMODE_ALLY_MULTI
+	CENTMODE_ENEMY_SINGLE
+}
+
+
 __fn func_ui_DIS_basic_mouse_control {
 		    @wait 0
 		    //Check LMB 
