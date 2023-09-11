@@ -11,6 +11,7 @@ def transparency = 45
 def {
 	PATH_ui_cohortflagbase = __str(PATH_ui_dir,"\cohortflagbase")
 
+		PATH_ui_mmcircle = __str(PATH_ui_dir,"\mmcircle")
 		PATH_ui_cohortflagbase_1 = __str(PATH_ui_cohortflagbase,"1")
 		PATH_ui_cohortflagbase_0 = __str(PATH_ui_cohortflagbase,"0")
 }
@@ -21,7 +22,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 	@comment moduletitle
 	@if LEGV_Selected_Cohort_Number < 1 {
 	    @pic[v[4811]].show {
-		"ui\mmcircle"
+		PATH_ui_mmcircle
 		.pos TT4, TT5 .center
 		.chromakey 1
 		.scale 100
@@ -372,7 +373,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 			@if TT15 < 45 {
 			    TT15 += 20
 			    @pic[v[4811]].show {
-				"ui\mmcircle"
+				PATH_ui_mmcircle
 				.pos TT4, TT5 .center
 				.chromakey 1
 				.scale 100

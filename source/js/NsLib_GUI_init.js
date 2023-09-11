@@ -353,7 +353,7 @@ class RTSmission {
 		let Trig = new RTStrigger();
 		let goalFrame = DIS.macro.timeToFrame(h,m,s)
 		Trig.condition = function(){
-			if (RTS.mission.passedFrame >= goalFrame){return true;}else{return false;};
+			return (RTS.mission.passedFrame >= goalFrame);
 		};
 		return Trig;
 	}
