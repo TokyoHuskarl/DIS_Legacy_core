@@ -291,14 +291,14 @@ cev .id(395), .name("!Weapon DataLoad") , {
 	v[1941] = 0
 	v[1941] += 1
 	@actor[4].name ""
-	t[503] .asg ""
-	t[505] .asg t[20034]
+	str3 .asg ""
+	str5 .asg t[20034]
 	@comment "Load"
-	v[1941] = v[1206] + v[11]
+	v[1941] = v[1206] + var1
 	t[2998] .asg t[v[1941]]
 	t[2998] .split ",", t[2998], v[1941]
-	t[503] .asg t[2999]
-	t[505] .asg t[3000]
+	str3 .asg t[2999]
+	str5 .asg t[3000]
 	t[2999..3000] .asg ""
 	@loop 40 .dst v[1941] {
 	    v[1942] = 3001 + v[1941]
@@ -343,7 +343,7 @@ cev .id(395), .name("!Weapon DataLoad") , {
 	@comment "###################	Set Variation"
 	//safety for ID collapse crash
 	var2 = max(var2,-1)
-	v[1930] += v[12] == -1 ? rnd(0, v[1928]) * 100000 : min(v[12], v[1928]) * 100000
+	v[1930] += var2 == -1 ? rnd(0, v[1928]) * 100000 : min(var2, v[1928]) * 100000
 	@comment "###################"
 	@comment "###################	Adjustment###################"
 	@if v[1901] >= 1 {
@@ -379,68 +379,66 @@ cev .id(395), .name("!Weapon DataLoad") , {
 	    
 	}
 	@comment "###################	Explain Str###################"
-	t[504] .asg ""
+	str4 .asg ""
 	@if v[1901] >= 200 {
 	    
 	} .else bl {
 	    @if v[1901] >= 100 {
-		t[504] .asg t[20022]
+		str4 .asg t[20022]
 		
 	    } .else bl {
-		t[504] .asg t[20023]
+		str4 .asg t[20023]
 		
 	    }
 	    
 	}
 	v[1942] = v[1901] % 100
 	@if v[1942] == 1 {
-	    t[504] .cat t[20024]
+	    str4 .cat t[20024]
 	    
 	}
 	@if v[1942] == 2 {
-	    t[504] .cat t[20025]
+	    str4 .cat t[20025]
 	    
 	}
 	@if v[1942] == 3 {
-	    t[504] .cat t[20026]
+	    str4 .cat t[20026]
 	    
 	}
 	@if v[1942] == 4 {
-	    t[504] .cat t[20027]
+	    str4 .cat t[20027]
 	    
 	}
 	@if v[1942] == 5 {
-	    t[504] .cat t[20028]
+	    str4 .cat t[20028]
 	    
 	}
 	@if v[1942] == 6 {
-	    t[504] .cat t[20029]
+	    str4 .cat t[20029]
 	    
 	}
 	@if v[1942] == 8 {
-	    t[504] .cat t[20030]
+	    str4 .cat t[20030]
 	    
 	}
 	@if v[1942] == 11 {
-	    t[504] .cat t[20031]
+	    str4 .cat t[20031]
 	    
 	}
 	@if v[1942] == 12 {
-	    t[504] .cat t[20032]
+	    str4 .cat t[20032]
 	    
 	}
 	@if v[1942] == 13 {
-	    t[504] .cat t[20233]
+	    str4 .cat t[20233]
 	    
 	}
 	@if v[1942] == 21 {
-	    t[504] .cat t[20241]
+	    str4 .cat t[20241]
 	    
 	}
-	@comment "###################
-	Set ID
-###################"
-	v[1940] = v[11]
+	@comment "###################Set ID##################"
+	v[1940] = var1
 	@comment "If v:1901==0, consider called item undefined"
 	v[1940] = v[1901] == 0 ? 0 : v[1940]
 }
@@ -448,8 +446,8 @@ cev .id(395), .name("!Weapon DataLoad") , {
 cev .id(396), .name("!Shield DataLoad") , {
     @comment "module_core_Game_items_general.tpc"
 
-    t[503] .asg ""
-    t[505] .asg t[20034]
+    str3 .asg ""
+    str5 .asg t[20034]
     @comment "V1 = ShieldID"
     @comment "Init"
     v[0] = v[1901..1940] = 0
@@ -457,11 +455,11 @@ cev .id(396), .name("!Shield DataLoad") , {
     v[1941] += 1
     @actor[4].name ""
     @comment "Load"
-    v[1941] = v[1207] + v[11]
+    v[1941] = v[1207] + var1
     t[2998] .asg t[v[1941]]
     t[2998] .split ",", t[2998], v[1941]
-    t[503] .asg t[2999]
-    t[505] .asg t[3000]
+    str3 .asg t[2999]
+    str5 .asg t[3000]
     t[2999..3000] .asg ""
     @loop 40 .dst v[1941] {
         v[1942] = 3001 + v[1941]
@@ -472,192 +470,184 @@ cev .id(396), .name("!Shield DataLoad") , {
         
     }
 
-    @comment "###################
-    Set Variation"
+    @comment "###################Set Variation"
     //safety for ID collapse crash
     var2 = max(var2,-1)
-    v[1930] += v[12] == -1 ? rnd(0, v[1928]) * 100000 : min(v[12], v[1928]) * 100000
+    v[1930] += var2 == -1 ? rnd(0, v[1928]) * 100000 : min(var2, v[1928]) * 100000
     @comment "###################"
     v[1941] += 1
-    t[504] .asg t[20020]
+    str4 .asg t[20020]
     @if v[1942] == 1 {
-        t[504] .asg t[20020]
+        str4 .asg t[20020]
         
     }
     @comment "###################
     Set ID
     ###################"
-    v[1940] = v[11]
+    v[1940] = var1
     @comment "If v:1901==0, consider called item undefined"
     v[1940] = v[1901] == 0 ? 0 : v[1940]
 
 }
 
 cev .id(397), .name("!Armor DataLoad") , {
-@comment "module_core_Game_items_general.tpc"
-v[0] = v[1901..1940] = 0
-v[1941] = 0
-v[1941] += 1
-@actor[4].name ""
-t[503] .asg ""
-t[505] .asg t[20034]
-v[1941] = v[1208] + v[11]
-t[2998] .asg t[v[1941]]
-t[2998] .split ",", t[2998], v[1941]
-t[503] .asg t[2999]
-t[505] .asg t[3000]
-t[2999..3000] .asg ""
-@loop 40 .dst v[1941] {
-    v[1942] = 3001 + v[1941]
-    v[1943] = 1901 + v[1941]
-    t[v[1942]] .toNum v[1944]
-    v[v[1943]] = v[1944]
-    
-}
+	@comment "module_core_Game_items_general.tpc"
+	v[0] = v[1901..1940] = 0
+	v[1941] = 0
+	v[1941] += 1
+	@actor[4].name ""
+	str3 .asg ""
+	str5 .asg t[20034]
+	v[1941] = v[1208] + var1
+	t[2998] .asg t[v[1941]]
+	t[2998] .split ",", t[2998], v[1941]
+	str3 .asg t[2999]
+	str5 .asg t[3000]
+	t[2999..3000] .asg ""
+	@loop 40 .dst v[1941] {
+			v[1942] = 3001 + v[1941]
+			v[1943] = 1901 + v[1941]
+			t[v[1942]] .toNum v[1944]
+			v[v[1943]] = v[1944]
+			
+	}
 
-@comment "####Exmotion"
-v[1926] = 0
-t[3026] .split "|", t[3200], v[1941]
-@loop v[1941] .dst v[1945] {
-    v[1942] = 3200 + v[1945]
-    t[v[1942]] .toNum v[1944]
-    v[1926] |= pow(2, v[1944] - 1)
-    
-}
+	@comment "####Exmotion"
+	v[1926] = 0
+	t[3026] .split "|", t[3200], v[1941]
+	@loop v[1941] .dst v[1945] {
+			v[1942] = 3200 + v[1945]
+			t[v[1942]] .toNum v[1944]
+			v[1926] |= pow(2, v[1944] - 1)
+			
+	}
 
-v[1925] = 0
-t[3025] .split "|", t[3200], v[1941]
-@loop v[1941] .dst v[1945] {
-    v[1942] = 3200 + v[1945]
-    t[v[1942]] .toNum v[1944]
-    v[1925] |= pow(2, v[1944] - 1)
-    
-}
+	v[1925] = 0
+	t[3025] .split "|", t[3200], v[1941]
+	@loop v[1941] .dst v[1945] {
+			v[1942] = 3200 + v[1945]
+			t[v[1942]] .toNum v[1944]
+			v[1925] |= pow(2, v[1944] - 1)
+			
+	}
 
-t[3001..3040] .asg ""
-@comment "###################
-Set Variation"
+	t[3001..3040] .asg ""
+	@comment "###################Set Variation"
 
-//safety for ID collapse crash
-var2 = max(var2,-1) 
-v[1930] += v[12] == -1 ? rnd(0, v[1928]) * 100000 : min(v[12], v[1928]) * 100000
-@comment "###################"
-v[1942] = v[1901] % 100
-t[504] .asg ""
-@if v[1942] == 1 {
-    t[504] .cat t[20018]
-    
-}
-@if v[1942] >= 2 {
-    t[504] .cat t[20019]
-    
-}
-@comment "###################
-Set ID
-###################"
-v[1940] = v[11]
-@comment "If v:1901==0, consider called item undefined"
-v[1940] = v[1901] == 0 ? 0 : v[1940]
+	//safety for ID collapse crash
+	var2 = max(var2,-1) 
+	v[1930] += var2 == -1 ? rnd(0, v[1928]) * 100000 : min(var2, v[1928]) * 100000
+	@comment "###################"
+	v[1942] = v[1901] % 100
+	str4 .asg ""
+	@if v[1942] == 1 {
+			str4 .cat t[20018]
+			
+	}
+	@if v[1942] >= 2 {
+			str4 .cat t[20019]
+			
+	}
+	@comment "###################Set ID###################"
+	v[1940] = var1
+	@comment "If v:1901==0, consider called item undefined"
+	v[1940] = v[1901] == 0 ? 0 : v[1940]
 }
 
 cev .id(398), .name("!Helm DataLoad") , {
 
-@comment "module_core_Game_items_general.tpc"
-t[503] .asg ""
-t[505] .asg t[20034]
-v[0] = v[1901..1940] = 0
-v[1941] = 0
-v[1941] += 1
-@actor[4].name ""
-v[1941] = v[1209] + v[11]
-@comment ""
-t[2998] .asg t[v[1941]]
-t[2998] .split ",", t[2998], v[1941]
-t[503] .asg t[2999]
-t[505] .asg t[3000]
-t[2999..3000] .asg ""
-@loop 40 .dst v[1941] {
-    v[1942] = 3001 + v[1941]
-    v[1943] = 1901 + v[1941]
-    t[v[1942]] .toNum v[1944]
-    v[v[1943]] = v[1944]
-    t[v[1942]] .asg ""
-    
-}
+	@comment "module_core_Game_items_general.tpc"
+	str3 .asg ""
+	str5 .asg t[20034]
+	v[0] = v[1901..1940] = 0
+	v[1941] = 0
+	v[1941] += 1
+	@actor[4].name ""
+	v[1941] = v[1209] + var1
+	@comment ""
+	t[2998] .asg t[v[1941]]
+	t[2998] .split ",", t[2998], v[1941]
+	str3 .asg t[2999]
+	str5 .asg t[3000]
+	t[2999..3000] .asg ""
+	@loop 40 .dst v[1941] {
+			v[1942] = 3001 + v[1941]
+			v[1943] = 1901 + v[1941]
+			t[v[1942]] .toNum v[1944]
+			v[v[1943]] = v[1944]
+			t[v[1942]] .asg ""
+			
+	}
 
-@comment "###################
-Set Variation"
-v[1930] += v[12] == -1 ? rnd(0, v[1928]) * 100000 : min(v[12], v[1928]) * 100000
-@comment "###################"
-v[1942] = v[1901] % 100
-t[504] .asg ""
-@if v[1942] == 1 {
-    t[504] .cat t[20016]
-    
-}
-@if v[1942] >= 2 {
-    t[504] .cat t[20017]
-    
-}
-@comment "###################
-Set ID
-###################"
-v[1940] = v[11]
-@comment "If v:1901==0, consider called item undefined"
-v[1940] = v[1901] == 0 ? 0 : v[1940]
+	@comment "###################Set Variation"
+	v[1930] += var2 == -1 ? rnd(0, v[1928]) * 100000 : min(var2, v[1928]) * 100000
+	@comment "###################"
+	v[1942] = v[1901] % 100
+	str4 .asg ""
+	@if v[1942] == 1 {
+			str4 .cat t[20016]
+			
+	}
+	@if v[1942] >= 2 {
+			str4 .cat t[20017]
+			
+	}
+	@comment "###################Set ID###################"
+	v[1940] = var1
+	@comment "If v:1901==0, consider called item undefined"
+	v[1940] = v[1901] == 0 ? 0 : v[1940]
 }
 
 cev .id(399), .name("!Acc DataLoad") , {
-@comment "module_core_Game_items_general.tpc"
-t[503] .asg ""
-t[505] .asg t[20034]
-v[0] = v[1901..1940] = 0
-v[1941] = 0
-v[1941] += 1
-@actor[4].name ""
-v[1941] = v[1210] + v[11]
-t[2998] .asg t[v[1941]]
-t[2998] .split ",", t[2998], v[1941]
-t[503] .asg t[2999]
-t[505] .asg t[3000]
-t[2999..3000] .asg ""
-@loop 40 .dst v[1941] {
-    v[1942] = 3001 + v[1941]
-    v[1943] = 1901 + v[1941]
-    t[v[1942]] .toNum v[1944]
-    v[v[1943]] = v[1944]
-    t[v[1942]] .asg ""
-    
-}
+	@comment "module_core_Game_items_general.tpc"
+	str3 .asg ""
+	str5 .asg t[20034]
+	v[0] = v[1901..1940] = 0
+	v[1941] = 0
+	v[1941] += 1
+	@actor[4].name ""
+	v[1941] = v[1210] + var1
+	t[2998] .asg t[v[1941]]
+	t[2998] .split ",", t[2998], v[1941]
+	str3 .asg t[2999]
+	str5 .asg t[3000]
+	t[2999..3000] .asg ""
+	@loop 40 .dst v[1941] {
+			v[1942] = 3001 + v[1941]
+			v[1943] = 1901 + v[1941]
+			t[v[1942]] .toNum v[1944]
+			v[v[1943]] = v[1944]
+			t[v[1942]] .asg ""
+			
+	}
 
-@comment "###################
-Set Variation"
-//safety for ID collapse crash
-var2 = max(var2,-1) 
-v[1930] += v[12] == -1 ? rnd(0, v[1928]) * 100000 : min(v[12], v[1928]) * 100000
-@comment "###################"
-v[1942] = v[1901] % 100
-t[504] .asg ""
-@if v[1942] == 1 {
-    t[504] .cat t[20012]
-    
-}
-@if v[1942] == 2 {
-    t[504] .cat t[20013]
-    
-}
-@if v[1942] == 3 {
-    t[504] .cat t[20014]
-    
-}
-@if v[1942] == 4 {
-    t[504] .cat t[20015]
-    
-}
-@comment "###################
-Set ID
+	@comment "###################Set Variation"
+	//safety for ID collapse crash
+	var2 = max(var2,-1) 
+	v[1930] += var2 == -1 ? rnd(0, v[1928]) * 100000 : min(var2, v[1928]) * 100000
+	@comment "###################"
+	v[1942] = v[1901] % 100
+	str4 .asg ""
+	@if v[1942] == 1 {
+			str4 .cat t[20012]
+			
+	}
+	@if v[1942] == 2 {
+			str4 .cat t[20013]
+			
+	}
+	@if v[1942] == 3 {
+			str4 .cat t[20014]
+			
+	}
+	@if v[1942] == 4 {
+			str4 .cat t[20015]
+			
+	}
+	@comment "###################
+	Set ID
 ###################"
-v[1940] = v[11]
-@comment "If v:1901==0, consider called item undefined"
-v[1940] = v[1901] == 0 ? 0 : v[1940]
+	v[1940] = var1
+	@comment "If v:1901==0, consider called item undefined"
+	v[1940] = v[1901] == 0 ? 0 : v[1940]
 }

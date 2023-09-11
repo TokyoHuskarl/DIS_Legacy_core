@@ -1552,6 +1552,8 @@ __fn UI_CEV_MOUSE_OBSERVER {
 							v[311] = v[302] + 99
 							v[v[311]].copy v[700], 150
 							LEGV_sentence_id_on_popup1 = 1000
+
+							def STRING_PAUSE_AGENT_MONITOR = __str("\c[\v[",__id(TT2),"]]\t[\v[",__id(TT1),"]]\c[0]",RAWSTR_LF,"\c[1]HP:\v[706]/\v[705]",RAWSTR_LF,"\c[3]AR:\v[711]/\v[738]",RAWSTR_LF,"\c[10]SP:\v[708]/\v[707]")
 							@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
 									TT1 = v[301] + 1
 									v[369] = TT1
@@ -1559,10 +1561,7 @@ __fn UI_CEV_MOUSE_OBSERVER {
 									TT2 = [8, 2, 17][(v[700] + 1)]
 									v[350] = v[v[302] + 6]
 									v[351] = v[v[302] + 7] - 16
-									t[501] .asg "\c[\TT2]\t[\TT1]\c[0]
-	\c[1]HP:\v[706]/\v[705]
-	\c[3]AR:\v[711]/\v[738]
-	\c[10]SP:\v[708]/\v[707]" .extract
+									t[501] .asg STRING_PAUSE_AGENT_MONITOR .extract
 									@pic[PicID_Popup_1].strpic {
 								t[501]
 								.pos v[350], v[351] .bottom

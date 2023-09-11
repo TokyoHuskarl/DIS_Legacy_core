@@ -119,6 +119,10 @@ DIS.macro = {
 	timeToFrame: (h,m,s) => ((h * 3600 + m * 60 + s) * DIS.RTSFPS), 
 };
 
+//
+DIS.building = {
+
+};
 
 DIS.log = {
 	
@@ -402,13 +406,21 @@ const MAPGEN_nomapgen = 0,
 	MAPGEN_loadPictureData = 2,
 	MAPGEN_script = 3;
 
+
+const Adr_HeightGenType = 2056;
+
+// height gen 
+const HGEN_NOTHING = 0,
+	HGEN_PRESET = 1,
+	HGEN_GENERATE = 2;
+
 class RTSmap {
 	constructor(mapdeffile){
 		mapdeffile = mapdeffile || "editmode";
 		this.source = mapdeffile;
 		this.size = [50,50]; // temp
 		this.isGenerated = false;
-		this.hasPresetHeightPic = false;
+		this.heightgenType = HGEN_NOTHING; // 
 		this.Tileset = 1; // RM tile set - if it's not defined, at least try to load 1.
 		this.terrainSource = "mapdata.png"; // png?
 	}
@@ -418,6 +430,7 @@ class RTSmap {
 		const Adr_TileID = 2060;
 		setv(Adr_TileID,this.defaultTileset);
 		this.generate();
+		setv(Adr_HeightGenType,this.heightgenType)
 	};
 	
 	
@@ -441,6 +454,8 @@ class RTSmap {
 };
 	
 
+
+// 
 class RTSplayer {
 	constructor(id,factionid){
 		this.id = id;
@@ -476,6 +491,24 @@ class RTStrigger {
 	isLoop = false; // whether this trigger will be called even after fulfilling condition once.
 
 };
+
+
+class DIS_dialog {
+	constructor(string,time){
+		this.string = string;
+		this.showframe = time;
+		this.opensound = ["",0,100,50] // file vol tempo vol
+		this.icon = ["",1]; // filename, sprite_number
+		this.fontdata = ["",0]; // filename, fontsize
+		this.stopworld = false;
+		this.size = [114,514];
+	};
+	effect(){/* override me*/}; // called after this ends
+
+};
+
+
+
 
 //
 
@@ -740,6 +773,11 @@ var Cmd = {
 			return DIS.agent.searchEmptySpace();
 		},
 
+		generateHeightmap: function(){ // generate heightmap
+			Cmd.Qset(this.CmdType,"genHeightmap",""); // just do it
+		},
+
+
 	},
 
 	//Cmd.snd
@@ -842,6 +880,22 @@ var Cmd = {
 
 		checkCurrentGroup: function(grp){
 			if(grp != this.cgrp){this.setCgrp(grp);};
+		},
+
+		registerCohort: function(grp,player,cohortid) { // jissoumati
+			checkCurrentGroup(grp)
+			Cmd.Qset(this.CmdType,"registerCohort",`${player},${cohortid}`);
+		},
+
+		move: function(grp,path,flag){
+			checkCurrentGroup(grp)
+			Cmd.Qset(this.CmdType,"move",`${player},${cohortid}`);
+		},
+
+		attack: function(grp,targetid){
+			checkCurrentGroup(grp)
+			Cmd.Qset(this.CmdType,"attack",`${targetid}`);
+
 		},
 
 	},
@@ -1189,6 +1243,7 @@ class Radiobutton extends UI_object {
 {
 	DIS.initID();
 	Cmd.init();
-	
 }
 
+
+// init 2
