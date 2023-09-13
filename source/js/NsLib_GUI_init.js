@@ -75,6 +75,15 @@ function parse_DISid(line,myArray) {
 	myArray[key] = parseInt(value,10);
 };
 
+function make_Array_DIStable(array) {
+	let string = "";
+	for (let elm of array) {
+				string += elm + "|";
+	};
+	// remove the last "|" upon return
+	return string.slice(0,-1);
+};
+
 // ------------------------------------------------
 // DIS objects
 // ------------------------------------------------
@@ -133,6 +142,25 @@ DIS.log = {
 	
 	
 	
+};
+
+// font addresses for DIS
+const Adrt_FontCommon = 529,
+	Adr_FontCommonSize = 4510,
+	Adrt_FontUI = 530,
+	Adr_FontUISize = 4511;
+
+DIS.lang = {
+	init: function(){ // this function called whenever player changes game language
+		
+	},
+
+	currentFontdata: {
+		common: [gett(Adrt_FontCommon),getv(Adr_FontCommonSize)],
+		ui: [gett(Adrt_FontUI),getv(Adr_FontUISize)],
+		imperial: [],
+
+	},
 };
 
 DIS.conf = {
@@ -497,15 +525,19 @@ class RTStrigger {
 class DIS_dialog {
 	constructor(string,time){
 		this.string = string;
-		this.showframe = time;
+		this.showframe = time | 235; // check default value later if showframe is -1, it wont end
 		this.opensound = ["",0,100,50] // file vol tempo vol
-		this.icon = ["",1]; // filename, sprite_number
-		this.fontdata = ["",0]; // filename, fontsize
+		this.icon = ["",[4,4],1]; // filename, sprite_number
+		this.fontdata = DIS.lang.currentFontdata.common; // filename, fontsize
 		this.stopworld = false;
-		this.size = [114,514];
+		this.size = [240,64]; // check default value later
 	};
-	effect(){/* override me*/}; // called after this ends
+	
 
+	afterEffect(){/* override me*/}; // called after this one is overino
+	setIcon(filename,spritenum){
+		
+	};
 };
 
 
@@ -518,6 +550,8 @@ class DIS_dialog {
 // DIS RTS module
 // ------------------------------------------------
 
+const Adrt_dialogQueue = 785 // -> Game_script_general.tpc
+
 let RTS = {
 	isRTSmode: false,
 	mission: new RTSmission(),
@@ -526,6 +560,16 @@ let RTS = {
 	Mvar: {}, // mission vars
 	Mbool: {}, // mission switch
 	Mstr: {}, // mission strings
+	DlogManager: {
+		queue: "",
+		receiveQ: function(){ // whenever you deal with Dialog Queue, you have to get current DialogQueue from RM
+			this.queue = gett(Adrt_dialogQueue);
+		},
+		sendQ: function(){
+			sett(Adrt_dialogQueue,this.queue);
+		},
+		afterEffects: [],
+	},
 
 	clearMission: function(){
 		this.mission = new RTSmission();
@@ -545,8 +589,9 @@ let RTS = {
 		
 	},
 
+	// if you do this on Cmd interpreter, then this function is not even needed I suppose
 	setupMission: function(missionid,mapid){ //
-		if (!this.isRTSmode){ // if the isRTSmode flag is not yet set (legacy maps) reopen DISmission
+		if (!(this.isRTSmode)){ // if the isRTSmode flag is not yet set (legacy maps) reopen DISmission
 			this.mission = new RTSmission(missionid,mapid);
 			this.isRTSmode = true;
 		}
@@ -579,6 +624,7 @@ let RTS = {
 	
 
 	restore: function(){ // call this function whenever player loads RMsavedata. reload all datas from RM memories.
+		
 		
 		// restore mission 
 
@@ -643,14 +689,17 @@ var Cmd = {
 	},
 	
 	runFlags: {
+		SpawnDetect: false, // init this flag
+		RMwaitDetect: false, //
+		CalledDialogQueue: false, //
+
 		initAll: function() {
-			SpawnDetect = false;
-			RMwaitDetect = false;
+			this.SpawnDetect = false;
+			this.RMwaitDetect = false;
+			this.CalledDialogQueue = false;
 			this.group.cgrp = [];
 		},
 
-		SpawnDetect: false, // init this flag
-		RMwaitDetect: false, //
 	},
 
 	// Cmd.init()
@@ -700,6 +749,26 @@ var Cmd = {
 			Cmd.Qset(this.CmdType,"eval",`${jsSentence}`);
 		},
 
+		pic: {
+			load: function(filepath,picid) { // load to picid 
+				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid}`);
+			},
+
+			remove: function(picid) {
+				Cmd.Qset(this.CmdType,"removePic",`${picid}`);
+			},
+		},
+
+		loadText: function(filepath) { // import as a js file 
+			Cmd.Qset(this.CmdType,"loadText",`${filepath}`);
+		},
+
+		exportText: function(string,filepath) {
+			Cmd.Qset(this.CmdType,"exportText",`${string},${filepath}`);
+		},
+
+
+
 		gotoRMmap: function(RMmapid,tilepos) { //
 			tilepos = tilepos || [0,0]
 			Cmd.Qset(this.CmdType,"gotoRMmap",`${RMmapid},${tilepos[0]},${tilepos[1]}`);
@@ -718,7 +787,7 @@ var Cmd = {
 			Cmd.Qset(this.CmdType,"msg",`\\C[5]JS DEBUG:${txt}`);
 		},	
 		
-		// turnSon:1,
+		//
 
 
 	},
@@ -803,7 +872,7 @@ var Cmd = {
 		victory:  function(){
 			Cmd.Qset(this.CmdType,"endGame",`2`);
 		},
-		defeat:  function(){
+		Refeat:  function(){
 			Cmd.Qset(this.CmdType,"endGame",`1`);
 		},
 		endMission: function(consequence) { // 1 = def, 2 = vic
@@ -911,9 +980,26 @@ var Cmd = {
 	ui: { 
 		CmdType: CTYP_UI,
 
-		queueDialog: function(diaset){
+		pushDialogQueue: function(dlog){ // push arg to dialog queue and toggle dialog manager switch
+			// set up string
 			
+			let sendstring = (dlog.string + "," + dlog.showframe + "," + make_Array_DIStable(dlog.icon) + "," + make_Array_DIStable(dlog.size) + ";");
+
+			Cmd.Qset(this.CmdType,"pushDialogQueue",sendstring);
+			RTS.DlogManager.afterEffects.push(dlog.afterEffect);
 		},
+
+		forceSkipDialog: function(skipi){ // toggle break flag switch
+			Cmd.Qset(this.CmdType,"forceSkipDialog",skipi);
+			 // still triggers afterEffect()
+		},
+
+		clearDialogQueue: function(){ // init dialog queue and force break - clear event switch on
+			RTS.DlogManager.afterEffects = []; // unlike forceSkip, thus will nullfy dialog afterEffect.
+			Cmd.Qset(this.CmdType,"clearDialogQueue","");
+		},
+
+
 		
 
 	},
@@ -1245,7 +1331,6 @@ class Radiobutton extends UI_object {
 	DIS.initID();
 	Cmd.init();
 }
-
 
 // init 2
 //
