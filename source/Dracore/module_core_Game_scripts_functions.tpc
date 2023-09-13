@@ -249,7 +249,10 @@ __fn DIS_ui_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("ui", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "queDialog",{cmd_player_prepare_endgame(0,SSargs0)})},
+		{NsCmd($LINKstr, $md, $i, "pushDialogQueue",{cmd_pushDialogQ(SSargs0)})},
+		{NsCmd($LINKstr, $md, $i, "forceSkipDialog",{cmd_forceSkipDialog(SSargs0)})},
+		{NsCmd($LINKstr, $md, $i, "clearDialogQueue",{cmd_clearDialogQueue()})},
+
 
 	])
 }
@@ -459,9 +462,21 @@ __fn cmd_map_randomise_height_legacy $tileXmin $tileYmin $tileXmax $tileYmax $am
 //##########################
 //Dialogs and messages
 //##########################
+__fn cmd_pushDialogQ $string {
+	dialogQueue.cat $string
+	RUN_Radio_Dialog.on
+}
 
-	defs RUN_Radio_Dialog = 100 // if this switch is on, then dialog manager runs -> game_scripts_general.tpc
-	defv RadioDialogTimer = 367
+__fn cmd_forceSkipDialog $i {
+	//?
+}
+
+__fn cmd_clearDialogQueue {
+	dialogQueue.asg "" // erase
+	cmd_forceSkipDialog()
+}
+
+
 
 __fn cmd_ui_dialog_set_legacy {
 

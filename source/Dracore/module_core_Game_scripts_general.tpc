@@ -32,13 +32,74 @@ cev[2041], .name("Script:DIS command interpriter"), .parallel , .cond(__id(BOOL_
 
 
 // dialog manager
-deft dialogQueue = 785
-cev .id(2087), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_Dialog)), {
-	RadioDialogTimer -= Is_Paused == 1 ? 0 : 1
-	@if RadioDialogTimer <= 0 {
-			@pic[1767..1769].erase
-			RUN_Radio_Dialog.off
-			
+cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_Dialog)), {
+	deft {
+		dialog_string = 3000
+		dialog_timer
+		dialog_iconinfo
+		dialog_opensnd
+		dialog_open
+		dialog_fontdata
+		dialog_stopworld
+		dialog_size
+		dialog_end
+	}
+
+	// check dialog queue
+	dialogQueue.inStr(";",Temp1)
+
+	// cut current dialog information
+	dialog_string.asg .subs(dialogQueue,0,Temp1)
+	t[__id(dialog_string)..__id(dialog_end)].asg ""
+	dialog_string.split(",",dialog_string,Temp2) // now you have extracted elements in the dialog order to dialog_ array.
+	dialog_timer.toNum RadioDialogTimer
+	
+	TT1 = v[1115] // ?
+	TT2 = 3
+	@pic[PicID_Radio_Dialog_Back].strpic {
+			""
+			.pos TT1, TT2 .top
+			.size 240, 64    .chromakey 1
+			.scale 100
+			.trans 50
+			.rgbs 100, 100, 100, 100
+			.font "", 12
+			.spacing 0, 4
+			.skin "system5" .stretch
+			.mapLayer 9
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+	}
+
+	TT1 -= 118
+	TT2 += 2
+	@pic[PicID_Radio_Dialog_Text].strpic {
+			dialog_string
+			.pos TT1, TT2 .topLeft
+			.size 0, 0    .chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.font Font_Common, v[4510]
+			.spacing 0, 4
+			.skin "" .nobg .noframe .noPadding
+			.mapLayer 9
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+	}
+	
+
+	
+	@loop bl {
+		@wait 0
+		RadioDialogTimer -= Is_Paused == 1 ? 0 : 1
+		@if RadioDialogTimer <= 0 {
+				@pic[1767..1769].erase
+				RUN_Radio_Dialog.off
+				@break
+		}
 	}
 }
 

@@ -9,6 +9,12 @@ deft Str_CmdQueue = 795
 defs BOOL_CMD_CALLING = 261 // this flag is for checking whether a building is built by worker or other script
 
 
+deft dialogQueue = 785
+defs RUN_Radio_Dialog = 100 // if this switch is on, then dialog manager runs -> game_scripts_general.tpc
+defv RadioDialogTimer = 367
+
+
+
 defv Const_save_var_Adr_ScriptsBufferHead = 1219
 def Str_ScriptsBufferHead = t[Const_save_var_Adr_ScriptsBufferHead]
 
