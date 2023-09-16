@@ -34,6 +34,8 @@ cev[2041], .name("Script:DIS command interpriter"), .parallel , .cond(__id(BOOL_
 // dialog manager
 cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_Dialog)), {
 	deft {
+		dialog_treeid = 2998
+		dialog_orderid = 2999
 		dialog_string = 3000
 		dialog_timer
 		dialog_iconinfo
@@ -49,9 +51,9 @@ cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_
 	dialogQueue.inStr(";",Temp1)
 
 	// cut current dialog information
-	dialog_string.asg .subs(dialogQueue,0,Temp1)
 	t[__id(dialog_string)..__id(dialog_end)].asg ""
-	dialog_string.split(",",dialog_string,Temp2) // now you have extracted elements in the dialog order to dialog_ array.
+	dialog_string.asg .subs(dialogQueue,0,Temp1)
+	dialog_string.split(",",dialog_treeid,Temp2) // now you have extracted elements in the dialog order to dialog_ array.
 	dialog_timer.toNum RadioDialogTimer
 	
 	TT1 = v[1115] // ?
@@ -101,6 +103,7 @@ cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_
 				@break
 		}
 	}
+
 }
 
 

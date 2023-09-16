@@ -44,6 +44,7 @@ __fn DIS_Cmd_callPackageTree $counter $CmdStr {
 
 	// Split given Str before calling Package
 	macro_demiliterset
+	str1.asg t[$CmdStr] 
 	t[$CmdStr] .split($delimiter, SS_CmdObjType, SSnargs)
 
 	// check which object is called by js
@@ -203,7 +204,15 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 		})},
 		{NsCmd($LINKstr, $md, $i, "msg",{func_show_msg(SSargs0)})},
 
+		// pic series
+		{NsCmd($LINKstr, $md, $i, "loadPic",{cmd_pic_simpleload(SSargs0,SSargs1)})},
+		{NsCmd($LINKstr, $md, $i, "removePic",{
+			t2v(SSargs0,var1)
+			@pic.erase [var1]
+		})},
+
 		
+    
 
 	])
 }
@@ -249,7 +258,7 @@ __fn DIS_ui_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("ui", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "pushDialogQueue",{cmd_pushDialogQ(SSargs0)})},
+		{NsCmd($LINKstr, $md, $i, "pushDialogQueue",{cmd_pushDialogQ(str1)})},
 		{NsCmd($LINKstr, $md, $i, "forceSkipDialog",{cmd_forceSkipDialog(SSargs0)})},
 		{NsCmd($LINKstr, $md, $i, "clearDialogQueue",{cmd_clearDialogQueue()})},
 
@@ -464,6 +473,7 @@ __fn cmd_map_randomise_height_legacy $tileXmin $tileYmin $tileXmax $tileYmax $am
 //##########################
 __fn cmd_pushDialogQ $string {
 	dialogQueue.cat $string
+	dialogQueue.cat ";"
 	RUN_Radio_Dialog.on
 }
 
@@ -520,6 +530,26 @@ __fn cmd_ui_dialog_set_legacy {
 
 }
 
+
+
+//#########################
+// picture commands
+//##########################
+
+
+__fn cmd_pic_simpleload $pic_name $picid {
+	t2v($picid,var1)
+	@pic[var1].show {
+			$pic_name
+			.pos 0, 0 .topLeft
+			.chromakey 1
+			.scale 100
+			.trans 100
+			.rgbs 100, 100, 100, 100
+			.mapLayer DIS_gui_Layer
+			.affectedByShake
+	}
+}
 //#########################
 // AI commands
 //##########################
