@@ -663,7 +663,8 @@ const LINKSTR_map = 771,
 	LINKSTR_agent = 775,
 	LINKSTR_player = 776,
 	LINKSTR_group = 777,
-	LINKSTR_END = 778; // footer
+	LINKSTR_ui = 778,
+	LINKSTR_END = 779; // footer
 
 
 // -> module_Game_scripts_general.tpc
@@ -759,7 +760,7 @@ var Cmd = {
 			},
 		},
 
-		loadText: function(filepath) { // import as a js file 
+		loadText: function(filepath) { 
 			Cmd.Qset(this.CmdType,"loadText",`${filepath}`);
 		},
 
@@ -972,34 +973,37 @@ var Cmd = {
 
 
 	// -------------
-	// Cmd.ui
-	// -------------
+		// Cmd.ui
+		// -------------
 
-	//radio dialog
-	//
-	ui: { 
-		CmdType: CTYP_UI,
+		//radio dialog
+		//
+		ui: { 
+			CmdType: CTYP_UI,
 
-		pushDialogQueue: function(dlog){ // push arg to dialog queue and toggle dialog manager switch
-			// set up string
-			
-			let sendstring = (dlog.string + "," + dlog.showframe + "," + make_Array_DIStable(dlog.icon) + "," + make_Array_DIStable(dlog.size) + ";");
+			pushDialogQueue: function(dlog){ // push arg to dialog queue and toggle dialog manager switch
+				// set up string
+				
+				let sendstring = (dlog.string + "," + dlog.showframe + "," + make_Array_DIStable(dlog.icon) + "," + make_Array_DIStable(dlog.size) + ";");
 
-			Cmd.Qset(this.CmdType,"pushDialogQueue",sendstring);
-			RTS.DlogManager.afterEffects.push(dlog.afterEffect);
-		},
+				Cmd.Qset(this.CmdType,"pushDialogQueue",sendstring);
+				RTS.DlogManager.afterEffects.push(dlog.afterEffect);
+			},
 
-		forceSkipDialog: function(skipi){ // toggle break flag switch
-			Cmd.Qset(this.CmdType,"forceSkipDialog",skipi);
-			 // still triggers afterEffect()
-		},
+			forceSkipDialog: function(skipi){ // toggle break flag switch
+				Cmd.Qset(this.CmdType,"forceSkipDialog",skipi);
+				 // still triggers afterEffect()
+			},
 
-		clearDialogQueue: function(){ // init dialog queue and force break - clear event switch on
-			RTS.DlogManager.afterEffects = []; // unlike forceSkip, thus will nullfy dialog afterEffect.
-			Cmd.Qset(this.CmdType,"clearDialogQueue","");
-		},
+			clearDialogQueue: function(){ // init dialog queue and force break - clear event switch on
+				RTS.DlogManager.afterEffects = []; // unlike forceSkip, thus will nullfy dialog afterEffect.
+				Cmd.Qset(this.CmdType,"clearDialogQueue","");
+			},
 
-
+			getPictureSize: function(picid){
+				
+				Cmd.Qset(this.CmdType,"getPictureSize","");
+			},
 		
 
 	},
@@ -1141,6 +1145,17 @@ class Ns_Presentation {
 }
 
 
+class RM_Picture {
+	constructor(picid,layer,spriteinfo) {
+		this.picid = picid;
+		this.layer = layer;
+		this.sprInfo = spriteinfo;
+
+		
+	};
+};
+
+
 // Fundamental class for every UI objects.
 // An UI object usually has one RMpicture, when the object is pushed to the presentation.components array, its pid is set.
 class UI_object {
@@ -1148,8 +1163,7 @@ class UI_object {
 	constructor(x,y) {
 		this.UI_objtype = UIOBJ_undefined;
 		this.pid = 0;
-		this.x = x;
-		this.y = y;
+		this.pos = [this.x,this.y];
 		this.children = [];
 		this.RGBS = [100,100,100,100]; // array
 		this.transparency = 0; // 0 to 100
@@ -1261,6 +1275,32 @@ class Simple_Checkbox extends UI_object {
 		
 		this.picCmd = PICCMD_Genstr;
 		
+	}
+
+	UIcheck = function() {
+		// check hit box
+	}
+
+	render = function() {
+		// checkbox,pid,picCmd,text
+		// // debug
+		let ORDER = `${this.UI_objtype},${this.pid},${this.picCmd},${this.txt},${this.x},${this.y}`;
+		this.picCmd = PICCMD_Keep; // reset picCmd
+		return ORDER;
+	}
+
+	
+}
+
+class SimpleButton extends UI_object {
+	constructor(x,y) {
+		super(x,y);
+		this.UI_objtype = UIOBJ_checkbox;
+		this.picCmd = PICCMD_Refresh;
+	}
+
+		Lclick = function() {
+	
 	}
 
 	UIcheck = function() {
