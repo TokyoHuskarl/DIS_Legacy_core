@@ -751,8 +751,16 @@ var Cmd = {
 		},
 
 		pic: {
-			load: function(filepath,picid) { // load to picid 
-				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid}`);
+			load: function(filepath,picid,layer) { // load to picid 
+				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid},${layer}`);
+				return new RM_Picture(picid,filepath,[0,0],layer,[1,1,1]);
+
+			},
+
+			move: function(pos,rgbs,trans) { 
+				rgbs = rgbs || [100,100,100,100];
+				trans = trans || 0;
+				Cmd.Qset(this.CmdType,"simplemovePic",`${pos[0]},${pos[1]},${rgbs[0]},${rgbs[1]},${rgbs[2]},${rgbs[3]},${trans}`);
 			},
 
 			remove: function(picid) {
@@ -1016,8 +1024,7 @@ var Cmd = {
 
 
 let mouseState = {
-	x: 0,
-	y: 0,
+	pos: [0,0],
 	click: 0,
 	Ldrag: 0,
 	Rdrag: 0,
@@ -1064,8 +1071,7 @@ let NsGUImgr = {
 
 	// get mouse status
 	controlUpdate: function() { 
-		this.mouseState.x = getv(RM_MousePointer.x);
-		this.mouseState.y = getv(RM_MousePointer.y);
+		this.mouseState.pos = [getv(RM_MousePointer.x),getv(RM_MousePointer.y)];
 		this.mouseState.click = getv(RM_MousePointer.click);
 		this.mouseState.Ldrag = getv(RM_MousePointer.click) == 1005 ? this.mouseState.Ldrag + 1 : 0; // if == 1, it's clicked.
 		
@@ -1080,7 +1086,7 @@ let NsGUImgr = {
 
 		let UIorderstr = "";
 
-		this.controlUpdate() // get mouse vars
+		this.controlUpdate(); // get mouse vars
 		for (let PRESEN of this.presentations) {
 			
 			if(PRESEN.is_controllable) { //if the presentation is controllable
@@ -1091,9 +1097,9 @@ let NsGUImgr = {
 				UIorderstr += PRESEN.UI_RenderingOrder2RMcev;
 				SSCmdOrderstr += PRESEN.UI_ScaleCmdOrder2RMcev;
 
-			}
+			};
 			
-		}
+		};
 
 		// give render order string to RPGMaker to execute cmds
 		deblog(UIorderstr);
@@ -1146,11 +1152,14 @@ class Ns_Presentation {
 
 
 class RM_Picture {
-	constructor(picid,pos,layer,spriteinfo) {
+	constructor(picid,filename,pos,layer,spriteinfo,size,trans) {
 		this.picid = picid;
+		this.filename = "";
 		this.pos = pos;
 		this.layer = layer;
-		this.sprInfo = spriteinfo;
+		this.sprInfo = spriteinfo = [1,1,1];
+		this.size = size || 100;
+		this.trans = trans || 0;
 	};
 };
 

@@ -6,14 +6,12 @@
 __fn expand_DIStable $table {
 	t[__id($table)] .split("|",t[3201],reg3)
 	
+
 }
 
 __fn checkItemPicFileName $source $slot $name {
 	t[__id($slot)].asg ""
-	t[$source] .exInStr("/D+",TT1)
-	@if TT1 == -1 {
-		t[__id($slot)].asg $name
-	}
+	t[__id($slot)].asg $name
 	t[__id($slot)].cat t[$source]
 
 }
@@ -354,9 +352,10 @@ cev .id(395), .name("!Weapon DataLoad") , {
 	    
 	}
 
-	expand_DIStable(t[3040])
-	var1 = rnd(1,reg3)
-	var1 = 3200 + var1
+	expand_DIStable(t[3030])
+	reg4 = reg3 - 1
+	var1 = var2 == -1 ? rnd(0,reg4) : min(var2,reg4)
+	var1 = 3201 + var1
 	checkItemPicFileName(var1,Str_slot_weaponfile,Const_str_weapon)
 
 
@@ -550,9 +549,20 @@ cev .id(397), .name("!Armor DataLoad") , {
 			
 	}
 
+
+	// get file table
+	expand_DIStable(t[3030])
+	reg4 = reg3 - 1
+	var1 = var2 == -1 ? rnd(0,reg4) : min(var2,reg4)
+	var1 = 3201 + var1
+	checkItemPicFileName(var1,Str_slot_armorfile,Const_str_armor)
+
+
 	t[3001..3040] .asg ""
 	@comment "###################Set Variation"
 
+	
+	
 	//safety for ID collapse crash
 	var2 = max(var2,-1) 
 	v[1930] += var2 == -1 ? rnd(0, v[1928]) * 100000 : min(var2, v[1928]) * 100000
@@ -586,6 +596,16 @@ cev .id(398), .name("!Helm DataLoad") , {
 	@comment ""
 	t[2998] .asg t[v[1941]]
 	t[2998] .split ",", t[2998], v[1941]
+
+
+	// get file table
+	expand_DIStable(t[3030])
+	reg4 = reg3 - 1
+	var1 = var2 == -1 ? rnd(0,reg4) : min(var2,reg4)
+	var1 = 3201 + var1
+	checkItemPicFileName(var1,Str_slot_helmfile,Const_str_helm)
+
+
 	str3 .asg t[2999]
 	str5 .asg t[3000]
 	t[2999..3000] .asg ""
@@ -628,6 +648,17 @@ cev .id(399), .name("!Acc DataLoad") , {
 	v[1941] = v[1210] + var1
 	t[2998] .asg t[v[1941]]
 	t[2998] .split ",", t[2998], v[1941]
+
+
+	// get file table
+	expand_DIStable(t[3030])
+	reg4 = reg3 - 1
+	var1 = var2 == -1 ? rnd(0,reg4) : min(var2,reg4)
+	var1 = 3201 + var1
+	checkItemPicFileName(var1,Str_slot_accfile,Const_str_misc)
+
+
+
 	str3 .asg t[2999]
 	str5 .asg t[3000]
 	t[2999..3000] .asg ""
@@ -639,7 +670,6 @@ cev .id(399), .name("!Acc DataLoad") , {
 			t[v[1942]] .asg ""
 			
 	}
-
 	@comment "###################Set Variation"
 	//safety for ID collapse crash
 	var2 = max(var2,-1) 
