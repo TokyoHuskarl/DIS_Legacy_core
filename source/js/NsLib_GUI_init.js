@@ -751,13 +751,23 @@ var Cmd = {
 		},
 
 		pic: {
-			load: function(filepath,picid) { // load to picid 
-				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid}`);
+			load: function(filepath,picid,layer) { // load to picid 
+				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid},${layer}`);
+				return new RM_Picture(picid,filepath,[0,0],layer,[1,1,1]);
+
+			},
+
+			move: function(pos,rgbs,trans) { 
+				rgbs = rgbs || [100,100,100,100];
+				trans = trans || 0;
+				Cmd.Qset(this.CmdType,"simplemovePic",`${pos[0]},${pos[1]},${rgbs[0]},${rgbs[1]},${rgbs[2]},${rgbs[3]},${trans}`);
 			},
 
 			remove: function(picid) {
 				Cmd.Qset(this.CmdType,"removePic",`${picid}`);
 			},
+		},
+
 		},
 
 		loadText: function(filepath) { 
@@ -1146,11 +1156,14 @@ class Ns_Presentation {
 
 
 class RM_Picture {
-	constructor(picid,pos,layer,spriteinfo) {
+	constructor(picid,filename,pos,layer,spriteinfo,size,trans) {
 		this.picid = picid;
+		this.filename = filename;
 		this.pos = pos;
 		this.layer = layer;
-		this.sprInfo = spriteinfo;
+		this.sprInfo = spriteinfo || [1,1,1];
+		this.size = size || 100;
+		this.trans = trans || 0;
 	};
 };
 
