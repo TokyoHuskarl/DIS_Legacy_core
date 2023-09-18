@@ -10,8 +10,14 @@ __fn expand_DIStable $table {
 }
 
 __fn checkItemPicFileName $source $slot $name {
-	t[__id($slot)].asg ""
-	t[__id($slot)].asg $name
+	@if t[__id($slot)].contains "spr_" {
+		t[__id($slot)].asg ""
+
+	}.else bl{
+		t[__id($slot)].cat $name
+
+	}
+
 	t[__id($slot)].cat t[$source]
 
 }
