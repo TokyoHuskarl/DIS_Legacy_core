@@ -53,6 +53,8 @@ __fn drawing_set_grid_raw $Exmotion $Addmotion {
 		v[4101] = 7
 		v[4107] = 7 
 	}
+
+	v[4104] = $Addmotion & ExMotionFlags_FLAG_Weapon_With_Anim ? 7 : 5 // animation weapons
 	v[4121] = $Addmotion & 1 ? 2 : 1
 }
 
@@ -64,11 +66,11 @@ __fn function_agent_init_set_picture_strs{
 		t[var2].asg Const_str_hair
 		t[var2].cat "\v[670]" .extract
 		@if v[670]>0{ func_load_cache(t[var2]) }
-		var2=var1+1
+		var2 = var1 + 1
 		// t[var2].asg Const_str_armor
 		// t[var2].cat "\v[886]" .extract
 		t[var2].asg Str_slot_armorfile
-		@if v[886]>0{ func_load_cache(t[var2]) }
+		@if v[886] > 0 { func_load_cache(t[var2]) }
 
 		var2 = var1 + 2
 		t[var2].asg Const_str_head
@@ -82,13 +84,15 @@ __fn function_agent_init_set_picture_strs{
 		@if v[888]>0{ func_load_cache(t[var2]) }
 
 		var2 = var1 + 4
-		t[var2].asg Const_str_weapon
-		t[var2].cat "\v[858]" .extract
+		// t[var2].asg Const_str_weapon
+		// t[var2].cat "\v[858]" .extract
+		t[var2].asg Str_slot_mainsetR
 		@if v[858]>0{ func_load_cache(t[var2]) }
 
 		var2 = var1 + 5
-		t[var2].asg Const_str_weapon
-		t[var2].cat "\v[859]" .extract
+		// t[var2].asg Const_str_weapon
+		// t[var2].cat "\v[859]" .extract
+		t[var2].asg Str_slot_mainsetL
 		@if v[859] > 0 { func_load_cache(t[var2]) }
 
 		var2 = var1 + 6
@@ -98,9 +102,10 @@ __fn function_agent_init_set_picture_strs{
 		@if v[889] > 0 { func_load_cache(t[var2]) }
 		// reserve set
 
-		var2=var1
-		t[var2].asg Const_str_weapon
-		t[var2].cat "\v[856]" .extract
+		var2 = var1
+		// t[var2].asg Const_str_weapon
+		// t[var2].cat "\v[856]" .extract
+		t[var2].asg Str_slot_subsetR
 		// @if v[856]>0{ func_load_cache(t[var2]) }
 
 		// Sub shield - not yet implemented in game
@@ -117,26 +122,29 @@ __fn function_agent_init_set_picture_strs{
 		var2 = var1 + 3
 		t[var2].asg Const_str_minion_head
 		t[var2].cat "\v[602]" .extract
-		var2=var1+1
+		var2 = var1 + 1
 		t[var2].asg Const_str_minion
 		t[var2].cat "\v[602]" .extract
-		var2=var1+4
-		t[var2].asg Const_str_weapon
-		t[var2].cat "\v[858]" .extract
+		var2 = var1 + 4
+		// t[var2].asg Const_str_weapon
+		// t[var2].cat "\v[858]" .extract
+		t[var2].asg Str_slot_mainsetR
 		@if v[858]>0{ func_load_cache(t[var2]) }
-		var2=var1+5
-		t[var2].asg Const_str_weapon
-		t[var2].cat "\v[859]" .extract
+		var2 = var1 + 5
+		// t[var2].asg Const_str_weapon
+		// t[var2].cat "\v[859]" .extract
+		t[var2].asg Str_slot_mainsetL
 		@if v[859]>0{ func_load_cache(t[var2]) }
 		//reserve set
-		var2=var1
-		t[var2].asg Const_str_weapon
-		t[var2].cat "\v[856]" .extract
+		var2 = var1
+		// t[var2].asg Const_str_weapon
+		// t[var2].cat "\v[856]" .extract
+		t[var2].asg Str_slot_subsetR
 		//@if v[856]>0{ func_load_cache(t[var2]) }
 		t[var2].cat ","
-		t[var2].cat Const_str_weapon
-		t[var2].cat "\v[857]" .extract
-		//@if v[857]>0{ func_load_cache(t[var2]) }
+		t[var2].cat Str_slot_subsetL
+		// t[var2].cat "\v[857]" .extract
+		// @if v[857]>0{ func_load_cache(t[var2]) }
 
 	}.elif v[601]==1 {//normal unit
 		var2=var1+1

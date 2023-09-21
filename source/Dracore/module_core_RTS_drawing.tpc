@@ -330,7 +330,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									}
 									v[4065] = agent_ProcessObjBit & 67108864 ? 100 : v[4065]
 			//horseback
-									@if `agent_ExMotionFlags & 16777216 {
+									@if `agent_ExMotionFlags & ExMotionFlags_FLAG_horseback {
 											@if expected_action_sprite == 3 {
 													//@comment "Horseback lance"
 													@if `agent_ProcessObjBit & 33554432 {

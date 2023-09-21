@@ -119,6 +119,10 @@ DIS = { // DIS fundamental components
 	},
 
 
+	buildings: [], // this array contains buildtemp objects.
+
+
+
 	// DIS game consts - never touch here blease?
 	RTSFPS: 48, // can be changed 
 	AgentsLimit: getv(1004), // v[1004]
@@ -465,6 +469,8 @@ class RTSmap {
 	
 	init(){return NULL;}; // override me. can be written in mapdef.js.txt.
 
+
+	restore(){}; // call me
 	
 	generate(){ // if you don't override this function, this object tries to load this.terrainSource unless the map is LEGACYmission - I mean using RMmap.
 	
@@ -626,9 +632,12 @@ let RTS = {
 	restore: function(){ // call this function whenever player loads RMsavedata. reload all datas from RM memories.
 		
 		
+		this.DlogManager.receiveQ(); // restore Dlog queue
 		// restore mission 
+		this.mission.restore();
 
 		// restore map
+		this.map.restore();
 	},
 
 
@@ -751,23 +760,13 @@ var Cmd = {
 		},
 
 		pic: {
-			load: function(filepath,picid,layer) { // load to picid 
-				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid},${layer}`);
-				return new RM_Picture(picid,filepath,[0,0],layer,[1,1,1]);
-
-			},
-
-			move: function(pos,rgbs,trans) { 
-				rgbs = rgbs || [100,100,100,100];
-				trans = trans || 0;
-				Cmd.Qset(this.CmdType,"simplemovePic",`${pos[0]},${pos[1]},${rgbs[0]},${rgbs[1]},${rgbs[2]},${rgbs[3]},${trans}`);
+			load: function(filepath,picid) { // load to picid 
+				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid}`);
 			},
 
 			remove: function(picid) {
 				Cmd.Qset(this.CmdType,"removePic",`${picid}`);
 			},
-		},
-
 		},
 
 		loadText: function(filepath) { 
@@ -1156,14 +1155,11 @@ class Ns_Presentation {
 
 
 class RM_Picture {
-	constructor(picid,filename,pos,layer,spriteinfo,size,trans) {
+	constructor(picid,pos,layer,spriteinfo) {
 		this.picid = picid;
-		this.filename = filename;
 		this.pos = pos;
 		this.layer = layer;
-		this.sprInfo = spriteinfo || [1,1,1];
-		this.size = size || 100;
-		this.trans = trans || 0;
+		this.sprInfo = spriteinfo;
 	};
 };
 
