@@ -486,15 +486,25 @@ cev .id(396), .name("!Shield DataLoad") , {
     t[2998] .split ",", t[2998], v[1941]
     str3 .asg t[2999]
     str5 .asg t[3000]
+
+
     t[2999..3000] .asg ""
     @loop 40 .dst v[1941] {
         v[1942] = 3001 + v[1941]
         v[1943] = 1901 + v[1941]
         t[v[1942]] .toNum v[1944]
         v[v[1943]] = v[1944]
-        t[v[1942]] .asg ""
         
     }
+
+		expand_DIStable(t[3030])
+		reg4 = reg3 - 1
+		var1 = var2 == -1 ? rnd(0,reg4) : min(var2,reg4)
+		var1 = 3201 + var1
+		checkItemPicFileName(var1,Str_slot_weaponfile,Const_str_weapon)
+
+
+	t[3001..3040] .asg ""
 
     @comment "###################Set Variation"
     //safety for ID collapse crash

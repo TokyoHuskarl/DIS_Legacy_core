@@ -191,6 +191,8 @@ __fn func_generate_agent {
 				//@call .cev 301
 				GenAgent_BaseStatsPerk()
 				// "###################Equipment Begin###################"
+				t[__id(Str_slot_armorfile)..__id(Str_slot_subsetL)].asg "" // init weapon file buffers
+
 				// "#wea"
 				@if v[851] == 0 {
 				    v[v[1216]..v[1216] + 100] = 0
@@ -303,6 +305,8 @@ __fn func_generate_agent {
 				    v[857] = v[v[1216] + rnd(0, v[1941] - 1)]
 				    
 				}
+				
+
 				// "#Get Variations"
 				t[3023] .toNum v[4001]
 				t[3025] .toNum v[4002]
@@ -311,10 +315,13 @@ __fn func_generate_agent {
 				t[3031] .toNum v[4005]
 				// "#Set Equipments Parameter"
 				//Check reserve ammo first
-				@if v[856]>0 {
+				@if v[856] > 0 {
 					var1 = v[856]
 					var2 = 0
 					@call .cev v[1150]
+					Str_slot_subsetR.asg Str_slot_weaponfile
+					Str_slot_weaponfile.asg ""
+
 					func_convert_weapon_ammo_into_four_byte_ammo_data(weapon_Ammo)
 					agent_Ammo = reg1 << 16
 					macro_set_agent_AI_decision_Sub_WEP_Type(v[1907])//set subset
@@ -328,8 +335,10 @@ __fn func_generate_agent {
 				var2 = v[4001]
 				@call .cev v[1150]
 				@call .cev 1923
+				Str_slot_mainsetR.asg Str_slot_weaponfile
+				Str_slot_weaponfile.asg ""
 				//Main weapon ammo Set!
-				//if v[1920] == 0, just ignored.
+				//if v[1920] == 0, just ignore.
 				func_convert_weapon_ammo_into_four_byte_ammo_data(weapon_Ammo)
 				agent_Ammo += reg1
 
@@ -339,8 +348,11 @@ __fn func_generate_agent {
 				    var2 = v[4002]
 				    @call .cev v[1151]
 				    @call .cev 1923
+						Str_slot_mainsetL.asg Str_slot_weaponfile
+						Str_slot_weaponfile.asg ""
 				    
 				} .else bl {
+						Str_slot_mainsetL.asg ""
 				    v[859] = v[858]
 				    v[852] = 0
 				    
