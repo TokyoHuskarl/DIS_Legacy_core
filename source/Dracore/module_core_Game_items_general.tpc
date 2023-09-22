@@ -3,24 +3,7 @@
 #include "./module_core_Game_items_functions.tpc"
 
 
-__fn expand_DIStable $table {
-	t[__id($table)] .split("|",t[3201],reg3)
-	
 
-}
-
-__fn checkItemPicFileName $source $slot $name {
-	@if t[__id($slot)].contains "spr_" {
-		t[__id($slot)].asg ""
-
-	}.else bl{
-		t[__id($slot)].cat $name
-
-	}
-
-	t[__id($slot)].cat t[$source]
-
-}
 
 
 cev .id(1923), .name("!Set Equipment into Unit Stat") , {

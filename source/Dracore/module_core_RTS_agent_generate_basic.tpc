@@ -6,15 +6,12 @@ __if LOAD_HEADER_DRAW != 1 {
 	YOU_MUST_INCLUDE_DRAWING_HEADER // Since behavior of TPC #include directive is SHIT, you must manually #include header_drawing.tpc whenever you use these functions  
 }
 
-//temp
+// temp korehido
 struct("weapon",{
 	defv  {
 		weapon_Ammo = 1920
 	}
 })
-
-//cev .id(300), .name("Agent:Spawn Basic"), {
-
 
 
 __fn func_generate_agent {
@@ -83,11 +80,18 @@ __fn func_generate_agent {
 				// "ObjTyp"
 				t[3001] .toNum v[601]
 				// "#SpriteSet"
-				//v[v[1216]..v[1216] + 100] = 0
 				v[1301].copy v[v[1216]], 100
 
+				// minion sprite
 				t[3200..3300] .asg ""
 				t[3002] .split "|", t[3200], v[1941]
+				expand_DIStable(t[3002])
+				reg4 = reg3 - 1
+				var1 = var2 == -1 ? rnd(0,reg4) : min(var2,reg4)
+				var1 = 3201 + var1
+				checkItemPicFileName(var1,Str_slot_minionfile,Const_str_minion)
+
+				/*
 				@loop v[1941] .dst v[1945] {
 				    v[1942] = 3200 + v[1945]
 				    v[1943] = v[1216] + v[1945]
@@ -95,8 +99,11 @@ __fn func_generate_agent {
 				    v[v[1943]] = v[1944]
 				    
 				}
-				
+				*/
+
+				// this will be need less or smth
 				v[602] = v[v[1216] + rnd(0, v[1941] - 1)]
+
 				// "###"
 				t[3003] .toNum v[664]
 				t[3004] .toNum v[1941]
@@ -2092,7 +2099,7 @@ __fn GenAgent_Horse_Setting {
 							@if `agent_AABits & AABits_FLAG_Camel {
 								// Sprite Offset Y
 								agent_InitialOffsetY -= 11 // Sprite Offset Y
-								agent_Height += 2 // add size since camel is simply tall! kek
+								agent_Height += 1 // add size since camel is simply tall!
 								
 							}.else bl {
 								agent_InitialOffsetY -=  9 // Sprite Offset Y

@@ -677,6 +677,11 @@ __fn getQstr $quickstring_id {
 }
 
 
+
+//---------------------------------
+// file system 
+//---------------------------------
+
 // file path setting
 def {
 
@@ -702,12 +707,25 @@ def {
 		
 		// minions parts path
 
+		// koreha hidoi
+		// design flaw, need to fix later
+		Const_str_armor = "parts\armor\spr_armor_"
+		Const_str_head = "parts\bodyset\set\spr_head_"
+		Const_str_helm = "parts\helm\spr_helm_"
+		Const_str_weapon = "parts\weapons\spr_cweapons_"
+		Const_str_misc = "parts\misc\spr_misc_"
+		Const_str_minion = __str(PATH_pictureHome,"minions\spr_minions_")
+		Const_str_static = "static\spr_static_"
+		Const_str_hair = "parts\hair\spr_hair_"
+		Const_str_minion_head = "minions\head\spr_head_"
+
+
 		PATH_spr_armor = __str(PATH_pictureHome,"parts\armor\spr_armor_0")
 		PATH_spr_head = __str(PATH_pictureHome,"parts\bodyset\set\spr_head_0")
 		PATH_spr_helm = __str(PATH_pictureHome,"parts\helm\spr_helm_0")
 		PATH_spr_weapon = __str(PATH_pictureHome,"parts\weapons\spr_cweapons_1")
 		PATH_spr_misc = __str(PATH_pictureHome,"parts\misc\spr_misc_0")
-		PATH_spr_minion = __str(PATH_pictureHome,"minions\spr_minions_1")
+		PATH_spr_minion = __str(Const_str_minion,"1")
 		PATH_spr_static = __str(PATH_pictureHome,"static\spr_static_1")
 		PATH_spr_hair = __str(PATH_pictureHome,"parts\hair\spr_hair_0")
 		PATH_spr_armor_damaged = __str(PATH_pictureHome,"parts\armor\damaged\spr_damaged_armor_0")
@@ -720,6 +738,13 @@ def {
 			PATH_pic_numdir_miss = __str(PATH_pic_numdir,"num_miss" )
 
 
+
+}
+
+
+__fn expand_DIStable $table {
+	t[__id($table)] .split("|",t[3201],reg3)
+	
 
 }
 
