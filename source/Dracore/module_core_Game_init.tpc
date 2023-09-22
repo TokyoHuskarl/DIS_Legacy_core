@@ -1218,8 +1218,9 @@ cev .id(1790), .name("@Init Database") , {
 	t[806] .asg  .file "..\scripts\const_armors_id", .utf8
 	t[807] .asg  .file "..\scripts\const_helms_id", .utf8
 	t[808] .asg  .file "..\scripts\const_accessories_id", .utf8
-	t[803] .split LF, t[v[1219]], v[505]
 
+
+	t[803] .split LF, t[v[1219]], v[505]
 	@loop v[505] .dst v[506] {
 			var1 = v[1219] + v[506]
 			t[var1] .split "=", t[3000], TT1
@@ -1373,36 +1374,33 @@ cev .id(1790), .name("@Init Database") , {
 			
 	}
 
+	def STRING_PL_SCOUT = __str("UNIT_PL_SCOUT=\v[",__id(TT1),"]",LF)
+	def STRING_PL_WORKER = __str("UNIT_PL_WORKER=\v[",__id(TT1),"]",LF)
+
 	t[800] .asg  .file "..\scripts\const_misc", .utf8
 	TT1 = v[4575] + 28
-	t[800] .cat "UNIT_PL_SCOUT=\v["
-	t[800] .cat "\TT1" .extract
-	t[800] .cat "]" .extract
-	t[800] .cat LF
+	t[800] .cat STRING_PL_SCOUT
+	t[800] .asg t[800] .extract
 	TT1 = v[4575] + 5
-	t[800] .cat "UNIT_PL_WORKER@\v["
-	t[800] .cat "\v[341]" .extract
-	t[800] .cat "]" .extract
-	t[800] .cat LF
+	t[800] .cat STRING_PL_WORKER
+	t[800] .asg t[800] .extract
+
 	t[511] .asg  .file "..\scripts\const_troops_id", .utf8
-	@if t[511] .eq "" {
-			@if t[511] .neq t[801] {
-					@loop .inf() {
-							@if .canOutput() {
-									@break
-									
-							}
-							@wait 0
+	@if t[511] .neq t[801] {
+			@loop .inf() {
+					@if .canOutput() {
+							@break
 							
 					}
-					
-					t[801] .toFile "..\scripts\const_troops_id", .utf8
 					@wait 0
 					
 			}
+			
+			t[801] .toFile "..\scripts\const_troops_id", .utf8
 			@wait 0
 			
 	}
+	
 
 
 	@comment "set id"
@@ -1537,6 +1535,9 @@ cev .id(1790), .name("@Init Database") , {
 	t[803].asg ""
 	v[4574] = 18700
 	t[510] .asg  .file "..\data\data_factiontemplates", .utf8, .extract
+	// replace troop ID in template setting
+	convert_troopID_in_string(t[510])
+
 	t[510] .split "*/", t[509], TT1
 	@if t[510] .neq "" {
 		t[510] .split LF, t[v[4574]], TT3
@@ -1561,11 +1562,14 @@ cev .id(1790), .name("@Init Database") , {
 				@wait 0
 				
 		}
+
+
 		@wait 0
 			
 	}.else bl {
 		func_errlog("Faction templates missing.")	
 	}
+
 	t[3000..3500] .asg ""
 
 	// set faction languages
@@ -1991,3 +1995,20 @@ cev .id(2120), .name("Game:Boot"),{
 
 	
 }
+
+__fn convert_troopID_in_string $str {
+	t[801] .split LF, t[v[1219]], v[505]
+	@loop v[505] .dst v[506] {
+			var1 = v[1219] + v[506]
+			t[var1] .split "=", t[3000], TT1
+			@if TT1 == 2 {
+					@if t[3000] .neq "" {
+							t[__id($str)] .asg  .rep $str, t[3000], t[3001]
+							
+					}
+					
+			}
+			
+	}
+}
+

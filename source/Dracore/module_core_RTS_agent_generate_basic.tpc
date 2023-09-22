@@ -60,52 +60,69 @@ __fn func_generate_agent {
 				// "まず清掃"
 				v[1301].copy v[601], 300
 				v[1301].copy v[Ptr20], 300
+				
+				// clear all file string buffers
+				t[__id(Str_slot_armorfile)..__id(Str_slot_subsetL)].asg "" // init weapon file buffers
+
 				// "ORDER SET"
 				v[841] = v[277]
+
 				// "チームセット"
 				agent_TeamID = spawnSet_Team
 				v[624] = between(agent_TeamID, 0, 2) ? agent_TeamID + 1 : 3
+
 				// "WP消しておく"
 				v[655] = -1
+
 				// "出る場所セット"
 				spawnSet_x.copy v[605], 2
+
 				// "生成場所の数値を入れる"
 				v[605].copy v[607], 2
 				v[605].copy v[641], 2
 				v[310..311] = 10000
 				v[605] .mul Temp10, 2
+
 				// "Init end##################"
+		
+
 				agent_UnitID = v[254]
 				agent_UnitID -= s[152] == 0 ? 200 : 0
+
 				// "ObjTyp"
 				t[3001] .toNum v[601]
+
 				// "#SpriteSet"
 				v[1301].copy v[v[1216]], 100
 
 				// minion sprite
 				t[3200..3300] .asg ""
-				t[3002] .split "|", t[3200], v[1941]
-				expand_DIStable(t[3002])
-				reg4 = reg3 - 1
-				var1 = var2 == -1 ? rnd(0,reg4) : min(var2,reg4)
-				var1 = 3201 + var1
-				checkItemPicFileName(var1,Str_slot_minionfile,Const_str_minion)
+				@if v[601] != 3 {
+					deploy_DIStable(t[3002])
+					var1 = 3201 + rnd(0,reg3 - 1)
+					checkItemPicFileName(var1,Str_slot_minionfile,Const_str_minion)
 
-				/*
-				@loop v[1941] .dst v[1945] {
-				    v[1942] = 3200 + v[1945]
-				    v[1943] = v[1216] + v[1945]
-				    t[v[1942]] .toNum v[1944]
-				    v[v[1943]] = v[1944]
-				    
+
+					// this will be need less or smth
+					v[602] = v[v[1216] + rnd(0, v[1941] - 1)]
+				}.else bl{
+					// kore iru?
+					@loop v[1941] .dst v[1945] {
+							v[1942] = 3200 + v[1945]
+							v[1943] = v[1216] + v[1945]
+							t[v[1942]] .toNum v[1944]
+							v[v[1943]] = v[1944]
+							
+					}
+					v[602] = v[v[1216] + rnd(0, v[1941] - 1)]
+
 				}
-				*/
-
-				// this will be need less or smth
-				v[602] = v[v[1216] + rnd(0, v[1941] - 1)]
 
 				// "###"
 				t[3003] .toNum v[664]
+
+
+				// skin pattern
 				t[3004] .toNum v[1941]
 				// "SkinSet"
 				@if v[1941] >= 1 {
@@ -123,13 +140,16 @@ __fn func_generate_agent {
 				    v[670] = 0
 				    
 				}
+
 				@call .cev 309
 				// "Hit Box"
 				t[3005] .toNum v[610]
 				t[3006] .toNum v[611]
+
 				// "#Passive"
 				t[3007] .toNum v[822]
 				t[3008] .toNum v[821]
+
 				// "#Simplification#Unit Type to MS Add"
 				@loop 13 .dst v[1941] {
 				    v[1942] = 3009 + v[1941]
@@ -139,6 +159,8 @@ __fn func_generate_agent {
 				    
 				}
 				
+
+				// wtf
 				v[0] = v[702..716] += [v[1901], 0, v[1902], v[1903], v[1903], v[1904], v[1904], v[1905], v[1906], v[1907], v[1908], v[1909], v[1910], v[1911], v[1912]]
 				// "##WILL"
 				v[739] += v[1913]
@@ -147,13 +169,16 @@ __fn func_generate_agent {
 				v[731] = v[1941] != 0 ? v[1941] : v[731]
 				t[3051] .toNum v[1941]
 				v[732] = v[1941] != 0 ? v[1941] : v[732]
-				// "#Movetype set"
+
+				// "#Movetype flag set" <- this needs to be changed into flag type
 				t[3053] .toNum v[638]
+
 				// "#Skills"
 				t[3036] .toNum v[741]
 				t[3037] .toNum v[761]
 				t[3038] .toNum v[781]
 				t[3039] .toNum v[801]
+
 				// "#Passive"
 				t[3040] .toNum v[824]
 				@if v[824] >= v[1186] {
@@ -162,9 +187,11 @@ __fn func_generate_agent {
 				    s[118].off
 				    
 				}
+
 				// "#SetPerks"
 				v[4101..4120] = 0
 				Temp2 = 4101 - 6
+
 				// "#Perks1"
 				@loop 4 .dst v[1950] {
 				    v[v[1216]..v[1216] + 100] = 0
@@ -198,7 +225,6 @@ __fn func_generate_agent {
 				//@call .cev 301
 				GenAgent_BaseStatsPerk()
 				// "###################Equipment Begin###################"
-				t[__id(Str_slot_armorfile)..__id(Str_slot_subsetL)].asg "" // init weapon file buffers
 
 				// "#wea"
 				@if v[851] == 0 {
@@ -337,13 +363,16 @@ __fn func_generate_agent {
 				}.else bl{
 					agent_Ammo = 0
 				}
+
 				//Set Weapon
 				var1 = v[851]
 				var2 = v[4001]
 				@call .cev v[1150]
 				@call .cev 1923
+				@if var1 <= 0 { Str_slot_weaponfile.cat "0" }
 				Str_slot_mainsetR.asg Str_slot_weaponfile
 				Str_slot_weaponfile.asg ""
+
 				//Main weapon ammo Set!
 				//if v[1920] == 0, just ignore.
 				func_convert_weapon_ammo_into_four_byte_ammo_data(weapon_Ammo)
@@ -364,6 +393,7 @@ __fn func_generate_agent {
 				    v[852] = 0
 				    
 				}
+
 				var1 = v[853]
 				var2 = v[4003]
 				@call .cev v[1152]
@@ -2098,8 +2128,8 @@ __fn GenAgent_Horse_Setting {
 					@if v[601] == 3 {
 							@if `agent_AABits & AABits_FLAG_Camel {
 								// Sprite Offset Y
-								agent_InitialOffsetY -= 11 // Sprite Offset Y
-								agent_Height += 1 // add size since camel is simply tall!
+								agent_InitialOffsetY -= 12 // Sprite Offset Y.. +3.
+								agent_Height += 2 // add size since camel is simply tall!
 								
 							}.else bl {
 								agent_InitialOffsetY -=  9 // Sprite Offset Y

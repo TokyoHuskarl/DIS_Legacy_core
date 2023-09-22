@@ -49,7 +49,7 @@ __fn drawing_set_grid_raw $Exmotion $Addmotion {
 	v[4121] = $Addmotion & AddMotionFlags_FLAG_Armor_has_second_sprite_line ? 2 : 1
 }
 
-__fn function_agent_init_set_picture_strs{
+__fn function_agent_init_set_picture_strs {
 	var1 = Const_str_agent_pictures_strings_start + v[201] * 10
 		var2 = var1 + 9
 	t[var1..var2].asg ""
