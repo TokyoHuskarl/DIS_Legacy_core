@@ -1392,7 +1392,8 @@ __fn show_Passive_description {
 							}
 							
 					} .else bl {
-							t[2999] .asg "[\c[\reg10]\n[6]\c[0]]\inputstr" .extract
+							def STRING_FACTIONNAME = __str("[\c[\v[", __id(reg10), "]]\n[6]\c[0]]\t[", __id(inputstr), "]")
+							t[2999] .asg STRING_FACTIONNAME .extract
 							@pic[996].strpic {
 									t[2999]
 									.pos v[1301], v[1065] .bottomLeft
@@ -1428,8 +1429,9 @@ __fn show_Passive_description {
 							
 					}
 					
-					t[2999] .asg "[\c[\reg10]\n[6]\c[0]]
-	" .extract
+					def STRING_N6andLF = __str("[\c[\v[", __id(reg10), "]]\n[6]\c[0]]")
+					t[2999] .asg STRING_N6andLF .extract
+					t[2999] .cat LF
 					t[2999] .cat t[3000] .extract
 					@pic[996].strpic {
 							t[2999]

@@ -776,15 +776,26 @@ deft {
 }
 
 __fn checkItemPicFileName $source $slot $name {
-	@if t[__id($slot)].contains "spr_" {
-		t[__id($slot)].asg ""
+	
+	@if t[$source].contains "spr_" {
+		t[1].asg $name
+		t[1].split ("spr_",t[1],reg9)
+		t[__id($slot)].asg t[1]
+		v[1930] = 1 // has sprite
 
 	}.else bl{
-		t[__id($slot)].cat $name
+		t[__id($slot)].asg $name
 
 	}
 
-	t[__id($slot)].cat t[$source]
+	@if t[$source].neq "" {
+		t[__id($slot)].cat t[$source]
+		v[1930] = 1 // has sprite
 
+	}.else bl{
+		t[__id($slot)].cat "0"
+		v[1930] = 0 // doesn't have sprite
+
+	}
 }
 
