@@ -1421,47 +1421,47 @@ __fn func_generate_agent_finish_set {
 	    @comment "##Init FootStepSound"
 	    v[887] = 0
 	    @if agent_UnitType == 2 {
-		@comment "#If not flying"
-		@if `(v[638] & 1) == 0 {
-		    @comment "#Horse Type Move Flag"
-		    v[638] |= 2
-		    @comment "#Won't get MS penalty from fatigue "
-		    agent_BaseObjBit |= 32768
-		    @comment "#SP Bonus"
-		    v[707..708] += 20
-		    @comment "#HIT/AVD Penalty"
-		    v[713..714] -= 5
-		    @comment "#Melee Range Penalty&Crit Bonus"
-		    @if v[703] == 0 {
-			v[717] -= 4000
-			v[717] = max(19000, v[717])
-			v[715] += 1
-			
-		    }
-		    v[610] += 2
-		    v[611] += 3
-		    @comment "Cant ShieldWall nor PikeWall"
-		    agent_BaseObjBit = agent_BaseObjBit & ~6
-		    @comment "Big flag"
-		    agent_BaseObjBit |= 524288
-		    @comment "Difficult to get hit on the head"
-		    v[839] += 1
-		    @comment "#set FootStepSound horse"
-		    v[887] = 1
-		    @comment "#Hold weapon"
-		    v[726] |= 2097152
-		    @comment "#Hold Weapon lock"
-		    v[726] |= 8388608
-		    @comment "#Horseback"
-		    v[726] |= 16777216
-		    @comment "#Tech:Husbandry"
-		    v[705..706] += v[2409 + spawnSet_Team % 3] & 0x80000 ? 200 : 0
-		    
-		} .else bl {
-		    @comment "#Flying Troops usually treated as Cav"
-		    agent_UnitType = agent_UnitType == 0 ? 2 : agent_UnitType
-		    
-		}
+				@comment "#If not flying"
+				@if `(v[638] & 1) == 0 {
+						@comment "#Horse Type Move Flag"
+						v[638] |= 2
+						@comment "#Won't get MS penalty from fatigue "
+						agent_BaseObjBit |= BaseObjBit_FLAG_Relentless
+						@comment "#SP Bonus"
+						v[707..708] += 20
+						@comment "#HIT/AVD Penalty"
+						v[713..714] -= 5
+						@comment "#Melee Range Penalty&Crit Bonus"
+						@if v[703] == 0 {
+							v[717] -= 4000
+							v[717] = max(19000, v[717])
+							v[715] += 1
+					
+						}
+						v[610] += 2
+						v[611] += 3
+						@comment "Cant ShieldWall nor PikeWall"
+						agent_BaseObjBit = agent_BaseObjBit & ~6
+						@comment "Big flag"
+						agent_BaseObjBit |= 524288
+						@comment "Difficult to get hit on the head"
+						v[839] += 1
+						@comment "#set FootStepSound horse"
+						v[887] = 1
+						@comment "#Hold weapon"
+						v[726] |= 2097152
+						@comment "#Hold Weapon lock"
+						v[726] |= 8388608
+						@comment "#Horseback"
+						v[726] |= 16777216
+						@comment "#Tech:Husbandry"
+						v[705..706] += v[2409 + spawnSet_Team % 3] & 0x80000 ? 200 : 0
+						
+				} .else bl {
+						@comment "#Flying Troops usually treated as Cav"
+						agent_UnitType = agent_UnitType == 0 ? 2 : agent_UnitType
+						
+				}
 		
 	    }
 	    @comment "#Siege Weapons"
@@ -2056,17 +2056,17 @@ __fn GenAgent_Horse_Setting {
 			@if v[638] != 1 {
 					@comment "##Riding Perks"
 					@comment "###MountainBlade"
-					@if `(v[Temp2 + 8] & 64) == 0 {
+					@if `!(v[Temp2 + 8] & PerkFlagBits3_FLAG_Mountainblade) { // if the troop doesn't have the perk, give it pernalties
 							v[836] = muldiv(v[836], 88, 100)
 							v[714] = muldiv(v[714], 92, 100)
 							
 					} .else bl {
 							@comment "#Speed Bonus"
-							v[740] |= 134217728
+							v[740] |= BaseObjBit_FLAG_SpeedBonus
 							
 					}
 					@comment "###HorseArchery"
-					@if `(v[Temp2 + 8] & 128) == 0 {
+					@if `(v[Temp2 + 8] & PerkFlagBits3_FLAG_HorseArcher) == 0 {
 							v[837] /= 2
 							
 					} .else bl {
@@ -2074,7 +2074,7 @@ __fn GenAgent_Horse_Setting {
 							
 					}
 					@comment "###Parthian Shot"
-					@if `(v[Temp2 + 8] & 256) == 0 {
+					@if `(v[Temp2 + 8] & PerkFlagBits3_FLAG_Parthian) == 0 {
 							@if s[211] .isOn() {
 									@comment "AS penalty"
 									v[719] -= 6
@@ -2089,9 +2089,15 @@ __fn GenAgent_Horse_Setting {
 							
 					}
 					@if v[601] == 3 {
-							@comment "Sprite Offset Y"
-							v[882] -= 9
-							
+							@if `agent_AABits & AABits_FLAG_Camel {
+								// Sprite Offset Y
+								agent_InitialOffsetY -= 11 // Sprite Offset Y
+								agent_Height += 2 // add size since camel is simply tall! kek
+								
+							}.else bl {
+								agent_InitialOffsetY -=  9 // Sprite Offset Y
+
+							}
 					}
 					
 			}

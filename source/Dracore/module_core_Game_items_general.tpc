@@ -283,6 +283,13 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    v[889] = v[1930]
 	    
 	}
+		
+	// Acc flags
+	@if `v[1927] & 1 { // camel kari
+		agent_AABits = AABits_FLAG_Camel
+	}
+	
+
 	@comment "#############Weight Proc#############"
 	v[1941] = v[1919]
 	@comment "#Set ArmorWeight"
@@ -683,14 +690,25 @@ cev .id(399), .name("!Acc DataLoad") , {
 			v[1943] = 1901 + v[1941]
 			t[v[1942]] .toNum v[1944]
 			v[v[1943]] = v[1944]
-			t[v[1942]] .asg ""
 			
 	}
-	@comment "###################Set Variation"
+	
+	
+	// "###################Set Variation"
+	
+	// get accessory flag 
+	t[3027] .split "|", t[3200], v[1941]
+	@loop v[1941] .dst v[1945] {
+	    v[1942] = 3200 + v[1945]
+	    t[v[1942]] .toNum v[1944]
+	    v[1927] |= pow(2, v[1944] - 1)
+	    
+	}
+
 	//safety for ID collapse crash
 	var2 = max(var2,-1) 
 	v[1930] += var2 == -1 ? rnd(0, v[1928]) * 100000 : min(var2, v[1928]) * 100000
-	@comment "###################"
+	// "###################"
 	v[1942] = v[1901] % 100
 	str4 .asg ""
 	@if v[1942] == 1 {
@@ -709,6 +727,8 @@ cev .id(399), .name("!Acc DataLoad") , {
 			str4 .cat t[20015]
 			
 	}
+
+	t[3001..3040] .asg ""
 	@comment "###################	Set ID###################"
 	v[1940] = var1
 	@comment "If v:1901==0, consider called item undefined"

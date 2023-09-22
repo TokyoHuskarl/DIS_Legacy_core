@@ -33,15 +33,6 @@ __fn function_set_agent_picture $agentid $stringvar $slot {
 
 // victim_ExMotionFlags victim_AddMotionBits
 __fn fuction_drawing_set_grid {
-	/*
-	v[4102] = Const_head_spr_gridX //grid X
-	v[4122] = Const_head_spr_gridY //grid Y
-	@if `agent_ExMotionFlags & 512 {
-		v[4101] = 7
-		v[4107] = 7 // this one can be removed everywhere not drawing sector - use meta if
-	}
-	v[4121] = agent_AddMotionBits & 1 ? 2 : 1
-	*/
 
 	drawing_set_grid_raw(agent_ExMotionFlags,agent_AddMotionBits)
 }
@@ -49,13 +40,13 @@ __fn drawing_set_grid_raw $Exmotion $Addmotion {
 	//in this function you can use v[725] and v[726] pointer to get bits flag 
 	v[4102] = Const_head_spr_gridX //grid X
 	v[4122] = Const_head_spr_gridY //grid Y
-	@if `$Exmotion & 512 {
-		v[4101] = 7
-		v[4107] = 7 
+	@if `$Exmotion & ExMotionFlags_FLAG_MoveAnim {
+		v[4101] = 7 // armor
+		v[4107] = 7 // minionspr
 	}
 
-	v[4104] = $Addmotion & ExMotionFlags_FLAG_Weapon_With_Anim ? 7 : 5 // animation weapons
-	v[4121] = $Addmotion & 1 ? 2 : 1
+	v[4104] = $Exmotion & ExMotionFlags_FLAG_Weapon_With_Anim ? 7 : 5 // animation weapons
+	v[4121] = $Addmotion & AddMotionFlags_FLAG_Armor_has_second_sprite_line ? 2 : 1
 }
 
 __fn function_agent_init_set_picture_strs{
@@ -172,10 +163,9 @@ __fn function_agent_init_set_picture_strs{
 __fn function_draw_moving_agent {
 	
 	v[11] =  v[340]*10
-	v[11] = Const_str_agent_pictures_strings_start+v[11]
+	v[11] = Const_str_agent_pictures_strings_start + v[11]
 	@while v[899] >= 1 {
 		v[341] = v[899] % 10
-		//v[286] = 900 + v[341] + 10 * v[v[341] + 342]
 		v[286] = v[341] + v[11]
 		//@comment "Layer Setting"
 		v[356].copy v[449], 4
@@ -192,26 +182,16 @@ __fn function_draw_moving_agent {
 		v[454] = 4140 + v[341]
 		v[456] = 4150 + v[341]
 		//surprise, but this seems faster than above... opt 25.4.23
-		//v[305] = v[v[305]]
-		//v[306] = v[v[306]]
 		v[305].deref v[305],2
 		v[447] = v[v[447]]
 		v[342] = v[v[342]]
-		//v[463] = v[v[463]]
-		//v[464] = v[v[464]]
 		v[463].deref v[463],2
 		v[321] = v[v[321]]
-		//v[453] = v[v[453]]
-		//v[454] = v[v[454]]
-		//v[455] = v[v[455]]
-		//v[456] = v[v[456]]
 		v[453].deref v[453],4
 
 		v[449] .add v[v[342]], 4
-		//@comment "Layer Setting END"
-		//v[320] = v[v[340] * 6 + (v[341] - 1) % 6 + v[1185]]
-		//@comment "Strings = t[v[286]]"
-		//this @if is for safety, set in order to not load false id picture 
+		// @comment "Layer Setting END"
+		// this @if is for safety, set in order not to load false id picture 
 		@if v[188] > 0 {
 		    @cmd 11110, t[v[286]], .args v[441], v[480]
 		    
