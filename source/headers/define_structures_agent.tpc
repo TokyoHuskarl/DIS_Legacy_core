@@ -411,7 +411,7 @@ struct("agent",{
 	BaseObjBit_FLAG_Relentless = 32768
 	BaseObjBit_FLAG_Immune_to_stun = 65536
 	BaseObjBit_FLAG_Duelist_Activated = 131072
-	BaseObjBit_FLAG_big_unit=524288
+	BaseObjBit_FLAG_big_unit = 524288
 	BaseObjBit_FLAG_Standard_Bearer = 1048576
 	BaseObjBit_FLAG_Explosive = 2097152
 	
@@ -756,3 +756,35 @@ struct("agent",{
 	Const_Function_do_nothing = 1899
 	}
 })
+
+
+//---------------------------------
+// agent file system 
+//---------------------------------
+
+// file name buffer for agent
+deft {
+	Str_slot_armorfile = 851
+	Str_slot_helmfile = 853
+	Str_slot_weaponfile = 854
+	Str_slot_accfile = 856
+	Str_slot_minionfile = 857
+	Str_slot_mainsetR = 861
+	Str_slot_mainsetL = 862
+	Str_slot_subsetR = 863
+	Str_slot_subsetL = 864
+}
+
+__fn checkItemPicFileName $source $slot $name {
+	@if t[__id($slot)].contains "spr_" {
+		t[__id($slot)].asg ""
+
+	}.else bl{
+		t[__id($slot)].cat $name
+
+	}
+
+	t[__id($slot)].cat t[$source]
+
+}
+

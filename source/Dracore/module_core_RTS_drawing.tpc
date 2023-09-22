@@ -326,10 +326,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													//@comment "Horseback lance"
 													@if `agent_ProcessObjBit & BaseObjBit_FLAG_LanceCharge {
 															HORSEBACK_CHARGE_ANIMATION
-															v[4054] += 1
-															Temp11 = 2 - 4 * v[325]
-															v[4041..4050] -= Temp11
-															v[4046] += Temp11
+															HORSEBACK_CHARGE_RIDER_POS
 															agent_ForceSprite = 100
 															
 													} .else bl {
@@ -346,11 +343,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													@if expected_action_sprite == 4 {
 															@if `agent_ProcessObjBit & BaseObjBit_FLAG_LanceCharge {
 																	HORSEBACK_CHARGE_ANIMATION
-																	v[4054] += 1
-																	Temp11 = 2 - 4 * v[325]
-																	v[4041..4050] -= Temp11
-																	v[4046] += Temp11
-
+																	HORSEBACK_CHARGE_RIDER_POS
 																	v[4114] = 3
 																	
 															} .else bl {
@@ -418,11 +411,10 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 					animation_foot_spear()
 															}
 
-															// weapon with animation
 
+													}
 
-				}
-													@if `agent_ExMotionFlags & ExMotionFlags_FLAG_MoveAnim {
+													@if `agent_ExMotionFlags & ExMotionFlags_FLAG_MoveAnim { // agent has movement animation
 															v[4117] = 6 + sin(TT1, 1, 9999) / 5000
 															v[4111] = v[4117]
 															@if v[4111] == 6 {
@@ -430,11 +422,15 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																	v[4059] -= 1
 																	
 															}
-															@if `(agent_AddMotionBits & 7) == 7 {
+															@if `(agent_AddMotionBits & 7) == 7 { // 1=Armor_has_second_sprite_line + 2=has_battle_move_animation + 3:4=weapon_double_grip_motion
 																	v[4111] += v[4101]
 																	v[4112..4119] = 4
 																	v[4051] -= 1
 																	
+															}
+															@if `agent_ExMotionFlags & ExMotionFlags_FLAG_Weapon_With_Anim { // for draconarius or battle banners
+																v[4114] = v[4117] // kari.
+
 															}
 															
 													}

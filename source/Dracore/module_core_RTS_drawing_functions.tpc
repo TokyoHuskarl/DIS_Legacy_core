@@ -137,25 +137,24 @@ __fn function_agent_init_set_picture_strs{
 		// t[var2].cat "\v[857]" .extract
 		// @if v[857]>0{ func_load_cache(t[var2]) }
 
-	}.elif v[601]==1 {//normal unit
-		var2=var1+1
-		t[var2].asg Const_str_minion
-		t[var2].cat "\v[602]" .extract
-		@if v[602]>0{ func_load_cache(t[var2]) }
-		var2=var1+3
+	}.elif v[601] == 1 {//normal unit
+		var2 = var1 + 1
+		// t[var2].asg Const_str_minion
+		// t[var2].cat "\v[602]" .extract
+		t[var2].asg Str_slot_minionfile
+
+		@if v[602] > 0 { func_load_cache(t[var2]) }
+		var2 = var1 + 3
 		t[var2].asg Const_str_minion_head
 		t[var2].cat "\v[602]" .extract
-		var2=var1+7
-		t[var2].asg Const_str_minion
-		t[var2].cat "\v[602]" .extract
-	}.elif v[601]==9 {//worker
-		var2=var1+1
-		t[var2].asg Const_str_minion
-		t[var2].cat "\v[602]" .extract
+		var2 = var1 + 7
+		t[var2].asg Str_slot_minionfile
+	}.elif v[601] == 9 {//worker
+		var2 = var1 + 1
+		t[var2].asg Str_slot_minionfile
 		@if v[602]>0{ func_load_cache(t[var2]) }
-		var2=var1+7
-		t[var2].asg Const_str_minion
-		t[var2].cat "\v[602]" .extract
+		var2 = var1 + 7
+		t[var2].asg Str_slot_minionfile
 	}
 
 }
