@@ -1781,8 +1781,7 @@ cev .id(2120), .name("Game:Boot"),{
 	t[1..100] .asg ""
 	t[3000..3300] .asg ""
 	@sys.getInfo .winSize  .dst v[1001]
-	// v[1115] = v[1001] / 2
-	// v[1116] = v[1002] / 2 - 8
+	
 	v[1001].copy v[1115],2
 	v[1115].div v[Const_2_combi],2
 	v[1116] -= 8
@@ -1872,7 +1871,8 @@ cev .id(2120), .name("Game:Boot"),{
 		v[22] += 12
 		
 			}
-			
+		v[1115] = v[1001] / 2
+		v[1116] = v[1002] / 2 - 8	
 			@pic[800].strpic {
 		"Click to Select Language."
 		.pos v[1115], v[1116] .center

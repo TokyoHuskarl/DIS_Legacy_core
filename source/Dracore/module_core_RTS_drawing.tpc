@@ -295,6 +295,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									@if `agent_ExMotionFlags & ExMotionFlags_FLAG_horseback {
 											v[4106] = 7
 											v[371] = 0
+											
 
 											 
 											@if `agent_ActionFlag & ActionFlag_FLAG_Walking {
@@ -310,7 +311,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													
 											}
 
-											
+											v[4056] += agent_AABits & AABits_FLAG_Camel ? Const_camel_offsetY_draw : 0 // Camel
 									}
 
 			//fleeing 
