@@ -31,7 +31,8 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 		    }
 		    
 		}
-		@if v[1925] < 1 {
+
+		@if `v[1924] & 1 { // weapon drawn priority (katana)
 		    s[154].on
 		    
 		} .else bl {
@@ -79,8 +80,8 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    v[740] |= v[1921]
 	    v[259] = v[1901]
 	    @comment "temp extramotion flag"
-	    v[726] |= v[1927]
-	    v[725] |= v[1926]
+	    v[726] |= v[1926]
+	    v[725] |= v[1925]
 	    @comment "Ranged?"
 	    v[0] = v[1901] >= 200 ? (s[211] = 1) : (s[211] = 0)
 	    
@@ -106,16 +107,11 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    v[740] &= v[1901] == 121 ? ~8388608 : ~0
 	    v[740] &= ~(v[1921])
 	    @if `!v[726] & 8388608 {
-				@if s[1] .isOn() {
-						v[726] &= ~pow(2, v[1927] - 1)
-						
-				} .else bl {
-						v[726] &= ~v[1927]
-						@if `v[726] & 512 {
-					v[725] &= ~(v[1926])
-						}
-						
-				}
+					v[726] &= ~v[1926]
+					@if `v[726] & 512 {
+					v[725] &= ~(v[1925])
+
+					}
 		
 	    }
 	    v[725] &= ~8
@@ -156,6 +152,12 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    @if v[601] == 4 {
 		
 	    }
+	    // "#Motion"
+	    @if v[601] == 3 {
+				v[726] |= v[1926]
+				v[725] |= v[1925]
+		
+	    }
 	    s[154].off
 	    
 	}
@@ -181,6 +183,13 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 		v[859] = 0
 		
 	    }
+	    // "#Motion"
+	    @if v[601] == 3 {
+				v[726] &= ~v[1926]
+				v[725] &= ~v[1925]
+		
+	    }
+
 	    @comment "Weight"
 	    v[1919] *= -1
 	    
@@ -195,7 +204,7 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    v[0] = (v[1927] & 1) == 1 ? (s[159] = 1) : (s[159] = 0)
 	    @comment "#Metal Armor AP Penalty"
 	    v[710] -= v[1901] != 1 ? muldiv(v[710], 2, 10) : 0
-	    @comment "#Motion"
+	    // "#Motion"
 	    @if v[601] == 3 {
 		v[726] |= v[1926]
 		v[725] |= v[1925]
@@ -203,20 +212,28 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    }
 	    
 	}
-	@comment "#Helm"
+	// "#Helm"
 	@if v[1929] == 4 {
-	    @comment "#AR-AVD"
+	    // "#AR-AVD"
 	    v[0] = v[711..714] += v[1902..1905]
-	    @comment "#HELM MAIN "
+	    // "#HELM MAIN "
 	    v[0] = v[839..840] += [v[1908], v[1907]]
-	    @comment "#Ranged penalty"
+	    // "#Ranged penalty"
 	    v[837] -= v[1918]
-	    @comment "#SPreg penalty"
+	    // "#SPreg penalty"
 	    v[828] = v[1920]
-	    @comment "#SPreg penalty"
+	    // "#SPreg penalty"
 	    v[732] -= v[1920]
-	    @comment "#Pic"
+	    // "#Pic"
 	    v[888] = v[1930]
+
+	    // "#Motion"
+	    @if v[601] == 3 {
+				v[726] |= v[1926]
+				v[725] |= v[1925]
+		
+	    }
+
 	    @comment "#Is_cover_head"
 	    @if `(v[1921] & 1) > 0 {
 		@comment "#NOT Dragons"
@@ -228,49 +245,54 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	}
 	@comment "#Acc"
 	@if v[1929] == 5 {
-	    @if v[1901] == 3 {
-		@comment "Is_attatchment"
-		@comment "#AR-AVD"
-		v[0] = v[711..714] += v[1902..1905]
-		@comment "#CritChanceReduction"
-		v[839] += v[1910]
 		
-	    } .else bl {
-		@if v[1901] == 2 {
-		    @comment "Is_horse"
-		    @comment "#AR-AVD"
-		    v[0] = v[711..714] += v[1902..1905]
-		    @comment "#BonusHP"
-		    v[705..706] += v[1911]
-		    @comment "#BonusSP"
-		    v[707..708] += v[1912]
-		    @comment "#BonusMS"
-		    v[716] += v[1913]
-		    @comment "#Make unit cav"
-		    v[702] = 2
-		    
+		// Motion
+		v[726] |= v[1926]
+		v[725] |= v[1925]
+
+		@if v[1901] == 3 {
+			@comment "Is_attatchment"
+			@comment "#AR-AVD"
+			v[0] = v[711..714] += v[1902..1905]
+			@comment "#CritChanceReduction"
+			v[839] += v[1910]
+			
 		} .else bl {
-		    @comment "#AR-AVD"
-		    v[0] = v[711..714] += v[1902..1905]
-		    @comment "#AD/AP"
-		    v[0] = v[709..710] += [v[1907], v[1908]]
-		    @comment "#Bonus Crit"
-		    v[0] = v[715] += v[1909]
-		    @comment "#CritChanceReduction"
-		    v[839] += v[1910]
-		    
+			@if v[1901] == 2 {
+					@comment "Is_horse"
+					@comment "#AR-AVD"
+					v[0] = v[711..714] += v[1902..1905]
+					@comment "#BonusHP"
+					v[705..706] += v[1911]
+					@comment "#BonusSP"
+					v[707..708] += v[1912]
+					@comment "#BonusMS"
+					v[716] += v[1913]
+					@comment "#Make unit cav"
+					v[702] = 2
+
+					// Acc flags
+					@if `agent_AddMotionBits & AddMotionFlags_FLAG_Camel { // camel kari
+						agent_AABits = AABits_FLAG_Camel
+					}
+					
+			} .else bl {
+					@comment "#AR-AVD"
+					v[0] = v[711..714] += v[1902..1905]
+					@comment "#AD/AP"
+					v[0] = v[709..710] += [v[1907], v[1908]]
+					@comment "#Bonus Crit"
+					v[0] = v[715] += v[1909]
+					@comment "#CritChanceReduction"
+					v[839] += v[1910]
+					
+			}
+			
 		}
-		
-	    }
-	    @comment "#Pic"
-	    v[889] = v[1930]
-	    
+		@comment "#Pic"
+		v[889] = v[1930]
 	}
 		
-	// Acc flags
-	@if `v[1927] & 1 { // camel kari
-		agent_AABits = AABits_FLAG_Camel
-	}
 	
 
 	@comment "#############Weight Proc#############"
@@ -290,6 +312,7 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	v[716] -= v[1941]
 
 }
+
 //
 cev .id(395), .name("!Weapon DataLoad") , {
 	@comment "module_core_Game_items_general.tpc"
@@ -328,25 +351,8 @@ cev .id(395), .name("!Weapon DataLoad") , {
 	    }
 	    
 	}
-	@comment "####Exmotion"
-	v[1926] = 0
-	t[3026] .split "|", t[3200], v[1941]
-	@loop v[1941] .dst v[1945] {
-	    v[1942] = 3200 + v[1945]
-	    t[v[1942]] .toNum v[1944]
-	    v[1926] |= pow(2, v[1944] - 1)
-	    
-	}
 
-	@comment "####Exmotion"
-	v[1927] = 0
-	t[3027] .split "|", t[3200], v[1941]
-	@loop v[1941] .dst v[1945] {
-	    v[1942] = 3200 + v[1945]
-	    t[v[1942]] .toNum v[1944]
-	    v[1927] |= pow(2, v[1944] - 1)
-	    
-	}
+	GET_CONVERTED_EXMOTION_BITS
 
 	deploy_DIStable(t[3030])
 	reg4 = reg3 - 1
@@ -498,6 +504,8 @@ cev .id(396), .name("!Shield DataLoad") , {
 		checkItemPicFileName(var1,Str_slot_weaponfile,Const_str_weapon)
 
 
+	GET_CONVERTED_EXMOTION_BITS
+
 	t[3001..3040] .asg ""
 
     @comment "###################Set Variation"
@@ -540,24 +548,9 @@ cev .id(397), .name("!Armor DataLoad") , {
 			
 	}
 
-	@comment "####Exmotion"
-	v[1926] = 0
-	t[3026] .split "|", t[3200], v[1941]
-	@loop v[1941] .dst v[1945] {
-			v[1942] = 3200 + v[1945]
-			t[v[1942]] .toNum v[1944]
-			v[1926] |= pow(2, v[1944] - 1)
-			
-	}
+	// ####Exmotion
+	GET_CONVERTED_EXMOTION_BITS
 
-	v[1925] = 0
-	t[3025] .split "|", t[3200], v[1941]
-	@loop v[1941] .dst v[1945] {
-			v[1942] = 3200 + v[1945]
-			t[v[1942]] .toNum v[1944]
-			v[1925] |= pow(2, v[1944] - 1)
-			
-	}
 
 
 	// get file table
@@ -641,6 +634,28 @@ cev .id(398), .name("!Helm DataLoad") , {
 			
 	}
 
+
+	// ####Exmotion
+	v[1926] = 0
+	t[3026] .split "|", t[3200], v[1941]
+	@loop v[1941] .dst v[1945] {
+			v[1942] = 3200 + v[1945]
+			t[v[1942]] .toNum v[1944]
+			v[1926] |= pow(2, v[1944] - 1)
+			
+	}
+
+	v[1925] = 0
+	t[3025] .split "|", t[3200], v[1941]
+	@loop v[1941] .dst v[1945] {
+			v[1942] = 3200 + v[1945]
+			t[v[1942]] .toNum v[1944]
+			v[1925] |= pow(2, v[1944] - 1)
+			
+	}
+
+
+
 	t[3001..3040] .asg ""
 	@comment "###################Set ID###################"
 	v[1940] = var1
@@ -680,15 +695,8 @@ cev .id(399), .name("!Acc DataLoad") , {
 	var1 = 3201 + var1
 	checkItemPicFileName(var1,Str_slot_accfile,Const_str_misc)
 
-	
 	// get accessory flag 
-	t[3027] .split "|", t[3200], v[1941]
-	@loop v[1941] .dst v[1945] {
-	    v[1942] = 3200 + v[1945]
-	    t[v[1942]] .toNum v[1944]
-	    v[1927] |= pow(2, v[1944] - 1)
-	    
-	}
+	GET_CONVERTED_EXMOTION_BITS
 
 	//safety for ID collapse crash
 	var2 = max(var2,-1) 
@@ -718,4 +726,29 @@ cev .id(399), .name("!Acc DataLoad") , {
 	v[1940] = var1
 	@comment "If v:1901==0, consider called item undefined"
 	v[1940] = v[1901] == 0 ? 0 : v[1940]
+}
+
+def GET_CONVERTED_EXMOTION_BITS = {
+
+	// ####Exmotion
+	v[1926] = 0
+	t[3026] .split "|", t[3200], v[1941]
+	@loop v[1941] .dst v[1945] {
+			v[1942] = 3200 + v[1945]
+			t[v[1942]] .toNum v[1944]
+			v[1926] |= pow(2, v[1944] - 1)
+			
+	}
+
+	v[1925] = 0
+	t[3025] .split "|", t[3200], v[1941]
+	@loop v[1941] .dst v[1945] {
+			v[1942] = 3200 + v[1945]
+			t[v[1942]] .toNum v[1944]
+			v[1925] |= pow(2, v[1944] - 1)
+			
+	}
+
+
+
 }

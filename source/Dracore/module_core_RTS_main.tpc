@@ -2031,7 +2031,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		// "#snow"
 		@if `v[340] & 32 {
 		    // "##movetype ice"
-		    @if `agent_MoveTypeBIts & 16 {
+		    @if `agent_MoveTypeBIts & MoveTypeBits_Snow {
 					agent_AgentBits |= 2
 			
 		    }
@@ -2046,7 +2046,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		// "#sand"
 		@if `v[340] & 128 {
 			// sand crawler
-			@if `agent_MoveTypeBIts & 128 {
+			@if `agent_MoveTypeBIts & MoveTypeBits_Sand {
 				agent_AgentBits |= 2
 			}			
 

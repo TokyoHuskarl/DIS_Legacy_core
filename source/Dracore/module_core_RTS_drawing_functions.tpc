@@ -46,6 +46,8 @@ __fn drawing_set_grid_raw $Exmotion $Addmotion {
 	}
 
 	v[4104] = $Exmotion & ExMotionFlags_FLAG_Weapon_With_Anim ? 7 : 5 // animation weapons
+	v[4103] = $Exmotion & ExMotionFlags_FLAG_Helm_With_Anim ? 7 : 5 // animation helms
+	v[4105] = $Exmotion & ExMotionFlags_FLAG_Shield_With_Anim ? 7 : 5 // animation shields
 	v[4121] = $Addmotion & AddMotionFlags_FLAG_Armor_has_second_sprite_line ? 2 : 1
 }
 
@@ -227,19 +229,21 @@ __fn function_draw_agent_inv_stats {
 	    v[455] = 0
 	    v[463] = 5
 	    v[464] = 1
+			v[4041..4050] = 0 //X
+			v[4051..4060] = 0 //Y
 	    v[4101..4110] = v[463]
 	    v[4121..4130] = v[464]
-		v[601] = v[340] * 300 + 4701
-		v[v[601]].copy v[601], 300
-		
-	    //v[726] = v[340] * 300 + 4826
-	    /*v[4107] = v[726] & 512 ? 7 : 5
-	    v[4101] = v[726] & 512 ? 7 : 5
-	    v[4121] = [1, 2][(v[v[725]] & 1)]*/
-	    //v[725] = v[340] * 300 + 4825
-	    fuction_drawing_set_grid()
+
+			v[601] = v[340] * 300 + 4701
+			v[v[601]].copy v[601], 300
+
+			fuction_drawing_set_grid()
 	    v[4106] = v[726] & 16777216 ? 7 : 5
 	    v[4124] = v[726] & 134217728 ? 2 : 1
+
+			// camel
+			v[4056] += agent_AABits & AABits_FLAG_Camel ? Const_camel_offsetY_draw : 0 // Camel
+
 	    v[468] = 9
 	    @comment "Colour"
 	    v[449..452] = 100
@@ -248,19 +252,21 @@ __fn function_draw_agent_inv_stats {
 	    v[11] = (v[340]-1)*10
 	    v[11] = Const_str_agent_pictures_strings_start + v[11]
 	    @while v[358] >= 1 {
-		v[305] = v[157] + 24
-		v[306] = v[158] + 54
-		@comment "Add Initial Offsets to SpriteXY"
-		v[0] = v[305..306] += v[881..882]
-		@comment "Add Initial Offsets to SpriteXY#End"
-		v[341] = v[358] % 10
-		v[463] = v[4100 + v[341]]
-		v[464] = v[4120 + v[341]]
-		v[286] = v[341] + v[11]
-		@comment "Strings = t[v[286]]"
-		@cmd 11110, t[v[286]], .args v[441], 30
-		v[350] += 1
-		v[358] /= 10
+				v[305] = v[157] + 24
+				v[306] = v[158] + 54
+				@comment "Add Initial Offsets to SpriteXY"
+				v[305].add v[881],2
+				// v[0] = v[305..306] += v[881..882]
+				v[306] += v[4050 + v[341]]
+				@comment "Add Initial Offsets to SpriteXY#End"
+				v[341] = v[358] % 10
+				v[463] = v[4100 + v[341]]
+				v[464] = v[4120 + v[341]]
+				v[286] = v[341] + v[11]
+				@comment "Strings = t[v[286]]"
+				@cmd 11110, t[v[286]], .args v[441], 30
+				v[350] += 1
+				v[358] /= 10
 		
 	    }
 

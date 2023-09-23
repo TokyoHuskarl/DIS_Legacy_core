@@ -101,6 +101,7 @@ __fn func_damage_calculation {
 
 				}.elif victim_UnitType == UNIT_CLASS_CAV {
 					damage_multiplier += AttackerAABits & AABits_FLAG_AntiCav ? 70 : 0
+					damage_multiplier += AttackerAABits & AABits_FLAG_Camel && victim_ExMotionFlags & ExMotionFlags_FLAG_horseback && !(victim_AddMotionBits & AddMotionFlags_FLAG_Camel) ? 30 : 0
 
 				}.elif victim_UnitType == UNIT_CLASS_MAGE {
 					damage_multiplier += AttackerAABits & AABits_FLAG_AntiMage ? 70 : 0

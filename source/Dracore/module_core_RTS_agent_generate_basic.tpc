@@ -102,9 +102,9 @@ __fn func_generate_agent {
 					var1 = 3201 + rnd(0,reg3 - 1)
 					checkItemPicFileName(var1,Str_slot_minionfile,Const_str_minion)
 
-
-					// this will be need less or smth
-					v[602] = v[v[1216] + rnd(0, v[1941] - 1)]
+					
+					// this is needed more or less 
+					t[var1].toNum v[602]
 				}.else bl{
 					// kore iru?
 					@loop v[1941] .dst v[1945] {
@@ -117,6 +117,9 @@ __fn func_generate_agent {
 					v[602] = v[v[1216] + rnd(0, v[1941] - 1)]
 
 				}
+				// set sprite offsets
+				t[3066] .toNum agent_InitialOffsetX
+				t[3067] .toNum agent_InitialOffsetY
 
 				// "###"
 				t[3003] .toNum v[664]
@@ -446,7 +449,9 @@ __fn func_generate_agent {
 				// "##Pen"
 				t[3062] .toNum v[1941]
 				v[737] = v[1941] != 0 ? v[1941] : v[737]
+
 				// "########################################################"
+
 				// "##AI Flag"
 				v[v[1216]..v[1216] + 100] = 0
 				t[3065] .split "|", t[3200], v[1941]
@@ -457,6 +462,7 @@ __fn func_generate_agent {
 				    v[v[1943]] = v[1944]
 				    
 				}
+
 				
 				@loop v[1941] .dst v[1945] {
 				    v[1943] = v[1216] + v[1945]
@@ -2126,14 +2132,13 @@ __fn GenAgent_Horse_Setting {
 							
 					}
 					@if v[601] == 3 {
-							@if `agent_AABits & AABits_FLAG_Camel {
-								// Sprite Offset Y
-								agent_InitialOffsetY -= 12 // Sprite Offset Y.. +3.
-								agent_Height += 2 // add size since camel is simply tall!
+							agent_InitialOffsetY -=  9 // Sprite Offset Y
+							@if `agent_AABits & AABits_FLAG_Camel { // CAMEL
+								agent_InitialOffsetY -= Const_camel_offsetY // Sprite Offset Y..
+								agent_Width += 1 // add size since camel is simply tall!
+								agent_Height += 3 // add size since camel is simply tall!
+								agent_MoveTypeBits |= MoveTypeBits_Sand
 								
-							}.else bl {
-								agent_InitialOffsetY -=  9 // Sprite Offset Y
-
 							}
 					}
 					

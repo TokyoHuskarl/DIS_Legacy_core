@@ -344,6 +344,8 @@ struct("agent",{
 
 
 	MoveTypeBits_Flying = 1
+	MoveTypeBits_Snow = 16
+	MoveTypeBits_Sand = 128
 	
 	//AI decision bits for combat units
 	//swap series
@@ -425,6 +427,7 @@ struct("agent",{
 	AddMotionFlags_FLAG_Armor_has_second_sprite_line = 1 
 	AddMotionFlags_FLAG_Blink_start = 64 
 	AddMotionFlags_FLAG_Blink_close = 128 
+	AddMotionFlags_FLAG_Camel = 1024 
 
 	//ExMotions
 
@@ -439,7 +442,8 @@ struct("agent",{
 	agent_ExMotionFlags_FLAG_horseback = 16777216
 	ExMotionFlags_FLAG_Weapon_Cannot_be_flipped = 134217728
 	ExMotionFlags_FLAG_Weapon_With_Anim = 268435456
-
+	ExMotionFlags_FLAG_Helm_With_Anim = 536870912
+	ExMotionFlags_FLAG_Shield_With_Anim = 1073741824
 	//Tactical Orders
 	
 	TacticsOrder_FLAG_garrison = 134217728
