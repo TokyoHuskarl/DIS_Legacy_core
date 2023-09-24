@@ -251,17 +251,19 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 												@if LEGS_Common_Switch5 .isOn() { // NOT EXPERIMENTAL
 												//@if `v[agent_AI_routine_bits] & 7 { // EXPERIMENTAL
 														@doWhile v[Temp2] != 0 {
+																
+
+																Temp1 = v[Temp2] * 300 
+																Temp1 += 4700
+																v[Temp1].copy address_victim_buffer_head, agent_Basic_Array_size
 																v[Temp9].copy Temp4, 2
-																//optimizing 25.4.23
-				//Temp1 = v[Temp2] * 300 + 4707
-				Temp1 = v[Temp2] * 300 
-				Temp1 += 4707
-																Temp4 .sub v[Temp1], 2
+																Temp4 .sub victim_RelativeX, 2
 																Temp4 .mul Temp4, 2
-																v[Temp6] = Temp4 + Temp5 + v[v[Temp2] * 300 + 4976]
+																v[Temp6] = Temp4 + Temp5
+																v[Temp6] += victim_ProcessCamoValue
 
 																@if v[Temp6] < Temp8 {
-																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp2] + v[4001 + min(v[Temp1 + 95], ClassType_Amount)]
+																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp2] + v[4001 + min(victim_UnitType, ClassType_Amount)]
 																		v[306..307] += 1
 																		
 																}
@@ -272,21 +274,22 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 														
 												} .else bl {
 														@doWhile v[Temp2] != 0 {
+
+
+																Temp1 = v[Temp2] * 300 
+																Temp1 += 4700
+																v[Temp1].copy address_victim_buffer_head, agent_Basic_Array_size
 																v[Temp9].copy Temp4, 2
-																//optimizing 25.4.23
-				//Temp1 = v[Temp2] * 300 + 4707
-				Temp1 = v[Temp2] * 300 
-				Temp1 += 4707
-																Temp4 .sub v[Temp1], 2
+																Temp4 .sub victim_RelativeX, 2
 																Temp4 .mul Temp4, 2
-																v[Temp6] = Temp4 + Temp5 + v[v[Temp2] * 300 + 4976]
+																v[Temp6] = Temp4 + Temp5
+																v[Temp6] += victim_ProcessCamoValue
 
 																@if v[Temp6] < Temp8 {
 																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp2]
 																		v[306..307] += 1
 																		
 																}
-
 																Temp2 += 1
 																
 														}
@@ -320,7 +323,23 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 														@if  agent_TeamID == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA
 
 																Temp11 = v[v[312]] * v[1117] 
-				Temp11 += 4700
+																Temp11 += 4700
+																v[Temp11].copy address_victim_buffer_head, agent_Basic_Array_size
+																v[Temp9].copy Temp4, 2
+																Temp4 .sub victim_RelativeX, 2
+																Temp4 .mul Temp4, 2
+																v[Temp6] = Temp4 + Temp5
+																v[Temp6] += victim_ProcessCamoValue
+
+																@if v[Temp6] < Temp8 {
+																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[v[312]] + v[4001 + min(victim_UnitType, ClassType_Amount)]
+																		v[306..307] += 1
+																		
+																}
+
+																/*
+																Temp11 = v[v[312]] * v[1117] 
+																Temp11 += 4700
 																v[Temp9].copy Temp4, 2
 																Temp1 = Temp11 + 7
 																Temp4 .sub v[Temp1], 2
@@ -333,6 +352,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 																		v[306..307] += 1
 																		
 																}
+																*/
 																
 														}
 														
@@ -411,12 +431,12 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 																						
 																				} .else bl {
 
-																						@if `v[agent_AI_routine_bits]  & 1 { //v[v[212] + 34] & 1 {
+																						@if `v[agent_AI_routine_bits] & 1 { // v[v[212] + 34] & 1 
 																								v[agent_StanceOrder] = 2
 																								v[v[534]] = Temp2
 																								v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_AIskip
 																								Temp7 += 1
-																								v[v[212] + 3] |= 37748736//33554432 + 4194304
+																								v[v[212] + 3] |= 37748736 // 33554432 + 4194304
 																								
 																						} .else bl {
 																								//@comment "stuck"
