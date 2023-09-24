@@ -319,19 +319,19 @@ cev .id(1224), .name("AA:Javelin"),{
 			    v[619] = abs(v[v[292] + 18] % 180000)
 			    v[668] = v[v[292] + 67]
 			    @pic[v[310]].show {
-				"arrows\javelin_g0" .repl 1 v[668]
-				.pos v[361], v[362] .center
-				.scrollWithMap
-				.chromakey 1
-				.scale 100
-				.trans 0
-				.rgbs 80, 80, 80, 80
-				.angle v[619], 1000
-				.mapLayer 3
-				.eraseWhenTransfer
-				.affectedByTint
-				.affectedByFlash
-				.affectedByShake
+						"arrows\javelin_g0" .repl 1 v[668]
+						.pos v[361], v[362] .center
+						.scrollWithMap
+						.chromakey 1
+						.scale 100
+						.trans 0
+						.rgbs 80, 80, 80, 80
+						.angle v[619], 1000
+						.mapLayer 3
+						.eraseWhenTransfer
+						.affectedByTint
+						.affectedByFlash
+						.affectedByShake
 			    }
 			    v[v[301] + 10] = 89
 			    // "仕上げに登録消す"

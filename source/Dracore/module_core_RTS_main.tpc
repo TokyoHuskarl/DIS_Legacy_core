@@ -2022,7 +2022,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		@if `v[340] & 8 {
 		    // "##Horse or roller"
 		    @if `agent_MoveTypeBIts & 34 {
-					agent_AgentBits |= 8
+					agent_AgentBits |= AgentBits_horse_in_forest
 					
 		    }
 		    
@@ -2035,9 +2035,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					agent_AgentBits |= 2
 			
 		    }
+
 		    // "##skating"
-		    @if `agent_MoveTypeBIts & 8 {
-					agent_AgentBits |= 34//32+2
+		    @if `agent_MoveTypeBIts & MoveTypeBits_Skate {
+					agent_AgentBits |= 34 //32+2
 			
 		    }
 		    
@@ -2053,7 +2054,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 
 		// roller
-		@if `agent_MoveTypeBIts & 32 {
+		@if `agent_MoveTypeBIts & MoveTypeBits_Roller {
 		    agent_AgentBits |= 48//32+16
 		    
 		}

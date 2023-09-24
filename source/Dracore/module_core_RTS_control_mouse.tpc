@@ -14,6 +14,8 @@ MousePtr_y += 1
 s[70].off
 @if `MousePtr_x != TT1 || MousePtr_y != TT2 {
 	s[70].on
+}.else bl{
+	v[42] += v[42] > 0 ? 1 : 0
 }
 
 @if v[47] > 0 {
@@ -26,6 +28,7 @@ s[70].off
     v[48] = Mouse_y
     
 }
+
 @if s[18] .isOn() {
     @key.input .dst Common_Control_Ck {
         .decision
@@ -349,6 +352,7 @@ s[70].off
                         v[7] = TT1 - MousePtr_x
                         v[8] = TT2 - MousePtr_y
 
+												// click frame is overino
                         @if v[42] <= 0 {
                             v[5] = abs(v[7])
                             v[6] = abs(v[8])
@@ -1365,6 +1369,7 @@ s[70].off
                     var4 = var2 + v[38] * 1
                     
                 }
+								
                 @cmd 11110, "static\spr_static_1", .args v[441], 30
                 @if Common_Control_Ck == LMB {
                     @if `MousePtr_y <= v[1286] && !(MousePtr_x <= v[4514] && MousePtr_y >= v[4515]) {
@@ -1495,5 +1500,6 @@ s[70].off
     }
     
 }
+
 // "safety"
 v[42] = min(v[42], 16)

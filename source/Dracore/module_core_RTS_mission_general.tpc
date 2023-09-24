@@ -526,6 +526,8 @@ cev .id(1804),.name("mission:gen_elevationmap"),{
 }
 
 
+
+
 // #include "./module_core_RTS_mission_simpletrigger.tpc"
 
 #include "./module_core_RTS_mission_weather_general.tpc" 
@@ -567,3 +569,22 @@ cev .id(67), .name("Combat Detection AI.."),.parallel , .cond(1), { // switch 29
 	    
 	}
 }
+
+
+// LEGACY 
+cev[2133] .name("[mapsys]Get Temp v11") {
+
+	v[341] = rnd(1, v[2740 + v[11]])
+	v[342] = v[341] + 10 * (v[11] - 1) + Adrt_mission_misc_data
+	t[510] .asg t[v[342]]
+	t[510] .split ",", t[2999], v[341]
+	@loop v[341] .dst v[342] {
+			v[343] = 3001 + v[342]
+			v[344] = 2761 + v[342]
+			t[v[343]] .toNum v[345]
+			v[v[344]] = v[345]
+			
+	}
+
+}
+
