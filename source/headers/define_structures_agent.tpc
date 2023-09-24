@@ -321,6 +321,7 @@ struct("agent",{
 	//Agent bits
 	AgentBits_horse_in_forest = 8
 	AgentBits_Inertia = 16
+	AgentBits_Skate = 32
 
 	AgentBits_Collided_Other_Agent = 64
 	AgentBits_Endpoint_Collision_Trouble = 128
@@ -344,7 +345,9 @@ struct("agent",{
 
 
 	MoveTypeBits_Flying = 1
+	MoveTypeBits_Skate = 8
 	MoveTypeBits_Snow = 16
+	MoveTypeBits_Roller = 32
 	MoveTypeBits_Sand = 128
 	
 	//AI decision bits for combat units

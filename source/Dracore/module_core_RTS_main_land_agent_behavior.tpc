@@ -507,6 +507,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						}
 						
 				}
+
 				//@comment "移動処理テスト"
 				//@comment "とまる"
 				@if agent_MovementOrder <= -1 {
@@ -514,10 +515,10 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						agent_ActionFlag |= 1
 						//@comment "hovering"
 						@if `agent_AgentBits & AgentBits_Hovering {
-					agent_ForceSprite = ForceSprite_MOVE // hovering animation
-					LEGS_MAIN_Agent_tries_to_stop.off
-					v[1301].copy agent_MoveUvectorX, 2
-					
+							agent_ForceSprite = ForceSprite_MOVE // hovering animation
+							LEGS_MAIN_Agent_tries_to_stop.off
+							v[1301].copy agent_MoveUvectorX, 2
+							
 						}
 						
 				}.else bl {
@@ -526,16 +527,15 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					agent_ActionFlag &= agent_MovementOrder >= 2 ? ~ActionFLag_FLAG_Hold_direction : ~0
 
 					// calc Vector 
-					TT2 = agent_AgentBits & 16 ? 9 : 2 // (agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback ? 4 : 2)
+					TT2 = agent_AgentBits & AgentBits_Inertia ? 9 : 2 // (agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback ? 4 : 2)
 					v[621..622] *= TT2
 					// Attention - v[351] = relX_sub_TargX_saved
-					defv relY_sub_TargY_saved= __id(relX_sub_TargX_saved)+1
+					defv relY_sub_TargY_saved= __id(relX_sub_TargX_saved) + 1
 					// muldiv is slower than lower past proc, but in this case you need to use this in order to avoid var overflow
 					v[351..352] *= 100000 
 					v[351..352] /= agent_MilPixMoveOrderedPointDist
 					agent_MoveUvectorX .add relX_sub_TargX_saved, 2
 					v[621..622] /= TT2 + 1
-
 
 				}
 
@@ -547,7 +547,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						LEGS_MAIN_Agent_tries_to_stop.on
 						
 				} .else bl {
-					@if `agent_AgentBits & 16 {
+					@if `agent_AgentBits & AgentBits_Inertia {
 						LEGS_MAIN_Agent_tries_to_stop.off
 					
 					}

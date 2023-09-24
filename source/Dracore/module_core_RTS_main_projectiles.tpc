@@ -5,6 +5,7 @@
 
 __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
+	defv Projectile_Ptr = __id(Ptr12) // 4301
 	defv ProjectileTeamSave = 531
 	defv ProjectileHitChecker = 4860
 
@@ -29,41 +30,43 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 	@loop v[4559] .dst v[214] {
 			v[215] = v[214] * 100
 			//@comment "Access15 = ProjType"
-			Ptr12 = v[215] + v[1075]
+			Projectile_Ptr = v[215] + v[1075]
 			//@comment "弾が存在する"
-			@if v[Ptr12] >= 1 {
+			@if v[Projectile_Ptr] >= 1 {
 				//@comment "Access15 = タイマー"
-				Ptr15 = Ptr12 + 99
+				Ptr15 = Projectile_Ptr + 99
 				//@comment "タイマーが切れていない"
 				@if v[Ptr15] >= 1 {
 						v[217] += 1
-						v[Ptr12].copy v[601], 30
-					 /* @comment "#T2 = Vxのポインタ
+						v[Projectile_Ptr].copy v[601], 30
+						/*
+						 @comment "#T2 = Vxのポインタ
 						#T3 = ピクチャ番号
 						#G5 = 詳細位置xPtr
 						#G6 = 詳細位置上yPtr
 						#G7 = xPtr
-						#G8 = yPtr"*/
+						#G8 = yPtr"
+						*/
 						//@comment "##process delta "
 						v[605].enum 4, 9
-						v[605..613] += Ptr12
+						v[605..613] += Projectile_Ptr
 						Temp2 = v[612]
 						//@comment ""
 						@if s[2] .isOff() {
-					//@comment "タイマー減らす"
-					v[Ptr15] -= 1
-					@if v[603] >= v[1186] {
-							//@comment "##If a function is registered in Get3, call it"
-							s[123].on
-							@call .cev v[603]
-							s[123].off
+							//@comment "タイマー減らす"
+							v[Ptr15] -= 1
+							@if v[603] >= v[1186] {
+									//@comment "##If a function is registered in Get3, call it"
+									s[123].on
+									@call .cev v[603]
+									s[123].off
+									
+							}
+							//@comment "まず加速の処理から"
+							v[Temp2] .add v[615], 2
+							//@comment "次に速度を加える"
+							v[v[605]] .add v[Temp2], 2
 							
-					}
-					//@comment "まず加速の処理から"
-					v[Temp2] .add v[615], 2
-					//@comment "次に速度を加える"
-					v[v[605]] .add v[Temp2], 2
-					
 						}
 						//@comment "座標セット"
 						v[v[605]] += v[53] * 10000
@@ -75,9 +78,9 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 						v[v[610]].copy v[383], 3
 						@if s[2] .isOff() {
 					//@comment "#Width+Height"
-					TT1 = v[v[610]] + v[v[611]]
-					//@comment "#範囲攻撃処理分岐#0なら当たり判定を持たない"
-					reg10 = 0
+						TT1 = v[v[610]] + v[v[611]]
+						//@comment "#範囲攻撃処理分岐#0なら当たり判定を持たない"
+						reg10 = 0
 					@if TT1 > 0 {
 							v[640] = v[607] + 33
 							v[v[640]] -= 1
@@ -141,7 +144,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 						v[v[640]] = v[327] < v[4522] ? v[v[640]] : 2
 						v[424] = v[340]
 						//Projectile Team Save
-						ProjectileTeamSave = v[Ptr12 + 17] % 3
+						ProjectileTeamSave = v[Projectile_Ptr + 17] % 3
 
 						// start checking morton space
 						@loop v[327] .dst Temp10 {
@@ -165,16 +168,17 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 									//@comment "Hit flag switch v[377]"
 									v[377] = 1
 									//@comment "If the projectile is SingleHit Pierce type"
-									@if v[Ptr12] == 2 {
+									@if v[Projectile_Ptr] == 2 {
 										//opt 28.4.23
-										Ptr10 = Ptr12 + 70 
-										Ptr10 += v[ProjectileHitChecker] / 30
-										TT3 = pow(2, (v[ProjectileHitChecker] - 1) % 30)
+										Ptr10 = Projectile_Ptr + 70 
+										Ptr10 += v[ProjectileHitChecker] / 31
+										TT3 = pow(2, (v[ProjectileHitChecker] - 1) % 31)
 										//@comment "Check if already hit the unit or not"
 										v[377] -= v[Ptr10] & TT3 ? 1 : 0
 										v[Ptr10] |= TT3
 								
 									}
+
 									@if v[377] == 1 {
 										//@comment "ＨＩＴ！"
 										/*@comment "Access19 = AttackerObjectID
@@ -184,20 +188,20 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 										temp2 = 防御　#0=ARで計算,1=MR
 										#temp3 = 属性 元のダメージ量を減らすべき？"*/
 										Ptr18 = Temp11 - 6
-										Ptr19 = v[Ptr12 + 8]
+										Ptr19 = v[Projectile_Ptr + 8]
 										Ptr20 = v[ProjectileHitChecker]
 										//@comment "HITCHECK"
-										v[471] = [44, 43, 42][v[Ptr12 + 26]]
+										v[471] = [44, 43, 42][v[Projectile_Ptr + 26]]
 										var3 = -1
 										@call .cev v[471]
-										v[Ptr12].copy v[601], 100//restore projectile data
+										v[Projectile_Ptr].copy v[601], 100 //restore projectile data
 										//@comment "reg10= 0:miss 1:hit 2:blocked"
 										@if reg1 == 1 {
 											 // @comment "Hit!"
 												//@comment "#Buff"
-												var1 = v[640] //v[Ptr12 + 40]
+												var1 = v[640] //v[Projectile_Ptr + 40]
 												@if var1 >= v[1186] {
-													var3 = v[641] //(v[Ptr12 + 41])
+													var3 = v[641] //(v[Projectile_Ptr + 41])
 													func_bs_register_buff_with_time(var1 Ptr20 var3)
 											
 												}
@@ -217,12 +221,12 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
 												//@comment "AABits"
 												var9 = v[624]
-												v[422] = Ptr12 + 68
+												v[422] = Projectile_Ptr + 68
 												v[422] = v[v[422]]
 												@call .cev 40 // call the damage cal
 												reg10 = 1
 												Ptr20 = v[36]
-												v[Ptr12].copy v[601], 34
+												v[Projectile_Ptr].copy v[601], 34
 
 												
 										} .else bl { //@comment "Miss!"
@@ -398,7 +402,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 										//@comment "#Parent Agent"
 										Ptr19 = v[v[215] + v[1076] + 9]
 										//@comment "#HitFuncあれば呼ぶ"
-										v[604] = Ptr12 + 3
+										v[604] = Projectile_Ptr + 3
 										@if v[v[604]] > 0 {
 												v[v[215] + v[1076] + 28] &= -3//~2
 												s[122].on
@@ -420,10 +424,10 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 												
 										}
 										//@comment "Hit Limit check"
-										v[Ptr12 + 38] += 1
-										v[Ptr12] = v[Ptr12 + 38] == v[Ptr12 + 28] ? 1 : v[Ptr12]
-										@if v[Ptr12] == 1 {
-												v[Ptr12 + 99] = 0
+										v[Projectile_Ptr + 38] += 1
+										v[Projectile_Ptr] = v[Projectile_Ptr + 38] == v[Projectile_Ptr + 28] ? 1 : v[Projectile_Ptr]
+										@if v[Projectile_Ptr] == 1 {
+												v[Projectile_Ptr + 99] = 0
 												@break
 												
 										}
@@ -445,35 +449,36 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 						//@comment "ピクチャ番号を考える"
 						Temp3 = v[4560] + v[214]
 						//opt 28.4.23
-						v[628] = Ptr12 + 27
+						v[628] = Projectile_Ptr + 27
 						v[628] = v[v[628]]
 						@if `!(v[628] & 8) {
-					//@comment "ここおもそう"
-					v[Ptr12].copy v[601], 34
-					TT1 = Ptr12 + 18
-					//@comment "#add angle delta"
-					TT2 = 1
-					@if v[620] != 0 {
-							v[TT1] += s[2] == 0 ? v[620] : 0
-							TT2 = v[612] >= 0 ? 1 : 0
+							//@comment "ここおもそう"
+							v[Projectile_Ptr].copy v[601], 34
+							TT1 = Projectile_Ptr + 18
+							//@comment "#add angle delta"
+							TT2 = 1
+							@if v[620] != 0 {
+									v[TT1] += s[2] == 0 ? v[620] : 0
+									TT2 = v[612] >= 0 ? 1 : 0
+									
+							}
+							TT1 = v[TT1]
+							//@comment "#MirrorFlag#4096"
+							v[457] = TT2 * 4096
+							//@comment "#Lightening#512"
+							v[457] |= 256 * v[630]
+							//@comment "#Colors"
+							v[449..452] = 100
+							v[449] .add v[631], 4
+							@cmd 11120, "", .args v[441], 22
 							
-					}
-					TT1 = v[TT1]
-					//@comment "#MirrorFlag#4096"
-					v[457] = TT2 * 4096
-					//@comment "#Lightening#512"
-					v[457] |= 256 * v[630]
-					//@comment "#Colors"
-					v[449..452] = 100
-					v[449] .add v[631], 4
-					@cmd 11120, "", .args v[441], 22
-					
 						} .else bl {
-					v[604] = v[Ptr12 + 3]
+							v[604] = v[Projectile_Ptr + 3]
 					
 						}
+
 						//@comment "時間切れ消滅処理"
-						@if `v[Ptr12 + 99] <= 0 {
+						@if `v[Projectile_Ptr + 99] <= 0 {
 							@pic[Temp3].erase
 							@if v[604] > 0 {
 									@if `v[628] & 2 {
@@ -481,8 +486,8 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 										//@comment "#Parent Agent"
 										Ptr19 = v[v[215] + v[1076] + 9]
 										v[423] = v[214]
-										v[607] = v[Ptr12 + 6]
-										v[608] = v[Ptr12 + 7]
+										v[607] = v[Projectile_Ptr + 6]
+										v[608] = v[Projectile_Ptr + 7]
 										func_devlog("Projectile removed and Cev called - ID:\v[604]")
 										@call .cev v[604]
 										v[214] = v[423]
@@ -491,8 +496,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 									}
 									
 							}
-							Ptr12 = v[215] + v[1075]
-							v[1301].copy v[Ptr12], 100
+							v[1301].copy v[Projectile_Ptr], 100
 							
 						}
 						

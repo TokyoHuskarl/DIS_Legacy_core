@@ -1661,14 +1661,14 @@ __fn CEV_MISSION_MAP_INIT {
 	    inputstr .split "*/", str9, TT1
 	    inputstr .split LF, t[3100], Temp1
 	    @loop Temp1 .dst Temp20 {
-		t[3001..3100] .asg ""
-		Temp2 = 3101 + Temp20
-		t[Temp2] .split ",", t[3000], TT1
-		t[3001] .toNum TT1
-		Temp3 = 1 + 10 * (TT1 - 1) + v[2740 + TT1]
-		t[Temp3] .asg t[Temp2]
-		v[2740 + TT1] += 1
-		
+				t[3001..3100] .asg ""
+				Temp2 = 3101 + Temp20
+				t[Temp2] .split ",", t[3000], TT1
+				t[3001] .toNum TT1
+				Temp3 = Adrt_mission_misc_data + 10 * (TT1 - 1) + v[2740 + TT1]
+				t[Temp3] .asg t[Temp2]
+				v[2740 + TT1] += 1
+				
 	    }
 	    
 	    
