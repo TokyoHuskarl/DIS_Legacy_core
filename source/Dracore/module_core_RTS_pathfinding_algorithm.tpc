@@ -681,14 +681,14 @@ __fn func_pathfinding_Astar() {
 			
 		    } .else bl {
 			v[pfagent_Ptr_AI_routine_bits] &= AI_routine_bits_KILL_FLAG_PFcontinue //~32768
-			v[pfagent_Ptr_pfagent_AgentBits] &= -33554433//~33554432
+			v[pfagent_Ptr_pfagent_AgentBits] &= ~AgentBits_FLAG_PF_walldetection_switch
 			
 		    }
 
 		    // 
 		    @if v[378] == -1 {
 			v[pfagent_Ptr_AI_routine_bits] |= AI_routine_bits_FLAG_Pathblocked
-			v[pfagent_Ptr_pfagent_AgentBits] &= -33554433 //~33554432
+			v[pfagent_Ptr_pfagent_AgentBits] &= ~AgentBits_FLAG_PF_walldetection_switch //~33554432 / ~AgentBits_FLAG_PF_walldetection_switch
 			
 		    } .else bl {
 			v[pfagent_Ptr_AI_routine_bits] &= -8388609 //~8388608
@@ -919,7 +919,7 @@ __fn func_pathfinding_retarded() {
 	v[2875] = v[4595]
 	v[2861] .sub v[1021], 14
 	v[380] = 0
-	@if `v[Pathfinding_AgentData_head_ptr + 3] & 33554432 {
+	@if `v[Pathfinding_AgentData_head_ptr + 3] & AgentBits_FLAG_PF_walldetection_switch {
 	    v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
 	    v[LEGV_ConstAIselectedListHead] = v[4596] + 1
 	    v[2880] = LEGV_ConstAIselectedListHead + 1
@@ -992,7 +992,7 @@ __fn func_pathfinding_retarded() {
 	    v[Pathfinding_AgentData_head_ptr + 34] &= ~32768
 	    
 	}
-	v[Pathfinding_AgentData_head_ptr + 3] &= ~33554432
+	v[Pathfinding_AgentData_head_ptr + 3] &= ~AgentBits_FLAG_PF_walldetection_switch
 	s[279].off
 	@wait 0
 

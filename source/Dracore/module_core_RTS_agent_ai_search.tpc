@@ -436,7 +436,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 																								v[v[534]] = Temp2
 																								v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_AIskip
 																								Temp7 += 1
-																								v[v[212] + 3] |= 37748736 // 33554432 + 4194304
+																								v[v[212] + 3] |= 37748736 // 33554432 + 4194304 ~ AgentBits_FLAG_PF_walldetection_switch + AgentBits_FLAG_ForcemoveFlag
 																								
 																						} .else bl {
 																								//@comment "stuck"

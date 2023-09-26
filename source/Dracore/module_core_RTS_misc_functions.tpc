@@ -12,6 +12,9 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 	    v[2502] += v[2501] / v[1240]
 	    v[2503] += v[2502] / 60
 	    v[2504] += v[2503] / 60
+
+			// koko iranakunaru
+
 	    v[2502..2503] %= 60
 	    v[2501] %= v[95]
 	    v[2510] -= s[309]== 1 ? 0 : 1 //[1, 0][s[309]]
@@ -71,14 +74,17 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 		
 	    }
 	    @if .rightAfterLoad() {
-		@gsave.open
-		gs[301].copyTo s[301], 100
-		@gsave.close
-		@call .cev 1795
-		@call .cev 1794
-		s[476].off
-		v[2501] += 1
-		
+				@gsave.open
+				gs[301].copyTo s[301], 100
+				@gsave.close
+				@call .cev 1795
+				@call .cev 1794
+				s[476].off
+				v[2501] += 1
+				
+				// js data restoration
+				boot_DIS_js_system()
+
 	    }
 	    @if s[7] .isOn() {
 		@if v[2403] == FAC_imperial {
@@ -330,3 +336,23 @@ __fn func_tilecheck_RayCast $X0 $Y0 $X1 $Y1 {
 }
 
 
+
+__fn get_point_morton_to_reg1 $pos {
+			__loop $pos $e $i {
+				$tp = __id(var1) + $i
+				v[$tp] = $e
+			}
+	    var1 .add v[53], 2
+	    var1 .sub v[76], 2
+	    var1 .div v[74], 2
+	    var1 = (var1 | var1 << 8) & 0xFF00FF
+	    var1 = (var1 | var1 << 4) & 0xF0F0F0F
+	    var1 = (var1 | var1 << 2) & 0x33333333
+	    var1 = (var1 | var1 << 1) & 0x55555555
+	    var2 = (var2 | var2 << 8) & 0xFF00FF
+	    var2 = (var2 | var2 << 4) & 0xF0F0F0F
+	    var2 = (var2 | var2 << 2) & 0x33333333
+	    var2 = ((var2 | var2 << 1) & 0x55555555) << 1
+	    reg1 = var1 | var2
+
+}

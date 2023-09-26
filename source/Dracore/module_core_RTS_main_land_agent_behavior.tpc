@@ -59,14 +59,14 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				//0~1023"
 				//v[343] = v[4538] + TT1
 				var5 += TT1
-				v[TT1 * v[1004] + v[4535] + v[var5]] = v[v[536]]
+				v[TT1 * Const_save_var_Agents_Limit + v[4535] + v[var5]] = v[v[536]]
 				v[var5] += 1
 				//@comment "#第四空間だよ
 				//0~255"
 				TT1 >>= 2
 				//v[343] = v[4537] + TT1
 				var4 += TT1
-				v[TT1 * v[1004] + v[4534] + v[var4]] = v[v[536]]
+				v[TT1 * Const_save_var_Agents_Limit + v[4534] + v[var4]] = v[v[536]]
 				v[var4] += 1
 
 
@@ -76,24 +76,24 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				//0~63"
 				TT1 >>= 2
 				//v[343] = v[1074] + TT1
-				//v[TT1 * v[1004] + v[1070] + v[v[343]]] = v[v[536]]
+				//v[TT1 * Const_save_var_Agents_Limit + v[1070] + v[v[343]]] = v[v[536]]
 				reg3 += TT1
-				v[TT1 * v[1004] + v[1070] + v[reg3]] = v[v[536]]
+				v[TT1 * Const_save_var_Agents_Limit + v[1070] + v[reg3]] = v[v[536]]
 				v[reg3] += 1
 				//@comment "#第二空間だよ
 				//0~15"
 				TT1 >>= 2
 				//v[343] = v[1073] + TT1
-				//v[TT1 * v[1004] + v[1069] + v[v[343]]] = v[v[536]]
+				//v[TT1 * Const_save_var_Agents_Limit + v[1069] + v[v[343]]] = v[v[536]]
 				reg2 += TT1
-				v[TT1 * v[1004] + v[1069] + v[reg2]] = v[v[536]]
+				v[TT1 * Const_save_var_Agents_Limit + v[1069] + v[reg2]] = v[v[536]]
 				v[reg2] += 1
 				//@comment "#第一空間だよ
 				//0~3"
 				TT1 >>= 2
 				//v[343] = v[1072] + TT1
 				reg1 += TT1
-				v[TT1 * v[1004] + v[1068] + v[reg1]] = v[v[536]]
+				v[TT1 * Const_save_var_Agents_Limit + v[1068] + v[reg1]] = v[v[536]]
 				v[reg1] += 1
 				//@comment "モートン座標関係はこれで終わり"
 			}
@@ -860,8 +860,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	    //Set Obj into Drawing List
 
 	    s[v[348]].off
-	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
-	    TT10 = Address_agent_inSight_switch_array_head+v[401]
+	    agent_AgentBits &= ~AgentBits_FLAG_Drawn_in_screen
+	    TT10 = Address_agent_inSight_switch_array_head + v[401]
 	    @if s[TT10] .isOn() { //`s[2001+v[401]] != 0 { // found in sight..
 						//v[345] = v[301] + 7
 				@if agent_RelativeX >= v[1008] {
@@ -874,7 +874,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 								//@comment "+[Const描画ymax]"
 								s[v[348]].on
 								agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
-								//@comment "Will_be_depicted"
+								// "will be drawn"
 								v[v[1112] + v[184]] = (agent_RelativeY + v[611] + v[1011]) * 1000 + v[401]
 								v[v[1113] + v[184]]= v[401]
 

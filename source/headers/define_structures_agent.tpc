@@ -41,6 +41,7 @@ struct("agent",{
 	agent_MoveUvectorX = 621
 	agent_MoveUvectorY = 622
 	agent_MilPixMoveOrderedPointDist = 623
+	agent_MarkerColor = 623
 
 	agent_ObjectCollideSkipFrame = 625
 
@@ -82,11 +83,11 @@ struct("agent",{
 	agent_MarchingDirection = 656
 
 	agent_getTerrainElevation = 657
-	agent_SaveActualTeamID= 658 // ... is this even necessary? <- I saw this is used in remove agent function
+	agent_SaveActualTeamID = 658 // ... is this even necessary? <- I saw this is used in remove agent function
 	agent_saveFoWPoint = 659
-	//agent_killXP = 659 // ported to AEBA
+	// agent_killXP = 659 // ported to AEBA
 	
-	//agent_gotXP = 660 // ?
+	// agent_gotXP = 660 // ?
 	agent_AbsoluteX  = 661
 	agent_AbsoluteY  = 662
 
@@ -97,7 +98,8 @@ struct("agent",{
 	agent_PerkFlagBits2 = 666 // 1=KillingFrenzy,2=BattleFlow,4=Berserk,8=HeadHunter, ////MASTERIES 16=M_Sword,32=M_Spear,64=M_Axe,128=M_Hammer,256=M_Mace,512=M_Cleaver,1024=M_Dagger,2048=M_Throwing,4096=M_res1,8192=M_res2,16384=M_bow,32768=M_crossbow,65536=M_res3 131072=spellcaster
 
 	agent_HeadID = 669 //999999=fullcovered
-	agent_Hair = 670
+		agent_GENERATION_Hair = 670 // will be abolished
+
 	agent_Buff1 = 671
 	agent_Buff2 = 672
 	agent_Buff3 = 673
@@ -218,7 +220,6 @@ struct("agent",{
 	agent_HelmID = 854
 	agent_AccID = 855
 	agent_ReserveWeaponID = 856
-
 	agent_ReserveShieldID = 857
 
 	agent_static_MapXdiv5 = 858
@@ -329,7 +330,8 @@ struct("agent",{
 
 	AgentBits_Hovering = 1024
 
-	AgentBits_FLAG_KILLED = 16384 
+	// AgentBits_FLAG_KILLED = 16384 
+	AgentBits_FLAG_can_clickable = 16384 
 
 	AgentBits_FLAG_EnableBasicAI = 1048576
 	AgentBits_FLAG_EnableCivAI = 2097152
@@ -341,7 +343,7 @@ struct("agent",{
 
 	AgentBits_FLAG_DirChange_skip = 134217728
 	AgentBits_FLAG_Pushed_by_terrain = 536870912
-	AgentBits_FLAG_Drawn_in_screen = 1073741824//31bit
+	AgentBits_FLAG_Drawn_in_screen = 1073741824 //31bit
 
 
 	MoveTypeBits_Flying = 1
@@ -635,7 +637,6 @@ struct("agent",{
 		victim_DodgeTimer = 740085
 		victim_BuffTimer1 = 740086
 
-		victim_TeamID = 740095
 
 		victim_TeamID = 740100
 		victim_UnitID = 740101
@@ -764,6 +765,9 @@ struct("agent",{
 
 	Const_Function_do_nothing = 1899
 	}
+	
+	defs bool_agent_is_clickable_head = 3001
+	def Adrs_clickable_switches_head_MINUS1 = __id(bool_agent_is_clickable_head) - 1
 })
 
 
@@ -807,4 +811,5 @@ __fn checkItemPicFileName $source $slot $name {
 
 	}
 }
+
 

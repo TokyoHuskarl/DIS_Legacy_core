@@ -1,6 +1,8 @@
 
 def click_waittime = 18 //12
 
+def click_animation = {v[47] = 3} 
+                
 @key.inputEx .keybdWithBind .dst GETKEY_A
 
 // save PointerXY to TT1,2
@@ -30,19 +32,21 @@ s[70].off
 }
 
 @if s[18] .isOn() {
-    @key.input .dst Common_Control_Ck {
-        .decision
-        .number
-        .lclick
-        .rclick
-        .wheelDown
-        .wheelUp
-    }
+
     @key.input .dst Common_Control_Ck {
         .lclick
         .rclick
     }
     @if s[1] .isOn() {
+				@key.input .dst Common_Control_Ck {
+					.decision
+					.number
+					.lclick
+					.rclick
+					.wheelDown
+					.wheelUp
+				}
+
         @if Common_Control_Ck == WheelUp {
             v[438] = 100
             
@@ -53,6 +57,9 @@ s[70].off
         }
         
     }
+		// set animation
+		@if Common_Control_Ck == LMB {click_animation}
+
     // "UIs"
     // "#Escape"
     @pic[1771].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
@@ -736,7 +743,7 @@ s[70].off
                 }
                 
                 s[40].off
-                v[47] = 3
+                click_animation
                 s[13].on
                 
             } .else bl {

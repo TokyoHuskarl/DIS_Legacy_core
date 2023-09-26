@@ -1,0 +1,181 @@
+cev .id(1284), .name("Charm"), {
+	@if s[118] .isOn() {
+			v[1301].copy v[581], 20
+			// "#Q_ID and Q_Func"
+			v[581] = 84
+			v[582] = v[581] + 1200
+			// "#Q_Type"
+			v[583] = 1
+			v[584] = 3
+			// "#Q_Motion"
+			v[585] = 4
+			// "#Q_Cost"
+			v[587] = 30
+			// "#Q_Range"
+			v[592] = 38000
+			// "#Q_CD"
+			v[588] = 48 * 13
+			
+	} .else bl {
+			@if s[122] .isOn() {
+					var1 = v[Ptr12 + 49]
+					@call .cev 35
+					@if reg1 == 1 {
+							@if Ptr20 >= 1 {
+									Ptr15 = Ptr20 * 300 + 4700
+									// "not static"
+									@if `v[Ptr15 + 1] < 10 {
+											var1 = Ptr20
+											var2 = v[v[215] + v[1076] + 18]
+											@if var2 == 0 {
+													// "＃＃＃＃＃＃＃＃＃＃＃＃"
+													v[229] = 21
+													s[240].on
+													// "＃＃＃＃＃＃＃＃＃＃＃＃"
+													
+											}
+											@call .cev 1895
+											@if reg1 == -1 {
+													// "True Damage"
+													Temp1 = 1500
+													Temp2 = 2
+													v[711] = Ptr20 * 300
+													v[607] = v[711] + 4707
+													v[v[607]].copy v[607], 2
+													v[421] = 200
+													@call .cev 40
+													
+											}
+											
+									}
+									
+							}
+							
+					}
+					@call .cev 154
+					
+			} .else bl {
+					// "Access19 = AttackerObjectID	Access20 = TargetObjectID	Access18 = TargetObjTypeチェックPtr"
+					@if v[217] < v[4559] {
+							v[217] += 1
+							@loop v[4559] .dst Temp20 {
+									v[216] %= v[4559]
+									Temp1 = v[216] * 100
+									Temp1 += v[1076]
+									Ptr15 = Temp1 + 1
+									@if v[Ptr15] == 0 {
+											// "Access17 = AttackerObjチェックPtr"
+											Ptr17 = Ptr19 * 300
+											Ptr17 += 4700
+											// "まず清掃"
+											v[1301].copy v[601], 100
+											v[1301].copy v[Ptr15], 100
+											// "ParentObjセット"
+											v[609] = Ptr19
+											// "出る場所セット"
+											TT1 = Ptr17 + 7
+											v[TT1].copy v[605], 2
+											v[605..606] *= 10000
+											v[TT1].copy v[607], 2
+											// "###############	速度べくとるを作る###############"
+											v[607].copy var1, 2
+											v[590].copy var3, 2
+											// "##狙いをランダマイズ"
+											var3 += rnd(-10, 10)
+											var4 += rnd(-10, 10)
+											// "#単位ベクトルできた"
+											@call .cev 2003
+											// "#速度をかけよう"
+											// "##*30"
+											v[21..22] *= 600
+											// "#速度パラメータ入力"
+											reg1.copy v[612], 2
+											// "#角度情報保存"
+											v[619] = atan2(v[613], v[612], 1000)
+											@if v[619] <= 0 {
+													v[619] += 360000
+													
+											}
+											// "Projectile team"
+											TT1 = Ptr17 + 100
+											v[618] = v[TT1]
+											// "パラメータ等入力begin"
+											// "#Pic"
+											// "#Trans"
+											v[626] = 40
+											// "#ProjectileType"
+											v[601] = 3
+											// "#Hit Limit"
+											v[629] = 3
+											// "#あたり判定"
+											v[610] = 6
+											v[611] = 6
+											// "#威力"
+											v[621] = 0
+											var1 = Ptr19
+											var2 = 2
+											@call .cev 2004
+											v[650] = reg1
+											// "[AP]*100%"
+											// "#ARMRと属性"
+											v[622] = 1
+											v[623] = 0
+											// "#Timer"
+											v[700] = 30
+											// "#Effect"
+											v[604] = 1284
+											// "#Nopic"
+											v[628] |= 8
+											// "#Pic"
+											TT2 = v[216] + v[4560]
+											@pic[TT2].show {
+													"projectile\null"
+													.pos v[605], v[606] .center
+													.scrollWithMap
+													.chromakey 1
+													.scale 100
+													.trans 100
+													.rgbs 100, 100, 100, 100
+													.mapLayer 7
+													.eraseWhenTransfer
+													.affectedByTint
+													.affectedByFlash
+													.affectedByShake
+											}
+											// "#Draw type"
+											v[630] = 0
+											// "パラメータ等入力end"
+											v[601].copy v[Ptr15], 100
+											// "演出"
+											@if `s[500 + Ptr19] == 1 && v[182] < 5 {
+													v[182] += 1
+													v[329] = rnd(0, 2)
+													// "#########################"
+													v[471] = 11550
+													v[472] = divmul(60, 100, v[2216])
+													v[473] = 120
+													v[474] = divmul(v[607] + v[1001], v[1281], 50)
+													// "#########################"
+													@cmd v[471], "magics\magicmissile", .args v[472], 3
+													
+											}
+											s[141].on
+											var1 = v[216] + 0
+											var2 = v[700]
+											@call .cev 153
+											s[141].off
+											@break
+											
+									}
+									v[216] += 1
+									
+							}
+							
+							
+					}
+					
+			}
+			
+	}
+
+}

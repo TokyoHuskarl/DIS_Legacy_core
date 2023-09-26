@@ -68,7 +68,6 @@ const adr_DISreg1 = 21;
 
 const adr_DISstr1 = 501;
 
-
 // macros
 function parse_DISid(line,myArray) {
 	const [key, value] = line.split('=');
@@ -120,6 +119,7 @@ DIS = { // DIS fundamental components
 
 
 	buildings: [], // this array contains buildtemp objects.
+	techs: [], // this array contains buildtemp objects.
 
 
 
@@ -262,6 +262,8 @@ if (SINGLEPLAY){
 };
 
 
+const Adr_world_frame = 2510;
+
 // DIS system component classes - these class objs usually work as component under RTS objects.
 
 
@@ -322,7 +324,18 @@ class RTSmission {
 	};
 
 	restore = function(){
+		// restore mission settings
+		this.passedFrame = getv(Adr_world_frame); //  if DIS game is reloaded, then reload from RM var. 
 		
+		// 
+
+		// restore vars
+		
+		// restore triggers
+		
+		
+
+		deblog("RTSmission restored.");
 	};
 
 	// mission.run() - this one is called in every frame.
@@ -557,15 +570,20 @@ class DIS_dialog {
 // ------------------------------------------------
 
 const Adrt_dialogQueue = 785 // -> Game_script_general.tpc
+const Is_SightSystem_On = 300; // <- header_common.tpc
+const Adrt_mapdirectory = 755;
 
 let RTS = {
 	isRTSmode: false,
 	mission: new RTSmission(),
 	map: new RTSmap(),
+	mvgrp: [], // agent movement group
+
 	Mtrig: {}, // mission triggers
 	Mvar: {}, // mission vars
 	Mbool: {}, // mission switch
 	Mstr: {}, // mission strings
+
 	DlogManager: {
 		queue: "",
 		receiveQ: function(){ // whenever you deal with Dialog Queue, you have to get current DialogQueue from RM
@@ -612,13 +630,11 @@ let RTS = {
 
 	setupMapLoading: function(mapdir){ // will be called after this.setupMission().
 		// sightsystem setting
-		const Is_SightSystem_On = 300; // <- header_common.tpc
 		sets(Is_SightSystem_On,this.mission.conf.isSightSystemOn);
 		
 		// set map name into RMstr
-		const Adr_mapdirectory = 755;
-		sett(Adr_mapdirectory,mapdir);
-		deblog(`${mapdir} will be loaded. (t[${Adr_mapdirectory}])`)
+		sett(Adrt_mapdirectory,mapdir);
+		deblog(`${mapdir} will be loaded. (t[${Adrt_mapdirectory}])`)
 		
 	},
 
@@ -630,14 +646,24 @@ let RTS = {
 	
 
 	restore: function(){ // call this function whenever player loads RMsavedata. reload all datas from RM memories.
-		
-		
-		this.DlogManager.receiveQ(); // restore Dlog queue
 		// restore mission 
-		this.mission.restore();
+		this.setupMission(gett(752),getv(501)); // init mission flags
+		const str_missiondef_storage = 761; // <- header_mission.tpc
+
+		// load mission def and setup map system
+		eval(gett(str_missiondef_storage)); // using eval is kinda risky, but still, I have no choice under 2003Maniacs I suppose
+		this.mission.conf.isSightSystemOn = gets(Is_SightSystem_On); // setupMapLoading
+
+		this.mission.restore(); // start actual restoration
 
 		// restore map
+		this.openMissionMapData();
+		const str_mapdef_storage = 762; // <- header_mission.tpc.. is this even necessarily?
 		this.map.restore();
+	
+		// Dlog?
+		this.DlogManager.receiveQ(); // restore Dlog queue
+		
 	},
 
 

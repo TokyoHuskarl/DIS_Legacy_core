@@ -4,7 +4,9 @@
 def {
 	PATH_cache_ui = __str("..\\Picture\",PATH_ui_dir,"preload_setting")
 	PATH_cache_numbers = __str("..\\Picture\",PATH_pic_numdir,"preload_setting")
-
+	PATH_click_agent_indicator = __str("..\\Picture\","menu_pointer")
+	// PATH_click_agent_indicator = __str(PATH_ui_dir,"\thing_indicator")
+ 
 }
 
 
@@ -373,6 +375,16 @@ __fn CEV_MISSION_INIT {
 	@pic[974].getInfo .ltrb .baseRect TT1, TT2, TT3, TT3
 	LEGV_ConstBuffIconsStartX = TT1 + 254
 	LEGV_ConstBuffIconsStartY = v[1286]
+	@pic[PicID_click_agent_indicator].show {
+		PATH_click_agent_indicator
+		.pos TT1, TT2 .topLeft
+		.chromakey 1
+		.scale 100
+		.trans 100
+		.rgbs 100, 100, 100, 100
+		.mapLayer 8
+		.eraseWhenTransfer
+	}
 	TT1 += 502
 	TT1 += 84
 	TT2 = v[1286] + 3
@@ -2107,6 +2119,7 @@ __fn loadMissionDef $missionpath {
 	@if inputstr.neq "" { // there's missiondef.js
 		@js .run "RTS.setupMission(gett(752),getv(501))" // t[752],v[501]
 		eval_js(inputstr) // execute missiondef.js.txt
+		str_missiondef_storage.asg inputstr
 		loadedJsConfig.on
 		@js .run "RTS.setupMapLoading(RTS.mission.essential.mapDataDirectory)" // terrainData check
 	}
@@ -2123,6 +2136,7 @@ __fn loadMapDef $missionpath {
 	@if inputstr .neq "" { // there's mapdef.js
 		@js .run "RTS.openMissionMapData()" // set new RTSmap into RTS module
 		eval_js(inputstr) // execute mapdef.js.txt
+		str_mapdef_storage.asg inputstr
 	}.else bl {
 		str1 .asg, .cat("Couldn't open Map terrain file!", " filepath is: ~/text", str1)//
 		func_errlog(str1)
