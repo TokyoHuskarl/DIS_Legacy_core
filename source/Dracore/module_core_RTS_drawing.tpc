@@ -5,6 +5,7 @@
 #include "./../headers/header_drawing.tpc"
 #include "./../headers/header_agent.tpc"
 #include "./../headers/header_control.tpc"
+#include "./../headers/header_ui.tpc"
 #include "./module_core_RTS_drawing_animations.tpc"
 
 
@@ -23,28 +24,46 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 	defv marker_RGB = __id(Temp16)
 	defv expected_action_sprite = __id(Temp21)
 
+	
 	def MACRO_clickable_holder_event = {
-		// clickable holder effect 
-		v[ptr_null].copy marker_saturation,2 // init both of marker vars
-		@if Control_ClickableAgentHolder == AgentIDholder {
-			TT1 = RTS_WORLD_passed_frame * 6
-			@if Is_Paused.isOff() { // pause?
-				v[4001..4003] += sin(TT1,1,10)
-			}
-			v[4001..4003] += 23
-			draw_main_S += 6
-			marker_saturation = 70
-			marker_RGB = 8
-			Temp5.copy TT14,2
-			TT15 -= agent_Height
-			TT15 += sin(TT1,1,3)
-			@pic[PicID_click_agent_indicator].move {
+	// clickable holder effect 
+		TT1 = RTS_WORLD_passed_frame * 6
+		@if Is_Paused.isOff() { // pause?
+			v[4001..4003] += sin(TT1,1,10)
+		}
+		v[4001..4003] += 23
+		draw_main_S += 6
+		marker_saturation = 70
+		marker_RGB = 8
+		Temp5.copy TT14,2
+		TT15 -= agent_Height
+		TT15 += sin(TT1,1,3)
+
+		// overlap agent indicator
+		@if LEGV_State_of_Central_Monitor == CENTMODE_FREE { // if free
+			@pic[PicID_click_agent_indicator].move { // then this
 				.pos TT14, TT15 .bottom
 				.scale 100
 				.trans 20
 				.time 0
 				.rgbs 100, 100, 100, 100
 			}
+		}.else bl { //
+			@pic[PicID_click_agent_indicator].move {
+				.pos TT14, TT15 .bottom
+				.scale 100
+				.trans 100
+				.time 0
+				.rgbs 100, 100, 100, 100
+			}
+		}
+	}
+
+	__fn event_if_agent_is_clickable $block {
+		// clickable holder effect 
+		v[ptr_null].copy marker_saturation,2 // init both of marker vars
+		@if Control_ClickableAgentHolder == AgentIDholder {
+			$block
 		}
 	}
 
@@ -296,7 +315,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									
 							}
 
-							MACRO_clickable_holder_event
+							event_if_agent_is_clickable({MACRO_clickable_holder_event})
 
 							v[4031..4040] = v[455] //h v
 							v[4041..4050] = Temp5 //X
@@ -802,32 +821,33 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									//@comment "Failsafe"
 									Temp5 = agent_RelativeX
 									Temp6 = v[637]
-			//opt 27.4.23
-									//expected_action_sprite = v[Temp1 + 243] + 2
-			//expected_action_sprite = Temp1 + 243
-			expected_action_sprite = v[843] + 2
-									//Temp20 = Temp1 + 2
+									expected_action_sprite = v[843] + 2
 									Temp20 = v[602]
-			//v[603] = Temp1 + 3
-									//v[603] = v[603]
 									@if `!(v[603] & 16384) {
 											//@comment "#"
 											//Ptr19 = Temp1 + 11
-											TT1 = Temp6 + v[611]
 											//@comment "#デコイ"
 											//@comment "Z"
-											Temp6 -= (v[657] - v[504]) * 3
+											TT13 = (v[657] - v[504]) 
+											TT13 *= 3
+											Temp6 -= TT13
 											//@comment "#描画範囲内か？T3 T4 Constx Consty"
 											//@comment "Get ID From Cache"
 											v[188] = v[178] = v[340] * Const_layer_amount + v[1201]
 											v[177] = v[186]
 											v[Temp1 + 290] = v[186]
 											//@comment "#仮置き、こんど変える"
-											v[447] = v[944] >= 1 ? 50 : 0
+											v[447] = GETKEY_Alt > 0 ? 35 : 0 // transparency set
+											
+																						v[447] += Control_ClickableStaticHolder == AgentIDholder ? 45 : 0 //  if there's overlapping agent for the static, so make it half-transparent
 
 
-											v[4001..4004] = 100 // set RGBS
-											MACRO_clickable_holder_event
+
+										v[4001..4004] = 100 // set RGBS
+										@if s[72] .isOff() { // RGB colour set
+												v[4001..4004] -= (v[1002] - 108 - agent_RelativeY) / 14 - TT13
+										}
+								event_if_agent_is_clickable({MACRO_clickable_holder_event})
 											@if v[188] > 0 {
 													@if `v[603] & 128 {
 															@pic[v[188]].move {

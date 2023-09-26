@@ -1685,7 +1685,26 @@ __fn UI_CEV_MOUSE_OBSERVER {
 				@wait 0
 				// check clickable units if there's no popup
 				@if LEGV_sentence_id_on_popup1 <= 0 {
-					check_clickable_units()
+
+					// always true
+					reg10 = 1
+					check_clickable_units({},CC_FLAG_ck_static_as_well)
+
+					// this was fucking meaningless for now. noticed after writing up. reeee
+					/* 
+					@if between(LEGV_State_of_Central_Monitor,CENTMODE_ALLY_SINGLE,CENTMODE_ALLY_MULTI) {
+						@if Is_Selecting_Civilian.isOn() {
+							check_clickable_units({reg10 = agent_TeamID != 0 || agent_UnitType == UNIT_CLASS_SIEGE || agent_AgentType == UNIT_CLASS_STATIC ? 1 : 0},CC_FLAG_ck_static_as_well)
+
+						}.else bl{
+							check_clickable_units({reg10 = agent_TeamID != 0 ? 1 : 0},CC_FLAG_ck_static_as_well)
+
+						}
+					}.else bl{
+						check_clickable_units({reg10 =  1},CC_FLAG_ck_static_as_well)
+
+					} 
+					*/
 				}
 
 				@if s[314] .isOn() {
@@ -2262,75 +2281,135 @@ __fn show_pupwin1_with_Qstr $QstrId $x $y {
 
 
 // just check if unit on screen is at clickable position 
-__fn check_clickable_units {
+// {block} $maskcondbl In this block, set reg10 as a masking condition for agent picking up. only when reg10 == 1, you can use this
+// {num} $flag 
+// CC_FLAG_ck_static_as_well - If this flag is on, check static agents as well.
+
+def CC_FLAG_ck_static_as_well = 0x1
+
+__fn check_clickable_units $maskcondbl $flag { 
 
 	// init clickable units switches
 	def Adrs_clickable_switches_tail = Agents_Limit + __id(bool_agent_is_clickable_head)
 	// s[__id(bool_agent_is_clickable_head)..Adrs_clickable_switches_tail].off
-	defv agent_pointer =__id(agent_pointer)
+	defv agent_pointer = 338 // __id(Temp38)
 	defv agent_counter = 339 // __id(Temp39)
 
 	// init clickable agent
+	Control_ClickableStaticHolder = -1
 	Control_ClickableAgentHolder = -1
 
-	// ------------------------
-	// searching static agents
-	// ------------------------
+	__if $flag & CC_FLAG_ck_static_as_well {
+		// ------------------------
+		// searching static agents
+		// ------------------------
 
-	agent_pointer = v[4533] // get static list 
+		agent_pointer = v[4533] // get static list 
 
-	@while v[agent_pointer] != 0 {
-		Ptr1 = v[agent_pointer] * agent_Basic_Array_size
-		Ptr1 += 4701
-		v[Ptr1].copy agent_AgentType,12
-		@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { // temporarily exclude static
-			MACRO_ck_if_current_agent_is_clickable_to_reg6
-			@if reg6 == 1 {
-				// TT1 = v[agent_pointer] + Adrs_clickable_switches_head_MINUS1
-				Control_ClickableAgentHolder = v[agent_pointer]
-				@break
+		@while v[agent_pointer] != 0 {
+			Ptr1 = v[agent_pointer] * agent_Basic_Array_size
+			Ptr1 += 4701
+			v[Ptr1].copy agent_AgentType,12
+			@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { // temporarily exclude static
+				$maskcondbl // use reg10 as a masking condition for agent picking up.
+				@if reg10 == 1 { 
+					MACRO_ck_if_current_agent_is_clickable_to_reg6 // change here for static agent later
+					@if reg6 == 1 { // clickable!
+						Control_ClickableStaticHolder = v[agent_pointer]
+						@break
+					}
+				}
 			}
+			agent_pointer += 1
 		}
-		agent_pointer += 1
 	}
 
 	// ------------------------
 	// searching mobile agents
 	// ------------------------
 
-	// what should I do after static agent found? 
+	
+	def click_rectangle_size = 4
 
-	// check morton id of where mouse pointer is 
-	get_point_morton_to_reg1([MousePtr_x,MousePtr_y])
+	// check morton id of where mouse pointer is
 
+	// upper left
+	MousePtr_x.copy var3,2
+	v[__id(var3)..__id(var4)] -= click_rectangle_size
+	get_point_morton_to_reg1([var3,var4])
+	TT1 = reg1 // save returned mortid to TT1
+
+	// bottom right
+	MousePtr_x.copy var3,2
+	v[__id(var3)..__id(var4)] += click_rectangle_size
+	get_point_morton_to_reg1([var3,var4])
+	TT2 = reg1 // save returned mortid to TT2
+
+	/*@comment "TT1 = upper left morton TT2 = bottom right morton TT5 = shift num"*/
+	TT3 = TT1 ^ TT2
+	/*@comment "#mask with 11000000" "#mask with 110000" @comment "#mask with 001100" @comment "#mask with 000011"*/
+	TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0 // isn't this retarded?
+	//@comment "#TT6 = morton id"
+	TT6 = TT2 >> TT5
+	//@comment "#mask end"
+
+	// setting up pointer and counter
+
+	// get ptr
+	TT5 /= 2
+	agent_pointer = Adr_MORTON_ListsPtrlink_array_head - TT5
+	agent_counter = Adr_MORTON_CountPtrlink_array_head - TT5
+
+	// deref
+	agent_pointer.deref agent_pointer,2
+
+	// goto each addresses for the morton id
+	agent_pointer += TT6 * Const_save_var_Agents_Limit
+	agent_counter += TT6
+	agent_counter.deref agent_counter,1 // deref again
+
+	/*
 	reg1 >>= 2 // search for dim4
 	agent_counter = MORTON_Dim4Count_head + reg1
 	agent_counter = v[agent_counter]
 	agent_pointer = MORTON_Dim4Lists_head 
 	agent_pointer += reg1 * Const_save_var_Agents_Limit
-	
+	*/
+
 	@loop agent_counter {
 		Ptr1 = v[agent_pointer] * agent_Basic_Array_size
 		Ptr1 += 4701
 		v[Ptr1].copy agent_AgentType,12
-		@if agent_AgentType != 11 { // temporarily exclude static
-			MACRO_ck_if_current_agent_is_clickable_to_reg6
-			@if reg6 == 1 {
-				// TT1 = v[agent_pointer] + Adrs_clickable_switches_head_MINUS1
-				Control_ClickableAgentHolder = v[agent_pointer]
-				// s[TT1].on
-				@break
+		@if agent_AgentType != 11 { // not STATIC
+			@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
+				$maskcondbl // use reg10 as a masking condition for agent picking up.
+				@if reg10 == 1 { 
+				MACRO_ck_if_current_agent_is_clickable_to_reg6
+					@if reg6 == 1 {
+						// TT1 = v[agent_pointer] + Adrs_clickable_switches_head_MINUS1
+						Control_ClickableAgentHolder = v[agent_pointer]
+						// s[TT1].on
+						@break
+					}
+				}
 			}
 		}
 		agent_pointer += 1
 	}
-	@if Control_ClickableAgentHolder == -1 {
-		@pic[PicID_click_agent_indicator].move{
-			.pos v[350], v[351] .bottom
-			.scale 100
-			.trans 100
-			.time 0
-			.rgbs 100, 100, 100, 100
+
+	@if Control_ClickableAgentHolder == -1 { // cannot click movable agents
+		@if Control_ClickableStaticHolder != -1 { // but if static clickable
+			Control_ClickableAgentHolder.swap Control_ClickableStaticHolder,1 // then swap it
+			
+		}.else bl{ // otherwise hide agent indicator pic
+			@pic[PicID_click_agent_indicator].move{
+				.pos v[350], v[351] .bottom
+				.scale 100
+				.trans 100
+				.time 0
+				.rgbs 100, 100, 100, 100
+			}
+
 		}
 	}
 }
