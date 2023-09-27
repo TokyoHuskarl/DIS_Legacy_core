@@ -235,6 +235,11 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 			@pic.erase [var1]
 		})},
 
+		// export text
+		{NsCmd($LINKstr, $md, $i, "exportText",{
+			t2v(SSargs0,var1)
+			t[var1].toFile SSargs1, .utf8
+		})},
 		
     
 
@@ -285,6 +290,7 @@ __fn DIS_ui_methods $LINKstr $md $i $given_v_or_str $flags {
 		{NsCmd($LINKstr, $md, $i, "pushDialogQueue",{cmd_pushDialogQ(str1)})},
 		{NsCmd($LINKstr, $md, $i, "forceSkipDialog",{cmd_forceSkipDialog(SSargs0)})},
 		{NsCmd($LINKstr, $md, $i, "clearDialogQueue",{cmd_clearDialogQueue()})},
+		{NsCmd($LINKstr, $md, $i, "getPictureInfo",{cmd_getPictureInfo()})},
 
 
 	])
@@ -508,6 +514,16 @@ __fn cmd_forceSkipDialog $i {
 __fn cmd_clearDialogQueue {
 	dialogQueue.asg "" // erase
 	cmd_forceSkipDialog()
+}
+
+
+
+__fn cmd_getPictureInfo {
+	t2v(SSargs0,var1)
+	@pic.getInfo[var1] .currentRect(reg1, reg2, reg3, reg4)
+	def RETURN_ARRAY_GETPICINFO = __str("[","\v[",__id(reg1),"],","\v[",__id(reg2),"],","\v[", __id(reg3), "],","\v[",__id(reg4), "],","]")
+	def JS_SENDBACK_GETPICINFO = __str("Cmd.sendback(",RETURN_ARRAY_GETPICINFO,",\t[",__id(SSargs1),"])")
+	eval_js(JS_SENDBACK_GETPICINFO) // sending back to js.
 }
 
 

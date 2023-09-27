@@ -17,6 +17,7 @@ __fn execute_js $filename {
 
 __fn eval_js $string {
 	// load
-	@js .run $string
+	js_StringBuffer.asg $string, .extract
+	@js .run js_StringBuffer
 }
 

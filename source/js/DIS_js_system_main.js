@@ -3,6 +3,15 @@
 */
 
 
+// these lines are written in order not to cause error when you test this file on Node.js
+var setv = setv || function(){};
+var getv = getv || function(n){return n};
+var sett = sett || function(){};
+var gett = gett || function(t){return `string t[${t}]`};
+var sets = sets || function(){};
+var gets = gets || function(){return true};
+
+
 //0 = normal mode, 1 = debug mode, 2 = developer mode
 const BOOT_MODE_NORMAL = 0,
 	BOOT_MODE_DEVELOPER = 1,
@@ -17,15 +26,6 @@ if (gets(316)) { // s[316] is DEBUG mode flag in DIS.
 
 const SINGLEPLAY = true;
 
-
-
-// these lines are written in order not to cause error when you test this file on Node.js
-var setv = setv || function(){};
-var getv = getv || function(){return 0};
-var sett = sett || function(){};
-var gett = gett || function(){return ""};
-var sets = sets || function(){};
-var gets = gets || function(){return true};
 
 
 // notification for developer mode.
@@ -50,6 +50,7 @@ const RMvar = 1,
 	RMswitch = 2,
 	RMstring = 3,
 	RMpicture = 4;
+	RMarray = 5;
 
 // this is not necessarily. kek
 function getRM(typ,add) {
@@ -65,7 +66,61 @@ function getRM(typ,add) {
 
 // Set RM Var addresses
 // DIS project
-//
+
+
+class DISRMobj { // fundamental prototype for DIS RPGmaker Object
+	constructor(){
+		this.receivedStuff = []; // given from CmdReturn
+		this.isAwaitingReturn = false;
+		this.receivedSth = false;
+		this.activated = false;
+	}
+
+	receiveFromCmd(stuff){
+		if (stuff != null){
+			this.receivedStuff.push(stuff); // store in array
+			this.receivedSth = true;
+		} else { // got only null
+			/*???*/
+		}
+		this.isAwaitingReturn = false;
+	}
+
+	get ckReceived() { return this.receivedSth ;}
+
+
+}
+
+class DISRMpicture extends DISRMobj { // simple picture object.
+	constructor(pid,file,pos){
+		super();
+		this.pid = pid;
+		this.file = file;
+		this.pos = pos || [0,0]; // [x,y]
+		
+	}
+	size = [0,0];
+
+	refreshPicInfo(){
+		let result = this.ckReceived;
+		if(this.ckReceived){
+			let arr = this.receivedStuff;
+			this.activated = true; // if once get refreshed infomation, this is now activated object on DIS js system.
+			this.pos = [arr[0],arr[1]];
+			this.size = [arr[2],arr[3]];
+			this.receivedStuff = []; // init
+			deblog(this.pos + this.size);
+		}
+		let reford = Cmd.ui.getPictureInfo(this.pid); // call DIS cmd and get link
+		reford.setLink(this); // ckReceived is now false
+		return result;
+	};
+
+	kill(){remove(this.pid);};
+
+}
+
+
 
 const RM_MousePointer = {
 	x: 51, // v[51]
@@ -106,42 +161,70 @@ function make_Array_DIStable(array) {
 // ------------------------------------------------
 // DIS objects
 // ------------------------------------------------
-//
-// DIS object is basically container for fundamental datas of DIS on quickjs.
+
+// DIS object is basically container for fundamental data of DIS on quickjs.
 // Whenever you want to access DIS game data, the DIS object serves you as a way to get/set the data..
 //
 
 var DIS = DIS || {};
 
-const trp = {}; // troop ID table
 
-const tech = {}; // ["techid",[group,flagbit]]
+// should I make them const?
+var trpid = trpid || {}; // troop ID table
+var facid = facid || {}; // faction ID table
+var tech =  tech || {}; // ["techid",[group,flagbit]]
 
 DIS = { // DIS fundamental components
 	initID: function(){ // this must be called every after DIS game id is loaded on the game
 
+		/* imported from TPC code - module_core_Game_init.tpc
+		 *
+			t[803] .asg  .file "..\scripts\const_factions_id", .utf8
+			t[804] .asg  .file "..\scripts\const_weapons_id", .utf8
+			t[805] .asg  .file "..\scripts\const_shields_id", .utf8
+			t[806] .asg  .file "..\scripts\const_armors_id", .utf8
+			t[807] .asg  .file "..\scripts\const_helms_id", .utf8
+			t[808] .asg  .file "..\scripts\const_accessories_id", .utf8
+		*/
 
+		// --------------------
+		// load troop ID
+		// --------------------
+	
+		trpid = {}; // init trpid
+		let IDstr = gett(801); // get scripts/const_troops.txt
+		let lines = IDstr.trim().split('\n');
 
-		// starts from troop ID
-		let TroopIDstr = gett(801); // get scripts/const_troops.txt
-		let lines = TroopIDstr.trim().split('\n');
-		lines.forEach(line => {
-			parse_DISid(line,trp);
-		});
+		// parse string to array
+		lines.forEach(line => { parse_DISid(line,trpid); });
 
-		// now you can use troopID by writing like this: trp["TRP_sushi_kensei"] 
+		// now you can use troopID by writing like this: trpid["TRP_sushi_kensei"] 
+		//
+
+		// --------------------
+		// load faction ID
+		// --------------------
+	
+		facid = {}; // init facid
+		IDstr = gett(803); // get scripts/const_factions.txt
+		lines = IDstr.trim().split('\n');
+
+		// parse string to array
+		lines.forEach(line => { parse_DISid(line,facid); });
+		
 		
 	},
 
 
-	restore: function(){
+	reload: function(){
 		this.initID(); // restore ID 
+
 	},
 
-
-	buildings: [], // this array contains buildtemp objects.
-	techs: [], // this array contains buildtemp objects.
-
+	data: {
+		buildings: [], // this array contains buildtemp objects.
+		techs: [], // this array contains buildtemp objects.
+	},
 
 
 	// DIS game consts - never touch here blease?
@@ -694,7 +777,7 @@ let RTS = {
 
 	}, // unco
 
-	restore: function(){ // call this function whenever player loads RMsavedata. reload all datas from RM memories.
+	restore: function(){ // call this function whenever player loads RMsavedata. reload all data from RM memories.
 		// restore mission 
 		this.setupMission(gett(752),getv(501)); // init mission flags
 		const str_missiondef_storage = 761; // <- header_mission.tpc
@@ -781,12 +864,52 @@ const LINKSTR_map = 771,
 const adr_RMbool_RUN_CMD = 132,
 	adr_RMStr_CmdOrder = 795;
 
+class CmdRetLink {
+	constructor(typ){
+		this.index = Cmd.ReturnQueue.length;
+		this.type = typ || RMvar; // if not given, consider it as a RMvar.
+		this.received = false;
+		this.value = 0;
+		Cmd.ReturnQueue.push(this);
+	};
+
+	receive(s){
+		this.value = s;
+		this.received = true;
+	};
+
+	setLink(DISRMo){
+		this.link = DISRMo;
+		this.link.isAwaitingReturn = true;
+		this.link.receivedStuff = false;
+	} // one directional link.
+
+	send(){ // send its value to Linked DISRMobject
+		let result = false;
+		if (this.received && typeof this.link == "object"){
+			this.link.receiveFromCmd(this.value);
+			result = true;
+		} else {
+			this.link.receiveFromCmd(null); // tell the object that getting return value was miserably failed 
+		};
+		return result;
+	};
+	
+}
+
+
 
 // DIS Command Object
-// (Almost) all command functions in objects in the Cmd module will be executed on RM interpreter, not on js process.
+// (Almost) all command functions in objects in the Cmd object will be executed on RM interpreter, not on js process.
 var Cmd = {
 	// DIS command
 	CmdQueue: "",
+
+	ReturnQueue: [],
+	sendback: function(stuff,i){ // this function is to be called by TPC. send RM stuff back to ReturnQueue.
+		Cmd.ReturnQueue[i].receive(stuff);
+	},
+
 	restore: function(){ // call this function when the game loads savedata
 		this.runFlags.initAll();
 	},
@@ -832,6 +955,9 @@ var Cmd = {
 	// Cmd.run()
 	// give signal to run DIS commands 
 	run: function() {
+		for (let link of this.ReturnQueue){link.send();}; // let all return link send what they received
+		this.ReturnQueue = []; // after 
+
 		// give raw cmd as string to RPGMaker
 		sett(adr_RMStr_CmdOrder,this.CmdQueue);
 		// turn on RM switch to run interpreter as cev
@@ -862,6 +988,7 @@ var Cmd = {
 		pic: {
 			load: function(filepath,picid) { // load to picid 
 				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid}`);
+				return (new DISRMpicture(picid,filepath)); // no pos gg
 			},
 
 			remove: function(picid) {
@@ -873,8 +1000,8 @@ var Cmd = {
 			Cmd.Qset(this.CmdType,"loadText",`${filepath}`);
 		},
 
-		exportText: function(string,filepath) {
-			Cmd.Qset(this.CmdType,"exportText",`${string},${filepath}`);
+		exportText: function(stringid,filepath) {
+			Cmd.Qset(this.CmdType,"exportText",`${stringid},${filepath}`);
 		},
 
 
@@ -1114,9 +1241,11 @@ var Cmd = {
 				Cmd.Qset(this.CmdType,"clearDialogQueue","");
 			},
 
-			getPictureSize: function(picid){
-				
-				Cmd.Qset(this.CmdType,"getPictureSize","");
+			getPictureInfo: function(picid){
+				let rei = Cmd.ReturnQueue.length // return index
+				Cmd.Qset(this.CmdType,"getPictureInfo",`${picid},${rei}`);
+				let retLink = new CmdRetLink(RMarray)
+				return retLink;
 			},
 		
 
