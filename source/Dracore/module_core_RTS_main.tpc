@@ -4,6 +4,7 @@
 
 #include "./module_core_RTS_misc_functions.tpc"
 #include "./module_core_RTS_ui_misc_functions.tpc"
+#include "./module_core_Game_system_functions.tpc"
 #include "./../headers/header_drawing.tpc"
 #include "./../headers/header_scripts.tpc"
 // #include "./../headers/header_agent.tpc" - included in header_scripts.tpc
@@ -44,6 +45,11 @@ __fn macro_HPSPreg $agent $HP_or_SP $amount{
 //CEV 1f
 cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {   
 	@comment "module_core_RTS_main.tpc"
+
+	// reloading system 
+	@if .rightAfterLoad() {
+		reboot_RTS_after_loading()
+	}
 
 	v[522] = v[2501] == 0 ? 0 : v[522] + v[182]
 	v[ptr_null].copy v[181],4
@@ -2374,6 +2380,37 @@ __fn func_main_extract_agent_vars {
 
 __fn func_main_save_agent_vars {
 	    agent_AgentType.copy v[Ptr1], 300
+}
+
+
+// shouldn't this be in the system functions file?
+__fn reboot_RTS_after_loading { //PicID_Auxilia_Message_Window
+
+	/*
+	@pic[PicID_Auxilia_Message_Window].strpic {
+			"NOW LOADING..."
+			.pos TT1, TT2
+			.size LEGV_ConstScreenCenterX, LEGV_ConstScreenCenterY    .chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.font Font_Common, Font_Common_size
+			.spacing 0, 4
+			.skin "" .stretch
+			.mapLayer 9
+			.eraseWhenTransfer
+	}
+	*/
+
+	sysfunc_load_global()
+	@call .cev 1790
+	@call .cev 1795
+	@call .cev 1794
+
+	reboot_DIS_js_RTS_system()
+	s[476].off
+	v[2501] += 1
+
 }
 
 __fn func_blink_set {

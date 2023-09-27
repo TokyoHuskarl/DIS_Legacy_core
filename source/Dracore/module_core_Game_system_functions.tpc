@@ -24,3 +24,17 @@ __fn func_get_stringid_from_numid $numid $DISdict {
 
 }
 
+__fn sysfunc_save_global {
+	
+}
+
+__fn sysfunc_load_global {
+	@gsave.open
+	gs[301].copyTo s[301], 100
+	gv[1].copyTo v[2201], 100
+	@gsave.close
+	
+}
+__fn sysfunc_RMsave $saveid {
+
+}

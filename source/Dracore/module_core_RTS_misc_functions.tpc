@@ -2,6 +2,7 @@
 
 __fn MAIN_CEV_RTS_FRAME_COUNT {
 	@comment "module_core_main_RTS_Frame_Count.tpc"
+
 	@if s[2] .isOff() {
 	    v[2500..2501] += 1
 	    
@@ -73,19 +74,8 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 		}
 		
 	    }
-	    @if .rightAfterLoad() {
-				@gsave.open
-				gs[301].copyTo s[301], 100
-				@gsave.close
-				@call .cev 1795
-				@call .cev 1794
-				s[476].off
-				v[2501] += 1
-				
-				// js data restoration
-				boot_DIS_js_system()
 
-	    }
+
 	    @if s[7] .isOn() {
 		@if v[2403] == FAC_imperial {
 		    @if v[2503] >= 12 {
@@ -356,3 +346,6 @@ __fn get_point_morton_to_reg1 $pos {
 	    reg1 = var1 | var2
 
 }
+
+
+

@@ -762,12 +762,20 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 
 
 cev .id(1790), .name("@Init Database") , {
+	init_DIS_database(0)
+}
 
-	@comment "*failsafe*"
+
+__fn init_DIS_database $already_loaded {
+	// @comment "*failsafe*"
 	@if t[522] .eq "" {
 			t[522] .asg "map_pointer"
 			
 	}
+
+	// init all ID table data
+	// t[__id(data_troopID)..__id(data_accessoryID)].asg ""
+
 	@comment "##################"
 	t[510] .asg  .file "..\\config\\language_config", .utf8
 	t[510] .split LF, t[2999], TT1
@@ -1210,7 +1218,7 @@ cev .id(1790), .name("@Init Database") , {
 			
 	}
 	v[1215] = 10000
-	t[510] .asg  .file "..\data\data_minions", .utf8, .extract //this was once sjis so this might cause some trouble
+	t[510] .asg  .file "..\data\data_minions", .utf8 //this was once sjis so this might cause some trouble
 	t[510] .split "*/", t[509], TT1
 	t[803] .asg  .file "..\scripts\const_factions_id", .utf8
 	t[804] .asg  .file "..\scripts\const_weapons_id", .utf8
@@ -1306,18 +1314,6 @@ cev .id(1790), .name("@Init Database") , {
 
 	t[510] .split LF, t[v[1215]], TT1
 
-	@if s[1] .isOn() {
-			t[801] .asg ""
-			@loop TT1 .dst var1 {
-					var2 = v[1215] + var1
-					t[801] .cat t[var2]
-					t[801] .cat LF
-					
-			}
-			
-			t[801] .toFile "DEBUG_char", .utf8
-			
-	}
 
 	t[3000..3500] .asg ""
 	t[511] .asg PATH_language .extract
@@ -1357,6 +1353,7 @@ cev .id(1790), .name("@Init Database") , {
 			
 			
 	}
+
 	t[801] .asg ""
 	@loop TT1 .dst var1 {
 			var2 = v[1215] + var1
@@ -1702,11 +1699,11 @@ cev .id(2120), .name("Game:Boot"),{
 				t[510] .split "=", t[3000], TT1
 				t[3001] .toNum TT1
 				@if TT1 >= 1 {
-			@sys.gameOpt .fatal 60, 2, 1
+					@sys.gameOpt .fatal 60, 2, 1
 			
 				}
 				@if TT1 == 114514 {
-			s[316].on
+					s[316].on
 			
 				}
 				

@@ -189,13 +189,6 @@ cev .id(2051),.name("[System]Escape Menu"),{
 	s[51].off
 	@label.set 15
 	@if s[476] .isOn() {
-	    @gsave.open
-	    gs[301].copyTo s[301], 100
-	    gv[1].copyTo v[2201], 100
-	    @gsave.close
-	    @call .cev 1790
-	    @call .cev 1795
-	    @call .cev 1794
 	    s[476].off
 	    
 	}
@@ -366,10 +359,15 @@ cev .id(2051),.name("[System]Escape Menu"),{
 			    t[3001..4000] .asg ""
 			    t[5001..30000] .asg ""
 			    s[476].on
+
+
+					// save.
+					save_DIS_js_RTS_system()
+
 			    @save[v[2382]].save
 			    s[11].on
 			    @if s[57] .isOn() {
-				@sys.gameOpt .fatal 48, 2, 0
+						@sys.gameOpt .fatal 48, 2, 0
 				
 			    }
 			    @label.jump 15

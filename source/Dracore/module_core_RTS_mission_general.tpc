@@ -26,9 +26,6 @@ def moduletitle="module_core_RTS_mission_general.tpc"
 // ------------------------------------------------
 
 
-def CEV_JS_MANAGER_RESTORE = "
-RTS.restore();
-"
 
 def CEV_JS_MANAGER_RUN_PER_FRAME = "
 RTS.mission.run();
@@ -37,9 +34,6 @@ RTS.mission.run();
 // this cev just call run() functions of objects under RTS module.
 
 cev .id(1830), .name("JS MissionManager"),.parallel , .cond(__id(RUN_js_MissionManager)), {
-	@if .rightAfterLoad() {
-		eval_js(CEV_JS_MANAGER_RESTORE) // call restore function is the game noticed 
-	}
 	@if s[2].isOff(){ // pause
 		eval_js(CEV_JS_MANAGER_RUN_PER_FRAME)
 	}

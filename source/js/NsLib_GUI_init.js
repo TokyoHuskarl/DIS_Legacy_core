@@ -1,9 +1,22 @@
 /*
-* @module NsLib_GUI
+* @module DIS_js_main_module
 */
 
-const DEBUG = 1;
+
+//0 = normal mode, 1 = debug mode, 2 = developer mode
+const BOOT_MODE_NORMAL = 0,
+	BOOT_MODE_DEVELOPER = 1,
+	BOOT_MODE_DEBUG = 2;
+
+let DEBUG = BOOT_MODE_NORMAL;
+
+if (gets(316)) { // s[316] is DEBUG mode flag in DIS. 
+	DEBUG = BOOT_MODE_DEBUG;
+	// check if the game is running developer mode
+}
+
 const SINGLEPLAY = true;
+
 
 
 // these lines are written in order not to cause error when you test this file on Node.js
@@ -15,12 +28,21 @@ var sets = sets || function(){};
 var gets = gets || function(){return true};
 
 
+// notification for developer mode.
+function devmsg(text) {
+	Cmd.game.log_dev(text);
+};
+if (DEBUG < BOOT_MODE_DEVELOPER) { function devmsg(dummy){}; }; // dummy
+
+// debug log function for debug mode 
 function deblog(text) {
-	if (DEBUG == 1) {
-		console.log(text);
-		Cmd.game.log_debug(text);
-	}
-}
+	console.log(text);
+	Cmd.game.log_debug(text);
+};
+if (DEBUG != BOOT_MODE_DEBUG) { function deblog(dummy){}; }; // dummy
+
+
+
 
 
 // RM var types
@@ -29,8 +51,8 @@ const RMvar = 1,
 	RMstring = 3,
 	RMpicture = 4;
 
+// this is not necessarily. kek
 function getRM(typ,add) {
-	
 	if (typ == RMvar) {
 		return getv(add)
 	} else if (typ == RMswitch) {
@@ -38,7 +60,6 @@ function getRM(typ,add) {
 	} else if (typ = RMstring) {
 		return gett(add)
 	}
-
 }
 
 
@@ -65,7 +86,6 @@ const adr_RMbool_RUN_RENDER = 131; // -> NsLib_GUI_functions.tpc -> Str_UI_ORDER
 
 
 const adr_DISreg1 = 21;
-
 const adr_DISstr1 = 501;
 
 // macros
@@ -107,11 +127,13 @@ DIS = { // DIS fundamental components
 		let lines = TroopIDstr.trim().split('\n');
 		lines.forEach(line => {
 			parse_DISid(line,trp);
+			deblog(line);
 		});
 
 		// now you can use troopID by writing like this: trp["TRP_sushi_kensei"] 
 		
 	},
+
 
 	restore: function(){
 		this.initID(); // restore ID 
@@ -153,6 +175,7 @@ const Adrt_FontCommon = 529,
 	Adr_FontCommonSize = 4510,
 	Adrt_FontUI = 530,
 	Adr_FontUISize = 4511;
+
 
 DIS.lang = {
 	init: function(){ // this function called whenever player changes game language
@@ -264,6 +287,8 @@ if (SINGLEPLAY){
 
 const Adr_world_frame = 2510;
 
+const Adrt_JSSAVE_triggersQueue = 763; // <- header_scripts
+
 // DIS system component classes - these class objs usually work as component under RTS objects.
 
 
@@ -274,16 +299,17 @@ class nonvolatileVar { // nvVar
 		this.value = getv(address);
 	};
 
-	refresh(){this.value = getv(address);};
+	refresh(){this.value = getv(this.address);};
 	get(){return this.value;};
+	initset(num){this.value = num;};
 	set(num){this.value = num; setv(this.address,num);};
-	refget(){this.refresh();return this.value;};;
+	refget(){this.refresh();return this.value;};
 
 };
 
 
 // RTSmission Object
-//
+
 class RTSmission {
 	constructor(missionid,mapid){
 		if (missionid == ""){missionid = "mapgentest";};
@@ -323,15 +349,20 @@ class RTSmission {
 		mapDataDirectory: this.mapDataDirectory, // set in constructor
 	};
 
+	save = function(){
+		// save triggers in queue as a string..
+		let savestring = ""
+		for (let elmid in this.triggers.queue){
+			let i = this.triggers.queue[elmid].index; // get trigger index in RTS.createdTrgs
+			savestring += i + ","
+		}
+		sett(Adrt_JSSAVE_triggersQueue,savestring.slice(0,-1));
+
+	};
+
 	restore = function(){
 		// restore mission settings
 		this.passedFrame = getv(Adr_world_frame); //  if DIS game is reloaded, then reload from RM var. 
-		
-		// 
-
-		// restore vars
-		
-		// restore triggers
 		
 		
 
@@ -366,7 +397,7 @@ class RTSmission {
 			for (let TRIGGER of this.queue) {
 				let result = TRIGGER.run(); // run the trigger!
 				if (result & 0b10){ // if end flag is TRUE
-					newQue.splice(newQue.indexOf(TRIGGER),1); // remove the called trigger from newQue
+					newQue.splice(newQue.indexOf(TRIGGER),1); // remove the called trigger from newQue 
 				};
 				isTriggered |= result;
 			};
@@ -483,7 +514,11 @@ class RTSmap {
 	init(){return NULL;}; // override me. can be written in mapdef.js.txt.
 
 
-	restore(){}; // call me
+	restore(){
+
+
+		deblog("Map restored.")
+	}; // call me
 	
 	generate(){ // if you don't override this function, this object tries to load this.terrainSource unless the map is LEGACYmission - I mean using RMmap.
 	
@@ -518,8 +553,9 @@ class RTSplayer {
 // maybe you need to build up restoring processes for mission and triggers.
 // both creation and deletion of the simple triggers must be memorized in RMvar (or str) just for restoring save data. After all.
 class RTStrigger {
-	constructor(){ // if you give any condition that returns bool as a arg0, it becomes condition of the new trigger.
-		
+	constructor(){
+		this.index = RTS.createdTrgs.length; // push this to created Triggers Array in RTS
+		RTS.createdTrgs.push(this); // push this to created Triggers Array in RTS
 	};
 
 	run = function(){ // if this function returns true, then erase from triggers.
@@ -577,12 +613,16 @@ let RTS = {
 	isRTSmode: false,
 	mission: new RTSmission(),
 	map: new RTSmap(),
-	mvgrp: [], // agent movement group
+	createdTrgs: [],
 
 	Mtrig: {}, // mission triggers
 	Mvar: {}, // mission vars
 	Mbool: {}, // mission switch
 	Mstr: {}, // mission strings
+
+
+
+	mvgrp: [], // agent movement group
 
 	DlogManager: {
 		queue: "",
@@ -643,7 +683,13 @@ let RTS = {
 		
 	},
 
-	
+
+	save: function(){ // called whenever the game is trying to make RM savefile...
+		
+		this.mission.save();
+		deblog("saved :D")
+
+	}, // unco
 
 	restore: function(){ // call this function whenever player loads RMsavedata. reload all datas from RM memories.
 		// restore mission 
@@ -660,7 +706,33 @@ let RTS = {
 		this.openMissionMapData();
 		const str_mapdef_storage = 762; // <- header_mission.tpc.. is this even necessarily?
 		this.map.restore();
-	
+
+
+		// restore js variables in RTS object
+		for (let elmid in this.Mvar) { // restore each of nonvolatileVar in this.Mvar
+			this.Mvar[elmid].refresh(); // get RPG maker var
+			deblog(this.Mvar[elmid].address);
+		};
+
+		deblog("js variables restored..")
+
+		// restore simple triggers in RTS object
+		this.mission.triggers.queue = []; // init triggers
+		let savedtrgStr = gett(Adrt_JSSAVE_triggersQueue); // get saved array
+		let trgQArray = savedtrgStr.split(",").map(str => parseInt(str, 10)); // convert into init array
+
+		for (let i of trgQArray){ // check it
+			if (typeof this.createdTrgs[i] == "object") { // failsafe
+				this.mission.triggers.queue.push(this.createdTrgs[i]); // re-push trigger to the trigger queue.
+			}
+		}
+		deblog("simple triggers restored..");
+
+		deblog(`${this.createdTrgs.length} triggers exist in mission.`);
+		deblog(`and currently ${this.mission.triggers.queue.length} triggers are active. `);
+
+		
+
 		// Dlog?
 		this.DlogManager.receiveQ(); // restore Dlog queue
 		
@@ -761,7 +833,6 @@ var Cmd = {
 		sett(adr_RMStr_CmdOrder,this.CmdQueue);
 		// turn on RM switch to run interpreter as cev
 		sets(adr_RMbool_RUN_CMD,1);
-		
 		Cmd.CmdQueue = ""; // initialize Command Order
 		this.runFlags.initAll();
 	},
@@ -817,7 +888,12 @@ var Cmd = {
 
 		log_error: function(txt){
 			Cmd.Qset(this.CmdType,"msg",`\\C[17]ERROR:${txt}`);
+			// deblog("`ERROR:${txt}`")
 		},
+
+		log_dev: function(txt){
+			Cmd.Qset(this.CmdType,"msg",`\\C[1]Dev:${txt}`);
+		},	
 
 		log_debug: function(txt){
 			Cmd.Qset(this.CmdType,"msg",`\\C[5]JS DEBUG:${txt}`);

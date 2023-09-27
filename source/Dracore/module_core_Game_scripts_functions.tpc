@@ -43,7 +43,20 @@ __fn reboot_DIS_js_system { // called after RMsavedata load
 	boot_DIS_js_system()
 	// and?
 }
-//
+
+def CEV_JS_MANAGER_RESTORE = "
+RTS.restore();
+"
+__fn reboot_DIS_js_RTS_system {
+	reboot_DIS_js_system()
+	eval_js(CEV_JS_MANAGER_RESTORE) 
+	
+}
+
+__fn save_DIS_js_RTS_system {
+	@js .run "RTS.save()" // call 
+
+}
 
 __fn callDISCmd $js {
 	
