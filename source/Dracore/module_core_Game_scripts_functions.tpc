@@ -36,7 +36,7 @@ def WAIT_FOR_JSCMD_EXECUTION = {
 
 // DIS JS functions
 __fn boot_DIS_js_system {
-	execute_js("NsLib_GUI_init.js")
+	execute_js("DIS_js_system_main.js")
 }
 
 __fn reboot_DIS_js_system { // called after RMsavedata load

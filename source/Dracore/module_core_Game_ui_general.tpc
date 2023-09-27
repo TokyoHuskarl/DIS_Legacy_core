@@ -25,18 +25,18 @@ cev[7], "Base Mouse Lock", .parallel, .cond(6),{
 	    }
 	    v[93] += 1
 	    @if s[2] .isOff() {
-		@mouse.getPos TT1, TT2
-		v[93] = TT1 == v[1115] && TT2 == v[1116] ? v[93] : 0
-		Mouse_x -= muldiv(v[1115] - TT1, v[2221], 50)
-		Mouse_x = max(0, Mouse_x)
-		Mouse_x = min(v[1001], Mouse_x)
-		Mouse_y -= muldiv(v[1116] - TT2, v[2221], 50)
-		Mouse_y = max(0, Mouse_y)
-		Mouse_y = min(v[1002], Mouse_y)
-		@mouse.setPos v[1115], v[1116]
-		@wait 0
-		s[51].on
-		
+				@mouse.getPos TT1, TT2
+				v[93] = TT1 == v[1115] && TT2 == v[1116] ? v[93] : 0
+				Mouse_x -= muldiv(v[1115] - TT1, v[2221], 50)
+				Mouse_x = max(0, Mouse_x)
+				Mouse_x = min(v[1001], Mouse_x)
+				Mouse_y -= muldiv(v[1116] - TT2, v[2221], 50)
+				Mouse_y = max(0, Mouse_y)
+				Mouse_y = min(v[1002], Mouse_y)
+				@mouse.setPos v[1115], v[1116]
+				@wait 0
+				s[51].on
+				
 	    } .else bl {
 		@if s[4] .isOff() {
 		    @mouse.getPos TT1, TT2
