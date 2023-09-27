@@ -127,7 +127,6 @@ DIS = { // DIS fundamental components
 		let lines = TroopIDstr.trim().split('\n');
 		lines.forEach(line => {
 			parse_DISid(line,trp);
-			deblog(line);
 		});
 
 		// now you can use troopID by writing like this: trp["TRP_sushi_kensei"] 

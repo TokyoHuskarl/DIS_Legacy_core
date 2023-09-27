@@ -18,7 +18,7 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 
 	    v[2502..2503] %= 60
 	    v[2501] %= v[95]
-	    v[2510] -= s[309]== 1 ? 0 : 1 //[1, 0][s[309]]
+	    RTS_WORLD_passed_frame -= s[309]== 1 ? 0 : 1 //[1, 0][s[309]]
 	    v[2661] -= 1
 
 	    vname[2505],"Frame-half"
@@ -27,198 +27,159 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 	}
 	@if s[319] .isOn() {
 	    @if s[317] .isOff() {
-		@if v[2401] < 5 {
-		    @if v[2502] == 20 {
-			@if `(v[2503] + 1) % 2 == 0 {
-			    @if v[2501] == 0 {
-				v[472] = divmul(90, 100, v[2216])
-				@se.play "cursor02" .opt v[472], 100, 50
-				//@comment "#######################"
-				@call .cev 1924
-				TT1 = 2
-				v[601] = 1
-				@pic[v[1155]].strpic {
-				    t[20354]
-				    .pos TT1, v[1126] .bottomLeft
-				    .size 0, 0                            .chromakey 1
-				    .scale 100
-				    .trans 30
-				    .rgbs 100, 100, 100, 100
-				    .font Font_UI, Font_UI_size
-				    .spacing 0, 4
-				    .skin "" .nobg .noframe .noPadding
-				    .mapLayer 8
-				    .eraseWhenTransfer
-				    .affectedByFlash
-				    .affectedByShake
+				@if RTS_Difficulty < DIF_RAGNAROK { // NOT RAGNAROK
+					def AUTOSAVE_FRAME = 2 * 60 + 20 * DIS_Game_FPS // (2min * 60 + 20sec) * baseFPS
+					TT1 = RTS_WORLD_passed_frame % AUTOSAVE_FRAME
+					@if TT1 == 0 {
+						sysfunc_autosave() // this nest looks seriously retarded.
+					}
 				}
-				@call .cev 1925
-				//@comment "#######################"
-				str1 .asg "AUTOSAVE"
-				@actor[1].name str1
-				v[v[1067]..v[1079]] = 0
-				/*@if s[1] .isOn() {
-				    v[v[4568]..v[4600]] = 0
-				    
-				}*/
-				@save[1].save
-				s[476].on
-				v[2501] += 1
-				
-			    }
-			    
-			}
-			
-		    }
-		    
-		}
-		
 	    }
 
 
 	    @if s[7] .isOn() {
-		@if v[2403] == FAC_imperial {
-		    @if v[2503] >= 12 {
-			@if `!(v[2412] & 0x80) {
-			    v[472] = divmul(100, 100, v[2216])
-			    @se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
-			    @se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
-			    v[472] = divmul(100, 100, v[2217])
-			    Current_BGMFile .asg "[J.R.S. Schattenberg]Aevitas(The Empire in Twilight)"
-			    @bgm.play "[J.R.S. Schattenberg]Aevitas(The Empire in Twilight)" .opt 1000, v[472], 100, 50
-			    v[2412] |= 128
-			    //@comment "#######################"
-			    @call .cev 1924
-			    TT1 = 2
-			    v[601] = 1
-			    @pic[v[1155]].strpic {
-				t[20326]
-				.pos TT1, v[1126] .bottomLeft
-				.size 0, 0                        .chromakey 1
-				.scale 100
-				.trans 30
-				.rgbs 100, 100, 100, 100
-				.font Font_UI, Font_UI_size
-				.spacing 0, 4
-				.skin "" .nobg .noframe .noPadding
-				.mapLayer 8
-				.eraseWhenTransfer
-				.affectedByFlash
-				.affectedByShake
-			    }
-			    @call .cev 1925
-			    @loop v[1012] .dst v[141] {
-				//@comment "Check Player Team List"
-				v[601] = v[141] + v[1145 + v[251] % 3]
-				@if v[v[601]] >= 1 {
-				    v[602] = v[v[601]] * 300
-				    v[602] += 4701
-				    @if v[v[602]] == 11 {
-					v[602] += 100
-					@if v[v[602]] == 1 {
-					    v[602] += 40
-					    v[602] += 3
-					    v[v[602]] = 147
-					    v[602] += 1
-					    v[v[602]] = 48
-					    
+				@if v[2403] == FAC_imperial {
+						@if v[2503] >= 12 {
+							@if `!(v[2412] & 0x80) {
+									v[472] = divmul(100, 100, v[2216])
+									@se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
+									@se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
+									v[472] = divmul(100, 100, v[2217])
+									Current_BGMFile .asg "[J.R.S. Schattenberg]Aevitas(The Empire in Twilight)"
+									@bgm.play "[J.R.S. Schattenberg]Aevitas(The Empire in Twilight)" .opt 1000, v[472], 100, 50
+									v[2412] |= 128
+									//@comment "#######################"
+									@call .cev 1924
+									TT1 = 2
+									v[601] = 1
+									@pic[v[1155]].strpic {
+										t[20326]
+										.pos TT1, v[1126] .bottomLeft
+										.size 0, 0                        .chromakey 1
+										.scale 100
+										.trans 30
+										.rgbs 100, 100, 100, 100
+										.font Font_UI, Font_UI_size
+										.spacing 0, 4
+										.skin "" .nobg .noframe .noPadding
+										.mapLayer 8
+										.eraseWhenTransfer
+										.affectedByFlash
+										.affectedByShake
+									}
+									@call .cev 1925
+									@loop v[1012] .dst v[141] {
+										//@comment "Check Player Team List"
+										v[601] = v[141] + v[1145 + v[251] % 3]
+										@if v[v[601]] >= 1 {
+												v[602] = v[v[601]] * 300
+												v[602] += 4701
+												@if v[v[602]] == 11 {
+													v[602] += 100
+													@if v[v[602]] == 1 {
+															v[602] += 40
+															v[602] += 3
+															v[v[602]] = 147
+															v[602] += 1
+															v[v[602]] = 48
+															
+													}
+													
+												}
+												
+										}
+										
+									}
+									
+									
+							}
+							
+						}
+						@if v[2503] >= 24 {
+					@if `!(v[2412] & 0x100) {
+							v[2412] |= 256
+							v[472] = divmul(100, 100, v[2216])
+							@se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
+							@se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
+							@if Current_BGMFile .neq "[Soularflair]We Are Legion(Einherjar)" {
+						v[472] = divmul(100, 100, v[2217])
+						Current_BGMFile .asg "[J.R.S. Schattenberg]Metus(Ruina Imperii)"
+						@bgm.play "[J.R.S. Schattenberg]Metus(Ruina Imperii)" .opt 0, 100, 100, 50
+						
+							}
+							v[229] = 15
+							s[240].on
+							@comment "#######################"
+							@call .cev 1924
+							TT1 = 2
+							v[601] = 1
+							@pic[v[1155]].strpic {
+						t[20327]
+						.pos TT1, v[1126] .bottomLeft
+						.size 0, 0                        .chromakey 1
+						.scale 100
+						.trans 30
+						.rgbs 100, 100, 100, 100
+						.font Font_UI, Font_UI_size
+						.spacing 0, 4
+						.skin "" .nobg .noframe .noPadding
+						.mapLayer 8
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
+							}
+							@call .cev 1925
+							@comment "#######################"
+							@loop v[1004] .dst v[141] {
+						@comment "Check Player Team List"
+						v[602] = v[141] * 300
+						v[602] += 5001
+						@if v[v[602]] == 11 {
+								@if `v[v[602] + 99] == 0 {
+							v[602] += 100
+							@if v[v[602]] == 23 {
+									v[602] += 40
+									v[v[602]] = 72
+									v[602] += 1
+									@comment "icon"
+									v[602] += 2
+									v[v[602]] = 62
+									v[602] += 1
+									@comment "icon"
+									v[602] += 2
+									v[v[602]] = 86
+									v[602] += 1
+									@comment "icon"
+									v[602] += 2
+									v[v[602]] = 81
+									v[602] += 1
+									@comment "icon"
+									v[602] += 2
+									v[v[602]] = 10305
+									v[602] += 1
+									@comment "icon"
+									v[602] += 2
+									v[v[602]] = 10306
+									v[602] += 1
+									@comment "icon"
+									v[602] += 2
+									v[v[602]] = 10307
+									
+							}
+							
+								}
+								
+						}
+						
+							}
+							
+							
 					}
 					
-				    }
-				    
+						}
+						
 				}
 				
-			    }
-			    
-			    
-			}
-			
-		    }
-		    @if v[2503] >= 24 {
-			@if `!(v[2412] & 0x100) {
-			    v[2412] |= 256
-			    v[472] = divmul(100, 100, v[2216])
-			    @se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
-			    @se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
-			    @if Current_BGMFile .neq "[Soularflair]We Are Legion(Einherjar)" {
-				v[472] = divmul(100, 100, v[2217])
-				Current_BGMFile .asg "[J.R.S. Schattenberg]Metus(Ruina Imperii)"
-				@bgm.play "[J.R.S. Schattenberg]Metus(Ruina Imperii)" .opt 0, 100, 100, 50
-				
-			    }
-			    v[229] = 15
-			    s[240].on
-			    @comment "#######################"
-			    @call .cev 1924
-			    TT1 = 2
-			    v[601] = 1
-			    @pic[v[1155]].strpic {
-				t[20327]
-				.pos TT1, v[1126] .bottomLeft
-				.size 0, 0                        .chromakey 1
-				.scale 100
-				.trans 30
-				.rgbs 100, 100, 100, 100
-				.font Font_UI, Font_UI_size
-				.spacing 0, 4
-				.skin "" .nobg .noframe .noPadding
-				.mapLayer 8
-				.eraseWhenTransfer
-				.affectedByFlash
-				.affectedByShake
-			    }
-			    @call .cev 1925
-			    @comment "#######################"
-			    @loop v[1004] .dst v[141] {
-				@comment "Check Player Team List"
-				v[602] = v[141] * 300
-				v[602] += 5001
-				@if v[v[602]] == 11 {
-				    @if `v[v[602] + 99] == 0 {
-					v[602] += 100
-					@if v[v[602]] == 23 {
-					    v[602] += 40
-					    v[v[602]] = 72
-					    v[602] += 1
-					    @comment "icon"
-					    v[602] += 2
-					    v[v[602]] = 62
-					    v[602] += 1
-					    @comment "icon"
-					    v[602] += 2
-					    v[v[602]] = 86
-					    v[602] += 1
-					    @comment "icon"
-					    v[602] += 2
-					    v[v[602]] = 81
-					    v[602] += 1
-					    @comment "icon"
-					    v[602] += 2
-					    v[v[602]] = 10305
-					    v[602] += 1
-					    @comment "icon"
-					    v[602] += 2
-					    v[v[602]] = 10306
-					    v[602] += 1
-					    @comment "icon"
-					    v[602] += 2
-					    v[v[602]] = 10307
-					    
-					}
-					
-				    }
-				    
-				}
-				
-			    }
-			    
-			    
-			}
-			
-		    }
-		    
-		}
-		
 	    }
 	    
 	}

@@ -189,7 +189,12 @@ cev .id(2051),.name("[System]Escape Menu"),{
 	s[51].off
 	@label.set 15
 	@if s[476] .isOn() {
-	    s[476].off
+		@if .rightAfterLoad() {
+			// if you load a save data, rebooting function will be called in main1f loop cev
+		}.else bl{
+			sysfunc_reload_RTS_data()
+
+		}
 	    
 	}
 	@pic[996].erase
@@ -321,59 +326,46 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		}
 		@if Common_Control_Ck == 1005 {
 		    @if s[11] .isOff() {
-			s[11].on
-			@call .cev 2054
-			@call .cev 2053
-			@if v[2381] == -1 {
-			    str1 .asg  .map[v[501]].name
-			    @if str1 .eq "CustomMap" {
-				str1 .asg t[750]
-				
-			    }
-			    @actor[1].name str1
-			    v[371..380] = 0
-			    v[561..900] = 0
-			    v[1901..1963] = 0
-			    v[3201..4160] = 0
-			    v[v[4568]..v[4600]] = 0
-			    v[v[1067]..v[1079]] = 0
-			    @comment "pixel extract"
-			    v[550445..560445] = 0
-			    @loop v[1004] .dst Temp1 {
-				Temp2 = Temp1 * 300 + 5001
-				@if v[Temp2] == 0 {
-				    @comment "not gate"
-				    @if `!(v[Temp16 + 2] & 256) {
-					v[1301].copy v[Temp2], 300
+					s[11].on
+					@call .cev 2054
+					@call .cev 2053
+					@if v[2381] == -1 {
+							str1 .asg  .map[v[501]].name
+							@if str1 .eq "CustomMap" {
+								str1 .asg t[750]
+						
+							}
+							@actor[1].name str1
+							@loop v[1004] .dst Temp1 {
+								Temp2 = Temp1 * 300 + 5001
+								@if v[Temp2] == 0 {
+										@comment "not gate"
+										@if `!(v[Temp16 + 2] & 256) {
+											v[1301].copy v[Temp2], 300
+									
+										}
+										
+								}
+								
+							}
+
+							// sysfunc
+							sysfunc_compress_savedata()
+							s[476].on
+
+							// save js system
+							save_DIS_js_RTS_system()
+
+							@save[v[2382]].save
+							s[11].on
+							@if s[57] .isOn() {
+								@sys.gameOpt .fatal 48, 2, 0
+						
+							}
+							@label.jump 15
+							
+					}
 					
-				    }
-				    
-				}
-				
-			    }
-
-			    //24.4.23
-			    t[502..510] .asg ""
-			    t[1001..1300] .asg ""
-
-			    t[3001..4000] .asg ""
-			    t[5001..30000] .asg ""
-			    s[476].on
-
-
-					// save.
-					save_DIS_js_RTS_system()
-
-			    @save[v[2382]].save
-			    s[11].on
-			    @if s[57] .isOn() {
-						@sys.gameOpt .fatal 48, 2, 0
-				
-			    }
-			    @label.jump 15
-			    
-			}
-			
 		    }
 		    
 		}
