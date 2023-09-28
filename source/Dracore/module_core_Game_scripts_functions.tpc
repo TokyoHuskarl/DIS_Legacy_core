@@ -15,6 +15,15 @@ def {
 	CTYP_END
 }
 
+def {
+// RM var types
+	RMvar = 1
+	RMswitch = 2
+	RMstring = 3
+	RMpicture = 4
+	RMarray = 5
+}
+
 deft {
 	str_link_Cmd_map = 771
 	str_link_Cmd_snd
@@ -522,7 +531,7 @@ __fn cmd_getPictureInfo {
 	t2v(SSargs0,var1)
 	@pic.getInfo[var1] .currentRect(reg1, reg2, reg3, reg4)
 	def RETURN_ARRAY_GETPICINFO = __str("[","\v[",__id(reg1),"],","\v[",__id(reg2),"],","\v[", __id(reg3), "],","\v[",__id(reg4), "],","]")
-	def JS_SENDBACK_GETPICINFO = __str("Cmd.sendback(",RETURN_ARRAY_GETPICINFO,",\t[",__id(SSargs1),"])")
+	def JS_SENDBACK_GETPICINFO = __str("Cmd.sendback(",RETURN_ARRAY_GETPICINFO,",\t[",__id(SSargs1),"],",RMarray,")") // send RM array
 	eval_js(JS_SENDBACK_GETPICINFO) // sending back to js.
 }
 

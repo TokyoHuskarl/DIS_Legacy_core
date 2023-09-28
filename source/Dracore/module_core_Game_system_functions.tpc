@@ -45,6 +45,11 @@ __fn sysfunc_RMsave $saveid {
 
 }
 
+__fn sysfunc_compress_savedata_autosave {
+	TT1 = v[1079] - v[1067]
+	v[ptr_null].copy v[v[1067]],TT1
+}
+
 __fn sysfunc_autosave {
 	v[472] = divmul(90, 100, v[2216])
 	@se.play "cursor02" .opt v[472], 100, 50
@@ -109,10 +114,6 @@ __fn sysfunc_compress_savedata {
 	v[550445..560445] = 0
 }
 
-__fn sysfunc_compress_savedata_autosave {
-	TT1 = v[1079] - v[1067]
-	v[ptr_null].copy v[v[1067]],TT1
-}
 
 // shouldn't this be in the system functions file?
 __fn sysfunc_reboot_RTS_after_loading { //PicID_Auxilia_Message_Window

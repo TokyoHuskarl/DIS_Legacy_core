@@ -26,6 +26,7 @@ cev[2041], .name("Script:DIS command interpriter"), .parallel , .cond(__id(BOOL_
 	
 	}
 	Str_CmdQueue.asg "" // init 
+	eval_js("Cmd.ReturnQueue = [];") // init Cmd.ReturnQueue after executing DIS commands
 	BOOL_CMD_RUN.off
 	BOOL_CMD_CALLING.off
 }

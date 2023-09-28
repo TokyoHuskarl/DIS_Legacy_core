@@ -2,6 +2,9 @@
 * @module DIS_js_main_module
 */
 
+// if setv() is undefined, it's virtual enviroment on node.js or sth.
+let VIRTUAL_ENV = (typeof setv == "undefined") ? true : false; 
+
 
 // these lines are written in order not to cause error when you test this file on Node.js
 var setv = setv || function(){};
@@ -32,6 +35,7 @@ const SINGLEPLAY = true;
 function devmsg(text) {
 	Cmd.game.log_dev(text);
 };
+
 if (DEBUG < BOOT_MODE_DEVELOPER) { function devmsg(dummy){}; }; // dummy
 
 // debug log function for debug mode 
@@ -41,6 +45,10 @@ function deblog(text) {
 };
 if (DEBUG != BOOT_MODE_DEBUG) { function deblog(dummy){}; }; // dummy
 
+function errorlog(text) {
+	if (DEBUG != BOOT_MODE_DEBUG){let contx = "ERROR:" + text;console.log(contx);}
+	Cmd.game.log_error(text);
+}
 
 
 
@@ -49,7 +57,7 @@ if (DEBUG != BOOT_MODE_DEBUG) { function deblog(dummy){}; }; // dummy
 const RMvar = 1,
 	RMswitch = 2,
 	RMstring = 3,
-	RMpicture = 4;
+	RMpicture = 4,
 	RMarray = 5;
 
 // this is not necessarily. kek
@@ -68,30 +76,41 @@ function getRM(typ,add) {
 // DIS project
 
 
-class DISRMobj { // fundamental prototype for DIS RPGmaker Object
+class DISentity { // fundamental prototype for DIS RPGmaker Object
 	constructor(){
-		this.receivedStuff = []; // given from CmdReturn
+		this.receivedStorage = []; // given from CmdReturn
 		this.isAwaitingReturn = false;
 		this.receivedSth = false;
 		this.activated = false;
 	}
 
-	receiveFromCmd(stuff){
-		if (stuff != null){
-			this.receivedStuff.push(stuff); // store in array
+	receiveFromCmd(stuff,sendwhat){
+		if (stuff != null){ // at least received something.
+			let address = this.getWhereToStorage(sendwhat);
+			if (typeof address == "undefined"){
+				this.receivedStorage.push(stuff); // store in array
+			} else {
+				this.receivedStorage[address] = stuff;
+			}
 			this.receivedSth = true;
+			deblog(`DISentity: received ${stuff}`)
 		} else { // got only null
-			/*???*/
+			errorlog("DISentity: failed receiving return value from DIS command process on TPC.")
 		}
 		this.isAwaitingReturn = false;
 	}
 
-	get ckReceived() { return this.receivedSth ;}
+	getWhereToStorage(gtwut){ // override me, but beware, this function must always return index int for receivedStorage array.
+		return "undefined";
+	}
+
+	// get ckReceived() { return this.receivedSth ;} 
+
 
 
 }
 
-class DISRMpicture extends DISRMobj { // simple picture object.
+class DISRMpicture extends DISentity { // simple picture object.
 	constructor(pid,file,pos){
 		super();
 		this.pid = pid;
@@ -102,21 +121,32 @@ class DISRMpicture extends DISRMobj { // simple picture object.
 	size = [0,0];
 
 	refreshPicInfo(){
-		let result = this.ckReceived;
-		if(this.ckReceived){
-			let arr = this.receivedStuff;
+		let result = this.receivedSth;
+		deblog("pictureinfo - try refreshing");
+		if(result){
+			let arr = this.receivedStorage;
+			let i = this.getWhereToStorage(RMarray);
+
 			this.activated = true; // if once get refreshed infomation, this is now activated object on DIS js system.
-			this.pos = [arr[0],arr[1]];
-			this.size = [arr[2],arr[3]];
-			this.receivedStuff = []; // init
-			deblog(this.pos + this.size);
+			this.pos = [arr[i][0],arr[i][1]];
+			this.size = [arr[i][2],arr[i][3]];
+			this.receivedStorage[i] = 0; // init storage?
+			deblog(`pic info refreshed! pos[${this.pos}] size[${this.size}]`);
 		}
 		let reford = Cmd.ui.getPictureInfo(this.pid); // call DIS cmd and get link
 		reford.setLink(this); // ckReceived is now false
 		return result;
 	};
 
-	kill(){remove(this.pid);};
+	getWhereToStorage(gtwut){
+		let i;
+		if (gtwut == RMarray){ 
+			i = 0;
+		}
+		return i;
+	}
+
+	kill(){Cmd.game.pic.remove(this.pid);};
 
 }
 
@@ -881,17 +911,19 @@ class CmdRetLink {
 	setLink(DISRMo){
 		this.link = DISRMo;
 		this.link.isAwaitingReturn = true;
-		this.link.receivedStuff = false;
+		this.link.receivedSth = false;
 	} // one directional link.
 
-	send(){ // send its value to Linked DISRMobject
+	send(sendwhat){ // send its value to Linked DISRMobject
 		let result = false;
-		if (this.received && typeof this.link == "object"){
-			this.link.receiveFromCmd(this.value);
+		if (this.received && (typeof this.link == "object")){
+			
+			this.link.receiveFromCmd(this.value,sendwhat);
 			result = true;
 		} else {
-			this.link.receiveFromCmd(null); // tell the object that getting return value was miserably failed 
+			this.link.receiveFromCmd(null,sendwhat); // tell the object that getting return value was miserably failed 
 		};
+		deblog(`Link sending back - ${result}`) 
 		return result;
 	};
 	
@@ -906,8 +938,13 @@ var Cmd = {
 	CmdQueue: "",
 
 	ReturnQueue: [],
-	sendback: function(stuff,i){ // this function is to be called by TPC. send RM stuff back to ReturnQueue.
-		Cmd.ReturnQueue[i].receive(stuff);
+	sendback: function(stuff,linki,sendwhat){ // this function is to be called by TPC. send RM stuff back to ReturnQueue.
+		deblog(`RetLink:sending back thing ${stuff} to returnArray[${linki}]!`)
+		deblog(`${Cmd.ReturnQueue[linki]} is receiver.`)
+		Cmd.ReturnQueue[linki].receive(stuff);
+		deblog(`RetLink:received successfully, now to send...`)
+		sendwhat = sendwhat || 0; // if 0, not designated what to send.
+		Cmd.ReturnQueue[linki].send(sendwhat);
 	},
 
 	restore: function(){ // call this function when the game loads savedata
@@ -931,7 +968,7 @@ var Cmd = {
 			this.SpawnDetect = false;
 			this.RMwaitDetect = false;
 			this.CalledDialogQueue = false;
-			this.group.cgrp = [];
+			Cmd.group.cgrp = [];
 		},
 
 	},
@@ -955,14 +992,15 @@ var Cmd = {
 	// Cmd.run()
 	// give signal to run DIS commands 
 	run: function() {
-		for (let link of this.ReturnQueue){link.send();}; // let all return link send what they received
-		this.ReturnQueue = []; // after 
+		// for (let link of this.ReturnQueue){link.send();}; // let all return link send what they received
 
 		// give raw cmd as string to RPGMaker
 		sett(adr_RMStr_CmdOrder,this.CmdQueue);
 		// turn on RM switch to run interpreter as cev
 		sets(adr_RMbool_RUN_CMD,1);
 		Cmd.CmdQueue = ""; // initialize Command Order
+		 
+		// return queue is cleared after TPC finishes actual Cmd processes
 		this.runFlags.initAll();
 	},
 	
@@ -985,7 +1023,9 @@ var Cmd = {
 			Cmd.Qset(this.CmdType,"eval",`${jsSentence}`);
 		},
 
-		pic: {
+		pic: { // Cmd.pic
+			CmdType: CTYP_GAME,
+
 			load: function(filepath,picid) { // load to picid 
 				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid}`);
 				return (new DISRMpicture(picid,filepath)); // no pos gg
@@ -1261,6 +1301,16 @@ var Cmd = {
 	Cmd.init();
 }
 
+// test
+
+if (VIRTUAL_ENV){
+	let fucker = Cmd.game.pic.load("camera_ball",10);
+	fucker.refreshPicInfo();
+	Cmd.run()
+	Cmd.sendback([11,4,5,14],0)
+	fucker.refreshPicInfo();
+
+}
 // init 2
 //
 
