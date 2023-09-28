@@ -76,10 +76,13 @@ function getRM(typ,add) {
 // DIS project
 
 
+// global pointers for important objects
+let MISSION; // {RTSmission} current mission
+let MAP; // {RTSmap} current map
+
 
 // global variables
 let g_PLAYER; // {DIS_RTSplayer}
-
 
 
 // actually DISentity on js system is not a real entity, it's something like bundle of links to actual entities on RM variables.
@@ -88,6 +91,7 @@ let g_PLAYER; // {DIS_RTSplayer}
 
 class DISentity { // fundamental prototype for DIS RPGmaker Object
 	constructor(){
+		this.class = "DISentity";
 		this.receivedStorage = []; // given from CmdReturn
 		this.isAwaitingReturn = false;
 		this.receivedSth = false;
@@ -115,6 +119,8 @@ class DISentity { // fundamental prototype for DIS RPGmaker Object
 		return "undefined";
 	}
 
+	getClass(){return this.class;};
+
 	// get ckReceived() { return this.receivedSth ;} 
 
 
@@ -124,6 +130,7 @@ class DISentity { // fundamental prototype for DIS RPGmaker Object
 class DISRMpicture extends DISentity { // simple picture object.
 	constructor(pid,file,pos){
 		super();
+		this.class = "DISRMpicture";
 		this.pid = pid;
 		this.file = file;
 		this.pos = pos || [0,0]; // [x,y]
@@ -169,19 +176,20 @@ class DISagent extends DISentity { // agents for RTS mode
 	constructor(agentid,unitid,team,isCertified){
 		super();
 		this.agentid = agentid; // only if agent id is secured, then no problemo.
+		this.class = "DISagent";
 		// this.agenttype = type;
 		this.unitid = unitid;
 		this.team = team;
 		this.activated = true;
 		this.isCertified = isCertified; 
 		
-	}
+	};
 
 	ckIntegrity(){ // check data integrity
 		Cmd.agent.ckIntegrity(this)
 	};
 
-	get getid(){return this.agentid;};
+	getid(){return this.agentid;};
 
 	// {int} 1~300
 	getAgentSlot(slot){ // just get slot value.
@@ -205,18 +213,18 @@ class DISagent_static extends DISagent {
 		super(agentid,buildingid,team,isCertified);
 	};
 	
-	
 }
 
 class RTSagentGroup { // list object for DISagent.
 	constructor(agtArray,team){
+		deblog(agtArray)
 		this.idlist = [];
 
 		// this design can make terrible error in future? idk 
 		if (typeof agtArray[0] == "object"){ // if DISagent is set in agtArray
 			this.agentlist = agtArray; // save agentlist
-			for (let i of agtArray){
-				this.idlist[i] = agtArray[i].getagentid() // save agentid
+			for (let elm of agtArray){
+				this.idlist.push(elm.getid()); // save agentid
 			} 
 			
 		} else { // otherwise, just make only idlist
@@ -227,7 +235,7 @@ class RTSagentGroup { // list object for DISagent.
 		this.team = team || "undefined";
 	}
 
-	get getids(){ return this.idlist };
+	getids(){ return this.idlist };
 	
 }
 
@@ -317,6 +325,8 @@ DIS = { // DIS fundamental components
 					text += `TroopID loaded - ${amount} troops are preset`;
 				} else if (type == 802) {
 					text += `StaticID loaded - ${amount} statics are preset`
+				} else if (type == 803) {
+					text += `FactionID loaded - ${amount} factions are preset`
 				} else {
 					text += "unknown RM str is loaded."
 				}
@@ -355,7 +365,10 @@ DIS = { // DIS fundamental components
 
 	},
 
-	data: {
+	data: { // DIS.data
+		init: function(){
+
+		},
 		buildings: [], // this array contains buildtemp objects.
 		techs: [], // this array contains buildtemp objects.
 	},
@@ -493,6 +506,10 @@ DIS.control = {
 };
 
 
+// set DATA global pointer
+const DATA = DIS.data;
+
+
 // ------------------------------------------------
 // DIS RTS manager
 // ------------------------------------------------
@@ -521,12 +538,17 @@ const Adrt_JSSAVE_triggersQueue = 763; // <- header_scripts
 
 // DIS system component classes - these class objs usually work as component under RTS objects.
 
-
-class nonvolatileVar { // nonvolatile Variable for RTS mission
+// DISvariable
+class DISvariable extends DISentity { // nonvolatile Variable for RTS mission
 	constructor(type, address){
+		super();
+		this.class = "DISvariable";
 		this.type = type;
 		this.address = address;
 		this.value = getv(address);
+		this.JSindex = RTS.savedVars.length;
+		RTS.savedVars.push(this);
+
 	};
 
 	refresh(){this.value = getv(this.address);};
@@ -555,12 +577,20 @@ class RTSmission {
 		let allocated = Adr_MissionVarMemoryHead + this.allocVarAmount;
 		if (this.allocVarAmount < VarmemoryLimit){
 			this.allocVarAmount += 1;
-			return new nonvolatileVar(RMvar,allocated);
+			return new DISvariable(RMvar,allocated);
 		} else {
 			Cmd.game.log_error(("Too many mission variables are declared! Current limit is: " + VarmemoryLimit))
 			return NULL;
 		}
 	};
+
+	local = { // mission local instances
+		Cmd: {
+				
+		},
+		
+	};
+	
 
 	conf = { // these matter only at the setting up mission part
 		isLEGACYmission: false,
@@ -814,12 +844,13 @@ class RTStrigger {
 };
 
 
-class DIS_dialog {
-	constructor(string,time){
+class DIS_dialog extends DISentity{
+	constructor(string,time,icon){
+		super();
 		this.string = string;
 		this.showframe = time | 235; // check default value later if showframe is -1, it wont end
 		this.opensound = ["",0,100,50] // file vol tempo vol
-		this.icon = ["",[4,4],1]; // filename, sprite_number
+		this.icon = icon || ["",[4,4],1]; // filename, sprite_number
 		this.fontdata = DIS.lang.currentFontdata.common; // filename, fontsize
 		this.stopworld = false;
 		this.size = [240,64]; // check default value later
@@ -851,12 +882,15 @@ let RTS = {
 	mission: new RTSmission(),
 	map: new RTSmap(),
 	createdTrgs: [],
+	savedVars: [],
+	global: {}, // store mission vars or whatever
 
+	/*
 	Mtrig: {}, // mission triggers
 	Mvar: {}, // mission vars
 	Mbool: {}, // mission switch
 	Mstr: {}, // mission strings
-
+	*/
 
 
 	mvgrp: [], // agent movement group
@@ -876,11 +910,9 @@ let RTS = {
 		this.mission = new RTSmission();
 		this.map = new RTSmap();
 		this.isRTSmode = false;
-		this.Mtrig = {}; // mission triggers
-		this.Mvar = {}; // mission vars
-		this.Mbool = {}; // mission switch
-		this.Mstr = {}; // mission strings
-
+		this.global = {}; // mission triggers
+		this.createdTrgs = []; // mission triggers
+		this.savedVars = []; // mission vars
 
 	},
 
@@ -903,6 +935,7 @@ let RTS = {
 			// so be it.
 			this.mission.conf.isLEGACYmission = true;
 		}
+		MISSION = this.mission // set link to current mission
 	},
 
 	setupMapLoading: function(mapdir){ // will be called after this.setupMission().
@@ -916,7 +949,8 @@ let RTS = {
 	},
 
 	openMissionMapData: function(){ // you can call this only after successfully load missiondef.js.txt..
-		this.map = new RTSmap(this.mission.essential.mapDataDirectory)
+		this.map = new RTSmap(this.mission.essential.mapDataDirectory);
+		MAP = this.map;
 		
 	},
 
@@ -946,9 +980,9 @@ let RTS = {
 
 
 		// restore js variables in RTS object
-		for (let elmid in this.Mvar) { // restore each of nonvolatileVar in this.Mvar
-			this.Mvar[elmid].refresh(); // get RPG maker var
-			deblog(this.Mvar[elmid].address);
+		for (let elm of this.savedVars) { // restore each of nonvolatileVar in this.savedVars
+			elm.refresh(); // get RPG maker var
+			deblog(elm.address);
 		};
 
 		deblog("js variables restored..")
@@ -1354,7 +1388,7 @@ var Cmd = {
 		// {RTSagentGroup}
 		setCgrp: function(grp){
 			let agentlist = "";
-			for (let elm of grp.getids) {
+			for (let elm of grp.getids()) {
 				agentlist += elm + "|";
 			};
 			Cmd.Qset(this.CmdType,"setCgrp",agentlist);
@@ -1392,6 +1426,11 @@ var Cmd = {
 		//
 		ui: { 
 			CmdType: CTYP_UI,
+			
+			sendSimpleDialog: function(txt,time,face){
+				let log = new DIS_dialog(txt,time,face);
+				pushDialogQueue(log);
+			},
 
 			pushDialogQueue: function(dlog){ // push arg to dialog queue and toggle dialog manager switch
 				// set up string
@@ -1440,7 +1479,6 @@ if (VIRTUAL_ENV){
 	Cmd.run()
 	Cmd.sendback([11,4,5,14],0,RMarray)
 	fucker.refreshPicInfo();
-	
 }
 // init 2
 //

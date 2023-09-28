@@ -1,4 +1,6 @@
 // you should move these functions to module files, not header
+deft Str_Log = 782
+deft LogBuffer = 782
 
 //?
 __fn func_logupdate_begin {
@@ -38,6 +40,7 @@ __fn func_logupdate_end {
 
 __fn func_show_msg $str {
 	t[3000].asg $str .extract
+	log_push(t[3000])
 	func_logupdate_begin()
 	var1 = 2
 	@pic[v[1155]].strpic {
@@ -119,4 +122,14 @@ __fn func_devlog $str{
 		
 
 	}
+}
+
+// push push
+__fn log_push $str {
+	Str_Log.cat LF
+	Str_Log.cat $str
+}
+
+__fn log_export $prefix {
+	
 }

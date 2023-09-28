@@ -528,12 +528,19 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	// --------------------------
 	boot_DIS_js_system()
 
+	@if s[316].isOn(){
+		@loop .inf() {
+				@if .canOutput() {
+						@break
+				}
+				@wait 0
+		}
+		log_push("BOOT PROCESS FINISHED.")
+		LogBuffer.toFile "..\user\log\DIS_bootlog", .utf8
+	}
+	LogBuffer.asg ""
 
-
-
-
-
-	@comment "####################DEBUG"
+	// @comment "####################DEBUG"
 
 	//RPG set up legacy
 	/*
@@ -1653,6 +1660,13 @@ __fn init_DIS_database $already_loaded {
 
 //Boot Process
 cev .id(2120), .name("Game:Boot"),{
+	var1 = sys.date
+	var2 = sys.time
+	LogBuffer.asg "BOOTING DIS - Date:"
+	LogBuffer.cat var1
+	LogBuffer.cat " Time:"
+	LogBuffer.cat var2
+
 	@gsave.open
 	gs[301].copyTo s[301], 100
 	gv[1].copyTo v[2201], 100
@@ -1700,11 +1714,13 @@ cev .id(2120), .name("Game:Boot"),{
 				t[3001] .toNum TT1
 				@if TT1 >= 1 {
 					@sys.gameOpt .fatal 60, 2, 1
+					log_push("Developer mode activated.")
 			
 				}
 				@if TT1 == 114514 {
 					s[316].on
 			
+					log_push("Debug mode activated.")
 				}
 				
 		}
@@ -1846,27 +1862,27 @@ cev .id(2120), .name("Game:Boot"),{
 			v[21] = 2
 			v[22] = 2
 			@loop var2 .dst v[10] {
-		v[1] = 3000 + v[10]
-		t[v[1]] .split ",", t[3100], TT1
-		v[3] = 1 + v[10]
-		t[v[3]] .asg t[3100]
-		@pic[v[3]].strpic {
-				t[v[3]]
-				.pos v[21], v[22] .topLeft
-				.size 0, 0            .chromakey 1
-				.scale 100
-				.trans 0
-				.rgbs 100, 100, 100, 100
-				.font "k8x12S", 12 .noShadow
-				.spacing 0, 4
-				.skin "" .nobg .noframe .noGradation .noPadding
-				.mapLayer 7
-				.eraseWhenTransfer
-				.affectedByFlash
-				.affectedByShake
-		}
-		v[22] += 12
-		
+				v[1] = 3000 + v[10]
+				t[v[1]] .split ",", t[3100], TT1
+				v[3] = 1 + v[10]
+				t[v[3]] .asg t[3100]
+				@pic[v[3]].strpic {
+						t[v[3]]
+						.pos v[21], v[22] .topLeft
+						.size 0, 0            .chromakey 1
+						.scale 100
+						.trans 0
+						.rgbs 100, 100, 100, 100
+						.font "k8x12S", 12 .noShadow
+						.spacing 0, 4
+						.skin "" .nobg .noframe .noGradation .noPadding
+						.mapLayer 7
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
+				}
+				v[22] += 12
+				
 			}
 		v[1115] = v[1001] / 2
 		v[1116] = v[1002] / 2 - 8	
@@ -1990,7 +2006,7 @@ cev .id(2120), .name("Game:Boot"),{
 	@map[4].setPlayerPos .pos 9, 1 .retain
 
 
-	
+
 }
 
 __fn convert_troopID_in_string $str {
