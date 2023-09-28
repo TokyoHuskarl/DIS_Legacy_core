@@ -51,7 +51,7 @@ function errorlog(text) {
 }
 
 
-
+const LF = "\n";
 
 // RM var types
 const RMvar = 1,
@@ -76,12 +76,23 @@ function getRM(typ,add) {
 // DIS project
 
 
+
+// global variables
+let g_PLAYER; // {DIS_RTSplayer}
+
+
+
+// actually DISentity on js system is not a real entity, it's something like bundle of links to actual entities on RM variables.
+// so unless you refresh its information through functions, data in DISentity on js is often diffrent from actual value stored in RPGMaker. 
+//
+
 class DISentity { // fundamental prototype for DIS RPGmaker Object
 	constructor(){
 		this.receivedStorage = []; // given from CmdReturn
 		this.isAwaitingReturn = false;
 		this.receivedSth = false;
 		this.activated = false;
+		this.isCertified = false; // turns true after checking essential value integrity with actual game data on RPGmaker
 	}
 
 	receiveFromCmd(stuff,sendwhat){
@@ -95,7 +106,7 @@ class DISentity { // fundamental prototype for DIS RPGmaker Object
 			this.receivedSth = true;
 			deblog(`DISentity: received ${stuff}`)
 		} else { // got only null
-			errorlog("DISentity: failed receiving return value from DIS command process on TPC.")
+			errorlog("DISentity: Receiving return value from DIS command process on TPC failed.")
 		}
 		this.isAwaitingReturn = false;
 	}
@@ -138,6 +149,7 @@ class DISRMpicture extends DISentity { // simple picture object.
 		return result;
 	};
 
+	// {int} if array is given, store it in [0]. temp.
 	getWhereToStorage(gtwut){
 		let i;
 		if (gtwut == RMarray){ 
@@ -146,8 +158,77 @@ class DISRMpicture extends DISentity { // simple picture object.
 		return i;
 	}
 
-	kill(){Cmd.game.pic.remove(this.pid);};
+	kill(){
+		Cmd.game.pic.remove(this.pid);
+		this.activated = false;
+	};
 
+}
+
+class DISagent extends DISentity { // agents for RTS mode 
+	constructor(agentid,unitid,team,isCertified){
+		super();
+		this.agentid = agentid; // only if agent id is secured, then no problemo.
+		// this.agenttype = type;
+		this.unitid = unitid;
+		this.team = team;
+		this.activated = true;
+		this.isCertified = isCertified; 
+		
+	}
+
+	ckIntegrity(){ // check data integrity
+		Cmd.agent.ckIntegrity(this)
+	};
+
+	get getid(){return this.agentid;};
+
+	// {int} 1~300
+	getAgentSlot(slot){ // just get slot value.
+		let res = null;
+		if (1 <= slot && slot <= 300){ // safety
+			res = getv((slot + DIS.agent.getPtrToMainParam(this.getid()))); // get agent slot/
+		} else {
+			errorlog(`Invalid agent slot[$] is refered for ${this.agentid}`);
+		};
+		return res; 
+	};
+
+	isAlive(){ // check if it's alive
+		
+	};
+
+}
+
+class DISagent_static extends DISagent {
+	constructor(agentid,buildingid,team,isCertified){
+		super(agentid,buildingid,team,isCertified);
+	};
+	
+	
+}
+
+class RTSagentGroup { // list object for DISagent.
+	constructor(agtArray,team){
+		this.idlist = [];
+
+		// this design can make terrible error in future? idk 
+		if (typeof agtArray[0] == "object"){ // if DISagent is set in agtArray
+			this.agentlist = agtArray; // save agentlist
+			for (let i of agtArray){
+				this.idlist[i] = agtArray[i].getagentid() // save agentid
+			} 
+			
+		} else { // otherwise, just make only idlist
+			this.agentlist = "undefined";
+			this.idlist = agtArray;
+		}
+		
+		this.team = team || "undefined";
+	}
+
+	get getids(){ return this.idlist };
+	
 }
 
 
@@ -198,9 +279,11 @@ function make_Array_DIStable(array) {
 
 var DIS = DIS || {};
 
+const Adrt_ShLog = 782; // same as Shell Log address 
 
 // should I make them const?
 var trpid = trpid || {}; // troop ID table
+var staid = staid || {}; // building ID table
 var facid = facid || {}; // faction ID table
 var tech =  tech || {}; // ["techid",[group,flagbit]]
 
@@ -217,32 +300,53 @@ DIS = { // DIS fundamental components
 			t[808] .asg  .file "..\scripts\const_accessories_id", .utf8
 		*/
 
+		// function for storing ID table
+		let store_ID_table = function(table,Adrt){
+			let IDstr = gett(Adrt);
+			let lines = IDstr.trim().split(LF);
+			let i = 0;
+			// parse string to array
+			lines.forEach(line => { parse_DISid(line,table); i++;});
+			return initIDlog(i,Adrt);
+		}
+
+		let initIDlog = function(amount,type){
+			let text = "DIS.initID():";
+			if (amount > 1){
+				if (type == 801){
+					text += `TroopID loaded - ${amount} troops are preset`;
+				} else if (type == 802) {
+					text += `StaticID loaded - ${amount} statics are preset`
+				} else {
+					text += "unknown RM str is loaded."
+				}
+			} else { // load amount is below 0
+				text += `loading process t[${type}] seemingly failed. Check integrity of const_*.txt files.`
+				errorlog(text);
+			}
+			return DIS.log.pushLog(text)
+		}
+
 		// --------------------
 		// load troop ID
 		// --------------------
-	
+		// you can use troopID by writing like this: trpid["TRP_sushi_kensei"] 
 		trpid = {}; // init trpid
-		let IDstr = gett(801); // get scripts/const_troops.txt
-		let lines = IDstr.trim().split('\n');
+		store_ID_table(trpid,801); // get from ~/scripts/const_troops.
 
-		// parse string to array
-		lines.forEach(line => { parse_DISid(line,trpid); });
-
-		// now you can use troopID by writing like this: trpid["TRP_sushi_kensei"] 
-		//
+		// --------------------
+		// load static ID
+		// --------------------
+		staid = {}; // init staid
+		store_ID_table(staid,802) // get from ~/scripts/const_statics.
 
 		// --------------------
 		// load faction ID
 		// --------------------
-	
 		facid = {}; // init facid
-		IDstr = gett(803); // get scripts/const_factions.txt
-		lines = IDstr.trim().split('\n');
-
-		// parse string to array
-		lines.forEach(line => { parse_DISid(line,facid); });
+		store_ID_table(facid,803) // get from ~/scripts/const_factions.
 		
-		
+		DIS.log.pushLog("ID table init done.")
 	},
 
 
@@ -272,9 +376,13 @@ DIS.building = {
 };
 
 DIS.log = {
-	
 	// ??
-	Adrt_ShLog: 782, // same as Shell Log address 
+	pushLog: function(txt){
+		let curlog = gett(Adrt_ShLog);
+		curlog += LF + txt;
+		sett(Adrt_ShLog,curlog);
+		deblog(txt); // deb
+	}
 	
 	
 	
@@ -329,12 +437,8 @@ DIS.string = {
 
 const Adr_ptr_spawnAgent = 201; //v[201]
 
-DIS.agent = {
-
-	
+DIS.agent = { 
 	genPtrPos: 0,
-
-
 
 	// Search Empry Space function - this function searches a blank space for an agent in the agent data space.
 	// BUT, it has several problems:
@@ -360,6 +464,16 @@ DIS.agent = {
 		};
 
 		return emptyspaceID;
+	},
+
+	getPtrToMainParam: (id) => {return 4700 + id * 300;},
+
+
+	ck_if_alive(agentid){
+		ptr = this.getPtrToMainParam(agentid);
+		ptr += 1; // agenttype. if *ptr > 0 it's considered alive.
+		// how about checking unique genid?
+		return (getv(ptr) > 0);
 	},
 
 	setName: function(agentid,name) {
@@ -408,7 +522,7 @@ const Adrt_JSSAVE_triggersQueue = 763; // <- header_scripts
 // DIS system component classes - these class objs usually work as component under RTS objects.
 
 
-class nonvolatileVar { // nvVar
+class nonvolatileVar { // nonvolatile Variable for RTS mission
 	constructor(type, address){
 		this.type = type;
 		this.address = address;
@@ -420,7 +534,6 @@ class nonvolatileVar { // nvVar
 	initset(num){this.value = num;};
 	set(num){this.value = num; setv(this.address,num);};
 	refget(){this.refresh();return this.value;};
-
 };
 
 
@@ -569,10 +682,8 @@ class RTSmission {
 	};
 
 	setPlayer = function(id,faction){ // set player in mission.
-		this.essential.players[id] = new RTSplayer(id,faction); // push to players array
-		if (id == 0 && SINGLEPLAY) { // DIS LEGACY - single player only.
-			this.essential.players[id].isHuman = true; // then player0 is always considered human.
-		};
+		this.essential.players[id] = new DIS_RTSplayer(id,faction); // push to players array
+
 	};
 
 
@@ -654,12 +765,22 @@ class RTSmap {
 	
 
 
-// 
-class RTSplayer {
+class DIS_RTSplayer extends DISentity {
 	constructor(id,factionid){
+		super();
 		this.id = id;
 		this.faction = factionid;
 		this.isHuman = false;
+
+		// check if it's game player
+		if (id == 0 && SINGLEPLAY) { // DIS LEGACY - single player only.
+			this.isHuman = true;
+			g_PLAYER = this;
+		};
+	};
+
+	restore(){ 
+		// restore tech info
 	};
 
 };
@@ -1085,16 +1206,16 @@ var Cmd = {
 			if (Cmd.bl_SpawnCmdCalled == false){}
 		} need to consider well */ 
 
-
-		spawnAgent: function(troopid,tilepos,team,cohort,dir,stance,flag){ // {int}, array[x,y]
+		// {int}, array[x,y]
+		spawnAgent: function(troopid,tilepos,team,cohort,dir,stance,flag){ // returns DISagent
 			cohort = cohort || 0;
 			dir = dir || 0;
 			stance = stance || 0;
 			flag = flag || 0;
 			
 			Cmd.Qset(this.CmdType,"spnAg",`${troopid},${tilepos[0]},${tilepos[1]},${team},${cohort},${dir},${stance}`);
-			return DIS.agent.searchEmptySpace(); // kari
-			// return {address: 4545, uniqueID: 114514}; // kari
+			let protoagent = new DISagent(DIS.agent.searchEmptySpace(),troopid,team,false);
+			return protoagent;
 		},
 
 		spawnAgentgroup: function(troopid,tilepos,team,delta,amount,cohort,dir,stance,flag){
@@ -1102,27 +1223,31 @@ var Cmd = {
 			let pos = tilepos
 			let agentslist = [];
 			for (let i = 0; i < amount; i++){ // this one is too slow 
-				agentslist[i] = this.spawnAgent(troopid,pos,team,cohort,dir,stance,flag);				
+				agentslist[i] = this.spawnAgent(troopid,pos,team,cohort,dir,stance,flag);
 				for (let p = 0; p < 2; p++){pos[p] += delta[p];}; // add delta
 			};
-			return agentslist;
+			let expected_agentgroup = new RTSagentGroup(agentslist,team);
+			return expected_agentgroup;
 		},
 
 		spawnStatic: function(staticID,tilepos,team,cohort){
 			cohort = cohort || 0; // ok?
 			Cmd.Qset(this.CmdType,"spnSt",`${staticID},${tilepos[0]},${tilepos[1]},${team},${cohort}`);
-			return DIS.agent.searchEmptySpace();
+			let protostatic = new DISagent(DIS.agent.searchEmptySpace(),staticID,team,false);
+			return protostatic;
 			
 		},
 
-		spawnPalisade: function(tileposbeg,tileposend,team){
+		spawnPalisade: function(tileposbeg,tileposend,team){ // returns DISagent
 			Cmd.Qset(this.CmdType,"spawnPalisade",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
-			return DIS.agent.searchEmptySpace();
+			let protostatic = new DISagent(DIS.agent.searchEmptySpace(),staid["STA_palisade"],team,false);
+			return protostatic;
 		},
 
-		spawnWall: function(tileposbeg,tileposend,team){
+		spawnWall: function(tileposbeg,tileposend,team){ // returns DISagent
 			Cmd.Qset(this.CmdType,"spawnWall",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
-			return DIS.agent.searchEmptySpace();
+			let protostatic = new DISagent(DIS.agent.searchEmptySpace(),staid["STA_wall"],team,false);
+			return protostatic;
 		},
 
 		generateHeightmap: function(){ // generate heightmap
@@ -1172,8 +1297,13 @@ var Cmd = {
 	// -------------
 	agent: {
 		CmdType: CTYP_AGENT,
+
+		ckIntegrity: function(Dagt){
+			Cmd.Qset(this.CmdType,"agtCert",`${Dagt.getid()}`); // unco
+
+		},
 		
-		setName: function(agentAdr, name) {
+		setName: function(agentAdr,name){
 			Cmd.Qset(this.CmdType,"setName",`${agentAdr},${name}`);
 		},
 
@@ -1219,11 +1349,12 @@ var Cmd = {
 
 	group: { 
 		CmdType: CTYP_GROUP,
-		cgrp: [],
+		cgrp: [], // agentid array
 
+		// {RTSagentGroup}
 		setCgrp: function(grp){
 			let agentlist = "";
-			for (let elm of grp) {
+			for (let elm of grp.getids) {
 				agentlist += elm + "|";
 			};
 			Cmd.Qset(this.CmdType,"setCgrp",agentlist);
@@ -1307,9 +1438,9 @@ if (VIRTUAL_ENV){
 	let fucker = Cmd.game.pic.load("camera_ball",10);
 	fucker.refreshPicInfo();
 	Cmd.run()
-	Cmd.sendback([11,4,5,14],0)
+	Cmd.sendback([11,4,5,14],0,RMarray)
 	fucker.refreshPicInfo();
-
+	
 }
 // init 2
 //
