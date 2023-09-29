@@ -466,7 +466,7 @@ __fn func_pathfinding_Astar() {
 
 
 		// from this part seemingly buggy
-		pf_agent_move()
+				pf_agent_move()
 	    }
 	    
 	}
@@ -698,47 +698,47 @@ __fn func_pathfinding_retarded() {
 	} .else bl {
 	    v[320] = v[Pathfinding_AgentData_head_ptr + 35] < 11 || v[Pathfinding_AgentData_head_ptr + 100] != 0 ? v[Pathfinding_AgentData_head_ptr + 35] : 0
 	    @if `v[320] > 0 {
-		// "v1=Cohort	v2=Team, 0/1"
-		v[12] = v[Pathfinding_AgentData_head_ptr + 100]
-		v[2861].copy v[2961], 15
-		@loop v[1012] .dst Temp1 {
-		    // "Check Enemy Team List"
-		    v[300] = Temp1 + v[1145 + v[12]]
-		    @if v[v[300]] >= 1 {
-			Ptr19 = v[v[300]] * 300
-			Ptr19 += 4735
-			// "The unit belongs to the selected Cohort"
-			@if v[Ptr19] == v[320] {
-			    v[298] = v[v[300]] * 300 + 4734
-			    @if `v[v[298]] & 16384 {
-				v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
-				v[2880] = LEGV_ConstAIselectedListHead
-				v[2841] = 0
-				var1 = v[v[300]]
-				@call .cev 1747
-				v[v[298]] |= 4096
-				v[v[298]] &= ~16384
-				v[v[298]] &= ~8388608
-				v[v[298]] &= ~32768
-				v[316] = v[LEGV_ConstAIselectedListHead] * 300 + 4741
-				v[317] = v[316] + 14
-				v[317] = max(v[v[317]], 0)
-				v[316] += v[317] * 2
-				v[v[316]].copy v[2851], 2
-				v[2961].copy v[2861], 15
-				// @call .cev 1771
-				func_pathfinding_move()
+				// "v1=Cohort	v2=Team, 0/1"
+				v[12] = v[Pathfinding_AgentData_head_ptr + 100]
+				v[2861].copy v[2961], 15
+				@loop v[1012] .dst Temp1 {
+						// "Check Enemy Team List"
+						v[300] = Temp1 + v[1145 + v[12]]
+						@if v[v[300]] >= 1 {
+							Ptr19 = v[v[300]] * 300
+							Ptr19 += 4735
+							// "The unit belongs to the selected Cohort"
+							@if v[Ptr19] == v[320] {
+										v[298] = v[v[300]] * 300 + 4734
+									@if `v[v[298]] & 16384 {
+										v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
+										v[2880] = LEGV_ConstAIselectedListHead
+										v[2841] = 0
+										var1 = v[v[300]]
+										@call .cev 1747
+										v[v[298]] |= 4096
+										v[v[298]] &= ~16384
+										v[v[298]] &= ~8388608
+										v[v[298]] &= ~32768
+										v[316] = v[LEGV_ConstAIselectedListHead] * 300 + 4741
+										v[317] = v[316] + 14
+										v[317] = max(v[v[317]], 0)
+										v[316] += v[317] * 2
+										v[v[316]].copy v[2851], 2
+										v[2961].copy v[2861], 15
+										// @call .cev 1771
+										func_pathfinding_move()
+										
+									}
+									
+							}
+					
+						}
+						
+				}
 				
-			    }
-			    
-			}
-			
-		    }
-		    
-		}
-		
-		v[380] = 1
-		
+				v[380] = 1
+				
 	    } .else bl {
 		v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
 		v[LEGV_ConstAIselectedListHead] = v[4596] + 1
@@ -748,6 +748,7 @@ __fn func_pathfinding_retarded() {
 	    }
 	    
 	}
+
 	// "####"
 	@if v[380] == 0 {
 	    v[316] = v[LEGV_ConstAIselectedListHead] * 300 + 4741
@@ -757,9 +758,10 @@ __fn func_pathfinding_retarded() {
 	    v[v[316]].copy v[2851], 2
 	    // @call .cev 1771
 			func_pathfinding_move()
-	    v[Pathfinding_AgentData_head_ptr + 34] |= 4096
-	    v[Pathfinding_AgentData_head_ptr + 34] &= ~8388608
-	    v[Pathfinding_AgentData_head_ptr + 34] &= ~32768
+			TT1 = Pathfinding_AgentData_head_ptr + 34
+	    v[TT1] |= 4096
+	    v[TT1] &= ~8388608
+	    v[TT1] &= ~32768
 	    
 	}
 	v[Pathfinding_AgentData_head_ptr + 3] &= ~AgentBits_FLAG_PF_walldetection_switch

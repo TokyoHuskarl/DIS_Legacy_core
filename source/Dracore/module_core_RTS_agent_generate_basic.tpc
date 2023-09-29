@@ -1693,15 +1693,15 @@ __fn func_generate_agent_finish_set {
 			
 		    } .else bl {
 
-			//SET ColBox!!!!
-			v[610] = muldiv(v[610], 3, 4)
-			v[611] = muldiv(v[611], 3, 4)
-			v[610].copy v[v[886]], 2
+					//SET ColBox!!!!
+					v[610] = muldiv(v[610], 4, 5)
+					v[611] = muldiv(v[611], 4, 5)
+					v[610].copy v[v[886]], 2
 
-			// Experimental - this might be far faster
-			__if DIS_EXPERIMENTAL == -1 {
-				set_AEAB_array(SpawnAgentID,610,AgentExBuffer_SLOT_ColBoxWidth,2)
-			}
+					// Experimental - this might be far faster
+					__if DIS_EXPERIMENTAL == -1 {
+						set_AEAB_array(SpawnAgentID,610,AgentExBuffer_SLOT_ColBoxWidth,2)
+					}
 			
 		    }
 		    @comment "#############Search and remove from body list"

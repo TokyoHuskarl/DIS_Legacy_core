@@ -421,7 +421,7 @@ __fn macro_ColCheck_distance {
 		//get from AEAB
 		v[322] = v[v[203]]
 		get_AEAB_array(v[322],__id(v[322]),AgentExBuffer_SLOT_ColBoxWidth,2)
-	}.elif DIS_EXPERIMENTAL == 1 { // use raw hitbox as a collision
+	}.elif DIS_EXPERIMENTAL == -2 { // use raw hitbox as a collision?
 		victim_Width.copy v[322],2
 	}.else bl {
 		v[322] = Address_Agent_HitCollisionArrayStartMinus2 
@@ -444,7 +444,7 @@ __fn macro_ColCheck_push {
 		@if v[v[203]] != agent_TargetAgentID { // NOT target
 			@if victim_TeamID == agent_TeamID { // and it's ally
 				Col_Ptr2AI_routine_bits = Temp1 + 34
-				def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PFskip + AI_routine_bits_FLAG_PATHFINDING
+				def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_1secDelay_PF
 				v[Col_Ptr2AI_routine_bits] |=  !(agent_AgentBits & AgentBits_Collided_Other_Agent) ? Col_AIFLAG_PFandSkip : 0 // start pathfinding
 			}
 		}

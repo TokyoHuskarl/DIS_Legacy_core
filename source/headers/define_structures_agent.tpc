@@ -346,7 +346,7 @@ struct("agent",{
 	AgentBits_FLAG_ForcemoveFlag = 4194304
 	AgentBits_FLAG_walldetected = 8388608
 	AgentBits_FLAG_NeedWpToReachObj = 16777216
-	AgentBits_FLAG_PF_walldetection_switch = 33554432
+	AgentBits_FLAG_PF_walldetection_switch = 33554432 // triggered in search AI proc 
 	AgentBits_FLAG_1fprocessed = 67108864
 
 	AgentBits_FLAG_DirChange_skip = 134217728
@@ -694,6 +694,10 @@ struct("agent",{
 		victim_Culture_Icon = 740222
 		victim_TakenDamageMultiplier = 740229
 		victim_ShieldBreakResistance = 740234
+
+		victim_static_SprWidth_OneUnit = 740238
+
+
 		victim_CritChanceReduction =  740239
 		victim_CritDamageReduction = 740240
 		victim_StanceOrder = 740241

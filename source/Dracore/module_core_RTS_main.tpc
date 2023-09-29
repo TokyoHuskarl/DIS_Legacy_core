@@ -1672,31 +1672,31 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    Temp1 += 4700
 	    func_main_extract_agent_vars()
 	    // "colck"
-	    @if `agent_AgentBits & 256 {
-		@if `agent_AgentBits & 128 {
-		    //v[842] = Temp1 + 239
-		    //v[v[842]] = -1
-		    agent_MovementOrder = -1
-		    agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
-		    agent_AgentBits &= -129//~128
-		    
-		}
+	    @if `agent_AgentBits & AgentBits_Movement_Giveup {
+				@if `agent_AgentBits & AgentBits_Endpoint_Collision_Trouble {
+						//v[842] = Temp1 + 239
+						//v[v[842]] = -1
+						agent_MovementOrder = -1
+						agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
+						agent_AgentBits &= -129//~128
+						
+				}
 		
 	    } .else bl {
-		@if `agent_AgentBits & 128 {
-		    //Ptr14 = Temp1 + 22
-		    @if `v[2501] / 6 % (agent_ObjectCollideSkipFrame * 16) == 0 {
-			agent_AgentBits |= 256
+			@if `agent_AgentBits & AgentBits_Endpoint_Collision_Trouble {
+					//Ptr14 = Temp1 + 22
+					@if `v[2501] / 6 % (agent_ObjectCollideSkipFrame * 16) == 0 {
+					agent_AgentBits |= AgentBits_Movement_Giveup
+				
+					}
+					
+			}
+			@if `agent_ProcessObjBit & BaseObjBit_FLAG_Discipline {
+					agent_AgentBits &= -513//~512
+					agent_AgentBits |= (agent_InCombatTimer <= 0 && agent_MovementOrder <= 0) ? 512 : 0
+					
+			}
 			
-		    }
-		    
-		}
-		@if `agent_ProcessObjBit & 16384 {
-		    agent_AgentBits &= -513//~512
-		    agent_AgentBits |= (agent_InCombatTimer <= 0 && agent_MovementOrder <= 0) ? 512 : 0
-		    
-		}
-		
 	    }
 
 

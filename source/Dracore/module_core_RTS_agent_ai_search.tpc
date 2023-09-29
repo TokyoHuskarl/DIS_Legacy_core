@@ -271,21 +271,21 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 												TT5 /= 2
 												v[340] = v[4546 - TT5] + TT6 * v[1004]
 												v[327] = v[v[4552 - TT5] + TT6]
-												agent_TeamID = [1, 0, -2][(Temp14)] /*v[Temp1] % 3*/
+												Temp33 = [1, 0, -2][(Temp14)] /*v[Temp1] % 3*/
 												Temp6 = 3601
 
 												@loop v[327] .dst v[310] {
 														v[312] = v[340] + v[310]
 
 
-					__if DIS_EXPERIMENTAL == -1 {
-						macro_get_agent_MetaTeam_into_var(v[v[312]],TT1) // AEBA
-					}.else bl {
-						TT1 = Const_AgentMetaTeam_beginMINUSONE + v[v[312]]
-					}
+														__if DIS_EXPERIMENTAL == -1 {
+															macro_get_agent_MetaTeam_into_var(v[v[312]],TT1) // AEBA
+														}.else bl {
+															TT1 = Const_AgentMetaTeam_beginMINUSONE + v[v[312]]
+														}
 
 														// @if  agent_TeamID == TT1 { // EXPERIMENTAL - IF YOU USE AEBA  
-														@if  agent_TeamID == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA
+														@if  Temp33 == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA
 
 																Temp11 = v[v[312]] * v[1117] 
 																Temp11 += 4700
@@ -347,13 +347,9 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 												
 										}
 										v[v[534]].sort Temp7
-										@if `agent_AgentBits & AgentBits_FLAG_walldetected { //v[v[212] + 3] & 8388608 {
-												//TT2 = v[212] + 26
-												//v[TT2].copy Temp11, 2
-			agent_MapX.copy Temp11,2
-												//TT2 = v[212] + 21
-												//v[TT2].copy Temp3, 2
-			v[621].copy Temp3,2
+										@if `agent_AgentBits & AgentBits_FLAG_walldetected {
+												agent_MapX.copy Temp11,2
+												v[621].copy Temp3,2
 												@if Temp4 < -30 {
 														v[312] -= 1
 														
@@ -392,7 +388,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 																				@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_Pathblocked { // v[v[212] + 34] & 8388608 {
 																						v[v[534]] = Temp2
 
-							def AIFLAG_SkipAndPF = AI_routine_bits_FLAG_AIskip + AI_routine_bits_FLAG_PATHFINDING
+																						def AIFLAG_SkipAndPF = AI_routine_bits_FLAG_AIskip + AI_routine_bits_FLAG_PATHFINDING
 																						v[agent_AI_routine_bits] |= AIFLAG_SkipAndPF // 2097152+16384
 																						Temp7 += 1
 																						

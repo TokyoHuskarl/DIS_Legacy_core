@@ -3,7 +3,7 @@
 */
 
 // if setv() is undefined, it's virtual enviroment on node.js or sth.
-let VIRTUAL_ENV = (typeof setv == "undefined") ? true : false; 
+let VIRTUAL_ENV = (typeof setv == "undefined") ? true : false;
 
 
 // these lines are written in order not to cause error when you test this file on Node.js
@@ -36,14 +36,14 @@ function devmsg(text) {
 	Cmd.game.log_dev(text);
 };
 
-if (DEBUG < BOOT_MODE_DEVELOPER) { function devmsg(dummy){}; }; // dummy
+if (DEBUG < BOOT_MODE_DEVELOPER) { function devmsg(d){}; }; // dummy
 
 // debug log function for debug mode 
 function deblog(text) {
 	console.log(text);
 	Cmd.game.log_debug(text);
 };
-if (DEBUG != BOOT_MODE_DEBUG) { function deblog(dummy){}; }; // dummy
+if (DEBUG != BOOT_MODE_DEBUG) { function deblog(d){}; }; // dummy
 
 function errorlog(text) {
 	if (DEBUG != BOOT_MODE_DEBUG){let contx = "ERROR:" + text;console.log(contx);}
@@ -108,11 +108,15 @@ class DISentity { // prototype for DIS RPGmaker Object
 
 	receiveFromCmd(stuff,sendwhat){
 		if (stuff != null){ // at least received something.
+
 			let address = this.getWhereToStorage(sendwhat);
+
 			if (typeof address == "undefined"){
 				this.receivedStorage.push(stuff); // store in array
+
 			} else {
 				this.receivedStorage[address] = stuff;
+
 			}
 			this.receivedSth = true;
 			deblog(`DISentity: received ${stuff}`);
@@ -335,7 +339,7 @@ DIS = { // DIS fundamental components
 				text += `loading process t[${type}] seemingly failed. Check integrity of const_*.txt files.`
 				errorlog(text);
 			}
-			return DIS.log.pushLog(text)
+			return DIS.log.push(text)
 		}
 
 		// --------------------
@@ -357,7 +361,7 @@ DIS = { // DIS fundamental components
 		facid = {}; // init facid
 		store_ID_table(facid,803) // get from ~/scripts/const_factions.
 		
-		DIS.log.pushLog("ID table init done.")
+		DIS.log.push("ID table init done.")
 	},
 
 
@@ -391,7 +395,7 @@ DIS.building = {
 
 DIS.log = {
 	// push background log
-	pushLog: function(txt){
+	push: function(txt){
 		let curlog = gett(Adrt_ShLog);
 		curlog += LF + txt;
 		sett(Adrt_ShLog,curlog);
@@ -908,20 +912,34 @@ let RTS = {
 
 		givePath: function(agentid){ // give stored path to the agent. array length after this is returned.
 			
-			let len = this.PfWPbuffer[agentid].length;
+			let buf = this.PfWPbuffer[agentid];
+			let len = buf.length;
 			if (len == 0) {return -1} // if there's no elements stored (it can happen after loading savegame) break and return -1. 
 
 			let cnt = Math.min(len,6);
 			let i;
 			let path = [cnt]; // path[0] = cnt of this
 			for (i = 0; i < cnt; i++){ // pick up nodeid from head of stored array
-				path[i + 1] = this.PfWPbuffer[agentid].shift();
+				path[i + 1] = buf.shift();
 			};
 
 			setv(22,path); // deploy path array to reg2 ~ reg9. 
 			let t = "RTS.path: give " + path + " to id:" + agentid; // tesT
 			deblog(t);
 			return (len - i); // return to reg1 (expected)
+		},
+
+		copyPath: function(agentid,targetid){
+			let src = this.PfWPbuffer[agentid];
+			let tg = this.PfWPbuffer[targetid];
+			tg = [];	
+
+			for (elm of src) {
+				tg.push(elm);
+			};
+
+			let t = "RTS.path: copied path array of " + agentid + ":" + src + " to id:" + targetid + "now : " + tg; // tesT
+			deblog(t);
 		},
 
 
@@ -1519,6 +1537,7 @@ if (VIRTUAL_ENV){
 	RTS.path.init();
 	RTS.path.storePath(1,[1414,4545,1919])
 	RTS.path.givePath(1)
+	RTS.path.copyPath(1,2)
 }
 // init 2
 //

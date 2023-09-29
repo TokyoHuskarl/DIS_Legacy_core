@@ -137,66 +137,63 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				// Setting up target agent pointer - this might be dangerous since even if Target is 0 Ptr8 can be used.
 				// You need to check all procs around Ptr8 in this meta function
 				Ptr8 = agent_TargetAgentID * 300
-
-				/* agent_TargetAgentID = agent_MovementOrder == MovementOrder_TYPE_prioritize_moving ? 0 : agent_TargetAgentID // changed */
+				victim_AgentType = Ptr8 + 4701
+				v[victim_AgentType].copy victim_AgentType,102
 
 				@if agent_TargetAgentID >= 1 { // Has target
 					@if agent_MovementOrder != MovementOrder_TYPE_prioritize_moving { // does not prioritize movement: the agent wants to attack the target
 							//@comment "Obj指定があり、そちらに行きたいとき
-							//Get18 = 目標ObjID"
-							//Ptr8 = Get18*300
-							Temp4 = Ptr8 + 4701
-							@if v[Temp4] >= 1 { // the target is valid agent
-						TT1 = Temp4 + 100 // ... isn't this needless?
-						@if agent_TargetAgentID != agent_LastTarget { // check if Target is switched
-								@if `!(agent_AgentBits & AgentBits_FLAG_ForcemoveFlag) { // Forcemove order isn't given to the agent
+							@if victim_AgentType >= 1 { // the target is valid agent
+								@if agent_TargetAgentID != agent_LastTarget { // check if Target is switched
+										@if `!(agent_AgentBits & AgentBits_FLAG_ForcemoveFlag) { // Forcemove order isn't given to the agent
 
-									// RayCast to check if the agent can reach the target straightly AND it's melee troop
-									agent_AI_routine_bits |= agent_AAType == 0 ? AI_routine_bits_FLAG_RayCast : 0 
+											// RayCast to check if the agent can reach the target straightly AND it's melee troop
+											agent_AI_routine_bits |= agent_AAType == 0 ? AI_routine_bits_FLAG_RayCast : 0 
 
-							@if `agent_AI_routine_bits & AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue { // AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
-									agent_MovementOrder = MovementOrder_TYPE_move_ordered // Change movement order to loose one
-									@if `!(agent_AgentBits & AgentBits_FLAG_walldetected) { // If there's no wall
-								agent_AI_routine_bits |= AI_routine_bits_FLAG_AIskip // AI check skip
-								
+									@if `agent_AI_routine_bits & AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue { // AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
+											agent_MovementOrder = MovementOrder_TYPE_move_ordered // Change movement order to loose one
+											@if `!(agent_AgentBits & AgentBits_FLAG_walldetected) { // If there's no wall
+												agent_AI_routine_bits |= AI_routine_bits_FLAG_AIskip // AI check skip
+										
+											}
+											
 									}
 									
-							}
-							
-								} .else bl { // if the agent gets force move order, then switch the Last target..
-							agent_LastTarget = agent_TargetAgentID
-								}
-								
-						}
-
-						// IF
-						// The agent still has WPs to chase AND its Stance is Attack mode
-						// OR
-						// Somekind of movement order is given to the agent AND its Stance is Standby mode
-						@if `agent_LeftWPtoChase >= 1 && (agent_StanceOrder == ORD_ATK) || agent_MovementOrder > -1 && agent_StanceOrder == ORD_STD {
-								//old:  `agent_LeftWPtoChase >= 1 && (agent_MovementOrder == MovementOrder_TYPE_prioritize_moving || agent_StanceOrder == ORD_ATK) || agent_MovementOrder > -1 && agent_StanceOrder == ORD_STD {
-
-								//@comment "#移動優先"
-								// then prioritize to move to HoldPoint.
-								agent_HoldPointX.copy agent_MovePointX, 2
-								
-						} .else bl { // otherwise
-								//@comment "#目標OBJ優先"
-								// go for the target
-								Temp4 += 6
-								v[Temp4].copy agent_MovePointX, 2
-								@if agent_StanceOrder == 2 {
-									agent_MovementOrder = 2
-									v[Temp4].copy agent_HoldPointX, 2
-							
+										} .else bl { // if the agent gets force move order, then switch the Last target..
+											agent_LastTarget = agent_TargetAgentID
+											// RayCast to check if the agent is worker who is heading to workplace
+											agent_AI_routine_bits |= agent_UnitType == 9 ? AI_routine_bits_FLAG_RayCast : 0 
+										}
+										
 								}
 
-								//@comment "T35=目標Objの幅*1000"
-								v[335] = v[Temp4 + 3] * 1000
-								LEGS_MAIN_Agent_heading_to_target.on
+								// IF
+								// The agent still has WPs to chase AND its Stance is Attack mode
+								// OR
+								// Somekind of movement order is given to the agent AND its Stance is Standby mode
+								@if `agent_LeftWPtoChase >= 1 && (agent_StanceOrder == ORD_ATK) || agent_MovementOrder > -1 && agent_StanceOrder == ORD_STD {
+										//old:  `agent_LeftWPtoChase >= 1 && (agent_MovementOrder == MovementOrder_TYPE_prioritize_moving || agent_StanceOrder == ORD_ATK) || agent_MovementOrder > -1 && agent_StanceOrder == ORD_STD {
+
+										//@comment "#移動優先"
+										// then prioritize to move to HoldPoint.
+										agent_HoldPointX.copy agent_MovePointX, 2
+										
+								} .else bl { // otherwise
+										//@comment "#目標OBJ優先"
+										// go for the target
+										victim_RelativeX.copy agent_MovePointX, 2
+										@if agent_StanceOrder == 2 {
+											agent_MovementOrder = 2
+											victim_RelativeX.copy agent_HoldPointX, 2
+									
+										}
+
+										//@comment "T35=目標Objの幅*1000"
+										v[335] = victim_Width * 1000
+										LEGS_MAIN_Agent_heading_to_target.on
+										
+								}
 								
-						}
-						
 							} .else bl {
 
 								//@comment "#指定Objが存在しない"
@@ -267,9 +264,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 							}
 							agent_LastTarget = agent_TargetAgentID
 							@if LEGS_MAIN_Agent_heading_to_target .isOn(){
-								@if `!(v[Ptr8 + 4703] & AgentBits_FLAG_1fprocessed) {
-							//@comment "目標地点にカメラのずれを加算"
-							agent_MovePointX .add v[53], 2
+								@if `!(victim_AgentBits & AgentBits_FLAG_1fprocessed) {
+									//@comment "目標地点にカメラのずれを加算"
+									agent_MovePointX .add v[53], 2
 							
 								}
 							}
@@ -277,10 +274,10 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					} .else bl {
 							//@comment "#WPを使ってOBJにたどり着こうとしていた"
 							@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
-						v[1301].copy v[643], 13
-						agent_MovementOrder = MovementOrder_TYPE_move_ordered
-						agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
-						agent_AI_routine_bits &= -49153//~49152
+								v[1301].copy v[643], 13
+								agent_MovementOrder = MovementOrder_TYPE_move_ordered
+								agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
+								agent_AI_routine_bits &= -49153//~49152
 						
 							}
 
@@ -328,78 +325,84 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	    @if agent_MovementOrder != MovementOrder_TYPE_force_moving {
 				@if Is_Paused .isOff() {
 						@if LEGS_MAIN_Agent_heading_to_target .isOn() { // heading to target agent
-					agent_ActionFlag &= -2//~1
-					//@comment "Objに向かっているときは"
-					//@comment "Set Dir"
-					agent_Direction = v[Ptr8 + 4707] - agent_RelativeX >= 0 ? 0 : 1
-					//@comment "AAレンジ内か否かを見る"
-					//v[295] = v[301] + 269
-					v[869].copy TT1, 2
-					//@comment "自分がMelee or townsman repairingなら([相手の幅]*1000)を引いて考える"
-					v[340] = agent_MilPixMoveOrderedPointDist
-					v[340] -= agent_AAType == 0 || agent_worker_JobType == 6 ? v[335] : 0
-					//@comment "If the target is build basement"
-					v[340] -= v[Ptr8 + 4703] & 32 && v[Ptr8 + 4701] == 11 ? v[Ptr8 + 4938] * 1000 : 0
-					@if v[340] <= TT1 {
-							@if v[340] >= TT2 {
-						//@comment "#WPを使ってOBJにたどり着こうとしていた"
-						@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
-								//TT1 = v[301] + 43
-								v[1301].copy v[643], 13
-								agent_AI_routine_bits &= -49153//~49152 - AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
-								
-						}
 
-						LEGS_MAIN_Agent_tries_to_stop.on
-						agent_MovementOrder = MovementOrder_TYPE_do_not_move
-						//@comment "Not casting skill"
-						@if `(agent_ActionState >= 4 || agent_AATimer > 0) != 1 {
-								//@comment "AAタイマー見る"
-								agent_ActionState = 1
-								/*This part does affect game speed.*/
-								agent_AATimer = v[721] > agent_SP && agent_ExMotionFlags & 2048 ? AA_WAIT_FPSx2 : AA_WAIT_FPSx1
+							agent_ActionFlag &= -2 //~1
+
+							// @comment "Objに向かっているときは"
+							// @comment "Set Dir"
+							TT1 = victim_RelativeX - agent_RelativeX
+							agent_Direction = TT1 >= 0 ? 0 : 1
+
+							// @comment "AAレンジ内か否かを見る"
+							v[869].copy TT1, 2
+							// @comment "自分がMelee or townsman repairingなら([相手の幅]*1000)を引いて考える"
+							v[340] = agent_MilPixMoveOrderedPointDist
+							v[340] -= agent_AAType == 0 || agent_worker_JobType == 6 ? v[335] : 0
+
+							// @comment "If the target is construction site"
+							v[340] -= victim_UnitType == 104 ? victim_Width * 1250 : 0
+							@if v[340] <= TT1 {
+								@if v[340] >= TT2 {
+									// @comment "#WPを使ってOBJにたどり着こうとしていた"
+									@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
+											v[1301].copy v[643], 13
+											agent_AI_routine_bits &= -49153 // ~49152 - AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
+											
+									}
+
+									LEGS_MAIN_Agent_tries_to_stop.on
+									agent_MovementOrder = MovementOrder_TYPE_do_not_move
+
+									// @comment "Not casting skill"
+									@if `(agent_ActionState >= 4 || agent_AATimer > 0) != 1 {
+											// @comment "AAタイマー見る"
+											agent_ActionState = 1
+											/* This part does affect game speed. */
+											agent_AATimer = v[721] > agent_SP && agent_ExMotionFlags & 2048 ? AA_WAIT_FPSx2 : AA_WAIT_FPSx1
+											
+									}
+									
+								} .else bl {
+									//@comment "If closer than minimum range"
+									@if agent_StanceOrder == ORD_STD {
+											//@comment "#待機モード時はその場で待ち構える"
+											LEGS_MAIN_Agent_tries_to_stop.on
+											agent_MovementOrder = MovementOrder_TYPE_do_not_move
+											
+									} .else bl {
+											LEGS_MAIN_Agent_tries_to_stop.off
+											agent_MovementOrder = MovementOrder_TYPE_fleeing
+											//@comment "#Flip flag"
+											agent_ProcessObjBit |= 1024
+											//@comment "#Kite flag"
+											agent_ExMotionFlags |= 33554432
+											
+									}
+									
+								}
 								
-						}
-						
-							} .else bl {
-						//@comment "If closer than minimum range"
-						@if agent_StanceOrder == ORD_STD {
-								//@comment "#待機モード時はその場で待ち構える"
-								LEGS_MAIN_Agent_tries_to_stop.on
-								agent_MovementOrder = MovementOrder_TYPE_do_not_move
+							} .else bl { // out of range
+									LEGS_MAIN_Agent_tries_to_stop.off
+									@if agent_StanceOrder == MovementOrder_TYPE_moving {
+										//@comment "#待機モード時はその場で待ち構える"
+										LEGS_MAIN_Agent_tries_to_stop.on
+										agent_MovementOrder = MovementOrder_TYPE_do_not_move
 								
-						} .else bl {
-								LEGS_MAIN_Agent_tries_to_stop.off
-								agent_MovementOrder = MovementOrder_TYPE_fleeing
-								//@comment "#Flip flag"
-								agent_ProcessObjBit |= 1024
-								//@comment "#Kite flag"
-								agent_ExMotionFlags |= 33554432
+									} .else bl {
+										agent_MovementOrder = MovementOrder_TYPE_moving
 								
-						}
-						
+									}
+									
 							}
 							
-					} .else bl { // out of range
-							LEGS_MAIN_Agent_tries_to_stop.off
-							@if agent_StanceOrder == MovementOrder_TYPE_moving {
-						//@comment "#待機モード時はその場で待ち構える"
-						LEGS_MAIN_Agent_tries_to_stop.on
-						agent_MovementOrder = MovementOrder_TYPE_do_not_move
-						
-							} .else bl {
-						agent_MovementOrder = MovementOrder_TYPE_moving
-						
-							}
-							
-					}
-					
 						} .else bl {
+
 							//@comment "If the unit is not in any fighting situation, Set OffsetX = 0"
 							agent_OneTimeOffsetX = 0
-							//@comment "before: 6700"
-							//v[340] = v[v[294]] > 0 ? (v[610] / 2 + 2) * 1000 : 6700
-							//this part was bugged since v[294] wasn't defined inititally - 9.5.23
+
+							// @comment "before: 6700"
+							// v[340] = v[v[294]] > 0 ? (v[610] / 2 + 2) * 1000 : 6700
+							// this part was bugged since v[294] wasn't defined inititally - 9.5.23
 							v[340] = agent_LeftWPtoChase > 0 ? (agent_Width / 2 + 3) * 1000 : 6700 //more fuzzy
 							@if agent_MilPixMoveOrderedPointDist <= v[340] {
 									//@comment "候補なし"
@@ -414,54 +417,57 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 									// reach at WP?
 									@if `agent_TargetAgentID == 0 || (agent_StanceOrder == ORD_STD || agent_StanceOrder == ORD_DEF || agent_MovementOrder == MovementOrder_TYPE_prioritize_moving || agent_LeftWPtoChase > 0) {
-									
-									//@comment "WPがあるならWP処理"
-									@if agent_LeftWPtoChase > 0 {
-
-										// Refresh WP arrays
-										MAIN_macro_agent_WP_Array_pop()
-										// ?
-										Reaching_Target_Way_Point.on
 										
+										//@comment "WPがあるならWP処理"
+										@if agent_LeftWPtoChase > 0 {
 
-										// has target and still chasing WP
-										@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj || agent_AI_routine_bits & AI_routine_bits_FLAG_WP_set_by_RayCast  {
-											@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_ForcemoveFlag) { // does this forcemove flag work...?
-												agent_AI_routine_bits |= AI_routine_bits_FLAG_RayCast
-												
+											// Refresh WP arrays
+											MAIN_macro_agent_WP_Array_pop()
+
+											// ?
+											Reaching_Target_Way_Point.on
+											
+
+											// has target and still chasing WP
+											@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj || agent_AI_routine_bits & AI_routine_bits_FLAG_WP_set_by_RayCast  {
+												@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_ForcemoveFlag) { // does this forcemove flag work...?
+													agent_AI_routine_bits |= AI_routine_bits_FLAG_RayCast
+													
+												}
 											}
+											
 										}
+
+										agent_AgentBits &= ~AgentBits_FLAG_PF_walldetection_switch // kill wall detection flag
 										
-										
-									}
+										// If the agent has no WP anymore
+										@if agent_LeftWPtoChase == 0 {
+											// kill Chasing Wp to Reach Target flag
+											agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
+
+											// If continue Pathfinding flag is on
+											@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFcontinue {
+												// then pathfinding
+												agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+											}
+
+											Reaching_Target_Way_Point.on
+											agent_ActionFlag = 0
+											agent_LeftWPtoChase -= 1
+
+										}
+
+										agent_AI_routine_bits &= -12289 //~12288 
 									
-									// If the agent has no WP anymore
-									@if agent_LeftWPtoChase == 0 {
-										// kill Chasing Wp to Reach Target flag
-										agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
-										// If continue Pathfinding flag is on
-										@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFcontinue {
-											// then pathfinding
-											agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
-										}
-										
-										Reaching_Target_Way_Point.on
-										agent_ActionFlag = 0
-										agent_LeftWPtoChase -= 1
-										
-									}
-									agent_AI_routine_bits &= -12289 //~12288 
-								
 									}
 
 									// Already reached or something
 									@if Reaching_Target_Way_Point .isOff() {
-									agent_AI_routine_bits &= -49153 //~49152
-									agent_AgentBits &= -37748737 //~37748736 //(4194304 + 33554432)
+									agent_AI_routine_bits &= -49153 // ~49152
+									agent_AgentBits &= -37748737 // ~37748736 // (4194304 + 33554432)
 									agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
 									LEGS_MAIN_Agent_tries_to_stop.on
 
-									// 
 									@if `!(agent_AgentBits & AgentBits_Collided_Other_Agent) {
 										//@comment "防御"
 										@if agent_StanceOrder == ORD_DEF {
@@ -473,9 +479,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 										} .else bl {
 										//@comment "待機"
 										agent_MovementOrder = agent_StanceOrder == 1 ? -2 : -1
-										
+
 										}
-										
+
 									} .else bl {
 										//@comment "Got Collision Problem"
 										agent_AgentBits |= AgentBits_Endpoint_Collision_Trouble

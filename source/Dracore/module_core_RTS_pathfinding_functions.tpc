@@ -461,7 +461,7 @@ __fn convert_Path_to_WP $WPamt {
 		reg2 += 8
 
 		reg2.copy v[Ptr8], 2	
-		msg("\v[287]のざぎょうを\v[288]に書きました")
+		// msg("\v[287]のざぎょうを\v[288]に書きました")
 		Ptr7 += 1
 		Ptr8 += 2
 	}
@@ -520,87 +520,98 @@ __fn pf_agent_move {
 			// If the agent has cohort AND the Group path flag
 			@if `v[320] > 0 && pfagent_AI_routine_bits & AI_routine_bits_FLAG_GroupPath {
 
-		// "v1=Cohort	v2=Team, 0/1"
-		var2 = Pathfinding_AgentData_head_ptr + 100
-		var2 = v[var2]
+				// "v1=Cohort	v2=Team, 0/1"
+				var2 = Pathfinding_AgentData_head_ptr + 100
+				var2 = v[var2]
 
-		v[2861].copy v[2961], 15
-		@loop v[1012] .dst Temp1 {
+				v[2861].copy v[2961], 15
+				@loop v[1012] .dst Temp1 {
 
-				// "Check Enemy Team List"
-				Ptr20 = Temp1 + v[1145 + var2]
-				@if v[Ptr20] >= 1 {
-					Ptr19 = v[Ptr20] * 300
-					Ptr19 += 4735
+					// "Check Enemy Team List"
+					Ptr20 = Temp1 + v[1145 + var2]
+					@if v[Ptr20] >= 1 {
+						Ptr19 = v[Ptr20] * 300
+						Ptr19 += 4735
 
-					// "The unit belongs to the selected Cohort"
-					@if v[Ptr19] == v[320] {
-							
-							//opt 27.4.23
-							Ptr18 = v[Ptr20] * 300
-							Ptr18 += 4734
+						// "The unit belongs to the selected Cohort"
+						@if v[Ptr19] == v[320] {
+								
+								//opt 27.4.23
+								Ptr18 = v[Ptr20] * 300
+								Ptr18 += 4734
+								
+								@if `v[Ptr18] & AI_routine_bits_FLAG_PATHFINDING { // PF continue is nolonger a condition
+									@if `!(v[Ptr18 - 31] & AgentBits_FLAG_PF_walldetection_switch) {
+											
+											// not a path parent
 
-							@if `v[Ptr18] & 49152 { // AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_PATHFINDING
-								@if `!(v[Ptr18 - 31] & AgentBits_FLAG_PF_walldetection_switch) {
+											@if v[PF_Manager_Loop_AgentPtr] != v[Ptr20] {
+												PF_Manager_Loop_AgentPtr.deref var1,1
+												Ptr20.deref var2,1 
+												def JSCMD_COPY_PATH = __str("RTS.path.copyPath(\v[",__id(var1),"],\v[",__id(var2),"]",")")
+												eval_js(JSCMD_COPY_PATH)
+											}
 
-										var1 = v[Ptr20]
-										v[2880] = LEGV_ConstAIselectedListHead
-										v[2841] = 0
-										v[ptr_null].copy v[LEGV_ConstAIselectedListHead],200 //v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
+											v[Ptr18] &= ~AI_routine_bits_FLAG_GroupPath // kill GroupPathFlag anyway
 
-										//CEV.. add agent to AI control list
-										// @call .cev 1747
-										v[v[2880]] = var1
-										v[2880] += 1
-										v[2841] += 1
+											var1 = v[Ptr20]
+											v[2880] = LEGV_ConstAIselectedListHead
+											v[2841] = 0
+											v[ptr_null].copy v[LEGV_ConstAIselectedListHead],200 //v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
+
+											//CEV.. add agent to AI control list
+											// @call .cev 1747
+											v[v[2880]] = var1
+											v[2880] += 1
+											v[2841] += 1
+											
+											@if v[378] == -1 {
+												v[Ptr18] |= AI_routine_bits_FLAG_Pathblocked
 										
-										@if v[378] == -1 {
-											v[Ptr18] |= AI_routine_bits_FLAG_Pathblocked
-									
-										} .else bl {
-											v[Ptr18] &= KILL_AI_routine_bits_FLAG_Pathblocked //-8388609//~8388608
-									
-										}
-
-										v[Ptr18] &= -16385//~16384
-										@if v[379] == 1 {
-											v[Ptr18] &= -16859137//~16859136
-									
-										} .else bl {
-											v[Ptr18] |= AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_PFskip
-									
-										}
-
-										// wall detected, and?
-										@if `!(v[Pathfinding_AgentData_head_ptr + 3] & AgentBits_FLAG_walldetected) || v[378] != -1 {
-											v[Ptr18] |= 4096
-											Temp16 = v[LEGV_ConstAIselectedListHead] * 300 
-											Temp16 += 4741
-											Temp17 = Temp16 + 14
-											Temp17 = max(v[Temp17], 0)
-											Temp16 += Temp17 * 2
-											v[Temp16].copy v[2851], 2
-											v[2961].copy v[2861], 15
-											func_pathfinding_move()
-
-										} .else bl {
-											// stop pathfinding
-											v[Pathfinding_AgentData_head_ptr + 34] &= AI_routine_bits_KILL_FLAG_PATHFINDING//-16385 ~16384
-									
-										}
+											} .else bl {
+												v[Ptr18] &= KILL_AI_routine_bits_FLAG_Pathblocked //-8388609//~8388608
 										
+											}
+
+											v[Ptr18] &= -16385 //~16384
+											@if v[379] == 1 {
+												v[Ptr18] &= -16859137//~16859136
+										
+											} .else bl { // got more than 6 WP to chase
+												v[Ptr18] |= AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_PFskip
+
+											}
+
+											// wall detected, and?
+											@if `!(v[Pathfinding_AgentData_head_ptr + 3] & AgentBits_FLAG_walldetected) || v[378] != -1 {
+												v[Ptr18] |= 4096
+												Temp16 = v[LEGV_ConstAIselectedListHead] * 300 
+												Temp16 += 4741
+												Temp17 = Temp16 + 14
+												Temp17 = max(v[Temp17], 0)
+												Temp16 += Temp17 * 2
+												v[Temp16].copy v[2851], 2
+												v[2961].copy v[2861], 15
+												func_pathfinding_move()
+
+											} .else bl {
+												// stop pathfinding
+												v[Pathfinding_AgentData_head_ptr + 34] &= AI_routine_bits_KILL_FLAG_PATHFINDING//-16385 ~16384
+										
+											}
+											
+									}
+									
 								}
 								
-							}
-							
+						}
+						
 					}
 					
 				}
 				
-		}
-		
-		v[380] = 1
-		
+				v[380] = 1
+				
 			} .else bl {
 		v[ptr_null].copy v[LEGV_ConstAIselectedListHead],200 //v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
 		v[LEGV_ConstAIselectedListHead] = v[4596] + 1
@@ -651,21 +662,21 @@ __fn pf_agent_move {
 
 			// 
 			@if v[379] == 0 {
-		v[pfagent_Ptr_AI_routine_bits] |= AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_PFskip
+				v[pfagent_Ptr_AI_routine_bits] |= AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_PFskip
 		
 			} .else bl {
-		v[pfagent_Ptr_AI_routine_bits] &= AI_routine_bits_KILL_FLAG_PFcontinue //~32768
-		v[pfagent_Ptr_pfagent_AgentBits] &= ~AgentBits_FLAG_PF_walldetection_switch
+				v[pfagent_Ptr_AI_routine_bits] &= AI_routine_bits_KILL_FLAG_PFcontinue //~32768
+				// v[pfagent_Ptr_pfagent_AgentBits] &= ~AgentBits_FLAG_PF_walldetection_switch
 		
 			}
 
 			// 
 			@if v[378] == -1 {
-		v[pfagent_Ptr_AI_routine_bits] |= AI_routine_bits_FLAG_Pathblocked
-		v[pfagent_Ptr_pfagent_AgentBits] &= ~AgentBits_FLAG_PF_walldetection_switch //~33554432 / ~AgentBits_FLAG_PF_walldetection_switch
-		
+				v[pfagent_Ptr_AI_routine_bits] |= AI_routine_bits_FLAG_Pathblocked
+				v[pfagent_Ptr_pfagent_AgentBits] &= ~AgentBits_FLAG_PF_walldetection_switch
+
 			} .else bl {
-		v[pfagent_Ptr_AI_routine_bits] &= -8388609 //~8388608
+				v[pfagent_Ptr_AI_routine_bits] &= -8388609 //~8388608
 		
 			}
 			
