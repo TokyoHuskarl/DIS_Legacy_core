@@ -1,46 +1,6 @@
 def Const_AgentMetaTeam_beginMINUSONE = Const_AgentMetaTeam_begin -1 
 
 
-
-__fn agent_AI_check_current_target {
-	//If the agent has target agent initially
-	@if v[Ptr20] > 0 {
-			//If the unit has cohort order flag
-
-			//Temp8 = Temp16
-			@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AICohortGatheringAttack {
-		//if the target is set by cohort order, then agent's sight radius is considered 2.5 times bigger than actual in this process. Besides if the agent has a target already, the sight radius gets halved..
-		Temp8 *= 5
-		
-			}
-
-		//Try checking if current target is in sight radius  
-		Temp11 = v[Ptr20] * v[1117] 
-		Temp11 += 4700
-		v[Temp11].copy address_victim_buffer_head, agent_Basic_Array_size
-
-		agent_RelativeX.copy Temp4, 2
-		Temp4 .sub victim_RelativeX, 2
-		Temp4 .mul Temp4, 2
-		v[Temp6] = Temp4 + Temp5
-		v[Temp6] += victim_ProcessCamoValue
-		@if v[Temp6] < Temp8 {
-				//and if it's in the agent's sight, let it keep following to the target.
-				TT1 = v[534] + Temp7
-				v[TT1] = v[Temp6] * 1000
-				v[TT1] += v[Ptr20] 
-				v[306..307] += 1
-				
-		}.else bl{
-			//If the target is out of agent sight, then break cohort order flag and wait new cohort order
-			v[agent_AI_routine_bits] &= -129//~128
-		}
-		
-	}
-}
-
-
-
 v[4599] = 0
 v[535] += 1
 v[533] = (v[204] / 52 + 1) * v[1134]
@@ -455,7 +415,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 																												
 																										} .else bl {
 																												v[agent_AI_routine_bits] |= AgentBits_FLAG_PF_walldetection_switch + AI_routine_bits_FLAG_PATHFINDING
-																											:
+																											
 																										}
 																										
 																								} .else bl {
@@ -709,3 +669,45 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 		
 		
 }
+
+
+
+__fn agent_AI_check_current_target {
+	//If the agent has target agent initially
+	@if v[Ptr20] > 0 {
+			//If the unit has cohort order flag
+
+			//Temp8 = Temp16
+			@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AICohortGatheringAttack {
+				//if the target is set by cohort order, then agent's sight radius is considered 2.5 times bigger than actual in this process. Besides if the agent has a target already, the sight radius gets halved..
+				Temp8 *= 5
+		
+			}
+
+		//Try checking if current target is in sight radius  
+		Temp11 = v[Ptr20] * v[1117] 
+		Temp11 += 4700
+		v[Temp11].copy address_victim_buffer_head, agent_Basic_Array_size
+
+		agent_RelativeX.copy Temp4, 2
+		Temp4 .sub victim_RelativeX, 2
+		Temp4 .mul Temp4, 2
+		v[Temp6] = Temp4 + Temp5
+		v[Temp6] += victim_ProcessCamoValue
+		@if v[Temp6] < Temp8 {
+				//and if it's in the agent's sight, let it keep following to the target.
+				TT1 = v[534] + Temp7
+				v[TT1] = v[Temp6] * 1000
+				v[TT1] += v[Ptr20] 
+				v[306..307] += 1
+				
+		}.else bl{
+			//If the target is out of agent sight, then break cohort order flag and wait new cohort order
+			v[agent_AI_routine_bits] &= -129//~128
+		}
+		
+	}
+}
+
+
+
