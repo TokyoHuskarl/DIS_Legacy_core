@@ -12,6 +12,7 @@ def {
 
 // INIT MISSION - this one is called whenever you open new mission
 __fn CEV_MISSION_INIT {
+	log_start("Initializing Mission")
 	v[1080] = v[1012]
 	s[18].off
 	s[43].on
@@ -99,6 +100,7 @@ __fn CEV_MISSION_INIT {
 		}
 		
 	}
+
 	// hidosugiru
 	s[1..300].off
 	s[6].on
@@ -107,6 +109,7 @@ __fn CEV_MISSION_INIT {
 	v[53..1000] = 0
 	v[2001..2080] = 0
 	v[2406..2418] = 0
+
 	// @comment "#########"
 	v[2800..4400] = 0
 	v[5000..200000] = 0
@@ -341,7 +344,7 @@ __fn CEV_MISSION_INIT {
 		}
 		
 	}
-	
+	log_push("Picture Cache Load")
 
 	// UI setting
 	@comment "Env"
@@ -805,13 +808,6 @@ __fn CEV_MISSION_INIT {
 	v[162] = max(v[162], v[518])
 	v[0] = v[165..166] = [v[161] / 16, v[162] / 16]
 
-	//@comment "#########################"
-	//v[0] = v[472..477] = [7, 17, 161, 162, 6, 0]
-	//@comment "#########################"
-	//v[471] = 11060
-	//@comment "#########################"
-	// @comment "#Safety"
-	// @cmd v[471], "", .args v[472], 6
 	func_general_camera_move(v[161],v[162])
 
 
@@ -902,6 +898,7 @@ __fn CEV_MISSION_INIT {
 			v[Adr_terrainbits_head + TT1] |= reg1
 		}
 	}
+	log_push("Terrain Data Load")
 
 	/*
 	@comment "#Forest"
@@ -1080,6 +1077,9 @@ __fn CEV_MISSION_INIT {
 		}
 		
 	}
+	str1.asg "Mapname get "
+	str1.cat t[750]
+	log_push(str1)
 
 	// generate Agent Extra Array Buffer as a picture
 	// construct_picture_buffer(PicID_AgentExBuffer,AgentExtraBuffer_ArraySize,AgentExtraBuffer_ArrayAmount) obsolete
@@ -1090,6 +1090,7 @@ __fn CEV_MISSION_INIT {
 
 // 
 __fn CEV_MISSION_MAP_INIT {
+	log_push("DIS mission map initializing process...")
 	var_allocatedmapsize = var_Map_Width * var_Map_Height
 	
 
@@ -1099,6 +1100,7 @@ __fn CEV_MISSION_MAP_INIT {
 		loadMapDef()
 		run_RTSmapGeneration()
 		@map.tileset v[2060]
+		log_push("JS config loaded")
 	}
 
 	//@comment "#########Tile Generation########"
@@ -1155,6 +1157,7 @@ __fn CEV_MISSION_MAP_INIT {
 		inputstr .cat "\"
 		inputstr .cat "mapdata"
 		generateTileMapFromPicfile(inputstr)
+		log_push("Map tile picture imported")
 	}
 
 
@@ -1162,6 +1165,7 @@ __fn CEV_MISSION_MAP_INIT {
 	@if Is_SightSystem_On .isOff() {
 	    s[2001..2500].on
 	    s[299].on
+			log_push("Mission Sight System is OFF.")
 	    
 	} .else bl {
 	    s[299].off
@@ -1197,6 +1201,7 @@ __fn CEV_MISSION_MAP_INIT {
 		}
 		
 	    }
+		log_push("Mission Sight System is ON.")
 	    
 	    
 	}
@@ -1205,35 +1210,35 @@ __fn CEV_MISSION_MAP_INIT {
 	@if s[1] .isOn() {
 	    str1 .asg  .file "../Maps/define_maps", .utf8
 	    @if DISmap_MapDirectory .eq "" {
-		str2 .asg ".*="
-		str2 .cat t[751]
-		str1.exMatch {
-		    str2
-		    str1
-		    TT1
-		    .beg 0
-		    .extract
-		}
-		str1 .split "=", str1, TT1
-		DISmap_MapDirectory .asg str1
-		
+				str2 .asg ".*="
+				str2 .cat t[751]
+				str1.exMatch {
+						str2
+						str1
+						TT1
+						.beg 0
+						.extract
+				}
+				str1 .split "=", str1, TT1
+				DISmap_MapDirectory .asg str1
+				
 	    } .else bl {
-		str2 .asg DISmap_MapDirectory
-		str2 .cat "=.*"
-		str1.exMatch {
-		    str2
-		    str1
-		    TT1
-		    .beg 0
-		    .extract
-		}
-		str1 .split "=", str1, TT1
-		str2 .toNum TT1
-		@comment "need to load mapgen.txt"
-		@if TT1 == 0 {
-		    
-		}
-		
+				str2 .asg DISmap_MapDirectory
+				str2 .cat "=.*"
+				str1.exMatch {
+						str2
+						str1
+						TT1
+						.beg 0
+						.extract
+				}
+				str1 .split "=", str1, TT1
+				str2 .toNum TT1
+				@comment "need to load mapgen.txt"
+				@if TT1 == 0 {
+						
+				}
+				
 	    }
 	    
 	}
@@ -1247,19 +1252,29 @@ __fn CEV_MISSION_MAP_INIT {
 	inputstr .cat "\\"
 	inputstr .cat "strings"
 	inputstr .cat Str_LanguageToken
+	log_push("loading DIS mapstring file.")
+	log_push(inputstr)
 	inputstr .asg  .file inputstr, .utf8, .extract
+	@if inputstr.neq "" {
+		log_push("DIS mapstring file loaded.")
+	}.else bl{
+		log_push("DIS mapstring file loading failed.")
+	}
 	inputstr .split "*/", str9, TT1
 	inputstr .split LF, t[40000], TT1
+
 	@comment "*Weather Init*"
 	@if s[312] .isOff() {
 	    @call .cev 1798
 	    
 	}
+
 	@comment "*MAP INIT*"
 	v[v[v[4569]]..v[v[4569] + v[4564] * 200 * 200]] = 0
 	v[0] = [Ptr6..Ptr6 + 160000] = 0
 	v[2063] = var_Map_Width * var_Map_Height
 	v[504] = 3
+
 	@if  Mapgentype == 2 { //new mapdata loaded
 	    @loop var_Map_Height .dst v[2064] {
 		    Ptr6 = var_Map_Width * v[2064] + v[4529]
@@ -1268,7 +1283,7 @@ __fn CEV_MISSION_MAP_INIT {
 			TT1 = v[2065] + Map_LimitCoordX_min
 			TT2 = v[2064] + Map_LimitCoordY_min
 			@comment "if elevation was not set"
-			@if v[Ptr7]<100000000{
+			@if v[Ptr7] < 100000000 {
 				v[Ptr7] += 300000000
 				@comment "lower water height"
 				v[Ptr7] -= (v[Const_save_var_AdrTerrainBitsHead + reg10] & 1) > 0 ? 100000000 : 0
@@ -1308,7 +1323,14 @@ __fn CEV_MISSION_MAP_INIT {
 	@comment "*Load Tile Config*"
 	inputstr .asg "..\\Chipset\\tiledata\\tileconf_"
 	inputstr .cat "\v[2060]" .extract
+	log_push("loading DIS tileconfig file")
+	log_push(inputstr)
 	inputstr .asg  .file inputstr, .utf8, .extract
+	@if inputstr.neq "" {
+		log_push("DIS tileconfig file loaded.")
+	}.else bl{
+		log_push("DIS tileconfig file loading failed.")
+	}
 	inputstr .split LF, t[v[1219]], v[505]
 	@loop v[505] .dst v[506] {
 	    var1 = v[1219] + v[506]
@@ -1324,68 +1346,68 @@ __fn CEV_MISSION_MAP_INIT {
 		    Ptr6 = var_Map_Width * v[2064] + v[4529]
 		    Ptr7 = var_Map_Width * v[2064] + v[1182]
 		    @loop var_Map_Width .dst v[2065] {
-			TT1 = v[2065] + Map_LimitCoordX_min
-			TT2 = v[2064] + Map_LimitCoordY_min
-			@sys.getInfo .tiles TT1, TT2, 1, 1 .lower .dst reg10
-			@comment "Set LowerChipID"
-			v[Ptr7] += reg10 * 100
-			@comment "Highgroundset"
-			v[371] = 0
-			@loop v[701] .dst TT5 {
-			    v[371] += reg10 == v[TT5 + 702] && reg10 != 0 ? 1 : 0
-			    
-			}
-			
-			v[Ptr7] += v[371] >= 1 ? 100000000 : 0
-			@comment "CliffCheck"
-			v[371] = 0
-			@loop v[751] .dst TT5 {
-			    v[371] += reg10 == v[TT5 + 752] && reg10 != 0 ? 1 : 0
-			    
-			}
-			
-			@if v[371] >= 1 {
-			    Ptr9 = Ptr7
-			    @while Ptr9 >= v[1182] {
-				@comment "HEIGHT LEVEL UP"
-				v[Ptr9] += 100000000
-				Ptr9 -= var_Map_Width
-				
-			    }
-			    
-			    
-			}
-			@comment "CliffEndCheck"
-			v[371] = 0
-			@loop v[801] .dst TT5 {
-			    v[371] += reg10 == v[TT5 + 802] && reg10 != 0 ? 1 : 0
-			    
-			}
-			
-			@if v[371] >= 1 {
-			    Ptr9 = Ptr7
-			    @while Ptr9 >= v[1182] {
-				@comment "HEIGHT LEVEL DOWN"
-				v[Ptr9] -= 100000000
-				Ptr9 -= var_Map_Width
-				
-			    }
-			    
-			    
-			}
-			@sys.getInfo .tiles TT1, TT2, 1, 1 .upper .dst reg10
-			@comment "Set UpperChipID"
-			v[Ptr7] += reg10 * 100000
-			@comment "#TileFuncPushFlag"
-			v[371] = 0
-			@loop v[601] .dst TT5 {
-			    v[371] += reg10 == v[TT5 + 602] && reg10 != 0 ? 1 : 0
-			    
-			}
-			
-			v[Ptr6] |= v[371] >= 1 ? 1 : 0
-			v[286..287] += 1
-			
+					TT1 = v[2065] + Map_LimitCoordX_min
+					TT2 = v[2064] + Map_LimitCoordY_min
+					@sys.getInfo .tiles TT1, TT2, 1, 1 .lower .dst reg10
+					@comment "Set LowerChipID"
+					v[Ptr7] += reg10 * 100
+					@comment "Highgroundset"
+					v[371] = 0
+					@loop v[701] .dst TT5 {
+							v[371] += reg10 == v[TT5 + 702] && reg10 != 0 ? 1 : 0
+							
+					}
+					
+					v[Ptr7] += v[371] >= 1 ? 100000000 : 0
+					@comment "CliffCheck"
+					v[371] = 0
+					@loop v[751] .dst TT5 {
+							v[371] += reg10 == v[TT5 + 752] && reg10 != 0 ? 1 : 0
+							
+					}
+					
+					@if v[371] >= 1 {
+							Ptr9 = Ptr7
+							@while Ptr9 >= v[1182] {
+								@comment "HEIGHT LEVEL UP"
+								v[Ptr9] += 100000000
+								Ptr9 -= var_Map_Width
+						
+							}
+							
+							
+					}
+					@comment "CliffEndCheck"
+					v[371] = 0
+					@loop v[801] .dst TT5 {
+							v[371] += reg10 == v[TT5 + 802] && reg10 != 0 ? 1 : 0
+							
+					}
+					
+					@if v[371] >= 1 {
+							Ptr9 = Ptr7
+							@while Ptr9 >= v[1182] {
+						@comment "HEIGHT LEVEL DOWN"
+						v[Ptr9] -= 100000000
+						Ptr9 -= var_Map_Width
+						
+							}
+							
+							
+					}
+					@sys.getInfo .tiles TT1, TT2, 1, 1 .upper .dst reg10
+					@comment "Set UpperChipID"
+					v[Ptr7] += reg10 * 100000
+					@comment "#TileFuncPushFlag"
+					v[371] = 0
+					@loop v[601] .dst TT5 {
+							v[371] += reg10 == v[TT5 + 602] && reg10 != 0 ? 1 : 0
+							
+					}
+					
+					v[Ptr6] |= v[371] >= 1 ? 1 : 0
+					v[286..287] += 1
+					
 		    }
 		    
 		    
@@ -1563,9 +1585,9 @@ __fn CEV_MISSION_MAP_INIT {
 	    
 	    
 	}
-
 	@wait 0
 	@if loadedJsConfig.isOff() { // LEGACY script. will be erased
+		log_push("Loading Legacy Mapscript")
 		@comment "*Map script load*"
 		inputstr .asg "..\Maps\"
 		inputstr .cat DISmap_MapDirectory
@@ -1584,13 +1606,14 @@ __fn CEV_MISSION_MAP_INIT {
 		}
 	
 	}.else bl{ // Jsconfig is loaded!
+		log_push("Calling RTS.mission.startup()")
 		startupMission()
 	}
 
 	@wait 0
 	@comment "MINIMAPS!"
-	//@call .cev 1794
 	init_minimap_for_this_mission()
+	log_push("Minimap initialized.")
 	
 	@comment "################"
 	@pic[2200].show {
@@ -1620,7 +1643,9 @@ __fn CEV_MISSION_MAP_INIT {
 	    .affectedByShake
 	}
 	s[78].on
-	@comment "*Map triggers load*"
+
+	// @comment "*Map triggers load*"
+	log_push("Loading Legacy map triggers")
 	v[507] = 0
 	Ptr7 = v[4577]
 	inputstr .asg "..\Maps\"
@@ -1635,9 +1660,10 @@ __fn CEV_MISSION_MAP_INIT {
 	    
 	}
 	inputstr .split LF, t[v[1219]], v[505]
-
 	@call .cev 1818
-	@comment "*AI script load*"
+	
+	//@comment "*AI script load*"
+	log_push("Loading Legacy tactics AI")
 	inputstr .asg "..\\Scripts\\ai"
 	inputstr .cat "\\"
 	inputstr .cat t[753]
@@ -1655,8 +1681,10 @@ __fn CEV_MISSION_MAP_INIT {
 	    s[290].on
 	    
 	}
+
 	@comment "#TRY"
 	@if v[2404] >= 1 {
+			log_push("Loading Map factional party table template csv.")
 	    t[1..100] .asg ""
 	    var2 = 0
 	    inputstr .asg "..\Maps\"
@@ -1667,7 +1695,8 @@ __fn CEV_MISSION_MAP_INIT {
 	    inputstr .asg  .file inputstr, .utf8
 	    @call .cev 1840
 	    @if .testPlay() {
-		inputstr .toFile "debug_template", .utf8
+				log_push("Developer Mode: debug_template.txt exported in $GAME/text/")
+				inputstr .toFile "debug_template", .utf8
 		
 	    }
 	    inputstr .split "*/", str9, TT1
@@ -1686,55 +1715,59 @@ __fn CEV_MISSION_MAP_INIT {
 	    
 	}
 	@if s[308] .isOff() {
-	    @comment "#########	NEED CONVERTING#########"
+			log_push("Loading overlay effect:")
+	    // @comment "#########	NEED CONVERTING#########"
 	    TT1 = muldiv(100, v[1001], 800)
 	    @if v[1001] > 800 {
 		TT1 += 5
 		
 	    }
 	    @if v[2403] == 1 {
-		@pic[2101].show {
-		    "shade_twilight"
-		    .pos v[1115], v[1116] .center
-		    .chromakey 0
-		    .scale TT1
-		    .trans 50
-		    .rgbs 100, 100, 100, 100
-		    .overlay
-		    .mapLayer 7
-		    .eraseWhenTransfer
-		    .affectedByTint
-		}
-		
+				log_push("Imperial Twilight - shade_twilight")
+				@pic[2101].show {
+						"shade_twilight"
+						.pos v[1115], v[1116] .center
+						.chromakey 0
+						.scale TT1
+						.trans 50
+						.rgbs 100, 100, 100, 100
+						.overlay
+						.mapLayer 7
+						.eraseWhenTransfer
+						.affectedByTint
+				}
+				
 	    } .else bl {
-		@pic[2101].show {
-		    "shade_16ex"
-		    .pos v[1115], v[1116] .center
-		    .chromakey 0
-		    .scale TT1
-		    .trans 50
-		    .rgbs 100, 100, 100, 100
-		    .overlay
-		    .mapLayer 7
-		    .eraseWhenTransfer
-		    .affectedByTint
-		}
-		
+				log_push("Normal Overlay - shade_16ex")
+				@pic[2101].show {
+						"shade_16ex"
+						.pos v[1115], v[1116] .center
+						.chromakey 0
+						.scale TT1
+						.trans 50
+						.rgbs 100, 100, 100, 100
+						.overlay
+						.mapLayer 7
+						.eraseWhenTransfer
+						.affectedByTint
+				}
+				
 	    }
 	    @if v[2401] == 5 {
-		@pic[2101].show {
-		    "shade_twilight"
-		    .pos v[1115], v[1116] .center
-		    .chromakey 0
-		    .scale TT1
-		    .trans 35
-		    .rgbs 100, 100, 100, 100
-		    .overlay
-		    .mapLayer 7
-		    .eraseWhenTransfer
-		    .affectedByTint
-		}
-		
+				log_push("RAGNAROK Twilight - shade_twilight")
+				@pic[2101].show {
+						"shade_twilight"
+						.pos v[1115], v[1116] .center
+						.chromakey 0
+						.scale TT1
+						.trans 35
+						.rgbs 100, 100, 100, 100
+						.overlay
+						.mapLayer 7
+						.eraseWhenTransfer
+						.affectedByTint
+				}
+				
 	    }
 	    
 	}
@@ -1742,7 +1775,7 @@ __fn CEV_MISSION_MAP_INIT {
 	@comment "Advanced heightmap system"
 	
 	__if DIS_EXPERIMENTAL == 1 {
-
+		log_push("DIS_EXPERIMENTAL FEATURE: Adv.Heightmap generation system activated.")
 		TT1 = ev[3].scrx
 		TT2 = ev[3].scry
 		v[341..342] -= 8
@@ -1752,7 +1785,8 @@ __fn CEV_MISSION_MAP_INIT {
 
 
 		// This shouldn't be implemented yet
-		/*@pic[PicID_Map_base].strpic {
+		/*
+		@pic[PicID_Map_base].strpic {
 		    ""
 		    .pos TT1, TT2 .topLeft
 		    .size TT3, TT4    .scrollWithMap
@@ -1768,7 +1802,8 @@ __fn CEV_MISSION_MAP_INIT {
 		    .affectedByTint
 		    .affectedByFlash
 		    .affectedByShake
-		}*/
+		}
+		*/
 
 		@pic[PicID_elevation_add].strpic {
 		    ""
@@ -1814,56 +1849,63 @@ __fn CEV_MISSION_MAP_INIT {
 
 
 	@if MapHeightMapType == 2 {
+			__if DIS_EXPERIMENTAL == 1 {
+				log_push("Adv.Heightmap generation system called.")
+			}.else bl{
+				log_push("Adv.Heightmap generation system called. - But the system is deactivated.")
+			}
 	    @call .cev 1804
 	    
 	} .else bl {
 	    @if MapHeightMapType == 1 {
-		str1 .asg DIS_MAPHOMEPATH
-		str1 .cat RTSmap_MapdefDir
-		t[502..503] .asg str1
-		str2 .cat "/heightmap_light"
-		str3 .cat "/heightmap_dark"
-		TT1 = ev[3].scrx
-		TT2 = ev[3].scry
-		v[341..342] -= 8
-		TT2 -= 10
-		TT3 = ev[4].scrx - ev[3].scrx
-		TT4 = ev[4].scry - ev[3].scry
-		@pic[PicID_elevation_add].show {
-		    str2
-		    .pos TT1, TT2 .topLeft
-		    .scrollWithMap
-		    .chromakey 1
-		    .scale 100
-		    .trans 0
-		    .rgbs 100, 100, 100, 100
-		    .add
-		    .mapLayer 4
-		    .eraseWhenTransfer
-		    .affectedByTint
-		    .affectedByFlash
-		    .affectedByShake
-		}
-		@pic[PicID_elevation_multi].show {
-		    str3
-		    .pos TT1, TT2 .topLeft
-		    .scrollWithMap
-		    .chromakey 1
-		    .scale 100
-		    .trans 0
-		    .rgbs 100, 100, 100, 100
-		    .multi
-		    .mapLayer 4
-		    .eraseWhenTransfer
-		    .affectedByTint
-		    .affectedByFlash
-		    .affectedByShake
-		}
+				log_push("preset Heightmap pictures loading.")
+				str1 .asg DIS_MAPHOMEPATH
+				str1 .cat RTSmap_MapdefDir
+				t[502..503] .asg str1
+				str2 .cat "/heightmap_light"
+				str3 .cat "/heightmap_dark"
+				TT1 = ev[3].scrx
+				TT2 = ev[3].scry
+				v[341..342] -= 8
+				TT2 -= 10
+				TT3 = ev[4].scrx - ev[3].scrx
+				TT4 = ev[4].scry - ev[3].scry
+				@pic[PicID_elevation_add].show {
+						str2
+						.pos TT1, TT2 .topLeft
+						.scrollWithMap
+						.chromakey 1
+						.scale 100
+						.trans 0
+						.rgbs 100, 100, 100, 100
+						.add
+						.mapLayer 4
+						.eraseWhenTransfer
+						.affectedByTint
+						.affectedByFlash
+						.affectedByShake
+				}
+				@pic[PicID_elevation_multi].show {
+						str3
+						.pos TT1, TT2 .topLeft
+						.scrollWithMap
+						.chromakey 1
+						.scale 100
+						.trans 0
+						.rgbs 100, 100, 100, 100
+						.multi
+						.mapLayer 4
+						.eraseWhenTransfer
+						.affectedByTint
+						.affectedByFlash
+						.affectedByShake
+				}
 		
 	    }
 	    
 	}
-	@comment "Advanced Maptile system"
+
+	// @comment "Advanced Maptile system"
 	@if s[1] .isOn() {
 	    @if s[316] .isOn() {
 		v[v[1068]..v[1068] + 500 * 500] = 0
@@ -2086,7 +2128,12 @@ __fn CEV_MISSION_MAP_INIT {
 	
 	// boot js mission manager 
 	@if loadedJsConfig.isOn() {
+		log_push("Booting JS mission manager.")
 		RUN_js_MissionManager.on // -> RTS_mission_general.tpc
+	}
+	log_push("DIS mission setup process is finished.")
+	@if .testPlay() {
+		log_export("..\user\log\mission_initlog")
 	}
 }
 

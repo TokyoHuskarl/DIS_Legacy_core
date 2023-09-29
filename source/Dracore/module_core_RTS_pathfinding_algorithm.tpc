@@ -144,7 +144,6 @@ __fn func_pathfinding_Astar() {
 		var1.copy PF_start_Node, 2
 		
 		v[ptr_null].copy v[v[4568]], PF_init_Range 
-		// v[v[4568]..v[4600] + 40000] = 0
 
 
 		// check from start node
@@ -163,167 +162,165 @@ __fn func_pathfinding_Astar() {
 
 		@loop v[341] .dst v[2064] {
 
-		    v[2075] = v[2064] + 1
-		    v[4581] = (PF_current_checking_Node - 1) * v[4564] + v[4569] + 11
-		    //ACHTUNG - need to change into .copy proc
-		    v[3601..3608] = 999999999
+			v[2075] = v[2064] + 1
+			v[4581] = (PF_current_checking_Node - 1) * v[4564] + v[4569] + 11
+			//ACHTUNG - need to change into .copy proc
+			v[3601..3608] = 999999999
 
-		    //ACHTUNG - need to change into .copy proc   
-		    v[ptr_null].copy v[3609],8 //v[3609..3617] = 0
-		    v[4591] = 0
+			//ACHTUNG - need to change into .copy proc   
+			v[ptr_null].copy v[3609],8 //v[3609..3617] = 0
+			v[4591] = 0
 
-		    // "Euclid"
+			// "Euclid"
 
-		    // These parts using MapIndex variables that were initially set in the Classic version.
-		    // So it can be unexpected roots of bugs (all classic features must be eventually removed, otherwise it will annoy you later)
-		    @if v[2064] == 0 {
-			// "First attempt"
-			@loop 8 .dst v[2065] {
-			    @if v[v[4581]] > 0 {
-				//opt 28.4.23
-				//save the v[v[4581]] / 10 to TT11
-				TT11 = v[v[4581]] / 10
+			// These parts using MapIndex variables that were initially set in the Classic version.
+			// So it can be unexpected roots of bugs (all classic features must be eventually removed, otherwise it will annoy you later)
+			@if v[2064] == 0 {
+				// "First attempt"
+				@loop 8 .dst v[2065] {
+						@if v[v[4581]] > 0 {
+							//opt 28.4.23
+							TT11 = v[v[4581]] / 10
 
-				@if TT11  == PF_goal_Node {
-				    v[v[4600] + TT11 - 1] = PF_current_checking_Node
-				    PF_current_checking_Node = TT11 
-				    v[378] = 0
-				    @break .level 2
-				    
-				}
-				PFckPtr = TT11  * v[4564] 
-				PFckPtr += v[4569] - v[4564]
+							@if TT11  == PF_goal_Node { // reached goal Node!
+								v[v[4600] + TT11 - 1] = PF_current_checking_Node
+								PF_current_checking_Node = TT11 
+								v[378] = 0
+								@break .level 2
+								
+							}
+							PFckPtr = TT11  * v[4564] 
+							PFckPtr += v[4569] - v[4564]
 
-				v[4004] = PFckPtr + 2
-				v[4004] = v[v[4004]]
-				@if v[4004] <= 105 {
-				    v[PFckPtr].copy v[4001], 2
-				    v[4001] .sub v[4588], 2
-				    v[4001] .mul v[4001], 2
+							v[4004] = PFckPtr + 2
+							v[4004] = v[v[4004]]
+							@if v[4004] <= 105 {
+									v[PFckPtr].copy v[4001], 2
+									v[4001] .sub v[4588], 2
+									v[4001] .mul v[4001], 2
 
-				    //use TT to optimise
-				    TT12 =  v[4001] + v[4002]
-				    v[4001] = sqrt(TT12, 100) // using sqrt might be the very reason of the slowness of this loop?
+									//use TT to optimise
+									TT12 =  v[4001] + v[4002]
+									v[4001] = sqrt(TT12, 100) // using sqrt might be the reason of the slowness of this loop?
 
-				    //save v[v[4581]] % 10 to some temp var and you vill happy
-				    TT12 = v[v[4581]] % 10
-				    TT13 = 3601 + v[2065] 
+									TT12 = v[v[4581]] % 10
+									TT13 = 3601 + v[2065] 
 
-				    v[TT13] = (v[4001] + v[4004] * 150) * 10 + TT12
-				    @if TT12 == v[4586] {
-					v[TT13] += 2500
+									v[TT13] = (v[4001] + v[4004] * 150) * 10 + TT12
+									@if TT12 == v[4586] {
+								v[TT13] += 2500
+								
+									}
+
+									v[4591] += 1
+									//optimise
+									//v[3609 + v[2065]] = v[v[4581]] / 10
+									TT13 += 8 // since TT13 is 3601 + v[2065]
+									//Now TT13 = 3609 + v[2065]...  
+									v[TT13] = TT11
+									
+							}
+							
+						} .else bl {
+					@break
 					
-				    }
-
-				    v[4591] += 1
-				    //optimise
-				    //v[3609 + v[2065]] = v[v[4581]] / 10
-				    TT13 += 8 // since TT13 is 3601 + v[2065]
-				    //Now TT13 = 3609 + v[2065]...  
-				    v[TT13] = TT11
-				    
+						}
+						v[4581] += 1
+						
 				}
 				
-			    } .else bl {
-				@break
 				
-			    }
-			    v[4581] += 1
-			    
+			} .else bl {
+
+		@loop 8 .dst v[2065] {
+				@if v[v[4581]] > 0 {
+
+			//opt 28.4.23
+			//save v[v[4581]] / 10 to TT11
+			TT11 = v[v[4581]] / 10
+
+			@if TT11 == PF_goal_Node {
+					v[v[4600] + TT11 - 1] = PF_current_checking_Node
+					PF_current_checking_Node = TT11
+					v[378] = 0
+					@break .level 2
+					
+			}
+
+			PFckPtr = TT11 * v[4564] 
+			PFckPtr += v[4569] - v[4564]
+
+			TT12  = PFckPtr + 2
+			v[4004] = v[TT12]
+			@if v[4004] <= 105 {
+					v[PFckPtr].copy v[4001], 2
+					v[4001] .sub v[4588], 2
+					v[4001] .mul v[4001], 2
+					v[4001] += v[4002]
+					v[4001] = sqrt(v[4001], 100)
+					v[3601 + v[2065]] = (v[4001] + v[4004] * 150) * 10 + v[v[4581]] % 10
+					v[4591] += 1
+
+					//opt 28.4.23
+					//v[3609 + v[2065]] = v[v[4581]] / 10
+					v[3609 + v[2065]] = TT11
+			
 			}
 			
-			
-		    } .else bl {
-
-			@loop 8 .dst v[2065] {
-			    @if v[v[4581]] > 0 {
-
-				//opt 28.4.23
-				//save v[v[4581]] / 10 to TT11
-				TT11 = v[v[4581]] / 10
-
-				@if TT11 == PF_goal_Node {
-				    v[v[4600] + TT11 - 1] = PF_current_checking_Node
-				    PF_current_checking_Node = TT11
-				    v[378] = 0
-				    @break .level 2
-				    
-				}
-
-				PFckPtr = TT11 * v[4564] 
-				PFckPtr += v[4569] - v[4564]
-
-				TT12  = PFckPtr + 2
-				v[4004] = v[TT12]
-				@if v[4004] <= 105 {
-				    v[PFckPtr].copy v[4001], 2
-				    v[4001] .sub v[4588], 2
-				    v[4001] .mul v[4001], 2
-				    v[4001] += v[4002]
-				    v[4001] = sqrt(v[4001], 100)
-				    v[3601 + v[2065]] = (v[4001] + v[4004] * 150) * 10 + v[v[4581]] % 10
-				    v[4591] += 1
-
-				    //opt 28.4.23
-				    //v[3609 + v[2065]] = v[v[4581]] / 10
-				    v[3609 + v[2065]] = TT11
-				
-				}
-				
-			    } .else bl {
-				@break
-				
-			    }
-
-			    v[4581] += 1
-			    
-			}
-			
-			
-		    }
-
-		    var8 = 0
-		    v[4003] = v[PF_current_checking_Node - 1 + v[4555]]
-		    @loop 8 .dst v[2065] {
-			var9 = 3609 + v[2065]
-			var9 = v[var9]
-			@if var9 > 0 {
-			    var10 = 3601 + v[2065]
-			    var10 = v[var10]
-			    var10 += v[4003]
-			    //@call .cev 1772
-			    func_pathfinding_open_Node()
-			}
-			
-		    }
-
-		    // "######	add var10 to closelist"
-		    v[19] = PF_current_checking_Node
-		    v[v[4567] + v[4583]] = v[19]
-		    v[4583] += 1
-		    v[v[4567]].sortDescending v[4583]
-		    var1 = v[4568] + 1
-		    v[var1].copy v[v[4568]], v[4582]
-		    v[v[4568] + v[4582]] = 0
-		    var1 = v[4555] + 1
-		    v[var1].copy v[v[4555]], v[4582]
-		    v[v[4555] + v[4582]] = 0
-		    v[4582] -= 1
-
-		    @if v[4582] <= 0 {
-			v[378] = -1
+				} .else bl {
 			@break
 			
-		    }
-		    v[v[4555]].sort v[4582] .sync v[v[4568]]
-		    PF_current_checking_Node = v[v[4568]]
-		    // "######"
-		    @if `v[2064] % 24 == 23 {
-			PF_done_per_1f = 0 // refresh PF counter
-			@wait 0
+				}
+
+				v[4581] += 1
+				
+		}
+		
+		
+			}
+
+			var8 = 0
+			v[4003] = v[PF_current_checking_Node - 1 + v[4555]]
+			@loop 8 .dst v[2065] {
+				var9 = 3609 + v[2065]
+				var9 = v[var9]
+				@if var9 > 0 {
+						var10 = 3601 + v[2065]
+						var10 = v[var10]
+						var10 += v[4003]
+						//@call .cev 1772
+						func_pathfinding_open_Node()
+				}
+		
+			}
+
+			// "######	add var10 to closelist"
+			v[19] = PF_current_checking_Node
+			v[v[4567] + v[4583]] = v[19]
+			v[4583] += 1
+			v[v[4567]].sortDescending v[4583]
+			var1 = v[4568] + 1
+			v[var1].copy v[v[4568]], v[4582]
+			v[v[4568] + v[4582]] = 0
+			var1 = v[4555] + 1
+			v[var1].copy v[v[4555]], v[4582]
+			v[v[4555] + v[4582]] = 0
+			v[4582] -= 1
+
+			@if v[4582] <= 0 {
+				v[378] = -1
+				@break
+		
+			}
+			v[v[4555]].sort v[4582] .sync v[v[4568]]
+			PF_current_checking_Node = v[v[4568]]
+			// "######"
+			@if `v[2064] % 24 == 23 {
+				PF_done_per_1f = 0 // refresh PF counter
+				@wait 0
+		
+			}
 			
-		    }
-		    
 		}
 		
 		// refresh deployed agent data after the node searching loop ends 
@@ -342,20 +339,20 @@ __fn func_pathfinding_Astar() {
 		    v[22..23] += 8
 
 		    @pic[v[2070]].strpic {
-			"\PF_current_checking_Node"
-			.pos reg2, reg3 .center
-			.size 32, 32                .scrollWithMap
-			.chromakey 1
-			.scale 100
-			.trans 50
-			.rgbs 100, 100, 100, 100
-			.font "", 9
-			.spacing 0, 4
-			.skin "" .stretch
-			.mapLayer 7
-			.eraseWhenTransfer
-			.affectedByFlash
-			.affectedByShake
+					"\PF_current_checking_Node"
+					.pos reg2, reg3 .center
+					.size 32, 32                .scrollWithMap
+					.chromakey 1
+					.scale 100
+					.trans 50
+					.rgbs 100, 100, 100, 100
+					.font "", 9
+					.spacing 0, 4
+					.skin "" .stretch
+					.mapLayer 7
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
 		    }
 		    @if Bool_PF_Wall_Detection .isOn() {
 			@if v[2070] == v[341] {
@@ -371,7 +368,7 @@ __fn func_pathfinding_Astar() {
 		@if `pfagent_AgentBits & AgentBits_FLAG_PF_walldetection_switch {
 		    v[341] = v[204] >= 380 ? 512 : 1024
 		    @if v[2070] == v[341] {
-			v[378] = -1
+					v[378] = -1
 			
 		    }
 		    
@@ -379,70 +376,72 @@ __fn func_pathfinding_Astar() {
 
 		// "restore path"
 		v[379] = 0
-		v[ptr_null].copy v[2066],2 //v[2066..2067] = 0
-		v[ptr_null].copy v[4350],31 //v[4350..4380] = 0
+		v[ptr_null].copy v[2066],2 // v[2066..2067] = 0
+		v[ptr_null].copy v[4350],31 // v[4350..4380] = 0
+
+		// loop until the last checknode  
+		defv CurNodeMINUS1 = __id(Temp12)
 		@while PF_current_checking_Node > 0 .dst v[2064] {
+				CurNodeMINUS1 = PF_current_checking_Node - 1
 		    @if v[2064] > 0 {
-			v[2065] = v[v[4600] + PF_current_checking_Node - 1]
-			v[2067] = v[2066]
-			v[2066] = PF_current_checking_Node - v[2065]
-			@if v[2064] >= 10000 {
-			    @break
-			    
-			}
-			
+					v[2065] = v[v[4600] + CurNodeMINUS1] // ?w
+					v[2067] = v[2066]
+					v[2066] = PF_current_checking_Node - v[2065]
+					@if v[2064] >= 10000 {
+							@break
+							
+					}
+					
 		    }
 
 
 		    @if v[2066] != v[2067] {
-			v[2070] += 1
-			v[4592] = 0
-			Temp11 = (PF_current_checking_Node - 1) * v[4564] + v[4569]
-			v[Temp11].copy var1, 2
-			@map[v[501]].setVehiclePos .boat .pos var1, var2 .retain
-			reg2 = boat.scrx
-			reg3 = boat.scry
-			reg2 += 8
-			/*optimise
-			reg3 -= 8
-			v[22..23] += 8
-			*/
-
-			__if DEBUG_BUILD == 1 {
-			    @pic[v[2070]].strpic {
-				"\v[2070]"
-				.pos reg2, reg3 .center
-				.size 32, 32                        .scrollWithMap
-				.chromakey 1
-				.scale 100
-				.trans 10
-				.rgbs 200, 200, 100, 100
-				.font "", 12 .bold
-				.spacing 0, 4
-				.skin "" .nobg .noframe .noPadding
-				.mapLayer 7
-				.eraseWhenTransfer
-				.affectedByFlash
-				.affectedByShake
-			    }
-			    
-			}
+					v[2070] += 1
+					v[4592] = 0
+					Temp11 = CurNodeMINUS1 * v[4564] + v[4569]
+					v[Temp11].copy var1, 2
+					@map[v[501]].setVehiclePos .boat .pos var1, var2 .retain
+					reg2 = boat.scrx
+					reg3 = boat.scry
+					reg2 += 8
 
 
-			v[375] = v[2875] % 20
+					__if DEBUG_BUILD == 1 {
+							def DEBSTRING_V2070 = __str("\v[","2070","]")
+							@pic[v[2070]].strpic {
+								DEBSTRING_V2070
+								.pos reg2, reg3 .center
+								.size 32, 32                        .scrollWithMap
+								.chromakey 1
+								.scale 100
+								.trans 10
+								.rgbs 200, 200, 100, 100
+								.font "", 12 .bold
+								.spacing 0, 4
+								.skin "" .nobg .noframe .noPadding
+								.mapLayer 7
+								.eraseWhenTransfer
+								.affectedByFlash
+								.affectedByShake
+							}
+							
+					}
 
-			//opt 27.4.23
-			//v[2071] = 4359 - v[375] * 2
-			v[2071] = 4359 
-			v[2071] -= v[375] * 2 
-			reg2.copy v[v[2071]], 2
-			// "WP"
-			v[2875] += 1
-			
+
+					v[375] = v[2875] % 20
+
+					//opt 27.4.23
+					//v[2071] = 4359 - v[375] * 2
+					v[2071] = 4359 
+					v[2071] -= v[375] * 2 
+					reg2.copy v[v[2071]], 2
+					// "WP"
+					v[2875] += 1
+					
 		    }
-		    PF_current_checking_Node = v[v[4600] + PF_current_checking_Node - 1]
+		    PF_current_checking_Node = v[v[4600] + CurNodeMINUS1]
 		    @if PF_current_checking_Node == PF_start_Node {
-			@break
+					@break
 			
 		    }
 		    
@@ -452,48 +451,50 @@ __fn func_pathfinding_Astar() {
 		    v[379] = 0
 		    v[2875] = 6
 		    @loop v[2875] .dst v[2064] {
-			@if v[2071] >= 4360 {
-			    v[2071] = 4321
-			    
-			}
-			v[2072] = 2873 - v[2064] * 2
-			v[v[2071]].copy v[2851], 2
-			v[2863].copy v[2861], 2
-			v[2865].copy v[2863], 2
-			v[2867].copy v[2865], 2
-			v[2869].copy v[2867], 2
-			v[2871].copy v[2869], 2
-			v[2873].copy v[2871], 2
-			v[2851].copy v[2873], 2
-			v[2071] += 2
-			
+					@if v[2071] >= 4360 {
+							v[2071] = 4321
+							
+					}
+					v[2072] = 2873 - v[2064] * 2
+					v[v[2071]].copy v[2851], 2
+					v[2863].copy v[2861], 2
+					v[2865].copy v[2863], 2
+					v[2867].copy v[2865], 2
+					v[2869].copy v[2867], 2
+					v[2871].copy v[2869], 2
+					v[2873].copy v[2871], 2
+					v[2851].copy v[2873], 2
+					v[2071] += 2
+					
 		    }
 		    
 		    
 		} .else bl {
 		    @if v[2875] > 6 {
-			v[379] = 0
-			v[2875] = 6
-			
+					v[379] = 0
+					v[2875] = 6
+					
 		    }
+
 		    @loop v[2875] .dst v[2064] {
-			v[2072] = 2873 - v[2064] * 2
-			v[v[2071]].copy v[2851], 2
-			v[2863].copy v[2861], 2
-			v[2865].copy v[2863], 2
-			v[2867].copy v[2865], 2
-			v[2869].copy v[2867], 2
-			v[2871].copy v[2869], 2
-			v[2873].copy v[2871], 2
-			v[2851].copy v[2873], 2
-			v[2071] += 2
-			
+					v[2072] = 2873 - v[2064] * 2
+					v[v[2071]].copy v[2851], 2
+					v[2863].copy v[2861], 2
+					v[2865].copy v[2863], 2
+					v[2867].copy v[2865], 2
+					v[2869].copy v[2867], 2
+					v[2871].copy v[2869], 2
+					v[2873].copy v[2871], 2
+					v[2851].copy v[2873], 2
+					v[2071] += 2
+					
 		    }
 		    
 		    
 		}
 
-		/*@if s[1] .isOn() {
+		/*
+		@if s[1] .isOn() {
 		    t[801] .asg "\v[4582]ko" .extract
 		    t[801] .cat t[525]
 		    @loop v[4582] .dst var1 {
@@ -517,7 +518,8 @@ __fn func_pathfinding_Astar() {
 		    
 		    t[801] .toFile "debug_closelist", .utf8
 		    
-		}*/
+		}
+		*/
 
 
 		// from this part seemingly buggy
@@ -557,70 +559,71 @@ __fn func_pathfinding_Astar() {
 			    // "Check Enemy Team List"
 			    Ptr20 = Temp1 + v[1145 + var2]
 			    @if v[Ptr20] >= 1 {
-				Ptr19 = v[Ptr20] * 300
-				Ptr19 += 4735
+						Ptr19 = v[Ptr20] * 300
+						Ptr19 += 4735
 
-				// "The unit belongs to the selected Cohort"
-				@if v[Ptr19] == v[320] {
-				    
-				    //opt 27.4.23
-				    Ptr18 = v[Ptr20] * 300
-				    Ptr18 += 4734
+						// "The unit belongs to the selected Cohort"
+						@if v[Ptr19] == v[320] {
+								
+								//opt 27.4.23
+								Ptr18 = v[Ptr20] * 300
+								Ptr18 += 4734
 
-				    @if `v[Ptr18] & 49152 { // AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_PATHFINDING
-					@if `!(v[Ptr18 - 31] & AgentBits_FLAG_PF_walldetection_switch) {
+								@if `v[Ptr18] & 49152 { // AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_PATHFINDING
+									@if `!(v[Ptr18 - 31] & AgentBits_FLAG_PF_walldetection_switch) {
 
-					    var1 = v[Ptr20]
-					    v[2880] = LEGV_ConstAIselectedListHead
-					    v[2841] = 0
-					    v[ptr_null].copy v[LEGV_ConstAIselectedListHead],200 //v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
+											var1 = v[Ptr20]
+											v[2880] = LEGV_ConstAIselectedListHead
+											v[2841] = 0
+											v[ptr_null].copy v[LEGV_ConstAIselectedListHead],200 //v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
 
-					    //CEV.. add agent to AI control list
-					    // @call .cev 1747
-					    v[v[2880]] = var1
-					    v[2880] += 1
-					    v[2841] += 1
-					    
-					    @if v[378] == -1 {
-						v[Ptr18] |= AI_routine_bits_FLAG_Pathblocked
+											//CEV.. add agent to AI control list
+											// @call .cev 1747
+											v[v[2880]] = var1
+											v[2880] += 1
+											v[2841] += 1
+											
+											@if v[378] == -1 {
+												v[Ptr18] |= AI_routine_bits_FLAG_Pathblocked
+										
+											} .else bl {
+												v[Ptr18] &= KILL_AI_routine_bits_FLAG_Pathblocked //-8388609//~8388608
+										
+											}
+
+											v[Ptr18] &= -16385//~16384
+											@if v[379] == 1 {
+												v[Ptr18] &= -16859137//~16859136
+										
+											} .else bl {
+												v[Ptr18] |= AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_PFskip
+										
+											}
+
+											// wall detected, and?
+											@if `!(v[Pathfinding_AgentData_head_ptr + 3] & AgentBits_FLAG_walldetected) || v[378] != -1 {
+												v[Ptr18] |= 4096
+												Temp16 = v[LEGV_ConstAIselectedListHead] * 300 
+												Temp16 += 4741
+												Temp17 = Temp16 + 14
+												Temp17 = max(v[Temp17], 0)
+												Temp16 += Temp17 * 2
+												v[Temp16].copy v[2851], 2
+												v[2961].copy v[2861], 15
+												func_pathfinding_move()
+
+											} .else bl {
+												// stop pathfinding
+												v[Pathfinding_AgentData_head_ptr + 34] &= AI_routine_bits_KILL_FLAG_PATHFINDING//-16385 ~16384
+										
+											}
+											
+									}
+									
+								}
+								
+						}
 						
-					    } .else bl {
-						v[Ptr18] &= KILL_AI_routine_bits_FLAG_Pathblocked //-8388609//~8388608
-						
-					    }
-
-					    v[Ptr18] &= -16385//~16384
-					    @if v[379] == 1 {
-						v[Ptr18] &= -16859137//~16859136
-						
-					    } .else bl {
-						v[Ptr18] |= AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_PFskip
-						
-					    }
-
-					    @if `!(v[Pathfinding_AgentData_head_ptr + 3] & AgentBits_FLAG_walldetected) || v[378] != -1 {
-						v[Ptr18] |= 4096
-						Temp16 = v[LEGV_ConstAIselectedListHead] * 300 
-						Temp16 += 4741
-						Temp17 = Temp16 + 14
-						Temp17 = max(v[Temp17], 0)
-						Temp16 += Temp17 * 2
-						v[Temp16].copy v[2851], 2
-						v[2961].copy v[2861], 15
-						func_pathfinding_move()
-
-					    } .else bl {
-						// stop pathfinding
-						v[Pathfinding_AgentData_head_ptr + 34] &= AI_routine_bits_KILL_FLAG_PATHFINDING//-16385 ~16384
-						
-					    }
-					    
-					}
-					
-				    }
-				    
-				}
-				
 			    }
 			    
 			}

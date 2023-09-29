@@ -528,15 +528,9 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	// --------------------------
 	boot_DIS_js_system()
 
+	log_push("BOOT PROCESS FINISHED.")
 	@if s[316].isOn(){
-		@loop .inf() {
-				@if .canOutput() {
-						@break
-				}
-				@wait 0
-		}
-		log_push("BOOT PROCESS FINISHED.")
-		LogBuffer.toFile "..\user\log\DIS_bootlog", .utf8
+		log_export("..\user\log\DIS_bootlog")
 	}
 	LogBuffer.asg ""
 
@@ -1660,12 +1654,7 @@ __fn init_DIS_database $already_loaded {
 
 //Boot Process
 cev .id(2120), .name("Game:Boot"),{
-	var1 = sys.date
-	var2 = sys.time
-	LogBuffer.asg "BOOTING DIS - Date:"
-	LogBuffer.cat var1
-	LogBuffer.cat " Time:"
-	LogBuffer.cat var2
+	log_start("BOOTING DIS")
 
 	@gsave.open
 	gs[301].copyTo s[301], 100

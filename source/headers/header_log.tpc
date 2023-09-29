@@ -130,6 +130,26 @@ __fn log_push $str {
 	Str_Log.cat $str
 }
 
-__fn log_export $prefix {
-	
+__fn log_start $str {
+	var1 = sys.date
+	var2 = sys.time
+	LogBuffer.asg $str
+	LogBuffer.cat " - Date:"
+	LogBuffer.cat var1
+	LogBuffer.cat " Time:"
+	LogBuffer.cat var2
+
+
 }
+
+__fn log_export $path {
+	@loop .inf() {
+		@if .canOutput() {
+			@break
+		}
+		@wait 0
+	}
+	LogBuffer.toFile $path, .utf8
+
+}
+

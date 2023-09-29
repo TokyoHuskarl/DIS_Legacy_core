@@ -85,11 +85,18 @@ let MAP; // {RTSmap} current map
 let g_PLAYER; // {DIS_RTSplayer}
 
 
-// actually DISentity on js system is not a real entity, it's something like bundle of links to actual entities on RM variables.
-// so unless you refresh its information through functions, data in DISentity on js is often diffrent from actual value stored in RPGMaker. 
-//
 
-class DISentity { // fundamental prototype for DIS RPGmaker Object
+
+
+// ------------------------------------------------
+// DIS objects
+// ------------------------------------------------
+
+// actually DISentity on js system is not a real entity that manages DIS agents in the game. 
+// It's rather something like a bundle of links to actual entities on RPGMaker.
+// so unless you refresh its information through functions, data in DISentity can be diffrent from the actual value stored in RPGMaker. 
+
+class DISentity { // prototype for DIS RPGmaker Object
 	constructor(){
 		this.class = "DISentity";
 		this.receivedStorage = []; // given from CmdReturn
@@ -97,7 +104,7 @@ class DISentity { // fundamental prototype for DIS RPGmaker Object
 		this.receivedSth = false;
 		this.activated = false;
 		this.isCertified = false; // turns true after checking essential value integrity with actual game data on RPGmaker
-	}
+	};
 
 	receiveFromCmd(stuff,sendwhat){
 		if (stuff != null){ // at least received something.
@@ -108,20 +115,18 @@ class DISentity { // fundamental prototype for DIS RPGmaker Object
 				this.receivedStorage[address] = stuff;
 			}
 			this.receivedSth = true;
-			deblog(`DISentity: received ${stuff}`)
-		} else { // got only null
-			errorlog("DISentity: Receiving return value from DIS command process on TPC failed.")
-		}
+			deblog(`DISentity: received ${stuff}`);
+		} else { // got null
+			errorlog("DISentity: Receiving return value from DIS command process on TPC failed.");
+		};
 		this.isAwaitingReturn = false;
-	}
+	};
 
-	getWhereToStorage(gtwut){ // override me, but beware, this function must always return index int for receivedStorage array.
+	getWhereToStorage(gtwut){ // override me, but beware, this function must always return int index for receivedStorage array.
 		return "undefined";
 	}
 
 	getClass(){return this.class;};
-
-	// get ckReceived() { return this.receivedSth ;} 
 
 
 
@@ -217,7 +222,7 @@ class DISagent_static extends DISagent {
 
 class RTSagentGroup { // list object for DISagent.
 	constructor(agtArray,team){
-		deblog(agtArray)
+		deblog(agtArray);
 		this.idlist = [];
 
 		// this design can make terrible error in future? idk 
@@ -235,7 +240,7 @@ class RTSagentGroup { // list object for DISagent.
 		this.team = team || "undefined";
 	}
 
-	getids(){ return this.idlist };
+	getids(){ return this.idlist; };
 	
 }
 
@@ -276,10 +281,6 @@ function make_Array_DIStable(array) {
 	// remove the last "|" upon return
 	return string.slice(0,-1);
 };
-
-// ------------------------------------------------
-// DIS objects
-// ------------------------------------------------
 
 // DIS object is basically container for fundamental data of DIS on quickjs.
 // Whenever you want to access DIS game data, the DIS object serves you as a way to get/set the data..
@@ -389,17 +390,13 @@ DIS.building = {
 };
 
 DIS.log = {
-	// ??
+	// push background log
 	pushLog: function(txt){
 		let curlog = gett(Adrt_ShLog);
 		curlog += LF + txt;
 		sett(Adrt_ShLog,curlog);
 		deblog(txt); // deb
 	}
-	
-	
-	
-	
 	
 };
 
@@ -484,7 +481,7 @@ DIS.agent = {
 
 	ck_if_alive(agentid){
 		ptr = this.getPtrToMainParam(agentid);
-		ptr += 1; // agenttype. if *ptr > 0 it's considered alive.
+		ptr += 1; // refering to agenttype slot. If *ptr > 0, the agent is seen alive.
 		// how about checking unique genid?
 		return (getv(ptr) > 0);
 	},
@@ -547,7 +544,8 @@ class DISvariable extends DISentity { // nonvolatile Variable for RTS mission
 		this.address = address;
 		this.value = getv(address);
 		this.JSindex = RTS.savedVars.length;
-		RTS.savedVars.push(this);
+		this.activated = true;
+		RTS.savedVars.push(this); // push to RTS savedVars array.
 
 	};
 
@@ -865,12 +863,8 @@ class DIS_dialog extends DISentity{
 
 
 
-
-//
-
-
 // ------------------------------------------------
-// DIS RTS module
+// DIS RTS object
 // ------------------------------------------------
 
 const Adrt_dialogQueue = 785 // -> Game_script_general.tpc
@@ -892,8 +886,16 @@ let RTS = {
 	Mstr: {}, // mission strings
 	*/
 
+	path: { // instances relating to pathfinding or agent movement order. properties won't be restored on loading savegame.
 
-	mvgrp: [], // agent movement group
+		mvgrp: [], // agent movement group
+
+		PfWPbuffer: [], // per
+
+
+
+	},
+
 
 	DlogManager: {
 		queue: "",
@@ -1147,9 +1149,8 @@ var Cmd = {
 	// Cmd.run()
 	// give signal to run DIS commands 
 	run: function() {
-		// for (let link of this.ReturnQueue){link.send();}; // let all return link send what they received
 
-		// give raw cmd as string to RPGMaker
+		// give raw cmd as a string to RPGMaker
 		sett(adr_RMStr_CmdOrder,this.CmdQueue);
 		// turn on RM switch to run interpreter as cev
 		sets(adr_RMbool_RUN_CMD,1);
