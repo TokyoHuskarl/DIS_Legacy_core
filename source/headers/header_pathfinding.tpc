@@ -6,9 +6,17 @@ __if LOAD_HEADER_PF != 1 {
 // Node system configuration
 def {
 	Node_Data_Size = 20
-	
+	NodesAmountLimit = 200 * 200
 }
+defv Const_save_var_NodeDataSize = 4564
+defv Const_save_var_NodeArrayHead = 4569
+defv Const_save_var_PFNodesLink = 4600
+defv Const_save_var_PFNodesLinkMINUS1 = 4594 // wtf
 
+defv Const_save_var_OpenNodesListHead = 4568
+defv Const_save_var_ClosedNodesListHead = 4567
+
+vname[4594], "PF_Const_NodesLink_MINUS1"
 
 // this parameter decides from how much movement-cost(Node[2]) agents see the node as Wall or Obstacle node.
 // 100 = neutral, one obstacle tile = 6
@@ -20,6 +28,11 @@ def PF_Limit_per1f = 16
 
 // defs for PF system start
 
+def {
+ Adr_PFWayPointDeployArray_Len = 4320 // -> used in js - RTS.path.sendPath()
+ Adr_PFWayPointDeployArray_Head = 4321 // -> used in js - RTS.path.sendPath()
+ Adr_PFWayPointDeployArray_Tail = 4359
+}
 
 defs Bool_PF_Wall_Detection = 280
 

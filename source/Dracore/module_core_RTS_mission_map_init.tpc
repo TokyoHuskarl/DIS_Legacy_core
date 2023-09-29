@@ -13,6 +13,7 @@ def {
 // INIT MISSION - this one is called whenever you open new mission
 __fn CEV_MISSION_INIT {
 	log_start("Initializing Mission")
+	eval_js("RTS.init()") // js RTS object init
 	v[1080] = v[1012]
 	s[18].off
 	s[43].on

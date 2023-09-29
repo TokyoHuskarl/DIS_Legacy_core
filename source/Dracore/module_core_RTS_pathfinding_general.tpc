@@ -120,52 +120,92 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 
 				// Pathfinding bits check
 				@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PATHFINDING {
+						
+						// If continue Pathfinding flag is on, ask js path container for path
+						@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFcontinue {
+							PF_Manager_Loop_AgentPtr.deref var1,1 
+							def JS_GIB_PATH = __str("RTS.path.givePath(\v[",__id(var1),"])")
+							js_StringBuffer.asg JS_GIB_PATH, .extract
+							@js .run(js_StringBuffer), reg1 // givePath() returns {int} to reg1.
+							// msg("get array[\v[21]] from givePath()")
+
+							@if reg2 > 0 { // only if the agent has managed to receive array
+								@if reg1 == 0 { // the agent will reach goal node in this attempt
+									refresh_deployed_agent_data()
+									v[379] = 1 // will reach the goal..
+									// get path
+									set_Path_gotten_from_jscontainer()
+									pf_agent_move()
+
+									TT1 = Pathfinding_AgentData_head_ptr + 34
+									v[TT1] &= ~AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue // kill flags
+									agent_AI_routine_bits |= AI_routine_bits_FLAG_PFskip
+
+								}.elif reg1 == -1 { // seemingly js path container was empty (caused by loading savegame)
+									// then?
+								}.else bl { // otherwise
+									refresh_deployed_agent_data()
+
+									// get path
+									set_Path_gotten_from_jscontainer()
+									
+									pf_agent_move()
+
+									TT1 = Pathfinding_AgentData_head_ptr + 34
+									v[TT1] &= ~AI_routine_bits_FLAG_PATHFINDING // kill flags
+									agent_AI_routine_bits |= AI_routine_bits_FLAG_PFskip
+								}
+							}
+						}
+
+
+
 				    @if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFskip {
 
-					 // Use TT1 as a Ptr
-					 TT1 = Pathfinding_AgentData_head_ptr + 34
-					 v[TT1] &= KILL_AI_routine_bits_FLAG_PFskip // -65537//~65536
-					
+							 // Use TT1 as a Ptr
+							 TT1 = Pathfinding_AgentData_head_ptr + 34
+							 v[TT1] &= KILL_AI_routine_bits_FLAG_PFskip // -65537//~65536
+							
 				    } .else bl {
-					
-					// Check if the agent can reach the goal node in the end
-					@if `agent_AI_routine_bits & AI_routine_bits_FLAG_Pathblocked { // If not
-					    @if `!(agent_AgentBits & AgentBits_FLAG_walldetected) { // and the situation is not around wall detection
-						
-						// then, retarded PF is not done many times (the limit setting is as half as the one for A*)
-						@if PF_done_per_1f <= 8 {
-							// start dumb "pathfinding" to look as if the agent is searching the path
-							func_pathfinding_retarded()
-							PF_done_per_1f += 1
-						}
-
-						// Use TT1 as a Ptr to agent_AI_routine_bits
-						TT1 = Pathfinding_AgentData_head_ptr + 34
-						v[TT1] &= ~AI_routine_bits_FLAG_RayCast 
-						v[TT1] &= KILL_AI_routine_bits_FLAG_Pathblocked // -8388609 ~8388608
-
-						v[TT1] |= AI_routine_bits_FLAG_1secDelay_PF
-						
-					    }
-					    
-					} .else bl {
-						
 							
-						// go for the A*!
-						func_pathfinding_Astar()
-						PF_done_per_1f += 1
+							// Check if the agent can reach the goal node in the end
+							@if `agent_AI_routine_bits & AI_routine_bits_FLAG_Pathblocked { // If not
+									@if `!(agent_AgentBits & AgentBits_FLAG_walldetected) { // and the situation is not around wall detection
+								
+								// then, retarded PF is not done many times (the limit setting is as half as the one for A*)
+								@if PF_done_per_1f <= 8 {
+									// start dumb "pathfinding" to look as if the agent is searching the path
+									func_pathfinding_retarded()
+									PF_done_per_1f += 1
+								}
 
-						// Use TT1 as a Ptr to agent_AI_routine_bits
-						TT1 = Pathfinding_AgentData_head_ptr + 34
-						v[TT1] &= ~AI_routine_bits_FLAG_RayCast // kill raycasting flag
-						@if `!(v[TT1] & AI_routine_bits_FLAG_Pathblocked) { // the agent seemingly cannot reach the goal node
-							// then end Pathfinding
-							v[TT1] &= AI_routine_bits_KILL_FLAG_PATHFINDING // -16385//~16384
-						}
+								// Use TT1 as a Ptr to agent_AI_routine_bits
+								TT1 = Pathfinding_AgentData_head_ptr + 34
+								v[TT1] &= ~AI_routine_bits_FLAG_RayCast 
+								v[TT1] &= KILL_AI_routine_bits_FLAG_Pathblocked // -8388609 ~8388608
+
+								v[TT1] |= AI_routine_bits_FLAG_1secDelay_PF
+								
+									}
+									
+							} .else bl {
+								
+									
+								// go for the A*!
+								func_pathfinding_Astar()
+								PF_done_per_1f += 1
+
+								// Use TT1 as a Ptr to agent_AI_routine_bits
+								TT1 = Pathfinding_AgentData_head_ptr + 34
+								v[TT1] &= ~AI_routine_bits_FLAG_RayCast // kill raycasting flag
+								@if `!(v[TT1] & AI_routine_bits_FLAG_Pathblocked) { // the agent seemingly cannot reach the goal node
+									// then end Pathfinding
+									v[TT1] &= AI_routine_bits_KILL_FLAG_PATHFINDING // -16385//~16384
+								}
+									
+									
+							}
 							
-					    
-					}
-					
 				    }
 				    
 				}

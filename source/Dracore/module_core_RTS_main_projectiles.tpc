@@ -27,6 +27,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 	v[462] = 1
 	v[217] = 0
 
+
 	@loop v[4559] .dst v[214] {
 			v[215] = v[214] * 100
 			//@comment "Access15 = ProjType"
@@ -199,9 +200,9 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 												@if reg1 == 1 {
 													 // @comment "Hit!"
 														//@comment "#Buff"
-														var1 = v[640] //v[Projectile_Ptr + 40]
+														var1 = v[640] 
 														@if var1 >= v[1186] {
-															var3 = v[641] //(v[Projectile_Ptr + 41])
+															var3 = v[641] 
 															func_bs_register_buff_with_time(var1 Ptr20 var3)
 													
 														}

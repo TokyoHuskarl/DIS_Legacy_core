@@ -802,7 +802,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 										v[4001..4004] = 100 // set RGBS
 										@if s[72] .isOff() { // RGB colour set
-												v[4001..4004] -= (v[1002] - 108 - agent_RelativeY) / 14 - TT13
+												TT1 = v[603] & 128 ? 32 : 14 // only a slight effect on wall colour 
+												v[4001..4004] -= (v[1002] - 108 - agent_RelativeY) / TT1 - TT13
 										}
 
 										// overlapping ui
@@ -812,7 +813,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 										})
 
 											@if v[188] > 0 {
-													@if `v[603] & 128 {
+													@if `v[603] & 128 { // walls
 															@pic[v[188]].move {
 																	.pos Temp5, Temp6 .center
 																	.scale 100

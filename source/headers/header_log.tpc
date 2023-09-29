@@ -61,6 +61,10 @@ __fn func_show_msg $str {
 	func_logupdate_end()
 }
 
+__fn msg $str { // simplified 
+	func_show_msg($str)
+}
+
 def macro_check_if_agentdata_extracted = {
 	__if AGENT_DATA_EXTRACTED != 1{
 		func_errlog("ERROR:Agent data has not been extracted in process, even though this process needs it.")

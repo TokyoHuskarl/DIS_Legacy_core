@@ -368,7 +368,7 @@ struct("agent",{
 	AI_decision_bits_FLAG_Sub_WEP_needs_Ammo = 2048
 	AI_decision_bits_FLAG_Currently_Melee = 4096
 	AI_decision_bits_FLAG_Currently_Ranged = 8192 
-	AI_routine_bits_FLAG_Forbid_AI_WeaponChange = 67108864
+	AI_routine_bits_FLAG_Forbid_AI_WeaponChange = 67108864 // AI_routine_bits??!?!?
 		AI_decision_bits_FLAGs_can_change_flags_all = 4+8+16+32+64+128
 		AI_decision_bits_KILL_ALL_WEAPONCHANGE_FLAG = ~(1+2+4+8+16+32+64+128+256+512+4096+8192)
 	
@@ -391,6 +391,7 @@ struct("agent",{
 		AI_routine_bits_KILL_FLAG_PFcontinue=-32769
 		AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PFcontinue 
 	AI_routine_bits_FLAG_PFskip = 65536
+		
 	AI_routine_bits_FLAG_Manual_Ordered = 131072
 	AI_routine_bits_FLAG_PF2Agent = 524288
 	AI_routine_bits_FLAG_AIskip = 2097152

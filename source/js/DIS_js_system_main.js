@@ -448,6 +448,7 @@ DIS.string = {
 const Adr_ptr_spawnAgent = 201; //v[201]
 
 DIS.agent = { 
+	limit: getv(1017), // get from game variable
 	genPtrPos: 0,
 
 	// Search Empry Space function - this function searches a blank space for an agent in the agent data space.
@@ -887,10 +888,42 @@ let RTS = {
 	*/
 
 	path: { // instances relating to pathfinding or agent movement order. properties won't be restored on loading savegame.
+		init: function(){
+			for (let i = 0; i < DIS.agent.limit; i++){
+				this.PfWPbuffer[i] = [];
+			};
+
+
+		},
 
 		mvgrp: [], // agent movement group
 
-		PfWPbuffer: [], // per
+		PfWPbuffer: [], // node array stored for each agents 
+		storePath: function(agentid,PathArray){ // usually called on TPC
+			this.PfWPbuffer[agentid] = PathArray; // send PathArray to RTS.path.PfWPbuffer.
+			let t = "RTS.path: stored " + PathArray; // tesT
+			deblog(t);
+
+		},
+
+		givePath: function(agentid){ // give stored path to the agent. array length after this is returned.
+			
+			let len = this.PfWPbuffer[agentid].length;
+			if (len == 0) {return -1} // if there's no elements stored (it can happen after loading savegame) break and return -1. 
+
+			let cnt = Math.min(len,6);
+			let i;
+			let path = [cnt]; // path[0] = cnt of this
+			for (i = 0; i < cnt; i++){ // pick up nodeid from head of stored array
+				path[i + 1] = this.PfWPbuffer[agentid].shift();
+			};
+
+			setv(22,path); // deploy path array to reg2 ~ reg9. 
+			let t = "RTS.path: give " + path + " to id:" + agentid; // tesT
+			deblog(t);
+			return (len - i); // return to reg1 (expected)
+		},
+
 
 
 
@@ -908,19 +941,21 @@ let RTS = {
 		afterEffects: [],
 	},
 
-	clearMission: function(){
+	init: function(){
 		this.mission = new RTSmission();
 		this.map = new RTSmap();
 		this.isRTSmode = false;
 		this.global = {}; // mission triggers
 		this.createdTrgs = []; // mission triggers
 		this.savedVars = []; // mission vars
-
+		this.path.init();
+		deblog("RTS obj init.")
 	},
 
 	openMission: function(missionid,mapid){ // "openmap" command in the old DISshell.
 		this.mission = new RTSmission(missionid,mapid);
 		this.isRTSmode = true;
+		this.path.init();
 		
 	},
 
@@ -1004,7 +1039,8 @@ let RTS = {
 		deblog(`${this.createdTrgs.length} triggers exist in mission.`);
 		deblog(`and currently ${this.mission.triggers.queue.length} triggers are active. `);
 
-		
+		// path data array init
+		this.path.init();
 
 		// Dlog?
 		this.DlogManager.receiveQ(); // restore Dlog queue
@@ -1480,6 +1516,9 @@ if (VIRTUAL_ENV){
 	Cmd.run()
 	Cmd.sendback([11,4,5,14],0,RMarray)
 	fucker.refreshPicInfo();
+	RTS.path.init();
+	RTS.path.storePath(1,[1414,4545,1919])
+	RTS.path.givePath(1)
 }
 // init 2
 //

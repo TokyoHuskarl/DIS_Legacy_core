@@ -356,8 +356,8 @@ __fn ColCheck {
 						
 								macro_ColCheck_distance()
 
-								@if `v[322] + v[337] >= abs(Temp20) {
-									@if `v[323] + v[338] >= abs(v[321]) {
+								@if `v[322] + v[337] >= abs(victim_RelativeX) {
+									@if `v[323] + v[338] >= abs(victim_RelativeY) {
 										macro_ColCheck_push()
 									}
 									
@@ -375,8 +375,8 @@ __fn ColCheck {
 
 								macro_ColCheck_distance()
 
-								@if `v[322] + v[337] >= abs(Temp20) {
-									@if `v[323] + v[338] >= abs(v[321]) {
+								@if `v[322] + v[337] >= abs(victim_RelativeX) {
+									@if `v[323] + v[338] >= abs(victim_RelativeY) {
 										macro_ColCheck_push()
 										
 									}
@@ -390,7 +390,7 @@ __fn ColCheck {
 						
 				}
 
-				@if `!(v[Temp32] & 64) {
+				@if `!(v[Temp32] & AgentBits_Collided_Other_Agent) { // NOT collided
 					v[Temp32] &= -385//~384
 					
 				}
@@ -405,16 +405,24 @@ __fn ColCheck {
 
 
 __fn macro_ColCheck_distance {
+	/*
 	Temp20 = v[v[203]] * 300
 	Temp20 += 4707
 	v[Temp20].copy Temp20,2
 	Temp20.sub v[607],2
+	*/
+	victim_AgentType = v[v[203]] * 300
+	victim_AgentType += 4701
+	v[victim_AgentType].copy victim_AgentType,102
+	victim_RelativeX.sub agent_RelativeX,2
 
 	//get colbox
 	__if DIS_EXPERIMENTAL == -1 { // pixel edit bug
 		//get from AEAB
 		v[322] = v[v[203]]
 		get_AEAB_array(v[322],__id(v[322]),AgentExBuffer_SLOT_ColBoxWidth,2)
+	}.elif DIS_EXPERIMENTAL == 1 { // use raw hitbox as a collision
+		victim_Width.copy v[322],2
 	}.else bl {
 		v[322] = Address_Agent_HitCollisionArrayStartMinus2 
 		v[322] += v[v[203]] * 2
@@ -428,9 +436,17 @@ __fn macro_ColCheck_distance {
 __fn macro_ColCheck_push {
 
 	// TT1 = Const_save_var_TileFlags + v[632] // check Tile flag
-	v[320..321] *= (v[527 + ((v[Temp32] | (v[638] & 2 && v[680] > 0 ? 256 : 0)) & 256) / 256]) + (v[Ptr5] & FLAG_Maptile_Crowded ? 1 : 0) // if it's Crowded, push more
-	v[Ptr19] .add Temp20, 2
-
-	v[Temp32] |= 64
+	v[__id(victim_RelativeX)..__id(victim_RelativeY)] *= (v[527 + ((v[Temp32] | (v[638] & 2 && v[680] > 0 ? 256 : 0)) & 256) / 256]) + (v[Ptr5] & FLAG_Maptile_Crowded ? 1 : 0) // if it's Crowded, push more
+	v[Ptr19] .add victim_RelativeX, 2
+	
+	defv Col_Ptr2AI_routine_bits = __id(Temp33) 
+	@if victim_AgentType == 11 { // pushed by static agent
+		@if victim_TeamID == agent_TeamID { // and it's ally
+			Col_Ptr2AI_routine_bits = Temp1 + 34
+			def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PFskip + AI_routine_bits_FLAG_PATHFINDING
+			v[Col_Ptr2AI_routine_bits] |=  !(agent_AgentBits & AgentBits_Collided_Other_Agent) ? Col_AIFLAG_PFandSkip : 0 // start pathfinding
+		}
+	}
+	v[Temp32] |= AgentBits_Collided_Other_Agent
 	@break
 }
