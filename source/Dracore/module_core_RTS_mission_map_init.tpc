@@ -18,10 +18,10 @@ __fn CEV_MISSION_INIT {
 	s[18].off
 	s[43].on
 	@sys.gameOpt .runWhenInactive
-	@comment "init map id"
+	// @comment "init map id"
 	t[751] .asg ""
 	t[752] .asg ""
-	@comment "init BGM string"
+	// @comment "init BGM string"
 	Current_BGMFile .asg ""
 	v[216574..1548949] = 0
 	@call .cev 1926

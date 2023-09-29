@@ -18,6 +18,7 @@ struct("agent",{
 
 	agent_PicID = 602
 	agent_AgentBits = 603
+	agent_StaticBits = 603
 	agent_Luck = 604
 
 
@@ -185,13 +186,14 @@ struct("agent",{
 	agent_Passive_Text = 821 // this maybe can be relocated into AEBA
 	agent_Culture_Icon = 822
 	agent_Passive_Type_Flag = 823
-
+	
 	agent_ChokeTimer = 827
 
 
 	agent_HeadSPregPenalty = 828
 	agent_TakenDamageMultiplier = 829
 
+	agent_UnitEyeSight_for_AgentSearch = 830
 
 	agent_Ammo = 832 //0x00(Max Ammo of Sub Weapon)0x00(CurrentAmmo of Sub Weapon)0x00(Max Ammo of Current Weapon)0x00(current Ammo of Sub Weapon) 
 	agent_ShieldType = 833
@@ -255,6 +257,12 @@ struct("agent",{
 	agent_OneTimeOffsetY = 897
 	agent_PictArray = 899
 	agent_generated_ID = 900
+	}
+
+	defv {
+		agent_static_AutoQue = 813
+		agent_static_ReserveAmount = 770
+
 	}
 
 	//Additional Agent Picture Buffer setting - AEBA - pic buffer
@@ -383,7 +391,7 @@ struct("agent",{
 	AI_routine_bits_FLAG_target_switched_by_AI=32
 	AI_routine_bits_FLAG_IdleAfterEnemySearch=64
 	AI_routine_bits_FLAG_AICohortGatheringAttack=128
-	AI_routine_bits_FLAG_tracing_flag=4096
+	AI_routine_bits_FLAG_tracing_flag = 4096 // this flag means tracing WALL. odd naming since it's from legacy pathfinding
 	AI_routine_bits_FLAG_tracing_wp=8192
 	AI_routine_bits_FLAG_PATHFINDING =16384
 		AI_routine_bits_KILL_FLAG_PATHFINDING=-16385

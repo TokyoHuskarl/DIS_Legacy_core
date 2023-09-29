@@ -17,14 +17,18 @@ __fn agent_AI_check_current_target {
 		//Try checking if current target is in sight radius  
 		Temp11 = v[Ptr20] * v[1117] 
 		Temp11 += 4700
-		v[Temp9].copy Temp4, 2
-		Temp1 = Temp11 + 7
-		Temp4 .sub v[Temp1], 2
+		v[Temp11].copy address_victim_buffer_head, agent_Basic_Array_size
+
+		agent_RelativeX.copy Temp4, 2
+		Temp4 .sub victim_RelativeX, 2
 		Temp4 .mul Temp4, 2
-		v[Temp6] = Temp4 + Temp5 + v[Temp11 + 276]
+		v[Temp6] = Temp4 + Temp5
+		v[Temp6] += victim_ProcessCamoValue
 		@if v[Temp6] < Temp8 {
 				//and if it's in the agent's sight, let it keep following to the target.
-				v[v[534] + Temp7] = v[Temp6] * 1000 + v[Ptr20] //+ v[4001 + min(v[Temp1 + 95], 29)] this part is needless, cuz the agent has no other possible target
+				TT1 = v[534] + Temp7
+				v[TT1] = v[Temp6] * 1000
+				v[TT1] += v[Ptr20] 
 				v[306..307] += 1
 				
 		}.else bl{
@@ -32,7 +36,7 @@ __fn agent_AI_check_current_target {
 			v[agent_AI_routine_bits] &= -129//~128
 		}
 		
-			}
+	}
 }
 
 
@@ -61,7 +65,8 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 			v[211] = v[v[536]] - 1
 				AgentIDholder = v[v[536]] 
 				v[v[212] + 3] &= -134217729//~134217728
-	//If worker AI flag is on
+
+				//If worker AI flag is on
 				@if `agent_AgentBits & AgentBits_FLAG_EnableCivAI {
 						@if `agent_AgentBits & AgentBits_FLAG_walldetected {
 								@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_tracing_flag) {
@@ -74,7 +79,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 						}
 						
 				} .else bl {
-						@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI {//9.5.23
+						@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI { //9.5.23
 								agent_AI_routine_bits = v[212] + 34
 								@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AIskip {
 										v[agent_AI_routine_bits] &= -2097153//~2097152
@@ -82,7 +87,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 								} .else bl {
 										Ptr20 = v[212] + 18
 										v[299] = v[212] + 241
-				//get team ID
+										//get team ID
 										Temp1 = v[212] + 100
 
 				//team ID % 3
@@ -96,13 +101,11 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 					Temp14 = v[Temp14]
 				}
 
-										Temp9 = v[212] + 7
-										//Temp8 = v[4034 + Temp14]
-				Temp8 = 4034 + Temp14
-				Temp8 = v[Temp8]
-										//Temp2 = v[4031 + Temp14]
-
-										//v[4001..4030] = 100000000
+										// Temp9 = v[212] + 7
+										// Temp8 = v[4034 + Temp14]
+										Temp8 = 4034 + Temp14
+										Temp8.deref Temp8,1
+										// Temp2 = v[4031 + Temp14]
 
 						__if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
 								get_AEAB_array(AgentIDholder,4001,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
@@ -116,7 +119,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 								LEGS_Common_Switch5.off
 								@if `Temp7 & 1 {
 										v[4001..4029] += 700000000
-										v[4011] -= 750000000
+										v[4011] -= 750000000 // wut
 										LEGS_Common_Switch5.on
 										
 								}
@@ -133,14 +136,11 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 						}
 
 						Temp7 = 0
-						//v[3401..3600] = 999999999
-				v[3401] = 999999999
-				v[3401].copy v[3402], 199
+										// set ptr to array for comparation of agents
 										v[534] = v[4579] + (v[1012] + 2) * v[211]
 										v[v[534]] = 0
 
-				//Temp8 = v[212] + 230 9.5.23
-										Temp8 = v[830]
+										Temp8 = agent_UnitEyeSight_for_AgentSearch
 										//@comment "##############"
 
 						// get sight range root
@@ -151,7 +151,8 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 				}.else bl {
 
 					v[315] = v[211] + v[4806]
-					v[315] = v[v[315]]
+					v[315].deref v[315],1
+					// v[315] = v[v[315]]
 				}
 
 				//If the agent has target agent
@@ -173,7 +174,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 										}
 
 										/*@comment "#########################		    #2002 Crd->Mort V1V2 reg1		    ##########################"*/
-										v[Temp9].copy TT1, 2
+										agent_RelativeX.copy TT1, 2
 										v[341..342] -= v[315]
 										TT1 .add v[53], 2
 										TT1 .sub v[76], 2
@@ -202,7 +203,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 										v[351] = TT1 | TT2
 
 										/*@comment "##########################2002 Crd->Mort V1V2 reg1##########################"*/
-										v[Temp9].copy TT1, 2
+										agent_RelativeX.copy TT1, 2
 										v[341..342] += v[315]
 										TT1 .add v[53], 2
 										TT1 .sub v[76], 2
@@ -242,8 +243,8 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 				//If the morton space where you're gonna check is the root space...
 										@if `TT3 & 768 {
 
-			Temp2 = 4031 + Temp14
-			Temp2 = v[Temp2]
+											Temp2 = 4031 + Temp14
+											Temp2 = v[Temp2]
 
 			//then just check team agent list - but this seemingly not good design (also kinda buggy), so maybe I need to change this later
 												Temp6 = 3601
@@ -256,7 +257,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 																Temp1 = v[Temp2] * 300 
 																Temp1 += 4700
 																v[Temp1].copy address_victim_buffer_head, agent_Basic_Array_size
-																v[Temp9].copy Temp4, 2
+																agent_RelativeX.copy Temp4, 2
 																Temp4 .sub victim_RelativeX, 2
 																Temp4 .mul Temp4, 2
 																v[Temp6] = Temp4 + Temp5
@@ -279,14 +280,16 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 																Temp1 = v[Temp2] * 300 
 																Temp1 += 4700
 																v[Temp1].copy address_victim_buffer_head, agent_Basic_Array_size
-																v[Temp9].copy Temp4, 2
+																agent_RelativeX.copy Temp4, 2
 																Temp4 .sub victim_RelativeX, 2
 																Temp4 .mul Temp4, 2
 																v[Temp6] = Temp4 + Temp5
 																v[Temp6] += victim_ProcessCamoValue
 
 																@if v[Temp6] < Temp8 {
-																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp2]
+																		TT1 = v[534] + Temp7
+																		v[TT1] = v[Temp6] * 1000
+																		v[TT1] = v[Temp2]
 																		v[306..307] += 1
 																		
 																}
@@ -304,8 +307,10 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 												TT5 = TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
 												TT6 = TT2 >> TT5
 												//@comment "#mask end"
-												v[340] = v[4546 - TT5 / 2] + TT6 * v[1004]
-												v[327] = v[v[4552 - TT5 / 2] + TT6]
+
+												TT5 /= 2
+												v[340] = v[4546 - TT5] + TT6 * v[1004]
+												v[327] = v[v[4552 - TT5] + TT6]
 												agent_TeamID = [1, 0, -2][(Temp14)] /*v[Temp1] % 3*/
 												Temp6 = 3601
 
@@ -325,7 +330,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 																Temp11 = v[v[312]] * v[1117] 
 																Temp11 += 4700
 																v[Temp11].copy address_victim_buffer_head, agent_Basic_Array_size
-																v[Temp9].copy Temp4, 2
+																agent_RelativeX.copy Temp4, 2
 																Temp4 .sub victim_RelativeX, 2
 																Temp4 .mul Temp4, 2
 																v[Temp6] = Temp4 + Temp5
@@ -410,18 +415,20 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 														
 												}
 
+												// checking tile terrain information
 												v[286] = v[4529] + Temp11 - v[69] + (v[312] - v[70]) * v[2061]
 
 												@if v[v[286]] > 0 {
-														@if `v[v[286]] / 10000 % 10 == 1 {
-																Temp2 = v[v[286]] / 100000
+														@if `v[v[286]] / 10000 % 10 == 1 { // if there's agent assigned
+
+																Temp2 = v[v[286]] / 100000 // pick it up
 																Temp1 = Temp2 * 300 
-				Temp1 += 4701
+																Temp1 += 4701
 
 																@if v[Temp1] == 11 {
 																		v[agent_AI_routine_bits] &= -193 // ~192//(64 + 128)
 
-																		@if `v[Temp1 + 99] != v[v[212] + 100] {
+																		@if `v[Temp1 + 99] != agent_TeamID {
 																				@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_Pathblocked { // v[v[212] + 34] & 8388608 {
 																						v[v[534]] = Temp2
 
@@ -430,7 +437,6 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 																						Temp7 += 1
 																						
 																				} .else bl {
-
 																						@if `v[agent_AI_routine_bits] & 1 { // v[v[212] + 34] & 1 
 																								v[agent_StanceOrder] = 2
 																								v[v[534]] = Temp2
@@ -440,17 +446,16 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 																								
 																						} .else bl {
 																								//@comment "stuck"
-																								@if agent_AAType == 0 { //v[v[212] + 103] == 0 {
-																										TT1 = v[v[212] + 100] != 0 ? rnd(0, 99) : 100
-																										@if TT1 <= 20 {
+																								@if agent_AAType == 0 { // melee
+																										TT1 = agent_TeamID != 0 ? rnd(0, 99) : 100
+																										@if TT1 <= 30 { // target stucked wall
 																												v[v[534]] = Temp2
 																												v[v[212] + 34] |= AI_routine_bits_FLAG_AIskip
 																												Temp7 += 1
 																												
 																										} .else bl {
-																												v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
-																												v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
-																												
+																												v[agent_AI_routine_bits] |= AgentBits_FLAG_PF_walldetection_switch + AI_routine_bits_FLAG_PATHFINDING
+																											:
 																										}
 																										
 																								} .else bl {
@@ -481,16 +486,16 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 														}
 														
 												} .else bl { 
-					def KILL_AI_routine_bits_FLAG_tracing_flag = ~AI_routine_bits_FLAG_tracing_flag
-														v[agent_AI_routine_bits] &= KILL_AI_routine_bits_FLAG_tracing_flag //-4097//~4096
-														
+													def KILL_AI_routine_bits_FLAG_tracing_flag = ~AI_routine_bits_FLAG_tracing_flag
+													v[agent_AI_routine_bits] &= KILL_AI_routine_bits_FLAG_tracing_flag //-4097//~4096
+												
 												}
 												
 										}
 										@if v[v[534]] < 999999999 {
 												v[v[534]..v[534] + Temp7 - 1] %= 1000
 												v[Ptr20] = v[v[534]]
-			def KILL_AI_routine_bits_FLAG_IdleAfterEnemySearch = ~AI_routine_bits_FLAG_IdleAfterEnemySearch
+												def KILL_AI_routine_bits_FLAG_IdleAfterEnemySearch = ~AI_routine_bits_FLAG_IdleAfterEnemySearch
 												v[agent_AI_routine_bits] &= KILL_AI_routine_bits_FLAG_IdleAfterEnemySearch //-65//~64
 												
 										} .else bl {
@@ -504,10 +509,10 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 										@if v[Ptr20] == 0 {
 												v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_IdleAfterEnemySearch
 
-												@if agent_StanceOrder == 3 {//`v[v[212] + 241] == 3 {
-														@if agent_MovementOrder != -2 {//`v[v[212] + 242] != -2 {
+												@if agent_StanceOrder == 3 { //`v[v[212] + 241] == 3 {
+														@if agent_MovementOrder != -2 { //`v[v[212] + 242] != -2 {
 				// ?
-																@if agent_MilPixMoveOrderedPointDist > 11000 {//`v[v[212] + 23] > 11000 {
+																@if agent_MilPixMoveOrderedPointDist > 11000 { //`v[v[212] + 23] > 11000 {
 																		v[v[212] + 245] = 0
 																		
 																}
@@ -542,66 +547,64 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 		v[536] = v[4532]
 		@while v[v[536]] != 0 {
 
-	Ptr1 = v[v[536]] * 300
-	Ptr1 += 4701
-	v[Ptr1].copy agent_ObjectType,300
+			Ptr1 = v[v[536]] * 300
+			Ptr1 += 4701
+			v[Ptr1].copy agent_ObjectType,300
 
-				@if agent_ActionTimer <= 0 {
+			@if agent_ActionTimer <= 0 {
 
-		agent_ActionTimer = v[1195] //init ActionTimer
+				agent_ActionTimer = v[1195] //init ActionTimer
 
-		@if `agent_AgentBits & AgentBits_FLAG_EnableCivAI { //peasant
+				@if `agent_AgentBits & AgentBits_FLAG_EnableCivAI { //peasant
 
-			agent_Morale = agent_InCombatTimer > 0 && !(agent_BaseObjBit & BaseObjBit_FLAG_Immune_to_bleed) ? 3 : 0
-			//finish?
+					agent_Morale = agent_InCombatTimer > 0 && !(agent_BaseObjBit & BaseObjBit_FLAG_Immune_to_bleed) ? 3 : 0
+					//finish?
 
-		}.else bl {
+				}.else bl {
 
-			@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI { //mil units
+					@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI { //mil units
 
-				@if agent_TargetAgentID == 0 { // have no target
-					
-					@if agent_MovementOrder < MovementOrder_TYPE_prioritize_moving { // and can go for his enemy agent...
-						
-						// then
-						// try to pick from own list 
-						v[211] = v[v[536]] - 1
-						v[534] = v[4579] + (v[1012] + 2) * v[211]
-						//pointer offset
-						v[297] = v[534] + v[1012]
-						//get obj amount in the list
-						Temp2 = v[v[297] + 1] - v[v[297]]
-						v[296] = v[534] + v[v[297]]
-						v[371] = 0
-						@loop Temp2 {
-								@if `0 < v[v[v[296]] * 300 + 4701] {
-							agent_TargetAgentID = v[v[296]]
-							v[371] = 1
-							@break
+						@if agent_TargetAgentID == 0 { // have no target
 							
+							@if agent_MovementOrder < MovementOrder_TYPE_prioritize_moving { // and can go for his enemy agent...
+								
+								// then
+								// try to pick from own list 
+								v[211] = v[v[536]] - 1
+								v[534] = v[4579] + (v[1012] + 2) * v[211]
+								//pointer offset
+								v[297] = v[534] + v[1012]
+								//get obj amount in the list
+								Temp2 = v[v[297] + 1] - v[v[297]]
+								v[296] = v[534] + v[v[297]]
+								v[371] = 0
+								@loop Temp2 {
+										TT1 = v[v[296]] * 300 
+										TT1 += 4701
+										@if TT1 > 0  {
+											agent_TargetAgentID = v[v[296]]
+											v[371] = 1
+											@break
+											
+										}
+										v[v[297]] += 1
+										v[296] += 1
+										
 								}
-								v[v[297]] += 1
-								v[296] += 1
 								
+								agent_TargetAgentID = v[371] == 0 ? 0 : agent_TargetAgentID
+
+							}
 						}
-						
-						@if v[371] == 0 {
-								agent_TargetAgentID = 0
-								
-						}
-					 
 
 					}
+
 				}
-
-			}
-
-		}
-		agent_ObjectType.copy v[Ptr1],300
-		
-	}
-	v[536] += 1
+				agent_ObjectType.copy v[Ptr1],300
 				
+			}
+			v[536] += 1
+						
 		}
 
 
@@ -613,71 +616,81 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 		v[4035..4036] = v[205]
 
 		@while v[v[536]] != 0 {
-
-				v[683] = v[v[536]] * 300 
-	v[683] += 4784
 				v[211] = v[v[536]] - 1
 				v[212] = v[211] * 300 
-	v[212] += 5000
+				v[212] += 5000
+				v[v[212]].copy Address_agent_array_head,agent_Basic_Array_size
 
-				@if v[v[683]] <= 0 {
-						v[v[683]] = v[1195] * 2
+				@if agent_ActionTimer <= 0 {
+						agent_ActionTimer = v[1195] * 2
 
-						@if `v[v[212] + 3] & 1048576 {
-								Ptr20 = v[212] + 18
-								v[299] = v[212] + 241
-								Temp1 = v[212] + 100
+						@if `agent_StaticBits & 1048576 {
+							Ptr20 = v[212] + 18
+							v[299] = v[212] + 241 // ?
+							Temp1 = v[212] + 100
 
-		__if DIS_EXPERIMENTAL == -1 {
-			macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEBA
-		}.else bl {
-			Temp14 = Const_AgentMetaTeam_begin + v[211]
-			Temp14 = v[Temp14] //v[Temp1] % 3
-		}
+						__if DIS_EXPERIMENTAL == -1 {
+							macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEBA
+						}.else bl {
+							Temp14 = Const_AgentMetaTeam_begin + v[211]
+							Temp14.deref Temp14,1
+						}
 
-								Temp2 = v[4031 + Temp14] //v[Temp1] % 3
-								Temp7 = Temp2
-								Temp9 = v[212] + 7
-								Temp8 = v[4034 + Temp14] //v[Temp1] % 3
-								v[4001..4030] = 0
-								Temp7 = 0
-								Temp8 = v[212] + 230
-								Temp8 = v[Temp8]
-								v[3401..3600] = 999999999
-								@doWhile v[Temp2] != 0 {
-										Temp6 = Temp7 + 3601
-										Temp1 = v[Temp2] * 300 
-				Temp1 += 4701
-										v[350] = v[Temp1]
-										Temp1 += 6
-										v[Temp9].copy Temp4, 2
-										Temp4 .sub v[Temp1], 2
-										Temp4 .mul Temp4, 2
-										v[Temp6] = Temp4 + Temp5 + v[v[Temp2] * 300 + 4976]
-										@if v[Temp6] < Temp8 {
-												TT1 = 3401 + Temp7
-												v[TT1] = v[Temp6] * 1000 + v[Temp2]
-												Temp7 += 1
-												
-										}
-										Temp2 += 1
-										
-								}
-								
-								v[3401].sort Temp7
-								v[Ptr20] = v[3401] < 999999999 ? v[3401] % 1000 : 0
-								
+							// a naru.
+							Temp2 = 4031 + Temp14
+							Temp2.deref Temp2,1
+							Temp2.copy Temp7
+							// Temp7 = Temp2
+							Temp8 = 4034 + Temp14
+							// Temp8 = v[4034 + Temp14]
+							Temp8.deref Temp8,1
+							// v[4001..4030] = 0
+							v[ptr_null].copy v[4001],30
+
+							Temp7 = 0
+
+							// v[3401..3600] = 999999999
+
+							v[534] = v[4579] + (v[1012] + 2) * v[211]
+							v[v[534]] = 0
+
+							@doWhile v[Temp2] != 0 {
+									Temp6 = Temp7 + 3601 // deploy v[3601] 'n check it
+									Temp1 = v[Temp2] * 300 
+									Temp1 += 4701
+									Temp1.copy address_victim_buffer_head, agent_Basic_Array_size
+									v[350] = agent_AgentType
+									agent_RelativeX.copy Temp4, 2
+									Temp4 .sub victim_RelativeX, 2
+									Temp4 .mul Temp4, 2
+									v[Temp6] = Temp4 + Temp5 
+									v[Temp6] += victim_ProcessCamoValue
+									@if v[Temp6] < agent_UnitEyeSight_for_AgentSearch { // kore teki huesugitara bagurun to tyauw
+											TT1 = v[534] + Temp7
+											v[TT1] = v[Temp6] * 1000 
+											v[TT1] += v[Temp2]
+											Temp7 += 1
+											
+									}
+									Temp2 += 1
+									
+							}
+							
+							v[v[534]].sort Temp7
+							v[Ptr20] = v[v[534]] < 999999999 ? v[v[534]] % 1000 : 0
+							
 						}
 						
 				}
-				@if `v[v[212] + 3] & 32768 {
-						Temp1 = v[212] + 170
-						@if v[Temp1] <= 0 {
+				
+				@if `agent_StaticBits & 32768 {
+						@if agent_static_ReserveAmount <= 0 {
+								// auto queue checker
 								@call .cev 1748
 								var1 = v[v[536]]
 								@call .cev 1747
-		var1 = v[212]+213
-								var1 = v[var1]
+								var1 = v[212] + 213
+								var1.deref var1,1
 								@if var1 >= 1 {
 										@call .cev 1730
 										@call .cev 1748

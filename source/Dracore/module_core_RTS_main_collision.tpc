@@ -441,10 +441,12 @@ __fn macro_ColCheck_push {
 	
 	defv Col_Ptr2AI_routine_bits = __id(Temp33) 
 	@if victim_AgentType == 11 { // pushed by static agent
-		@if victim_TeamID == agent_TeamID { // and it's ally
-			Col_Ptr2AI_routine_bits = Temp1 + 34
-			def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PFskip + AI_routine_bits_FLAG_PATHFINDING
-			v[Col_Ptr2AI_routine_bits] |=  !(agent_AgentBits & AgentBits_Collided_Other_Agent) ? Col_AIFLAG_PFandSkip : 0 // start pathfinding
+		@if v[v[203]] != agent_TargetAgentID { // NOT target
+			@if victim_TeamID == agent_TeamID { // and it's ally
+				Col_Ptr2AI_routine_bits = Temp1 + 34
+				def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PFskip + AI_routine_bits_FLAG_PATHFINDING
+				v[Col_Ptr2AI_routine_bits] |=  !(agent_AgentBits & AgentBits_Collided_Other_Agent) ? Col_AIFLAG_PFandSkip : 0 // start pathfinding
+			}
 		}
 	}
 	v[Temp32] |= AgentBits_Collided_Other_Agent
