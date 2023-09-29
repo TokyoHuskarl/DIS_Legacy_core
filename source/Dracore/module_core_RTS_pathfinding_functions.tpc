@@ -525,6 +525,10 @@ __fn pf_agent_move {
 				var2 = v[var2]
 
 				v[2861].copy v[2961], 15
+
+				// save the first agent to Ptr17
+				PF_Manager_Loop_AgentPtr.copy Ptr10,1
+
 				@loop v[1012] .dst Temp1 {
 
 					// "Check Enemy Team List"
@@ -545,13 +549,16 @@ __fn pf_agent_move {
 											
 											// not a path parent
 
-											@if v[PF_Manager_Loop_AgentPtr] != v[Ptr20] {
-												PF_Manager_Loop_AgentPtr.deref var1,1
+											@if v[Ptr10] != v[Ptr20] {
+												Ptr10.deref var1,1 
 												Ptr20.deref var2,1 
 												def JSCMD_COPY_PATH = __str("RTS.path.copyPath(\v[",__id(var1),"],\v[",__id(var2),"]",")")
 												eval_js(JSCMD_COPY_PATH)
+												// msg(js_StringBuffer)
 											}
 
+											// Ptr20.deref var2,1 
+											// msg("hontoha \v[12]")
 											v[Ptr18] &= ~AI_routine_bits_FLAG_GroupPath // kill GroupPathFlag anyway
 
 											var1 = v[Ptr20]
@@ -603,7 +610,7 @@ __fn pf_agent_move {
 									}
 									
 								}
-								
+
 						}
 						
 					}
@@ -613,10 +620,10 @@ __fn pf_agent_move {
 				v[380] = 1
 				
 			} .else bl {
-		v[ptr_null].copy v[LEGV_ConstAIselectedListHead],200 //v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
-		v[LEGV_ConstAIselectedListHead] = v[4596] + 1
-		v[2880] = LEGV_ConstAIselectedListHead + 1
-		v[2841] = 1
+				v[ptr_null].copy v[LEGV_ConstAIselectedListHead],200 //v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
+				v[LEGV_ConstAIselectedListHead] = v[4596] + 1
+				v[2880] = LEGV_ConstAIselectedListHead + 1
+				v[2841] = 1
 		
 			}
 			
@@ -631,24 +638,24 @@ __fn pf_agent_move {
 
 			@if `!(pfagent_AgentBits & AgentBits_FLAG_walldetected) || v[378] != -1 {
 
-		// set up the point coordinate to move
-		Temp16 = v[LEGV_ConstAIselectedListHead] * 300 
-		Temp16 += 4741
-		Temp17 = Temp16 + 14
-		Temp17 = max(v[Temp17], 0)
-		Temp16 += Temp17 * 2
-		v[Temp16].copy v[2851], 2
-		// pathfinding movement order
-		func_pathfinding_move()
-		
-		// agent AI_routine_bit
-		v[Pathfinding_AgentData_head_ptr + 34] |= AI_routine_bits_FLAG_tracing_flag
-		
+				// set up the point coordinate to move
+				Temp16 = v[LEGV_ConstAIselectedListHead] * 300 
+				Temp16 += 4741
+				Temp17 = Temp16 + 14
+				Temp17 = max(v[Temp17], 0)
+				Temp16 += Temp17 * 2
+				v[Temp16].copy v[2851], 2
+				// pathfinding movement order
+				func_pathfinding_move()
+				
+				// agent AI_routine_bit
+				v[Pathfinding_AgentData_head_ptr + 34] |= AI_routine_bits_FLAG_tracing_flag
+				
 			} .else bl {
-		// stop pathfinding
-		// agent AI_routine_bit
-		v[Pathfinding_AgentData_head_ptr + 34] &= AI_routine_bits_KILL_FLAG_PATHFINDING //~16384
-		
+				// stop pathfinding
+				// agent AI_routine_bit
+				v[Pathfinding_AgentData_head_ptr + 34] &= AI_routine_bits_KILL_FLAG_PATHFINDING //~16384
+				
 			}
 
 			// flag management after movement order

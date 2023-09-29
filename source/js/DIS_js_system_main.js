@@ -910,6 +910,13 @@ let RTS = {
 
 		},
 
+
+		initPath_list: function(agentidlist){ 
+			for (let agt of agentidlist){
+				this.PfWPbuffer[agt] = [];
+			}
+		},
+
 		givePath: function(agentid){ // give stored path to the agent. array length after this is returned.
 			
 			let buf = this.PfWPbuffer[agentid];
@@ -930,16 +937,13 @@ let RTS = {
 		},
 
 		copyPath: function(agentid,targetid){
-			let src = this.PfWPbuffer[agentid];
-			let tg = this.PfWPbuffer[targetid];
-			tg = [];	
+			deblog(agentid + " to " +targetid) 
+			this.PfWPbuffer[targetid] = []; // ? should I use let?
 
-			for (elm of src) {
-				tg.push(elm);
+			for (let elm of this.PfWPbuffer[agentid]) {
+				this.PfWPbuffer[targetid].push(elm);
+				// deblog(elm)
 			};
-
-			let t = "RTS.path: copied path array of " + agentid + ":" + src + " to id:" + targetid + "now : " + tg; // tesT
-			deblog(t);
 		},
 
 

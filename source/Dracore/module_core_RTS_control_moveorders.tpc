@@ -1,112 +1,11 @@
 
-__fn func_control_moveorder_proc_let_units_attack {
-
-    @if v[82] >= 1 {
-	@if v[82] <= 10 {
-	    v[v[4530] + (v[82] - 1) * 20 + 20] = 2
-	    
-	}
-	
-    }
-    @loop .inf() {
-	@if v[v[202]] == 0 {
-	    // "とぎれた"
-	    @break
-	    
-	}
-	@if v[202] >= v[1007] {
-	    // "とりあえず40体までしか選択できない"
-	    @break
-	    
-	}
-	// "配列ゲット"
-	Temp1 = v[v[202]] * 300
-	Temp1 += 4700
-	@if `v[Temp1 + 102] != 104 {
-	    Ptr20 = Temp1 + 242
-	    Ptr19 = Temp1 + 19
-	    Ptr18 = Temp1 + 20
-	    Ptr17 = Temp1 + 18
-	    Ptr16 = Temp1 + 241
-	    Ptr14 = Temp1 + 55
-	    v[Temp1 + 34] &= ~AI_routine_bits_FLAG_tracing_flag
-	    // "処理開始"
-	    v[Ptr16] = 2
-	    @if v[Ptr20] != 4 {
-		v[Ptr20] = s[16] == 1 ? 2 : 3
-		
-	    }
-	    // "#ForceMoveFlag"
-	    v[Temp1 + 34] &= ~16809984 //
-	    v[Temp1 + 34] &= ~(8388608 + AI_routine_bits_FLAG_tracing_wp)
-	    @if `v[Temp1 + 1] != 11 {
-		v[Temp1 + 3] &= ~384
-		
-	    }
-	    @if s[16] .isOn() {
-
-		// no matter if attack move key is pressed or not, once attack order is given, just give the agents force move flag 
-		//v[Temp1 + 3] &= ~AgentBits_FLAG_ForcemoveFlag
-		v[Temp1 + 3] |= AgentBits_FLAG_ForcemoveFlag
-		
-	    } .else bl {
-		v[Temp1 + 3] |= AgentBits_FLAG_ForcemoveFlag
-		
-	    }
-	    v[Temp1 + 3] &= ~1048576 //AgentBits_FLAG_EnableBasicAI
-	    // "#########"
-	    @if LEGV_WPamount_to_set >= 1 {
-		Ptr13 = 273
-		Ptr13 -= LEGV_WPamount_to_set * 2
-		Ptr19 = Temp1 + 41
-		@loop LEGV_WPamount_to_set {
-		    v[Ptr13].copy v[Ptr19], 2
-		    Ptr13 += 2
-		    Ptr19 += 2
-		    
-		}
-		
-		v[Ptr13].copy v[Ptr19], 2
-		// "#Set 現在目指してるWPと総WP数"
-		v[Ptr14] = LEGV_WPamount_to_set
-		v[Temp1 + 242] = 3
-		v[Temp1 + 242] = 2
-		
-	    } .else bl {
-		v[Ptr14] = -1
-		// "#Set 移動するX"
-		v[Ptr19] = v[391]
-		// "#Set 移動するY"
-		v[Ptr18] = v[392]
-		// "#Set 現在目指してるWPと総WP数"
-		v[Temp1 + 242] = 2
-		
-	    }
-	    @if s[13] .isOff() {
-		@if v[Ptr17] != v[100] {
-		    v[Temp1 + 243] = v[Temp1 + 243] == 1 ? 0 : v[Temp1 + 243]
-		    v[Temp1 + 29] = 0
-		    
-		}
-		
-	    }
-	    // "#Set Target"
-	    v[Ptr17] = v[100]
-	    // "#Set Direｃ"
-	    Ptr13 = Temp1 + 245
-	    v[Ptr13] = 0
-	    
-	}
-	// "処理終わり"
-	v[202] += 1
-	
-    }
-
-}
 
 
 
 __fn func_control_moveorder_mil {
+
+	def JSCMD_INITPATH = __str("RTS.path.initPath_list(getv(", Adr_PlayerSelectList_Head, ",\v[", __id(SelectedAmount) ,"]))")
+	eval_js(JSCMD_INITPATH)
 
 
 	s[163].off
@@ -120,14 +19,14 @@ __fn func_control_moveorder_mil {
 	// "Init Form info"
 	v[0] = v[341..342] = [v[1165], v[1165] + 39]
 	@pic[TT1..TT2].erase
-	v[38] = v[v[v[101]] * 300 + 4944]
+	v[38] = v[v[v[Adr_PlayerSelectList_Head]] * 300 + 4944]
 	@call .cev 1897
 	// "TempS1"
 	v[391] = s[40] == 1 ? var1 : MousePtr_x
 	v[392] = s[40] == 1 ? var2 : MousePtr_y
 	MousePtr_x.copy v[405], 2
 	v[391].copy v[489], 2
-	v[202] = 101
+	v[202] = Adr_PlayerSelectList_Head
 	s[201].off
 	s[203].off
 	s[21].off
@@ -1079,5 +978,111 @@ __fn func_control_moveorder_mil {
 	s[201].off
 	s[16].off
 	s[36].on
+
+}
+
+
+__fn func_control_moveorder_proc_let_units_attack {
+
+    @if v[82] >= 1 {
+	@if v[82] <= 10 {
+	    v[v[4530] + (v[82] - 1) * 20 + 20] = 2
+	    
+	}
+	
+    }
+    @loop .inf() {
+	@if v[v[202]] == 0 {
+	    // "とぎれた"
+	    @break
+	    
+	}
+	@if v[202] >= v[1007] {
+	    // "とりあえず40体までしか選択できない"
+	    @break
+	    
+	}
+	// "配列ゲット"
+	Temp1 = v[v[202]] * 300
+	Temp1 += 4700
+	@if `v[Temp1 + 102] != 104 {
+	    Ptr20 = Temp1 + 242
+	    Ptr19 = Temp1 + 19
+	    Ptr18 = Temp1 + 20
+	    Ptr17 = Temp1 + 18
+	    Ptr16 = Temp1 + 241
+	    Ptr14 = Temp1 + 55
+	    v[Temp1 + 34] &= ~AI_routine_bits_FLAG_tracing_flag
+	    // "処理開始"
+	    v[Ptr16] = 2
+	    @if v[Ptr20] != 4 {
+		v[Ptr20] = s[16] == 1 ? 2 : 3
+		
+	    }
+	    // "#ForceMoveFlag"
+	    v[Temp1 + 34] &= ~16809984 //
+	    v[Temp1 + 34] &= ~(8388608 + AI_routine_bits_FLAG_tracing_wp)
+	    @if `v[Temp1 + 1] != 11 {
+		v[Temp1 + 3] &= ~384
+		
+	    }
+	    @if s[16] .isOn() {
+
+		// no matter if attack move key is pressed or not, once attack order is given, just give the agents force move flag 
+		//v[Temp1 + 3] &= ~AgentBits_FLAG_ForcemoveFlag
+		v[Temp1 + 3] |= AgentBits_FLAG_ForcemoveFlag
+		
+	    } .else bl {
+		v[Temp1 + 3] |= AgentBits_FLAG_ForcemoveFlag
+		
+	    }
+	    v[Temp1 + 3] &= ~1048576 //AgentBits_FLAG_EnableBasicAI
+	    // "#########"
+	    @if LEGV_WPamount_to_set >= 1 {
+		Ptr13 = 273
+		Ptr13 -= LEGV_WPamount_to_set * 2
+		Ptr19 = Temp1 + 41
+		@loop LEGV_WPamount_to_set {
+		    v[Ptr13].copy v[Ptr19], 2
+		    Ptr13 += 2
+		    Ptr19 += 2
+		    
+		}
+		
+		v[Ptr13].copy v[Ptr19], 2
+		// "#Set 現在目指してるWPと総WP数"
+		v[Ptr14] = LEGV_WPamount_to_set
+		v[Temp1 + 242] = 3
+		v[Temp1 + 242] = 2
+		
+	    } .else bl {
+		v[Ptr14] = -1
+		// "#Set 移動するX"
+		v[Ptr19] = v[391]
+		// "#Set 移動するY"
+		v[Ptr18] = v[392]
+		// "#Set 現在目指してるWPと総WP数"
+		v[Temp1 + 242] = 2
+		
+	    }
+	    @if s[13] .isOff() {
+		@if v[Ptr17] != v[100] {
+		    v[Temp1 + 243] = v[Temp1 + 243] == 1 ? 0 : v[Temp1 + 243]
+		    v[Temp1 + 29] = 0
+		    
+		}
+		
+	    }
+	    // "#Set Target"
+	    v[Ptr17] = v[100]
+	    // "#Set Direｃ"
+	    Ptr13 = Temp1 + 245
+	    v[Ptr13] = 0
+	    
+	}
+	// "処理終わり"
+	v[202] += 1
+	
+    }
 
 }
