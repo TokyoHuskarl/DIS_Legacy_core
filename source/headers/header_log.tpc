@@ -5,6 +5,8 @@ deft LogBuffer = 782
 
 defs PUSH_DIS_LOG = 270
 sname[__id(PUSH_DIS_LOG)], "PUSH_DIS_LOG"
+defs IS_EXPORTING_LOG_ALLOWED = 271
+sname[__id(IS_EXPORTING_LOG_ALLOWED)], "IS_EXPORTING_LOG_ALLOWED"
 
 //?
 __fn func_logupdate_begin {
@@ -138,3 +140,20 @@ __fn log_export $path {
 
 }
 
+__fn export_mapautolog {
+	inputstr.asg "../user/log/"
+	
+	str1 .asg  .map[v[501]].name
+	@if str1 .eq "CustomMap" {
+		str1 .asg t[750]
+	}
+	
+	inputstr.cat str1
+	inputstr.cat "_"
+	var1 = sys.date
+	inputstr.cat var1
+	inputstr.cat "_"
+	var2 = sys.time
+	inputstr.cat var2
+	log_export(inputstr)
+}

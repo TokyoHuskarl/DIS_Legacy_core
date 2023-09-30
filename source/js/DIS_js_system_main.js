@@ -312,15 +312,21 @@ DIS = { // DIS fundamental components
 
 				// autosave
 				if (boot_config.autosave == 1) {
+					sets(317,0);
+					DIS.log.push("Autosave activated.");
+				} else {
+					sets(317,1);
+					DIS.log.push("Autosave deactivated.");
+				}; 
+				//
+				// autolog?
+				if (boot_config.autolog == 1) {
 					sets(317,1);
 					DIS.log.push("Autosave activated.");
 				} else {
 					sets(317,0);
 					DIS.log.push("Autosave deactivated.");
-				}; 
-				//
-				// autolog?
-				
+				}; 				
 				// bootmode
 				if (boot_config.bootmode == 1) { // dev mode
 					setv(1265,boot_config.bootmode);

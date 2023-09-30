@@ -26,6 +26,9 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 	    
 	}
 	@if s[319] .isOn() {
+		@if s[2] .isOff {
+
+			// autosave
 	    @if s[317] .isOff() {
 				@if RTS_Difficulty < DIF_RAGNAROK { // NOT RAGNAROK
 					def AUTOSAVE_FRAME = (2 * 60 + 20) * DIS_Game_FPS // (2min * 60 + 20sec) * baseFPS
@@ -35,6 +38,16 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 					}
 				}
 	    }
+			
+			// gamelog export
+			@if IS_EXPORTING_LOG_ALLOWED .isOff() {
+				def GAMELOG_FRAME = 90 * DIS_Game_FPS // refresh per 90 sec
+				TT1 = RTS_WORLD_passed_frame % GAMELOG_FRAME
+				@if TT1 == 0 {
+					export_mapautolog()
+				}
+	    }
+		}
 
 
 	    @if s[7] .isOn() {
