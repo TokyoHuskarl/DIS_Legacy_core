@@ -454,7 +454,7 @@ __fn macro_ColCheck_push {
 		}
 	}
 
-	v[__id(victim_RelativeX)..__id(victim_RelativeY)] *= (v[527 + ((v[Col_Ptr2AgentBits] | (agent_MoveTypeBIts & MoveTypeBits_Horse && agent_InCombatTimer > 0 ? 256 : 0)) & 256) >> 8]) + ((v[Ptr5] & FLAG_Maptile_Crowded) >> 1) // if it's Crowded, push more
+	v[__id(victim_RelativeX)..__id(victim_RelativeY)] *= (v[527 + (((v[Col_Ptr2AgentBits] | (agent_MoveTypeBIts & MoveTypeBits_Horse && agent_InCombatTimer > 0 ? 256 : 0)) & 256) >> 8)]) + ((v[Ptr5] & FLAG_Maptile_Crowded) >> 1) // if it's Crowded, push more
 	v[Ptr19] .add victim_RelativeX, 2
 	
 	defv Col_Ptr2AI_routine_bits = __id(Temp33) 
