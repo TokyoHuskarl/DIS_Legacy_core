@@ -1,0 +1,61 @@
+#!DIS_SCRIPT
+//Player Units
+spawn_static(1,137,105,0)
+//MapVar1
+set_last_agent_id_mapvar(1)
+
+spawn_static(9,128,105,0)
+
+spawn_static(12,137,111,0)
+
+spawn_unit(74,137,114,0,0,0,0)
+
+
+//WALLS!
+//North
+spawn_wall(89,68,113,68,0)
+spawn_wall(113,68,132,68,0)
+spawn_wall(142,68,161,68,0)
+spawn_wall(161,68,182,68,0)
+
+
+spawn_wall(89,68,89,87,0)
+spawn_wall(89,87,89,100,0)
+spawn_wall(89,109,89,125,0)
+spawn_wall(89,125,89,143,0)
+
+spawn_wall(182,68,182,87,0)
+spawn_wall(182,87,182,100,0)
+spawn_wall(182,109,182,125,0)
+spawn_wall(182,125,182,143,0)
+
+
+spawn_wall(89,143,113,143,0)
+spawn_wall(113,143,132,143,0)
+spawn_wall(142,143,161,143,0)
+spawn_wall(161,143,182,143,0)
+
+spawn_static(24,92,140,0)
+
+spawn_static(24,179,140,0)
+
+spawn_static(24,92,70,0)
+
+spawn_static(24,179,70,0)
+
+//North gate
+spawn_static(33,136,144,0)
+spawn_static(33,140,144,0)
+
+//East gate
+spawn_static(33,184,104,0)
+spawn_static(33,184,107,0)
+
+//Wect gate
+spawn_static(33,89,104,0)
+spawn_static(33,89,107,0)
+//South gate
+spawn_static(33,136,68,0)
+spawn_static(33,140,68,0)
+
+map_randomise_height(61,45,214,176,12)

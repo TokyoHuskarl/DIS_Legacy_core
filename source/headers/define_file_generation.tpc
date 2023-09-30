@@ -1,0 +1,32 @@
+//When you add some boot config settings, then edit these below
+
+// you have to manually adjust here, source file is "source/js/bootconfig.js"
+def PATH_js_bootconfig = "..\config\boot_config.js"
+def Gen_BootConfig = "
+
+const boot_config = {
+	// module setting
+	module: ""Legacy"",
+	// 0 = normal mode,1 = developer mode
+	bootmode: 0,
+
+	// you can switch gore VFX (unco)
+	gore: true,
+
+	// you can set particle amount in range of 0-400. default:350
+	particle_amount: 350,
+	// 0 = autosave off, 1=autosave on
+	autosave: true,
+	// 0 = autosave off, 1=autosave on
+	exportlog: true,
+	
+}
+
+"
+
+def Gen_user_custom_config = "
+//put your own custom cursor in ""DIS_Legacy/User/userui/""
+custom_cursor = """"
+//custom_cursor = ""map_pointer_classic"" <-sample
+"
+

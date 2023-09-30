@@ -49,6 +49,7 @@ __fn boot_DIS_js_system {
 }
 
 __fn reboot_DIS_js_system { // called after RMsavedata load
+	execute_js(PATH_js_bootconfig) // load boot config
 	boot_DIS_js_system()
 	// and?
 }
@@ -67,9 +68,13 @@ __fn save_DIS_js_RTS_system {
 
 }
 
-__fn callDISCmd $js {
-	
+// Open DIS js scene
+/*
+__fn open_js_scene $scenename {
+	execute_js("DIS_js_system_main.js")
 }
+*/
+
 
 
 // Package Tree - only for calling Cmd.obj.method on RPG_RT.exe, you need init process for each of Cmd Packages before you use this function. 

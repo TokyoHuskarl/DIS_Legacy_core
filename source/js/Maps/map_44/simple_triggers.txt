@@ -1,0 +1,82 @@
+//
+
+trigger_timer(0,0,1){
+	//ally orders shield wall
+	AI_select_all_combat_units(3)
+	AI_order_defensive()
+	
+	//play_global_sound("misc\\trx01",75,100,50)
+	show_radio_dialog(2)
+	play_global_music("[Glorian]Imperial Auxilia", 80, 100, 50)
+	show_radio_dialog(3)
+	//Set_switch_on(401)
+}
+
+trigger_timer(0,0,45){
+	AI_select_cohort(1,4)
+	//AI_cmd_set_waypoint_mev(6)
+	call_mev(6,1)
+	AI_cmd_move_line(1)
+}
+
+//Cavs
+trigger_timer(0,1,0){
+	AI_select_cohort(1,2)
+	call_mev(6,1)
+	AI_cmd_move_line(1)
+
+}
+
+//reinforcement
+trigger_timer(0,1,5){
+	spawn_unit_group(12,149,8,1,5,0,1,0,8)
+	spawn_unit_group(12,149,8,1,5,0,1,0,8)
+	AI_select_cohort(1,5)
+	call_mev(6,1)
+	AI_cmd_move_line(1)
+	
+	spawn_unit_group(12,12,115,1,6,0,0,1,8)
+	spawn_unit_group(12,12,115,1,6,0,0,1,8)
+	AI_select_cohort(1,6)
+	call_mev(6,1)
+	AI_cmd_move_line(1)
+}
+
+
+//reinforcement
+trigger_timer(0,1,30){
+	spawn_unit_group(12,149,8,1,5,0,1,0,8)
+	spawn_unit_group(12,149,8,1,5,0,1,0,8)
+	AI_select_cohort(1,5)
+	call_mev(6,1)
+	AI_cmd_move_line(1)
+	
+	spawn_unit_group(94,12,115,1,6,0,0,1,8)
+	spawn_unit_group(94,12,115,1,6,0,0,1,8)
+	AI_select_cohort(1,6)
+	call_mev(6,1)
+	AI_cmd_move_line(1)
+}
+
+//reinforcement
+trigger_timer(0,1,45){
+	spawn_unit_group(6,149,8,1,5,0,1,0,8)
+	spawn_unit_group(12,149,8,1,5,0,1,0,8)
+	AI_select_cohort(1,5)
+	call_mev(6,1)
+	AI_cmd_move_line(1)
+	
+	spawn_unit_group(7,12,115,1,6,0,0,1,8)
+	spawn_unit_group(6,12,115,1,6,0,0,1,8)
+	AI_select_cohort(1,6)
+	call_mev(6,1)
+	AI_cmd_move_line(1)
+}
+
+//cmd idle troops 
+trigger_loop(400){
+	AI_select_idle_units(1,0)
+	call_mev(6,1)
+	AI_cmd_move_line(1,1)	
+};
+

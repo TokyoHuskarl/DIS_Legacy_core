@@ -47,7 +47,7 @@ if (DEBUG != BOOT_MODE_DEBUG) { function deblog(d){}; }; // dummy
 
 function errorlog(text) {
 	if (DEBUG != BOOT_MODE_DEBUG){let contx = "ERROR:" + text;console.log(contx);}
-	Cmd.game.log_error(text);
+	return Cmd.game.log_error(text);
 }
 
 
@@ -79,11 +79,11 @@ function getRM(typ,add) {
 // global pointers for important objects
 let MISSION; // {RTSmission} current mission
 let MAP; // {RTSmap} current map
+var scene = scene || {};
 
 
 // global variables
 let g_PLAYER; // {DIS_RTSplayer}
-
 
 
 
@@ -301,69 +301,111 @@ var facid = facid || {}; // faction ID table
 var tech =  tech || {}; // ["techid",[group,flagbit]]
 
 DIS = { // DIS fundamental components
-	initID: function(){ // this must be called every after DIS game id is loaded on the game
-
-		/* imported from TPC code - module_core_Game_init.tpc
-		 *
-			t[803] .asg  .file "..\scripts\const_factions_id", .utf8
-			t[804] .asg  .file "..\scripts\const_weapons_id", .utf8
-			t[805] .asg  .file "..\scripts\const_shields_id", .utf8
-			t[806] .asg  .file "..\scripts\const_armors_id", .utf8
-			t[807] .asg  .file "..\scripts\const_helms_id", .utf8
-			t[808] .asg  .file "..\scripts\const_accessories_id", .utf8
-		*/
-
-		// function for storing ID table
-		let store_ID_table = function(table,Adrt){
-			let IDstr = gett(Adrt);
-			let lines = IDstr.trim().split(LF);
-			let i = 0;
-			// parse string to array
-			lines.forEach(line => { parse_DISid(line,table); i++;});
-			return initIDlog(i,Adrt);
-		}
-
-		let initIDlog = function(amount,type){
-			let text = "DIS.initID():";
-			if (amount > 1){
-				if (type == 801){
-					text += `TroopID loaded - ${amount} troops are preset`;
-				} else if (type == 802) {
-					text += `StaticID loaded - ${amount} statics are preset`
-				} else if (type == 803) {
-					text += `FactionID loaded - ${amount} factions are preset`
-				} else {
-					text += "unknown RM str is loaded."
-				}
-			} else { // load amount is below 0
-				text += `loading process t[${type}] seemingly failed. Check integrity of const_*.txt files.`
-				errorlog(text);
-			}
-			return DIS.log.push(text)
-		}
-
-		// --------------------
-		// load troop ID
-		// --------------------
-		// you can use troopID by writing like this: trpid["TRP_sushi_kensei"] 
-		trpid = {}; // init trpid
-		store_ID_table(trpid,801); // get from ~/scripts/const_troops.
-
-		// --------------------
-		// load static ID
-		// --------------------
-		staid = {}; // init staid
-		store_ID_table(staid,802) // get from ~/scripts/const_statics.
-
-		// --------------------
-		// load faction ID
-		// --------------------
-		facid = {}; // init facid
-		store_ID_table(facid,803) // get from ~/scripts/const_factions.
+	init: {
 		
-		DIS.log.push("ID table init done.")
-	},
+		loadBootconf: () => {
+			if (typeof boot_config == "undefined") {
+				DIS.log.crash(errorlog("DIS boot config file is broken. Please delete $DISGAMEDIR/Config/boot_config.js and restart the game."));
+			} else {
+				// toggle bootconfig settings 
+				DIS.log.push(`Game module:${boot_config.module}`);
 
+				// autosave
+				if (boot_config.autosave == 1) {
+					sets(317,1);
+					DIS.log.push("Autosave activated.");
+				} else {
+					sets(317,0);
+					DIS.log.push("Autosave deactivated.");
+				}; 
+				//
+				// autolog?
+				
+				// bootmode
+				if (boot_config.bootmode == 1) { // dev mode
+					setv(1265,boot_config.bootmode);
+					DIS.log.push("Developer mode activated.");
+
+				} else if (boot_config.bootmode == 114514) { // debug mode
+					sets(316,1);
+					setv(1265,boot_config.bootmode);
+					DIS.log.push("Debug mode activated.");
+
+				};
+				
+				// Particle limit
+				let ptcl = Math.min(400,boot_config.particle_amount)
+				setv(2215,ptcl)
+				DIS.log.push(`RTS particle picture Limit: ${ptcl}`);
+				
+				// gore effect setting?
+
+			};
+		},
+
+		initID: function(){ // this must be called every after DIS game id is loaded on the game
+
+			/* imported from TPC code - module_core_Game_init.tpc
+			 *
+				t[803] .asg  .file "..\scripts\const_factions_id", .utf8
+				t[804] .asg  .file "..\scripts\const_weapons_id", .utf8
+				t[805] .asg  .file "..\scripts\const_shields_id", .utf8
+				t[806] .asg  .file "..\scripts\const_armors_id", .utf8
+				t[807] .asg  .file "..\scripts\const_helms_id", .utf8
+				t[808] .asg  .file "..\scripts\const_accessories_id", .utf8
+			*/
+
+			// function for storing ID table
+			let store_ID_table = function(table,Adrt){
+				let IDstr = gett(Adrt);
+				let lines = IDstr.trim().split(LF);
+				let i = 0;
+				// parse string to array
+				lines.forEach(line => { parse_DISid(line,table); i++;});
+				return initIDlog(i,Adrt);
+			}
+
+			let initIDlog = function(amount,type){
+				let text = "DIS.initID():";
+				if (amount > 1){
+					if (type == 801){
+						text += `TroopID loaded - ${amount} troops are preset`;
+					} else if (type == 802) {
+						text += `StaticID loaded - ${amount} statics are preset`
+					} else if (type == 803) {
+						text += `FactionID loaded - ${amount} factions are preset`
+					} else {
+						text += "unknown RM str is loaded."
+					}
+				} else { // load amount is below 0
+					text += `loading process t[${type}] seemingly failed. Check integrity of const_*.txt files.`
+					errorlog(text);
+				}
+				return DIS.log.push(text)
+			}
+
+			// --------------------
+			// load troop ID
+			// --------------------
+			// you can use troopID by writing like this: trpid["TRP_sushi_kensei"] 
+			trpid = {}; // init trpid
+			store_ID_table(trpid,801); // get from ~/scripts/const_troops.
+
+			// --------------------
+			// load static ID
+			// --------------------
+			staid = {}; // init staid
+			store_ID_table(staid,802) // get from ~/scripts/const_statics.
+
+			// --------------------
+			// load faction ID
+			// --------------------
+			facid = {}; // init facid
+			store_ID_table(facid,803) // get from ~/scripts/const_factions.
+			
+			DIS.log.push("ID table init done.")
+		},
+	},
 
 	reload: function(){
 		this.initID(); // restore ID 
@@ -395,12 +437,21 @@ DIS.building = {
 
 DIS.log = {
 	// push background log
+	crash: function(error){
+		const day = new Date();
+		const file = "user/log/crashlog_" + day.getFullYear() + "_" + day.getMonth() + "_" + day.getDate() + "_" + day.getHours() + "_" + day.getMinutes()
+		DIS.log.push(error);
+		Cmd.game.exportText(Adrt_ShLog,file);
+		Cmd.game.pic.load(error,999); // force crash
+		deblog(file);
+	},
+
 	push: function(txt){
 		let curlog = gett(Adrt_ShLog);
 		curlog += LF + txt;
 		sett(Adrt_ShLog,curlog);
 		deblog(txt); // deb
-	}
+	},
 	
 };
 
@@ -1267,22 +1318,29 @@ var Cmd = {
 			Cmd.Qset(this.CmdType,"gotoRMmap",`${RMmapid},${tilepos[0]},${tilepos[1]}`);
 		},
 
+
 		// log series
 		log: function(txt){
 			Cmd.Qset(this.CmdType,"msg",`${txt}`);
 		},
 
 		log_error: function(txt){
-			Cmd.Qset(this.CmdType,"msg",`\\C[17]ERROR:${txt}`);
+			let t = `\\C[17]ERROR:${txt}`;
+			Cmd.Qset(this.CmdType,"msg",t);
+			return t;
 			// deblog("`ERROR:${txt}`")
 		},
 
 		log_dev: function(txt){
-			Cmd.Qset(this.CmdType,"msg",`\\C[1]Dev:${txt}`);
+			let t = `\\C[1]Dev:${txt}`;
+			Cmd.Qset(this.CmdType,"msg",t);
+			return t;
 		},	
 
 		log_debug: function(txt){
-			Cmd.Qset(this.CmdType,"msg",`\\C[5]JS DEBUG:${txt}`);
+			let t = `\\C[5]JS DEBUG:${txt}`;
+			Cmd.Qset(this.CmdType,"msg",t);
+			return t;
 		},	
 		
 		//
@@ -1528,7 +1586,8 @@ var Cmd = {
 
 // init load
 {
-	DIS.initID();
+	DIS.init.loadBootconf();
+	DIS.init.initID();
 	Cmd.init();
 }
 
@@ -1544,6 +1603,7 @@ if (VIRTUAL_ENV){
 	RTS.path.storePath(1,[1414,4545,1919])
 	RTS.path.givePath(1)
 	RTS.path.copyPath(1,2)
+	DIS.log.crash("test")
 }
 // init 2
 //

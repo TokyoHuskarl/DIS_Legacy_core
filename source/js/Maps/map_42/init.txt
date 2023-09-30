@@ -1,0 +1,101 @@
+#!DIS_SCRIPT
+
+
+//Player Units
+//Ghurkag the Humble Shield
+spawn_unit(79,238,65,0,1,1)
+//MapVar1
+set_last_agent_id_mapvar(1)
+
+//Ork Warriors 
+spawn_unit_group(123,240,62,0,1,1,0,1,7)
+spawn_unit_group(122,242,62,0,1,1,0,1,7)
+//Ork Berserkers
+//spawn_unit_group(121,242,72,0,1,1,0,1,7)
+cohort_register()
+
+//Archers
+spawn_unit_group(56,244,62,0,2,1,0,1,6)
+spawn_unit_group(18,246,62,0,2,1,0,1,6)
+cohort_register()
+
+//Wolfriders
+spawn_unit_group(111,244,52,0,3,1,0,1,7)
+spawn_unit_group(111,246,52,0,3,1,0,1,7)
+cohort_register()
+
+//Skirmishers
+spawn_unit_group(110,240,52,0,4,1,0,1,7)
+spawn_unit_group(110,242,52,0,4,1,0,1,7)
+cohort_register()
+
+spawn_unit_group(80,260,62,0,5,1,0,1,1)
+
+//Enemies
+//spawn_unit_group(5,102,29,1,0,0,0,1,12)
+//spawn_unit_group(5,100,29,1,0,0,0,1,12)
+
+//spawn_unit_group(95,202,56,1,0,0,0,1,12)
+//spawn_unit_group(5,200,56,1,0,0,0,1,12)
+
+
+//ZAKOs
+spawn_unit_group(13,134,62,1,0,0,1,0,6)
+spawn_static(11,137,66,1)
+spawn_unit_group(13,134,70,1,0,0,1,0,6)
+
+//Crossroad Tower
+spawn_static(24,212,115,1)
+//Militias
+spawn_unit_group(12,211,108,1,0,0,1,1,6)
+spawn_unit_group(6,209,113,1,0,0,1,1,6)
+
+spawn_unit_group(13,159,100,1,0,0,1,0,7)
+
+//Inf near villa
+spawn_unit_group(94,118,112,1,0,0,1,1,7)
+spawn_unit_group(2,116,114,1,0,0,1,1,7)
+spawn_unit_group(96,128,115,1,0,0,0,1,5)
+
+//Inf in villa
+spawn_unit_group(95,107,131,1,0,0,1,0,8)
+spawn_unit_group(5,107,133,1,0,0,1,0,8)
+//Teulus
+spawn_unit_group(44,110,135,1,0,0,1,0,3)
+
+//Villa Static
+spawn_static(11,111,137,1)
+//MapVar2
+set_last_agent_id_mapvar(2)
+
+//Villa south side
+spawn_unit_group(97,119,144,1,0,0,1,0,6)
+spawn_static(24,123,146,1)
+
+// cavs
+spawn_unit_group(98,30,35,1,0,0,0,1,9)
+spawn_unit_group(46,28,35,1,0,0,0,1,9)
+
+//Houses
+spawn_static(8,101,134,2)
+spawn_static(8,120,127,2)
+spawn_static(8,120,139,2)
+spawn_static(8,97,123,2)
+spawn_static(8,97,123,2)
+spawn_static(8,132,140,2)
+
+spawn_static(8,108,83,2)
+
+spawn_static(8,161,96,2)
+
+//terrain
+make_height(102,127,119,139)
+
+make_height(213,98,229,115)
+
+make_height(130,54,144,75)
+
+make_basin(154,65,167,87)
+make_height(158,10,169,22)
+
+

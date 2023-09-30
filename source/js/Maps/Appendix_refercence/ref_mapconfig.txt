@@ -1,0 +1,13 @@
+//set factions on the stage
+factions(var player_faction,var enemy_faction,var third_party_faction)
+//set AI 
+AI_script= str scriptfilepath
+//Just turn off morale system
+turnoff_moralesystem()
+//set initial maptile
+set_initial_maptile(var MapTileID)
+//set Map Size from config
+set_map_size(var width, var height)
+//Set how to depict Height Map 
+Use_Height_Map = var　num //0=do not use height map,1=use preset heightmap in map directory(heightmap_light.png,heightmap_dark.png),2=generate heightmap
+

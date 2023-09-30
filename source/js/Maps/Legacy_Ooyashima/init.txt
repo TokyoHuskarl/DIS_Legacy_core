@@ -1,0 +1,29 @@
+#!DIS_SCRIPT
+
+//Player Units
+spawn_static(STA_towncenter,97,128,TEAM_PL)
+//MapVar1
+set_last_agent_id_mapvar(1)
+
+//spawn_static(9,128,105,0)
+//spawn_static(12,137,111,0)
+
+spawn_unit(UNIT_PL_SCOUT,97,132,TEAM_PL,0,DIR_LEFT,ORD_STD)
+spawn_unit_group(UNIT_PL_WORKER,95,134,TEAM_PL,0,DIR_LEFT,1,0,3,ORD_AGG)
+spawn_static(STA_lumber,107,130,TEAM_PL)
+
+//default sushi enemies
+
+team_set_faction(TEAM_EN,FAC_sushi)
+
+//Sadoga shima
+spawn_static(STA_mage_altar,127,90,TEAM_EN,1)
+spawn_unit(TRP_sushi_fox,127,92,TEAM_EN,1,DIR_LEFT,ORD_DEF)
+
+//Bando musha
+
+spawn_static(STA_castle,173,138,TEAM_EN,2)
+
+//shizuoka to nagano
+spawn_static(STA_mage_altar,156,126,TEAM_EN,3)
+spawn_static(STA_mage_altar,151,144,TEAM_EN,3)
