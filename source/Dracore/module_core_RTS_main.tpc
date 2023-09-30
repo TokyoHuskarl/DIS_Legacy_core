@@ -1976,6 +1976,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		Length_x.sub STARTPOINTx,2
 		Length_x = min(Length_x,$length)
 		Length_y = min(Length_y,$length)
+
 		//func_devlog("Shield Wall aura STARTs from \TT1,\TT2 - Length \TT3,\TT4 ")
 		STARTPOINTx += STARTPOINTy * var_Map_Width
 		STARTPOINTx += Const_save_var_TileFlags

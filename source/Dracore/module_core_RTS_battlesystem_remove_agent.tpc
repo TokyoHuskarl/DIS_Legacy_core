@@ -197,27 +197,10 @@ __fn Kill_Agent {
 						v[372] = victim_ProcessObjBit & BaseObjBit_FLAG_Immune_to_bleed ? 1 : 0
 						@if s[313] .isOn() {
 							//@call .cev 1924
-							func_logupdate_begin()
 							TT1 = 2
 							TT2 = [10, 5, 8, 1][victim_TeamID]
 							v[330] = v[4562] + Ptr20
-							@pic[v[1155]].strpic {
-								t[20306]
-								.pos TT1, v[1126] .bottomLeft
-								.size 0, 0                        .chromakey 1
-								.scale 100
-								.trans 30
-								.rgbs 100, 100, 100, 100
-								.font Font_UI, Font_UI_size
-								.spacing 0, 4
-								.skin "" .nobg .noframe .noPadding
-								.mapLayer 8
-								.eraseWhenTransfer
-								.affectedByFlash
-								.affectedByShake
-							}
-							//@call .cev 1925
-							func_logupdate_end()
+							msg(t[20306])
 										
 						}
 
@@ -787,54 +770,18 @@ __fn Kill_Agent {
 
 								@if s[175] .isOn() {
 										@if s[313] .isOn() {
-											//@call .cev 1924
-											func_logupdate_begin()
 											TT1 = 2
 											TT2 = [10, 5, 8, 1][victim_TeamID]
 											v[330] = v[4562] + Ptr20
-											@pic[v[1155]].strpic {
-													t[20444]
-													.pos TT1, v[1126] .bottomLeft
-													.size 0, 0                            .chromakey 1
-													.scale 100
-													.trans 30
-													.rgbs 100, 100, 100, 100
-													.font Font_UI, Font_UI_size
-													.spacing 0, 4
-													.skin "" .nobg .noframe .noPadding
-													.mapLayer 8
-													.eraseWhenTransfer
-													.affectedByFlash
-													.affectedByShake
-											}
-											//@call .cev 1925
-											func_logupdate_end()
+											msg(t[20444])
 										}
 										
 								} .else bl {
 										@if s[313] .isOn() {
-											//@call .cev 1924
-											func_logupdate_begin()
 											TT1 = 2
 											TT2 = [10, 5, 8, 1][victim_TeamID]
 											v[330] = v[4562] + Ptr20
-											@pic[v[1155]].strpic {
-													t[20304]
-													.pos TT1, v[1126] .bottomLeft
-													.size 0, 0                            .chromakey 1
-													.scale 100
-													.trans 30
-													.rgbs 100, 100, 100, 100
-													.font Font_UI, Font_UI_size
-													.spacing 0, 4
-													.skin "" .nobg .noframe .noPadding
-													.mapLayer 8
-													.eraseWhenTransfer
-													.affectedByFlash
-													.affectedByShake
-											}
-											func_logupdate_end()
-											//@call .cev 1925
+											msg(t[20304])
 									
 										}
 										

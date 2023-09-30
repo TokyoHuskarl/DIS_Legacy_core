@@ -639,8 +639,8 @@ __fn func_generate_agent {
 		}
 		
 	    } .else bl {
-		str3 .asg "UNDEFINED"
-		func_errlog("The troop attempted to be spawned is UNDEFINED.")
+				str3 .asg "UNDEFINED"
+				func_errlog("The troop attempted to be spawned is UNDEFINED.")
 	    }
 	    
 	}
@@ -1929,51 +1929,21 @@ __fn func_generate_agent_finish_set {
 			@if agent_TeamID == 0 {
 			    @if v[601] < 11 {
 				@if v[2218] <= 2 {
-				    @call .cev 1924
+				    //@call .cev 1924
 				    TT1 = 2
 				    v[601] = 1
-				    @pic[v[1155]].strpic {
-					t[20243]
-					.pos TT1, v[1126] .bottomLeft
-					.size 0, 0                                .chromakey 1
-					.scale 100
-					.trans 30
-					.rgbs 100, 100, 100, 100
-					.font Font_UI, Font_UI_size
-					.spacing 0, 4
-					.skin "" .nobg .noframe .noPadding
-					.mapLayer 8
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
-				    }
-				    @call .cev 1925
+						msg(t[20243])
 				    
 				}
 				@if `v[205] >= min(v[1080], v[v[4580]]) {
 				    @if agent_UnitType < 100 {
-					@call .cev 1924
 					TT1 = 2
 					v[601] = 1
 					agent_UnitID = v[agent_TeamID + 1]
 					str1 .asg t[Ptr20]
 					TT2 = v[agent_TeamID] == 1 ? 5 : 10
-					@pic[v[1155]].strpic {
-					    "\c[17]\t[20195]"
-					    .pos TT1, v[1126] .bottomLeft
-					    .size 0, 0                                    .chromakey 1
-					    .scale 100
-					    .trans 30
-					    .rgbs 100, 100, 100, 100
-					    .font Font_UI, Font_UI_size
-					    .spacing 0, 4
-					    .skin "" .nobg .noframe .noPadding
-					    .mapLayer 8
-					    .eraseWhenTransfer
-					    .affectedByFlash
-					    .affectedByShake
-					}
-					@call .cev 1925
+					msg("\c[17]\t[20195]")
+
 					v[472] = divmul(100, 100, v[2216])
 					@se.play "ui\UI_Quirky4" .opt v[472], 100, 50
 					
@@ -1984,33 +1954,17 @@ __fn func_generate_agent_finish_set {
 			    } .else bl {
 				@if v[2218] <= 2 {
 				    @if v[602] != 104 {
-					@call .cev 1924
-					TT1 = 2
-					v[601] = 1
-					@pic[v[1155]].strpic {
-					    t[20244]
-					    .pos TT1, v[1126] .bottomLeft
-					    .size 0, 0                                    .chromakey 1
-					    .scale 100
-					    .trans 30
-					    .rgbs 100, 100, 100, 100
-					    .font Font_UI, Font_UI_size
-					    .spacing 0, 4
-					    .skin "" .nobg .noframe .noPadding
-					    .mapLayer 8
-					    .eraseWhenTransfer
-					    .affectedByFlash
-					    .affectedByShake
-					}
-					@call .cev 1925
-					
+							TT1 = 2
+							v[601] = 1
+							msg(t[20244])
+							
 				    }
 				    
 				}
 				
 			    }
 			    @if s[117] .isOn() {
-				@call .cev 84
+						@call .cev 84
 				
 			    }
 			    

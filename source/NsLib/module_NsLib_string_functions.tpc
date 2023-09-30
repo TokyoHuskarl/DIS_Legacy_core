@@ -31,7 +31,7 @@ __fn str_remove_comment_out $ptr_target_str {
 		} .else bl {
 			t[$ptr_target_str] .inStr ("*/",var3,.beg(var2))
 			@if var3 == -1 {//underconstruction, illegal comment out, cannot find */!
-				func_show_msg("\c[17]ERROR:String comment out funciton - Illegal comment out! Couldn't find */")
+				msg("\c[17]ERROR:String comment out funciton - Illegal comment out! Couldn't find */")
 
 			} .else bl {//erase coment out
 				var3 = var3 - var2 + 2

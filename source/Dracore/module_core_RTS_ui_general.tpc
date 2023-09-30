@@ -59,30 +59,46 @@ cev[84] "Resource Window", {
 	func_refresh_resource_window()
 }
 
+
+
 //Log Manager
 cev .id(70) ,.name("Log:RTS log manager"), .parallel , .cond(Const_Is_RTS_Mode), {
+	
+	@if PUSH_DIS_LOG .isOn() {
+		DISlogQueue.inStr(LF,reg1)
+		reg1 += 1
+		t[3000].asg .subs(DISlogQueue, 0, reg1)
+		DISlogQueue.asg .rem(DISlogQueue, 0, reg1)
+		func_draw_DIS_log(t[3000])
+		DISlogQueue.getlen(reg1)
+		@if reg1 == 0 {
+			PUSH_DIS_LOG.off
+		}
+	}
+	
+
 	@if s[2] .isOff() {
 	    v[238] -= 1
 	    @if v[238] <= 0 {
-		TT1 = v[1155]
-		TT10 = 2
-		TT11 = v[4515]
-		TT5 = v[239]
-		TT6 = divmul(-25, 45, v[1139])
-		@loop v[1136] .dst TT2 {
-		    TT2 += TT1
-		    @pic[TT2].move {
-			.pos TT10, TT11 .bottomLeft
-			.scale 100
-			.trans 100
-			.time TT6
-			.rgbs 100, 100, 100, 100
-		    }
-		    TT11 -= v[1137]
-		    TT5 = min(TT5 + 5, 100)
-		    
-		}
-		
+				TT1 = v[1155]
+				TT10 = 2
+				TT11 = v[4515]
+				TT5 = v[239]
+				TT6 = divmul(-25, 45, v[1139])
+				@loop v[1136] .dst TT2 {
+						TT2 += TT1
+						@pic[TT2].move {
+					.pos TT10, TT11 .bottomLeft
+					.scale 100
+					.trans 100
+					.time TT6
+					.rgbs 100, 100, 100, 100
+						}
+						TT11 -= v[1137]
+						TT5 = min(TT5 + 5, 100)
+						
+				}
+				
 		
 	    }
 	    

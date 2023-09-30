@@ -1,6 +1,10 @@
 // you should move these functions to module files, not header
+deft DISlogQueue = 781
 deft Str_Log = 782
 deft LogBuffer = 782
+
+defs PUSH_DIS_LOG = 270
+sname[__id(PUSH_DIS_LOG)], "PUSH_DIS_LOG"
 
 //?
 __fn func_logupdate_begin {
@@ -38,7 +42,9 @@ __fn func_logupdate_end {
 
 }
 
-__fn func_show_msg $str {
+
+__fn func_draw_DIS_log $str {
+
 	t[3000].asg $str .extract
 	log_push(t[3000])
 	func_logupdate_begin()
@@ -61,6 +67,13 @@ __fn func_show_msg $str {
 	func_logupdate_end()
 }
 
+__fn func_show_msg $str {
+	t[3000].asg $str .extract
+	t[3000].cat LF
+	DISlogQueue.cat t[3000]
+	PUSH_DIS_LOG.on
+}
+
 __fn msg $str { // simplified 
 	func_show_msg($str)
 }
@@ -76,25 +89,10 @@ __fn func_errlog $str {
 	
 	t[3000].asg "\c[17]ERROR: "
 	t[3000].cat $str .extract
-	func_logupdate_begin()
-	TT1 = 2
-	@pic[v[1155]].strpic {
-	    t[3000]
-	    .pos TT1, v[1126] .bottomLeft
-	    .size 0, 0    .chromakey 1
-	    .scale 100
-	    .trans 30
-	    .rgbs 100, 100, 100, 100
-	    .font Font_UI, Font_UI_size
-	    .spacing 0, 4
-	    .skin "" .nobg .noframe .noPadding
-	    .mapLayer 8
-	    .eraseWhenTransfer
-	    .affectedByFlash
-	    .affectedByShake
-	}
-	func_logupdate_end()
-		
+	t[3000].cat LF
+	DISlogQueue.cat t[3000]
+	PUSH_DIS_LOG.on
+	
 
 
 }
@@ -105,26 +103,9 @@ __fn func_devlog $str{
 	
 	t[3000].asg "\c[5]DEBUG: "
 	t[3000].cat $str .extract
-	func_logupdate_begin()
-	var1 = 2
-	@pic[v[1155]].strpic {
-	    t[3000]
-	    .pos var1, v[1126] .bottomLeft
-	    .size 0, 0    .chromakey 1
-	    .scale 100
-	    .trans 30
-	    .rgbs 100, 100, 100, 100
-	    .font Font_UI, Font_UI_size
-	    .spacing 0, 4
-	    .skin "" .nobg .noframe .noPadding
-	    .mapLayer 8
-	    .eraseWhenTransfer
-	    .affectedByFlash
-	    .affectedByShake
-	}
-	func_logupdate_end()
-		
-
+	t[3000].cat LF
+	DISlogQueue.cat t[3000]
+	PUSH_DIS_LOG.on
 	}
 }
 

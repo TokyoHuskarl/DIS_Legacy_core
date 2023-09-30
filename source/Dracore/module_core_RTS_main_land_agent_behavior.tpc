@@ -472,7 +472,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 										//@comment "防御"
 										@if agent_StanceOrder == ORD_DEF {
 										//@comment "地点に戻った"
-										agent_ActionFlag &= -2//~1
+										agent_ActionFlag &= -2 //~1
 										agent_LeftWPtoChase = -2
 										agent_MovementOrder = MovementOrder_TYPE_returned
 										
@@ -499,8 +499,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 								@if agent_MovementOrder <= MovementOrder_TYPE_do_not_move {
 										// stance is Def or Standby
 										@if `agent_StanceOrder == ORD_DEF || agent_StanceOrder == ORD_STD {
-									LEGS_MAIN_Agent_tries_to_stop.off
-									agent_MovementOrder = MovementOrder_TYPE_moving
+											LEGS_MAIN_Agent_tries_to_stop.off
+											agent_MovementOrder = MovementOrder_TYPE_moving
 									
 										}
 										
@@ -530,7 +530,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				}.else bl {
 
 					//@comment "移動"
-					agent_ActionFlag &= agent_MovementOrder >= 2 ? ~ActionFLag_FLAG_Hold_direction : ~0
+					agent_ActionFlag &= agent_MovementOrder >= 2 ? ~ActionFLag_FLAG_Hold_direction : agent_ActionFlag
 
 					// calc Vector 
 					TT2 = agent_AgentBits & AgentBits_Inertia ? 9 : 2 // (agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback ? 4 : 2)

@@ -1228,6 +1228,8 @@ var Cmd = {
 			Cmd.Qset(this.CmdType,"exec",`${jsfile}`);
 		},
 
+		importDISdata: function(jsonfile){},
+
 		wait: function(RMwaittime) { // RMwaittime: 10 = 1sec, 0 = 1f, -n = {n}f. 
 			Cmd.Qset(this.CmdType,"wait",`${RMwaittime}`);
 			Cmd.runFlags.RMwaitDetect = true;
