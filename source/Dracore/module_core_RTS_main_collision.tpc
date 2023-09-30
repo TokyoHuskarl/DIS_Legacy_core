@@ -210,7 +210,7 @@ __fn ColCheck {
 				Ptr15 = Temp1 + 296
 				Ptr16 = Temp1 + 36
 				Ptr17 = 53
-				v[Col_Ptr2AgentBits] |= 64
+				v[Col_Ptr2AgentBits] |= AgentBits_Collided_Other_Agent
 				//kabe no naka ni iru!
 				@ev[2].setPos .pos v[626], v[627]
 				Temp16 = ev[2].scrx
@@ -296,16 +296,19 @@ __fn ColCheck {
 				//@comment ""#mask with 110000""
 				//@comment ""#mask with 001100""
 				//@comment ""#mask with 000011"""
-				TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
-				v[609] = TT2 >> TT5
+				
+				// TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
+				// maybe this is faster I suppose?
+				TT5 = (TT3 & 768 >> 7) * 10 | (TT3 & 192 >> 6) * 8 | (TT3 & 48 >> 4) * 6 | ( TT3 & 12 >> 2) * 4 | (TT3 & 3 >> 1) * 2
+				agent_Morton = TT2 >> TT5
 				//@comment "#mask end"
 				TT6 = TT5 / 2
 				v[340] = 4546 - TT6
-				v[340] = v[v[340]]
-				v[327] = v[v[4552 - TT6] + v[609]]
+				v[340].deref v[340],1
+				v[327] = v[v[4552 - TT6] + agent_Morton]
 				//@comment "##############"
 				Ptr14 = Temp1 + 25
-				v[Ptr14] = 2 + v[327] / v[4522] + v[610] / 19 - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
+				v[Ptr14] = 2 + v[327] / v[4522] + v[610] / 19 - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0) // (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
 					//@comment "DisciplineCheck"
 				//opt
 
@@ -323,13 +326,14 @@ __fn ColCheck {
 				}
 
 				//v[339] as a ptr
-				v[339] = v[609] * v[1004] 
+				v[339] = agent_Morton * v[1004] 
 				v[339] += v[340]
 
 				//experimental
 				Ptr5 = Const_save_var_TileFlags + v[632]
 				@if `v[Ptr5] & FLAG_Maptile_Crowded {
-					TT1 = min(v[327],16) // shuffling too much size array causes lag so set limitation on the max num
+					// shuffling too much size array causes lag so set limitation on the max num
+					TT1 = min(v[327],8) // changed 16 -> 8
 					v[v[339]].shuffle TT1
 				}
 				
@@ -338,7 +342,7 @@ __fn ColCheck {
 
 				// set pointer for push
 				Ptr19 = Temp1 + 15
-				@if `v[Temp32] & 512 { // the agent has discipline?
+				@if `v[Col_Ptr2AgentBits] & AgentBits_Discipline_Col { // the agent has discipline?
 
 						// if so
 						@loop v[327] {
@@ -352,7 +356,7 @@ __fn ColCheck {
 							//@if v[700] != TT3 { // EXPERIMENTAL cond
 
 							// cond in case of NOT DIS_EXPERIMENTAL.. you must adjust manually
-							@if `v[700] != v[v[v[203]] + Const_AgentMetaTeam_beginMINUSONE] {
+							@if `agent_TeamID != v[v[v[203]] + Const_AgentMetaTeam_beginMINUSONE] {
 						
 								macro_ColCheck_distance()
 
@@ -384,16 +388,21 @@ __fn ColCheck {
 								}
 								
 							}
-							v[203] += 1//++
+							v[203] += 1 //++
 						}
 						
 						
 				}
-
-				@if `!(v[Temp32] & AgentBits_Collided_Other_Agent) { // NOT collided
-					v[Temp32] &= -385//~384
+				
+				/*
+				@if `!(v[Col_Ptr2AgentBits] & AgentBits_Collided_Other_Agent) { // NOT collided
+					v[Col_Ptr2AgentBits] &= -385 // ~384
 					
 				}
+				*/
+				
+				v[Col_Ptr2AgentBits] &= v[Col_Ptr2AgentBits] & AgentBits_Collided_Other_Agent ? v[Col_Ptr2AgentBits] : -385 // is this really faster than above?
+
 				
 			}
 			
@@ -411,6 +420,7 @@ __fn macro_ColCheck_distance {
 	v[Temp20].copy Temp20,2
 	Temp20.sub v[607],2
 	*/
+
 	victim_AgentType = v[v[203]] * 300
 	victim_AgentType += 4701
 	v[victim_AgentType].copy victim_AgentType,102
@@ -435,8 +445,16 @@ __fn macro_ColCheck_distance {
 
 __fn macro_ColCheck_push {
 
-	// TT1 = Const_save_var_TileFlags + v[632] // check Tile flag
-	v[__id(victim_RelativeX)..__id(victim_RelativeY)] *= (v[527 + ((v[Temp32] | (v[638] & 2 && v[680] > 0 ? 256 : 0)) & 256) / 256]) + (v[Ptr5] & FLAG_Maptile_Crowded ? 1 : 0) // if it's Crowded, push more
+	// if the agents are in the completely same coordinate
+	@if victim_RelativeX == 0 {
+		@if victim_RelativeY == 0 {
+			// then push it to random direction
+			victim_RelativeX = rnd(-2,2) 
+			victim_RelativeY = rnd(-2,2)
+		}
+	}
+
+	v[__id(victim_RelativeX)..__id(victim_RelativeY)] *= (v[527 + ((v[Col_Ptr2AgentBits] | (agent_MoveTypeBIts & MoveTypeBits_Horse && agent_InCombatTimer > 0 ? 256 : 0)) & 256) >> 8]) + ((v[Ptr5] & FLAG_Maptile_Crowded) >> 1) // if it's Crowded, push more
 	v[Ptr19] .add victim_RelativeX, 2
 	
 	defv Col_Ptr2AI_routine_bits = __id(Temp33) 
@@ -445,10 +463,12 @@ __fn macro_ColCheck_push {
 			@if victim_TeamID == agent_TeamID { // and it's ally
 				Col_Ptr2AI_routine_bits = Temp1 + 34
 				def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_1secDelay_PF
-				v[Col_Ptr2AI_routine_bits] |=  !(agent_AgentBits & AgentBits_Collided_Other_Agent) ? Col_AIFLAG_PFandSkip : 0 // start pathfinding
+				v[Col_Ptr2AI_routine_bits] |= agent_LeftWPtoChase > 0 ? Col_AIFLAG_PFandSkip : AI_routine_bits_FLAG_PATHFINDING
+
 			}
 		}
 	}
-	v[Temp32] |= AgentBits_Collided_Other_Agent
+
+	v[Col_Ptr2AgentBits] |= AgentBits_Collided_Other_Agent
 	@break
 }

@@ -335,7 +335,7 @@ struct("agent",{
 	AgentBits_Collided_Other_Agent = 64
 	AgentBits_Endpoint_Collision_Trouble = 128
 	AgentBits_Movement_Giveup = 256
-
+	AgentBits_Discipline_Col = 512
 	AgentBits_Hovering = 1024
 
 	// AgentBits_FLAG_KILLED = 16384 
@@ -355,6 +355,7 @@ struct("agent",{
 
 
 	MoveTypeBits_Flying = 1
+	MoveTypeBits_Horse = 2
 	MoveTypeBits_Skate = 8
 	MoveTypeBits_Snow = 16
 	MoveTypeBits_Roller = 32
