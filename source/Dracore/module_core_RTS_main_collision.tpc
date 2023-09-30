@@ -297,9 +297,7 @@ __fn ColCheck {
 				//@comment ""#mask with 001100""
 				//@comment ""#mask with 000011"""
 				
-				// TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
-				// maybe this is faster I suppose?
-				TT5 = (TT3 & 768 >> 7) * 10 | (TT3 & 192 >> 6) * 8 | (TT3 & 48 >> 4) * 6 | ( TT3 & 12 >> 2) * 4 | (TT3 & 3 >> 1) * 2
+				TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
 				agent_Morton = TT2 >> TT5
 				//@comment "#mask end"
 				TT6 = TT5 / 2

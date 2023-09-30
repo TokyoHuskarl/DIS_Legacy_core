@@ -148,7 +148,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 				@if v[683] > 0 {
 					TT1 = 30 *  v[683]
 					TT1 = sin(TT1, 1, -2) 
-					TT1 *= v[844] == 0 ? 1 : -1
+					// TT1 *= v[844] == 0 ? 1 : -1
+					TT1 = v[844] == 0 ? TT1 : -TT1
 					agent_SpriteX += TT1
 				}
 				// @comment "#Try Dodge Motion#Try Hit Motion"
@@ -164,7 +165,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 					TT1 = agent_Luck + v[2500]
 					TT1 *= 5
 					TT1 = sin(TT1, 3, 2999)
-					agent_SpriteY += TT1 / 1000
+					agent_SpriteY += TT1 >> 10 // / 1000
 				}
 
 				//@comment "#################"
@@ -385,6 +386,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																			@if agent_InCombatTimer > 0 {
 																					v[4134] = 3
 																					v[4144] = 180000 * (1 - 2 * v[325])
+
 																					v[4154] = 10000
 																					v[4044] -= v[325]
 																					v[4054] -= 1
@@ -423,23 +425,23 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															v[311..312] = sin(TT1, 1, 2)
 															Temp11 *= agent_MainShieldID > 0 ? 1 : -1//maybe this means have shield?
 															Temp12 *= -1
-															v[311..312] *= 1 - 2 * v[325]
+															v[311..312] *= v[325] == 0 ? 1 : -1 // 1 - 2 * v[325]
 															v[311..312] += Temp5
 															Temp11.copy v[4044], 2
 															//@comment "Archer"
-							 agent_AASfx=agent_AASfx % 10000
+																agent_AASfx=agent_AASfx % 10000
 															@if agent_AASfx == 91 {
-							animation_foot_archer()
+																animation_foot_archer()
 															//Spear   
 															}.elif agent_AASfx==3{
-					animation_foot_spear()
+																animation_foot_spear()
 															}
 
 
 													}
 
 													@if `agent_ExMotionFlags & ExMotionFlags_FLAG_MoveAnim { // agent has movement animation
-															v[4117] = 6 + sin(TT1, 1, 9999) / 5000
+															v[4117] = 6 + sin(TT1, 1, 9999) >> 12 // / 5000
 															v[4111] = v[4117]
 															@if v[4111] == 6 {
 																	v[4052..4056] -= 1
@@ -465,7 +467,11 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															//@comment "shieldwall"
 															@if `v[848] & 6 {
 																	v[4051..4060] += 1
-																	v[4045] -= 1 - 2 * v[455] / 4096
+
+																	// v[4045] -= 1 - 2 * v[455] / 4096
+																	v[4045] += v[455] >> 11
+																	v[4045] -= 1 // 1 - (v[455] >> 11)
+
 																	v[4055] -= 1
 																	
 															}
@@ -473,7 +479,9 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															@if `v[848] & 1 {
 																	//@comment "pikewall"
 																	v[4051..4060] += 1
-																	v[4044] -= 1 - 2 * v[455] / 4096
+																	// v[4044] -= 1 - 2 * v[455] / 4096
+																	v[4044] += v[455] >> 11
+																	v[4044] -= 1 // 1 - (v[455] >> 11)
 																	v[4054] -= 1
 																	
 															}
@@ -593,7 +601,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																								@if agent_AASfx == 0 {
 																										@if agent_AttackFrame == 0 {
 																												v[4111..4120] = 4
-																												TT1 = 1 - 2 * v[325]
+																												TT1 = 1 
+																												TT1 -= 2 * v[325]
 																												@if `!(agent_ExMotionFlags & ExMotionFlags_FLAG_horseback) {
 																														v[4041..4049] += TT1
 																														
