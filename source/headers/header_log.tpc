@@ -48,7 +48,7 @@ __fn func_logupdate_end {
 __fn func_draw_DIS_log $str {
 
 	t[3000].asg $str .extract
-	log_push(t[3000])
+	Str_Log.cat t[3000]
 	func_logupdate_begin()
 	var1 = 2
 	@pic[v[1155]].strpic {
@@ -142,18 +142,6 @@ __fn log_export $path {
 
 __fn export_mapautolog {
 	inputstr.asg "../user/log/"
-	
-	str1 .asg  .map[v[501]].name
-	@if str1 .eq "CustomMap" {
-		str1 .asg t[750]
-	}
-	
-	inputstr.cat str1
-	inputstr.cat "_"
-	var1 = sys.date
-	inputstr.cat var1
-	inputstr.cat "_"
-	var2 = sys.time
-	inputstr.cat var2
+	inputstr.cat MissionLogName
 	log_export(inputstr)
 }

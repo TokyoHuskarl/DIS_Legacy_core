@@ -2136,6 +2136,22 @@ __fn CEV_MISSION_MAP_INIT {
 	@if .testPlay() {
 		log_export("..\user\log\mission_initlog")
 	}
+
+	MissionLogName.asg t[750]
+	MissionLogName.cat "_"
+	var1 = sys.date
+	MissionLogName.cat var1
+	MissionLogName.cat "_"
+	var2 = sys.time
+	MissionLogName.cat var2
+	inputstr.asg "RTS game :"
+	inputstr.cat MissionLogName
+	inputstr.cat " starts."
+	log_push(inputstr)
+
+
+	
+
 }
 
 
