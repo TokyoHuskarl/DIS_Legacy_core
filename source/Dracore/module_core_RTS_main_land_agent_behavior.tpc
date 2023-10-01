@@ -65,7 +65,6 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				TT1 >>= 2
 				val_add(var4,TT1) // var4 += TT1
 				v[TT1 * Const_save_var_Agents_Limit + v[4534] + v[var4]] = v[v[536]]
-				
 				v[var4].add N1,1 // v[var4] += 1
 
 				// first mort dim ~ third mort dim
@@ -77,6 +76,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				val_add(reg3,TT1) // reg3 += TT1
 				v[TT1 * Const_save_var_Agents_Limit + v[1070] + v[reg3]] = v[v[536]]
 				v[reg3].add N1,1 // v[reg3] += 1
+
 				//@comment "#第二空間だよ
 				//0~15"
 				TT1 >>= 2
@@ -84,6 +84,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				val_add(reg1,TT1) // reg2 += TT1
 				v[TT1 * Const_save_var_Agents_Limit + v[1069] + v[reg2]] = v[v[536]]
 				v[reg2].add N1,1 // v[reg2] += 1
+
 				//@comment "#第一空間だよ
 				//0~3"
 				TT1 >>= 2
@@ -92,6 +93,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				v[TT1 * Const_save_var_Agents_Limit + v[1068] + v[reg1]] = v[v[536]]
 				v[reg1].add N1,1 // v[reg1] += 1
 				//@comment "モートン座標関係はこれで終わり"
+
 			}
 		}
 

@@ -346,6 +346,7 @@ __fn ColCheck {
 				@if `v[Col_Ptr2AgentBits] & AgentBits_Discipline_Col { // the agent has discipline?
 
 						// if so
+						Temp10 = agent_TeamID % 3
 						@loop v[327] {
 
 							__if DIS_EXPERIMENTAL == -1 {
@@ -357,7 +358,7 @@ __fn ColCheck {
 							//@if v[700] != TT3 { // EXPERIMENTAL cond
 
 							// cond in case of NOT DIS_EXPERIMENTAL.. you must adjust manually
-							@if `agent_TeamID != v[v[v[203]] + Const_AgentMetaTeam_beginMINUSONE] {
+							@if `Temp10 != v[v[v[203]] + Const_AgentMetaTeam_beginMINUSONE] {
 						
 								macro_ColCheck_distance()
 

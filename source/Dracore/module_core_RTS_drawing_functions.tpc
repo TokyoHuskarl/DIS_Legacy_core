@@ -253,13 +253,15 @@ __fn function_draw_agent_inv_stats {
 
 			// camel
 			v[4056] += agent_AABits & AABits_FLAG_Camel ? Const_camel_offsetY_draw : 0 // Camel
+			// cav idle
+			v[4046] -= agent_ExMotionFlags & ExMotionFlags_FLAG_horseback ? 1 : 0
 
 	    v[468] = 9
 	    @comment "Colour"
 	    v[449..452] = 100
 	    @comment "Get Picture Layer Array"
 	    v[358] = v[159]
-	    v[11] = (v[340]-1)*10
+	    v[11] = (v[340] - 1) * 10
 	    v[11] = Const_str_agent_pictures_strings_start + v[11]
 	    @while v[358] >= 1 {
 				v[305] = v[157] + 24

@@ -30,7 +30,6 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 
 	// set consts for loop below
 	v[4001..4016] = 7
-	Temp1 = 4
 
 	@loop v[4526] .dst TT1 {
 	    TT8 = TT1 % TT6
@@ -40,9 +39,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	    TT5 += TT9 * v[2927]
 
 	    // TT10 = TT10 & 1 ? 100 : v[TT5] & 2 ? 50 : 0
-			TT10 ^= v[TT5] & 3 // replaced for fast proc :D
-			TT10 <<= 5 // {64,0} + {32,0}
-			TT10.add Temp1,1 // + 4
+			TT10 = (((0 ^ v[TT5]) & 3) << 5) + 4 // replaced for fast proc :D
 			
 			/*
 	    TT3 = 80 * TT8
@@ -398,7 +395,7 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 							// use Array operand!
 							TT10 = v[1277] * v[1276] // index
 							val_sub(TT10,N1) // -= 1 
-							v[ptr_null].copy v[4563],TT10 // v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
+							v[ptr_null].copy v[v[4563]],TT10 // v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
 							@loop v[1276] .dst TT4 {
 								// tempA = TT4 * v[1277] 
 								// tempB = v[4802] + TT4 ...no need to calc these in inner loop

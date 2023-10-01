@@ -62,7 +62,7 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    // v[0] = v[720..721] = v[1911..1912]
 			v[1911].copy v[720],2
 	    agent_AABits |= v[1913]
-			v[1914].copy v[727],3
+			v[1914].copy v[727],4
 	    // v[0] = v[727..730] = v[1914..1917]
 	    @if agent_AAType == 2 {
 				func_get_ranged_weapon_velocity(v[1908],v[1914])
