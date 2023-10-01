@@ -111,6 +111,10 @@ __fn func_devlog $str{
 	}
 }
 
+__fn deblog $str {
+	func_devlog($str)
+}
+
 // push push
 __fn log_push $str {
 	Str_Log.cat LF

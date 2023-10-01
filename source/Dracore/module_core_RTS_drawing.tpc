@@ -165,7 +165,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 					TT1 = agent_Luck + v[2500]
 					TT1 *= 5
 					TT1 = sin(TT1, 3, 2999)
-					agent_SpriteY += TT1 >> 10 // / 1000
+					agent_SpriteY += TT1 / 1000
 				}
 
 				//@comment "#################"
@@ -441,7 +441,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													}
 
 													@if `agent_ExMotionFlags & ExMotionFlags_FLAG_MoveAnim { // agent has movement animation
-															v[4117] = 6 + sin(TT1, 1, 9999) >> 12 // / 5000
+															v[4117] = 6 + sin(TT1, 1, 9999) / 5000
 															v[4111] = v[4117]
 															@if v[4111] == 6 {
 																	v[4052..4056] -= 1
