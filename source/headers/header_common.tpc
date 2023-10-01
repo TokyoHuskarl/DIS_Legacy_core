@@ -8,7 +8,7 @@ __if PSEUDO_ARG_SET == 0 {
 	//def MAKE_TYPE = 0
 }
 
-def DEBUG_BUILD = 1 //0 = release, 1 = debug
+def DEBUG_BUILD = 0 //0 = release, 1 = debug
 
 __if MAKE_TYPE == 0 {
 #apply
@@ -35,7 +35,7 @@ def DIS_DEBUG_BUILD = DEBUG_BUILD
 __if DEBUG_BUILD == 1 {
 #optimize 0
 }.else bl {
-#optimize 1 //eggsperimental, can cause some problems
+#optimize 1 //eggsberimental, can cause some broblemes :D
 }
 
 
@@ -787,6 +787,22 @@ deft {
 	data_armorID = 806
 	data_helmIDD = 807
 	data_accessoryID = 808
+}
+
+
+// for array manipulation
+vname[4836] "N5000"
+vname[4837] "N5001"
+vname[4838] "N4700"
+vname[4839] "N4701"
+defv {
+	N1 = 1089
+	N2 = 4826 // array [2,2]
+
+	N5000 = 4836
+	N5001 = 4837
+	N4700 = 4838
+	N4701 = 4839
 }
 
 #include "./header_log.tpc"

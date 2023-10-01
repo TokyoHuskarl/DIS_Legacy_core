@@ -60,3 +60,29 @@ __fn convertStrBitsTable_to_r1 $str {
 	}
 	
 }
+
+// you cannot give this 
+__fn increment_var $targv {
+	v[__id($targv)].add N1,1 
+}
+
+__fn val_asg $v1 $v2 {
+	v[__id($v2)].copy v[__id($v1)],1
+}
+
+__fn val_add $v1 $v2 {
+	v[__id($v1)].add v[__id($v2)],1
+}
+
+__fn val_sub $v1 $v2 {
+	v[__id($v1)].sub v[__id($v2)],1
+}
+
+__fn val_mul $v1 $v2 {
+	v[__id($v1)].mul v[__id($v2)],1
+}
+
+__fn val_div $v1 $v2 {
+	v[__id($v1)].div v[__id($v2)],1
+}
+

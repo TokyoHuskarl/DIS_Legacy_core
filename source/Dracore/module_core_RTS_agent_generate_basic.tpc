@@ -875,15 +875,15 @@ __fn func_generate_agent_finish_set {
 	@if v[601] == 11 {
 
 	    @if agent_AAType == 2 {
-		func_get_ranged_weapon_velocity(agent_BaseRange_max,1)
-		agent_AAvelocity = reg1
+				func_get_ranged_weapon_velocity(agent_BaseRange_max,1)
+				agent_AAvelocity = reg1
 	    }
 
 	    Bool_Refresh_Static_Minimap.on //request refresh minimap static
 	    v[834..835] = 0
 	    //MapXY/5 for minimap
-	    v[600+AGENT_STATIC_SLOT_MINIMAP_X]=agent_MapX/5
-	    v[600+AGENT_STATIC_SLOT_MINIMAP_Y]=agent_MapY/5
+	    v[600 + AGENT_STATIC_SLOT_MINIMAP_X] = agent_MapX / 5
+	    v[600 + AGENT_STATIC_SLOT_MINIMAP_Y] = agent_MapY / 5
 	    @comment "Node check"
 	    @comment "walls"
 	    @if agent_UnitType == 107 {
@@ -907,27 +907,27 @@ __fn func_generate_agent_finish_set {
 	    	    v[857]=(v[857]+v[611]/16)/5*/
 
 		    @loop v[809] .dst v[2064] {
-			Ptr6 = v[4564] * (v[807] + v[433] * v[2064]) + v[4569] - 1
-			@loop v[808] .dst v[2065] {
-			    @comment "init"
-			    Ptr7 = Ptr6 + 3
-			    @comment "setup"
-			    @if v[Ptr7] == 0 {
-				Ptr7 += 1
-				
-			    }
-			    @comment "Cost Set"
-			    @comment "setup"
-			    @comment "Cost Set"
-			    v[Ptr7] -= 30
-			    @comment "static built"
-			    v[Ptr6 + 11] |= 32
-			    @comment "1"
-			    Ptr6 += v[4564]
-			    
-			}
-			
-			
+					Ptr6 = v[4564] * (v[807] + v[433] * v[2064]) + v[4569] - 1
+					@loop v[808] .dst v[2065] {
+							@comment "init"
+							Ptr7 = Ptr6 + 3
+							@comment "setup"
+							@if v[Ptr7] == 0 {
+						Ptr7 += 1
+						
+							}
+							@comment "Cost Set"
+							@comment "setup"
+							@comment "Cost Set"
+							v[Ptr7] -= 30
+							@comment "static built"
+							v[Ptr6 + 11] |= 32
+							@comment "1"
+							Ptr6 += v[4564]
+							
+					}
+					
+					
 		    }
 		    
 		    
@@ -1485,8 +1485,8 @@ __fn func_generate_agent_finish_set {
 						v[713..714] -= 5
 						@comment "#Melee Range Penalty&Crit Bonus"
 						@if v[703] == 0 {
-							v[717] -= 4000
-							v[717] = max(19000, v[717])
+							v[717] -= 2000
+							v[717] = max(19500, v[717])
 							v[715] += 1
 					
 						}
@@ -1591,7 +1591,7 @@ __fn func_generate_agent_finish_set {
 		
 	    }
 
-	    @comment "Civilians have better AI eyesight in order to find basement"
+	    @comment "Civilians have better AI eyesight in order to find constcrution site"
 	    @if agent_UnitType == 9 {
 		v[830] *= 2
 		
@@ -1738,7 +1738,7 @@ __fn func_generate_agent_finish_set {
 			v[v[4533] + v[1004] - 1] = ptr_SpawnAgentMainSpace_Head + 1
 			v[v[4533] + v[1004]] += 1
 			v[v[4533]].sortDescending v[1004]
-			@comment "BASEMENT"
+			@comment "constcrution site"
 			@comment "#temp, this is not made for enemy team "
 			@if agent_UnitType == 104 {
 			    v[v[4561] + v[1012] - 1] = ptr_SpawnAgentMainSpace_Head + 1

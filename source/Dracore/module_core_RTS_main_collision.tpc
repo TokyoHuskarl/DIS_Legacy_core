@@ -22,97 +22,98 @@ __fn MAIN_CEV_RTS_COLLISION_MANAGER { // ->
 			v[527] = Const_ColPushA
 			v[528] = Const_ColPushB
 			@if s[2] .isOff() {
-		//@comment "Even Normal Units Collision "
-		v[536] = v[4532]
-		@while v[v[536]] != 0 {
-				v[401] = v[v[536]] - 1
-				Temp1 = v[401] * v[1117] 
-				Temp1 += 5000
-				//@comment "#Col"
-				ColCheck()
-				//@comment "++"
-				v[536] += 2
+				//@comment "Even Normal Units Collision "
+				v[536] = v[4532]
+				@while v[v[536]] != 0 {
+						v[401] = v[v[536]] - 1
+						Temp1 = v[401] * v[1117] 
+						val_add(Temp1,N5000) // Temp1 += 5000
+						//@comment "#Col"
+						ColCheck()
+						//@comment "++"
+						// v[536] += 2
+						val_add(v[536],N2) // v[536] += 2
+						
+				}
 				
-		}
-		
-		
+				
 			}
 
 			@wait 0
 			@if s[2] .isOff() {
-		//@comment "Odd Normal Units Collision "
-		v[536] = v[4532] + 1
-		@while v[v[536]] != 0 {
-				v[401] = v[v[536]] - 1
-				Temp1 = v[401] * v[1117] 
-				Temp1 += 5000
-				//@comment "#Col"
-				ColCheck()
-				//@comment "++"
-				v[536] += 2
+				//@comment "Odd Normal Units Collision "
+				v[536] = v[4532] + 1
+				@while v[v[536]] != 0 {
+						v[401] = v[v[536]] - 1
+						Temp1 = v[401] * v[1117] 
+						val_add(Temp1,N5000) // Temp1 += 5000
+						//@comment "#Col"
+						ColCheck()
+						//@comment "++"
+						val_add(v[536],N2) // v[536] += 2
+						
+				}
 				
-		}
-		
 		
 			}
 			
 	} .else bl {
 			@if v[204] < 600 {
-		v[527] = Const_ColPushA2
-		v[528] = Const_ColPushB2
+				v[527] = Const_ColPushA2
+				v[528] = Const_ColPushB2
 
-		@if s[2] .isOff() {
-				//@comment "Even Normal Units Collision "
-				v[536] = v[4532]
-				@while v[v[536]] != 0 {
-			v[401] = v[v[536]] - 1
-			Temp1 = v[401] * v[1117] 
-			Temp1 += 5000
-			//@comment "#Col"
-				ColCheck()
-			//@comment "++"
-			v[536] += 3
-			
+				@if s[2] .isOff() {
+						//@comment "Even Normal Units Collision "
+						v[536] = v[4532]
+						@while v[v[536]] != 0 {
+							v[401] = v[v[536]] - 1
+							Temp1 = v[401] * v[1117] 
+							val_add(Temp1,N5000) // Temp1 += 5000
+							//@comment "#Col"
+								ColCheck()
+							//@comment "++"
+							v[536] += 3
+							
+						}
+						
+						
 				}
-				
-				
-		}
 
-		@wait 0
-		@if s[2] .isOff() {
-				//@comment "Odd Normal Units Collision "
-				v[536] = v[4532] + 1
-				@while v[v[536]] != 0 {
-			v[401] = v[v[536]] - 1
-			Temp1 = v[401] * v[1117]
-			Temp1 += 5000
-			//@comment "#Col"
-			ColCheck()
-			//@comment "++"
-			v[536] += 3
-			
+				@wait 0
+				@if s[2] .isOff() {
+						//@comment "Odd Normal Units Collision "
+						v[536] = v[4532] + 1
+						@while v[v[536]] != 0 {
+							v[401] = v[v[536]] - 1
+							Temp1 = v[401] * v[1117]
+							val_add(Temp1,N5000) // Temp1 += 5000
+							//@comment "#Col"
+							ColCheck()
+							//@comment "++"
+							v[536] += 3
+							
+						}
+						
+						
+				}
+				@wait 0
+				@if s[2] .isOff() {
+						//@comment "Odd Normal Units Collision "
+						v[536] = v[4532] + 2
+						@while v[v[536]] != 0 {
+							v[401] = v[v[536]] - 1
+							Temp1 = v[401] * v[1117]
+							val_add(Temp1,N5000) // Temp1 += 5000
+							//@comment "#Col"
+							ColCheck()
+							//@comment "++"
+							v[536] += 3
+					
+						}
+						
+						
 				}
 				
-				
-		}
-		@wait 0
-		@if s[2] .isOff() {
-				//@comment "Odd Normal Units Collision "
-				v[536] = v[4532] + 2
-				@while v[v[536]] != 0 {
-			v[401] = v[v[536]] - 1
-			Temp1 = v[401] * v[1117]
-			Temp1 += 5000
-			//@comment "#Col"
-			ColCheck()
-			//@comment "++"
-			v[536] += 3
-			
-				}
-				
-				
-		}
-		
 			} .else bl {
 		v[527] = Const_ColPushA3
 		v[528] = Const_ColPushB3
@@ -311,21 +312,22 @@ __fn ColCheck {
 				//opt
 
 				// set real agentid to TT2 
-				TT2 = v[v[536]]
+				v[536].deref TT2,1 // TT2 = v[v[536]]
 
 				//GET Colbox XY
 				__if DIS_EXPERIMENTAL == -1 {
 					//get from AEAB
 					get_AEAB_array(TT2,__id(v[337]),AgentExBuffer_SLOT_ColBoxWidth,2)
 				}.else bl {
-					v[337] = v[4523] 
+					val_asg(v[337],v[4523]) // v[337] = v[4523] 
 					v[337] += v[401] * 2
 					v[v[337]].copy v[337], 2
 				}
 
 				//v[339] as a ptr
 				v[339] = agent_Morton * v[1004] 
-				v[339] += v[340]
+				v[339].add v[340],1 // v[339] += v[340]
+				
 
 				//experimental
 				Ptr5 = Const_save_var_TileFlags + v[632]
@@ -336,7 +338,8 @@ __fn ColCheck {
 				}
 				
 				//v[203] = Ptr
-				v[203] = v[339] //set &array[0]
+				v[339].copy v[203],1 // v[203] = v[339] //set &array[0]
+				
 
 				// set pointer for push
 				Ptr19 = Temp1 + 15
@@ -366,7 +369,7 @@ __fn ColCheck {
 								}
 								
 							}
-							v[203] += 1 //++
+							increment_var(v[203]) // v[203] += 1 //++
 							
 						}
 						
@@ -386,7 +389,7 @@ __fn ColCheck {
 								}
 								
 							}
-							v[203] += 1 //++
+							increment_var(v[203]) // v[203] += 1 //++
 						}
 						
 						
@@ -420,7 +423,7 @@ __fn macro_ColCheck_distance {
 	*/
 
 	victim_AgentType = v[v[203]] * 300
-	victim_AgentType += 4701
+	val_add(victim_AgentType,N4701) // victim_AgentType += 4701
 	v[victim_AgentType].copy victim_AgentType,102
 	victim_RelativeX.sub agent_RelativeX,2
 
@@ -457,7 +460,7 @@ __fn macro_ColCheck_push {
 	
 	defv Col_Ptr2AI_routine_bits = __id(Temp33) 
 	@if victim_AgentType == 11 { // pushed by static agent
-		@if agent_MovementOrder > MovementOrder_TYPE_move_ordered
+		@if agent_MovementOrder > MovementOrder_TYPE_move_ordered {
 			@if v[v[203]] != agent_TargetAgentID { // NOT target
 				@if victim_TeamID == agent_TeamID { // and it's ally
 					Col_Ptr2AI_routine_bits = Temp1 + 34
