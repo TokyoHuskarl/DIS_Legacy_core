@@ -330,14 +330,14 @@ __fn ColCheck {
 				
 
 				//experimental
-				v[Col_Ptr2AgentBits].deref TT4,1
+				Col_Ptr2AgentBits.deref TT4,1
 				Ptr5 = Const_save_var_TileFlags + v[632]
 				@if `v[Ptr5] & FLAG_Maptile_Crowded {
 					// shuffling too much size array causes lag so set limitation on the max num
 					TT1 = min(v[327],8) // changed 16 -> 8
 					v[v[339]].shuffle TT1
 					def KILLDISCP = ~AgentBits_Discipline_Col
-					// TT4 &= v[Ptr5] & FLAG_Maptile_TooManyInOneTile ? KILLDISCP : TT4
+					TT4 &= KILLDISCP
 				}
 				
 				//v[203] = Ptr
@@ -452,8 +452,8 @@ __fn macro_ColCheck_push {
 					victim_RelativeY = rnd(-2,2)
 				}
 			}
-
-			v[__id(victim_RelativeX)..__id(victim_RelativeY)] *= (v[527 + (((v[Col_Ptr2AgentBits] | (agent_MoveTypeBIts & MoveTypeBits_Horse && agent_InCombatTimer > 0) << 8) & 256) >> 8)]) + ((v[Ptr5] & FLAG_Maptile_TooManyInOneTile) << 8) // if it's Crowded, push more
+			def TileCrowdedANDtooMany = 6
+			v[__id(victim_RelativeX)..__id(victim_RelativeY)] *= (v[527 + (((v[Col_Ptr2AgentBits] | ((agent_MoveTypeBIts & MoveTypeBits_Horse && agent_InCombatTimer > 0) << 8)) & 256) >> 8)]) - ((v[Ptr5] & TileCrowdedANDtooMany) << 8) // if it's Crowded, push more
 			v[Ptr19] .add victim_RelativeX, 2
 			
 			defv Col_Ptr2AI_routine_bits = __id(Temp33) 
@@ -464,7 +464,6 @@ __fn macro_ColCheck_push {
 							Col_Ptr2AI_routine_bits = Temp1 + 34
 							def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_1secDelay_PF
 							v[Col_Ptr2AI_routine_bits] |= agent_LeftWPtoChase > 0 ? Col_AIFLAG_PFandSkip : AI_routine_bits_FLAG_PATHFINDING
-							v[Col_Ptr2AgentBits] |= AgentBits_FLAG_PF_walldetection_switch
 
 						}
 					}

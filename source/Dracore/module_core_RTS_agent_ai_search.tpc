@@ -101,7 +101,8 @@ v[4101].copy v[4102],29
 										v[534] = v[4579] + (v[1012] + 2) * v[211]
 										v[v[534]] = 0
 
-										Temp8 = agent_UnitEyeSight_for_AgentSearch
+										agent_UnitEyeSight_for_AgentSearch.copy Temp8,1
+										agent_UnitEyeSight_for_AgentSearch.copy Temp9,1
 
 										// get sight range root
 										defv UnitAI_agent_eyesight = 315
