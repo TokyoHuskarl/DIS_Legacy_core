@@ -461,49 +461,49 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 									// Already reached or something
 									@if Reaching_Target_Way_Point .isOff() {
-									agent_AI_routine_bits &= -49153 // ~49152
-									agent_AgentBits &= -37748737 // ~37748736 // (4194304 + 33554432)
-									agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
-									LEGS_MAIN_Agent_tries_to_stop.on
+										agent_AI_routine_bits &= -49153 // ~49152
+										agent_AgentBits &= -37748737 // ~37748736 // (4194304 + 33554432)
+										agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
+										LEGS_MAIN_Agent_tries_to_stop.on
 
-									@if `!(agent_AgentBits & AgentBits_Collided_Other_Agent) {
-										//@comment "防御"
-										@if agent_StanceOrder == ORD_DEF {
-										//@comment "地点に戻った"
-										agent_ActionFlag &= -2 //~1
-										agent_LeftWPtoChase = -2
-										agent_MovementOrder = MovementOrder_TYPE_returned
-										
+										@if `!(agent_AgentBits & AgentBits_Collided_Other_Agent) {
+											//@comment "防御"
+											@if agent_StanceOrder == ORD_DEF {
+												//@comment "地点に戻った"
+												agent_ActionFlag &= -2 //~1
+												agent_LeftWPtoChase = -2
+												agent_MovementOrder = MovementOrder_TYPE_returned
+											
+											} .else bl {
+											//@comment "待機"
+											agent_MovementOrder = agent_StanceOrder == 1 ? -2 : -1
+
+											}
+
 										} .else bl {
-										//@comment "待機"
-										agent_MovementOrder = agent_StanceOrder == 1 ? -2 : -1
-
+											//@comment "Got Collision Problem"
+											agent_AgentBits |= AgentBits_Endpoint_Collision_Trouble
+											//@comment "Stop Forcemove"
+											agent_MovementOrder -= agent_MovementOrder == MovementOrder_TYPE_prioritize_moving ? 1 : 0
 										}
-
-									} .else bl {
-										//@comment "Got Collision Problem"
-										agent_AgentBits |= AgentBits_Endpoint_Collision_Trouble
-										//@comment "Stop Forcemove"
-										agent_MovementOrder -= agent_MovementOrder == MovementOrder_TYPE_prioritize_moving ? 1 : 0
-									}
-									
+										
 									}
 									
 							} .else bl {
 									//
 									def Collided_And_GiveupMove = AgentBits_Collided_Other_Agent + AgentBits_Movement_Giveup
 									@if `!(agent_AgentBits & Collided_And_GiveupMove) {
-								// at least move order is given
-								@if agent_MovementOrder <= MovementOrder_TYPE_do_not_move {
-										// stance is Def or Standby
-										@if `agent_StanceOrder == ORD_DEF || agent_StanceOrder == ORD_STD {
-											LEGS_MAIN_Agent_tries_to_stop.off
-											agent_MovementOrder = MovementOrder_TYPE_moving
-									
+										// at least move order is given
+										@if agent_MovementOrder <= MovementOrder_TYPE_do_not_move {
+												// stance is Def or Standby
+												@if `agent_StanceOrder == ORD_DEF || agent_StanceOrder == ORD_STD {
+													LEGS_MAIN_Agent_tries_to_stop.off
+													agent_MovementOrder = MovementOrder_TYPE_moving
+											
+												}
+												
 										}
-										
-								}
-								
+									
 									}
 									
 							}

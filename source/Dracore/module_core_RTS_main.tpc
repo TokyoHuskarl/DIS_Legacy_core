@@ -1676,7 +1676,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						//v[v[842]] = -1
 						agent_MovementOrder = -1
 						agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
-						agent_AgentBits &= -129//~128
+						agent_AgentBits &= -129 //~128
 						
 				}
 		
@@ -1684,7 +1684,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				@if `agent_AgentBits & AgentBits_Endpoint_Collision_Trouble {
 						//Ptr14 = Temp1 + 22
 						@if `(v[2501] / 6 % (agent_ObjectCollideSkipFrame << 4)) == 0 { // "* 16" -> "<< 4"
-						agent_AgentBits |= AgentBits_Movement_Giveup
+							agent_AgentBits |= AgentBits_Movement_Giveup
 					
 						}
 						
@@ -2093,7 +2093,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //Set tile instants begin
 		//Use Temp2 as ptr to maptile
 		Temp2 = Const_save_var_TileFlags + agent_TileLink
-		v[Temp2] |= v[Temp2] & FLAG_Maptile_Occupied ? FLAG_Maptile_Crowded : FLAG_Maptile_Occupied //set occupied flag
+		// v[Temp2] |= v[Temp2] & FLAG_Maptile_Occupied ? FLAG_Maptile_Crowded : FLAG_Maptile_Occupied //set occupied flag
+		def CrowdedANDOccupied = 3
+		v[Temp2] |= ((v[Temp2] & CrowdedANDOccupied) << 1) | FLAG_Maptile_Occupied // ? FLAG_Maptile_Crowded : FLAG_Maptile_Occupied //set occupied flag
 		@if agent_TacticsOrderFlag > 0 {
 			@if `agent_TacticsOrderFlag & 6 { //using shieldwall
 				@if `!(agent_ProcessObjBit & 67108864) { //can use shield
