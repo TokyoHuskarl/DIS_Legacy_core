@@ -277,41 +277,41 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 												//@comment "#mask end"
 
 												TT5 >>= 1 // TT5 /= 2
-												v[340] = v[4546 - TT5] + TT6 * v[1004]
-												v[327] = v[v[4552 - TT5] + TT6]
-												Temp33 = [1, 0, -2][Temp14] /* v[Temp1] % 3 */
+												v[340] = v[4546 - TT5] + TT6 * v[1004] // morton agent list head
+												v[327] = v[v[4552 - TT5] + TT6] // morton agent list length
+												Temp33 = [1, 0, -2][Temp14]
 												Temp6 = 3601
 
-												@loop v[327] .dst v[310] {
-														v[312] = v[340] + v[310]
-
+												@loop v[327] .dst Temp12 { // .dst Temp 10 {
+														// Temp12 = v[340] + Temp10
+														val_add(Temp12,v[340])
 
 														__if DIS_EXPERIMENTAL == -1 {
-															macro_get_agent_MetaTeam_into_var(v[v[312]],TT1) // AEBA
+															macro_get_agent_MetaTeam_into_var(v[Temp12],TT1) // AEBA
 														}.else bl {
-															TT1 = Const_AgentMetaTeam_beginMINUSONE + v[v[312]]
+															TT1 = Const_AgentMetaTeam_beginMINUSONE + v[Temp12]
 														}
 
 														// @if  agent_TeamID == TT1 { // EXPERIMENTAL - IF YOU USE AEBA  
 														@if  Temp33 == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA
 
-																Temp11 = v[v[312]] * v[1117] 
+																Temp11 = v[Temp12] * v[1117] 
 																val_add(Temp11,N4700) // Temp11 += 4700
 																v[Temp11].copy address_victim_buffer_head, agent_Basic_Array_size
 																agent_RelativeX.copy Temp4, 2
 																Temp4 .sub victim_RelativeX, 2
 																Temp4 .mul Temp4, 2
 																v[Temp6] = Temp4 + Temp5
-																v[Temp6] += victim_ProcessCamoValue
+																ptr_add(Temp6,victim_ProcessCamoValue) // v[Temp6] += victim_ProcessCamoValue
 
 																@if v[Temp6] < Temp8 {
-																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[v[312]] + v[4000 + min(victim_UnitType, ClassType_Amount)]
+																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp12] + v[4000 + min(victim_UnitType, ClassType_Amount)]
 																		Temp6.add N1,2 // v[306..307] += 1
 																		
 																}
 
 																/*
-																Temp11 = v[v[312]] * v[1117] 
+																Temp11 = v[Temp12] * v[1117] 
 																Temp11 += 4700
 																v[Temp9].copy Temp4, 2
 																Temp1 = Temp11 + 7
@@ -321,17 +321,14 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 				
 
 																@if v[Temp6] < Temp8 {
-																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[v[312]] + v[4001 + min(v[Temp1 + 95], ClassType_Amount)]
+																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp12] + v[4001 + min(v[Temp1 + 95], ClassType_Amount)]
 																		v[306..307] += 1
 																		
 																}
 																*/
 																
 														}
-														
 												}
-												
-												
 										}
 
 				//Has more than 16 enemies in the search radius
@@ -368,6 +365,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 														}
 														
 												}
+
 												@if Temp3 > 30 {
 														Temp11 += 1
 														
@@ -398,7 +396,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 
 																						def AIFLAG_SkipAndPF = AI_routine_bits_FLAG_AIskip + AI_routine_bits_FLAG_PATHFINDING
 																						v[agent_AI_routine_bits] |= AIFLAG_SkipAndPF // 2097152+16384
-																						Temp7 += 1
+																						val_add(Temp7,N1) // Temp7 += 1
 																						
 																				} .else bl {
 																						@if `v[agent_AI_routine_bits] & 1 { // v[v[212] + 34] & 1 
@@ -540,7 +538,7 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 								@loop Temp2 {
 										TT1 = v[v[296]] * 300 
 										val_add(TT1,N4701) // TT1 += 4701
-										@if TT1 > 0  {
+										@if v[TT1] > 0  {
 											agent_TargetAgentID = v[v[296]]
 											val_asg(v[371],N1) // v[371] = 1
 											@break
@@ -559,9 +557,8 @@ v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
 					}
 
 				}
-				
+				agent_ObjectType.copy v[Ptr1],300
 			}
-			agent_ObjectType.copy v[Ptr1],300
 			increment_var(v[536]) // v[536] += 1
 						
 		}

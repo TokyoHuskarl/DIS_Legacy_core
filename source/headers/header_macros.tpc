@@ -86,3 +86,24 @@ __fn val_div $v1 $v2 {
 	v[__id($v1)].div v[__id($v2)],1
 }
 
+// ptr series
+__fn ptr_asg $v1 $v2 {
+	v[__id($v2)].copy v[$v1],1
+}
+
+__fn ptr_add $v1 $v2 {
+	v[$v1].add v[__id($v2)],1
+}
+
+__fn ptr_sub $v1 $v2 {
+	v[$v1].sub v[__id($v2)],1
+}
+
+__fn ptr_mul $v1 $v2 {
+	v[$v1].mul v[__id($v2)],1
+}
+
+__fn ptr_div $v1 $v2 {
+	v[$v1].div v[__id($v2)],1
+}
+
