@@ -39,7 +39,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	    TT5 += TT9 * v[2927]
 
 	    // TT10 = TT10 & 1 ? 100 : v[TT5] & 2 ? 50 : 0
-			TT10 = (((0 ^ v[TT5]) & 3) << 5) + 4 // replaced for fast proc :D
+			TT10 = ((v[TT5] & 3) << 5) + 4 // replaced for fast proc :D
 			
 			/*
 	    TT3 = 80 * TT8
@@ -310,11 +310,11 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 
 					__fn FoWManagementFlagProc $flag {
 						__if $flag == 6 {
-							LEGV_FoWManagementFlags |= !(v[TT20] & 2) ? 6 : (v[TT20] & 4) ^ 4 // !(v[TT20] & 2) ? 6 : (!(v[TT20] & 4) ? 4 : 0)
+							LEGV_FoWManagementFlags |= !(v[TT20] & 2) ? 6 : (~v[TT20] & 4) // !(v[TT20] & 2) ? 6 : (!(v[TT20] & 4) ? 4 : 0)
 						// }.elif $flag == 4 {
 							// LEGV_FoWManagementFlags |= ^(v[TT20] & 4)
 						}.else bl {
-							LEGV_FoWManagementFlags |= (v[TT20] & 4) ^ 4
+							LEGV_FoWManagementFlags |= ~v[TT20] & 4
 							// LEGV_FoWManagementFlags |= !(v[TT20] & 4) ? $flag : 0
 						}
 					} // simple as

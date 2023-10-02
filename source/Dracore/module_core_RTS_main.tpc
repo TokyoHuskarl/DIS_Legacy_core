@@ -452,7 +452,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    @while v[v[536]] != 0 {
 				v[401] = v[v[536]] - 1
 				Temp1 = v[401] * v[1117] 
-				Temp1 += 5000
+				val_add(Temp1,N5000) // Temp1 += 5000
 
 
 						func_main_extract_agent_vars()
@@ -463,7 +463,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						// "#Unit Behavior Start"
 						// "#Out of Breath"
 						// "#Hit Timer ==0&&current SP is below 35%&&the unit has fatigue"
-						@if `divmul(v[707], 100, 35) > v[708] && v[682] <= 0 && !(v[726] & 2048) {
+						@if `v[682] <= 0 && divmul(v[707], 100, 35) > v[708] && !(v[726] & 2048) {
 					v[682] = 48
 					// "Sweat Particle"
 					@loop v[1017] .dst Temp20 {
@@ -502,177 +502,177 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				// "#Footstep Sound"
 				@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[401] + 501] == 1 {
 						@if `agent_ActionFlag & ActionFlag_FLAG_Walking { // DIS_EXPERIMENTAL s[v[401] + v[4558]] == 1 {
-					// "#Sub timer"
-					v[886] -= 2
-					@if v[886] <= 0 {
-							TT1 = v[1179] + v[640] + 20 * v[887]
-							v[685] = 13
-							@if `agent_MoveTypeBIts & 1 {
-						@if v[182] < 1 {
-								@if v[522] < 32 {
-							v[182] += 1
-							// "#########################"
-							v[472] = divmul(18, 100, v[2216])
-							v[473] = rnd(95, 105)
-							v[474] = divmul(v[607] + v[1001], v[1281], 50)
-							v[329] = rnd(0, 2)
-							inputstr .asg "footsteps\fly"
-							inputstr .cat v[329]
-							TT2 = 510
-							// "Strings = t[TT2]"
-							@cmd 11550, t[TT2], .args v[472], 3
-							// "#########################"
-							
-								}
-								
-						}
-						v[886] = v[868] / 4 
-						v[886]+= rnd(7, 11)
-						
-							} .else bl {
-						@if v[182] < 1 {
-								@if v[522] < 80 {
-							v[182] += 1
-							// "#########################"
-							v[472] = divmul(20, 100, v[2216])
-							v[473] = rnd(95, 105)
-							v[474] = divmul(v[607] + v[1001], v[1281], 50)
-							v[329] = rnd(0, 6)
-							inputstr .asg t[TT1]
-							inputstr .cat v[329]
-							TT2 = 510
-							// "Strings = t[TT2]"
-							@cmd 11550, t[TT2], .args v[472], 3
-							// "#########################"
-							
-								}
-								
-						}
-						v[886] = v[868] / 4 
-						v[886] += rnd(7, 11)
-						// "Is_in_water"
-						@if `agent_AgentBits & 4 {
-								// "Bubble Particle"
-								@loop v[1017] .dst Temp20 {
-							v[244] %= v[1199]
-							TT11 = v[244] * 50 
-							TT11 += v[1198]
-							@if v[TT11] <= 1 {
-									// "init"
-									v[1301].copy v[TT11], 50
-									v[TT11] = 1
-									// "timer"
-									v[TT11 + 49] = 3
-									// "Set itself"
-									v[TT11 + 3] = 133
-									// "set pos"
-									TT1 = TT11 + 6
-									v[607].copy v[TT1], 2
-									v[244] += 1
-									@break
-									
-							}
-							v[244] += 1
-							
-								}
-								
-								
-						} .else bl {
-								@if `v[874] & 512 {
-							@loop v[1017] .dst Temp20 {
-									v[244] %= v[1199]
-									TT11 = v[244] * 50 
-									TT11 += v[1198]
-									@if v[TT11] <= 1 {
-								// "init"
-								v[1301].copy v[TT11], 50
-								v[TT11] = 1
-								// "timer"
-								v[TT11 + 49] = 1
-								// "Set itself"
-								v[TT11 + 3] = 155
-								// "Set Dire"
-								v[TT11 + 27] = v[Temp1 + 244]
-								// "set pos"
-								TT1 = TT11 + 6
-								v[607].copy v[TT1], 2
-								v[244] += 1
-								@break
-								
-									}
-									v[244] += 1
-									
-							}
-							
-							
-								} .else bl {
-							// "Is_horse"
-							@if TT1 >= 551 {
-									@if `agent_AgentBits & 8 {
-								// "Leaf Particle"
-								@loop v[1017] .dst Temp20 {
-										v[244] %= v[1199]
-										TT11 = v[244] * 50 
-										TT11 += v[1198]
-										@if v[TT11] <= 1 {
-									// "init"
-									v[1301].copy v[TT11], 50
-									v[TT11] = 1
-									// "timer"
-									v[TT11 + 49] = 3
-									// "Set itself"
-									v[TT11 + 3] = 134
-									// "set pos"
-									TT1 = TT11 + 6
-									v[607].copy v[TT1], 2
-									v[244] += 1
-									@break
-									
+							// "#Sub timer"
+							v[886] -= 2
+							@if v[886] <= 0 {
+									TT1 = v[1179] + v[640] + 20 * v[887]
+									v[685] = 13
+									@if `agent_MoveTypeBIts & 1 {
+										@if v[182] < 1 {
+												@if v[522] < 32 {
+											v[182] += 1
+											// "#########################"
+											v[472] = divmul(18, 100, v[2216])
+											v[473] = rnd(95, 105)
+											v[474] = divmul(v[607] + v[1001], v[1281], 50)
+											v[329] = rnd(0, 2)
+											inputstr .asg "footsteps\fly"
+											inputstr .cat v[329]
+											TT2 = 510
+											// "Strings = t[TT2]"
+											@cmd 11550, t[TT2], .args v[472], 3
+											// "#########################"
+											
+												}
+												
 										}
-										v[244] += 1
+										v[886] = v[868] / 4 
+										v[886]+= rnd(7, 11)
 										
-								}
-								
-								
 									} .else bl {
-								@loop v[1017] .dst Temp20 {
-										v[244] %= v[1199]
-										TT11 = v[244] * 50 
-										TT11 += v[1198]
-										@if v[TT11] <= 1 {
-									// "init"
-									v[1301].copy v[TT11], 50
-									v[TT11] = 1
-									// "timer"
-									v[TT11 + 49] = 3
-									// "Set itself"
-									v[TT11 + 3] = 130
-									// "set pos"
-									TT1 = TT11 + 6
-									v[607].copy v[TT1], 2
-									v[244] += 1
-									@break
-									
+										@if v[182] < 1 {
+												@if v[522] < 80 {
+											v[182] += 1
+											// "#########################"
+											v[472] = divmul(20, 100, v[2216])
+											v[473] = rnd(95, 105)
+											v[474] = divmul(v[607] + v[1001], v[1281], 50)
+											v[329] = rnd(0, 6)
+											inputstr .asg t[TT1]
+											inputstr .cat v[329]
+											TT2 = 510
+											// "Strings = t[TT2]"
+											@cmd 11550, t[TT2], .args v[472], 3
+											// "#########################"
+											
+												}
+												
 										}
-										v[244] += 1
+										v[886] = v[868] / 4 
+										v[886] += rnd(7, 11)
+										// "Is_in_water"
+										@if `agent_AgentBits & 4 {
+												// "Bubble Particle"
+												@loop v[1017] .dst Temp20 {
+											v[244] %= v[1199]
+											TT11 = v[244] * 50 
+											TT11 += v[1198]
+											@if v[TT11] <= 1 {
+													// "init"
+													v[1301].copy v[TT11], 50
+													v[TT11] = 1
+													// "timer"
+													v[TT11 + 49] = 3
+													// "Set itself"
+													v[TT11 + 3] = 133
+													// "set pos"
+													TT1 = TT11 + 6
+													v[607].copy v[TT1], 2
+													v[244] += 1
+													@break
+													
+											}
+											v[244] += 1
+											
+												}
+												
+												
+										} .else bl {
+												@if `v[874] & 512 {
+											@loop v[1017] .dst Temp20 {
+													v[244] %= v[1199]
+													TT11 = v[244] * 50 
+													TT11 += v[1198]
+													@if v[TT11] <= 1 {
+												// "init"
+												v[1301].copy v[TT11], 50
+												v[TT11] = 1
+												// "timer"
+												v[TT11 + 49] = 1
+												// "Set itself"
+												v[TT11 + 3] = 155
+												// "Set Dire"
+												v[TT11 + 27] = v[Temp1 + 244]
+												// "set pos"
+												TT1 = TT11 + 6
+												v[607].copy v[TT1], 2
+												v[244] += 1
+												@break
+												
+													}
+													v[244] += 1
+													
+											}
+											
+											
+												} .else bl {
+											// "Is_horse"
+											@if TT1 >= 551 {
+													@if `agent_AgentBits & 8 {
+												// "Leaf Particle"
+												@loop v[1017] .dst Temp20 {
+														v[244] %= v[1199]
+														TT11 = v[244] * 50 
+														TT11 += v[1198]
+														@if v[TT11] <= 1 {
+													// "init"
+													v[1301].copy v[TT11], 50
+													v[TT11] = 1
+													// "timer"
+													v[TT11 + 49] = 3
+													// "Set itself"
+													v[TT11 + 3] = 134
+													// "set pos"
+													TT1 = TT11 + 6
+													v[607].copy v[TT1], 2
+													v[244] += 1
+													@break
+													
+														}
+														v[244] += 1
+														
+												}
+												
+												
+													} .else bl {
+												@loop v[1017] .dst Temp20 {
+														v[244] %= v[1199]
+														TT11 = v[244] * 50 
+														TT11 += v[1198]
+														@if v[TT11] <= 1 {
+													// "init"
+													v[1301].copy v[TT11], 50
+													v[TT11] = 1
+													// "timer"
+													v[TT11 + 49] = 3
+													// "Set itself"
+													v[TT11 + 3] = 130
+													// "set pos"
+													TT1 = TT11 + 6
+													v[607].copy v[TT1], 2
+													v[244] += 1
+													@break
+													
+														}
+														v[244] += 1
+														
+												}
+												
+												
+													}
+													
+											} .else bl {
+													
+											}
+											
+												}
+												
+										}
 										
-								}
-								
-								
 									}
 									
-							} .else bl {
-									
 							}
 							
-								}
-								
-						}
-						
-							}
-							
-					}
-					
 						}
 						
 				}
@@ -695,47 +695,59 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
 	    Temp1 = v[401] * v[1117] 
-	    Temp1 += 5000
+	    val_add(Temp1,N5000) // Temp1 += 5000
 	    func_main_extract_agent_vars()
 	    // "Set Dir"
 	    @if Is_Paused .isOff() {
-		@if `agent_AgentBits & AgentBits_FLAG_DirChange_skip {
-		    @if `v[726] & 8388608 {
-			agent_AgentBits &= -134217729 //~134217728
-			
-		    }
-		    
-		} .else bl {
-		    v[844] = (v[845] & 1)?v[844]:(v[621] >= 0 ? 0 : 1) //[v[621] >= 0 ? 0 : 1, v[844]][(v[845] & 1)]
-		    
-		}
-		
+				@if `agent_AgentBits & AgentBits_FLAG_DirChange_skip {
+						@if `v[726] & 8388608 {
+							agent_AgentBits &= -134217729 //~134217728 ~AgentBits_FLAG_DirChange_skip
+							
+						}
+						
+				} .else bl {
+						// v[844] = (v[845] & 1) ? v[844] : (v[621] >= 0 ? 0 : 1) //[v[621] >= 0 ? 0 : 1, v[844]][(v[845] & 1)]
+						v[844] = v[845] & 1 ? v[844] : (v[621] < 0)
+				}
+				
 	    }
+
 	    // "Get terrain's bit where the unit stands on"
 	    v[340] = v[4505] + v[640]
-	    v[340] = v[v[340]]
+	    v[340].deref v[340],1 // v[340] = v[v[340]]
 	    /* "###############Camo Check###############"*/
-	    v[876] = v[617]
-	    // "#Ambush"
+	    val_asg(v[876],v[617]) // v[876] = v[617]
+
+	    // Ambush setting
+
 	    // "#Bush"
-	    v[874] = v[340] & 4 && v[680] <= 0 ? v[874] | 1 : v[874]
+			// |= cond ? BaseObjBit_FLAG_Ambushing : 0
+	    v[874] |= (v[340] & 4 && v[680] <= 0) // v[340] & 4 && v[680] <= 0 ? v[874] | 1 : v[874]
+
 	    // "##big units cannot ambush"
-	    v[874] = v[874] & 524288 || v[843] > 3 ? v[874] & ~1 : v[874]
+	    // v[874] = v[874] & 524288 || v[843] > 3 ? v[874] & ~1 : v[874]
+	    v[874] &= ~(v[874] & BaseObjBit_FLAG_big_unit || v[843] > 3)
+
 	    // "##in melee combat"
-	    v[874] = v[681] >= 1 ? v[874] & ~1 : v[874]
-	    v[898] = v[880]
+	    // v[874] = v[681] >= 1 ? v[874] & ~1 : v[874]
+	    v[874] &= ~(v[681] >= 1)
+
+	    val_asg(v[898],v[880]) // v[898] = v[880]
+			
+
 	    @if `v[874] & 1 {
 				v[898] = 40 + v[880]
 				v[876] += 38000
 				v[v[4518] + v[401]] = 0
 		
 	    }
+
 	    // "##is fleeing?"
 	    v[876] += v[860] >= 3 ? 40000 : 0
 	    // "###############Camo Check end##############"
-	    // "++"
 	    func_main_save_agent_vars()
-	    v[536] += 1
+	    // "++"
+	    increment_var(v[536]) // v[536] += 1
 
 	}
 
@@ -745,16 +757,16 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
 	    Temp1 = v[401] * v[1117] 
-	    Temp1 += 5000
+	    val_add(Temp1,N5000) // Temp1 += 5000
 
 	    Ptr19 = Temp1 + 1
 	    v[Ptr19].copy agent_AgentType, 300
-		agent_ref_stats()
-		func_blink_progress()
+			agent_ref_stats()
+			func_blink_progress()
 	    //@call .cev 2020
 	    agent_AgentType.copy v[Ptr19], 300    
 	    // "++"
-	    v[536] += 2
+	    val_add(v[536],N2) // v[536] += 2
 	    
 	}
 
@@ -764,7 +776,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	@while v[v[536]] != 0 {
 	    v[401] = v[v[536]] - 1
 	    Temp1 = v[401] * v[1117] 
-	    Temp1 += 5000
+	    val_add(Temp1,N5000) // Temp1 += 5000
 
 	    Ptr19 = Temp1 + 1
 	    v[Ptr19].copy agent_AgentType, 300
@@ -774,7 +786,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //@call .cev 2020
 	    agent_AgentType.copy v[Ptr19], 300    
 	    // "++"
-	    v[536] += 2
+	    val_add(v[536],N2) // v[536] += 2
 	    
 	}
 
@@ -782,119 +794,116 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	@if Is_Paused .isOff() {
 	    v[536] = v[4532]
 	    @while v[v[536]] != 0 {
-		v[401] = v[v[536]] - 1
-		Temp1 = v[401] * v[1117] 
-		Temp1 += 5000
-	        func_main_extract_agent_vars()
-		// "#Reg Timer"
-		@if v[699] <= 0 {
-		    //opt 25.4.23
-		    //v[0] = v[11..13] = [v[401] + 1, 0, v[Temp1 + 272]]
-		    //var2=0
-		    // "#EV RecoverH/M"
-		    /* "Var1 = Obj 1~	Var2 = 0/1# HP/MP	Var3 = Amount"*/
-		    //TT2 = Temp1+106
-		    //TT3 = TT2 - 1
-		    //var3=Temp1+272
-		    // "#そのうち処理作る"
-		    v[706] += v[872]
-		    // "Min(HealedHP,MaxHP)"
-		    v[706] = min(v[706], v[705])
-		    // "#EV RecoverH/M end"
-		    var1 = v[401] + 1
-		    var2 = 1
-		    // "#Derp Breathing :DDDDDDD"
-		    var3 = divmul(v[707], 100, 35) > v[708] && v[665] & 1024 ? 15 : 10
-		    @if var3 == 15 {
-			// "Breath Particle"
-			@loop v[1017] .dst Temp20 {
-			    v[244] %= v[1199]
-			    v[331] = v[244] * 50 
-			    v[331] += v[1198]
-			    @if v[v[331]] <= 1 {
-				// "まず清掃"
-				v[1301].copy v[v[331]], 50
-				// "ポインタセット開始"
-				// "設定"
-				v[v[331]] = 1
-				// "500F"
-				v[v[331] + 49] = v[95]
-				// "Set itself"
-				v[v[331] + 3] = 126
-				// "Set Parent Obj"
-				v[v[331] + 9] = v[401] + 1
-				// "普通にアニメ"
-				TT1 = v[331] + 6
-				v[607].copy v[TT1], 2
-				// "Colour"
-				v[0] = v[v[331] + 31..v[331] + 38] = [0, 40, 150, 90, 0, 40, 150, 60]
-				// "仕上げに登録消す"
-				v[244] += 1
-				@break
-				
-			    }
-			    v[244] += 1
-			    
-			}
-			
-			
-		    }
-		    var3 = muldiv(var3, v[873], 10)
-		    // "#EV RecoverH/M"
-		    /* "Var1 = Obj 1~
-	Var2 = 0/1# HP/MP
-	Var3 = Amount"*/
-		    //TT2 = Temp1+108
-		    //TT3 = TT2 - 1
-		    // "#そのうち処理作る"
-		    v[708] += var3
-		    // "Min(HealedHP,MaxHP)"
-		    v[708] = min(v[707], v[708])
-		    // "#EV RecoverH/M end"
-		    v[699] = v[95] + 2
-		    // "kill parthian flag here"
-		    // "kill kiting flag"
-		    @if v[628] <= 0 {
-			//v[726] &= ~33554432
-			//v[726] &= ~67108864
-			v[726] &=-100663297
-		    }
+				v[401] = v[v[536]] - 1
+				Temp1 = v[401] * v[1117] 
+				val_add(Temp1,N5000) // Temp1 += 5000
+							func_main_extract_agent_vars()
+				// "#Reg Timer"
+				@if v[699] <= 0 {
+						//opt 25.4.23
+						//v[0] = v[11..13] = [v[401] + 1, 0, v[Temp1 + 272]]
+						//var2=0
+						// "#EV RecoverH/M"
+						/* "Var1 = Obj 1~	Var2 = 0/1# HP/MP	Var3 = Amount"*/
+						//TT2 = Temp1+106
+						//TT3 = TT2 - 1
+						//var3=Temp1+272
+						// "#そのうち処理作る"
+						val_add(v[706],v[872]) // v[706] += v[872]
+						// "Min(HealedHP,MaxHP)"
+						v[706] = min(v[706], v[705])
+						// "#EV RecoverH/M end"
+						var1 = v[401] + 1
+						val_asg(var2,N1)// var2 = 1
+						// "#Derp Breathing :DDDDDDD"
+						// var3 = divmul(v[707], 100, 35) > v[708] && v[665] & 1024 ? 15 : 10
+						var3 = ((v[665] & 1024 && divmul(v[707], 100, 35) > v[708]) << 2) + 10 // ? 14 : 10
+						@if var3 == 14 {
+					// "Breath Particle"
+							@loop v[1017] .dst Temp20 {
+									v[244] %= v[1199]
+									v[331] = v[244] * 50 
+									v[331] += v[1198]
+									@if v[v[331]] <= 1 {
+										// "まず清掃"
+										v[1301].copy v[v[331]], 50
+										// "ポインタセット開始"
+										// "設定"
+										v[v[331]] = 1
+										// "500F"
+										v[v[331] + 49] = v[95]
+										// "Set itself"
+										v[v[331] + 3] = 126
+										// "Set Parent Obj"
+										v[v[331] + 9] = v[401] + 1
+										// "普通にアニメ"
+										TT1 = v[331] + 6
+										v[607].copy v[TT1], 2
+										// "Colour"
+										v[0] = v[v[331] + 31..v[331] + 38] = [0, 40, 150, 90, 0, 40, 150, 60]
+										// "仕上げに登録消す"
+										v[244] += 1
+										@break
+										
+									}
+									v[244] += 1
+									
+							}
+							
+							
+						}
+						// var3 is recovering number
+						var3 = muldiv(var3, v[873], 10)
+						// "#EV RecoverH/M"
+						val_add(v[708],var3) // v[708] += var3
+						// "Min(HealedHP,MaxHP)"
+						v[708] = min(v[707], v[708])
+						// "#EV RecoverH/M end"
+						v[699] = v[95] + 2
+						// "kill parthian flag AND kiting flag"
+						v[726] &= v[628] <= 0 ? -100663297 : v[726]
+						/*
+						@if v[628] <= 0 {
+							//v[726] &= ~33554432
+							//v[726] &= ~67108864
+							v[726] &=-100663297
+						}
+						*/
 
-		    // kill Pathfinding 1 sec delay by wall detection
-		    v[634] &= ~AI_routine_bits_FLAG_1secDelay_PF
+						// kill Pathfinding 1 sec delay by wall detection
+						v[634] &= ~AI_routine_bits_FLAG_1secDelay_PF
 
 
-		    //v[680] = Temp1 + 80 
-		    //v[680] = v[v[680]]
+						//v[680] = Temp1 + 80 
+						//v[680] = v[v[680]]
 
 
-		    @if `s[7] == 1 || s[474] == 1 {
-			// "##If Fleeing"
-			//v[860] = Temp1 + 260
-			@if v[680] < -480 {
-			    v[860] = 0
-			    
-			} .else bl {
-			    @if `v[860] == 3 {
-				@if v[680] < -100 {
-				    // "roll recovering from flee"
-				    v[860] -= rnd(0, 99) <= var2 + v[875] / 5 && v[860] > -1 ? 1 : 0
-				    
+						@if `s[7] == 1 || s[474] == 1 {
+							// "##If Fleeing"
+							//v[860] = Temp1 + 260
+							@if v[680] < -480 {
+									v[860] = 0
+									
+							} .else bl {
+								@if v[860] == 3 {
+									@if v[680] < -100 {
+										// "roll chance to recover from fleeing state"
+										v[860] -= (rnd(0, 99) <= (var2 + v[875] / 5) && v[860] > -1) // ? 1 : 0
+										
+									}
+								}
+								
+							}
+							
+						}
+						
 				}
+
+						func_main_save_agent_vars()
+
+				// "++"
+				increment_var(v[536]) // v[536] += 1
 				
-			    }
-			    
-			}
-			
-		    }
-		    
-		}
-
-	    	func_main_save_agent_vars()
-
-		// "++"
-		v[536] += 1
-		
 	    }
 	    
 	    
@@ -2012,7 +2021,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    @if `!(agent_MoveTypeBIts & 1) {
 				// "#Water"
 				// agent_MoveTypeBIts = b1000000
-				agent_AgentBits |= v[340] & 1 ? (4 + (0 ^ agent_MoveTypeBIts & 64 >> 6 )) : 0 // (4 + (agent_MoveTypeBIts & 64 ? 0 : 1)) : 0
+				agent_AgentBits |= v[340] & 1 ? (4 + (~agent_MoveTypeBIts & 64 >> 6)) : 0 // (4 + (agent_MoveTypeBIts & 64 ? 0 : 1)) : 0
 				/*
 				@if `v[340] & 1 {
 						agent_AgentBits |= 4 + (agent_MoveTypeBIts & 64 ? 0 : 1)
@@ -2294,13 +2303,13 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    }
 	    // "PF reset"
 	    @if `(agent_generated_ID + v[2501]) % 420 == 0 {
-		agent_AI_routine_bits &= -4097//~4096
+				agent_AI_routine_bits &= -4097//~4096
 		
 	    }
 
 	    func_main_save_agent_vars()	
 	    // "++"
-	    v[536] += 1
+	    increment_var(v[536]) // v[536] += 1
 	    
 	}
 
@@ -2321,9 +2330,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[401] = v[v[536]] - 1
 	    // "死体"
 	    Temp1 = v[401] * v[1117] 
-	    Temp1 += 5000
+	    val_add(Temp1,N5000) // Temp1 += 5000
 	    func_main_extract_agent_vars()
-	    v[680] -= 1
+	    val_sub(v[680],N1)// v[680] -= 1
 	    @if v[680] <= 0 {
 				v[898] += 5
 				@if v[898] >= 100 {
@@ -2424,7 +2433,7 @@ __fn func_blink_set {
 		@if `!(agent_AddMotionBits & 448) {
 			//blink flag?
 			TT1 = v[604] + v[2500] 
-			agent_AddMotionBits |= (TT1 % 200) == 0 ? 64 : 0 //?
+			agent_AddMotionBits |= ((TT1 % 200) == 0) << 6 // ? 64 : 0
 		}
 	}
 
