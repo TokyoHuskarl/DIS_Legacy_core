@@ -20,67 +20,34 @@ __fn func_ai_skill_usage_check{
 	@loop 1 {
 	    // "Only when the unit is moving"
 	    @if `skill_AutoCastFlags & 2 {
-		@if `agent_MovementOrder < 1 {
-		    reg1 = 1
-		    @break
-		    
-		}
-		
+				@if `agent_MovementOrder < 1 {
+						reg1 = 1
+						@break
+						
+				}
+				
 	    }
 	    @if `skill_AutoCastFlags & 4 {
-		@if agent_MeleeFightTimer > 0 {
-		    // "Only when the unit is not in melee combat"
-		    reg1 = 1
-		    @break
-		    
-		}
-		@break
+				@if agent_MeleeFightTimer > 0 {
+						// "Only when the unit is not in melee combat"
+						reg1 = 1
+						@break
+						
+				}
+				@break
 		
 	    }
 	    // "Dash"
 	    @if skill_Usage == 4 {
-		// "Archers and Mages Try Kiting with Dash skill"
-		v[345..346] *= agent_AAType >= 1 ? -1 : 1
-		
+				// "Archers and Mages Try Kiting with Dash skill"
+				v[345..346] *= agent_AAType >= 1 ? -1 : 1
+				
 	    }
 	    // "##AI casts dash/blink skills only when they are in aggressive stance "
-	    reg1 = between(skill_Usage, 4, 5) && agent_StanceOrder != 0 ? 1 : 0
+	    reg1 = between(skill_Usage, 4, 5) && agent_StanceOrder != 0 // ? 1 : 0
 	    
 	}
 
-/*
-	TT10 = TT1 - 6
-	@loop 1 {
-	    // "Only when the unit is moving"
-	    @if `v[TT10 + 16] & 2 {
-		@if `v[v[212] + 242] < 1 {
-		    reg1 = 1
-		    @break
-		    
-		}
-		
-	    }
-	    @if `v[TT10 + 16] & 4 {
-		@if `v[v[212] + 81] > 0 {
-		    // "Only when the unit is not in melee combat"
-		    reg1 = 1
-		    @break
-		    
-		}
-		@break
-		
-	    }
-	    // "Dash"
-	    @if v[TT10] == 4 {
-		// "Archers and Mages Try Kiting with Dash skill"
-		v[345..346] *= v[v[212] + 103] >= 1 ? -1 : 1
-		
-	    }
-	    // "##AI casts dash/blink skills only when they are in aggressive stance "
-	    reg1 = between(v[TT10], 4, 5) && v[v[212] + 241] != 0 ? 1 : 0
-	    
-	}
-*/
 
 }
 
@@ -96,7 +63,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 		@if v[684] == 2 {
 		    @if `v[603] & 524288 {
 			v[212] = v[v[536]] * 300 
-			v[212] += 4700
+			val_add(v[212],N4700) // v[212] += 4700
 			Ptr20 = v[212] + 18
 			@if v[Ptr20] > 0 {
 			    Ptr11 = v[v[536]]
