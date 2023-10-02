@@ -14,7 +14,10 @@ v[4035..4036] = v[205]
 //Check ground type troops agents all
 
 // set expanding temp array for copying
-v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily
+v[4101] = 100000000 
+v[4101].copy v[4102],29
+// WITHOUT AEAB, above part is necessarily
+
 
 @while v[v[536]] != 0 {
 		v[212] = v[v[536]] * 300 
