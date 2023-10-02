@@ -70,10 +70,10 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	// "Normal Units"
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
-		RTS_MAIN_LAND_AGENT_1f()
-		//"++"
-		increment_var(v[536]) // v[536] += 1
-		
+	    RTS_MAIN_LAND_AGENT_1f()
+	    //"++"
+	    increment_var(v[536]) // v[536] += 1
+	    
 	}
 
 	// "STATICS"
@@ -201,10 +201,9 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    TT8 = v[401] + 501
 	    s[TT8].off
-
 	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
 	    //opt
-	    TT10 = Address_agent_inSight_switch_array_head + v[401]
+	    TT10 = Address_agent_inSight_switch_array_head+v[401]
 	    @if s[TT10] .isOn() {
 	    //@if `s[2001 + v[401]] != 0 {
 			// "Walls "
@@ -217,27 +216,28 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			    
 			}
 			//Set Obj into Drawing List
-			val_sub(TT14,v[610]) // TT14 -= v[610]
-			val_add(TT15,v[610]) // TT15 += v[610]
-			@if v[607] >= TT14 {
-				@if v[607] <= TT15 {
-						//TT6 = Temp1 + 8
-						//TT7 = Temp1 + 11
+			//TT9 = Temp1 + 10
+			TT14 -= v[610]
+			TT15 += v[610]
+			@if v[607]>=TT14 {
+				@if v[607]<=TT15 {
+	    			    //TT6 = Temp1 + 8
+	    			    //TT7 = Temp1 + 11
 				    TT16 -= v[611] + v[882]
 				    TT17 += v[611] - v[882]
-				    @if v[608] >= TT16 {
-					    @if v[608] <= TT17{
-								// "#Set OffsetY"
-								v[637] = v[608] + v[882]
-								// "Will_be_depicted"
-								agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
-								s[TT8].on
-								// "#"
-								// "#描画範囲内であれば保存"
-								v[v[1112] + v[184]] = (v[608] + v[611] + v[1011]) * 1000 + v[401]
-								v[v[1113] + v[184]]=v[401]
-								v[184] += 1
-								
+				    @if v[608]>=TT16 {
+					    @if v[608]<=TT17{
+						// "#Set OffsetY"
+						v[637] = v[608] + v[882]
+						// "Will_be_depicted"
+						agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
+						s[TT8].on
+						// "#"
+						// "#描画範囲内であれば保存"
+						v[v[1112] + v[184]] = (v[608] + v[611] + v[1011]) * 1000 + v[401]
+						v[v[1113] + v[184]]=v[401]
+						v[184] += 1
+						
 					    }
 				   }
 				}
@@ -1683,7 +1683,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    } .else bl {
 				@if `agent_AgentBits & AgentBits_Endpoint_Collision_Trouble {
 						//Ptr14 = Temp1 + 22
-						@if `(v[2501] / 6 % (agent_ObjectCollideSkipFrame << 4)) == 0 { // "* 16" -> "<< 4"
+						@if `v[2501] / 6 % (agent_ObjectCollideSkipFrame << 4) == 0 { // "* 16" -> "<< 4"
 						agent_AgentBits |= AgentBits_Movement_Giveup
 					
 						}
@@ -1704,19 +1704,52 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //`s[v[401] + 501] ==1 {
 				// "Hero Particle"
 				@if `agent_ProcessObjBit & 4194304 { //is hero
-					func_set_preset_particle_emitter(v[331],
-						PROC({
-							emitter_ParticleType = 1
-							emitter_Timer = 6
-							emitter_CallPartFunc = cevid_hero_particle
-							emitter_ParentObject = v[401] + 1
+
+						func_set_preset_particle_emitter(v[331],
+							PROC({
+								emitter_ParticleType = 1
+								emitter_Timer = 6
+								emitter_CallPartFunc = cevid_hero_particle
+								emitter_ParentObject = v[401] + 1
+								// "普通にアニメ"
+								agent_RelativeX.copy emitter_RelativeX, 2
+								emitter_RelativeY += 8
+							})
+						)
+
+						/*@loop v[1017] .dst Temp20 {
+					v[244] %= v[1199]
+					v[331] = v[244] * 50 
+					v[331] += v[1198]
+					@if v[v[331]] <= 1 {
+							// "まず清掃"
+							v[1301].copy v[v[331]], 50
+							// "ポインタセット開始"
+							// "設定"
+							v[v[331]] = 1
+							// "500F"
+							v[v[331] + 49] = 6
+							// "Set itself"
+							v[v[331] + 3] = 167
+							// "Set Parent Obj"
+							v[v[331] + 9] = v[401] + 1
 							// "普通にアニメ"
-							agent_RelativeX.copy emitter_RelativeX, 2
-							emitter_RelativeY += 8
-						})
-					)
-				}
-				
+							agent_RelativeX.copy var1, 2
+							var2 += 8
+							TT1 = v[331] + 6
+							var1.copy v[TT1], 2
+							// "仕上げに登録消す"
+							v[244] += 1
+							@break
+							
+					}
+					v[244] += 1
+					
+						}*/
+						
+						
+		}
+		
 	    }
 
 	    // "Check flee end "
@@ -1732,7 +1765,6 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				
 	    }
 			*/
-
 	    //v[827] = Temp1 + 227
 	    //v[640] = Temp1 + 40
 	    //v[640] = v[v[640]]
@@ -1740,7 +1772,6 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				agent_2hweapon_stain -= agent_2hweapon_stain > 0 ? 1 : 0
 				
 	    }
-
 	    @if agent_Morale <= -1 { // fleeing
 				// if the fleeing agent is not in combat for 1800f, stop it fleeing
 				agent_Morale = agent_InCombatTimer <= -1800 ? 0 : agent_Morale 
@@ -1768,8 +1799,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				}
 				
 	    } .else bl {
-				agent_ChokeTimer = 0 //reset choke timer
-				func_main_save_agent_vars()//save
+		agent_ChokeTimer = 0 //reset choke timer
+		func_main_save_agent_vars()//save
 	    }
 
 	    // "#########################PAssive#########################"
@@ -1920,7 +1951,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 
 	    // "++"
-	    increment_var(v[536]) //v[536] += 1
+	    v[536] += 1
 	    
 	}
 
@@ -1972,7 +2003,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	val_asg(v[536],v[4532]) // v[536] = v[4532]
 	@while v[v[536]] != 0 {
 	    Temp1 = v[v[536]] * v[1117] 
-	    val_add(Temp1,N4700) // Temp1 += 4700
+	    val_add(Temp1,T4700) // Temp1 += 4700
 	    func_extract_agent_vars(v[v[536]])
 
 			// if it's standing on wall tile, let the tile push the agent
@@ -2019,7 +2050,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				*/
 
 				// "#Forest"
-				agent_AgentBits |= (v[340] & 8 && agent_MoveTypeBIts & 34) << 3 // ? AgentBits_horse_in_forest : 0
+				agent_AgentBits |= v[340] & 8 && agent_MoveTypeBIts & 34 ? AgentBits_horse_in_forest : 0
 				/*
 				@if `v[340] & 8 {
 						// "##Horse or roller"
@@ -2134,7 +2165,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    // "++"
 	    func_main_save_agent_vars()
-	    increment_var(v[536]) // v[536] += 1
+	    v[536] += 1
 	    
 	}
 
@@ -2155,7 +2186,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				//v[680] = Temp1 + 77
 				//v[v[680]] -= 4
 				agent_InCombatTimer -= 4
-				@if agent_TeamID == 0 {
+				@if agent_TeamID == 0 { //`v[Temp1 + 97] == 0 {
 						// "Count up worker assignment"
 						//v[v[Temp1 + 244] + 2940] += between(v[Temp1 + 244], 1, 4) ? 1 : 0
 						v[agent_worker_JobType + 2940] += between(agent_worker_JobType, 1, 4) ? 1 : 0
@@ -2163,102 +2194,118 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						//v[842] = Temp1 + 239
 						//v[v[842]].copy v[842], 6
 						@if agent_MovementOrder <= 0 {
-							@if agent_ActionState == 0 {
-								@if agent_worker_JobType == 0 {
-									s[187].on // there's at least one idle worker unit 
-									@if Is_Paused .isOff() { // not pause
-										@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { 
-											@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { // 124 = magic number but maybe 48*3
-												@if `!(agent_ProcessObjBit & 4096) {
-													agent_RelativeX.copy v[361], 2
-													TT1 = 20422 // quote quickstring
+					@if agent_ActionState == 0 {
+							@if agent_worker_JobType == 0 {
+						s[187].on // there's at least one idle worker unit 
+						@if Is_Paused .isOff() { // not pause
+								@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen{ //s[500 + v[v[536]]]==1 { 
+							@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { //124 = magic number but maybe 48*3
+									@if `!(agent_ProcessObjBit & 4096) {
+								//v[607] = Temp1 + 4
+								//v[v[607]].copy v[607], 2
+								agent_RelativeX.copy v[361], 2
+								TT1 = 20422 // quote quickstring
+								//v[680] = Temp1 + 77
 
-													//Dragon voice, outdated 
-													@if agent_Race == 3 {
-															// quotes of dragon workers vary
-															TT1 += agent_UnitID == 10 ? 1 : 2
-															
-													}
-
-													str1 .asg t[TT1] // text that says "I'm idle"
-													// Set new particle emitter
-													@loop v[1017] .dst Temp20 {
-															v[242] %= v[1017]
-															v[331] = v[242] * 100
-															v[331] = v[331] + v[1018]
-															@if v[v[331]] <= 1 {
-																v[243] -= v[v[331]] == 1 ? 1 : 0
-																v[242] %= v[1017]
-																// "まず清掃"
-																v[ptr_null].copy v[v[331]], 100
-																// "ポインタセット開始"
-																Temp10 = v[242] + v[1220]
-																Ptr15 = v[331] + 99
-																// "設定"
-																v[v[331]] = 1
-																v[Ptr15] = 0
-																// "普通にアニメ"
-																v[607].copy v[361], 2
-																@pic[Temp10].strpic {
-																		str1
-																		.pos v[361], v[362] .center
-																		.size 0, 0                                                   .scrollWithMap
-																		.chromakey 1
-																		.scale 100
-																		.trans v[1066]
-																		.rgbs 100, 100, 100, 100
-																		.font Font_UI, 11
-																		.spacing 0, 0
-																		.skin "" .nobg .noframe .noGradation .noPadding
-																		.mapLayer 7
-																		.eraseWhenTransfer
-																		.affectedByFlash
-																		.affectedByShake
-																}
-																v[362] -= 48
-																@pic[Temp10].move {
-																		.pos v[361], v[362] .center
-																		.scale 100
-																		.trans 100
-																		.time 45
-																		.rgbs 100, 100, 100, 100
-																}
-																// "仕上げに登録消す"
-																v[242..243] += 1
-																@break
-																
-															}
-															v[242] += 1
-															
-													}
-													
-													
-												}
-												
-											}
+								//Dragon voice, outdated 
+								@if agent_Race == 3 {
+										/*@if s[1] .isOn() {
+									@if v[182] <= 4 {
+											v[182] += 1
+											// #########################
+											v[471] = 11550
+											v[472] = divmul(25, 100, v[2216])
+											v[473] = rnd(90, 115)
+											v[474] = divmul(v[361] + v[1001], v[1281], 50)
+											// #########################
+											v[329] = rnd(1, 3)
+											inputstr .asg "vo\dragon_gyaogyao"
+											inputstr .cat v[329]
+											@cmd v[471], inputstr, .args v[472], 3
 											
-										}
-										
 									}
 									
+										}*/
+										// quotes of dragon workers vary
+										TT1 += agent_UnitID == 10 ? 1 : 2
+										
+								}
+
+								str1 .asg t[TT1] // text that says "I'm idle"
+								// Set new particle emitter
+								@loop v[1017] .dst Temp20 {
+										v[242] %= v[1017]
+										v[331] = v[242] * 100
+										v[331] = v[331] + v[1018]
+										@if v[v[331]] <= 1 {
+									v[243] -= v[v[331]] == 1 ? 1 : 0
+									v[242] %= v[1017]
+									// "まず清掃"
+									v[ptr_null].copy v[v[331]], 100
+									// "ポインタセット開始"
+									Temp10 = v[242] + v[1220]
+									Ptr15 = v[331] + 99
+									// "設定"
+									v[v[331]] = 1
+									v[Ptr15] = 0
+									// "普通にアニメ"
+									v[607].copy v[361], 2
+									@pic[Temp10].strpic {
+											str1
+											.pos v[361], v[362] .center
+											.size 0, 0                                                   .scrollWithMap
+											.chromakey 1
+											.scale 100
+											.trans v[1066]
+											.rgbs 100, 100, 100, 100
+											.font Font_UI, 11
+											.spacing 0, 0
+											.skin "" .nobg .noframe .noGradation .noPadding
+											.mapLayer 7
+											.eraseWhenTransfer
+											.affectedByFlash
+											.affectedByShake
+									}
+									v[362] -= 48
+									@pic[Temp10].move {
+											.pos v[361], v[362] .center
+											.scale 100
+											.trans 100
+											.time 45
+											.rgbs 100, 100, 100, 100
+									}
+									// "仕上げに登録消す"
+									v[242..243] += 1
+									@break
+									
+										}
+										v[242] += 1
+										
 								}
 								
+								
+									}
+									
 							}
 							
+								}
+								
 						}
 						
-				}
+							}
+							
+					}
+					
+		    }
+		    
+		}
 		
 	    }
 	    // "PF reset"
-			agent_AI_routine_bits &= (agent_generated_ID + v[2501]) % 420 == 0 ? -4097 : agent_AI_routine_bits
-
-			/*
 	    @if `(agent_generated_ID + v[2501]) % 420 == 0 {
 				agent_AI_routine_bits &= -4097//~4096
 		
 	    }
-			*/
 
 	    func_main_save_agent_vars()	
 	    // "++"

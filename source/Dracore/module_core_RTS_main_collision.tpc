@@ -301,7 +301,7 @@ __fn ColCheck {
 				TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
 				agent_Morton = TT2 >> TT5
 				//@comment "#mask end"
-				TT6 = TT5 >> 1 // TT6 = TT5 / 2
+				TT6 = TT5 / 2
 				v[340] = 4546 - TT6
 				v[340].deref v[340],1
 				v[327] = v[v[4552 - TT6] + agent_Morton]

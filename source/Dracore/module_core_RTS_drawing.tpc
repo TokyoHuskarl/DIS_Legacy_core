@@ -43,7 +43,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 	v[233] = 0
 	TT1 = v[1196]
 	@loop v[1203] {
-			increment_var(TT1)// TT1 += 1
+			TT1 += 1
 			@pic[TT1].move {
 					.pos 0, 0 .center
 					.scale 100
@@ -93,9 +93,9 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 			
 			//@comment "Init Pictures"
 			TT1 = Const_layer_amount * TT1 
-			val_add(TT1,v[1202]) // TT1 += v[1202]
+			TT1 += v[1202]
 			@cmd v[471], "", .args v[472], 6
-			val_add(v[186],v[475]) // v[186] += v[475]
+			v[186] += v[475]
 			
 	}
 	TT1 = v[1004]*2
@@ -128,10 +128,10 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 			v[480] = 30
 			v[187] = 0
 			v[340] = v[1113] + v[401]
-			v[340].deref v[340],1 // v[340] = v[v[340]]
+			v[340] = v[v[340]]
 			//v[340] = v[v[1113] + v[401]] % 1000
 			Temp1 = v[340] * 300//opt 
-			val_add(Temp1,N5000) // Temp1 += 5000
+			Temp1 += 5000
 			v[Temp1].copy Address_agent_array_head, 300
 			/*@comment "表示処理 T1=ObjID T2=ピクチャの番号 T3=Ptrピクチャのx T4=Ptrピクチャのy T5=Getピクチャのx T6=Getピクチャのy T11=旧ピクチャ番号Ptr T20=ピクチャスプライト指定 T21=アクションステート取得*/
 			//@comment "MINIONS"
@@ -161,7 +161,6 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 					TT1 = v[682] * 30
 					agent_SpriteY += sin(TT1, 2, 2)
 				}
-
 				@if `agent_AgentBits & 4 { //In water
 					TT1 = agent_Luck + v[2500]
 					TT1 *= 5
@@ -215,18 +214,17 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 							v[463] = 5
 							v[464] = 1
 							v[468] = 4
-							v[ptr_null].copy v[453], 2
+				v[ptr_null].copy v[453], 2
 							v[456] = 0
-							v[ptr_null].copy v[471], 2
+				v[ptr_null].copy v[471], 2
 							//@comment "Height"
 							TT13 = (v[657] - v[504]) 
-							TT13 *= 3
+				TT13 *= 3
 							//@comment "Z "
 							Temp6 -= TT13
 							//@comment "Get ID From Cache"
 							v[188] = v[178] = v[340] * Const_layer_amount + v[1201]
 							v[177] = v[186]
-
 							v[Temp1 + 290] = v[186]
 
 							//@comment "#get damaged variation"
@@ -240,12 +238,12 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									v[449].copy TT16, 4
 									//Ptr20 = Temp1 + 285
 									//v[0] = v[4013..4016] = [v[Ptr20] * 1, v[Ptr20] * -1, v[Ptr20] * -1, v[Ptr20] * -2]opt 25.4.23
-									v[4013] = agent_2hweapon_stain
-									v[4014] = agent_2hweapon_stain * -1
-									v[4015] = v[4014]
-									v[4016] = agent_2hweapon_stain * -2
+			v[4013] = agent_2hweapon_stain
+			v[4014] = agent_2hweapon_stain * -1
+			v[4015] = v[4014]
+			v[4016] = agent_2hweapon_stain * -2
 
-								v[891].copy v[4001], 4
+			v[891].copy v[4001], 4
 
 
 
@@ -289,7 +287,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 							//v[868] = v[v[868]]
 							v[4111..4120] = expected_action_sprite
 							v[ptr_null].copy v[4131],30
-							v[325] = v[455] >> 12 // v[325] = v[455] / 4096
+							v[325] = v[455] / 4096
 							//Agent has multiple layers
 							@if agent_PictArray >= 10 {
 								//Agent has Extra Motion
