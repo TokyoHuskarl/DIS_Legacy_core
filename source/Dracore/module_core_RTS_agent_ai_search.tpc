@@ -54,8 +54,6 @@ v[4101].copy v[4102],29
 									// Temp1 = v[212] + 100
 
 									//team ID % 3
-									//opt 28.4.23
-									//Temp14 = v[Const_AgentMetaTeam_begin+v[211]] //v[Temp1] % 3
 									__if DIS_EXPERIMENTAL == -1 {
 										//macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14)
 														get_AEAB_element_wo_ptr(AgentIDholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
@@ -144,8 +142,8 @@ v[4101].copy v[4102],29
 										TT1 .add v[53], 2
 										TT1 .sub v[76], 2
 										TT1 .div v[74], 2
-										TT1 = max(TT1, 0)
-										TT2 = max(TT2, 0)
+										TT1 &= 31 // TT1 = max(TT1, 31)
+										TT2 &= 31 // TT2 = max(TT2, 31)
 
 										/*@comment "TT1=MortX
 			 TT2=MortY
@@ -173,8 +171,8 @@ v[4101].copy v[4102],29
 										TT1 .add v[53], 2
 										TT1 .sub v[76], 2
 										TT1 .div v[74], 2
-										TT1 = min(TT1, 31)
-										TT2 = min(TT2, 31)
+										TT1 &= 31 // TT1 = min(TT1, 31)
+										TT2 &= 31 // TT2 = min(TT2, 31)
 
 										/*@comment "TT1=MortX
 				TT2=MortY
@@ -276,7 +274,7 @@ v[4101].copy v[4102],29
 												TT6 = TT2 >> TT5
 												//@comment "#mask end"
 
-												TT5 >>= 1 // TT5 /= 2
+												TT5 /= 2 // >>= 1 // TT5 /= 2
 												defv AISearch_morton_ptr = __id(Temp12)
 												AISearch_morton_ptr = v[4546 - TT5] + TT6 * v[1004] // morton agent list head
 												v[327] = v[v[4552 - TT5] + TT6] // morton agent list length
@@ -307,7 +305,7 @@ v[4101].copy v[4102],29
 																		// set TT2 = v[534] + Temp7
 																		val_asg(TT2,v[534])
 																		val_add(TT2,Temp7)
-																		v[TT2] = v[Temp6] * 1000 + v[Temp2] + v[4000 + min(victim_UnitType, ClassType_Amount)]
+																		v[TT2] = v[Temp6] * 1000 + v[AISearch_morton_ptr] + v[4000 + min(victim_UnitType, ClassType_Amount)]
 
 																		Temp6.add N1,2 // v[306..307] += 1
 																		
@@ -498,7 +496,7 @@ v[4101].copy v[4102],29
 
 			Ptr1 = v[v[536]] * 300
 			val_add(Ptr1,N4701) // Ptr1 += 4701
-			v[Ptr1].copy agent_ObjectType,300
+			v[Ptr1].copy agent_AgentType,300
 
 			@if agent_ActionTimer <= 0 {
 				agent_ActionTimer = v[1195] //init ActionTimer
@@ -544,7 +542,7 @@ v[4101].copy v[4102],29
 					}
 
 				}
-				agent_ObjectType.copy v[Ptr1],300
+				agent_AgentType.copy v[Ptr1],300
 			}
 			increment_var(v[536]) // v[536] += 1
 						
@@ -597,7 +595,7 @@ v[4101].copy v[4102],29
 							Temp6 = 3601 // deploy v[3601] 'n check it
 							@doWhile v[Temp2] != 0 {
 									Temp1 = v[Temp2] * 300 
-									val_add(Temp1,N4701) // Temp1 += 4701
+									val_add(Temp1,N4700) // Temp1 += 4700
 									calc_victim_distance_and_camo_to_Temp4(Temp1)
 									@if Temp4 < agent_UnitEyeSight_for_AgentSearch { // kore teki huesugitara bagurun to tyauw
 											ptr_asg(Temp6,Temp4) // set the value to v[Temp6]

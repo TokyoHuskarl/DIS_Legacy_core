@@ -888,7 +888,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 								TT1.add v[184],1 // TT1 is now v[1112] + v[184]
 								TT2.add v[184],1 // TT2 is now v[1113] + v[184]
 								v[TT1] = (agent_RelativeY + agent_Height + v[1011]) * 1000 + v[401] // v[v[1112] + v[184]] = (agent_RelativeY + agent_Height + v[1011]) * 1000 + v[401]
-								ptr_asg(TT1,v[401]) // v[v[1113] + v[184]]= v[401]
+								ptr_asg(TT2,v[401]) // v[v[1113] + v[184]]= v[401]
 
 								val_add(v[184],N1) // v[184] += 1
 
