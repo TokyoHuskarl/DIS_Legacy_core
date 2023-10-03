@@ -80,58 +80,58 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		    v[Ptr1].copy agent_ObjectType, 300 //extract data
 		    //@comment "Have max hp?"
 		    @if agent_TeamID == 0 {
-			@if `agent_Cohort_ID == TT20 + 1 {
-			    @if agent_MaxHP >= 1 {
-				Temp2 += 1
-				//@comment "Get current HP"
-				Temp3 += agent_MaxHP
-				@if agent_ObjectType >= 1 {
-				    Temp4 += agent_HP
-				    @if agent_Morale < 3 {
-					Temp14 += 1
-					//Temp16 = Temp1 + 26
-					v[Temp13] .add agent_MapX, 2
-					//Temp16 = Temp1 + 7
-					v[Temp20] .add agent_RelativeX, 2
-					@if s[201] .isOff() {
-					    @if agent_StanceOrder == 0 {
-						@if agent_TargetAgentID > 0 {
-						    v[330] = agent_TargetAgentID
-						    v[331] = v[330] * 300
-						    //@comment "is enemy"
-						    @if `v[v[331] + 4800] % 3 == 1 {
-							@if `v[v[331] + 4960] != 3 {
-							    s[201].on
-							    
+					@if `agent_Cohort_ID == TT20 + 1 {
+							@if agent_MaxHP >= 1 {
+								Temp2 += 1
+								//@comment "Get current HP"
+								Temp3 += agent_MaxHP
+								@if agent_ObjectType >= 1 {
+										Temp4 += agent_HP
+										@if agent_Morale < 3 {
+											Temp14 += 1
+											//Temp16 = Temp1 + 26
+											v[Temp13] .add agent_MapX, 2
+											//Temp16 = Temp1 + 7
+											v[Temp20] .add agent_RelativeX, 2
+											@if s[201] .isOff() {
+													@if agent_StanceOrder == 0 {
+														@if agent_TargetAgentID > 0 {
+																v[330] = agent_TargetAgentID
+																v[331] = v[330] * 300
+																//@comment "is enemy"
+																@if `v[v[331] + 4800] % 3 == 1 {
+																	@if `v[v[331] + 4960] != 3 {
+																			s[201].on
+																			
+																	}
+																	v[CohortArrayPtr + 4] |= cohort_StateFlag_FLAG_fighting
+																	
+																} .else bl {
+																}
+																
+														}
+														
+													}
+													
+											}
+											
+										}
+										
+								}
+								
 							}
-							v[CohortArrayPtr + 4] |= cohort_StateFlag_FLAG_fighting
 							
-						    } .else bl {
-						    }
-						    
-						}
-						
-					    }
-					    
+					} .else bl {
+							//@comment "not the same cohort"
+							v[v[202]] = 0
+							s[202].on
+							
 					}
 					
-				    }
-				    
-				}
-				
-			    }
-			    
-			} .else bl {
-			    //@comment "not the same cohort"
-			    v[v[202]] = 0
-			    s[202].on
-			    
-			}
-			
 		    } .else bl {
-			//@comment "not my team"
-			v[v[202]] = 0
-			s[202].on
+					//@comment "not my team"
+					v[v[202]] = 0
+					s[202].on
 			
 		    }
 		    v[202] += 1
@@ -151,49 +151,49 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		//@comment "やっぱりちょっと危険な気がする"
 		@if cohort_CohortType == cohort_CohortType_TYPE_normal {//0 = normalunits
 		    @if s[201] .isOn() {
-			//@comment "Alert and fighting"
-			@if cohort_StanceOrder == 0 {
-			    @if v[330] > 0 {
-				v[202] = PlayerSelectList_Size * TT20 
-				v[202] += v[4524]
-				@while v[v[202]] != 0 .dst var10 {
-				    @if var10 >= PlayerSelectList_Size {
-					@break
-					
-				    }
-				    Temp1 = v[v[202]] * 300 
-				    Temp1 += v[1005] - 300
-				    Ptr1 = Temp1+1
-				    v[Ptr1].copy agent_ObjectType, 300 //extract data
-				    @if agent_ObjectType >= 1 {
-					@if agent_MovementOrder <= 2 {
-					    @if agent_StanceOrder == 0 {
-						//enemy searched and still idle
-						@if `agent_AI_routine_bits & 64 {
-						    @if agent_LeftWPtoChase < 1 {
-							agent_AgentBits |= 1048576
-							agent_TargetAgentID = v[330]
-							agent_AI_routine_bits |= 128
-							agent_AI_routine_bits &= -65//~64
-						    }
-						    
-						}
+					//@comment "Alert and fighting"
+					@if cohort_StanceOrder == 0 {
+							@if v[330] > 0 {
+								v[202] = PlayerSelectList_Size * TT20 
+								v[202] += v[4524]
+								@while v[v[202]] != 0 .dst var10 {
+										@if var10 >= PlayerSelectList_Size {
+											@break
+									
+										}
+										Temp1 = v[v[202]] * 300 
+										Temp1 += v[1005] - 300
+										Ptr1 = Temp1 + 1
+										v[Ptr1].copy agent_ObjectType, 300 //extract data
+										@if agent_ObjectType >= 1 {
+											@if agent_MovementOrder <= 2 {
+													@if agent_StanceOrder == 0 {
+														//enemy searched and still idle
+														@if `agent_AI_routine_bits & AI_routine_bits_FLAG_IdleAfterEnemySearch {
+																@if agent_LeftWPtoChase < 1 {
+																	agent_AgentBits |= 1048576
+																	agent_TargetAgentID = v[330]
+																	agent_AI_routine_bits |= 128
+																	agent_AI_routine_bits &= -65//~64
+																}
+																
+														}
+														
+													}
+													
+											}
+											
+										}
+										agent_ObjectType.copy v[Ptr1], 300//save alle :D
+										v[202] += 1
+										
+								}
+								
 						
-					    }
-					    
+							}
+							
 					}
 					
-				    }
-				    agent_ObjectType.copy v[Ptr1], 300//save alle :D
-				    v[202] += 1
-				    
-				}
-				
-				
-			    }
-			    
-			}
-			
 		    } .else bl {
 			//@comment "Fighting end"
 			@if `cohort_StateFlag & cohort_StateFlag_FLAG_fighting {
@@ -210,13 +210,13 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 				    Temp1 += v[1005] - 300
 		    		    Temp1.copy Address_agent_array_head, 300 //extract data
 				    @if agent_ObjectType >= 1 {
-					@if agent_Morale < 3 {
-					    @if agent_MovementOrder > 1 {
-						s[202].on
-						
-					    }
-					    
-					}
+							@if agent_Morale < 3 {
+									@if agent_MovementOrder > 1 {
+								s[202].on
+								
+									}
+									
+							}
 					
 				    }
 				    v[202] += 1

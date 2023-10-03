@@ -12,6 +12,7 @@ def {
 
 // INIT MISSION - this one is called whenever you open new mission
 __fn CEV_MISSION_INIT {
+	v[ptr_null] = 0 // allocate memory
 	log_start("Initializing Mission")
 	eval_js("RTS.init()") // js RTS object init
 	v[1080] = v[1012]
@@ -23,7 +24,7 @@ __fn CEV_MISSION_INIT {
 	t[752] .asg ""
 	// @comment "init BGM string"
 	Current_BGMFile .asg ""
-	v[216574..1548949] = 0
+	v[216574..1548949] = 0 // ????????????????????
 	@call .cev 1926
 	@call .cev 2130
 	v[154] = 0

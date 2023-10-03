@@ -102,7 +102,6 @@ v[4101].copy v[4102],29
 										v[v[534]] = 0
 
 										agent_UnitEyeSight_for_AgentSearch.copy Temp8,1
-										agent_UnitEyeSight_for_AgentSearch.copy Temp9,1
 
 										// get sight range root
 										defv UnitAI_agent_eyesight = 315
@@ -138,10 +137,10 @@ v[4101].copy v[4102],29
 												
 										}
 
-										UnitAI_agent_eyesight.copy v[316],1 // UnitAI_agent_eyesight = v[315]
+										UnitAI_agent_eyesight.copy v[316],1 // UnitAI_agent_eyesight is v[315]
 										/*@comment "#########################		    #2002 Crd->Mort V1V2 reg1		    ##########################"*/
 										agent_RelativeX.copy TT1, 2
-										TT1 .sub Temp8,2 // v[341..342] -= UnitAI_agent_eyesight
+										TT1 .sub UnitAI_agent_eyesight,2 // v[341..342] -= UnitAI_agent_eyesight
 										TT1 .add v[53], 2
 										TT1 .sub v[76], 2
 										TT1 .div v[74], 2
@@ -170,7 +169,7 @@ v[4101].copy v[4102],29
 
 										/*@comment "##########################2002 Crd->Mort V1V2 reg1##########################"*/
 										agent_RelativeX.copy TT1, 2
-										TT1 .add Temp8,2 // v[341..342] += UnitAI_agent_eyesight
+										TT1 .add UnitAI_agent_eyesight,2 // v[341..342] += UnitAI_agent_eyesight
 										TT1 .add v[53], 2
 										TT1 .sub v[76], 2
 										TT1 .div v[74], 2
@@ -221,21 +220,20 @@ v[4101].copy v[4102],29
 											@if LEGS_Common_Switch5 .isOn() { // NOT EXPERIMENTAL
 											//@if `v[agent_AI_routine_bits] & 7 { // EXPERIMENTAL
 													@doWhile v[Temp2] != 0 {
-															
 
 															Temp1 = v[Temp2] * 300 
 															val_add(Temp1,N4700) // Temp1 += 4700
-															v[Temp1].copy address_victim_buffer_head, agent_Basic_Array_size
-															agent_RelativeX.copy Temp4, 2
-															Temp4 .sub victim_RelativeX, 2
-															Temp4 .mul Temp4, 2
-															v[Temp6] = Temp4 + Temp5
-															v[Temp6].add victim_ProcessCamoValue,1 // v[Temp6] += victim_ProcessCamoValue
+															calc_victim_distance_and_camo_to_Temp4(Temp1)
 
+															@if Temp4 < Temp8 {
+																	ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
+																	
+																	// set TT2 = v[534] + Temp7
+																	val_asg(TT2,v[534])
+																	val_add(TT2,Temp7)
+																	v[TT2] = v[Temp6] * 1000 + v[Temp2] + v[4000 + min(victim_UnitType, ClassType_Amount)]
 
-															@if v[Temp6] < Temp8 {
-																	v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp2] + v[4000 + min(victim_UnitType, ClassType_Amount)]
-																	v[306].add N1,2 // v[306..307] += 1
+																	Temp6.add N1,2 // v[306..307] += 1
 																	
 															}
 
@@ -248,20 +246,18 @@ v[4101].copy v[4102],29
 													@doWhile v[Temp2] != 0 {
 															Temp1 = v[Temp2] * 300 
 															val_add(Temp1,N4700) // Temp1 += 4700
-															v[Temp1].copy address_victim_buffer_head, agent_Basic_Array_size
-															agent_RelativeX.copy Temp4, 2
-															Temp4 .sub victim_RelativeX, 2
-															Temp4 .mul Temp4, 2
-															v[Temp6] = Temp4 + Temp5
-															v[Temp6].add victim_ProcessCamoValue,1
+															calc_victim_distance_and_camo_to_Temp4(Temp1)
+															@if Temp4 < Temp8 {
+																ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
 
-															@if v[Temp6] < Temp8 {
-																	TT1 = v[534] + Temp7
-																	v[TT1] = v[Temp6] * 1000
-																	v[TT1] += v[Temp2]
-																	v[306].add N1,2 // v[306..307] += 1
-																	// v[306..307] += 1
-																	
+																// TT1 = v[534] + Temp7
+																val_asg(TT1,v[534])
+																val_add(TT1,Temp7)
+
+																v[TT1] = v[Temp6] * 1000
+																v[TT1].add v[Temp2],1 // v[TT1] += v[Temp2]
+																Temp6.add N1,2 // v[306..307] += 1
+																
 															}
 
 															increment_var(Temp2) // Temp2 += 1
@@ -281,69 +277,56 @@ v[4101].copy v[4102],29
 												//@comment "#mask end"
 
 												TT5 >>= 1 // TT5 /= 2
-												v[340] = v[4546 - TT5] + TT6 * v[1004] // morton agent list head
+												defv AISearch_morton_ptr = __id(Temp12)
+												AISearch_morton_ptr = v[4546 - TT5] + TT6 * v[1004] // morton agent list head
 												v[327] = v[v[4552 - TT5] + TT6] // morton agent list length
 												Temp33 = [1, 0, -2][Temp14]
 												Temp6 = 3601
 
-												@loop v[327] .dst Temp12 { // .dst Temp 10 {
-														// Temp12 = v[340] + Temp10
-														val_add(Temp12,v[340])
+												@loop v[327] {
+														// AISearch_morton_ptr = v[340] + Temp10
+														// val_add(AISearch_morton_ptr,v[340])
 
 														__if DIS_EXPERIMENTAL == -1 {
-															macro_get_agent_MetaTeam_into_var(v[Temp12],TT1) // AEBA
+															macro_get_agent_MetaTeam_into_var(v[AISearch_morton_ptr],TT1) // AEBA
 														}.else bl {
-															TT1 = Const_AgentMetaTeam_beginMINUSONE + v[Temp12]
+															TT1 = Const_AgentMetaTeam_beginMINUSONE + v[AISearch_morton_ptr]
+
 														}
 
 														// @if  agent_TeamID == TT1 { // EXPERIMENTAL - IF YOU USE AEBA  
 														@if  Temp33 == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA
 
-																Temp11 = v[Temp12] * v[1117] 
-																val_add(Temp11,N4700) // Temp11 += 4700
-																v[Temp11].copy address_victim_buffer_head, agent_Basic_Array_size
-																agent_RelativeX.copy Temp4, 2
-																Temp4 .sub victim_RelativeX, 2
-																Temp4 .mul Temp4, 2
-																v[Temp6] = Temp4 + Temp5
-																ptr_add(Temp6,victim_ProcessCamoValue) // v[Temp6] += victim_ProcessCamoValue
+																Temp1 = v[AISearch_morton_ptr] * v[1117] 
+																val_add(Temp1,N4700) // Temp1 += 4700
+																calc_victim_distance_and_camo_to_Temp4(Temp1)
 
-																@if v[Temp6] < Temp8 {
-																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp12] + v[4000 + min(victim_UnitType, ClassType_Amount)]
+																@if Temp4 < Temp8 { // in agent sight
+																		ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
+
+																		// set TT2 = v[534] + Temp7
+																		val_asg(TT2,v[534])
+																		val_add(TT2,Temp7)
+																		v[TT2] = v[Temp6] * 1000 + v[Temp2] + v[4000 + min(victim_UnitType, ClassType_Amount)]
+
 																		Temp6.add N1,2 // v[306..307] += 1
 																		
 																}
-
-																/*
-																Temp11 = v[Temp12] * v[1117] 
-																Temp11 += 4700
-																v[Temp9].copy Temp4, 2
-																Temp1 = Temp11 + 7
-																Temp4 .sub v[Temp1], 2
-																Temp4 .mul Temp4, 2
-																v[Temp6] = Temp4 + Temp5 + v[Temp11 + 276]
-				
-
-																@if v[Temp6] < Temp8 {
-																		v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp12] + v[4001 + min(v[Temp1 + 95], ClassType_Amount)]
-																		v[306..307] += 1
-																		
-																}
-																*/
 																
 														}
+														increment_var(AISearch_morton_ptr)
 												}
 										}
 
-				//Has more than 16 enemies in the search radius
+										//Has more than 16 enemies in the search radius
 										@if Temp7 >= 16 {
-			//set next search skip flag 
-												v[agent_AI_routine_bits] |= agent_AAType == 0 ? AI_routine_bits_FLAG_AIskip : 0 //v[v[212] + 103] == 0 ? 2097152 : 0
-												//break the flag
-			v[agent_AI_routine_bits] &= -129 //~128
-												
+											//set next search skip flag 
+											v[agent_AI_routine_bits] |= agent_AAType == 0 ? AI_routine_bits_FLAG_AIskip : 0 //v[v[212] + 103] == 0 ? 2097152 : 0
+											//break the flag
+											v[agent_AI_routine_bits] &= -129 //~128
+											
 										} .else bl {
-			//found none in the radius
+												//found none in the radius
 												@if Temp7 == 0 {
 
 													agent_AI_check_current_target()
@@ -468,6 +451,7 @@ v[4101].copy v[4102],29
 												Temp7 = 0
 												
 										}
+
 										Temp6 = 0
 										TT1 = v[534] + v[1012]
 										Temp6.copy v[TT1], 2
@@ -477,7 +461,6 @@ v[4101].copy v[4102],29
 
 												@if agent_StanceOrder == 3 { //`v[v[212] + 241] == 3 {
 														@if agent_MovementOrder != -2 { //`v[v[212] + 242] != -2 {
-				// ?
 																@if agent_MilPixMoveOrderedPointDist > 11000 { //`v[v[212] + 23] > 11000 {
 																		v[v[212] + 245] = 0
 																		
@@ -589,47 +572,39 @@ v[4101].copy v[4102],29
 							v[299] = v[212] + 241 // ?
 							Temp1 = v[212] + 100
 
-						__if DIS_EXPERIMENTAL == -1 {
-							macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEBA
-						}.else bl {
-							Temp14 = Const_AgentMetaTeam_begin + v[211]
-							Temp14.deref Temp14,1
-						}
+							__if DIS_EXPERIMENTAL == -1 {
+								macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEBA
+							}.else bl {
+								Temp14 = Const_AgentMetaTeam_begin + v[211]
+								Temp14.deref Temp14,1
+							}
 
 							// a naru.
 							Temp2 = 4031 + Temp14
 							Temp2.deref Temp2,1
-							Temp2.copy Temp7,1
-							// Temp7 = Temp2
+							Temp2.copy Temp7,1 // Temp7 = Temp2
 							Temp8 = 4034 + Temp14
 							// Temp8 = v[4034 + Temp14]
 							Temp8.deref Temp8,1
-							// v[4001..4030] = 0
 							v[ptr_null].copy v[4001],30
 
 							Temp7 = 0
 
-							// v[3401..3600] = 999999999
 
 							v[534] = v[4579] + (v[1012] + 2) * v[211]
 							v[v[534]] = 0
 
+							Temp6 = 3601 // deploy v[3601] 'n check it
 							@doWhile v[Temp2] != 0 {
-									Temp6 = Temp7 + 3601 // deploy v[3601] 'n check it
 									Temp1 = v[Temp2] * 300 
 									val_add(Temp1,N4701) // Temp1 += 4701
-									Temp1.copy address_victim_buffer_head, agent_Basic_Array_size
-									v[350] = agent_AgentType
-									agent_RelativeX.copy Temp4, 2
-									Temp4 .sub victim_RelativeX, 2
-									Temp4 .mul Temp4, 2
-									v[Temp6] = Temp4 + Temp5 
-									v[Temp6] += victim_ProcessCamoValue
-									@if v[Temp6] < agent_UnitEyeSight_for_AgentSearch { // kore teki huesugitara bagurun to tyauw
+									calc_victim_distance_and_camo_to_Temp4(Temp1)
+									@if Temp4 < agent_UnitEyeSight_for_AgentSearch { // kore teki huesugitara bagurun to tyauw
+											ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
 											TT1 = v[534] + Temp7
 											v[TT1] = v[Temp6] * 1000 
-											v[TT1] += v[Temp2]
-											Temp7 += 1
+											v[TT1].add v[Temp2],1
+											Temp6.add N1,2
 											
 									}
 									increment_var(Temp2) // Temp2 += 1
@@ -690,17 +665,13 @@ __fn agent_AI_check_current_target {
 			Temp8 <<= v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AICohortGatheringAttack ? 1 : 0
 
 			//Try checking if current target is in sight radius  
-			Temp11 = v[Ptr20] * v[1117] 
-			val_add(Temp11,N4700) // Temp11 += 4700
-			v[Temp11].copy address_victim_buffer_head, agent_Basic_Array_size
+			Temp1 = v[Ptr20] * v[1117] 
+			val_add(Temp1,N4700) // Temp11 += 4700
+			calc_victim_distance_and_camo_to_Temp4(Temp1)
 
-			agent_RelativeX.copy Temp4, 2
-			Temp4 .sub victim_RelativeX, 2
-			Temp4 .mul Temp4, 2
-			v[Temp6] = Temp4 + Temp5
-			v[Temp6] += victim_ProcessCamoValue
-			@if v[Temp6] < Temp8 {
+			@if Temp4 < Temp8 {
 					//and if it's in the agent's sight, let it keep following to the target.
+					ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
 					TT1 = v[534] + Temp7
 					v[TT1] = v[Temp6] * 1000
 					v[TT1].add v[Ptr20],1 // v[TT1] += v[Ptr20] 
@@ -714,5 +685,11 @@ __fn agent_AI_check_current_target {
 	}
 }
 
-
-
+__fn calc_victim_distance_and_camo_to_Temp4 $ptrToHead {
+	v[$ptrToHead].copy address_victim_buffer_head, agent_Basic_Array_size
+	agent_RelativeX.copy Temp4, 2
+	Temp4 .sub victim_RelativeX, 2
+	Temp4 .mul Temp4, 2
+	val_add(Temp4,Temp5)
+	val_add(Temp4,victim_ProcessCamoValue)
+}

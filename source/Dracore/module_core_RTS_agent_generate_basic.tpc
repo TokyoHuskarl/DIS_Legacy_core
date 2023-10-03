@@ -1580,20 +1580,20 @@ __fn func_generate_agent_finish_set {
 		
 	    }
 	    @comment "####################EyeSight####################"
-	    v[830] = max(v[1019], pow(v[717] / 1000, 2))
+	    agent_UnitEyeSight_for_AgentSearch = max(v[1019], pow(v[717] / 1000, 2))
 	    
 
 	    // Agent eyesight for minimap fow check 
 
 	    @if `between(agent_UnitType, 104, 105) {
-		@comment "In sight?"
-		v[0] = s[2001 + ptr_SpawnAgentMainSpace_Head] = 1
+				@comment "In sight?"
+				v[0] = s[2001 + ptr_SpawnAgentMainSpace_Head] = 1
 		
 	    }
 
 	    @comment "Civilians have better AI eyesight in order to find constcrution site"
 	    @if agent_UnitType == 9 {
-		v[830] *= 2
+				agent_UnitEyeSight_for_AgentSearch *= 2
 		
 	    }
 
@@ -1677,10 +1677,10 @@ __fn func_generate_agent_finish_set {
 		// abolished
 		vname[4806], "ConstAgentRootSightArrayHead"
 		__if DIS_EXPERIMENTAL == -1 { 
-			reg2 = sqrt(v[830], 1)
+			reg2 = sqrt(agent_UnitEyeSight_for_AgentSearch, 1)
 			set_AEAB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_BaseSight_Root)
 		} .else bl {
-			v[v[4806] + ptr_SpawnAgentMainSpace_Head] = sqrt(v[830], 1)
+			v[v[4806] + ptr_SpawnAgentMainSpace_Head] = sqrt(agent_UnitEyeSight_for_AgentSearch, 1)
 		}
 
 		@comment "avoid false data"
@@ -1767,7 +1767,7 @@ __fn func_generate_agent_finish_set {
 				 
 		    __if DIS_EXPERIMENTAL == -2 { // even if AEAB command bug in MP itself is solved, this part won't return, since the traditional way below (what in else block) is faster
 			    // EyeSightForminimaps const =62500
-			    reg2 = min(v[830] / 31250, 6)
+			    reg2 = min(agent_UnitEyeSight_for_AgentSearch / 31250, 6)
 			    // "#Cavs  have better sight"
 			    @if `between(agent_UnitType, 1, 2) {
 						reg2 += 1
@@ -1790,7 +1790,7 @@ __fn func_generate_agent_finish_set {
 
 		    }.else bl { // this is faster
 			    @comment "EyeSightForminimaps const =62500"
-			    v[v[4528] + ptr_SpawnAgentMainSpace_Head] = min(v[830] / 31250, 6)
+			    v[v[4528] + ptr_SpawnAgentMainSpace_Head] = min(agent_UnitEyeSight_for_AgentSearch / 31250, 6)
 			    @comment "#Cavs  have better sight"
 			    @if `between(agent_UnitType, 1, 2) {
 				v[v[4528] + ptr_SpawnAgentMainSpace_Head] += 1

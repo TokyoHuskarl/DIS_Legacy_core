@@ -121,13 +121,13 @@ __fn MAIN_CEV_RTS_COLLISION_MANAGER { // ->
 				//@comment "Even Normal Units Collision "
 				v[536] = v[4532]
 				@while v[v[536]] != 0 {
-			v[401] = v[v[536]] - 1
-			Temp1 = v[401] * v[1117] 
-			Temp1 += 5000
-			//@comment "#Col"
-			ColCheck()
-			//@comment "++"
-			v[536] += 4
+					v[401] = v[v[536]] - 1
+					Temp1 = v[401] * v[1117] 
+					Temp1 += 5000
+					//@comment "#Col"
+					ColCheck()
+					//@comment "++"
+					v[536] += 4
 			
 				}
 				
@@ -409,12 +409,6 @@ __fn ColCheck {
 
 
 __fn macro_ColCheck_distance {
-	/*
-	Temp20 = v[v[203]] * 300
-	Temp20 += 4707
-	v[Temp20].copy Temp20,2
-	Temp20.sub v[607],2
-	*/
 
 	victim_AgentType = v[v[203]] * 300
 	val_add(victim_AgentType,N4701) // victim_AgentType += 4701

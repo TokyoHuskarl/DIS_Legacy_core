@@ -9,8 +9,6 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 __fn RTS_MAIN_LAND_AGENT_1f {
 
 	    v[401] = v[v[536]] - 1
-	    //v[301] = v[401] * v[1117] 
-	    //v[301] += 5001
 		
 	    Ptr1 = v[401] * v[1117] 
 	    val_add(Ptr1,N5001) // Ptr1 += 5001
@@ -35,67 +33,68 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	    TT2 = (TT2 | TT2 << 8) & 0xFF00FF
 	    TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
 	    TT2 = (TT2 | TT2 << 2) & 0x33333333
-	    TT2 = ((TT2 | TT2 << 1) & 0x55555555) << 1
-	    //@comment "yは1bitシフトで終わり"
-	    //@comment "最後にTT1 OR TT2"
-	    TT1 = TT1 | TT2
+	    TT1 |= ((TT2 | TT2 << 1) & 0x55555555) << 1
+			TT1 &= 1023 // mask with b1111111111 for safety, by this, TT1 is always between 0~1023.
 
-		@if TT1 >= 0 {	// safety!
-			@if TT1 <= 1023 {	// safety!
-				//@comment "モートン座標を記録しおえたよ
-				//次はリストに登録するよ
-				//TT3=カウンター
-				//TT2=ポインター"
-				agent_Morton = TT1
-				//@comment "#ルート空間だよ"
-				TT2 = v[1067] + v[v[1071]]
-				v[TT2] = v[v[536]]
-				v[v[1071]] += 1
+			//@comment "モートン座標を記録しおえたよ
+			//次はリストに登録するよ
+			val_asg(agent_Morton,TT1) // agent_Morton = TT1
+			//@comment "#ルート空間だよ"
+			TT2 = v[1067] + v[v[1071]]
+			v[v[536]].copy v[TT2],1 // v[TT2] = v[v[536]]
+			ptr_add(v[1071],N1) // v[v[1071]] += 1
 
-				
-				// forth mort dim ~ fifth mort dim
-				v[4537].copy var4, 2
-				//@comment "#第5空間だよ
-				//0~1023"
-				val_add(var5,TT1) // var5 += TT1
-				v[TT1 * Const_save_var_Agents_Limit + v[4535] + v[var5]] = v[v[536]]
-				v[var5].add N1,1 // v[var5] += 1
-				//@comment "#第四空間だよ
-				//0~255"
-				TT1 >>= 2
-				val_add(var4,TT1) // var4 += TT1
-				v[TT1 * Const_save_var_Agents_Limit + v[4534] + v[var4]] = v[v[536]]
-				v[var4].add N1,1 // v[var4] += 1
+			
+			// forth mort dim ~ fifth mort dim
+			v[4537].copy var4, 2
 
-				// first mort dim ~ third mort dim
-				v[1072].copy reg1, 3
-				//@comment "#第三空間だよ
-				//0~63"
-				TT1 >>= 2
-				//v[343] = v[1074] + TT1
-				val_add(reg3,TT1) // reg3 += TT1
-				v[TT1 * Const_save_var_Agents_Limit + v[1070] + v[reg3]] = v[v[536]]
-				v[reg3].add N1,1 // v[reg3] += 1
+			//@comment "#第5空間だよ
+			//0~1023"
+			val_add(var5,TT1) // var5 += TT1
+			v[TT1 * Const_save_var_Agents_Limit + v[4535] + v[var5]] = v[v[536]]
 
-				//@comment "#第二空間だよ
-				//0~15"
-				TT1 >>= 2
-				//v[343] = v[1073] + TT1
-				val_add(reg1,TT1) // reg2 += TT1
-				v[TT1 * Const_save_var_Agents_Limit + v[1069] + v[reg2]] = v[v[536]]
-				v[reg2].add N1,1 // v[reg2] += 1
+			v[var5].add N1,1 // v[var5] += 1
 
-				//@comment "#第一空間だよ
-				//0~3"
-				TT1 >>= 2
-				//v[343] = v[1072] + TT1
-				val_add(reg1,TT1) // reg1 += TT1
-				v[TT1 * Const_save_var_Agents_Limit + v[1068] + v[reg1]] = v[v[536]]
-				v[reg1].add N1,1 // v[reg1] += 1
-				//@comment "モートン座標関係はこれで終わり"
+			//@comment "#第四空間だよ
+			//0~255"
+			TT1.shr N2,1 // TT1 >>= 2 
+			val_add(var4,TT1) // var4 += TT1
 
-			}
-		}
+			v[TT1 * Const_save_var_Agents_Limit + v[4534] + v[var4]] = v[v[536]]
+			v[var4].add N1,1 // v[var4] += 1
+
+
+			// first mort dim ~ third mort dim
+			v[1072].copy reg1, 3
+
+			//@comment "#第三空間だよ
+			//0~63"
+			TT1.shr N2,1 // TT1 >>= 2 
+			val_add(reg3,TT1) // reg3 += TT1
+
+			v[TT1 * Const_save_var_Agents_Limit + v[1070] + v[reg3]] = v[v[536]]
+			v[reg3].add N1,1 // v[reg3] += 1
+
+
+
+			//@comment "#第二空間だよ
+			//0~15"
+			TT1.shr N2,1 // TT1 >>= 2 
+			//v[343] = v[1073] + TT1
+			val_add(reg1,TT1) // reg2 += TT1
+			v[TT1 * Const_save_var_Agents_Limit + v[1069] + v[reg2]] = v[v[536]]
+			v[reg2].add N1,1 // v[reg2] += 1
+
+			//@comment "#第一空間だよ
+			//0~3"
+			TT1.shr N2,1 // TT1 >>= 2 
+			//v[343] = v[1072] + TT1
+			val_add(reg1,TT1) // reg1 += TT1
+			v[TT1 * Const_save_var_Agents_Limit + v[1068] + v[reg1]] = v[v[536]]
+			v[reg1].add N1,1 // v[reg1] += 1
+
+			//@comment "モートン座標関係はこれで終わり"
+
 
 	    // Auto Attack Process 
 	    @if Is_Paused .isOff() { //optimizing 26.4.23
@@ -126,7 +125,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	
 	    __if DIS_EXPERIMENTAL == 1 {
 		    // Kill walking flag
-		    agent_ActionFlag &= ~ActionFlag_FLAG_Walking
+				def Main_KILLActionFlag_FLAG_Walking = ~ActionFlag_FLAG_Walking
+		    agent_ActionFlag &= Main_KILLActionFlag_FLAG_Walking
 	    }
 
 	    // Check if the agent is in dash or KnockBack state
@@ -134,8 +134,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 				// Setting up target agent pointer - this might be dangerous since even if Target is 0 Ptr8 can be used.
 				// You need to check all procs around Ptr8 in this meta function
-				Ptr8 = agent_TargetAgentID * 300
-				victim_AgentType = Ptr8 + 4701
+				victim_AgentType = agent_TargetAgentID * 300
+				val_add(victim_AgentType,N4701) // victim_AgentType += 4701
 				v[victim_AgentType].copy victim_AgentType,102
 
 				@if agent_TargetAgentID >= 1 { // Has target
@@ -196,7 +196,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 								//@comment "#指定Objが存在しない"
 								agent_AgentBits |= AgentBits_FLAG_DirChange_skip
-								agent_AI_routine_bits &= ~AI_routine_bits_FLAG_AIskip //~2097152
+								def Main_KILLAI_routine_bits_FLAG_AIskip = ~AI_routine_bits_FLAG_AIskip
+								agent_AI_routine_bits &= Main_KILLAI_routine_bits_FLAG_AIskip //~2097152
 
 								//@comment "if AA Timer <1"
 								//@comment "#攻撃指令モードであれば、その場で警戒モードに移行"
@@ -205,21 +206,21 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 									agent_StanceOrder = ORD_MANU
 									
 										} .else bl {
-									agent_HoldPointX.copy agent_MovePointX, 2
-									agent_StanceOrder = ORD_AGG
-									//@comment "Set searching for enemy flag"
-									agent_AgentBits |= agent_AgentBits & AgentBits_FLAG_EnableCivAI ? 0 : AgentBits_FLAG_EnableBasicAI
-									
+											agent_HoldPointX.copy agent_MovePointX, 2
+											agent_StanceOrder = ORD_AGG
+											//@comment "Set searching for enemy flag"
+											agent_AgentBits |= agent_AgentBits & AgentBits_FLAG_EnableCivAI ? 0 : AgentBits_FLAG_EnableBasicAI
+											
 										}
 										
 								}
 
 								//@comment "#WPを使ってOBJにたどり着こうとしていた"
 								@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
-										v[1301].copy v[643], 13
-										agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj //~16777216 AgentBits_FLAG_NeedWpToReachObj
-										agent_AI_routine_bits &= ~AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue // 
-										
+									v[1301].copy v[643], 13
+									agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj //~16777216 AgentBits_FLAG_NeedWpToReachObj
+									agent_AI_routine_bits &= ~AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue // 
+									
 								}
 
 								@if agent_AttackFrame <= 0 {
@@ -240,11 +241,11 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 														
 													} .else bl {
 														@if agent_StanceOrder == ORD_DEF {
-																//@comment "#防御モードor have Waypoint であれば、HoldPointへ戻る#"
-																agent_HoldPointX.copy agent_MovePointX, 2
-																agent_ActionFlag |= 1
-																agent_MovementOrder = MovementOrder_TYPE_move_ordered
-																
+															//@comment "#防御モードor have Waypoint であれば、HoldPointへ戻る#"
+															agent_HoldPointX.copy agent_MovePointX, 2
+															agent_ActionFlag |= 1
+															agent_MovementOrder = MovementOrder_TYPE_move_ordered
+															
 														}
 														
 													}
@@ -252,8 +253,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 											}
 											
 										} .else bl {
-									agent_HoldPointX.copy agent_MovePointX, 2
-									agent_MovementOrder = MovementOrder_TYPE_move_ordered
+											agent_HoldPointX.copy agent_MovePointX, 2
+											agent_MovementOrder = MovementOrder_TYPE_move_ordered
 									
 										}
 										
@@ -305,15 +306,6 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	    //v[300] = v[301] + 23
 	    agent_MilPixMoveOrderedPointDist = sqrt(Temp4, 1000)
 	    //v[318] = agent_MilPixMoveOrderedPointDist
-
-	    // #############
-	    // ここ配列操作で高速化可能
-	    // #############"
-
-	    //v[300] = v[301] + 22
-	    //v[622] = (v[622] * TT2 + v[310] * 100000 / v[318]) / (TT2 + 1)
-	    //v[300] = v[301] + 21
-	    //v[621] = (v[621] * TT2 + v[309] * 100000 / v[318]) / (TT2 + 1)
 		
 		// -> relocated to walking pro
 		defv relX_sub_TargX_saved = 351
@@ -338,7 +330,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 							v[340] -= agent_AAType == 0 || agent_worker_JobType == 6 ? v[335] : 0
 
 							// @comment "If the target is construction site"
-							v[340] -= victim_UnitType == 104 ? victim_Width * 1250 : 0
+							v[340] -= victim_UnitType == 104 ? victim_Width << 10 : 0 // Width * 1024 : 0
 							@if v[340] <= TT1 {
 								@if v[340] >= TT2 {
 									// @comment "#WPを使ってOBJにたどり着こうとしていた"
@@ -354,9 +346,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 									// @comment "Not casting skill"
 									@if `(agent_ActionState >= 4 || agent_AATimer > 0) != 1 {
 											// @comment "AAタイマー見る"
-											agent_ActionState = 1
+											val_asg(agent_ActionState,N1) // agent_ActionState = 1
 											/* This part does affect game speed. */
-											agent_AATimer = v[721] > agent_SP && agent_ExMotionFlags & 2048 ? AA_WAIT_FPSx2 : AA_WAIT_FPSx1
+											agent_AATimer = agent_AACost > agent_SP && !(agent_ExMotionFlags & ExMotionFlags_FLAG_no_fatigue) ? AA_WAIT_FPSx2 : AA_WAIT_FPSx1
 											
 									}
 									
@@ -436,7 +428,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 											
 										}
 
-										agent_AgentBits &= ~AgentBits_FLAG_PF_walldetection_switch // kill wall detection flag
+										def Main_KILLAgentBits_FLAG_PF_walldetection_switch = ~AgentBits_FLAG_PF_walldetection_switch
+										agent_AgentBits &= Main_KILLAgentBits_FLAG_PF_walldetection_switch // kill wall detection flag
 										
 										// If the agent has no WP anymore
 										@if agent_LeftWPtoChase == 0 {
@@ -516,7 +509,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				//@comment "とまる"
 				@if agent_MovementOrder <= -1 {
 						LEGS_MAIN_Agent_tries_to_stop.on
-						agent_ActionFlag |= 1
+						agent_ActionFlag |= ActionFLag_FLAG_Hold_direction
 						//@comment "hovering"
 						@if `agent_AgentBits & AgentBits_Hovering {
 							agent_ForceSprite = ForceSprite_MOVE // hovering animation
@@ -532,14 +525,20 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 					// calc Vector 
 					TT2 = agent_AgentBits & AgentBits_Inertia ? 9 : 2 // (agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback ? 4 : 2)
-					v[621..622] *= TT2
+					TT2.copy TT3,1 // copy to TT3
+
+					agent_MoveUvectorX.mul TT2,2 // v[621..622] *= TT2
+
 					// Attention - v[351] = relX_sub_TargX_saved
 					defv relY_sub_TargY_saved= __id(relX_sub_TargX_saved) + 1
 					// muldiv is slower than lower past proc, but in this case you need to use this in order to avoid var overflow
 					v[351..352] *= 100000 
 					v[351..352] /= agent_MilPixMoveOrderedPointDist
 					agent_MoveUvectorX .add relX_sub_TargX_saved, 2
-					v[621..622] /= TT2 + 1
+
+					// v[621..622] /= TT2 + 1
+					TT2.add N1,2
+					agent_MoveUvectorX.div TT2,2
 
 				}
 
@@ -647,8 +646,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	    Temp11.copy var1,2
 	    var1.sub v[69],2
 
-	    Temp17 = var2 // Save Temp12 - v[70] to Temp17
-	    Temp18 = var1 // Save Temp11 - v[69] to Temp18
+	    val_asg(Temp17,var2) // Temp17 = var2 // Save Temp12 - v[70] to Temp17
+	    val_asg(Temp18,var1) // Temp18 = var1 // Save Temp11 - v[69] to Temp18
 
 	    TT1 = var2 * var_Map_Width
 	    v[632] = var1 + TT1//map point saved
@@ -696,7 +695,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			
 			v[315] = Temp13 / 20 
 			v[315] += v[314] / 20
-			v[315] %= 2
+			val_mod(v[315],N2) // v[315] %= 2
 
 			@if Is_Paused .isOff() {
 
@@ -771,7 +770,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					agent_MilPixX.add var1,1 // agent_MilPixX += var1
 					
 					} .else bl {
-					agent_MilPixVx = divmul(agent_MilPixVx, TT2, TT1)
+						agent_MilPixVx = divmul(agent_MilPixVx, TT2, TT1)
 					
 					}
 					//@comment "#カメラずらして"
@@ -883,9 +882,13 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 								//@comment "+[Const描画ymax]"
 								s[v[348]].on
 								agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
+
 								// "will be drawn"
-								v[v[1112] + v[184]] = (agent_RelativeY + agent_Height + v[1011]) * 1000 + v[401]
-								v[v[1113] + v[184]]= v[401]
+								v[1112].copy TT1,2
+								TT1.add v[184],1 // TT1 is now v[1112] + v[184]
+								TT2.add v[184],1 // TT2 is now v[1113] + v[184]
+								v[TT1] = (agent_RelativeY + agent_Height + v[1011]) * 1000 + v[401] // v[v[1112] + v[184]] = (agent_RelativeY + agent_Height + v[1011]) * 1000 + v[401]
+								ptr_asg(TT1,v[401]) // v[v[1113] + v[184]]= v[401]
 
 								val_add(v[184],N1) // v[184] += 1
 
