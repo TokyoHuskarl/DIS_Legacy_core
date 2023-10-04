@@ -103,6 +103,17 @@ cev .id(70) ,.name("Log:RTS log manager"), .parallel , .cond(Const_Is_RTS_Mode),
 	    }
 	    
 	}
+
+	// gamelog export
+	@if IS_EXPORTING_LOG_ALLOWED .isOff() {
+		@if RTS_WORLD_passed_frame > 0 {
+			def GAMELOG_FRAME = 90 * DIS_Game_FPS // refresh per 90 sec
+			TT1 = RTS_WORLD_passed_frame % GAMELOG_FRAME
+			@if TT1 == 0 {
+				export_mapautolog()
+			}
+		}
+	}
 }
 
 

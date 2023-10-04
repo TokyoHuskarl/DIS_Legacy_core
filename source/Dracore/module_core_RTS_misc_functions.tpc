@@ -18,37 +18,32 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 
 	    v[2502..2503] %= 60
 	    v[2501] %= v[95]
-	    RTS_WORLD_passed_frame -= s[309]== 1 ? 0 : 1 //[1, 0][s[309]]
+	    v[2510] -= s[309]== 1 ? 0 : 1 //[1, 0][s[309]]
 	    v[2661] -= 1
 
 	    vname[2505],"Frame-half"
 	    v[2505] = v[2502] / 2 // for col check
 	    
 	}
+			
+
 	@if s[319] .isOn() {
 		@if s[2] .isOff {
 
-			// autosave
-	    @if s[317] .isOff() {
-				@if RTS_Difficulty < DIF_RAGNAROK { // NOT RAGNAROK
-					def AUTOSAVE_FRAME = (2 * 60 + 20) * DIS_Game_FPS // (2min * 60 + 20sec) * baseFPS
-					TT1 = RTS_WORLD_passed_frame % AUTOSAVE_FRAME
-					@if TT1 == 0 {
-						sysfunc_autosave() // this nest looks seriously retarded.
+				// autosave
+		    @if s[317] .isOff() {
+					@if RTS_Difficulty < DIF_RAGNAROK { // NOT RAGNAROK
+						@if RTS_WORLD_passed_frame > 100 { // avoid starting save spam
+							def AUTOSAVE_FRAME = (2 * 60 + 20) * DIS_Game_FPS // (2min * 60 + 20sec) * baseFPS
+							
+							TT1 = RTS_WORLD_passed_frame % AUTOSAVE_FRAME
+							@if TT1 == 0 {
+								sysfunc_autosave() // this nest looks seriously retarded.
+							}
+						}
 					}
-				}
-	    }
-			
-			// gamelog export
-			@if IS_EXPORTING_LOG_ALLOWED .isOff() {
-				def GAMELOG_FRAME = 90 * DIS_Game_FPS // refresh per 90 sec
-				TT1 = RTS_WORLD_passed_frame % GAMELOG_FRAME
-				@if TT1 == 0 {
-					export_mapautolog()
-				}
-	    }
-		}
-
+		    }
+	}
 
 	    @if s[7] .isOn() {
 				@if v[2403] == FAC_imperial {

@@ -341,8 +341,8 @@ DIS = { // DIS fundamental components
 				
 				// Particle limit
 				let ptcl = Math.min(400,boot_config.particle_amount)
-				setv(2215,ptcl)
-				DIS.log.push(`RTS particle picture Limit: ${ptcl}`);
+					setv(2215,ptcl)
+					DIS.log.push(`RTS particle picture Limit: ${ptcl}`);
 				
 				// gore effect setting?
 
@@ -429,7 +429,6 @@ DIS = { // DIS fundamental components
 
 	// DIS game consts - never touch here blease?
 	RTSFPS: 48, // can be changed 
-	AgentsLimit: getv(1004), // v[1004]
 },
 
 DIS.macro = {
@@ -509,7 +508,7 @@ DIS.string = {
 const Adr_ptr_spawnAgent = 201; //v[201]
 
 DIS.agent = { 
-	limit: getv(1017), // get from game variable
+	limit: getv(1004), // get from game variable
 	genPtrPos: 0,
 
 	// Search Empry Space function - this function searches a blank space for an agent in the agent data space.
@@ -524,9 +523,9 @@ DIS.agent = {
 		if(!Cmd.runFlags.SpawnDetect){this.genPtrPos = getv(Adr_ptr_spawnAgent); Cmd.runFlags.SpawnDetect = true;}
 		let emptyspaceID = -1; // if the AgentSpace is full, return -1
 
-		for (let i = 0; i < DIS.AgentsLimit; i++){
+		for (let i = 0; i < this.limit; i++){
 			let p = 5001
-			this.genPtrPos %= DIS.AgentsLimit; // compared to ternary operator, which is faster?
+			this.genPtrPos %= this.limit; // compared to ternary operator, which is faster?
 			p += this.genPtrPos * 300
 			this.genPtrPos++; // this increment position is correct since if it's empty, the actual slot ID is (genPtrPos + 1)
 			if (getv(p) <= 0){
@@ -978,7 +977,7 @@ let RTS = {
 			
 			let buf = this.PfWPbuffer[agentid];
 			let len = buf.length;
-			if (len == 0) {return -1} // if there's no elements stored (it can happen after loading savegame) break and return -1. 
+			if (len <= 0) {return -1} // if there's no elements stored (it can happen after loading savegame) break and return -1. 
 
 			let cnt = Math.min(len,6);
 			let i;

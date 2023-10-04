@@ -3,7 +3,7 @@
 cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 
 	@if .rightAfterLoad() {
-	    
+		sysfunc_reboot_RTS_after_loading()	    
 	} .else bl {
 	    @if s[43] .isOff() {
 		s[41..44].off

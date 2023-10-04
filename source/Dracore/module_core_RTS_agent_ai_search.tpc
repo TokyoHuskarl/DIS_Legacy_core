@@ -20,7 +20,7 @@ v[4035..4036] = v[205]
 //Check ground type troops agents all
 
 // set expanding temp array for copying
-v[4101..4111] = 100000000
+v[4100..4112] = 100000000
 // WITHOUT AEAB, above part is necessarily
 
 
@@ -77,13 +77,13 @@ v[4101..4111] = 100000000
 									}.else bl {
 
 									agent_AI_routine_bits.deref Temp7,1 // Temp7 = v[agent_AI_routine_bits]
-									v[4101].copy v[4001],30
+									v[4101].copy v[4001],12
 
-			// Common_Switch5 serves checking if the agent has bias to prioritize the enemy by its type, if it's on, it means the agent has the bias
+								// Common_Switch5 serves checking if the agent has bias to prioritize the enemy by its type, if it's on, it means the agent has the bias
 									LEGS_Common_Switch5.off
 									@if `Temp7 & 1 {
-											v[4001..4011] += 900000000
-											v[4011] -= 950000000 // wut
+											v[4001..4012] += 900000000
+											v[4012] -= 950000000 // wut
 											LEGS_Common_Switch5.on
 											
 									}
@@ -200,8 +200,8 @@ v[4101..4111] = 100000000
 										TT2 &= 31 // TT2 = min(TT2, 31)
 
 										/*@comment "TT1=MortX
-				TT2=MortY
-				ビット演算して処理するよ"*/
+									TT2=MortY
+									ビット演算して処理するよ"*/
 										TT1 = (TT1 | TT1 << 8) & 0xFF00FF
 										TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
 										TT1 = (TT1 | TT1 << 2) & 0x33333333
@@ -236,68 +236,41 @@ v[4101..4111] = 100000000
 											//then just check team agent list - but this seemingly not good design (also kinda buggy), so maybe I need to change this later
 											Temp6 = 3601
 
-											@if LEGS_Common_Switch5 .isOn() { // NOT EXPERIMENTAL
 											//@if `v[agent_AI_routine_bits] & 7 { // EXPERIMENTAL
-													@doWhile v[Temp2] != 0 {
+											@doWhile v[Temp2] != 0 {
 
-															Temp1 = v[Temp2] * 300 
-															val_add(Temp1,N4700) // Temp1 += 4700
-															calc_victim_distance_and_camo_to_Temp4(Temp1)
+													Temp1 = v[Temp2] * 300 
+													val_add(Temp1,N4700) // Temp1 += 4700
+													calc_victim_distance_and_camo_to_Temp4(Temp1)
 
-															@if Temp4 < Temp8 {
-																ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
-																
-
-																// debug 
-																debug_selecting_agt(v[536],{
-																		func_devlog(__str("Hit. target is \v[\v[",__id(AISearch_morton_ptr),"]] "," I checked teamlist"))
-																})
-
-																// set TT2 = v[534] + Temp7
-																val_asg(TT2,v[534])
-																val_add(TT2,Temp7)
-																v[TT2] = v[Temp6] * 1000 + v[Temp2] + v[4000 + min(victim_UnitType, ClassType_Amount)]
-
-																Temp6.add N1,2 // v[306..307] += 1
-																
-															}
-
-															increment_var(Temp2) // Temp2 += 1
-															
-													}
-													
-													
-											} .else bl {
-													@doWhile v[Temp2] != 0 {
-														Temp1 = v[Temp2] * 300 
-														val_add(Temp1,N4700) // Temp1 += 4700
-														calc_victim_distance_and_camo_to_Temp4(Temp1)
-
-														@if Temp4 < Temp8 {
-															ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
-
-															// TT1 = v[534] + Temp7
-															val_asg(TT1,v[534])
-															val_add(TT1,Temp7)
+													@if Temp4 < Temp8 {
+														ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
 
 														// debug 
 														debug_selecting_agt(v[536],{
 																func_devlog(__str("Hit. target is \v[\v[",__id(AISearch_morton_ptr),"]] "," I checked teamlist"))
 														})
 
-															v[TT1] = v[Temp6] * 1000
-															v[TT1].add v[Temp2],1 // v[TT1] += v[Temp2]
-															Temp6.add N1,2 // v[306..307] += 1
-															
-														}
+														// set TT2 = v[534] + Temp7
+														val_asg(TT2,v[534])
+														val_add(TT2,Temp7)
+														@if LEGS_Common_Switch5 .isOn() {
+															v[TT2] = v[Temp6] * 1000 + v[Temp2] + v[4001 + min(victim_UnitType, ClassType_Amount)]
 
-														increment_var(Temp2) // Temp2 += 1
+														}.else bl{
+															v[TT2] = v[Temp6] * 1000
+															v[TT2].add v[Temp2],1 // v[TT1] += v[Temp2]
+
+														}
+														Temp6.add N1,2 // v[306..307] += 1
 														
 													}
-													
+
+													increment_var(Temp2) // Temp2 += 1
 													
 											}
-
+											
+											
 
 										} .else bl {
 
@@ -350,7 +323,7 @@ v[4101..4111] = 100000000
 														// set TT2 = v[534] + Temp7
 														val_asg(TT2,v[534])
 														val_add(TT2,Temp7)
-														v[TT2] = v[Temp6] * 1000 + v[AISearch_morton_ptr] + v[4000 + min(victim_UnitType, 11)]
+														v[TT2] = v[Temp6] * 1000 + v[AISearch_morton_ptr] + v[4001 + min(victim_UnitType, 11)]
 
 														Temp6.add N1,2 // v[306..307] += 1
 														
@@ -516,7 +489,7 @@ v[4101..4111] = 100000000
 														
 												}
 
-												// If agent has not been in combat for long time
+												// If agent has not been in combat for a long time
 												@if agent_InCombatTimer <= -5000 { //`v[v[212] + 80] <= -5000 {
 														v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_AIskip // reduce enemy search frequency
 														
@@ -696,14 +669,6 @@ __fn agent_AI_check_current_target {
 	//If the agent has target agent initially
 	@if v[Ptr20] > 0 {
 			//If the unit has cohort order flag
-
-			//Temp8 = Temp16
-			/*
-			@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AICohortGatheringAttack {
-				Temp8 *= 5
-		
-			}
-			*/
 
 			//if the target is set by cohort order, then agent's sight radius is considered 2 times bigger than actual in this process. Besides if the agent has a target already, the sight radius gets halved..
 			Temp8 <<= v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AICohortGatheringAttack ? 1 : 0

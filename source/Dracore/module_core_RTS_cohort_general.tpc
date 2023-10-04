@@ -38,7 +38,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		s[222].on
 		s[223].on
 		
-	    } .else bl {
+			} .else bl {
 		s[222].off
 		s[223].off
 		
@@ -149,7 +149,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		v[Temp13] .div Temp14, 2
 		v[Temp20] .div Temp14, 2
 		//@comment "やっぱりちょっと危険な気がする"
-		@if cohort_CohortType == cohort_CohortType_TYPE_normal {//0 = normalunits
+		@if cohort_CohortType == cohort_CohortType_TYPE_normal { //0 = normalunits
 		    @if s[201] .isOn() {
 					//@comment "Alert and fighting"
 					@if cohort_StanceOrder == 0 {

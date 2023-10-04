@@ -45,10 +45,7 @@ __fn macro_HPSPreg $agent $HP_or_SP $amount{
 cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {   
 	@comment "module_core_RTS_main.tpc"
 
-	// reloading system 
-	@if .rightAfterLoad() {
-		sysfunc_reboot_RTS_after_loading()
-	}
+	// reloading system  -> module_core_RTS_control_camera.tpc
 
 	v[522] = v[2501] == 0 ? -v[522] : v[182] // v[522] = v[2501] == 0 ? 0 : v[522] + v[182]
 	v[ptr_null].copy v[181],4
