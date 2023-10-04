@@ -36,14 +36,12 @@ function devmsg(text) {
 	Cmd.game.log_dev(text);
 };
 
-if (DEBUG < BOOT_MODE_DEVELOPER) { function devmsg(d){}; }; // dummy
 
 // debug log function for debug mode 
 function deblog(text) {
 	console.log(text);
 	Cmd.game.log_debug(text);
 };
-if (DEBUG != BOOT_MODE_DEBUG) { function deblog(d){}; }; // dummy
 
 function errorlog(text) {
 	if (DEBUG != BOOT_MODE_DEBUG){let contx = "ERROR:" + text;console.log(contx);}
@@ -307,6 +305,22 @@ DIS = { // DIS fundamental components
 			if (typeof boot_config == "undefined") {
 				DIS.log.crash(errorlog("DIS boot config file is broken. Please delete $DISGAMEDIR/Config/boot_config.js and restart the game."));
 			} else {
+				// bootmode
+				if (boot_config.bootmode == 1) { // dev mode
+					setv(1265,boot_config.bootmode);
+					DEBUG = BOOT_MODE_DEVELOPER
+					DIS.log.push("Developer mode activated.");
+
+				} else if (boot_config.bootmode == 114514) { // debug mode
+					sets(316,1);
+					setv(1265,boot_config.bootmode);
+					DEBUG = BOOT_MODE_DEBUG
+					DIS.log.push("Debug mode activated.");
+				};
+				if (DEBUG < BOOT_MODE_DEVELOPER) { devmsg = function(d){}; }; // dummy
+				if (DEBUG != BOOT_MODE_DEBUG) { deblog = function(d){}; }; // dummy
+
+
 				// toggle bootconfig settings 
 				DIS.log.push(`Game module:${boot_config.module}`);
 
@@ -327,17 +341,7 @@ DIS = { // DIS fundamental components
 					sets(317,0);
 					DIS.log.push("Autosave deactivated.");
 				}; 				
-				// bootmode
-				if (boot_config.bootmode == 1) { // dev mode
-					setv(1265,boot_config.bootmode);
-					DIS.log.push("Developer mode activated.");
 
-				} else if (boot_config.bootmode == 114514) { // debug mode
-					sets(316,1);
-					setv(1265,boot_config.bootmode);
-					DIS.log.push("Debug mode activated.");
-
-				};
 				
 				// Particle limit
 				let ptcl = Math.min(400,boot_config.particle_amount)
