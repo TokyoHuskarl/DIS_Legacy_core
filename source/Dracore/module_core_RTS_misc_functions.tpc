@@ -115,9 +115,9 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 							@se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
 							@se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
 							@if Current_BGMFile .neq "[Soularflair]We Are Legion(Einherjar)" {
-						v[472] = divmul(100, 100, v[2217])
-						Current_BGMFile .asg "[J.R.S. Schattenberg]Metus(Ruina Imperii)"
-						@bgm.play "[J.R.S. Schattenberg]Metus(Ruina Imperii)" .opt 0, 100, 100, 50
+								v[472] = divmul(100, 100, v[2217])
+								Current_BGMFile .asg "[J.R.S. Schattenberg]Metus(Ruina Imperii)"
+								@bgm.play "[J.R.S. Schattenberg]Metus(Ruina Imperii)" .opt 0, v[472], 100, 50
 						
 							}
 							v[229] = 15
@@ -127,19 +127,19 @@ __fn MAIN_CEV_RTS_FRAME_COUNT {
 							TT1 = 2
 							v[601] = 1
 							@pic[v[1155]].strpic {
-						t[20327]
-						.pos TT1, v[1126] .bottomLeft
-						.size 0, 0                        .chromakey 1
-						.scale 100
-						.trans 30
-						.rgbs 100, 100, 100, 100
-						.font Font_UI, Font_UI_size
-						.spacing 0, 4
-						.skin "" .nobg .noframe .noPadding
-						.mapLayer 8
-						.eraseWhenTransfer
-						.affectedByFlash
-						.affectedByShake
+								t[20327]
+								.pos TT1, v[1126] .bottomLeft
+								.size 0, 0                        .chromakey 1
+								.scale 100
+								.trans 30
+								.rgbs 100, 100, 100, 100
+								.font Font_UI, Font_UI_size
+								.spacing 0, 4
+								.skin "" .nobg .noframe .noPadding
+								.mapLayer 8
+								.eraseWhenTransfer
+								.affectedByFlash
+								.affectedByShake
 							}
 							@call .cev 1925
 							@comment "#######################"
