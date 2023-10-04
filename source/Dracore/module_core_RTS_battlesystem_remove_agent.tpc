@@ -863,9 +863,11 @@ __fn Kill_Agent {
 													// "init"
 													Ptr7 = Ptr6 + 3
 													// "Cost Set"
-													v[Ptr7] += 15
-													@if `victim_AgentBits & 8 {
-															v[Ptr7] -= 45
+													def STATIC_NODE_MOVEMENT_COST_GATE_DIV2 = STATIC_NODE_MOVEMENT_COST_GATE / 2
+													def STATIC_NODE_MOVEMENT_COST_GATE_SUBSUM = STATIC_NODE_MOVEMENT_COST_GATE + STATIC_NODE_MOVEMENT_COST_GATE_DIV2
+													v[Ptr7] += STATIC_NODE_MOVEMENT_COST_GATE_DIV2
+													@if `victim_AgentBits & 8 { // incase it's closed
+															v[Ptr7] -= STATIC_NODE_MOVEMENT_COST_GATE_SUBSUM
 															
 													}
 													// "1"
@@ -888,7 +890,7 @@ __fn Kill_Agent {
 													// "init"
 													Ptr7 = Ptr6 + 3
 													// "Cost Sub"
-													v[Ptr7] -= 24
+													v[Ptr7] -= STATIC_NODE_MOVEMENT_COST_WALL
 													// "1"
 													Ptr6 += v[4564]
 											
@@ -912,7 +914,7 @@ __fn Kill_Agent {
 											// "init"
 											Ptr7 = Ptr6 + 3
 											// "Cost Set"
-											v[Ptr7] -= 5
+											v[Ptr7] -= STATIC_NODE_MOVEMENT_COST
 											// "1"
 											Ptr6 += v[4564]
 												

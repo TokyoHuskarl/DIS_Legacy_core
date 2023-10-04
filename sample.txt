@@ -1,0 +1,122 @@
+#toClip
+#blueprint .db "def_ldb.txt"
+#blueprint .map "def_lmu.txt"
+
+
+/*
+    Steam版 RPG Maker 2003 のサンプルゲーム、
+    「Picture Tutorial」のコモンイベント20を変換したものです
+
+*/
+
+cev[20] "Show Picture Input" {
+
+@comment "
+/-------------------------------------------------/
+// This stores the player input to a temporary
+// variable.
+/-------------------------------------------------/"
+v[7] = v[6]
+@comment "
+/-------------------------------------------------/
+// This variable is for picture ID. 
+// We will go from 101-107 since we have 7 Digits.
+/-------------------------------------------------/"
+v[8] = 101
+@comment "
+/-------------------------------------------------/
+// This sets the coordinates of the pictures.
+/-------------------------------------------------/"
+v[9] = 250
+v[10] = 50
+@comment "
+/-------------------------------------------------/
+// Initiate Loop
+/-------------------------------------------------/"
+@loop .inf() {
+    @comment "
+/-------------------------------------------------/
+// We will now divide the variable's original value
+// and store the remainder on a new variable using
+// the modulus variable command. 
+//
+// For example, number 1337. In order to display it
+// via pictures, we need to be able to take each digit
+// and separate them to 1 (thousands), 3(hundreds), 3(tens), 
+// 7(ones)
+//
+// Mod 10 will take only the rightmost digit, and /10 will 
+// remove the rightmost digit
+/-------------------------------------------------/"
+    @comment "
+// In this picture command, we're using Variable 11
+// as a suffix. If you go to the pictures folder, you 
+// will find files with the name Zahl (German word for number).
+// You will also notice they have numbers like Zahl0, Zahl1, etc.
+// 
+// The purpose of this is so you don't have to create a 
+// long conditional branch to show each number.
+/-------------------------------------------------/"
+    v[11] = v[7]
+    v[11] %= 10
+    @pic[v[8]].show {
+        "Zahl0" .repl 1 v[11]
+        .pos v[9], v[10] .center
+        .chromakey 1
+        .scale 100
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .mapLayer 7
+    }
+    v[7] /= 10
+    v[8] += 1
+    v[9] -= 16
+    @comment "
+/-------------------------------------------------/
+// Break loop once 7 digits are displayed.
+/-------------------------------------------------/"
+    @if v[8] > 107 {
+        @break
+        
+    }
+    
+}
+
+}
+
+
+/*
+    同ゲームのマップイベント(Brian's House -> DIARY)です
+*/
+
+
+mev[1] {
+    "DIARY"
+    .parent 3
+    .pos 15, 4
+}
+
+
+mep[1] {
+    .parent 1
+    .body "", 79
+    .priority .middle
+
+    .ev {
+        @msg.choice {
+            .case "Save" {
+                @sys.call .saveMenu
+                
+            }
+            .case "Load" {
+                @sys.loadMenu
+                
+            }
+            .case "Back" {
+                
+            }
+            .cancel 2
+        }
+    }
+
+}

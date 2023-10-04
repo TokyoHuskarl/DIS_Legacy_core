@@ -3,9 +3,9 @@
 " First Author:	Tokyo Huskarl
 " Last Change:	2023 Jun 3
 " garbage syntax file lmao
-
 " quit when a syntax file was already loaded
-if exists("b:current_syntax")
+
+if exists('b:current_syntax')
   finish
 endif
 
@@ -33,7 +33,7 @@ syn match tpcComment /@comment\s".*"/ contained
 
 syn keyword tpcFunctions cev mev __fn break mep ev
  
-syntax keyword tpcOperator copy sub add mul div muldiv divmul max min asg split cat rem ins exrep rep subs file join extract ToFile inStr
+syntax keyword tpcOperator copy sub add mul div muldiv divmul max min asg split cat rem ins exrep rep subs file join extract ToFile inStr deref
 
 
 " syntax region tpcComment start=/@comment\s"/ end=/"/ 
@@ -100,8 +100,6 @@ highlight link DIS_lang_symbols Character
 highlight link DIS_variables Number 
 highlight link DIS_strings String 
 highlight link DIS_colour Tag 
-
-
 
 
 

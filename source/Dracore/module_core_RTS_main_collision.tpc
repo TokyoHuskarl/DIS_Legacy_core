@@ -452,7 +452,7 @@ __fn macro_ColCheck_push {
 			
 			defv Col_Ptr2AI_routine_bits = __id(Temp33) 
 			@if victim_AgentType == 11 { // pushed by static agent
-				@if agent_MovementOrder > MovementOrder_TYPE_move_ordered {
+				@if agent_MovementOrder > 0 {
 					@if v[v[203]] != agent_TargetAgentID { // NOT target
 						@if victim_TeamID == agent_TeamID { // and it's ally
 							Col_Ptr2AI_routine_bits = Temp1 + 34

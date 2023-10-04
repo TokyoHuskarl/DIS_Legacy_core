@@ -1,0 +1,2588 @@
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ cd ~/2003ManiacsKommentar/Optimization/
+rhomaioi@Dacia:~/2003ManiacsKommentar/Optimization$ l
+bash: l: command not found
+rhomaioi@Dacia:~/2003ManiacsKommentar/Optimization$ ls
+README.md  sokudomemo.md  VariableAndArray.md
+rhomaioi@Dacia:~/2003ManiacsKommentar/Optimization$ rm sokudomemo.md
+rhomaioi@Dacia:~/2003ManiacsKommentar/Optimization$ cd $DIS_APPEND
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ ls
+checkjs.js               def_lmt.txt        Languages   README.md   Reverberation          source    TODO.md                     tpc.vim
+copyalljs.sh             def_lmu.txt        localize    readme.txt  sample.txt             temp.js   tpc.exe                     vimplugin
+CustomUnitTemplate.json  DIS_vimplug.vim    logs        reference   Sdefv_common_vars.vim  temp.txt  TPC_readme_en_improved.txt
+def_ldb.txt              jp_v1.162BETA3.md  PSEUDO_ARG  reply.txt   Sdefv_control.vim      tmp.txt   TPC_readme_en.txt
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git add source/
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git commit -m "something is wrong"
+[colopt be6ee14] something is wrong
+ 2 files changed, 10 insertions(+), 12 deletions(-)
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git che
+checkout      cherry        cherry-pick
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git che
+checkout      cherry        cherry-pick
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git checkout
+BETA3Fix              DIS_Legacy/BETA3Fix   DIS_Legacy/master     HEAD                  master
+colopt                DIS_Legacy/main       FETCH_HEAD            main                  ORIG_HEAD
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git checkout BETA3Fix
+error: Your local changes to the following files would be overwritten by checkout:
+        TODO.md
+Please commit your changes or stash them before you switch branches.
+Aborting
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git add TODO.md
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git commit -m "TODO"
+[colopt 71bbce3] TODO
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git checkout BETA3Fix
+M       Languages/en/lang_quick_strings.txt
+M       Languages/jp/lang_quick_strings.txt
+M       copyalljs.sh
+D       experiment.js
+M       localize/kaogura/DIS_kaoguraTutorial1.txt
+M       localize/strings_en.txt
+M       reference/memo.txt
+M       reference/memofaction.txt
+M       tpc.vim
+Switched to branch 'BETA3Fix'
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ cd
+.git/          Languages/     localize/      logs/          reference/     Reverberation/ source/        vimplugin/
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ cd
+.git/          Languages/     localize/      logs/          reference/     Reverberation/ source/        vimplugin/
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ checkout
+checkjs.js                  .git/                       readme.txt                  source/                     TPC_readme_en.txt
+copyalljs.sh                jp_v1.162BETA3.md           reference/                  temp.js                     tpc.vim
+CustomUnitTemplate.json     Languages/                  reply.txt                   temp.txt                    vimplugin/
+def_ldb.txt                 localize/                   Reverberation/              tmp.txt
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git checkout
+BETA3Fix              DIS_Legacy/BETA3Fix   DIS_Legacy/master     HEAD                  master
+colopt                DIS_Legacy/main       FETCH_HEAD            main                  ORIG_HEAD
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git checkout colopt
+M       Languages/en/lang_quick_strings.txt
+M       Languages/jp/lang_quick_strings.txt
+M       copyalljs.sh
+D       experiment.js
+M       localize/kaogura/DIS_kaoguraTutorial1.txt
+M       localize/strings_en.txt
+M       reference/memo.txt
+M       reference/memofaction.txt
+M       tpc.vim
+Switched to branch 'colopt'
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git diff
+BETA3Fix              DIS_Legacy/BETA3Fix   DIS_Legacy/master     HEAD                  ORIG_HEAD
+colopt                DIS_Legacy/main       FETCH_HEAD            master
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git diff
+BETA3Fix              DIS_Legacy/BETA3Fix   DIS_Legacy/master     HEAD                  ORIG_HEAD
+colopt                DIS_Legacy/main       FETCH_HEAD            master
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git diff colopt
+BETA3Fix              DIS_Legacy/BETA3Fix   DIS_Legacy/master     HEAD                  ORIG_HEAD
+colopt                DIS_Legacy/main       FETCH_HEAD            master
+rhomaioi@Dacia:~/Dropbox/2003/DIS_Legacy/Append$ git diff colopt BETA3Fix
+diff --git a/TODO.md b/TODO.md
+index d86ed0d..67bdafc 100644
+--- a/TODO.md
++++ b/TODO.md
+@@ -1,25 +1,11 @@
+ # メモ
+ v[3401..3600] が解放されたかも
+ v[3601~]をAIサーチテーブルとして使ってるけど、溢れそうだから注意。
+-天帝で敵ユニットがSTATICに触るとパスファインディングしてあれしちゃうのがよくない.きょどうをなおす
+-建物パスファインディングしちゃうと敵と戦おうとしなくなる？
+-未だにAIの検知位置がおかしい（たぶんモートンがおかしい）
+-部隊中心地点の計算もおかしかったことがあった？
+-なんか引き撃ちの操作感が悪い（JS関係なく重い。何？）
+-表示優先順位の設定もなんかおかしい
+-移動フラグもう一回チェックしろ
+-movementorderが不正に変わっていること��ありそう
+�-Iから見える画面の装備表示に欠落がありがちになってる
+-建物のAIが壊れてる
+-マインドブラストが意味なくなってる たぶんfleeの処理がおかしい
+-ベンチマークだとログがばぐってる
+-吹っ飛ばされたあとのAI挙動が変
+-建物から出たときにjsを呼んでないのでばぐる
+
+ # 必要要素
+ 選択システムの再調整
+- - 労働者
+-
++  - 建物との重なりで建物を優先する処理を作らないと滅びる^M
++DrawingにDrawn in screen flagチェックいらない説^M
+ ## 翻訳
+ - ファクション説明の英訳
+ - ボーナスをdeepLにかける？
+@@ -34,40 +20,53 @@ Iから見える画面の装備表示に欠落がありがちになってる
+ - CharSetも消せるのでは..?
+ - Moduleにつっこむ？
+
++## js導入^M
++- js導入開始^M
++^M
+ ### UIビルダ
+ - インプットボックス
+ - プルダウンメニュー
+ - 文字メニュー
+
++- 新規通過点アクション^M
+
+
+ ## 修正
+-- 建物ぶつかったときの経路探索判定がなんか変
+-- 重なってる時絶対押し出すあれも壊れとる <-警戒時も絶対戻ろうとするのが原因と思われる
+-- 到達不能地点へ移動しようとすると無限に経路探索を繰り返してしまう
+-- 前からあるやつ
+-       - 高低差があると選択位置がずれるやつを治す
+-       - セーブ画面でクラッシュする
+-               - セーブ処理が完遂する前に落ちている
+-       - 資源タイルのクリックがちょっとズレる
++- 到達不能地点へ移動しようとすると無限に経路探索を繰り返してしまう^M
++- 前からあるやつ^M
++       - 高低差があると選択位置がずれるやつを治す^M
++       - セーブ画面でクラッシュする^M
++               - セーブ処理が完遂する前に落ちている^M
++       - 金のクリックがちょっとズレる^M
++       - 帝国の崩壊の挙動がおかしい。^M
++       - 兵舎のアップグレードが物故割れるバグ^M
+        - 建物建築の表示が崩れる
+                - 怪しいのは操作周りの変数
+
+ - 新しいやつ
+-       - 操縦モードが壊れとる
+-       - 遅滞防御を押すと選択ができなくなる?
+-       - 装甲騎兵の動きがおかしい。コストもおかしい。
+-               - 装甲騎兵がいると建築時建物の表示がおかしい?
+-       - 建設予定地が消えた?
+-       - マウスの開始位置がおかしいょ
++       - コホート単位での戦闘感知AIが壊れてる?^M
++               - 索敵AIの変更が響いてるかも？^M
++       - 操縦モードが壊れとる^M
++       - チャームが物故割れとる^M
++       - 遅滞防御を押すと選択ができなくなる?^M
++       - 装甲騎兵の動きがおかしい。コストもおかしい。^M
++               - 装甲騎兵がいると建築時建物の表示がおかしい?^M
++       - ゴブリンが半裸の時の見た目がおかしい^M
++       - 刀の表示優先度が壊れてる^M
++       - 建設予定地が消えた?^M
++       - AI挙動がおかしい(持ち替え可能な弓と、騎兵)^M
++       - マウスの開始位置がおかしいょ^M
+
+ - コホート登録を切り替える
+-- 建物建築時にレイトレーシングの関係で変になることある?
++- 建物建築時にレイトレーシングの関係で変になることある^M
+ - ID置き換えが完全一致naってない
++- 破城槌のAIがおかしい^M
++- クラシック島でsaveするとundefinedが出る^M
+ - エンピリオンガードが出ないことがあった？
+-- インタプリタ変数衝突の回避!
++- インタプリタ変数衝突の回避^M
+ - !無理やりチーム限界数以上のユニットを生成しようとすると落ちる
+ - 味方コホートのセットで40体上限を超えると落ちる
++- 説明とLoreの分離^M
+ - 壁にぶち当たったときの処理をどうするのかを決める必要がある
+ - NeedWPtoReachObjがどこで起きてるのかを突き止めて、Main側でチェックするフラグとなりうるようにしないと、敵検索壁ぶつかりからのあれでRayを飛ば
+さない
+ - 予後、アリーナの指示は経路探索中のユニットに出さないようにする?
+@@ -81,26 +80,23 @@ Iから見える画面の装備表示に欠落がありがちになってる
+ - 民間人のもCtrlクリックによる経路探索をするようにする
+
+ ## 要検討
+-- 到達不能だったら？
+ - 労働者の振る舞い
+-- 建築現場にノードの重みもたせる
+-- 弾の当たり判定が消えてない！
++       - 建物で労働者が詰まるのをどうにかする^M
++- 当たり判定が消えてない！^M
+   - 弾の当たり判定が900体以上のユニットの出撃を見込んでいない。
+ - 弾のリファクタリング
+ - 破城槌のアニメ
+ - 経路探索中のユニットの挙動についてよく考えてリメイクしましょう
+ - 壁越しの挙動どうすんの
+   - たどり着けないとあきらめちゃうけど…
++- ソースの整理が必要^M
++  - とりあえずgeneralファイル以外ではcevのセットをしないようにして、まとめられる処理はまとめて一つのファイルで管理するようにする^M
+ - 重心等みてからの指示の際、マップ外が移動先として指定された場合は命令を実行しないように変更..?
+   - 一応やったが、移動指示周りの処理一元化が望ましいため検討する。
+ - Moraleの処理を軽量化できるはず
+ - コリジョンがやっぱり機能してないときがある気がする?
+
+ ## 推定解決
+-- セーブ周りの変数破壊
+-       - 帝国の崩壊の挙動がおかしい。 <- これセーブ周りかも。
+-       - 兵舎のアップグレードが物故割れるバグ <- これセーブ周りかも。
+-- クラシック島でsaveするとundefinedが出る <- たぶん直った？セーブ周りの問題。
+ - A＊のどこかでポインタを破損させることがある Arena11セーブ参照
+   - ポインタの指定がおかしかったのを直した。
+ - アリーナのクラッシュはたぶん経路探索が原因?
+@@ -119,10 +115,6 @@ Iから見える画面の装備表示に欠落がありがちになってる
+ - 専用の領域を割り当ててあげて、経路探索をさらに高速化する
+   - だめです　あんまり効果なさそう
+   - ScaleScriptはNsLibへ統合
+-- AI挙動がおかしい(持ち替え可能な弓と騎兵?)
+-  - AIの重み付け処理がぶっ壊れてました
+-       - コホート単位での戦闘感知AIが壊れてる?
+-               - 索敵AIの変更が響いてるかも？
+
+ ## 雑多
+ - 980まで最大Agent数を上げる
+diff --git a/jp_v1.162BETA3.md b/jp_v1.162BETA3.md
+index 8b705ba..04c8fe9 100644
+--- a/jp_v1.162BETA3.md
++++ b/jp_v1.162BETA3.md
+@@ -62,40 +62,40 @@
+   視界取りと攻城兵器の大切さを学ぶシナリオ……
+   と見せかけて、ユニットパワーの関係で一筋縄ではいかない難度かもしれません。
+ */
+-
+-- 操作の追加
+-  - Ctrlキーを押しながら右クリックでミニマップ指定以外でも経路探索付きの移動指示をできるように。
+-  - Ctrlキーを押しながらの暇な労働者ユニットを呼び出すことで、一括選択ができるように。
+-  - 暇な軍事ユニットの一括選択ができるように（予定）
+-
++^M
++- 操作の追加^M
++  - Ctrlキーを押しながら右クリックでミニマップ指定以外でも経路探索付きの移動指示をできるように。  ^M
++  - Ctrlキーを押しながらの暇な労働者ユニットを呼び出すことで、一括選択ができるように。  ^M
++  - 暇な軍事ユニットの一括選択ができるように（予定）  ^M
++^M
+ - アドバンスドタイルシステム（仮）
+   - 前々から用意していた高度情報等を動的に変更して描画に反映したりマップタイルを細かく書き換えたりできるシステムの試験を開始。
+     すこし重くなるかもしれませんが，BETA版の軽量化度合いがまず凄まじいのでわからないでしょう。
+-
++^M
+ - Java Script制御のUIシステムを試作。
+   速度的な問題及びセーブロード時の諸々を考慮して、RTS中のUIをjsで管理することはできません。
+-  が、それ以外の諸々は、すべて新規UIシステムによって制御されるようになる...予定です。
+-
++  が、それ以外の諸々は、すべて新規UIシステムによって制御されるようになる...予定です。^M
++^M
+ - らくだ騎兵の追加
+   やしおじ様のご厚意によりらくだのスプライトを頂き、駱駝騎兵が実現。
+-  馬よりもさらにパワフルで、砂の上での機動力が高いかわり、当たり判定が縦に長めなため新システムの弓には弱いです。
+-  馬に対する通常攻撃特効効果を持っています(BETA3(9.22版)では表示は出ません)
+-
++  馬よりもさらにパワフルで、砂の上での機動力が高いかわり、当たり判定が縦に長めなため新システムの弓には弱いです。  ^M
++  馬に対する通常攻撃特効効果を持っています(BETA3(9.22版)では表示は出ません)  ^M
++^M
+ - 新勢力をテスト実装。
+   装備の見た目だけ試験的に試せるようになっています。
+-  基本的にモックアップで、試しに遊ぶことができるような完成度ではありません。
++  基本的にモックアップで、試しに遊ぶことができるような完成度ではありません。  ^M
+   ユニット性能も仮置き。
+-  デベロッパー向け。ベータ版以外ではデベロッパーモード（テスト起動）時のみ選択可能になります。
+-
+-### 各論
+-- 帝国
++  デベロッパー向け。ベータ版以外ではデベロッパーモード（テスト起動）時のみ選択可能になります。^M
++^M
++### 各論^M
++- 帝国^M
+   - 帝国の厩舎のR枠に「帝国支援ドロメダリィ」を追加。
+-    今のところは単なるらくだ騎兵の先行実装枠です。
+-
+-## 変更
++    今のところは単なるらくだ騎兵の先行実装枠です。^M
++^M
++## 変更^M
+
+
+-### 総論
++### 総論^M
+   - Maniacs Patchバージョン更新
+     - なんとJava Scriptによる処理を挟むことができるようになりました。
+       これに対応してマップスクリプトはJava Scriptに完全に依拠したものへと抜本的に変更。
+@@ -142,13 +142,13 @@
+       - 命中係数変更については投擲系の武器も影響を受けるため，投槍系武器は補填としてHITボーナスを一律+5，着弾時の当たり判定を1pixel拡大。
+         投げ斧は斧が元々強いのを踏まえて変更なし。むしろ盾に当たりやすくなって好都合かもしれません。
+     - 弾薬システムのリメイク
+-
++^M
+   - 高度システムの変更
+     - より高度の高い位置へ移動する際はSPを消費するように変更。
+       大して変わりませんが，戦闘中しながら高台へ移動しようとするとSPが削れて苦労するかもしれません。
+       特に騎兵はSP消費が激しくなります。起伏のある場所では思わぬ苦戦をするかもしれません。
+       当然ですが飛行ユニットには影響がありません。
+-
++^M
+   - シールドウォールの変更
+     - 性能変更
+       - シールドウォール中のユニットは、正面から飛んでくる矢弾の回避率が非常に高くなるように変更。
+@@ -159,7 +159,7 @@
+       - シールドウォール中のユニットに隣接しているユニットは、矢弾の回避率にボーナスを受けるように変更。
+         両手持ちユニットも微弱ながらシールドウォール効果の恩恵を得ることができるように。
+         オーラ効果の発動如何については別個表示を追加します(予定)。
+-
++^M
+   - 騎兵の変更
+     - スピードボーナスを現在移動速度の8%から10%に変更。段々とある意味極端な存在へ変わってきました。
+       騎兵とは衝撃力の具現化なのです。
+@@ -178,7 +178,7 @@
+         - 「強化改良破城槌」HPを1800->3300、ADを48->50、ARを180->230に変更。
+         - 双方にPerk"Battle Forged"を付与。
+       - その分敵としての出撃数と、生産速度とを減少。
+-
++^M
+        - 内政バランス調整
+
+    - 戦闘バランス調整
+@@ -189,8 +189,7 @@
+          以下は負荷軽減上の理由からの変更です。
+                - 内政研究のうち、荷車シリーズと魔術起重機の効果が微量増加。
+     - 最適地形ボーナスのMS上昇量を+20%->+25%へ増加。
+-               - Perk「深呼吸」の回復効果を15から14へ変更。
+-
++^M
+
+ ### 各論
+
+@@ -218,7 +217,7 @@
+       - スキル「アンブッシュ」を削除。
+           下記の弩の性能変更に伴う調整。
+           数が揃うと凄まじい火力になりますが，どうせすぐ死んでしまうのでこれくらいのほうが面白いのではないでしょうか。
+-
++  ^M
+       - 「三八式歩兵弩」の性能変更
+         - 三回連続で射撃を行うように変更。
+           また一発ごとの射撃SPコストを14->5に変更し，AA必要フレームを4->2に変更。
+@@ -278,7 +277,7 @@
+   - 1fあたりのステップ数上限（内部コマンド実行数上限）をデフォルトの15万程度から300万へ変更。たまに起きていた再現性のない変な挙動はこれで改善
+されるかもしれません。
+   - リスタートボタンを一時的に消去。
+     元々挙動が怪しかったのですが、今回の組み換えで完全に壊れたため。
+-
++^M
+ ## 修正
+ ### v1.161からの修正:
+ - 2019年当時のテキストから変更されていたはずの内容がマップに反映されていなかったのを修正。
+diff --git a/source/.swp b/source/.swp
+deleted file mode 100644
+index 3b7fc4a..0000000
+Binary files a/source/.swp and /dev/null differ
+diff --git a/source/Dracore/module_core_Game_init.tpc b/source/Dracore/module_core_Game_init.tpc
+index c21b46b..9e2d0b7 100644
+--- a/source/Dracore/module_core_Game_init.tpc
++++ b/source/Dracore/module_core_Game_init.tpc
+@@ -32,6 +32,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
+        @comment "module_core_Game_init.tpc"
+
+        ptr_null = 50000000 // This value itself has no meaning, just to get null array from unallocated area to init an array
++       ^M
+
+
+
+@@ -417,6 +418,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
+        v[1276] = 72
+        v[1277] = 148 * 2
+        v[1276] = 92 * 2
++       v[4563] = 10000000^M
+        v[1277] = 148
+        v[1276] = 92
+        v[1282] = v[1001] - 2 - v[1277]
+@@ -494,7 +496,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
+        v[4537] = v[1074] + 64
+        v[4538] = v[4537] + 256
+        v[1079] = v[4538] + 1024
+-       Const_var_save_all_morton_memories = v[1079] - v[1071]
++       Const_var_save_all_morton_memories = v[1079]-v[1071]^M
+        v[0] = v[4547..4553] = [v[1071], v[1072], v[1073], v[1074], v[4537], v[4538]]
+        v[1020] = 20
+        @comment "#四分木用End"
+diff --git a/source/Dracore/module_core_RTS_agent_ai_search.tpc b/source/Dracore/module_core_RTS_agent_ai_search.tpc
+index acfd628..d4a8650 100644
+--- a/source/Dracore/module_core_RTS_agent_ai_search.tpc
++++ b/source/Dracore/module_core_RTS_agent_ai_search.tpc
+@@ -14,10 +14,7 @@ v[4035..4036] = v[205]
+ //Check ground type troops agents all
+
+ // set expanding temp array for copying
+-v[4101] = 100000000
+-v[4101].copy v[4102],29
+-// WITHOUT AEAB, above part is necessarily
+-
++v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily^M
+
+ @while v[v[536]] != 0 {
+                v[212] = v[v[536]] * 300
+@@ -54,6 +51,8 @@ v[4101].copy v[4102],29
+                                                                        // Temp1 = v[212] + 100
+
+                                                                        //team ID % 3
++                                                                       //opt 28.4.23^M
++                                                                       //Temp14 = v[Const_AgentMetaTeam_begin+v[211]] //v[Temp1] % 3^M
+                                                                        __if DIS_EXPERIMENTAL == -1 {
+                                                                                //macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14)
+                                                                                                                get_AEAB_element_wo_ptr(AgentI
+Dholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
+@@ -99,7 +98,7 @@ v[4101].copy v[4102],29
+@@ -32,6 +32,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
+        @comment "module_core_Game_init.tpc"
+
+        ptr_null = 50000000 // This value itself has no meaning, just to get null array from unallocated area to init an array
++       ^M
+
+
+
+@@ -417,6 +418,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
+        v[1276] = 72
+        v[1277] = 148 * 2
+        v[1276] = 92 * 2
++       v[4563] = 10000000^M
+        v[1277] = 148
+        v[1276] = 92
+        v[1282] = v[1001] - 2 - v[1277]
+@@ -494,7 +496,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
+        v[4537] = v[1074] + 64
+        v[4538] = v[4537] + 256
+        v[1079] = v[4538] + 1024
+-       Const_var_save_all_morton_memories = v[1079] - v[1071]
++       Const_var_save_all_morton_memories = v[1079]-v[1071]^M
+        v[0] = v[4547..4553] = [v[1071], v[1072], v[1073], v[1074], v[4537], v[4538]]
+        v[1020] = 20
+        @comment "#四分木用End"
+diff --git a/source/Dracore/module_core_RTS_agent_ai_search.tpc b/source/Dracore/module_core_RTS_agent_ai_search.tpc
+index acfd628..d4a8650 100644
+--- a/source/Dracore/module_core_RTS_agent_ai_search.tpc
++++ b/source/Dracore/module_core_RTS_agent_ai_search.tpc
+@@ -14,10 +14,7 @@ v[4035..4036] = v[205]
+ //Check ground type troops agents all
+
+ // set expanding temp array for copying
+-v[4101] = 100000000
+-v[4101].copy v[4102],29
+-// WITHOUT AEAB, above part is necessarily
+-
++v[4101..4130] = 100000000 // WITHOUT AEAB, this part is necessarily^M
+
+ @while v[v[536]] != 0 {
+                v[212] = v[v[536]] * 300
+@@ -54,6 +51,8 @@ v[4101].copy v[4102],29
+                                                                        // Temp1 = v[212] + 100
+
+                                                                        //team ID % 3
++                                                                       //opt 28.4.23^M
++                                                                       //Temp14 = v[Const_AgentMetaTeam_begin+v[211]] //v[Temp1] % 3^M
+                                                                        __if DIS_EXPERIMENTAL == -1 {
+                                                                                //macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14)
+                                                                                                                get_AEAB_element_wo_ptr(AgentI
+Dholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
+@@ -99,7 +98,7 @@ v[4101].copy v[4102],29
+                                                                                v[534] = v[4579] + (v[1012] + 2) * v[211]
+                                                                                v[v[534]] = 0
+
+-                                                                               agent_UnitEyeSight_for_AgentSearch.copy Temp8,1
++                                                                               Temp8 = agent_UnitEyeSight_for_AgentSearch^M
+
+                                                                                // get sight range root
+                                                                                defv UnitAI_agent_eyesight = 315
+@@ -135,15 +134,15 @@ v[4101].copy v[4102],29
+
+                                                                                }
+
+-                                                                               UnitAI_agent_eyesight.copy v[316],1 // UnitAI_agent_eyesight i
+s v[315]
++                                                                               UnitAI_agent_eyesight.copy v[316],1 // UnitAI_agent_eyesight =
+ v[315]^M
+                                                                                /*@comment "#########################               #2002 Crd-
+>Mort V1V2 reg1               ##########################"*/
+                                                                                agent_RelativeX.copy TT1, 2
+-                                                                               TT1 .sub UnitAI_agent_eyesight,2 // v[341..342] -= UnitAI_agen
+t_eyesight
++                                                                               TT1 .sub Temp8,2 // v[341..342] -= UnitAI_agent_eyesight^M
+                                                                                TT1 .add v[53], 2
+                                                                                TT1 .sub v[76], 2
+                                                                                TT1 .div v[74], 2
+-                                                                               TT1 &= 31 // TT1 = max(TT1, 31)
+-                                                                               TT2 &= 31 // TT2 = max(TT2, 31)
++                                                                               TT1 = max(TT1, 0)^M
++                                                                               TT2 = max(TT2, 0)^M
+
+                                                                                /*@comment "TT1=MortX
+                         TT2=MortY
+@@ -167,12 +166,12 @@ v[4101].copy v[4102],29
+
+                                                                                /*@comment "##########################2002 Crd->Mort V1V2 reg1
+##########################"*/
+                                                                                agent_RelativeX.copy TT1, 2
+-                                                                               TT1 .add UnitAI_agent_eyesight,2 // v[341..342] += UnitAI_agen
+t_eyesight
++                                                                               TT1 .add Temp8,2 // v[341..342] += UnitAI_agent_eyesight^M
+                                                                                TT1 .add v[53], 2
+                                                                                TT1 .sub v[76], 2
+                                                                                TT1 .div v[74], 2
+-                                                                               TT1 &= 31 // TT1 = min(TT1, 31)
+-                                                                               TT2 &= 31 // TT2 = min(TT2, 31)
++                                                                               TT1 = min(TT1, 31)^M
++                                                                               TT2 = min(TT2, 31)^M
+
+                                                                                /*@comment "TT1=MortX
+                                TT2=MortY
+@@ -218,20 +217,21 @@ v[4101].copy v[4102],29
+                                                                                        @if LEGS_Common_Switch5 .isOn() { // NOT EXPERIMENTAL
+                                                                                        //@if `v[agent_AI_routine_bits] & 7 { // EXPERIMENTAL
+                                                                                                        @doWhile v[Temp2] != 0 {
++                                                                                                                       ^M
+
+                                                                                                                        Temp1 = v[Temp2] * 300
+
+                                                                                                                        val_add(Temp1,N4700) /
+/ Temp1 += 4700
+-                                                                                                                       calc_victim_distance_a
+nd_camo_to_Temp4(Temp1)
++                                                                                                                       v[Temp1].copy address_
+victim_buffer_head, agent_Basic_Array_size^M
++                                                                                                                       agent_RelativeX.copy T
+emp4, 2^M
++                                                                                                                       Temp4 .sub victim_Rela
+tiveX, 2^M
++                                                                                                                       Temp4 .mul Temp4, 2^M
++                                                                                                                       v[Temp6] = Temp4 + Tem
+p5^M
++                                                                                                                       v[Temp6].add victim_Pr
+ocessCamoValue,1 // v[Temp6] += victim_ProcessCamoValue^M
+
+-                                                                                                                       @if Temp4 < Temp8 {
+-                                                                                                                                       ptr_as
+g(Temp6,Temp4) // set the value to v[Temp6]
+-
+-                                                                                                                                       // set
+ TT2 = v[534] + Temp7
+-                                                                                                                                       val_as
+g(TT2,v[534])
+-                                                                                                                                       val_ad
+d(TT2,Temp7)
+-                                                                                                                                       v[TT2]
+ = v[Temp6] * 1000 + v[Temp2] + v[4000 + min(victim_UnitType, ClassType_Amount)]
+
+-                                                                                                                                       Temp6.
+add N1,2 // v[306..307] += 1
++                                                                                                                       @if v[Temp6] < Temp8 {
+^M
++                                                                                                                                       v[v[53
+4] + Temp7] = v[Temp6] * 1000 + v[Temp2] + v[4000 + min(victim_UnitType, ClassType_Amount)]^M
++                                                                                                                                       v[306]
+.add N1,2 // v[306..307] += 1^M
+
+                                                                                                                        }
+
+@@ -244,18 +244,20 @@ v[4101].copy v[4102],29
+                                                                                                        @doWhile v[Temp2] != 0 {
+                                                                                                                        Temp1 = v[Temp2] * 300
+
+                                                                                                                        val_add(Temp1,N4700) /
+/ Temp1 += 4700
+-                                                                                                                       calc_victim_distance_a
+nd_camo_to_Temp4(Temp1)
+-                                                                                                                       @if Temp4 < Temp8 {
+-                                                                                                                               ptr_asg(Temp6,
+Temp4) // set the value to v[Temp6]
+-
+-                                                                                                                               // TT1 = v[534
+] + Temp7
+-                                                                                                                               val_asg(TT1,v[
+534])
+-                                                                                                                               val_add(TT1,Te
+mp7)
+-
+-                                                                                                                               v[TT1] = v[Tem
+p6] * 1000
+-                                                                                                                               v[TT1].add v[T
+emp2],1 // v[TT1] += v[Temp2]
+-                                                                                                                               Temp6.add N1,2
+ // v[306..307] += 1
+-
++                                                                                                                       v[Temp1].copy address_
+victim_buffer_head, agent_Basic_Array_size^M
++                                                                                                                       agent_RelativeX.copy T
+emp4, 2^M
++                                                                                                                       Temp4 .sub victim_Rela
+tiveX, 2^M
++                                                                                                                       Temp4 .mul Temp4, 2^M
++                                                                                                                       v[Temp6] = Temp4 + Tem
+p5^M
++                                                                                                                       v[Temp6].add victim_Pr
+ocessCamoValue,1^M
++^M
++                                                                                                                       @if v[Temp6] < Temp8 {
+^M
++                                                                                                                                       TT1 =
+v[534] + Temp7^M
++                                                                                                                                       v[TT1]
+ = v[Temp6] * 1000^M
++                                                                                                                                       v[TT1]
+ += v[Temp2]^M
++                                                                                                                                       v[306]
+.add N1,2 // v[306..307] += 1^M
++                                                                                                                                       // v[3
+06..307] += 1^M
++                                                                                                                                       ^M
+                                                                                                                        }
+
+                                                                                                                        increment_var(Temp2) /
+/ Temp2 += 1
+@@ -274,57 +276,70 @@ v[4101].copy v[4102],29
+                                                                                                TT6 = TT2 >> TT5
+                                                                                                //@comment "#mask end"
+
+-                                                                                               TT5 /= 2 // >>= 1 // TT5 /= 2
+-                                                                                               defv AISearch_morton_ptr = __id(Temp12)
+-                                                                                               AISearch_morton_ptr = v[4546 - TT5] + TT6 * v[
+1004] // morton agent list head
++                                                                                               TT5 >>= 1 // TT5 /= 2^M
++                                                                                               v[340] = v[4546 - TT5] + TT6 * v[1004] // mort
+on agent list head^M
+                                                                                                v[327] = v[v[4552 - TT5] + TT6] // morton agen
+t list length
+                                                                                                Temp33 = [1, 0, -2][Temp14]
+                                                                                                Temp6 = 3601
+
+-                                                                                               @loop v[327] {
+-                                                                                                               // AISearch_morton_ptr = v[340
+] + Temp10
+-                                                                                                               // val_add(AISearch_morton_ptr
+,v[340])
++                                                                                               @loop v[327] .dst Temp12 { // .dst Temp 10 {^M
++                                                                                                               // Temp12 = v[340] + Temp10^M
++                                                                                                               val_add(Temp12,v[340])^M
+
+                                                                                                                __if DIS_EXPERIMENTAL == -1 {
+-                                                                                                                       macro_get_agent_MetaTe
+am_into_var(v[AISearch_morton_ptr],TT1) // AEBA
++                                                                                                                       macro_get_agent_MetaTe
+am_into_var(v[Temp12],TT1) // AEBA^M
+                                                                                                                }.else bl {
+-                                                                                                                       TT1 = Const_AgentMetaT
+eam_beginMINUSONE + v[AISearch_morton_ptr]
+-
++                                                                                                                       TT1 = Const_AgentMetaT
+eam_beginMINUSONE + v[Temp12]^M
+                                                                                                                }
+
+                                                                                                                // @if  agent_TeamID == TT1 {
+// EXPERIMENTAL - IF YOU USE AEBA
+                                                                                                                @if  Temp33 == v[TT1] { // NOT
+ EXPERIMENTAL - WITHOUT AEBA
+
+-                                                                                                                               Temp1 = v[AISe
+arch_morton_ptr] * v[1117]
+-                                                                                                                               val_add(Temp1,
+N4700) // Temp1 += 4700
+-                                                                                                                               calc_victim_di
+stance_and_camo_to_Temp4(Temp1)
+-
+-                                                                                                                               @if Temp4 < Te
+mp8 { // in agent sight
+-
+        ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
++                                                                                                                               Temp11 = v[Tem
+p12] * v[1117] ^M
++                                                                                                                               val_add(Temp11
+,N4700) // Temp11 += 4700^M
++                                                                                                                               v[Temp11].copy
+ address_victim_buffer_head, agent_Basic_Array_size^M
++                                                                                                                               agent_Relative
+X.copy Temp4, 2^M
++                                                                                                                               Temp4 .sub vic
+tim_RelativeX, 2^M
++                                                                                                                               Temp4 .mul Tem
+p4, 2^M
++                                                                                                                               v[Temp6] = Tem
+p4 + Temp5^M
++                                                                                                                               ptr_add(Temp6,
+victim_ProcessCamoValue) // v[Temp6] += victim_ProcessCamoValue^M
++^M
++                                                                                                                               @if v[Temp6] <
+ Temp8 {^M
++
+        v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp12] + v[4000 + min(victim_UnitType, ClassType_Amount)]^M
++
+        Temp6.add N1,2 // v[306..307] += 1^M
++
+        ^M
++                                                                                                                               }^M
+
+-
+        // set TT2 = v[534] + Temp7
+-
+        val_asg(TT2,v[534])
+-
+        val_add(TT2,Temp7)
+-
+        v[TT2] = v[Temp6] * 1000 + v[AISearch_morton_ptr] + v[4000 + min(victim_UnitType, ClassType_Amount)]
++                                                                                                                               /*^M
++                                                                                                                               Temp11 = v[Tem
+p12] * v[1117] ^M
++                                                                                                                               Temp11 += 4700
+^M
++                                                                                                                               v[Temp9].copy
+Temp4, 2^M
++                                                                                                                               Temp1 = Temp11
+ + 7^M
++                                                                                                                               Temp4 .sub v[T
+emp1], 2^M
++                                                                                                                               Temp4 .mul Tem
+p4, 2^M
++                                                                                                                               v[Temp6] = Tem
+p4 + Temp5 + v[Temp11 + 276]^M
++                               ^M
+
+-
+        Temp6.add N1,2 // v[306..307] += 1
++                                                                                                                               @if v[Temp6] <
+ Temp8 {^M
++                                                                                                               // Temp12 = v[340] + Temp10^M
++                                                                                                               val_add(Temp12,v[340])^M
+
+                                                                                                                __if DIS_EXPERIMENTAL == -1 {
+-                                                                                                                       macro_get_agent_MetaTe
+am_into_var(v[AISearch_morton_ptr],TT1) // AEBA
++                                                                                                                       macro_get_agent_MetaTe
+am_into_var(v[Temp12],TT1) // AEBA^M
+                                                                                                                }.else bl {
+-                                                                                                                       TT1 = Const_AgentMetaT
+eam_beginMINUSONE + v[AISearch_morton_ptr]
+-
++                                                                                                                       TT1 = Const_AgentMetaT
+eam_beginMINUSONE + v[Temp12]^M
+                                                                                                                }
+
+                                                                                                                // @if  agent_TeamID == TT1 {
+// EXPERIMENTAL - IF YOU USE AEBA
+                                                                                                                @if  Temp33 == v[TT1] { // NOT
+ EXPERIMENTAL - WITHOUT AEBA
+
+-                                                                                                                               Temp1 = v[AISe
+arch_morton_ptr] * v[1117]
+-                                                                                                                               val_add(Temp1,
+N4700) // Temp1 += 4700
+-                                                                                                                               calc_victim_di
+stance_and_camo_to_Temp4(Temp1)
+-
+-                                                                                                                               @if Temp4 < Te
+mp8 { // in agent sight
+-
+        ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
++                                                                                                                               Temp11 = v[Tem
+p12] * v[1117] ^M
++                                                                                                                               val_add(Temp11
+,N4700) // Temp11 += 4700^M
++                                                                                                                               v[Temp11].copy
+ address_victim_buffer_head, agent_Basic_Array_size^M
++                                                                                                                               agent_Relative
+X.copy Temp4, 2^M
++                                                                                                                               Temp4 .sub vic
+-                                                                                                                               val_add(Temp1,
+N4700) // Temp1 += 4700
+-                                                                                                                               calc_victim_di
+stance_and_camo_to_Temp4(Temp1)
+-
+-                                                                                                                               @if Temp4 < Te
+mp8 { // in agent sight
+-
+        ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
++                                                                                                                               Temp11 = v[Tem
+p12] * v[1117] ^M
++                                                                                                                               val_add(Temp11
+,N4700) // Temp11 += 4700^M
++                                                                                                                               v[Temp11].copy
+ address_victim_buffer_head, agent_Basic_Array_size^M
++                                                                                                                               agent_Relative
+X.copy Temp4, 2^M
++                                                                                                                               Temp4 .sub vic
+tim_RelativeX, 2^M
++                                                                                                                               Temp4 .mul Tem
+p4, 2^M
++                                                                                                                               v[Temp6] = Tem
+p4 + Temp5^M
++                                                                                                                               ptr_add(Temp6,
+victim_ProcessCamoValue) // v[Temp6] += victim_ProcessCamoValue^M
++^M
++                                                                                                                               @if v[Temp6] <
+ Temp8 {^M
++
+        v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp12] + v[4000 + min(victim_UnitType, ClassType_Amount)]^M
++
+        Temp6.add N1,2 // v[306..307] += 1^M
++
+        ^M
++                                                                                                                               }^M
+
+-
+        // set TT2 = v[534] + Temp7
+-
+        val_asg(TT2,v[534])
+-
+        val_add(TT2,Temp7)
+-
+        v[TT2] = v[Temp6] * 1000 + v[AISearch_morton_ptr] + v[4000 + min(victim_UnitType, ClassType_Amount)]
++                                                                                                                               /*^M
++                                                                                                                               Temp11 = v[Tem
+p12] * v[1117] ^M
++                                                                                                                               Temp11 += 4700
+^M
++                                                                                                                               v[Temp9].copy
+Temp4, 2^M
++                                                                                                                               Temp1 = Temp11
+ + 7^M
++                                                                                                                               Temp4 .sub v[T
+emp1], 2^M
++                                                                                                                               Temp4 .mul Tem
+p4, 2^M
++                                                                                                                               v[Temp6] = Tem
+p4 + Temp5 + v[Temp11 + 276]^M
++                               ^M
+
+-
+        Temp6.add N1,2 // v[306..307] += 1
++                                                                                                                               @if v[Temp6] <
+ Temp8 {^M
++
+        v[v[534] + Temp7] = v[Temp6] * 1000 + v[Temp12] + v[4001 + min(v[Temp1 + 95], ClassType_Amount)]^M
++
+        v[306..307] += 1^M
+
+
+                                                                                                                                }
++                                                                                                                               */^M
+
+                                                                                                                }
+-                                                                                                               increment_var(AISearch_morton_
+ptr)
+                                                                                                }
+                                                                                }
+
+-                                                                               //Has more than 16 enemies in the search radius
++                               //Has more than 16 enemies in the search radius^M
+                                                                                @if Temp7 >= 16 {
+-                                                                                       //set next search skip flag
+-                                                                                       v[agent_AI_routine_bits] |= agent_AAType == 0 ? AI_rou
+tine_bits_FLAG_AIskip : 0 //v[v[212] + 103] == 0 ? 2097152 : 0
+-                                                                                       //break the flag
+-                                                                                       v[agent_AI_routine_bits] &= -129 //~128
+-
++                       //set next search skip flag ^M
++                                                                                               v[agent_AI_routine_bits] |= agent_AAType == 0
+? AI_routine_bits_FLAG_AIskip : 0 //v[v[212] + 103] == 0 ? 2097152 : 0^M
++                                                                                               //break the flag^M
++                       v[agent_AI_routine_bits] &= -129 //~128^M
++                                                                                               ^M
+                                                                                } .else bl {
+-                                                                                               //found none in the radius
++                       //found none in the radius^M
+                                                                                                @if Temp7 == 0 {
+
+                                                                                                        agent_AI_check_current_target()
+@@ -449,7 +464,6 @@ v[4101].copy v[4102],29
+                                                                                                Temp7 = 0
+
+                                                                                }
+-
+                                                                                Temp6 = 0
+                                                                                TT1 = v[534] + v[1012]
+                                                                                Temp6.copy v[TT1], 2
+@@ -459,6 +473,7 @@ v[4101].copy v[4102],29
+
+                                                                                                @if agent_StanceOrder == 3 { //`v[v[212] + 241
+] == 3 {
+                                                                                                                @if agent_MovementOrder != -2
+{ //`v[v[212] + 242] != -2 {
++                               // ?^M
+                                                                                                                                @if agent_MilP
+ixMoveOrderedPointDist > 11000 { //`v[v[212] + 23] > 11000 {
+
+        v[v[212] + 245] = 0
+
+
+@@ -496,7 +511,7 @@ v[4101].copy v[4102],29
+
+                        Ptr1 = v[v[536]] * 300
+                        val_add(Ptr1,N4701) // Ptr1 += 4701
+-                       v[Ptr1].copy agent_AgentType,300
++                       v[Ptr1].copy agent_ObjectType,300^M
+
+                        @if agent_ActionTimer <= 0 {
+                                agent_ActionTimer = v[1195] //init ActionTimer
+@@ -542,7 +557,7 @@ v[4101].copy v[4102],29
+                                        }
+
+                                }
+-                               agent_AgentType.copy v[Ptr1],300
++                               agent_ObjectType.copy v[Ptr1],300^M
+                        }
+                        increment_var(v[536]) // v[536] += 1
+
+@@ -570,39 +585,47 @@ v[4101].copy v[4102],29
+                                                        v[299] = v[212] + 241 // ?
+                                                        Temp1 = v[212] + 100
+
+-                                                       __if DIS_EXPERIMENTAL == -1 {
+-                                                               macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEBA
+-                                                       }.else bl {
+-                                                               Temp14 = Const_AgentMetaTeam_begin + v[211]
+-                                                               Temp14.deref Temp14,1
+-                                                       }
++                                               __if DIS_EXPERIMENTAL == -1 {^M
++                                                       macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEBA^M
++                                               }.else bl {^M
++                                                       Temp14 = Const_AgentMetaTeam_begin + v[211]^M
++                                                       Temp14.deref Temp14,1^M
++                                               }^M
+
+                                                        // a naru.
+                                                        Temp2 = 4031 + Temp14
+                                                        Temp2.deref Temp2,1
+-                                                       Temp2.copy Temp7,1 // Temp7 = Temp2
++                                                       Temp2.copy Temp7,1^M
++                                                       // Temp7 = Temp2^M
+                                                        Temp8 = 4034 + Temp14
+                                                        // Temp8 = v[4034 + Temp14]
+                                                        Temp8.deref Temp8,1
++                                                       // v[4001..4030] = 0^M
+                                                        v[ptr_null].copy v[4001],30
+
+                                                        Temp7 = 0
+
++                                                       // v[3401..3600] = 999999999^M
+
+                                                        v[534] = v[4579] + (v[1012] + 2) * v[211]
+                                                        v[v[534]] = 0
+
+-                                                       Temp6 = 3601 // deploy v[3601] 'n check it
+                                                        @doWhile v[Temp2] != 0 {
++                                                                       Temp6 = Temp7 + 3601 // deploy v[3601] 'n check it^M
+                                                                        Temp1 = v[Temp2] * 300
+-                                                                       val_add(Temp1,N4700) // Temp1 += 4700
+-                                                                       calc_victim_distance_and_camo_to_Temp4(Temp1)
+-                                                                       @if Temp4 < agent_UnitEyeSight_for_AgentSearch { // kore teki huesugit
+ara bagurun to tyauw
+-                                                                                       ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
++                                                                       val_add(Temp1,N4701) // Temp1 += 4701^M
++                                                                       Temp1.copy address_victim_buffer_head, agent_Basic_Array_size^M
++                                                                       v[350] = agent_AgentType^M
++                                                                       agent_RelativeX.copy Temp4, 2^M
++                                                                       Temp4 .sub victim_RelativeX, 2^M
++                                                                       Temp4 .mul Temp4, 2^M
++                                                                       v[Temp6] = Temp4 + Temp5 ^M
++                                                                       v[Temp6] += victim_ProcessCamoValue^M
++                                                                       @if v[Temp6] < agent_UnitEyeSight_for_AgentSearch { // kore teki huesu
+gitara bagurun to tyauw^M
+                                                                                        TT1 = v[534] + Temp7
+                                                                                        v[TT1] = v[Temp6] * 1000
+-                                                                                       v[TT1].add v[Temp2],1
+-                                                                                       Temp6.add N1,2
++                                                                                       v[TT1] += v[Temp2]^M
++                                                                                       Temp7 += 1^M
+
+                                                                        }
+                                                                        increment_var(Temp2) // Temp2 += 1
+@@ -663,13 +686,17 @@ __fn agent_AI_check_current_target {
+                        Temp8 <<= v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AICohortGatheringAttack ? 1 : 0
+
+                        //Try checking if current target is in sight radius
+-                       Temp1 = v[Ptr20] * v[1117]
+-                       val_add(Temp1,N4700) // Temp11 += 4700
+-                       calc_victim_distance_and_camo_to_Temp4(Temp1)
+-
+-                       @if Temp4 < Temp8 {
++                       Temp11 = v[Ptr20] * v[1117] ^M
++                       val_add(Temp11,N4700) // Temp11 += 4700^M
++                       v[Temp11].copy address_victim_buffer_head, agent_Basic_Array_size^M
++^M
++                       agent_RelativeX.copy Temp4, 2^M
++                       Temp4 .sub victim_RelativeX, 2^M
++                       Temp4 .mul Temp4, 2^M
++                       v[Temp6] = Temp4 + Temp5^M
++                       v[Temp6] += victim_ProcessCamoValue^M
++                       @if v[Temp6] < Temp8 {^M
+                                        //and if it's in the agent's sight, let it keep following to the target.
+-                                       ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
+                                        TT1 = v[534] + Temp7
+                                        v[TT1] = v[Temp6] * 1000
+                                        v[TT1].add v[Ptr20],1 // v[TT1] += v[Ptr20]
+@@ -683,11 +710,5 @@ __fn agent_AI_check_current_target {
+        }
+ }
+
+-__fn calc_victim_distance_and_camo_to_Temp4 $ptrToHead {
+-       v[$ptrToHead].copy address_victim_buffer_head, agent_Basic_Array_size
+-       agent_RelativeX.copy Temp4, 2
+-       Temp4 .sub victim_RelativeX, 2
+-       Temp4 .mul Temp4, 2
+-       val_add(Temp4,Temp5)
+-       val_add(Temp4,victim_ProcessCamoValue)
+-}
++
++
+diff --git a/source/Dracore/module_core_RTS_agent_generate_basic.tpc b/source/Dracore/module_core_RTS_agent_generate_basic.tpc
+index 22d48fb..e4a56a1 100644
+--- a/source/Dracore/module_core_RTS_agent_generate_basic.tpc
++++ b/source/Dracore/module_core_RTS_agent_generate_basic.tpc
+@@ -1580,20 +1580,20 @@ __fn func_generate_agent_finish_set {
+
+            }
+            @comment "####################EyeSight####################"
+-           agent_UnitEyeSight_for_AgentSearch = max(v[1019], pow(v[717] / 1000, 2))
++           v[830] = max(v[1019], pow(v[717] / 1000, 2))^M
+
+
+            // Agent eyesight for minimap fow check
+
+            @if `between(agent_UnitType, 104, 105) {
+-                               @comment "In sight?"
+-                               v[0] = s[2001 + ptr_SpawnAgentMainSpace_Head] = 1
++               @comment "In sight?"^M
++               v[0] = s[2001 + ptr_SpawnAgentMainSpace_Head] = 1^M
+
+            }
+
+            @comment "Civilians have better AI eyesight in order to find constcrution site"
+            @if agent_UnitType == 9 {
+-                               agent_UnitEyeSight_for_AgentSearch *= 2
++               v[830] *= 2^M
+
+            }
+
+@@ -1677,10 +1677,10 @@ __fn func_generate_agent_finish_set {
+                // abolished
+                vname[4806], "ConstAgentRootSightArrayHead"
+                __if DIS_EXPERIMENTAL == -1 {
+-                       reg2 = sqrt(agent_UnitEyeSight_for_AgentSearch, 1)
++                       reg2 = sqrt(v[830], 1)^M
+                        set_AEAB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_BaseSight_Root)
+                } .else bl {
+-                       v[v[4806] + ptr_SpawnAgentMainSpace_Head] = sqrt(agent_UnitEyeSight_for_AgentSearch, 1)
++                       v[v[4806] + ptr_SpawnAgentMainSpace_Head] = sqrt(v[830], 1)^M
+                }
+
+                @comment "avoid false data"
+@@ -1767,7 +1767,7 @@ __fn func_generate_agent_finish_set {
+
+                    __if DIS_EXPERIMENTAL == -2 { // even if AEAB command bug in MP itself is solved, this part won't return, since the tradi
+tional way below (what in else block) is faster
+                            // EyeSightForminimaps const =62500
+-                           reg2 = min(agent_UnitEyeSight_for_AgentSearch / 31250, 6)
++                           reg2 = min(v[830] / 31250, 6)^M
+                            // "#Cavs  have better sight"
+                            @if `between(agent_UnitType, 1, 2) {
+                                                reg2 += 1
+@@ -1790,7 +1790,7 @@ __fn func_generate_agent_finish_set {
+
+                    }.else bl { // this is faster
+                            @comment "EyeSightForminimaps const =62500"
+-                           v[v[4528] + ptr_SpawnAgentMainSpace_Head] = min(agent_UnitEyeSight_for_AgentSearch / 31250, 6)
++                           v[v[4528] + ptr_SpawnAgentMainSpace_Head] = min(v[830] / 31250, 6)^M
+                            @comment "#Cavs  have better sight"
+                            @if `between(agent_UnitType, 1, 2) {
+                                v[v[4528] + ptr_SpawnAgentMainSpace_Head] += 1
+diff --git a/source/Dracore/module_core_RTS_cohort_general.tpc b/source/Dracore/module_core_RTS_cohort_general.tpc
+index f1ccd88..d91d853 100644
+--- a/source/Dracore/module_core_RTS_cohort_general.tpc
++++ b/source/Dracore/module_core_RTS_cohort_general.tpc
+@@ -80,58 +80,58 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
+                    v[Ptr1].copy agent_ObjectType, 300 //extract data
+                    //@comment "Have max hp?"
+                    @if agent_TeamID == 0 {
+-                                       @if `agent_Cohort_ID == TT20 + 1 {
+-                                                       @if agent_MaxHP >= 1 {
+-                                                               Temp2 += 1
+-                                                               //@comment "Get current HP"
+-                                                               Temp3 += agent_MaxHP
+-                                                               @if agent_ObjectType >= 1 {
+-                                                                               Temp4 += agent_HP
+-                                                                               @if agent_Morale < 3 {
+-                                                                                       Temp14 += 1
+-                                                                                       //Temp16 = Temp1 + 26
+-                                                                                       v[Temp13] .add agent_MapX, 2
+-                                                                                       //Temp16 = Temp1 + 7
+-                                                                                       v[Temp20] .add agent_RelativeX, 2
+-                                                                                       @if s[201] .isOff() {
+-                                                                                                       @if agent_StanceOrder == 0 {
+-                                                                                                               @if agent_TargetAgentID > 0 {
+-                                                                                                                               v[330] = agen
+t_TargetAgentID
+-                                                                                                                               v[331] = v[33
+0] * 300
+-                                                                                                                               //@comment "i
+s enemy"
+-                                                                                                                               @if `v[v[331]
+ + 4800] % 3 == 1 {
+-                                                                                                                                       @if `
+v[v[331] + 4960] != 3 {
+-
+                s[201].on
+-
+
+-                                                                                                                                       }
+-                                                                                                                                       v[Coh
+ortArrayPtr + 4] |= cohort_StateFlag_FLAG_fighting
+-
+-                                                                                                                               } .else bl {
+-                                                                                                                               }
+-
+-                                                                                                               }
+-
+-                                                                                                       }
+-
+-                                                                                       }
+-
+-                                                                               }
+-
+-                                                               }
+-
++                       @if `agent_Cohort_ID == TT20 + 1 {^M
++                           @if agent_MaxHP >= 1 {^M
++                               Temp2 += 1^M
++                               //@comment "Get current HP"^M
++                               Temp3 += agent_MaxHP^M
++                               @if agent_ObjectType >= 1 {^M
++                                   Temp4 += agent_HP^M
++                                   @if agent_Morale < 3 {^M
++                                       Temp14 += 1^M
++                                       //Temp16 = Temp1 + 26^M
++                                       v[Temp13] .add agent_MapX, 2^M
++                                       //Temp16 = Temp1 + 7^M
++                                       v[Temp20] .add agent_RelativeX, 2^M
++                                       @if s[201] .isOff() {^M
++                                           @if agent_StanceOrder == 0 {^M
++                                               @if agent_TargetAgentID > 0 {^M
++                                                   v[330] = agent_TargetAgentID^M
++                                                   v[331] = v[330] * 300^M
++                                                   //@comment "is enemy"^M
++                                                   @if `v[v[331] + 4800] % 3 == 1 {^M
++                                                       @if `v[v[331] + 4960] != 3 {^M
++                                                           s[201].on^M
++                                                           ^M
+                                                        }
++                                                       v[CohortArrayPtr + 4] |= cohort_StateFlag_FLAG_fighting^M
+
+-                                       } .else bl {
+-                                                       //@comment "not the same cohort"
+-                                                       v[v[202]] = 0
+-                                                       s[202].on
+-
++                                                   } .else bl {^M
++                                                   }^M
++                                                   ^M
++                                               }^M
++                                               ^M
++                                           }^M
++                                           ^M
+                                        }
+
++                                   }^M
++                                   ^M
++                               }^M
++                               ^M
++                           }^M
++                           ^M
++                       } .else bl {^M
++                           //@comment "not the same cohort"^M
++                           v[v[202]] = 0^M
++                           s[202].on^M
++                           ^M
++                       }^M
++                       ^M
+                    } .else bl {
+-                                       //@comment "not my team"
+-                                       v[v[202]] = 0
+-                                       s[202].on
++                       //@comment "not my team"^M
++                       v[v[202]] = 0^M
++                       s[202].on^M
+
+                    }
+                    v[202] += 1
+@@ -151,49 +151,49 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
+                //@comment "やっぱりちょっと危険な気がする"
+                @if cohort_CohortType == cohort_CohortType_TYPE_normal {//0 = normalunits
+                    @if s[201] .isOn() {
+-                                       //@comment "Alert and fighting"
+-                                       @if cohort_StanceOrder == 0 {
+-                                                       @if v[330] > 0 {
+-                                                               v[202] = PlayerSelectList_Size * TT20
+-                                                               v[202] += v[4524]
+-                                                               @while v[v[202]] != 0 .dst var10 {
+-                                                                               @if var10 >= PlayerSelectList_Size {
+-                                                                                       @break
+-
+-                                                                               }
+-                                                                               Temp1 = v[v[202]] * 300
+-                                                                               Temp1 += v[1005] - 300
+-                                                                               Ptr1 = Temp1 + 1
+-                                                                               v[Ptr1].copy agent_ObjectType, 300 //extract data
+-                                                                               @if agent_ObjectType >= 1 {
+-                                                                                       @if agent_MovementOrder <= 2 {
+-                                                                                                       @if agent_StanceOrder == 0 {
+-                                                                                                               //enemy searched and still id
+le
+-                                                                                                               @if `agent_AI_routine_bits &
+AI_routine_bits_FLAG_IdleAfterEnemySearch {
+-                                                                                                                               @if agent_Lef
+tWPtoChase < 1 {
+-                                                                                                                                       agent
+_AgentBits |= 1048576
+-                                                                                                                                       agent
+_TargetAgentID = v[330]
+-                                                                                                                                       agent
+_AI_routine_bits |= 128
+-                                                                                                                                       agent
+_AI_routine_bits &= -65//~64
+-                                                                                                                               }
+-
+-                                                                                                               }
+-
+-                                                                                                       }
+-
+-                                                                                       }
+-
+-                                                                               }
+-                                                                               agent_ObjectType.copy v[Ptr1], 300//save alle :D
+-                                                                               v[202] += 1
+-
+-                                                               }
+-
++                       //@comment "Alert and fighting"^M
++                       @if cohort_StanceOrder == 0 {^M
++                           @if v[330] > 0 {^M
++                               v[202] = PlayerSelectList_Size * TT20 ^M
++                               v[202] += v[4524]^M
++                               @while v[v[202]] != 0 .dst var10 {^M
++                                   @if var10 >= PlayerSelectList_Size {^M
++                                       @break^M
++                                       ^M
++                                   }^M
++                                   Temp1 = v[v[202]] * 300 ^M
++                                   Temp1 += v[1005] - 300^M
++                                   Ptr1 = Temp1+1^M
++                                   v[Ptr1].copy agent_ObjectType, 300 //extract data^M
++                                   @if agent_ObjectType >= 1 {^M
++                                       @if agent_MovementOrder <= 2 {^M
++                                           @if agent_StanceOrder == 0 {^M
++                                               //enemy searched and still idle^M
++                                               @if `agent_AI_routine_bits & 64 {^M
++                                                   @if agent_LeftWPtoChase < 1 {^M
++                                                       agent_AgentBits |= 1048576^M
++                                                       agent_TargetAgentID = v[330]^M
++                                                       agent_AI_routine_bits |= 128^M
++                                                       agent_AI_routine_bits &= -65//~64^M
++                                                   }^M
++                                                   ^M
++                                               }^M
+
+-                                                       }
+-
++                                           }^M
++                                           ^M
+                                        }
+
++                                   }^M
++                                   agent_ObjectType.copy v[Ptr1], 300//save alle :D^M
++                                   v[202] += 1^M
++                                   ^M
++                               }^M
++                               ^M
++                               ^M
++                           }^M
++                           ^M
++                       }^M
++                       ^M
+                    } .else bl {
+                        //@comment "Fighting end"
+                        @if `cohort_StateFlag & cohort_StateFlag_FLAG_fighting {
+@@ -210,13 +210,13 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
+                                    Temp1 += v[1005] - 300
+                                    Temp1.copy Address_agent_array_head, 300 //extract data
+                                    @if agent_ObjectType >= 1 {
+-                                                       @if agent_Morale < 3 {
+-                                                                       @if agent_MovementOrder > 1 {
+-                                                               s[202].on
+-
+-                                                                       }
+-
+-                                                       }
++                                       @if agent_Morale < 3 {^M
++                                           @if agent_MovementOrder > 1 {^M
++                                               s[202].on^M
++                                               ^M
++                                           }^M
++                                           ^M
++                                       }^M
+
+                                    }
+                                    v[202] += 1
+diff --git a/source/Dracore/module_core_RTS_main.tpc b/source/Dracore/module_core_RTS_main.tpc
+index a1949be..9a5abbc 100644
+--- a/source/Dracore/module_core_RTS_main.tpc
++++ b/source/Dracore/module_core_RTS_main.tpc
+@@ -1676,7 +1676,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
+                                                //v[v[842]] = -1
+                                                agent_MovementOrder = -1
+                                                agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
+-                                               agent_AgentBits &= -129 //~128
++                                               agent_AgentBits &= -129//~128^M
+
+                                }
+
+@@ -1684,7 +1684,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
+                                @if `agent_AgentBits & AgentBits_Endpoint_Collision_Trouble {
+                                                //Ptr14 = Temp1 + 22
+                                                @if `(v[2501] / 6 % (agent_ObjectCollideSkipFrame << 4)) == 0 { // "* 16" -> "<< 4"
+-                                                       agent_AgentBits |= AgentBits_Movement_Giveup
++                                               agent_AgentBits |= AgentBits_Movement_Giveup^M
+
+                                                }
+
+@@ -1721,7 +1721,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
+
+            // "Check flee end "
+                        // if it's not fleeing anymore, then reset movement order
+-                       agent_MovementOrder = agent_MovementOrder == 11 && (agent_ProcessObjBit & BaseObjBit_FLAG_Fleeing) ? 0 : agent_Moveme
+ntOrder
++                       agent_MovementOrder = agent_MovementOrder == 11 && (agent_ProcessObjBit & BaseObjBit_FLAG_Fleeing) ? agent_MovementOr
+der : 0 ^M
+
+                        /*
+                        @if agent_MovementOrder == 11 {
+@@ -2093,9 +2093,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
+            //Set tile instants begin
+                //Use Temp2 as ptr to maptile
+                Temp2 = Const_save_var_TileFlags + agent_TileLink
+-               // v[Temp2] |= v[Temp2] & FLAG_Maptile_Occupied ? FLAG_Maptile_Crowded : FLAG_Maptile_Occupied //set occupied flag
+-               def CrowdedANDOccupied = 3
+-               v[Temp2] |= ((v[Temp2] & CrowdedANDOccupied) << 1) | FLAG_Maptile_Occupied // ? FLAG_Maptile_Crowded : FLAG_Maptile_Occupied
+//set occupied flag
++               v[Temp2] |= v[Temp2] & FLAG_Maptile_Occupied ? FLAG_Maptile_Crowded : FLAG_Maptile_Occupied //set occupied flag^M
+                @if agent_TacticsOrderFlag > 0 {
+                        @if `agent_TacticsOrderFlag & 6 { //using shieldwall
+                                @if `!(agent_ProcessObjBit & 67108864) { //can use shield
+diff --git a/source/Dracore/module_core_RTS_main_collision.tpc b/source/Dracore/module_core_RTS_main_collision.tpc
+index 29895df..84f6c93 100644
+--- a/source/Dracore/module_core_RTS_main_collision.tpc
++++ b/source/Dracore/module_core_RTS_main_collision.tpc
+@@ -121,13 +121,13 @@ __fn MAIN_CEV_RTS_COLLISION_MANAGER { // ->
+                                //@comment "Even Normal Units Collision "
+                                v[536] = v[4532]
+                                @while v[v[536]] != 0 {
+-                                       v[401] = v[v[536]] - 1
+-                                       Temp1 = v[401] * v[1117]
+-                                       Temp1 += 5000
+-                                       //@comment "#Col"
+-                                       ColCheck()
+-                                       //@comment "++"
+-                                       v[536] += 4
++                       v[401] = v[v[536]] - 1^M
++                       Temp1 = v[401] * v[1117] ^M
++                       Temp1 += 5000^M
++                       //@comment "#Col"^M
++                       ColCheck()^M
++                       //@comment "++"^M
++                       v[536] += 4^M
+
+                                }
+
+@@ -330,14 +330,11 @@ __fn ColCheck {
+
+
+                                //experimental
+-                               Col_Ptr2AgentBits.deref TT4,1
+                                Ptr5 = Const_save_var_TileFlags + v[632]
+                                @if `v[Ptr5] & FLAG_Maptile_Crowded {
+                                        // shuffling too much size array causes lag so set limitation on the max num
+                                        TT1 = min(v[327],8) // changed 16 -> 8
+                                        v[v[339]].shuffle TT1
+-                                       def KILLDISCP = ~AgentBits_Discipline_Col
+-                                       TT4 &= KILLDISCP
+                                }
+
+                                //v[203] = Ptr
+@@ -346,7 +343,7 @@ __fn ColCheck {
+
+                                // set pointer for push
+                                Ptr19 = Temp1 + 15
+-                               @if `TT4 & AgentBits_Discipline_Col { // the agent has discipline?
++                               @if `v[Col_Ptr2AgentBits] & AgentBits_Discipline_Col { // the agent has discipline?^M
+
+                                                // if so
+                                                Temp10 = agent_TeamID % 3
+@@ -365,7 +362,12 @@ __fn ColCheck {
+
+                                                                macro_ColCheck_distance()
+
+-                                                               macro_ColCheck_push()
++                                                               @if `v[322] + v[337] >= abs(victim_RelativeX) {^M
++                                                                       @if `v[323] + v[338] >= abs(victim_RelativeY) {^M
++                                                                               macro_ColCheck_push()^M
++                                                                       }^M
++                                                                       ^M
++                                                               }^M
+
+                                                        }
+                                                        increment_var(v[203]) // v[203] += 1 //++
+@@ -379,8 +381,13 @@ __fn ColCheck {
+
+                                                                macro_ColCheck_distance()
+
+-                                                               macro_ColCheck_push()
++                                                               @if `v[322] + v[337] >= abs(victim_RelativeX) {^M
++                                                                       @if `v[323] + v[338] >= abs(victim_RelativeY) {^M
++                                                                               macro_ColCheck_push()^M
+
++                                                                       }^M
++                                                                       ^M
++                                                               }^M
+
+                                                        }
+                                                        increment_var(v[203]) // v[203] += 1 //++
+@@ -409,6 +416,12 @@ __fn ColCheck {
+
+
+ __fn macro_ColCheck_distance {
++       /*^M
++       Temp20 = v[v[203]] * 300^M
++       Temp20 += 4707^M
++       v[Temp20].copy Temp20,2^M
++       Temp20.sub v[607],2^M
++       */^M
+
+        victim_AgentType = v[v[203]] * 300
+        val_add(victim_AgentType,N4701) // victim_AgentType += 4701
+@@ -427,45 +440,39 @@ __fn macro_ColCheck_distance {
+                v[322] += v[v[203]] * 2
+                v[v[322]].copy v[322],2
+        }
+-
+-       v[322].add v[337],2
++^M
+        //func_devlog("\v[\v[203]]: \v[322] \v[323] \Temp20 \v[321]")
+
+ }
+
+ __fn macro_ColCheck_push {
+-       v[324] = abs(victim_RelativeX)
+-       @if v[322] >= v[324] {
+-               v[325] = abs(victim_RelativeY)
+-               @if v[323] >= v[325] {
+-                       // if the agents are in the completely same coordinate
+-                       @if victim_RelativeX == 0 {
+-                               @if victim_RelativeY == 0 {
+-                                       // then push it to random direction
+-                                       victim_RelativeX = rnd(-2,2)
+-                                       victim_RelativeY = rnd(-2,2)
+-                               }
+-                       }
+-                       def TileCrowdedANDtooMany = 6
+-                       v[__id(victim_RelativeX)..__id(victim_RelativeY)] *= (v[527 + (((v[Col_Ptr2AgentBits] | ((agent_MoveTypeBIts & MoveTy
+peBits_Horse && agent_InCombatTimer > 0) << 8)) & 256) >> 8)]) - ((v[Ptr5] & TileCrowdedANDtooMany) << 8) // if it's Crowded, push more
+-                       v[Ptr19] .add victim_RelativeX, 2
+-
+-                       defv Col_Ptr2AI_routine_bits = __id(Temp33)
+-                       @if victim_AgentType == 11 { // pushed by static agent
+-                               @if agent_MovementOrder > MovementOrder_TYPE_move_ordered {
+-                                       @if v[v[203]] != agent_TargetAgentID { // NOT target
+-                                               @if victim_TeamID == agent_TeamID { // and it's ally
+-                                                       Col_Ptr2AI_routine_bits = Temp1 + 34
+-                                                       def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_1s
+ecDelay_PF
+-                                                       v[Col_Ptr2AI_routine_bits] |= agent_LeftWPtoChase > 0 ? Col_AIFLAG_PFandSkip : AI_rou
+tine_bits_FLAG_PATHFINDING
+
+-                                               }
+-                                       }
++       // if the agents are in the completely same coordinate^M
++       @if victim_RelativeX == 0 {^M
++               @if victim_RelativeY == 0 {^M
++                       // then push it to random direction^M
++                       victim_RelativeX = rnd(-2,2) ^M
++                       victim_RelativeY = rnd(-2,2)^M
++               }^M
++       }^M
++^M
++       v[__id(victim_RelativeX)..__id(victim_RelativeY)] *= (v[527 + (((v[Col_Ptr2AgentBits] | (agent_MoveTypeBIts & MoveTypeBits_Horse && a
+gent_InCombatTimer > 0 ? 256 : 0)) & 256) >> 8)]) + ((v[Ptr5] & FLAG_Maptile_Crowded) >> 1) // if it's Crowded, push more^M
++       v[Ptr19] .add victim_RelativeX, 2^M
++       ^M
++       defv Col_Ptr2AI_routine_bits = __id(Temp33) ^M
++       @if victim_AgentType == 11 { // pushed by static agent^M
++               @if agent_MovementOrder > MovementOrder_TYPE_move_ordered {^M
++                       @if v[v[203]] != agent_TargetAgentID { // NOT target^M
++                               @if victim_TeamID == agent_TeamID { // and it's ally^M
++                                       Col_Ptr2AI_routine_bits = Temp1 + 34^M
++                                       def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_1secDelay_PF^M
++                                       v[Col_Ptr2AI_routine_bits] |= agent_LeftWPtoChase > 0 ? Col_AIFLAG_PFandSkip : AI_routine_bits_FLAG_P
+ATHFINDING^M
++^M
+                                }
+                        }
+-
+-                       v[Col_Ptr2AgentBits] |= AgentBits_Collided_Other_Agent
+-                       @break
+                }
+        }
++^M
++       v[Col_Ptr2AgentBits] |= AgentBits_Collided_Other_Agent^M
++       @break^M
+ }
+diff --git a/source/Dracore/module_core_RTS_main_land_agent_behavior.tpc b/source/Dracore/module_core_RTS_main_land_agent_behavior.tpc
+index feaa423..d4b2dcc 100644
+--- a/source/Dracore/module_core_RTS_main_land_agent_behavior.tpc
++++ b/source/Dracore/module_core_RTS_main_land_agent_behavior.tpc
+@@ -9,6 +9,8 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
+ __fn RTS_MAIN_LAND_AGENT_1f {
+
+            v[401] = v[v[536]] - 1
++           //v[301] = v[401] * v[1117] ^M
++           //v[301] += 5001^M
+
+            Ptr1 = v[401] * v[1117]
+            val_add(Ptr1,N5001) // Ptr1 += 5001
+@@ -33,68 +35,67 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+            TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+            TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+            TT2 = (TT2 | TT2 << 2) & 0x33333333
+-           TT1 |= ((TT2 | TT2 << 1) & 0x55555555) << 1
+-                       TT1 &= 1023 // mask with b1111111111 for safety, by this, TT1 is always between 0~1023.
++           TT2 = ((TT2 | TT2 << 1) & 0x55555555) << 1^M
++           //@comment "yは1bitシフトで終わり"^M
++           //@comment "最後にTT1 OR TT2"^M
++           TT1 = TT1 | TT2^M
++^M
++               @if TT1 >= 0 {  // safety!^M
++                       @if TT1 <= 1023 {       // safety!^M
++                               //@comment "モートン座標を記録しおえたよ^M
++                               //次はリストに登録するよ^M
++                               //TT3=カウンター^M
++                               //TT2=ポインター"^M
++                               agent_Morton = TT1^M
++                               //@comment "#ルート空間だよ"^M
++                               TT2 = v[1067] + v[v[1071]]^M
++                               v[TT2] = v[v[536]]^M
++                               v[v[1071]] += 1^M
+
+-                       //@comment "モートン座標を記録しおえたよ
+-                       //次はリストに登録するよ
+-                       val_asg(agent_Morton,TT1) // agent_Morton = TT1
+-                       //@comment "#ルート空間だよ"
+-                       TT2 = v[1067] + v[v[1071]]
+-                       v[v[536]].copy v[TT2],1 // v[TT2] = v[v[536]]
+-                       ptr_add(v[1071],N1) // v[v[1071]] += 1
+-
+-
+-                       // forth mort dim ~ fifth mort dim
+-                       v[4537].copy var4, 2
+-
+-                       //@comment "#第5空間だよ
+-                       //0~1023"
+-                       val_add(var5,TT1) // var5 += TT1
+-                       v[TT1 * Const_save_var_Agents_Limit + v[4535] + v[var5]] = v[v[536]]
+-
+-                       v[var5].add N1,1 // v[var5] += 1
+-
+-                       //@comment "#第四空間だよ
+-                       //0~255"
+-                       TT1.shr N2,1 // TT1 >>= 2
+-                       val_add(var4,TT1) // var4 += TT1
+-
+-                       v[TT1 * Const_save_var_Agents_Limit + v[4534] + v[var4]] = v[v[536]]
+-                       v[var4].add N1,1 // v[var4] += 1
+-
+-
+-                       // first mort dim ~ third mort dim
+-                       v[1072].copy reg1, 3
+-
+-                       //@comment "#第三空間だよ
+-                       //0~63"
+-                       TT1.shr N2,1 // TT1 >>= 2
+-                       val_add(reg3,TT1) // reg3 += TT1
+-
+-                       v[TT1 * Const_save_var_Agents_Limit + v[1070] + v[reg3]] = v[v[536]]
+-                       v[reg3].add N1,1 // v[reg3] += 1
+-
+-
+-
+-                       //@comment "#第二空間だよ
+-                       //0~15"
+-                       TT1.shr N2,1 // TT1 >>= 2
+-                       //v[343] = v[1073] + TT1
+-                       val_add(reg1,TT1) // reg2 += TT1
+-                       v[TT1 * Const_save_var_Agents_Limit + v[1069] + v[reg2]] = v[v[536]]
+-                       v[reg2].add N1,1 // v[reg2] += 1
+-
+-                       //@comment "#第一空間だよ
+-                       //0~3"
+-                       TT1.shr N2,1 // TT1 >>= 2
+-                       //v[343] = v[1072] + TT1
+-                       val_add(reg1,TT1) // reg1 += TT1
+-                       v[TT1 * Const_save_var_Agents_Limit + v[1068] + v[reg1]] = v[v[536]]
+-                       v[reg1].add N1,1 // v[reg1] += 1
+-
+-                       //@comment "モートン座標関係はこれで終わり"
++                               ^M
++                               // forth mort dim ~ fifth mort dim^M
++                               v[4537].copy var4, 2^M
++                               //@comment "#第5空間だよ^M
++                               //0~1023"^M
++                               val_add(var5,TT1) // var5 += TT1^M
++                               v[TT1 * Const_save_var_Agents_Limit + v[4535] + v[var5]] = v[v[536]]^M
++                               v[var5].add N1,1 // v[var5] += 1^M
++                               //@comment "#第四空間だよ^M
++                               //0~255"^M
++                               TT1 >>= 2^M
++                               val_add(var4,TT1) // var4 += TT1^M
++                               v[TT1 * Const_save_var_Agents_Limit + v[4534] + v[var4]] = v[v[536]]^M
++                               v[var4].add N1,1 // v[var4] += 1^M
++^M
++                               // first mort dim ~ third mort dim^M
++                               v[1072].copy reg1, 3^M
++                               //@comment "#第三空間だよ^M
++                               //0~63"^M
++                               TT1 >>= 2^M
++                               //v[343] = v[1074] + TT1^M
++                               val_add(reg3,TT1) // reg3 += TT1^M
++                               v[TT1 * Const_save_var_Agents_Limit + v[1070] + v[reg3]] = v[v[536]]^M
++                               v[reg3].add N1,1 // v[reg3] += 1^M
++^M
++                               //@comment "#第二空間だよ^M
++                               //0~15"^M
++                               TT1 >>= 2^M
++                               //v[343] = v[1073] + TT1^M
++                               val_add(reg1,TT1) // reg2 += TT1^M
++                               v[TT1 * Const_save_var_Agents_Limit + v[1069] + v[reg2]] = v[v[536]]^M
++                               v[reg2].add N1,1 // v[reg2] += 1^M
++^M
++                               //@comment "#第一空間だよ^M
++                               //0~3"^M
++                               TT1 >>= 2^M
++                               //v[343] = v[1072] + TT1^M
++                               val_add(reg1,TT1) // reg1 += TT1^M
++                               v[TT1 * Const_save_var_Agents_Limit + v[1068] + v[reg1]] = v[v[536]]^M
++                               v[reg1].add N1,1 // v[reg1] += 1^M
++                               //@comment "モートン座標関係はこれで終わり"^M
+
++                       }^M
++               }^M
+
+            // Auto Attack Process
+            @if Is_Paused .isOff() { //optimizing 26.4.23
+@@ -125,8 +126,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+
+            __if DIS_EXPERIMENTAL == 1 {
+                    // Kill walking flag
+-                               def Main_KILLActionFlag_FLAG_Walking = ~ActionFlag_FLAG_Walking
+-                   agent_ActionFlag &= Main_KILLActionFlag_FLAG_Walking
++                   agent_ActionFlag &= ~ActionFlag_FLAG_Walking^M
+            }
+
+            // Check if the agent is in dash or KnockBack state
+@@ -134,8 +134,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+
+                                // Setting up target agent pointer - this might be dangerous since even if Target is 0 Ptr8 can be used.
+                                // You need to check all procs around Ptr8 in this meta function
+-                               victim_AgentType = agent_TargetAgentID * 300
+-                               val_add(victim_AgentType,N4701) // victim_AgentType += 4701
++                               Ptr8 = agent_TargetAgentID * 300^M
++                               victim_AgentType = Ptr8 + 4701^M
+                                v[victim_AgentType].copy victim_AgentType,102
+
+                                @if agent_TargetAgentID >= 1 { // Has target
+@@ -196,8 +196,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+
+                                                                //@comment "#指定Objが存在しない"
+                                                                agent_AgentBits |= AgentBits_FLAG_DirChange_skip
+-                                                               def Main_KILLAI_routine_bits_FLAG_AIskip = ~AI_routine_bits_FLAG_AIskip
+-                                                               agent_AI_routine_bits &= Main_KILLAI_routine_bits_FLAG_AIskip //~2097152
++                                                               agent_AI_routine_bits &= ~AI_routine_bits_FLAG_AIskip //~2097152^M
+
+                                                                //@comment "if AA Timer <1"
+                                                                //@comment "#攻撃指令モードであれば、その場で警戒モードに移行"
+@@ -206,21 +205,21 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+                                                                        agent_StanceOrder = ORD_MANU
+
+                                                                                } .else bl {
+-                                                                                       agent_HoldPointX.copy agent_MovePointX, 2
+-                                                                                       agent_StanceOrder = ORD_AGG
+-                                                                                       //@comment "Set searching for enemy flag"
+-                                                                                       agent_AgentBits |= agent_AgentBits & AgentBits_FLAG_E
+nableCivAI ? 0 : AgentBits_FLAG_EnableBasicAI
+-
++                                                                       agent_HoldPointX.copy agent_MovePointX, 2^M
++                                                                       agent_StanceOrder = ORD_AGG^M
++                                                                       //@comment "Set searching for enemy flag"^M
++                                                                       agent_AgentBits |= agent_AgentBits & AgentBits_FLAG_EnableCivAI ? 0 :
+ AgentBits_FLAG_EnableBasicAI^M
++                                                                       ^M
+                                                                                }
+
+                                                                }
+
+                                                                //@comment "#WPを使ってOBJにたどり着こうとしていた"
+                                                                @if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
+-                                                                       v[1301].copy v[643], 13
+-                                                                       agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj //~16777216 Agent
+Bits_FLAG_NeedWpToReachObj
+-                                                                       agent_AI_routine_bits &= ~AI_routine_bits_FLAG_COMPOUND_PF_and_PFcont
+inue //
+-
++                                                                               v[1301].copy v[643], 13^M
++                                                                               agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj //~167772
+16 AgentBits_FLAG_NeedWpToReachObj^M
++                                                                               agent_AI_routine_bits &= ~AI_routine_bits_FLAG_COMPOUND_PF_an
+d_PFcontinue // ^M
++                                                                               ^M
+                                                                }
+
+                                                                @if agent_AttackFrame <= 0 {
+@@ -241,11 +240,11 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+
+                                                                                                        } .else bl {
+                                                                                                                @if agent_StanceOrder == ORD_
+DEF {
+-                                                                                                                       //@comment "#防御モー
+ドor have Waypoint であれば、HoldPointへ戻る#"
+-                                                                                                                       agent_HoldPointX.copy
+ agent_MovePointX, 2
+-                                                                                                                       agent_ActionFlag |= 1
+-                                                                                                                       agent_MovementOrder =
+ MovementOrder_TYPE_move_ordered
+-
++                                                                                                                               //@comment "#
+防御モードor have Waypoint であれば、HoldPointへ戻る#"^M
++                                                                                                                               agent_HoldPoi
+ntX.copy agent_MovePointX, 2^M
++                                                                                                                               agent_ActionF
+lag |= 1^M
++                                                                                                                               agent_Movemen
+tOrder = MovementOrder_TYPE_move_ordered^M
++                                                                                                                               ^M
+                                                                                                                }
+
+                                                                                                        }
+@@ -253,8 +252,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+                                                                                        }
+
+                                                                                } .else bl {
+-                                                                                       agent_HoldPointX.copy agent_MovePointX, 2
+-                                                                                       agent_MovementOrder = MovementOrder_TYPE_move_ordered
++                                                                       agent_HoldPointX.copy agent_MovePointX, 2^M
++                                                                       agent_MovementOrder = MovementOrder_TYPE_move_ordered^M
+
+                                                                                }
+
+@@ -306,6 +305,15 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+            //v[300] = v[301] + 23
+            agent_MilPixMoveOrderedPointDist = sqrt(Temp4, 1000)
+            //v[318] = agent_MilPixMoveOrderedPointDist
++^M
++           // #############^M
++           // ここ配列操作で高速化可能^M
++           // #############"^M
++^M
++           //v[300] = v[301] + 22^M
++           //v[622] = (v[622] * TT2 + v[310] * 100000 / v[318]) / (TT2 + 1)^M
++           //v[300] = v[301] + 21^M
++           //v[621] = (v[621] * TT2 + v[309] * 100000 / v[318]) / (TT2 + 1)^M
+
+                // -> relocated to walking pro
+                defv relX_sub_TargX_saved = 351
+@@ -330,7 +338,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+                                                        v[340] -= agent_AAType == 0 || agent_worker_JobType == 6 ? v[335] : 0
+
+                                                        // @comment "If the target is construction site"
+-                                                       v[340] -= victim_UnitType == 104 ? victim_Width << 10 : 0 // Width * 1024 : 0
++                                                       v[340] -= victim_UnitType == 104 ? victim_Width * 1250 : 0^M
+                                                        @if v[340] <= TT1 {
+                                                                @if v[340] >= TT2 {
+                                                                        // @comment "#WPを使ってOBJにたどり着こうとしていた"
+@@ -346,9 +354,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+                                                                        // @comment "Not casting skill"
+                                                                        @if `(agent_ActionState >= 4 || agent_AATimer > 0) != 1 {
+                                                                                        // @comment "AAタイマー見る"
+-                                                                                       val_asg(agent_ActionState,N1) // agent_ActionState =
+1
++                                                                                       agent_ActionState = 1^M
+                                                                                        /* This part does affect game speed. */
+-                                                                                       agent_AATimer = agent_AACost > agent_SP && !(agent_Ex
+MotionFlags & ExMotionFlags_FLAG_no_fatigue) ? AA_WAIT_FPSx2 : AA_WAIT_FPSx1
++                                                                                       agent_AATimer = v[721] > agent_SP && agent_ExMotionFl
+ags & 2048 ? AA_WAIT_FPSx2 : AA_WAIT_FPSx1^M
+
+                                                                        }
+
+@@ -428,8 +436,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+
+                                                                                }
+
+-                                                                               def Main_KILLAgentBits_FLAG_PF_walldetection_switch = ~AgentB
+its_FLAG_PF_walldetection_switch
+-                                                                               agent_AgentBits &= Main_KILLAgentBits_FLAG_PF_walldetection_s
+witch // kill wall detection flag
++                                                                               agent_AgentBits &= ~AgentBits_FLAG_PF_walldetection_switch //
+ kill wall detection flag^M
+
+                                                                                // If the agent has no WP anymore
+                                                                                @if agent_LeftWPtoChase == 0 {
+@@ -454,49 +461,49 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+
+                                                                        // Already reached or something
+                                                                        @if Reaching_Target_Way_Point .isOff() {
+-                                                                               agent_AI_routine_bits &= -49153 // ~49152
+-                                                                               agent_AgentBits &= -37748737 // ~37748736 // (4194304 + 33554
+432)
+-                                                                               agent_Direction = (cos(agent_MarchingDirection, 1000, -100) +
+ 200) / 200
+-                                                                               LEGS_MAIN_Agent_tries_to_stop.on
+-
+-                                                                               @if `!(agent_AgentBits & AgentBits_Collided_Other_Agent) {
+-                                                                                       //@comment "防御"
+-                                                                                       @if agent_StanceOrder == ORD_DEF {
+-                                                                                               //@comment "地点に戻った"
+-                                                                                               agent_ActionFlag &= -2 //~1
+-                                                                                               agent_LeftWPtoChase = -2
+-                                                                                               agent_MovementOrder = MovementOrder_TYPE_retu
+rned
+-
+-                                                                                       } .else bl {
+-                                                                                       //@comment "待機"
+-                                                                                       agent_MovementOrder = agent_StanceOrder == 1 ? -2 : -
+1
+-
+-                                                                                       }
++                                                                       agent_AI_routine_bits &= -49153 // ~49152^M
++                                                                       agent_AgentBits &= -37748737 // ~37748736 // (4194304 + 33554432)^M
++                                                                       agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) /
+200^M
++                                                                       LEGS_MAIN_Agent_tries_to_stop.on^M
+
++                                                                       @if `!(agent_AgentBits & AgentBits_Collided_Other_Agent) {^M
++                                                                               //@comment "防御"^M
++                                                                               @if agent_StanceOrder == ORD_DEF {^M
++                                                                               //@comment "地点に戻った"^M
++                                                                               agent_ActionFlag &= -2 //~1^M
++                                                                               agent_LeftWPtoChase = -2^M
++                                                                               agent_MovementOrder = MovementOrder_TYPE_returned^M
++                                                                               ^M
+                                                                                } .else bl {
+-                                                                                       //@comment "Got Collision Problem"
+-                                                                                       agent_AgentBits |= AgentBits_Endpoint_Collision_Troub
+le
+-                                                                                       //@comment "Stop Forcemove"
+-                                                                                       agent_MovementOrder -= agent_MovementOrder == Movemen
+tOrder_TYPE_prioritize_moving ? 1 : 0
++                                                                               //@comment "待機"^M
++                                                                               agent_MovementOrder = agent_StanceOrder == 1 ? -2 : -1^M
++^M
+                                                                                }
+-
++^M
++                                                                       } .else bl {^M
++                                                                               //@comment "Got Collision Problem"^M
++                                                                               agent_AgentBits |= AgentBits_Endpoint_Collision_Trouble^M
++                                                                               //@comment "Stop Forcemove"^M
++                                                                               agent_MovementOrder -= agent_MovementOrder == MovementOrder_T
+YPE_prioritize_moving ? 1 : 0^M
++                                                                       }^M
++                                                                       ^M
+                                                                        }
+
+                                                        } .else bl {
+                                                                        //
+                                                                        def Collided_And_GiveupMove = AgentBits_Collided_Other_Agent + AgentB
+its_Movement_Giveup
+                                                                        @if `!(agent_AgentBits & Collided_And_GiveupMove) {
+-                                                                               // at least move order is given
+-                                                                               @if agent_MovementOrder <= MovementOrder_TYPE_do_not_move {
+-                                                                                               // stance is Def or Standby
+-                                                                                               @if `agent_StanceOrder == ORD_DEF || agent_St
+anceOrder == ORD_STD {
+-                                                                                                       LEGS_MAIN_Agent_tries_to_stop.off
+-                                                                                                       agent_MovementOrder = MovementOrder_T
+YPE_moving
+-
+-                                                                                               }
+-
+-                                                                               }
++                                                               // at least move order is given^M
++                                                               @if agent_MovementOrder <= MovementOrder_TYPE_do_not_move {^M
++                                                                               // stance is Def or Standby^M
++                                                                               @if `agent_StanceOrder == ORD_DEF || agent_StanceOrder == ORD
+_STD {^M
++                                                                                       LEGS_MAIN_Agent_tries_to_stop.off^M
++                                                                                       agent_MovementOrder = MovementOrder_TYPE_moving^M
+
++                                                                               }^M
++                                                                               ^M
++                                                               }^M
++                                                               ^M
+                                                                        }
+
+                                                        }
+@@ -509,7 +516,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+                                //@comment "とまる"
+                                @if agent_MovementOrder <= -1 {
+                                                LEGS_MAIN_Agent_tries_to_stop.on
+-                                               agent_ActionFlag |= ActionFLag_FLAG_Hold_direction
++                                               agent_ActionFlag |= 1^M
+                                                //@comment "hovering"
+                                                @if `agent_AgentBits & AgentBits_Hovering {
+                                                        agent_ForceSprite = ForceSprite_MOVE // hovering animation
+@@ -525,20 +532,14 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+
+                                        // calc Vector
+                                        TT2 = agent_AgentBits & AgentBits_Inertia ? 9 : 2 // (agent_ExMotionFlags & agent_ExMotionFlags_FLAG_
+horseback ? 4 : 2)
+-                                       TT2.copy TT3,1 // copy to TT3
+-
+-                                       agent_MoveUvectorX.mul TT2,2 // v[621..622] *= TT2
+-
++                                       v[621..622] *= TT2^M
+                                        // Attention - v[351] = relX_sub_TargX_saved
+                                        defv relY_sub_TargY_saved= __id(relX_sub_TargX_saved) + 1
+                                        // muldiv is slower than lower past proc, but in this case you need to use this in order to avoid var
+ overflow
+                                        v[351..352] *= 100000
+                                        v[351..352] /= agent_MilPixMoveOrderedPointDist
+                                        agent_MoveUvectorX .add relX_sub_TargX_saved, 2
+-
+-                                       // v[621..622] /= TT2 + 1
+-                                       TT2.add N1,2
+-                                       agent_MoveUvectorX.div TT2,2
++                                       v[621..622] /= TT2 + 1^M
+
+                                }
+
+@@ -646,8 +647,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+            Temp11.copy var1,2
+            var1.sub v[69],2
+
+-           val_asg(Temp17,var2) // Temp17 = var2 // Save Temp12 - v[70] to Temp17
+-           val_asg(Temp18,var1) // Temp18 = var1 // Save Temp11 - v[69] to Temp18
++           Temp17 = var2 // Save Temp12 - v[70] to Temp17^M
++           Temp18 = var1 // Save Temp11 - v[69] to Temp18^M
+
+            TT1 = var2 * var_Map_Width
+            v[632] = var1 + TT1//map point saved
+@@ -695,7 +696,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+
+                        v[315] = Temp13 / 20
+                        v[315] += v[314] / 20
+-                       val_mod(v[315],N2) // v[315] %= 2
++                       v[315] %= 2^M
+
+                        @if Is_Paused .isOff() {
+
+@@ -770,7 +771,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+                                        agent_MilPixX.add var1,1 // agent_MilPixX += var1
+
+                                        } .else bl {
+-                                               agent_MilPixVx = divmul(agent_MilPixVx, TT2, TT1)
++                                       agent_MilPixVx = divmul(agent_MilPixVx, TT2, TT1)^M
+
+                                        }
+                                        //@comment "#カメラずらして"
+@@ -882,13 +883,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+                                                                //@comment "+[Const描画ymax]"
+                                                                s[v[348]].on
+                                                                agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
+-
+                                                                // "will be drawn"
+-                                                               v[1112].copy TT1,2
+-                                                               TT1.add v[184],1 // TT1 is now v[1112] + v[184]
+-                                                               TT2.add v[184],1 // TT2 is now v[1113] + v[184]
+-                                                               v[TT1] = (agent_RelativeY + agent_Height + v[1011]) * 1000 + v[401] // v[v[11
+12] + v[184]] = (agent_RelativeY + agent_Height + v[1011]) * 1000 + v[401]
+-                                                               ptr_asg(TT2,v[401]) // v[v[1113] + v[184]]= v[401]
++                                                               v[v[1112] + v[184]] = (agent_RelativeY + agent_Height + v[1011]) * 1000 + v[4
+01]^M
++                                                               v[v[1113] + v[184]]= v[401]^M
+
+                                                                val_add(v[184],N1) // v[184] += 1
+
+diff --git a/source/Dracore/module_core_RTS_mission_map_init.tpc b/source/Dracore/module_core_RTS_mission_map_init.tpc
+index 0daa7be..02ee843 100644
+--- a/source/Dracore/module_core_RTS_mission_map_init.tpc
++++ b/source/Dracore/module_core_RTS_mission_map_init.tpc
+@@ -12,7 +12,6 @@ def {
+
+ // INIT MISSION - this one is called whenever you open new mission
+ __fn CEV_MISSION_INIT {
+-       v[ptr_null] = 0 // allocate memory
+        log_start("Initializing Mission")
+        eval_js("RTS.init()") // js RTS object init
+        v[1080] = v[1012]
+@@ -24,7 +23,7 @@ __fn CEV_MISSION_INIT {
+        t[752] .asg ""
+        // @comment "init BGM string"
+        Current_BGMFile .asg ""
+-       v[216574..1548949] = 0 // ????????????????????
++       v[216574..1548949] = 0^M
+        @call .cev 1926
+        @call .cev 2130
+        v[154] = 0
+diff --git a/source/headers/.swp b/source/headers/.swp
+index 5afd9de..ea14c24 100644
+Binary files a/source/headers/.swp and b/source/headers/.swp differ
+diff --git a/source/headers/header_common.tpc b/source/headers/header_common.tpc
+index da7dd5f..47c8f18 100644
+--- a/source/headers/header_common.tpc
++++ b/source/headers/header_common.tpc
+@@ -80,10 +80,7 @@ def {
+
+        Const_Map_Allocate_Limit = 160000 // which part of the map mem allocated???
+
+-       // Agents_Limit must be multiple of 16! if possible multiple of 64 is better.
+-       // the reason for it is to optimize Morton coordinate calculation.
+-       Agents_Limit = 880
+-
++       Agents_Limit = 890 // 845^M
+        Effects_Limit = 120
+        Effects_Additional_Cap = 65
+        PicID_Effects_Begin = 801
+@@ -186,7 +183,6 @@ def {
+     //Maptile Flags
+        FLAG_Maptile_Occupied = 1
+        FLAG_Maptile_Crowded = 2
+-       FLAG_Maptile_TooManyInOneTile = 4
+
+        FLAG_Maptile_ShieldCoverTeam0 = 32
+        FLAG_Maptile_ShieldCoverTeam1 = 64
+@@ -807,7 +803,6 @@ defv {
+        N5001 = 4837
+        N4700 = 4838
+        N4701 = 4839
+-       NagtLen = 1117 // agent array length
+ }
+
+ #include "./header_log.tpc"
+diff --git a/source/headers/header_macros.tpc b/source/headers/header_macros.tpc
+index 4404ca7..37a25a0 100644
+--- a/source/headers/header_macros.tpc
++++ b/source/headers/header_macros.tpc
+@@ -1,116 +1,116 @@
+-// misc macro
+-// included in header_common.tpc
+-
+-//cev 2000
+-//$regX and $regY must be vars set at address in a row
+-__fn macro_convert_relativeXY_into_maptileXY $TileX $TileY $regX $regY {
+-       v[__id($TileX)].copy $regX, 2
+-       v[__id($regX)] += 8
+-       v[__id($regY)] += 24
+-       v[__id($regX)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
+-       v[__id($regX)] /= 16
+-       v[__id($regY)] /= 16
+-}
+-
+-//cev 2001
+-__fn macro_convert_maptileXY_into_relativeXY $TileX $TileY $regX $regY {
+-       @map[v[501]].setVehiclePos .airship .pos $TileX, $TileY .retain
+-       v[__id($regX)] = airship.scrx
+-       v[__id($regY)] = airship.scry
+-       v[__id($regY)] -= 8
+-}
+-
+-
+-__fn macro_convert_absolute_coord $RelXstart $regXstart {
+-       // ?
+-       //v[__id($RelXstart)].copy $regXstart, 2
+-       //v[__id($regXstart)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
+-
+-}
+-
+-
+-// return the result to reg1, if reg1 = 1, thenthe given cord is out of map
+-__fn macro_ck_if_given_rel_coord_is_inside_map $X $Y {
+-       macro_convert_relativeXY_into_maptileXY($X,$Y,reg2,reg3)
+-       reg1 = between(reg2,Map_LimitCoordX_min,Map_LimitCoordX_max)&&between(reg3,Map_LimitCoordY_min,Map_LimitCoordY_max)? 0 : 1
+-
+-}
+-
+-
+-// convert t[] to v[]
+-__fn t2v $t $v {
+-       t[__id($t)].toNum $v
+-}
+-
+-
+-
+-
+-__fn splitStrData $str {
+-               t[2998] .asg $str
+-               t[2998] .split ",", t[3000], reg1
+-}
+-
+-__fn convertStrBitsTable_to_r1 $str {
+-       t[__id($str)] .split "|", t[3200], var1
+-       reg1 = 0
+-       @loop var1 .dst var5 {
+-           var2 = 3200 + var5
+-           t[var2] .toNum var4
+-           reg1 |= pow(2, var4 - 1)
+-       }
+-
+-}
+-
+-// you cannot give this
+-__fn increment_var $targv {
+-       v[__id($targv)].add N1,1
+-}
+-
+-__fn val_asg $v1 $v2 {
+-       v[__id($v2)].copy v[__id($v1)],1
+-}
+-
+-__fn val_add $v1 $v2 {
+-       v[__id($v1)].add v[__id($v2)],1
+-}
+-
+-__fn val_sub $v1 $v2 {
+-       v[__id($v1)].sub v[__id($v2)],1
+-}
+-
+-__fn val_mul $v1 $v2 {
+-       v[__id($v1)].mul v[__id($v2)],1
+-}
+-
+-__fn val_div $v1 $v2 {
+-       v[__id($v1)].div v[__id($v2)],1
+-}
+-
+-__fn val_mod $v1 $v2 {
+-       v[__id($v1)].mod v[__id($v2)],1
+-}
+-
+-// ptr series
+-__fn ptr_asg $v1 $v2 {
+-       v[__id($v2)].copy v[$v1],1
+-}
+-
+-__fn ptr_add $v1 $v2 {
+-       v[$v1].add v[__id($v2)],1
+-}
+-
+-__fn ptr_sub $v1 $v2 {
+-       v[$v1].sub v[__id($v2)],1
+-}
+-
+-__fn ptr_mul $v1 $v2 {
+-       v[$v1].mul v[__id($v2)],1
+-}
+-
+-__fn ptr_div $v1 $v2 {
+-       v[$v1].div v[__id($v2)],1
+-}
+-
+-__fn ptr_mod $v1 $v2 {
+-       v[$v1].mod v[__id($v2)],1
+-}
++// misc macro
++// included in header_common.tpc
++
++//cev 2000
++//$regX and $regY must be vars set at address in a row
++__fn macro_convert_relativeXY_into_maptileXY $TileX $TileY $regX $regY {
++       v[__id($TileX)].copy $regX, 2
++       v[__id($regX)] += 8
++       v[__id($regY)] += 24
++       v[__id($regX)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
++       v[__id($regX)] /= 16
++       v[__id($regY)] /= 16
++}
++
++//cev 2001
++__fn macro_convert_maptileXY_into_relativeXY $TileX $TileY $regX $regY {
++       @map[v[501]].setVehiclePos .airship .pos $TileX, $TileY .retain
++       v[__id($regX)] = airship.scrx
++       v[__id($regY)] = airship.scry
++       v[__id($regY)] -= 8
++}
++
++
++__fn macro_convert_absolute_coord $RelXstart $regXstart {
++       // ?
++       //v[__id($RelXstart)].copy $regXstart, 2
++       //v[__id($regXstart)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
++
++}
++
++
++// return the result to reg1, if reg1 = 1, thenthe given cord is out of map
++__fn macro_ck_if_given_rel_coord_is_inside_map $X $Y {
++       macro_convert_relativeXY_into_maptileXY($X,$Y,reg2,reg3)
++       reg1 = between(reg2,Map_LimitCoordX_min,Map_LimitCoordX_max)&&between(reg3,Map_LimitCoordY_min,Map_LimitCoordY_max)?0:1
++
++}
++
++
++// convert t[] to v[]
++__fn t2v $t $v {
++       t[__id($t)].toNum $v
++}
++
++
++
++
++__fn splitStrData $str {
++               t[2998] .asg $str
++               t[2998] .split ",", t[3000], reg1
++}
++
++__fn convertStrBitsTable_to_r1 $str {
++       t[__id($str)] .split "|", t[3200], var1
++       reg1 = 0
++       @loop var1 .dst var5 {
++           var2 = 3200 + var5
++           t[var2] .toNum var4
++           reg1 |= pow(2, var4 - 1)
++       }
++
++}
++
++// you cannot give this
++__fn increment_var $targv {
++       v[__id($targv)].add N1,1
++}
++
++__fn val_asg $v1 $v2 {
++       v[__id($v2)].copy v[__id($v1)],1
++}
++
++__fn val_add $v1 $v2 {
++       v[__id($v1)].add v[__id($v2)],1
++}
++
++__fn val_sub $v1 $v2 {
++       v[__id($v1)].sub v[__id($v2)],1
++}
++
++__fn val_mul $v1 $v2 {
++       v[__id($v1)].mul v[__id($v2)],1
++}
++
++
++}
++
++
+            TT1 = var2 * var_Map_Width
+            v[632] = var1 + TT1//map point saved
+@@ -695,7 +696,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+
+                        v[315] = Temp13 / 20
+                        v[315] += v[314] / 20
+-                       val_mod(v[315],N2) // v[315] %= 2
++                       v[315] %= 2^M
+
+                        @if Is_Paused .isOff() {
+
+@@ -770,7 +771,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+                                        agent_MilPixX.add var1,1 // agent_MilPixX += var1
+
+                                        } .else bl {
+-                                               agent_MilPixVx = divmul(agent_MilPixVx, TT2, TT1)
++                                       agent_MilPixVx = divmul(agent_MilPixVx, TT2, TT1)^M
+
+                                        }
+                                        //@comment "#カメラずらして"
+@@ -882,13 +883,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
+                                                                //@comment "+[Const描画ymax]"
+                                                                s[v[348]].on
+                                                                agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
+-
+                                                                // "will be drawn"
+-                                                               v[1112].copy TT1,2
+-                                                               TT1.add v[184],1 // TT1 is now v[1112] + v[184]
+-                                                               TT2.add v[184],1 // TT2 is now v[1113] + v[184]
+-                                                               v[TT1] = (agent_RelativeY + agent_Height + v[1011]) * 1000 + v[401] // v[v[11
+12] + v[184]] = (agent_RelativeY + agent_Height + v[1011]) * 1000 + v[401]
+-                                                               ptr_asg(TT2,v[401]) // v[v[1113] + v[184]]= v[401]
++                                                               v[v[1112] + v[184]] = (agent_RelativeY + agent_Height + v[1011]) * 1000 + v[4
+01]^M
++                                                               v[v[1113] + v[184]]= v[401]^M
+
+                                                                val_add(v[184],N1) // v[184] += 1
+
+diff --git a/source/Dracore/module_core_RTS_mission_map_init.tpc b/source/Dracore/module_core_RTS_mission_map_init.tpc
+index 0daa7be..02ee843 100644
+--- a/source/Dracore/module_core_RTS_mission_map_init.tpc
++++ b/source/Dracore/module_core_RTS_mission_map_init.tpc
+@@ -12,7 +12,6 @@ def {
+
+ // INIT MISSION - this one is called whenever you open new mission
+ __fn CEV_MISSION_INIT {
+-       v[ptr_null] = 0 // allocate memory
+        log_start("Initializing Mission")
+        eval_js("RTS.init()") // js RTS object init
+        v[1080] = v[1012]
+@@ -24,7 +23,7 @@ __fn CEV_MISSION_INIT {
+        t[752] .asg ""
+        // @comment "init BGM string"
+        Current_BGMFile .asg ""
+-       v[216574..1548949] = 0 // ????????????????????
++       v[216574..1548949] = 0^M
+        @call .cev 1926
+        @call .cev 2130
+        v[154] = 0
+diff --git a/source/headers/.swp b/source/headers/.swp
+index 5afd9de..ea14c24 100644
+Binary files a/source/headers/.swp and b/source/headers/.swp differ
+diff --git a/source/headers/header_common.tpc b/source/headers/header_common.tpc
+index da7dd5f..47c8f18 100644
+--- a/source/headers/header_common.tpc
++++ b/source/headers/header_common.tpc
+@@ -80,10 +80,7 @@ def {
+
+        Const_Map_Allocate_Limit = 160000 // which part of the map mem allocated???
+
+-       // Agents_Limit must be multiple of 16! if possible multiple of 64 is better.
+-       // the reason for it is to optimize Morton coordinate calculation.
+-       Agents_Limit = 880
+-
++       Agents_Limit = 890 // 845^M
+        Effects_Limit = 120
+        Effects_Additional_Cap = 65
+        PicID_Effects_Begin = 801
+@@ -186,7 +183,6 @@ def {
+     //Maptile Flags
+        FLAG_Maptile_Occupied = 1
+        FLAG_Maptile_Crowded = 2
+-       FLAG_Maptile_TooManyInOneTile = 4
+
+        FLAG_Maptile_ShieldCoverTeam0 = 32
+        FLAG_Maptile_ShieldCoverTeam1 = 64
+@@ -807,7 +803,6 @@ defv {
+        N5001 = 4837
+        N4700 = 4838
+        N4701 = 4839
+-       NagtLen = 1117 // agent array length
+ }
+
+ #include "./header_log.tpc"
+diff --git a/source/headers/header_macros.tpc b/source/headers/header_macros.tpc
+index 4404ca7..37a25a0 100644
+--- a/source/headers/header_macros.tpc
++++ b/source/headers/header_macros.tpc
+@@ -1,116 +1,116 @@
+-// misc macro
+-// included in header_common.tpc
+-
+-//cev 2000
+-//$regX and $regY must be vars set at address in a row
+-__fn macro_convert_relativeXY_into_maptileXY $TileX $TileY $regX $regY {
+-       v[__id($TileX)].copy $regX, 2
+-       v[__id($regX)] += 8
+-       v[__id($regY)] += 24
+-       v[__id($regX)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
+-       v[__id($regX)] /= 16
+-       v[__id($regY)] /= 16
+-}
+-
+-//cev 2001
+-__fn macro_convert_maptileXY_into_relativeXY $TileX $TileY $regX $regY {
+-       @map[v[501]].setVehiclePos .airship .pos $TileX, $TileY .retain
+-       v[__id($regX)] = airship.scrx
+-       v[__id($regY)] = airship.scry
+-       v[__id($regY)] -= 8
+-}
+-
+-
+-__fn macro_convert_absolute_coord $RelXstart $regXstart {
+-       // ?
+-       //v[__id($RelXstart)].copy $regXstart, 2
+-       //v[__id($regXstart)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
+-
+-}
+-
+-
+-// return the result to reg1, if reg1 = 1, thenthe given cord is out of map
+-__fn macro_ck_if_given_rel_coord_is_inside_map $X $Y {
+-       macro_convert_relativeXY_into_maptileXY($X,$Y,reg2,reg3)
+-       reg1 = between(reg2,Map_LimitCoordX_min,Map_LimitCoordX_max)&&between(reg3,Map_LimitCoordY_min,Map_LimitCoordY_max)? 0 : 1
+-
+-}
+-
+-
+-// convert t[] to v[]
+-__fn t2v $t $v {
+-       t[__id($t)].toNum $v
+-}
+-
+-
+-
+-
+-__fn splitStrData $str {
+-               t[2998] .asg $str
+-               t[2998] .split ",", t[3000], reg1
+-}
+-
+-__fn convertStrBitsTable_to_r1 $str {
+-       t[__id($str)] .split "|", t[3200], var1
+-       reg1 = 0
+-       @loop var1 .dst var5 {
+-           var2 = 3200 + var5
+-           t[var2] .toNum var4
+-           reg1 |= pow(2, var4 - 1)
+-       }
+-
+-}
+-
+-// you cannot give this
+-__fn increment_var $targv {
+-       v[__id($targv)].add N1,1
+-}
+-
+-__fn val_asg $v1 $v2 {
+-       v[__id($v2)].copy v[__id($v1)],1
+-}
+-
+-__fn val_add $v1 $v2 {
+-       v[__id($v1)].add v[__id($v2)],1
+-}
+-
+-__fn val_sub $v1 $v2 {
+-       v[__id($v1)].sub v[__id($v2)],1
+-}
+-
+-__fn val_mul $v1 $v2 {
+-       v[__id($v1)].mul v[__id($v2)],1
+-}
+-
+-__fn val_div $v1 $v2 {
+-       v[__id($v1)].div v[__id($v2)],1
+-}
+-
+-__fn val_mod $v1 $v2 {
+-       v[__id($v1)].mod v[__id($v2)],1
+-}
+-
+-// ptr series
+-__fn ptr_asg $v1 $v2 {
+-       v[__id($v2)].copy v[$v1],1
+-}
+-
+-__fn ptr_add $v1 $v2 {
+-       v[$v1].add v[__id($v2)],1
+-}
+-
+-__fn ptr_sub $v1 $v2 {
+-       v[$v1].sub v[__id($v2)],1
+-}
+-
+-__fn ptr_mul $v1 $v2 {
+-       v[$v1].mul v[__id($v2)],1
+-}
+-
+-__fn ptr_div $v1 $v2 {
+-       v[$v1].div v[__id($v2)],1
+-}
+-
+-__fn ptr_mod $v1 $v2 {
+-       v[$v1].mod v[__id($v2)],1
+-}
++// misc macro
++// included in header_common.tpc
++
++//cev 2000
++//$regX and $regY must be vars set at address in a row
++__fn macro_convert_relativeXY_into_maptileXY $TileX $TileY $regX $regY {
++       v[__id($TileX)].copy $regX, 2
++       v[__id($regX)] += 8
++       v[__id($regY)] += 24
++       v[__id($regX)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
++       v[__id($regX)] /= 16
++       v[__id($regY)] /= 16
++}
++
++//cev 2001
++__fn macro_convert_maptileXY_into_relativeXY $TileX $TileY $regX $regY {
++       @map[v[501]].setVehiclePos .airship .pos $TileX, $TileY .retain
++       v[__id($regX)] = airship.scrx
++       v[__id($regY)] = airship.scry
++       v[__id($regY)] -= 8
++}
++
++
++__fn macro_convert_absolute_coord $RelXstart $regXstart {
++       // ?
++       //v[__id($RelXstart)].copy $regXstart, 2
++       //v[__id($regXstart)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
++
++}
++
++
++// return the result to reg1, if reg1 = 1, thenthe given cord is out of map
++__fn macro_ck_if_given_rel_coord_is_inside_map $X $Y {
++       macro_convert_relativeXY_into_maptileXY($X,$Y,reg2,reg3)
++       reg1 = between(reg2,Map_LimitCoordX_min,Map_LimitCoordX_max)&&between(reg3,Map_LimitCoordY_min,Map_LimitCoordY_max)?0:1
++
++}
++
++
++// convert t[] to v[]
++__fn t2v $t $v {
++       t[__id($t)].toNum $v
++}
++
++
++
++
++__fn splitStrData $str {
++               t[2998] .asg $str
++               t[2998] .split ",", t[3000], reg1
++}
++
++__fn convertStrBitsTable_to_r1 $str {
++       t[__id($str)] .split "|", t[3200], var1
++       reg1 = 0
++       @loop var1 .dst var5 {
++           var2 = 3200 + var5
++           t[var2] .toNum var4
++           reg1 |= pow(2, var4 - 1)
++       }
++
++}
++
++// you cannot give this
++__fn increment_var $targv {
++       v[__id($targv)].add N1,1
++}
++
++__fn val_asg $v1 $v2 {
++       v[__id($v2)].copy v[__id($v1)],1
++}
++
++__fn val_add $v1 $v2 {
++       v[__id($v1)].add v[__id($v2)],1
++}
++
++__fn val_sub $v1 $v2 {
++       v[__id($v1)].sub v[__id($v2)],1
++}
++
++__fn val_mul $v1 $v2 {
++       v[__id($v1)].mul v[__id($v2)],1
++}
++
++__fn val_div $v1 $v2 {
++       v[__id($v1)].div v[__id($v2)],1
++}
++
++__fn val_mod $v1 $v2 {
++       v[__id($v1)].mod v[__id($v2)],1
++}
++
++// ptr series
++__fn ptr_asg $v1 $v2 {
++       v[__id($v2)].copy v[$v1],1
++}
++
++__fn ptr_add $v1 $v2 {
++       v[$v1].add v[__id($v2)],1
++}
++
++__fn ptr_sub $v1 $v2 {
++       v[$v1].sub v[__id($v2)],1
++}
++
++__fn ptr_mul $v1 $v2 {
++       v[$v1].mul v[__id($v2)],1
++}
++
++__fn ptr_div $v1 $v2 {
++       v[$v1].div v[__id($v2)],1
++}
++
++__fn ptr_mod $v1 $v2 {
++       v[$v1].mod v[__id($v2)],1
++}
+(END)

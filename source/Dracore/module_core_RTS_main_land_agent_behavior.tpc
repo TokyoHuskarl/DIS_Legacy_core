@@ -81,7 +81,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			//0~15"
 			TT1.shr N2,1 // TT1 >>= 2 
 			//v[343] = v[1073] + TT1
-			val_add(reg1,TT1) // reg2 += TT1
+			val_add(reg2,TT1) // reg2 += TT1
 			v[TT1 * Const_save_var_Agents_Limit + v[1069] + v[reg2]] = v[v[536]]
 			v[reg2].add N1,1 // v[reg2] += 1
 
@@ -160,7 +160,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 										} .else bl { // if the agent gets force move order, then switch the Last target..
 											agent_LastTarget = agent_TargetAgentID
 											// RayCast to check if the agent is worker who is heading to workplace
-											agent_AI_routine_bits |= agent_UnitType == 9 ? AI_routine_bits_FLAG_RayCast : 0 
+											// agent_AI_routine_bits |= agent_UnitType == 9 ? AI_routine_bits_FLAG_RayCast : 0 
 										}
 										
 								}
