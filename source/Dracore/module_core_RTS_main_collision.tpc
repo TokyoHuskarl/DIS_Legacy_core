@@ -121,13 +121,13 @@ __fn MAIN_CEV_RTS_COLLISION_MANAGER { // ->
 				//@comment "Even Normal Units Collision "
 				v[536] = v[4532]
 				@while v[v[536]] != 0 {
-			v[401] = v[v[536]] - 1
-			Temp1 = v[401] * v[1117] 
-			Temp1 += 5000
-			//@comment "#Col"
-			ColCheck()
-			//@comment "++"
-			v[536] += 4
+					v[401] = v[v[536]] - 1
+					Temp1 = v[401] * v[1117] 
+					Temp1 += 5000
+					//@comment "#Col"
+					ColCheck()
+					//@comment "++"
+					v[536] += 4
 			
 				}
 				
@@ -330,11 +330,14 @@ __fn ColCheck {
 				
 
 				//experimental
+				Col_Ptr2AgentBits.deref TT4,1
 				Ptr5 = Const_save_var_TileFlags + v[632]
 				@if `v[Ptr5] & FLAG_Maptile_Crowded {
 					// shuffling too much size array causes lag so set limitation on the max num
 					TT1 = min(v[327],8) // changed 16 -> 8
 					v[v[339]].shuffle TT1
+					def KILLDISCP = ~AgentBits_Discipline_Col
+					TT4 &= KILLDISCP
 				}
 				
 				//v[203] = Ptr
@@ -343,7 +346,7 @@ __fn ColCheck {
 
 				// set pointer for push
 				Ptr19 = Temp1 + 15
-				@if `v[Col_Ptr2AgentBits] & AgentBits_Discipline_Col { // the agent has discipline?
+				@if `TT4 & AgentBits_Discipline_Col { // the agent has discipline?
 
 						// if so
 						Temp10 = agent_TeamID % 3
@@ -362,12 +365,7 @@ __fn ColCheck {
 						
 								macro_ColCheck_distance()
 
-								@if `v[322] + v[337] >= abs(victim_RelativeX) {
-									@if `v[323] + v[338] >= abs(victim_RelativeY) {
-										macro_ColCheck_push()
-									}
-									
-								}
+								macro_ColCheck_push()
 								
 							}
 							increment_var(v[203]) // v[203] += 1 //++
@@ -381,13 +379,8 @@ __fn ColCheck {
 
 								macro_ColCheck_distance()
 
-								@if `v[322] + v[337] >= abs(victim_RelativeX) {
-									@if `v[323] + v[338] >= abs(victim_RelativeY) {
-										macro_ColCheck_push()
+								macro_ColCheck_push()
 										
-									}
-									
-								}
 								
 							}
 							increment_var(v[203]) // v[203] += 1 //++
@@ -416,12 +409,6 @@ __fn ColCheck {
 
 
 __fn macro_ColCheck_distance {
-	/*
-	Temp20 = v[v[203]] * 300
-	Temp20 += 4707
-	v[Temp20].copy Temp20,2
-	Temp20.sub v[607],2
-	*/
 
 	victim_AgentType = v[v[203]] * 300
 	val_add(victim_AgentType,N4701) // victim_AgentType += 4701
@@ -440,39 +427,45 @@ __fn macro_ColCheck_distance {
 		v[322] += v[v[203]] * 2
 		v[v[322]].copy v[322],2
 	}
-
+	
+	v[322].add v[337],2
 	//func_devlog("\v[\v[203]]: \v[322] \v[323] \Temp20 \v[321]")
 
 }
 
 __fn macro_ColCheck_push {
-
-	// if the agents are in the completely same coordinate
-	@if victim_RelativeX == 0 {
-		@if victim_RelativeY == 0 {
-			// then push it to random direction
-			victim_RelativeX = rnd(-2,2) 
-			victim_RelativeY = rnd(-2,2)
-		}
-	}
-
-	v[__id(victim_RelativeX)..__id(victim_RelativeY)] *= (v[527 + (((v[Col_Ptr2AgentBits] | (agent_MoveTypeBIts & MoveTypeBits_Horse && agent_InCombatTimer > 0 ? 256 : 0)) & 256) >> 8)]) + ((v[Ptr5] & FLAG_Maptile_Crowded) >> 1) // if it's Crowded, push more
-	v[Ptr19] .add victim_RelativeX, 2
-	
-	defv Col_Ptr2AI_routine_bits = __id(Temp33) 
-	@if victim_AgentType == 11 { // pushed by static agent
-		@if agent_MovementOrder > MovementOrder_TYPE_move_ordered {
-			@if v[v[203]] != agent_TargetAgentID { // NOT target
-				@if victim_TeamID == agent_TeamID { // and it's ally
-					Col_Ptr2AI_routine_bits = Temp1 + 34
-					def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_1secDelay_PF
-					v[Col_Ptr2AI_routine_bits] |= agent_LeftWPtoChase > 0 ? Col_AIFLAG_PFandSkip : AI_routine_bits_FLAG_PATHFINDING
-
+	v[324] = abs(victim_RelativeX)
+	@if v[322] >= v[324] {
+		v[325] = abs(victim_RelativeY)
+		@if v[323] >= v[325] {
+			// if the agents are in the completely same coordinate
+			@if victim_RelativeX == 0 {
+				@if victim_RelativeY == 0 {
+					// then push it to random direction
+					victim_RelativeX = rnd(-2,2) 
+					victim_RelativeY = rnd(-2,2)
 				}
 			}
+			def TileCrowdedANDtooMany = 6
+			v[__id(victim_RelativeX)..__id(victim_RelativeY)] *= (v[527 + (((v[Col_Ptr2AgentBits] | ((agent_MoveTypeBIts & MoveTypeBits_Horse && agent_InCombatTimer > 0) << 8)) & 256) >> 8)]) - ((v[Ptr5] & TileCrowdedANDtooMany) << 8) // if it's Crowded, push more
+			v[Ptr19] .add victim_RelativeX, 2
+			
+			defv Col_Ptr2AI_routine_bits = __id(Temp33) 
+			@if victim_AgentType == 11 { // pushed by static agent
+				@if agent_MovementOrder > 0 {
+					@if v[v[203]] != agent_TargetAgentID { // NOT target
+						@if victim_TeamID == agent_TeamID { // and it's ally
+							Col_Ptr2AI_routine_bits = Temp1 + 34
+							def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_1secDelay_PF
+							v[Col_Ptr2AI_routine_bits] |= agent_LeftWPtoChase > 0 ? Col_AIFLAG_PFandSkip : AI_routine_bits_FLAG_PATHFINDING
+
+						}
+					}
+				}
+			}
+
+			v[Col_Ptr2AgentBits] |= AgentBits_Collided_Other_Agent
+			@break
 		}
 	}
-
-	v[Col_Ptr2AgentBits] |= AgentBits_Collided_Other_Agent
-	@break
 }

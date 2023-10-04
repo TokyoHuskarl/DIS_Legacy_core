@@ -1,7 +1,8 @@
 
 
 defv Var_MouseMode = 87
-
+defv current_descriptionID = 84
+defv save_descID_1fpast = 85
 
 
 defv{
@@ -138,6 +139,10 @@ __fn func_get_mouse {
     }
 }
 
+
+def forceRefresh_popwindow = {
+	save_descID_1fpast = 0
+}
 
 // kek
 def MACRO_ck_if_current_agent_is_clickable_to_reg6 = {

@@ -32,7 +32,7 @@ __fn macro_convert_absolute_coord $RelXstart $regXstart {
 // return the result to reg1, if reg1 = 1, thenthe given cord is out of map
 __fn macro_ck_if_given_rel_coord_is_inside_map $X $Y { 
 	macro_convert_relativeXY_into_maptileXY($X,$Y,reg2,reg3)
-	reg1 = between(reg2,Map_LimitCoordX_min,Map_LimitCoordX_max)&&between(reg3,Map_LimitCoordY_min,Map_LimitCoordY_max)?0:1
+	reg1 = between(reg2,Map_LimitCoordX_min,Map_LimitCoordX_max)&&between(reg3,Map_LimitCoordY_min,Map_LimitCoordY_max)? 0 : 1
 
 }
 

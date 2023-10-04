@@ -32,7 +32,6 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	@comment "module_core_Game_init.tpc"
 
 	ptr_null = 50000000 // This value itself has no meaning, just to get null array from unallocated area to init an array
-	
 
 	
 
@@ -418,7 +417,6 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1276] = 72
 	v[1277] = 148 * 2
 	v[1276] = 92 * 2
-	v[4563] = 10000000
 	v[1277] = 148
 	v[1276] = 92
 	v[1282] = v[1001] - 2 - v[1277]
@@ -496,7 +494,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[4537] = v[1074] + 64
 	v[4538] = v[4537] + 256
 	v[1079] = v[4538] + 1024
-	Const_var_save_all_morton_memories = v[1079]-v[1071]
+	Const_var_save_all_morton_memories = v[1079] - v[1071]
 	v[0] = v[4547..4553] = [v[1071], v[1072], v[1073], v[1074], v[4537], v[4538]]
 	v[1020] = 20
 	@comment "#四分木用End"
@@ -1340,12 +1338,12 @@ __fn init_DIS_database $already_loaded {
 					}
 					// set description string
 					@if t[3302] .neq "" {
-							t[3082] .asg t[3302]
+							t[3085] .asg t[3302]
 							
 					}
 					// set lore string
 					@if t[3303] .neq "" {
-							t[3083] .asg t[3303]
+							t[3086] .asg t[3303]
 							
 					}
 

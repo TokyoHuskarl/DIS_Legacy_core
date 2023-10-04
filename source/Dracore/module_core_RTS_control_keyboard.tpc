@@ -587,12 +587,13 @@ __fn CEV_CONTROL_KEYBOARD {
 							
 					}
 					@if GETKEY_Alt >= 1 {
-							@if GETKEY_Alt_PRESS == 0 {
-									
-							}
+							forceRefresh_popwindow
 							GETKEY_Alt_PRESS += 1
 							
 					} .else bl {
+							@if GETKEY_Alt_PRESS > 0 {
+								forceRefresh_popwindow
+							}
 							GETKEY_Alt_PRESS = 0
 							
 					}
