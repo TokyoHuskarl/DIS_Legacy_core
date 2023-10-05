@@ -1314,9 +1314,18 @@ __fn ui_choose_which_color_indicator_is $flag {
 }
 
 __fn draw_agent_indicator $RGBS $T {
+
 	__loop $RGBS $elm $i {
 		$ptr = $i + __id(var1)
 		v[$ptr] = $elm
+	}
+	__if $RGBS == RGBS_WHITE {
+		@if DISmap_isWintermap.isOn() {
+			__loop [15,15,15,60] $elm $i {
+				$ptr = $i + __id(var1)
+				v[$ptr] = $elm
+			}
+		}
 	}
 	@pic[PicID_click_agent_indicator].move {
 		.pos TT14, TT15 .bottom

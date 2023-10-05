@@ -871,7 +871,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	    agent_AgentBits &= MAIN_KILLSCREENFLAG
 	    TT10 = Address_agent_inSight_switch_array_head + v[401]
 	    @if s[TT10] .isOn() { //`s[2001+v[401]] != 0 { // found in sight..
-						//v[345] = v[301] + 7
+
+				// check if the agent is in screen
 				@if agent_RelativeX >= v[1008] {
 					@if agent_RelativeX <= v[1009]{
 						@if agent_RelativeY >= v[1010]{
@@ -896,7 +897,6 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 							}
 						}
 					}
-
 				}
 	    }
 

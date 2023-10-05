@@ -789,8 +789,8 @@ __fn UI_CEV_MOUSE_OBSERVER {
 						// "番号を見る"
 						LEGV_sentence_id_on_popup1 = v[v[301]]
 						@if LEGS_selecting_enemy .isOn() {
-					@call .cev 1100
-					
+							@call .cev 1100
+
 						} .else bl {
 					@if v[101] >= 1 {
 							@if v[99] > 1 {
@@ -1629,43 +1629,43 @@ __fn UI_CEV_MOUSE_OBSERVER {
 					@pic[PicID_Auxilia_Message_Window].erase
 					// "Paused Information"
 					@if v[81] == 0 {
-							@if s[11] .isOff() {
+						@if s[11] .isOff() {
+							@if Control_ClickableAgentHolder <= 0 {
+								// ????
+								// "#Check Terrain"
+								LEGV_MousePointer_X.copy var1, 2
+									v[12] -= 8
+									@call .cev 2000
 
-						// ????
-						// "#Check Terrain"
-						LEGV_MousePointer_X.copy var1, 2
-						v[12] -= 8
-						@call .cev 2000
-
-						// "######################Get Terrain and Elevation info"
-						v[313] = v[v[1182] + v[21] - v[69] + (v[22] - v[70]) * v[2061]]
-						TT1 = v[313] / 100000000
-						TT2 = v[313] % 100
-						v[350] = LEGV_MousePointer_X
-						v[351] = LEGV_MousePointer_Y - 16
-						TT2 = v[1239] + TT2
-						// "######################"
-						TT1 = v[21]
-						TT2 = v[22]
-						@call .cev 2001 // 
-						v[344] = 63
-						@if Var_MouseMode != MODE_Elevation {
-							@pic[PicID_pointer_sub].show {
-									"ui\terrainsquare"
-									.pos v[22], v[23] .center
-									.chromakey 1
-									.scale 100
-									.trans v[344]
-									.rgbs 100, 100, 100, 100
-									.add
-									.mapLayer 5
-									.eraseWhenTransfer
-									.affectedByFlash
-									.affectedByShake
+									// "######################Get Terrain and Elevation info"
+									v[313] = v[v[1182] + v[21] - v[69] + (v[22] - v[70]) * v[2061]]
+									TT1 = v[313] / 100000000
+									TT2 = v[313] % 100
+									v[350] = LEGV_MousePointer_X
+									v[351] = LEGV_MousePointer_Y - 16
+									TT2 = v[1239] + TT2
+									// "######################"
+									TT1 = v[21]
+									TT2 = v[22]
+									@call .cev 2001 // 
+									v[344] = 63
+									@if Var_MouseMode != MODE_Elevation {
+										@pic[PicID_pointer_sub].show {
+											"ui\terrainsquare"
+												.pos v[22], v[23] .center
+												.chromakey 1
+												.scale 100
+												.trans v[344]
+												.rgbs 100, 100, 100, 100
+												.add
+												.mapLayer 5
+												.eraseWhenTransfer
+												.affectedByFlash
+												.affectedByShake
+										}
+									}
 							}
-						}
-						
-							} .else bl {
+						} .else bl {
 						@pic[PicID_pointer_sub].erase
 						
 							}
@@ -2478,6 +2478,15 @@ __fn check_clickable_units $maskcondbl $flag {
 			}
 
 		}
+	}
+	@if Control_ClickableAgentHolder > 0 {
+		@pic[PicID_pointer_sub].move { // make terrain square disappear
+				.pos v[350], v[351] .bottom
+				.scale 100
+				.trans 100
+				.time 0
+				.rgbs 100, 100, 100, 100
+			}
 	}
 }
 

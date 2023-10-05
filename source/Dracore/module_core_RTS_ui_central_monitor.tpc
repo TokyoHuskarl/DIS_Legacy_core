@@ -8,6 +8,7 @@ def {
 	STRING_centmonitor_debug = __str(" Player Units:\c[\v[", __id(TT3), "]]\v[205]/\v[", __id(TT2), "]\c[0]  Enemy Units:\v[206]\t[", __id(LF), "]    \t[750] \t[751] \t[752]")
 
 	STRING_centmonitor_normal = __str(" Player Units:\c[\v[",__id(TT3),"]]\v[205]/\v[",__id(TT2),"]\c[0]")
+	STRING_space_to_center = __str("    ")
 }
 
 
@@ -158,13 +159,18 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 		v[1972] = v[206]
 		v[1973] = v[v[4580]]
 		@wait 0
-		func_ui_show_terrain_info()
+		@if Control_ClickableAgentHolder > 0 {
+			func_ui_show_clickable_agent()
+			
+		}.else bl{
+			func_ui_show_terrain_info()
+		}
 		@wait 0
 		
 	    }
 	    //// "単体ステータス"
 	    @if LEGV_State_of_Central_Monitor == CENTMODE_ALLY_SINGLE {
-		ally_single_unit_monitor()
+				ally_single_unit_monitor()
 
 	    }
 
@@ -3813,13 +3819,45 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 
 
 
-// string consts
-def {
-	STRING_terrainfo_basic = __str(RAWSTR_LF,RAWSTR_LF, "    \t[20110] \t[", __id(regs1),"] \t[20111]\v[", __id(TT1),"]")
-	STRING_terrainfo_debug = __str(STRING_terrainfo_basic, " (\v[", __id(reg1), "],\v[", __id(reg2),"])")
 
+__fn func_ui_show_clickable_agent {
+	@if s[18] .isOn() {
+		get_agentName_to_inputstr(Control_ClickableAgentHolder)
+			TT2 = [2, 17, 8, 1][v[Control_ClickableAgentHolder * 300 + 4800]] // team colour
+			string_set_colour_var(str2,TT2)
+			str1.asg str2
+			str1.cat LF
+			@if .testPlay(){
+				str1.cat LF
+			}
+			str1.cat STRING_space_to_center
+			str1.cat inputstr
+
+			@pic[PicID_Unit_SP].strpic {
+					str1
+					.pos v[1296], v[1297] .topLeft
+					.size 0, 0                        .chromakey 1
+					.scale 100
+					.trans 0
+					.rgbs 100, 100, 100, 100
+					.font Font_UI, Font_UI_size .noShadow
+					.spacing 0, 0
+					.skin "" .nobg .noframe .noGradation .noPadding
+					.mapLayer 8
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+			}
+	}
 }
 
+
+// string consts
+def {
+	STRING_terrainfo_basic = __str(RAWSTR_LF, "    \t[20110] \t[", __id(regs1),"] \t[20111]\v[", __id(TT1),"]")
+	STRING_terrainfo_debug = __str(RAWSTR_LF,STRING_terrainfo_basic, " (\v[", __id(reg1), "],\v[", __id(reg2),"])")
+
+}
 
 
 __fn func_ui_show_terrain_info {
@@ -3856,7 +3894,7 @@ __fn func_ui_show_terrain_info {
 							.scale 100
 							.trans 0
 							.rgbs 100, 100, 100, 100
-							.font Font_UI, 11 .noShadow
+							.font Font_UI, Font_UI_size .noShadow
 							.spacing 0, 0
 							.skin "" .nobg .noframe .noGradation .noPadding
 							.mapLayer 8

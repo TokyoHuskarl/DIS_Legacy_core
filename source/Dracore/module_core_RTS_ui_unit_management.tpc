@@ -1119,6 +1119,13 @@ __fn show_Passive_description {
 	} .else bl {
 			var1 = v[4574] + v[Temp2]
 			t[var1] .split ",", t[2998], v[505]
+			@if Team_Player_Faction == FAC_dra {
+				@if Team_Player_Faction_Hero_Type == HERO_Dra_Orthunass {
+					// replace DRAGONS! with Empyrean New Order
+					t[2999].asg t[20491] // ENO
+				}
+			}
+
 			@actor[6].name t[2999]
 			t[3000] .toNum reg10
 			@loop 36 .dst v[506] {
@@ -1655,7 +1662,4 @@ __fn show_agent_skill_description {
 
 }
 
-// cev 
-__fn show_agent_description {
 
-}

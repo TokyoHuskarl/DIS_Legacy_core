@@ -56,6 +56,13 @@ def {
 //Entity General Const Setting
 
 defv Team_Player_ResourcesHead = 300001
+defv Team_Player_Faction = 2403 
+defv Team_Player_Faction_Hero_Type = 2402 
+def {
+	HERO_Dra_Orthunass = 1
+}
+
+
 defv RTS_WORLD_passed_frame = 2500
 defv RTS_Difficulty = 2401
 
@@ -814,6 +821,10 @@ defv {
 	N4700 = 4838
 	N4701 = 4839
 	NagtLen = 1117 // agent array length
+}
+
+__fn string_set_colour_var $str $clvar {
+	t[__id($str)].asg __str("\c[\v[",__id($clvar),"]]")
 }
 
 #include "./header_log.tpc"

@@ -105,6 +105,11 @@ __fn macro_get_agent_MetaTeam_into_var $agentid $getvar {
 */
 
 
+__fn get_agentName_to_inputstr $agentid {
+	reg10 = v[4562] + v[__id($agentid)]
+	inputstr.asg t[reg10]
+}
+
 __fn macro_set_agent_AI_decision_Sub_WEP_Type $AAusage  {
 	var1 = $AAusage
 	var1 = [AI_decision_bits_FLAG_Sub_WEP_is_Melee,AI_decision_bits_FLAG_Sub_WEP_is_Ranged,AI_decision_bits_FLAG_Sub_WEP_is_Magic][var1]
