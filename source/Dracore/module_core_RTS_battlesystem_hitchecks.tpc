@@ -63,7 +63,7 @@ __fn func_bs_melee_hit_check_wo_prep {
 		    //@comment "Parry chance"
 		    //v[874] = Ptr10 + 4974
 		    @if `victim_ProcessObjBit & 16777216 {
-			@if victim_AAType == 0 {//not ranged type?
+			@if victim_AAType == 0 { //not ranged type?
 			    reg2 = rnd(0, 99) <= victim_ProcessHIT / (victim_ProcessObjBit & 131072 ? 2 : 3) + 16 ? 2 : 0
 			    
 			}
@@ -97,6 +97,7 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	val_asg(reg1,victim_ProcessEVA) // reg1 = victim_ProcessEVA
 	//@comment "#DodgeMS*12%"
 	reg1 += victim_PerkFlagBits1 & 32 ? victim_ProcessMS >> 3 : 0 // muldiv(victim_ProcessMS, 12, 100)
+	reg1 = max(reg1,0)
 	reg1 >>= 2 // /= 4
 	// @comment "##########Perk##########"
 	// @comment "Anticipation"

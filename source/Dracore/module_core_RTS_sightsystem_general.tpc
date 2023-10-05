@@ -37,8 +37,9 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 
 	    TT5 = v[2931] + TT8
 	    // TT5 += TT9 * v[2927]
-			val_mul(TT9,v[2927])
-			val_add(TT5,TT9)
+			TT9.copy TT10,1
+			val_mul(TT10,v[2927])
+			val_add(TT5,TT10)
 
 	    // TT10 = TT10 & 1 ? 100 : v[TT5] & 2 ? 50 : 0
 			TT10 = ((v[TT5] & 3) << 5) + 4 // replaced for fast proc :D
@@ -64,89 +65,161 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	    
 	}
 
-	v[536] = v[4532]
+	TT1 = RTS_WORLD_passed_frame % 2 // per 2f
+	def Const_AgentMetaTeam_HEAD = Const_AgentMetaTeam_begin - 1 
+	@if TT1 == 0 {
 
-	@while v[v[536]] != 0 {
+		v[536] = v[4532]
+		v[__id(Temp5)..__id(Temp6)] = 5 // const array for next loop
+		@while v[v[536]] > 0 {
 
-	    __if DIS_EXPERIMENTAL == -1 {
-				macro_get_agent_MetaTeam_into_var(v[v[536]],reg1) // ATTENTION AEBA
-	    }.else bl {
-				v[401] = v[v[536]] - 1
-				TT1 = 2001 + v[401]
-	    }
+				get_metateam_for_sightproc()
 
-	    @if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
-	    //@if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
-				TT1 = 2000 + v[v[536]]
-				s[TT1].on
-	    } .else bl {
+				@if v[TT2] == 0 { //NOT EXPERIMENTAL
+				//@if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
+					TT1 = 2000 + v[v[536]]
+					s[TT1].on
 
-				v[401] = v[v[536]] - 1
-				TT1 = 2001 + v[401]
-				Temp1 = v[401] * v[1117] 
-				Temp1 += 5026
-				v[Temp1].copy v[626], 2
-				v[626..627] /= 5
+				} .else bl {
+					checkinsight_agent_non_ally({
+						s[TT1].off
 
-				Temp2 = v[4518] + v[401]
-				s[TT1].off
-
-				// uh oh, this looks retarded
-				@if `(v[Temp2] = v[v[4527] + v[626] + v[627] * v[2927]] & 1 ? 100 : v[Temp2] - 1) > 0 {
-						s[TT1].on
+						// uh oh, this looks retarded
+						@if `(v[Temp2] = v[v[4527] + agent_MapX + agent_MapY * v[2927]] & 1 ? 100 : v[Temp2] - 1) > 0 {
+								s[TT1].on
+								
+						}
 						
+					})
 				}
+				//++
+				increment_var(v[536]) //v[536] += 1
 				
+		}
+
+		//Static
+		v[536] = v[4533]
+		@while v[v[536]] != 0 {
+
+				__if DIS_EXPERIMENTAL == -1 {
+					macro_get_agent_MetaTeam_into_var(v[v[536]],reg1) // AEBA
+				}.else bl {
+					// v[401] = v[v[536]] - 1
+					TT2 = Const_AgentMetaTeam_HEAD + v[v[536]]
+				}
+
+				@if v[TT2] == 0 { //NOT EXPERIMENTAL
+				// @if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
+
+					TT1 = 2000 + v[v[536]]
+					s[TT1].on
+					
+				} .else bl {
+
+					v[401] = v[v[536]] - 1
+					Temp1 = v[401] * v[1117] 
+					Temp1 += 5258
+					v[Temp1].copy v[858], 2
+					Temp2 = v[4518] + v[401]
+					//opt 28.4.23
+					//get from saved slot for optimizing
+					s[TT1].off
+					@if `(v[Temp2] = v[v[4527] + v[858]  + v[859]  * v[2927]] & 1 ? 100 : v[Temp2]) > 0 {
+						s[TT1].on
+						Bool_Refresh_Static_Minimap.on //request refresh minimap static
+					}
+
+				}
+
+				//++
+				increment_var(v[536]) // v[536] += 1
 				
-	    }
-	    //++
-	    increment_var(v[536]) //v[536] += 1
-	    
+		}
+	}.else bl{
+		v[536] = v[4532]
+		v[__id(Temp5)..__id(Temp6)] = 5 // const array for next loop
+		@while v[v[536]] > 0 {
+				get_metateam_for_sightproc()
+				@if v[TT2] != 0 { // check only non ally units
+					checkinsight_agent_non_ally({
+						
+						ptr_sub(Temp2,N1)
+						@if v[Temp2] > 0 {
+							s[TT1].on
+						}
+						
+					})
+				}
+				//++
+				increment_var(v[536]) //v[536] += 1
+				
+		}
+
+		//Static
+		v[536] = v[4533]
+		@while v[v[536]] != 0 {
+
+				__if DIS_EXPERIMENTAL == -1 {
+					macro_get_agent_MetaTeam_into_var(v[v[536]],reg1) // AEBA
+				}.else bl {
+					// v[401] = v[v[536]] - 1
+					TT2 = Const_AgentMetaTeam_HEAD + v[v[536]]
+				}
+
+				@if v[TT2] != 0 {
+					checkinsight_agent_non_ally_static({
+						//get from saved slot for optimizing
+						s[TT1].off
+						@if `(v[Temp2] = v[v[4527] + v[858]  + v[859]  * v[2927]] & 1 ? 100 : v[Temp2]) > 0 {
+							s[TT1].on
+							Bool_Refresh_Static_Minimap.on //request refresh minimap static
+						}
+					})
+
+
+				}
+
+				//++
+				increment_var(v[536]) // v[536] += 1
+				
+		}
 	}
 
-	//Static
-	v[536] = v[4533]
-	@while v[v[536]] != 0 {
+}
 
-	    __if DIS_EXPERIMENTAL == -1 {
-				macro_get_agent_MetaTeam_into_var(v[v[536]],reg1) // AEBA
-	    }.else bl {
-				v[401] = v[v[536]] - 1
-				TT1 = 2001 + v[401]
-	    }
-
-	    @if `v[Const_AgentMetaTeam_begin + v[401]] == 0 { //NOT EXPERIMENTAL
-	    // @if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
-
-				TT1 = 2000 + v[v[536]]
-				s[TT1].on
-				
-	    } .else bl {
-
-				v[401] = v[v[536]] - 1
-				TT1 = 2001 + v[401]
-
-				Temp1 = v[401] * v[1117] 
-				Temp1 += 5258
-				v[Temp1].copy v[858], 2
-				Temp2 = v[4518] + v[401]
-				//opt 28.4.23
-				//get from saved slot for optimizing
-				s[TT1].off
-				@if `(v[Temp2] = v[v[4527] + v[858]  + v[859]  * v[2927]] & 1 ? 100 : v[Temp2]) > 0 {
-					s[TT1].on
-					Bool_Refresh_Static_Minimap.on //request refresh minimap static
-				}
-
-	    }
-
-	    //++
-			increment_var(v[536]) // v[536] += 1
-	    
+__fn get_metateam_for_sightproc {
+	__if DIS_EXPERIMENTAL == -1 {
+		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1) // ATTENTION AEBA
+	}.else bl {
+		// v[401] = v[v[536]] - 1
+		TT2 = Const_AgentMetaTeam_HEAD + v[v[536]]
 	}
 }
 
+__fn checkinsight_agent_non_ally $switching {
+	v[401] = v[v[536]] - 1
+	TT1 = 2000 + v[v[536]]
+	Temp1 = v[401] * v[1117] 
+	val_add(Temp1,N5001) // Temp1 += 5001
 
+	v[Temp1].copy agent_ObjectType, 27
+	agent_MapX.div Temp5,2 // v[626..627] /= 5
+
+	Temp2 = v[4518] + v[401]
+ $switching
+}
+
+
+__fn checkinsight_agent_non_ally_static $switching {
+
+					v[401] = v[v[536]] - 1
+					Temp1 = v[401] * v[1117] 
+					Temp1 += 5258
+					v[Temp1].copy v[858], 2
+					Temp2 = v[4518] + v[401]
+					$switching
+
+}
 
 // Map FoW check
 // Fow refresh
