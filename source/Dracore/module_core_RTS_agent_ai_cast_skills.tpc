@@ -20,8 +20,8 @@ __fn func_ai_skill_usage_check{
 	@loop 1 {
 	    // "Only when the unit is moving"
 	    @if `skill_AutoCastFlags & 2 {
-				@if `agent_MovementOrder < 1 {
-						reg1 = 1
+				@if agent_MovementOrder < 1 {
+						val_asg(reg1,N1) // reg1 = 1
 						@break
 						
 				}
@@ -30,7 +30,7 @@ __fn func_ai_skill_usage_check{
 	    @if `skill_AutoCastFlags & 4 {
 				@if agent_MeleeFightTimer > 0 {
 						// "Only when the unit is not in melee combat"
-						reg1 = 1
+						val_asg(reg1,N1) // reg1 = 1
 						@break
 						
 				}
@@ -44,7 +44,7 @@ __fn func_ai_skill_usage_check{
 				
 	    }
 	    // "##AI casts dash/blink skills only when they are in aggressive stance "
-	    reg1 = between(skill_Usage, 4, 5) && agent_StanceOrder != 0 // ? 1 : 0
+	    reg1 = between(skill_Usage, 4, 5) && agent_StanceOrder != 0
 	    
 	}
 
@@ -68,7 +68,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 			@if v[Ptr20] > 0 {
 			    Ptr11 = v[v[536]]
 			    @if `!(v[634] & 131072) {
-				@if `v[842] < 3 {
+				@if v[842] < 3 {
 				    @loop 1 {
 					//Temp9 = v[212] + 7
 					v[607].copy Temp4, 2
@@ -83,24 +83,26 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 					    //@call .cev 2008
 					    func_CkIfSklCall(Ptr11 1)
 					    @if reg1 <= 0 {
-						def macro_if_it_can_cast_then_do = {
-							TT2 = v[Ptr20] * 300 
-							TT2 += 4707
-							v[TT2].copy TT5, 2
-							//Inherit what was extracted in func_CkIfSklCall()
-							TT5 .sub agent_RelativeX, 2
-						}
-						macro_if_it_can_cast_then_do
-						TT1 = v[212] + 150
-						//@call .cev 1929
-						func_ai_skill_usage_check()
-						@if reg1 == 0 {
-						    TT5.copy v[TT1], 2
-						    v[v[212] + 246] = 1
-						    @break
-						    
-						}
-						
+								def macro_if_it_can_cast_then_do = {
+									TT2 = v[Ptr20] * 300 
+									TT2 += 4707
+									v[TT2].copy TT5, 2
+									//Inherit what was extracted in func_CkIfSklCall()
+									TT5 .sub agent_RelativeX, 2
+								}
+								macro_if_it_can_cast_then_do
+
+								TT1 = v[212] + 150
+								//@call .cev 1929
+								func_ai_skill_usage_check()
+								@if reg1 == 0 {
+										TT5.copy v[TT1], 2
+										TT3 = v[212] + 246
+										ptr_asg(TT3,N1)
+										@break
+										
+								}
+								
 					    }
 					    
 					}
@@ -110,17 +112,17 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 					    //@call .cev 2008 //9.3.23 found forgetting to comment out - this can be the root of weapon picture collapsing bug.
 					    func_CkIfSklCall(Ptr11 2)
 					    @if reg1 <= 0 {
-						macro_if_it_can_cast_then_do
-						TT1 = v[212] + 170
-						//@call .cev 1929
-						func_ai_skill_usage_check()
-						@if reg1 == 0 {
-						    TT5.copy v[TT1], 2
-						    v[v[212] + 246] = 2
-						    @break
-						    
-						}
-						
+								macro_if_it_can_cast_then_do
+								TT1 = v[212] + 170
+								//@call .cev 1929
+								func_ai_skill_usage_check()
+								@if reg1 == 0 {
+										TT5.copy v[TT1], 2
+										v[v[212] + 246] = 2
+										@break
+										
+								}
+								
 					    }
 					    
 					}
@@ -177,7 +179,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    }
 		    
 		}
-		v[536] += 1
+	 val_add(v[536],N1) // v[536] += 1
 		
 	    }
 	    

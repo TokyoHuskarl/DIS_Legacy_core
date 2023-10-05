@@ -6,6 +6,7 @@
 #include "./module_core_RTS_ui_misc_functions.tpc"
 #include "./../headers/header_drawing.tpc"
 #include "./../headers/header_scripts.tpc"
+#include "./../headers/header_ui.tpc"
 // #include "./../headers/header_agent.tpc" - included in header_scripts.tpc
 #include "./../preset_databases/header_preset_particles.tpc"
 
@@ -1978,47 +1979,44 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "##############
 	    //#Terrain Check#
 	    //##############"
-	    v[340] = v[4505] + v[640]
-	    v[340].deref v[340],1 // v[340] = v[v[340]]
+			defv StandingTerrainInfoBits = __id(v[340])
+	    StandingTerrainInfoBits = v[4505] + v[640]
+	    StandingTerrainInfoBits.deref v[340],1 // v[340] = v[v[340]]
 	    // "#Reset Terrain Flags"
 	    agent_AgentBits &= -1072//~1071 //15 + 32 + 1024
 	    //agent_MoveTypeBIts = Temp1 + 38
 	    // "##Not Flying"
-	    @if `!(agent_MoveTypeBIts & 1) {
+
+	    @if `!(agent_MoveTypeBIts & MoveTypeBits_Flying) {
 				// "#Water"
 				// agent_MoveTypeBIts = b1000000
-				agent_AgentBits |= v[340] & 1 ? (4 + (~agent_MoveTypeBIts & 64 >> 6)) : 0 // (4 + (agent_MoveTypeBIts & 64 ? 0 : 1)) : 0
-				/*
-				@if `v[340] & 1 {
-						agent_AgentBits |= 4 + (agent_MoveTypeBIts & 64 ? 0 : 1)
-						
-				}
-				*/
-
+				agent_AgentBits |= StandingTerrainInfoBits & FLAG_TERRAIN_Water ? (4 + (~agent_MoveTypeBIts & MoveTypeBits_Amphibious) >> 6) : 0 // (4 + (agent_MoveTypeBIts & 64 ? 0 : 1)) : 0
+				
 				// "#Ice"
-				agent_AgentBits |= (v[340] & 16) << 1 // |= MoveTypeBits_Roller
-				// agent_AgentBits |= v[340] & 16 ? 32 : 0
+				agent_AgentBits |= (StandingTerrainInfoBits & FLAG_TERRAIN_Ice) << 1 // |= MoveTypeBits_Roller
+				// agent_AgentBits |= StandingTerrainInfoBits & 16 ? 32 : 0
 				/*
-				@if `v[340] & 16 {
+				@if `StandingTerrainInfoBits & 16 {
 						agent_AgentBits |= 32
 						
 				}
 				*/
 
 				// "#Stone Road"
-				agent_AgentBits |= (v[340] & 64) >> 5
-				// agent_AgentBits |= v[340] & 64 ? 2 : 0
+				agent_AgentBits |= (StandingTerrainInfoBits & FLAG_TERRAIN_PavedRoad) >> 5
+				// agent_AgentBits |= StandingTerrainInfoBits & 64 ? 2 : 0
 				/*
-				@if `v[340] & 64 {
+				@if `StandingTerrainInfoBits & 64 {
 						agent_AgentBits |= 2
 						
 				}
 				*/
 
 				// "#Forest"
-				agent_AgentBits |= (v[340] & 8 && agent_MoveTypeBIts & 34) << 3 // ? AgentBits_horse_in_forest : 0
+				agent_AgentBits |= (StandingTerrainInfoBits & 8 && agent_MoveTypeBIts & 34) << 3 // ? AgentBits_horse_in_forest : 0
+
 				/*
-				@if `v[340] & 8 {
+				@if `StandingTerrainInfoBits & 8 {
 						// "##Horse or roller"
 						@if `agent_MoveTypeBIts & 34 {
 							agent_AgentBits |= AgentBits_horse_in_forest
@@ -2029,7 +2027,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				*/
 
 				// "#snow"
-				@if `v[340] & 32 {
+				@if `StandingTerrainInfoBits & FLAG_TERRAIN_Snow {
 						// "##movetype ice"
 						// MoveTypeBits_Snow = b10000
 						agent_AgentBits |= (agent_MoveTypeBIts & MoveTypeBits_Snow) >> 3
@@ -2042,46 +2040,25 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 						// "##skating"
 						agent_AgentBits |= agent_MoveTypeBIts & MoveTypeBits_Skate ? 34 : 0
-						/*
-						@if `agent_MoveTypeBIts & MoveTypeBits_Skate {
-							agent_AgentBits |= 34 //32+2
-					
-						}
-						*/
 						
 				}
 				
 				// "#sand"
-				@if `v[340] & 128 {
+				@if `StandingTerrainInfoBits & FLAG_TERRAIN_Sand {
 					// sand crawler
 					// MoveTypeBits_Sand = b10000000
 					agent_AgentBits |= (agent_MoveTypeBIts & MoveTypeBits_Sand) >> 6 // |= 2 or 0
-					/*
-					@if `agent_MoveTypeBIts & MoveTypeBits_Sand {
-						agent_AgentBits |= 2
-					}			
-					*/
 
 				}
 
 				// roller
 				agent_AgentBits |= agent_MoveTypeBIts & MoveTypeBits_Roller ? 48 : 0 //32+16
-				/*
-				@if `agent_MoveTypeBIts & MoveTypeBits_Roller {
-						agent_AgentBits |= 48//32+16
-						
-				}
-				*/
+
 				
 	    } .else bl {
-				// "#Water"
-				agent_AgentBits |= v[340] & 1 ? 1056 : 0
-				/*
-				@if `v[340] & 1 {
-						agent_AgentBits |= 1056 //32 + 1024
-						
-				}
-				*/
+				// keep hovering on Water tile
+				agent_AgentBits |= StandingTerrainInfoBits & 1 ? 1056 : 0
+
 				
 	    }
 	    // "###################Terrain Check End###################"
@@ -2139,8 +2116,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	@wait 0
 	// "Workers?"
-	v[2941].copy v[2945], 4
-	v[2941..2944] = 0
+	
+	ui_workers_amount.copy ui_workers_amount_save, 5
+	v[ptr_null].copy ui_workers_amount,5 // v[2941..2944] = 0
 	v[536] = v[4532]
 	s[187].off
 	@while v[v[536]] != 0 {
@@ -2150,29 +2128,22 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[Ptr1].copy agent_AgentType, 300
 
 	    @if `agent_AgentBits & AgentBits_FLAG_EnableCivAI { //Worker AI flag is on
-				// "Escaping time"
-				//v[680] = Temp1 + 77
-				//v[v[680]] -= 4
+				val_add(ui_workers_amount,N1) // count up
+				// "Escape time"
 				agent_InCombatTimer -= 4
 				@if agent_TeamID == 0 {
-						// "Count up worker assignment"
-						//v[v[Temp1 + 244] + 2940] += between(v[Temp1 + 244], 1, 4) ? 1 : 0
-						v[agent_worker_JobType + 2940] += between(agent_worker_JobType, 1, 4) ? 1 : 0
-						// "idle"
-						//v[842] = Temp1 + 239
-						//v[v[842]].copy v[842], 6
-						@if agent_MovementOrder <= 0 {
+						// check idle workers
+						@if agent_worker_JobType == 0 {
 							@if agent_ActionState == 0 {
-								@if agent_worker_JobType == 0 {
+								@if agent_MovementOrder <= 0 {
 									s[187].on // there's at least one idle worker unit 
 									@if Is_Paused .isOff() { // not pause
 										@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { 
 											@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { // 124 = magic number but maybe 48*3
-												@if `!(agent_ProcessObjBit & 4096) {
+												@if `!(agent_ProcessObjBit & BaseObjBit_FLAG_Immune_to_bleed) { // skeletons won't say anything
 													agent_RelativeX.copy v[361], 2
 													TT1 = 20422 // quote quickstring
-
-													//Dragon voice, outdated 
+													//Dragon voice
 													@if agent_Race == 3 {
 															// quotes of dragon workers vary
 															TT1 += agent_UnitID == 10 ? 1 : 2
@@ -2244,6 +2215,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 								
 							}
 							
+						}.else bl{
+							// "Count up worker assignment"
+							TT1 = agent_worker_JobType + __id(ui_workers_amount)
+							v[TT1] += agent_worker_JobType <= 4 ? 1 : 0
 						}
 						
 				}
@@ -2265,7 +2240,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    
 	}
 
-	@if `v[2941] != v[2945] || v[2942] != v[2946] || v[2943] != v[2947] || v[2944] != v[2948] {
+	
+	@if `ui_workers_for_food != ui_workers_for_food_save || ui_workers_for_wood != ui_workers_for_wood_save || ui_workers_for_wood != ui_workers_for_stone_save || ui_workers_for_stone != ui_workers_for_gold_save {
 	    func_refresh_resource_window()
 
 	    

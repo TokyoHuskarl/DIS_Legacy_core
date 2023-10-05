@@ -41,11 +41,12 @@ __fn func_bs_melee_hit_check_wo_prep {
 	reg1 = victim_ProcessEVA
 	//@comment "#################GetParaNow v1v2r1 END#################"
 	//@comment "#DodgeMS*12%"
-	reg1 += victim_PerkFlagBits1 & 32 ? victim_ProcessMS >> 3:0//muldiv(victim_ProcessMS, 12, 100) : 0
+	reg1 += victim_PerkFlagBits1 & 32 ? victim_ProcessMS >> 3 : 0 //muldiv(victim_ProcessMS, 12, 100) : 0
 	//@comment "＃＃＃＃＃＃＃＃＃＃Elevation Bonus＃＃＃＃＃＃＃＃＃＃"
 	Temp20 = agent_getTerrainElevation - victim_getTerrainElevation
 	//@comment "＃＃＃＃＃＃＃＃＃＃BackAttack Bonus＃＃＃＃＃＃＃＃＃＃"
-	Temp1 += s[164] == 1 ? 15 : 0
+	// Temp1 += s[164] == 1 ? 15 : 0
+	Temp1 += s[164] << 4 //  16
 	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per...10% min5% max95%＃＃＃＃＃＃＃＃＃＃"
 	Temp1 += 10 - reg1 + 5 * Temp20
 	Temp1 = max(5, min(95, Temp1))
@@ -97,8 +98,8 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	//reg1 = Ptr10 + 4966
 	reg1 = victim_ProcessEVA//v[reg1]
 	//@comment "#DodgeMS*12%"
-	reg1 += victim_PerkFlagBits1 & 32 ? victim_ProcessMS >> 3 : 0// muldiv(victim_ProcessMS, 12, 100)
-	reg1 /= 4
+	reg1 += victim_PerkFlagBits1 & 32 ? victim_ProcessMS >> 3 : 0 // muldiv(victim_ProcessMS, 12, 100)
+	reg1 >>= 2 // /= 4
 	//@comment "##########Perk##########"
 	//@comment "Anticipation"
 	reg1 += victim_PerkFlagBits1 & 64 ? 18 + reg1 : 0
@@ -107,19 +108,22 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	Temp1 += 7 * Temp20
 	//@comment "＃＃＃＃＃＃＃＃＃＃Check Shield?＃＃＃＃＃＃＃＃＃＃"
 	//@comment "Shieldを取得 302...ADV/4+302*2"
-	Temp2 = victim_Shield_Value
-	@if Temp2> 0{ //if victim has shield
+	val_asg(Temp2,victim_Shield_Value) // Temp2 = victim_Shield_Value
+
+
+	@if Temp2> 0 { //if victim has shield
 		@if `victim_ProcessObjBit & 67108864 { //check if broken
-			Temp2 = 0
+			v[ptr_null].copy Temp2,1 // Temp2 = 0
+
  
 		}.else bl { // not broken
-			Temp2 =  victim_TacticsOrderFlag & 6 ? muldiv(victim_Shield_Value, 250, 100) : victim_Shield_Value * 2
+			Temp2 =  victim_TacticsOrderFlag & 6 ? muldiv(victim_Shield_Value, 250, 100) : victim_Shield_Value << 1 // * 2
 			//if you're covered with shield wall brother ... then?
 			
 		}
 
 	}.else bl{
-		Temp2 = 0
+		v[ptr_null].copy Temp2,1 // Temp2 = 0
 	}
 
 	//If you covered by ally's shield, you will gain+8 shield value, even if you don't have any shield
@@ -134,8 +138,11 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	__if $flags & bs_hitcheck_FLAG_ArrowMode {
 		Temp1 += var_funcbs_rhc_arrow_hitbonus - reg1
 	}.else bl{
-		Temp1 += ranged_base_hit - reg1
+		// Temp1 += ranged_base_hit - reg1
+		val_sub(Temp1,reg1)
+		Temp1 = ranged_base_hit
 	}
+
 	Temp1 = max(1, min(99, Temp1))
 	//against ambushed unit, accuracy is halved
 	Temp1 >>= (victim_ProcessObjBit & 1) //fixed BETA2
@@ -144,7 +151,8 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 }
 
 __fn func_bs_dummy_hit_check {
-	reg1 = 1
+	val_asg(reg1,N1) // reg1 = 1
+
 }
 
 __fn func_bs_mind_hit_check $attacker $victim{
@@ -157,7 +165,8 @@ __fn func_bs_mind_hit_check $attacker $victim{
 	//@comment "#################GetParaNow v1v2r1 END#################"
 	Temp1 = var1
 	//@comment "#################	GetWillPower#################"
-	reg1 = victim_ProcessWill//v[Ptr20 * 300 + 4975]
+	val_asg(reg1,victim_ProcessWill) // reg1 = victim_ProcessWill //v[Ptr20 * 300 + 4975]
+
 	//@comment "＃＃＃＃＃＃＃＃＃＃	Base Hit Per...10%	min5% max95%	＃＃＃＃＃＃＃＃＃＃"
 	Temp1 -= reg1
 	var2 = victim_ProcessObjBit//v[Ptr20 * 300 + 4974]
