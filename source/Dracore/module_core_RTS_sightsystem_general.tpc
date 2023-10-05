@@ -36,7 +36,9 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	    TT9 = TT1 / TT6
 
 	    TT5 = v[2931] + TT8
-	    TT5 += TT9 * v[2927]
+	    // TT5 += TT9 * v[2927]
+			val_mul(TT9,v[2927])
+			val_add(TT5,TT9)
 
 	    // TT10 = TT10 & 1 ? 100 : v[TT5] & 2 ? 50 : 0
 			TT10 = ((v[TT5] & 3) << 5) + 4 // replaced for fast proc :D
@@ -63,6 +65,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	}
 
 	v[536] = v[4532]
+
 	@while v[v[536]] != 0 {
 
 	    __if DIS_EXPERIMENTAL == -1 {
@@ -181,7 +184,7 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 				//Temp1 = v[401] * v[1117] 
 				//Temp1 += 5000
 				Ptr1 = v[401] * v[1117]
-				Ptr1 += 5001
+				val_add(Ptr1,N5001) // Ptr1 += 5001
 				v[Ptr1].copy v[601], 300
 
 				//@comment "Minions"
