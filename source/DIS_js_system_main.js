@@ -85,6 +85,26 @@ let g_PLAYER; // {DIS_RTSplayer}
 
 
 
+// ------------------------------------------------
+// DIS Data Objects
+// ------------------------------------------------
+
+// template class for factions
+class DATA_faction {
+	constructor(){
+		this.minors = [this]; // you can set minorfactions to each faction. (like Dracos, Dranas) but [0] must be always link to the parent faction itself.
+	};
+
+	trpTree = {}; // you need to import from json template 
+
+	getTroopTree(){
+		return JSON.parse(JSON.stringify(this.trpTree));
+	};
+
+	createMinorFaction(){}; // unco
+};
+
+
 
 // ------------------------------------------------
 // DIS objects
@@ -275,6 +295,25 @@ function parse_DISid(line,myArray) {
 	myArray[key] = parseInt(value,10);
 };
 
+function parse_DISData_IdArray(ary,dict){
+	let res = [];
+	let i = 0; // index for debug
+	for (let elm of ary){
+		if (typeof elm == "string"){
+			res.push(dict[elm]); // search and push numerical id from given dictionary
+
+		} else if (typeof elm == "number"){
+			res.push(elm); // just push
+			
+		} else {
+			errorlog(`parse_DISData_IdArray(${ary},${dict}) - Illegal object is found in given array[${i}].`)
+
+		};
+		i++;
+	};
+	return res;
+};
+
 function make_Array_DIStable(array) {
 	let string = "";
 	for (let elm of array) {
@@ -422,15 +461,6 @@ DIS = { // DIS fundamental components
 
 	},
 
-	data: { // DIS.data
-		init: function(){
-
-		},
-		buildings: [], // this array contains buildtemp objects.
-		techs: [], // this array contains buildtemp objects.
-	},
-
-
 	// DIS game consts - never touch here blease?
 	RTSFPS: 48, // can be changed 
 },
@@ -569,6 +599,59 @@ DIS.control = {
 
 
 // set DATA global pointer
+
+DIS.data = { // DIS.data
+	init: function(){
+		this.faction.init();
+	},
+	
+	faction: {
+		init: function(){
+			// load faction template json file in current module directly
+			// before running this js file, TPC loads it
+			let LOADED_TEMPLATE = JSON.parse(gett(633)); // <- t[633] is str_moduleData_FacTemplate_json
+			let i = 1;
+			for (let key in facid){
+				let raw = key.slice(4); // remove "FAC_" prefix
+				let fac = this.createNew(raw);
+				let temp = LOADED_TEMPLATE[raw];
+				deblog(temp)
+				if (typeof temp == "object") { // if it's defined in json
+					
+					fac.name  = temp.name; // value copy 
+					fac.color = temp.color; // value copy
+					fac.trpTree  = temp.trpTree; // ref copy - ACHTUNG! Is it really okay?
+					for (let Ary in fac.trpTree){
+						fac.trpTree[Ary] = parse_DISData_IdArray(fac.trpTree[Ary],trpid);
+
+					};
+				};
+				
+
+
+				this.register(fac,i); // even if it's dummy faction, register to as far as it's written in const_factions.txt
+				i++;
+			};
+		},
+
+		ptrs: [0],
+
+		createNew: function(strid){
+			return this[strid] = new DATA_faction(); // do not resgister to ptrs yet
+		},
+
+		register(Dfac,index){
+			index = index || this.ptr[0] + 1; // if index is not set,then just push
+			this.ptrs[index] = Dfac;
+			this.ptrs[0] = this.ptrs.length;
+		},
+
+	},
+	building: {}, 
+	tech: {},
+
+};
+
 const DATA = DIS.data;
 
 
@@ -763,7 +846,7 @@ class RTSmission {
 			return (this.timer >= f);
 		};
 		return Trig;
-	}
+	};
 
 
 	setMapData = function(mapdir){ // {string}
@@ -862,8 +945,12 @@ class DIS_RTSplayer extends DISentity {
 	constructor(id,factionid){
 		super();
 		this.id = id;
-		this.faction = factionid;
+		this.factionid = factionid;
 		this.isHuman = false;
+
+		// get troop tree data from
+		this.trpTree = DATA.faction.ptrs[factionid]();
+
 
 		// check if it's game player
 		if (id == 0 && SINGLEPLAY) { // DIS LEGACY - single player only.
@@ -1593,11 +1680,17 @@ var Cmd = {
 
 };
 
+
 // init load
 {
 	DIS.init.loadBootconf();
 	DIS.init.initID();
+	DIS.data.init(); // reset DIS data
 	Cmd.init();
+	for (let o in DATA.faction.imperial.trpTree){
+		deblog(DATA.faction.imperial.trpTree[o]);
+
+	}
 }
 
 // test
@@ -1613,6 +1706,8 @@ if (VIRTUAL_ENV){
 	RTS.path.givePath(1)
 	RTS.path.copyPath(1,2)
 	DIS.log.crash("test")
+	DIS.data.init(); // reset DIS data
+
 }
 // init 2
 //

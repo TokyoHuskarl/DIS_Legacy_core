@@ -4,7 +4,7 @@
 
 def {
 	CTYP_MAP = 1
-	CTYP_SND = 2 // should be integrateed into Game
+	CTYP_SYS = 2 // should be integrateed into Game
 	CTYP_MISSION = 3
 	CTYP_GAME = 4
 	CTYP_AGENT = 5
@@ -68,6 +68,11 @@ __fn save_DIS_js_RTS_system {
 
 }
 
+__fn load_json_to $jsonpath $savestr {
+	load_json($jsonpath)
+	t[__id($savestr)].asg js_StringBuffer
+}
+
 // Open DIS js scene
 /*
 __fn open_js_scene $scenename {
@@ -106,7 +111,7 @@ __fn DIS_Cmd_PackTree $chosenobj $md $counter $given_v_or_str $flags {
 	@if $chosenobj == CTYP_MAP { // Cmd.map
 		DIS_Cmd_map(str_link_Cmd_map,$md,$counter,$given_v_or_str,$flags)
 
-	}.elif $chosenobj == CTYP_SND { // Cmd.snd
+	}.elif $chosenobj == CTYP_SYS { // Cmd.snd
 		DIS_Cmd_snd(str_link_Cmd_snd,$md,$counter,$given_v_or_str,$flags)
 
 	}.elif $chosenobj == CTYP_MISSION { // Cmd.mission

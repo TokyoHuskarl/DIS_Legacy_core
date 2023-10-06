@@ -1,0 +1,22 @@
+	PerkBit1 =6  #1=ShieldMaster,2=Brawny,3:4=BattleForged,4:8=Nimble,5:16=Stalwart,6:32=Dodge,7:64=Anticipation,8:128=Pathfinder,
+				 #9:256=fearsome,10:512=WithFireAndSword,11:1024=DeepBreathing,12:2048=NineLives,13:4096=Backstab,14:8192=strider,15:16384=Bannerlord
+				 #16:32768=UnseenThreat,17:65536=CripplingStrikes,18:131072=Indomitable,19:262144=Duelist,20:524288=LastStand
+	PerkBit2 =7# 1:1=KillingFrenzy,2:2=BattleFlow,3:4=Berserk,4:8=HeadHunter,
+						 ##MASTERIES
+						 5:16=M_Sword,6:32=M_Spear,7:64=M_Axe,8:128=M_Hammer,9:256=M_Mace,10:512=M_Cleaver,11:1024=M_Dagger,12:2048=M_Throwing,13:4096=M_res1,14:8192=M_res2,15:16384=M_bow,16:32768=M_crossbow,17:65536=M_res3
+						 18:131072=spellcaster,19:262144=Grimreaper,20:524288=PowerStrike,21:1048576=OverDraw,22:2097152=Overwhelm
+	PerkBit3(Extra, will not get loaded into Ingame agent) =8 #1:1=BattleMaster,2:2=Determination,3:4=DevastatingStrikes,
+															  #4:8=Unique,5:16=Student,6:32=rider,7:64=mountainblade,8:128=horsearcher,9:256=parthian,10:512=IronFresh,11:1024=Second Wind,12:2048=SteelWill,13:4096=battlemage,14:8192=mageblaster
+															  #15:16384=Warmage,16:32768=Unstoppable,17:65536=Rockhead,18:131072=Executioner,19:262144=Logistica 20:524288=HERO
+															  
+	AAbits = 124 #BITS: 1 = AntiInf,2 = AntiArcher, 4 = AntiCav, 8= AntiMagi, 16 = AntiSiege,32 = reserved, 64= AntiCiv, 128=AntiStatic, 256=SlayStatic, 512=NOTantiStatic, 1024 = ShieldCracking, 2048 = DevastatingStrikes , 4096 = Trample 
+
+															  
+	Have_extra_motion = 126 #1:0000001 = have AA cooldown(pic4), 2:0000010 = have Move Motion(pic5), 3:0000100 = have Skill Motion(pic5) 4:0001000 = have Skill Motion(pic4),  5:0010000 = have Move Motion(pic4), 6:32 = Decapitatable, 7:64 = Smashable_head, 8:128= reserve, 9:256=reserve,10:512=Having_Extra_moving_animation,11:1024=dont_have_footstepsound,12:2048=no_fatigue,13:4096=upsidedown
+							#14:8192=CanBeDamaged_Armor, 15:16384=ArmorNotYetDamaged, 16:32768=CanBeDamaged_Head, 17:65536=HeadNotYetDamaged
+
+
+	ObjBits = 140 #1:1b = ambushflag, 2:10b = canspearwall, 3:100b = canshieldwall,4:1000b = wontgetKncokback,5:10000b = canSkirmish, 6:100000b = HalveRangedDamage 7:1000000b = HalveAll 8:10000000b = wontgetCombatDebuff
+				 #9:100000000b = has_no_mind 10:1000000000b = flee!,11:1024 = flip_sprite, 12:2048 = fearsome , 13:4096 = wontbleed, 14:8192 = shieldbash, 15:16384 = Discipline, 16:32768 = Relentless
+				 #17:65536=ImmuneToStun,18:131072=DuelistActivated,19:262144=silence,20:524288=bigflag 21:1048576=standard_bearer  22:2097152=explosive   23:4194304 = HERO UNIT　24:8388608=canMagicSupport　25:16777216=can_parry 26:33554432=lancecharge_flag
+				 #27:67108864=Brokenshield 

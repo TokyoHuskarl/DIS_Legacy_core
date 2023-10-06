@@ -150,7 +150,7 @@ __fn cmd_tpc_support_replace $target $source $mode {
 
 
 	str_SSreg1.asg .file($source) .utf8 //get source text
-	str_remove_comment_out(__id(str_SSreg1)) //remove comment out
+	remove_comment_out_from_refstr(__id(str_SSreg1)) //remove comment out
 	str_SSreg3.asg .file($target) .utf8 //get target text
 	
 	//@msg.show $givenstring str_SSreg1 

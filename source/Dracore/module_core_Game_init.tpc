@@ -4,7 +4,6 @@
 
 #include "./../headers/header_scripts.tpc"
 
-deft str_ShLog = 782 // -> NsLib_GUI_init.js 
 
 // -----------------------------------
 // GAME INIT
@@ -97,6 +96,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	    @sys.gameOpt .animLimit 30
 	    
 	}
+
 	@sys.gameOpt .mouse.disableMsgProcession 0
 	v[1148] = 28
 	v[1148] = 32
@@ -1538,6 +1538,17 @@ __fn init_DIS_database $already_loaded {
 
 
 	// LOAD FACTION TEMPLATE
+	
+	// new loading
+	getModulePathTo(inputstr)
+	inputstr.cat "Data/data_factions_template.json"
+	load_json_to(inputstr,str_moduleData_FacTemplate_json)
+	remove_comment_out_from_refstr(__id(str_moduleData_FacTemplate_json))
+
+	
+	
+
+	// legacy loading with csv
 	t[803].asg ""
 	v[4574] = 18700
 	t[510] .asg  .file "..\data\data_factiontemplates", .utf8, .extract
@@ -1699,11 +1710,18 @@ cev .id(2120), .name("Game:Boot"),{
 			t[510].toFile PATH_js_bootconfig, .utf8
 	}
 
+	// add a command for saving module name
+	def JSCMD_set_module_name = __str(RAWSTR_LF,"sett(",__id(str_moduleName),",boot_config.module)")
+	t[510].cat JSCMD_set_module_name
+
 	
 	defv BOOTMODE = 1265
 	vname[__id(BOOTMODE)], "SET:BOOTMODE"
 	// @comment "*Load Config*"
 	eval_js(t[510])
+
+	// module_name.asg 
+
 
 	/*
 	t[510] .split LF, t[1], v[505]

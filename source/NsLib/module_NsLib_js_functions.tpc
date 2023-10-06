@@ -1,11 +1,13 @@
-// treating java script from TPC/RM2003 side
+// -------------------------
+// dealing with java script
+// -------------------------
 
 def {
 	js_directory = "../js/"
 }
 
 // kari
-deft js_StringBuffer = 510
+deft js_StringBuffer = __id(DIS_js_buffer)
 
 //
 __fn execute_js $filename {
@@ -26,4 +28,10 @@ __fn eval_js $string {
 
 __fn deblog_js $string {
 	@js .run __str("console.log(",$string,");")
+}
+
+
+__fn load_json $jsonpath {
+	js_StringBuffer.asg $jsonpath
+	js_StringBuffer.asg .file(js_StringBuffer), .utf8
 }

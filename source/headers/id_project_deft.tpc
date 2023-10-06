@@ -1,0 +1,166 @@
+
+// common strs
+deft{
+	str1 = 501
+	str2 = 502
+	str3 = 503
+	str4 = 504
+	str5 = 505
+	str6 = 506
+	str7 = 507
+	str8 = 508
+	str9 = 509
+	inputstr = 510
+	strreg1 = 1 // are you serious?
+	regs1 = 1
+
+
+	strAr0 = 3000
+	strAr1 = 3001
+	strAr2 = 3002
+	strAr3 = 3003
+	strAr4 = 3004
+	strAr5 = 3005
+	strAr6 = 3006
+	strAr7 = 3007
+	strAr8 = 3008
+	strAr9 = 3009
+	strAr10 = 3010
+	strAr11 = 3011
+	strAr12 = 3012
+	strAr13 = 3013
+	strAr14 = 3014
+	strAr15 = 3015
+	strAr16 = 3016
+	strAr17 = 3017
+	strAr18 = 3018
+	strAr19 = 3019
+	strAr20 = 3020
+	strAr21 = 3021
+	strAr22 = 3022
+	strAr23 = 3023
+	strAr24 = 3024
+	strAr25 = 3025
+	strAr26 = 3026
+	strAr27 = 3027
+	strAr28 = 3028
+	strAr29 = 3029
+	strAr30 = 3030
+	strAr31 = 3031
+	strAr32 = 3032
+	strAr33 = 3033
+	strAr34 = 3034
+	strAr35 = 3035
+	strAr36 = 3036
+	strAr37 = 3037
+	strAr38 = 3038
+	strAr39 = 3039
+	strAr40 = 3040
+	strAr41 = 3041
+	strAr42 = 3042
+	strAr43 = 3043
+	strAr44 = 3044
+	strAr45 = 3045
+	strAr46 = 3046
+	strAr47 = 3047
+	strAr48 = 3048
+	strAr49 = 3049
+	strAr50 = 3050
+	strAr51 = 3051
+	strAr52 = 3052
+	strAr53 = 3053
+	strAr54 = 3054
+	strAr55 = 3055
+	strAr56 = 3056
+	strAr57 = 3057
+	strAr58 = 3058
+	strAr59 = 3059
+	strAr60 = 3060
+	strAr61 = 3061
+	strAr62 = 3062
+	strAr63 = 3063
+	strAr64 = 3064
+	strAr65 = 3065
+	strAr66 = 3066
+	strAr67 = 3067
+	strAr68 = 3068
+	strAr69 = 3069
+	strAr70 = 3070
+	strAr71 = 3071
+	strAr72 = 3072
+	strAr73 = 3073
+	strAr74 = 3074
+	strAr75 = 3075
+	strAr76 = 3076
+	strAr77 = 3077
+	strAr78 = 3078
+	strAr79 = 3079
+	strAr80 = 3080
+	strAr81 = 3081
+	strAr82 = 3082
+	strAr83 = 3083
+	strAr84 = 3084
+	strAr85 = 3085
+	strAr86 = 3086
+	strAr87 = 3087
+	strAr88 = 3088
+	strAr89 = 3089
+	strAr90 = 3090
+	strAr91 = 3091
+	strAr92 = 3092
+	strAr93 = 3093
+	strAr94 = 3094
+	strAr95 = 3095
+	strAr96 = 3096
+	strAr97 = 3097
+	strAr98 = 3098
+	strAr99 = 3099
+
+}
+
+
+// other specified strs
+deft {
+
+	
+	DIS_js_buffer = 512 // -> module_NsLib_js_functions.tpc
+
+	StrConst_LF = 525
+	Str_LanguageToken = 526
+
+	Str_LanguagePath = 528
+
+	str_moduleName = 631
+	str_moduleData_FacTemplate_json = 633 
+
+	Str_MapDirectory = 750
+	Str_MapID = 751
+	Str_MapName = 752
+
+
+	Current_BGMFile = 760
+	str_ShLog = 782 // -> NsLib_GUI_init.js 
+
+	data_troopID = 801 
+	data_staticID = 802
+	data_factionID = 803
+	data_weaponID = 804
+	data_shieldID = 805
+	data_armorID = 806
+	data_helmIDD = 807
+	data_accessoryID = 808
+
+	
+}
+
+__fn getModulePathTo $strid {
+	t[__id($strid)].asg "../Module/"
+	t[__id($strid)].cat str_moduleName
+	t[__id($strid)].cat "/"
+}
+
+def {
+
+}
+
+

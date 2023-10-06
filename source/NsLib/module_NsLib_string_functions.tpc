@@ -2,7 +2,7 @@
 
 
 //&str target_string
-__fn str_remove_comment_out $ptr_target_str {
+__fn remove_comment_out_from_refstr $ptr_target_str {
 
 	// var1=index
 	//Check //Comment Out
@@ -39,6 +39,10 @@ __fn str_remove_comment_out $ptr_target_str {
 			}
 		}
 	}
+
+	// finally erase indent
+	t[$ptr_target_str] .asg .exrep(t[$ptr_target_str],"\t","")
+
 
 }
 
