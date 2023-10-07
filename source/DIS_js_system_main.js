@@ -20,7 +20,7 @@ const BOOT_MODE_NORMAL = 0,
 	BOOT_MODE_DEVELOPER = 1,
 	BOOT_MODE_DEBUG = 2;
 
-let DEBUG = BOOT_MODE_NORMAL;
+let DEBUG = VIRTUAL_ENV ? BOOT_MODE_DEBUG : BOOT_MODE_NORMAL;
 
 if (gets(316)) { // s[316] is DEBUG mode flag in DIS. 
 	DEBUG = BOOT_MODE_DEBUG;
@@ -43,8 +43,12 @@ function deblog(text) {
 	Cmd.game.log_debug(text);
 };
 
+function debObj(obj) {
+	deblog(JSON.stringify(obj))
+};
+
 function errorlog(text) {
-	if (DEBUG != BOOT_MODE_DEBUG){let contx = "ERROR:" + text;console.log(contx);}
+	if (DEBUG != BOOT_MODE_DEBUG){let contx = "ERROR:" + text;console.log(contx);} else {deblog(`ERROR: ${text}`)};
 	return Cmd.game.log_error(text);
 }
 
@@ -89,9 +93,74 @@ let g_PLAYER; // {DIS_RTSplayer}
 // DIS Data Objects
 // ------------------------------------------------
 
+class DATA_entity {
+	constructor(){};
+	inherit(){}; // override me
+
+};
+
+const TREETYPE_TEMPLATE = 0,
+	TREETYPE_TRP = 1,
+	TREETYPE_TECH = 2;
+
+class DATA_tree extends DATA_entity {
+	constructor(typ,tree){ // {string}
+		super();
+		this.TREETYPE = typ;
+		this.INHERITS = tree.INHERITS || "";
+		// inherit DATA_tree object
+		if (this.INHERITS != ""){ // if inheritance setting exists
+		deblog(`inherit ${this.INHERITS}`)
+			let ptr2ParentTree = DATA.TREETEMP[this.INHERITS];
+			for (let aryname in ptr2ParentTree){
+				let clone = [];
+				deblog(`get ${aryname} key`)
+				for (let elm of ptr2ParentTree[aryname]){ // make clone
+					clone.push(elm);
+				};
+				this[aryname] = clone; // save clone of array of parent tree
+			};
+		};
+
+		// copy given tree template
+		for (let key in tree){
+			if (typeof key == "object"){ // copy only array
+				let clone = [];
+				for (let elm of tree[key]){ // make clone
+					clone.push(elm);
+				};
+				this[key] = clone; // save clone of array of parent tree
+			};
+			this[key] = tree[key]; // copy
+		};
+
+		let idcontainer;
+		// finally replace idtokens with number id
+		if (typ == TREETYPE_TRP){
+			idcontainer = trpid
+		} else if (typ == TREETYPE_TECH){
+			idcontainer = 0 // underconstruction
+		};
+
+
+		if (idcontainer != 0){ // debug
+			for (let Ary in this){
+				if (typeof this[Ary] == "object"){
+					this[Ary] = parse_DISData_IdArray(this[Ary],idcontainer);
+				};
+			};
+		};
+
+		
+	};	
+
+};
+
+
 // template class for factions
-class DATA_faction {
+class DATA_faction extends DATA_entity {
 	constructor(){
+		super();
 		this.minors = [this]; // you can set minorfactions to each faction. (like Dracos, Dranas) but [0] must be always link to the parent faction itself.
 	};
 
@@ -300,7 +369,12 @@ function parse_DISData_IdArray(ary,dict){
 	let i = 0; // index for debug
 	for (let elm of ary){
 		if (typeof elm == "string"){
-			res.push(dict[elm]); // search and push numerical id from given dictionary
+			try {
+				res.push(dict[elm]); // search and push numerical id from given dictionary
+			} catch (error) {
+				errorlog(`ID token "${elm}" is invalid. Replaced it with -1.`)
+				res.push(-1);
+			}
 
 		} else if (typeof elm == "number"){
 			res.push(elm); // just push
@@ -602,10 +676,50 @@ DIS.control = {
 
 DIS.data = { // DIS.data
 	init: function(){
-		this.faction.init();
+		this.FACTION.init();
 	},
+
+	parseDISjson(src){ // returns object
+		let result = {};
+		let dataobj = JSON.parse(src);
+		deblog(`DIS.data.parseDISjson:`)
+		for (let typ in dataobj){
+			if (typ == "FACTION"){ // faction data
+				deblog(`FACTION template data found.`)
+				result.FACTION = result.FACTION || [];
+				let ptr2Res = result.FACTION;
+				for (let temp in dataobj){
+					let fac = this.FACTION.createNew(temp);
+					fac.name  = dataobj.FACTION[temp].name; // value copy 
+					fac.color = dataobj.FACTION[temp].color; // value copy
+					fac.trpTree  = new DATA_tree(TREETYPE_TRP,temp.trpTree);
+					fac.techTree  = new DATA_tree(TREETYPE_TECH,temp.techTree);
+					ptr2Res.push(fac);
+
+				};
+
+			} else if (typ == "TREETEMP"){ // tree template data
+				deblog(`TREETEMP data found.`)
+				result.TREETEMP = result.TREETEMP || [];
+				let ptr2Res = result.TREETEMP;
+				for (let name in dataobj.TREETEMP){
+					let type = dataobj.TREETEMP.TREETYPE || 0; //
+					debObj(dataobj.TREETEMP[name])
+					let tree = this.TREETEMP.createNew(type,name,dataobj.TREETEMP[name]);
+					debObj(`${tree}`)
+					ptr2Res.push(tree)
+				};
+
+			};
+
+		};
+		deblog("DISjson parsing finished.\n result:")
+		deblog(result)
+		return result;
+	},
+
 	
-	faction: {
+	FACTION: {
 		init: function(){
 			// load faction template json file in current module directly
 			// before running this js file, TPC loads it
@@ -616,15 +730,8 @@ DIS.data = { // DIS.data
 				let fac = this.createNew(raw);
 				let temp = LOADED_TEMPLATE[raw];
 				deblog(temp)
-				if (typeof temp == "object") { // if it's defined in json
+				if (typeof temp == "object"){ // if it's defined in json
 					
-					fac.name  = temp.name; // value copy 
-					fac.color = temp.color; // value copy
-					fac.trpTree  = temp.trpTree; // ref copy - ACHTUNG! Is it really okay?
-					for (let Ary in fac.trpTree){
-						fac.trpTree[Ary] = parse_DISData_IdArray(fac.trpTree[Ary],trpid);
-
-					};
 				};
 				
 
@@ -647,8 +754,16 @@ DIS.data = { // DIS.data
 		},
 
 	},
-	building: {}, 
-	tech: {},
+	TROOP: {}, 
+	STATIC: {}, 
+	TECH: {},
+	TREETEMP: {
+		createNew: function(typ,strid,treedata){
+			return this[strid] = new DATA_tree(typ,treedata); // do not resgister to ptrs yet
+		},
+
+	},
+	SKILL: {},
 
 };
 
@@ -949,7 +1064,7 @@ class DIS_RTSplayer extends DISentity {
 		this.isHuman = false;
 
 		// get troop tree data from
-		this.trpTree = DATA.faction.ptrs[factionid]();
+		this.trpTree = DATA.FACTION.ptrs[factionid]();
 
 
 		// check if it's game player
@@ -1686,7 +1801,7 @@ var Cmd = {
 
 // DUI init process is run after disrc.js in user directory.
 
-DUI = DUI || {};
+var DUI = DUI || {};
 
 DUI = {
 	init(){
@@ -1708,20 +1823,116 @@ DUI = {
 
 
 // init load
-{
+if (!VIRTUAL_ENV){
 	DIS.init.loadBootconf();
 	DIS.init.initID();
 	DIS.data.init(); // reset DIS data
 	Cmd.init();
-	for (let o in DATA.faction.imperial.trpTree){
-		deblog(DATA.faction.imperial.trpTree[o]);
+	for (let o in DATA.FACTION.imperial.trpTree){
+		deblog(DATA.FACTION.imperial.trpTree[o]);
 
 	}
 }
 
 // test
 
+const kishida = {
+	INHERITS: "abeshinzo",
+	1:[11,44,55],
+	2:[11,44,55],
+	seggs: ["TRP_imperial_mage","TRP_imperial_mage","yajusenpai"],
+	quote: ["putainshine!"],
+	state: "alive"
+};
+
+DATA.TREETEMP.abeshinzo = {
+	1:[22],
+	4:[22,22,22],
+	5:[222,4441,41],
+	quote: ["juicy."],
+	state: "dead",
+	dukannstnicht: ["yajusenpai"]
+}
+
+trpid.yajusenpai = 114514;
+trpid.TRP_imperial_mage = "baka";
+let aaa = new DATA_tree(TREETYPE_TRP,kishida)
+debObj(aaa)
+
+
+const disjson = `
+{
+	"TREETEMP": {
+		"humantech": {
+			"TREETYPE": 2,
+			"ageadv": ["TECH_castle_age"],
+			"watch": ["TECH_townwatch","TECH_field_medic"],
+			"cart": ["TECH_cart1","TECH_cart2"],
+
+			"food": ["TECH_food1","TECH_food2"],
+			"wood": ["TECH_wood1","TECH_wood2"],
+			"build": ["TECH_crane"],
+
+			"forgeMelee": ["TECH_melee1","TECH_melee2"],
+			"forgeArrow": ["TECH_arrow1","TECH_arrow2"],
+			"forgeArmor": ["TECH_armor1","TECH_armor2"],
+
+			"magealtar1": ["TECH_MageAP"],
+			"magealtar2": ["TECH_MageHP"],
+			"magealtar3": ["TECH_dralchemy"],
+
+			"siege2": ["TECH_siege_engineer"],
+
+			"artitecture": ["TECH_artitecture"],
+			"husbandry": ["TECH_husbandry"],
+			"ballistics": ["TECH_ballistics"],
+
+			"unique1": [0],
+			"unique2": [0],
+			"conscription": ["TECH_conscription"]
+
+		},
+			"dragontech": {
+			"TREETYPE": 2,
+			"ageadv": ["TECH_castle_age"],
+			"watch": ["TECH_townwatch","TECH_field_medic"],
+			"cart": ["TECH_dra_basement"],
+
+			"dinfup": ["TECH_dra_inf1","TECH_dra_inf2","TECH_dra_inf3"],
+			"dcrossbow": ["TECH_dra_crossbow_improvement","TECH_dra_shooting_training"],
+			"dinfms": ["TECH_dra_squires","TECH_dra_combat_training"],
+
+			"food": ["TECH_food1","TECH_food2"],
+			"wood": ["TECH_wood1","TECH_wood2"],
+			"build": ["TECH_crane"],
+
+			"forge_melee": ["TECH_dra_tool_upgrade"],
+			"forge_arrow": ["TECH_dra_dragonforge"],
+			"forge_armor": ["TECH_dra_better_armor"],
+
+			"magealtar1": ["TECH_conscription"],
+			"magealtar2": ["TECH_MageHP"],
+			"magealtar3": ["TECH_dra_add_magic_missile"],
+
+			"siege1": ["TECH_dra_siege"],
+
+			"unique1": [0],
+			"unique2": [0],
+			"conscription": [0]
+
+		}
+	}
+
+}
+`
+
+debObj(DIS.data.parseDISjson(disjson))
+
+
+
+
 if (VIRTUAL_ENV){
+	/*
 	let fucker = Cmd.game.pic.load("camera_ball",10);
 	fucker.refreshPicInfo();
 	Cmd.run()
@@ -1732,7 +1943,9 @@ if (VIRTUAL_ENV){
 	RTS.path.givePath(1)
 	RTS.path.copyPath(1,2)
 	DIS.log.crash("test")
+	
 	DIS.data.init(); // reset DIS data
+*/
 
 }
 // init 2
