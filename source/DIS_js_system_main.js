@@ -1680,6 +1680,32 @@ var Cmd = {
 
 };
 
+// ----------------------------------
+// DIS Player UI system
+// ----------------------------------
+
+// DUI init process is run after disrc.js in user directory.
+
+DUI = DUI || {};
+
+DUI = {
+	init(){
+
+	},
+
+	setUserCursor(file){
+		let userpath = "../user/userui/" + file;
+		this.cursor_picture = userpath;
+		
+	},
+
+
+	cursor_picture: "map_pointer",
+
+};
+
+
+
 
 // init load
 {

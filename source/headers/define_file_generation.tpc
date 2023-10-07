@@ -1,7 +1,7 @@
 //When you add some boot config settings, then edit these below
 
 // you have to manually adjust here, source file is "source/js/bootconfig.js"
-def PATH_js_bootconfig = "..\config\boot_config.js"
+def PATH_js_bootconfig = "..\user\boot_config.js"
 def Gen_BootConfig = "
 
 const boot_config = {
@@ -22,6 +22,24 @@ const boot_config = {
 	
 }
 
+"
+
+def PATH_js_disrc = "..\user\disrc.js"
+
+def Gen_disrc_jp = "
+// disrc.jsはゲーム起動時に読み込まれる、ユーザによるカスタム用のファイルです。
+// ゲーム設定の調整等ができるようになります。
+// 例えば、下の一行のように、/user/userui/内の好きなファイルをマウスポインターとして使ったりすることができます。
+
+// DUI.setUserCursor(""map_pointer_classic"")
+"
+
+def Gen_disrc_en = "
+// disrc.js executed by DIS_Legacy.exe everytime after booting process of the game. 
+// You can configure the game with java script commands.
+// For example, you can set custom cursor picture in your $DISGAME/user/userui/ directory like this:
+
+// DUI.setUserCursor(""map_pointer_classic"")
 "
 
 def Gen_user_custom_config = "

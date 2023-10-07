@@ -3,7 +3,7 @@
 You vill compile them to ldb file and yuo vill be happy.  
 ### DraCore  
 Core part of DIS:Legacy. Simply speaking, it's an insanely complicated spaghetti.  
-Readablitiy is utter shite.  
+Its readablitiy is utter shit.  
 ### header
 Header files for DraCore. macabre.  
 ### NsLib  

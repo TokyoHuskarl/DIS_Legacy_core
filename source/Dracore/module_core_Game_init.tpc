@@ -1692,7 +1692,7 @@ cev .id(2120), .name("Game:Boot"),{
 		log_push("Boot config loading...")
 	t[510] .asg  .file PATH_js_bootconfig, .utf8
 	@if t[510] .eq ""{
-			log_push(__str("Boot config missing. Now generating to ",PATH_js_bootconfig))
+			log_push(__str("Boot config missing. Generating config file to ",PATH_js_bootconfig))
 			//There's no boot_config.txt, so going to generate it.
 			t[510].asg "// DIS boot config file"
 			t[510].cat LF
@@ -1771,6 +1771,7 @@ cev .id(2120), .name("Game:Boot"),{
 		s[316].on
 	}
 	
+	/*
 	//Check if user_custom_config.txt is generated
 	t[510] .asg  .file "..\User\user_custom_config", .utf8
 	@if t[510] .eq ""{
@@ -1782,7 +1783,7 @@ cev .id(2120), .name("Game:Boot"),{
 			t[510].cat Gen_user_custom_config
 			file_output_cooldown()
 			t[510] .toFile "..\User\user_custom_config", .utf8
-	}
+	}*/
 
 	@comment "*Load User Custom Config*"
 	t[510] .split LF, t[1], v[505]

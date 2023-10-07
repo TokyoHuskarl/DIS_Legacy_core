@@ -69,10 +69,10 @@ __fn func_damage_calculation {
 		v[Ptr1].copy agent_AgentType, agent_Basic_Array_size
 
 		// Temp2 is calculation type
-		@if Temp2 == 2 { // TRUE DAMAGE
+		@if Temp2 == 2 { // TRUE DAMAGE!
 			v[21..22] = argv_raw_dmg_amount
 			// "#HP check"
-			victim_HP -= reg2
+			val_sub(victim_HP,reg2) // victim_HP -= reg2
 			victim_HP = min(victim_HP, victim_MaxHP)
 			
 		} .else bl {
@@ -81,13 +81,13 @@ __fn func_damage_calculation {
 			var2 = SLOT_CURRENT_AR + Temp2
 			macro_get_agent_slot_to_r1(Ptr20 var2) // can be removed
 			
-			// "#Indomitable"
+			// "#Indomitable Perk gives victim AR/MR bonus 
 			reg1 += victim_PerkFlagBits1 & PerkFlagBits1_FLAG_Indomitable ? victim_ProcessWill : 0
 			// "回復属性に注意"
 			argv_damage_cal_type = argv_damage_cal_type <= -1 ? 0 : reg1
-			// "##############CheckBits##############"
-			// v[305..314] = Ptr10
-			// "#########################	AA flags which won't affect here are set off in Melee AA cev(34) to improve performance"
+
+
+			// AA flags which won't affect result here are set off in Melee AA cev(34) to improve performance"
 			@if AttackerAABits > 0 {
 				@if victim_UnitType >= 100 { // static
 					damage_multiplier += AttackerAABits & AABits_FLAG_AntiBuilding ? 200 : 0
@@ -126,22 +126,28 @@ __fn func_damage_calculation {
 
 			
 			@if LEGV_PopColour > -1 { // 224 = popcolour
+					
 					// "#Get AReff/pen #if the damage is magical, set both 0"
 					agent_AA_AR_effectiveness = LEGV_PopColour == 0 ? __id(agent_AA_AR_effectiveness) : 1301
 					v[agent_AA_AR_effectiveness].copy agent_AA_AR_effectiveness, 2
+
 					// "#If Crit, AR pen gets amplified"
 					agent_AA_AR_penetration = min(agent_AA_AR_penetration * (damage_multiplier > 200 ? 2 : 1), 100)
 					@if damage_multiplier >= 200 {
 						s[168].on
 				
 					}
+
 					/*// "(実際に受けるダメージ)=	(計算前のダメージ)×(100 / (100 +(AR.MR)))×(ダメージ倍率)	(temp1)X(temp4*(100 + temp2)*100)/100	ARならARから引いていく	Pen分はHPに通る"*/
 					reg_actual_dmg = muldiv(argv_raw_dmg_amount, damage_multiplier, 100 + muldiv(Temp2, 100 - agent_AA_AR_penetration, 100))
+
 					// "#AR check"
 					// "#[70%] of AR covers HP"
 					reg_actual_dmg_after_armor = reg_actual_dmg - muldiv(muldiv(victim_BaseAR, 70, 100), 100 - agent_AA_AR_penetration, 100)
+
 					// "#Nimble"
 					reg_actual_dmg_after_armor = muldiv(reg_actual_dmg_after_armor, victim_TakenDamageMultiplier, 100)
+
 					// "#AR adjustment"
 					// "##Battle Forge...10%"
 					victim_BaseAR = max(0, victim_BaseAR - max(1, muldiv(reg_actual_dmg / 2, 100 + agent_AA_AR_effectiveness - (victim_PerkFlagBits1 & PerkFlagBits1_FLAG_BattleForged ? muldiv(victim_BaseAR, 10, 100) : 0), 100)))
@@ -197,6 +203,7 @@ __fn func_damage_calculation {
 						}
 				
 					}
+
 					victim_InCombatTimer = v[1240] * v[4571]
 					
 			} .else bl { // OTHERWISE HEAL AGENT...
@@ -445,17 +452,6 @@ __fn func_damage_calculation {
 
 
 
-			// "Morale Check"
-			// "v1= targobj	v2=power#...?"
-			/* 9.3.23
-			var1 = Ptr20
-			var2 = reg2 / 8
-			// "#Base"
-			var2 += 15
-			// "#Fearsome"
-			var2 *= v[Ptr9 + 4974] & 2048 ? 2 : 1
-			*/
-
 			var2 = min((((reg2 / 8) + damage_base_morale_check) * agent_ProcessObjBit & BaseObjBit_FLAG_Cause_Demoralizing ? 2 : 1), 100)
 			func_bs_morale_check(Ptr20,var2)
 			// "Morale Check End################"
@@ -463,7 +459,7 @@ __fn func_damage_calculation {
 
 		damage_multiplier = 100
 		v[422] = 0
-		v[19..20] = 0
+		v[ptr_null].copy v[19],2 // v[19..20] = 0
 		s[162].off
 		// "r1=raw damage	r2=damage to HP"
 	}
@@ -528,11 +524,8 @@ __fn dmg_popup {
 						s[141].on
 						v[247] += 1
 						// "#Heal Eff"
-						var1 = reg1 / -6
+						var1 = reg1 / - 6
 						var1 = min(var1, 15)
-						//var2 = 0
-						//v[607].copy v[361], 2
-						//@call .cev 119
 						set_particle_simple(119,victim_RelativeX,var1,2)
 						s[141].off
 						
@@ -541,7 +534,7 @@ __fn dmg_popup {
 			} .else bl {
 					// "Not overkilled"
 					@if victim_HP > 0 { // this setting can be causing what is not intended (killed units won't flash)
-						@if victim_AgentType > 0 { // the victim is living
+						@if victim_AgentType > 0 { // the victim is alive
 							@if reg2 >= 1 { // "#Red Flash"
 								victim_FlashType = 1
 								TT1 = 100
