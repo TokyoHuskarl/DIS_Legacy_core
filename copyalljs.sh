@@ -14,4 +14,9 @@ for dir in "$PARENT_DIR"/*/; do
 	done
 done
 
+for file in "$PARENT_DIR"/*.js; do
+	base_name=$(basename "$file")
+	cp "$file" "$DIS_WORKSPACE"/js/"$base_name".txt
+done
+
 echo "All .js files in source directory have been copied to DIS/js/."
