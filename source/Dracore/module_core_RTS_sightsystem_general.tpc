@@ -74,10 +74,10 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 		@while v[v[536]] > 0 {
 
 				get_metateam_for_sightproc()
+				TT1 = 2000 + v[v[536]]
 
 				@if v[TT2] == 0 { //NOT EXPERIMENTAL
 				//@if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
-					TT1 = 2000 + v[v[536]]
 					s[TT1].on
 
 				} .else bl {
@@ -108,10 +108,10 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 					TT2 = Const_AgentMetaTeam_HEAD + v[v[536]]
 				}
 
+				TT1 = 2000 + v[v[536]]
 				@if v[TT2] == 0 { //NOT EXPERIMENTAL
 				// @if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
 
-					TT1 = 2000 + v[v[536]]
 					s[TT1].on
 					
 				} .else bl {
@@ -145,6 +145,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 						
 						ptr_sub(Temp2,N1)
 						@if v[Temp2] > 0 {
+							TT1 = 2000 + v[v[536]]
 							s[TT1].on
 						}
 						
@@ -169,6 +170,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 				@if v[TT2] != 0 {
 					checkinsight_agent_non_ally_static({
 						//get from saved slot for optimizing
+						TT1 = 2000 + v[v[536]]
 						s[TT1].off
 						@if `(v[Temp2] = v[v[4527] + v[858]  + v[859]  * v[2927]] & 1 ? 100 : v[Temp2]) > 0 {
 							s[TT1].on
