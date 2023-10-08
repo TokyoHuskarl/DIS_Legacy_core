@@ -4,7 +4,7 @@
 
 def {
 	CTYP_MAP = 1
-	CTYP_SYS = 2 // should be integrateed into Game
+	CTYP_SYS = 2 // ex-SND, will be reformed
 	CTYP_MISSION = 3
 	CTYP_GAME = 4
 	CTYP_AGENT = 5
@@ -54,9 +54,7 @@ __fn reboot_DIS_js_system { // called after RMsavedata load
 	// and?
 }
 
-def CEV_JS_MANAGER_RESTORE = "
-RTS.restore();
-"
+def CEV_JS_MANAGER_RESTORE = "RTS.restore();"
 __fn reboot_DIS_js_RTS_system {
 	reboot_DIS_js_system()
 	eval_js(CEV_JS_MANAGER_RESTORE) 

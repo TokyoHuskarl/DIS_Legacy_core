@@ -33,6 +33,7 @@ const SINGLEPLAY = true;
 
 // notification for developer mode.
 function devmsg(text) {
+	if (VIRTUAL_ENV){console.log(text);};
 	Cmd.game.log_dev(text);
 };
 
@@ -107,18 +108,20 @@ class DATA_tree extends DATA_entity {
 	constructor(typ,tree){ // {string}
 		super();
 		this.TREETYPE = typ;
-		this.INHERITS = tree.INHERITS || "";
+		this.INHERITS = "";
 		// inherit DATA_tree object
-		if (this.INHERITS != ""){ // if inheritance setting exists
-		deblog(`inherit ${this.INHERITS}`)
+		if (tree.hasOwnProperty("INHERITS")){ // if inheritance setting exists
+			this.INHERITS = tree.INHERITS;
+			deblog(`inherit ${this.INHERITS}`)
 			let ptr2ParentTree = DATA.TREETEMP[this.INHERITS];
 			for (let aryname in ptr2ParentTree){
-				let clone = [];
-				deblog(`get ${aryname} key`)
-				for (let elm of ptr2ParentTree[aryname]){ // make clone
-					clone.push(elm);
+				if (typeof ptr2ParentTree[aryname] == "object"){
+					let clone = [];
+					for (let elm of ptr2ParentTree[aryname]){ // make clone
+						clone.push(elm);
+					};
+					this[aryname] = clone; // save clone of array of parent tree
 				};
-				this[aryname] = clone; // save clone of array of parent tree
 			};
 		};
 
@@ -129,17 +132,22 @@ class DATA_tree extends DATA_entity {
 				for (let elm of tree[key]){ // make clone
 					clone.push(elm);
 				};
-				this[key] = clone; // save clone of array of parent tree
+				this[key] = clone; // save new clone of array of parent tree
+			} else {
+				this[key] = tree[key]; // copy numbers and strings
 			};
-			this[key] = tree[key]; // copy
 		};
 
 		let idcontainer;
 		// finally replace idtokens with number id
 		if (typ == TREETYPE_TRP){
 			idcontainer = trpid
+
 		} else if (typ == TREETYPE_TECH){
-			idcontainer = 0 // underconstruction
+			idcontainer = techid
+
+		} else {
+			idcontainer = 0
 		};
 
 
@@ -161,18 +169,31 @@ class DATA_tree extends DATA_entity {
 class DATA_faction extends DATA_entity {
 	constructor(){
 		super();
-		this.minors = [this]; // you can set minorfactions to each faction. (like Dracos, Dranas) but [0] must be always link to the parent faction itself.
+		this.minors = [0]; // you can set minorfactions to each faction. (like Dracos, Dranas) but minors[0] must be always blank - I mean number 0.
 	};
 
 	trpTree = {}; // you need to import from json template 
+	techTree = {}; // you need to import from json template 
 
 	getTroopTree(){
 		return JSON.parse(JSON.stringify(this.trpTree));
 	};
 
-	createMinorFaction(){}; // unco
+	getTechTree(){
+		return JSON.parse(JSON.stringify(this.techTree));
+	};
+
 };
 
+
+
+// template class for troops
+class DATA_troop extends DATA_entity {
+	constructor(){
+		super();
+	};
+
+};
 
 
 // ------------------------------------------------
@@ -359,10 +380,14 @@ const adr_DISreg1 = 21;
 const adr_DISstr1 = 501;
 
 // macros
+// parse ids and save into container on js
 function parse_DISid(line,myArray) {
 	const [key, value] = line.split('=');
 	myArray[key] = parseInt(value,10);
 };
+
+
+
 
 function parse_DISData_IdArray(ary,dict){
 	let res = [];
@@ -388,6 +413,7 @@ function parse_DISData_IdArray(ary,dict){
 	return res;
 };
 
+
 function make_Array_DIStable(array) {
 	let string = "";
 	for (let elm of array) {
@@ -409,7 +435,7 @@ const Adrt_ShLog = 782; // same as Shell Log address
 var trpid = trpid || {}; // troop ID table
 var staid = staid || {}; // building ID table
 var facid = facid || {}; // faction ID table
-var tech =  tech || {}; // ["techid",[group,flagbit]]
+var techid =  techid || {}; // ["techid",[group,flagbit]]
 
 DIS = { // DIS fundamental components
 	init: {
@@ -526,6 +552,11 @@ DIS = { // DIS fundamental components
 			facid = {}; // init facid
 			store_ID_table(facid,803) // get from ~/scripts/const_factions.
 			
+			// --------------------
+			// load tech ID
+			// --------------------
+			techid = {}; // init facid
+					
 			DIS.log.push("ID table init done.")
 		},
 	},
@@ -688,12 +719,20 @@ DIS.data = { // DIS.data
 				deblog(`FACTION template data found.`)
 				result.FACTION = result.FACTION || [];
 				let ptr2Res = result.FACTION;
-				for (let temp in dataobj){
+				for (let temp in dataobj.FACTION){
 					let fac = this.FACTION.createNew(temp);
-					fac.name  = dataobj.FACTION[temp].name; // value copy 
-					fac.color = dataobj.FACTION[temp].color; // value copy
-					fac.trpTree  = new DATA_tree(TREETYPE_TRP,temp.trpTree);
-					fac.techTree  = new DATA_tree(TREETYPE_TECH,temp.techTree);
+					let TEMPFAC = dataobj.FACTION[temp]
+					// try {
+					if (TEMPFAC.name != ""){
+						fac.name  = TEMPFAC.name; // value copy 
+						fac.color = TEMPFAC.color; // value copy
+						
+						var givenTree = TEMPFAC.trpTree || {};
+						fac.trpTree  = new DATA_tree(TREETYPE_TRP,givenTree);
+						givenTree = TEMPFAC.techTree || {};
+						fac.techTree  = new DATA_tree(TREETYPE_TECH,givenTree);
+
+					}
 					ptr2Res.push(fac);
 
 				};
@@ -704,9 +743,7 @@ DIS.data = { // DIS.data
 				let ptr2Res = result.TREETEMP;
 				for (let name in dataobj.TREETEMP){
 					let type = dataobj.TREETEMP.TREETYPE || 0; //
-					debObj(dataobj.TREETEMP[name])
 					let tree = this.TREETEMP.createNew(type,name,dataobj.TREETEMP[name]);
-					debObj(`${tree}`)
 					ptr2Res.push(tree)
 				};
 
@@ -1364,7 +1401,7 @@ const LINKSTR_map = 771,
 	LINKSTR_player = 776,
 	LINKSTR_group = 777,
 	LINKSTR_ui = 778,
-	LINKSTR_END = 779; // footer
+	LINKSTR_END = 779;
 
 
 // -> module_Game_scripts_general.tpc
@@ -1748,7 +1785,7 @@ var Cmd = {
 	},
 
 
-	// -------------
+		// -------------
 		// Cmd.ui
 		// -------------
 
@@ -1826,21 +1863,20 @@ DUI = {
 if (!VIRTUAL_ENV){
 	DIS.init.loadBootconf();
 	DIS.init.initID();
-	DIS.data.init(); // reset DIS data
+	// DIS.data.init(); // reset DIS data
 	Cmd.init();
-	for (let o in DATA.FACTION.imperial.trpTree){
-		deblog(DATA.FACTION.imperial.trpTree[o]);
 
-	}
 }
 
+
+/*
 // test
 
 const kishida = {
 	INHERITS: "abeshinzo",
 	1:[11,44,55],
 	2:[11,44,55],
-	seggs: ["TRP_imperial_mage","TRP_imperial_mage","yajusenpai"],
+	spapapra: ["TRP_imperial_mage","TRP_imperial_mage","yajusenpai"],
 	quote: ["putainshine!"],
 	state: "alive"
 };
@@ -1851,13 +1887,15 @@ DATA.TREETEMP.abeshinzo = {
 	5:[222,4441,41],
 	quote: ["juicy."],
 	state: "dead",
-	dukannstnicht: ["yajusenpai"]
+	dukannstnichtersein: ["yajusenpai"]
 }
 
 trpid.yajusenpai = 114514;
 trpid.TRP_imperial_mage = "baka";
 let aaa = new DATA_tree(TREETYPE_TRP,kishida)
 debObj(aaa)
+
+trpid.TRP_townsman = "Aiyooo";
 
 
 const disjson = `
@@ -1925,12 +1963,381 @@ const disjson = `
 
 }
 `
+const disjson_fac = `
 
-debObj(DIS.data.parseDISjson(disjson))
+	"FACTION": {
+		"commoners": {
+			"name": "Commoners",
+			"color": 0,
+
+			"trpTree": {
+				"townsman": ["TRP_townsman"],
+				"scout": ["TRP_harpy_scout"],
+			
+				"shield": ["TRP_merc_mob","TRP_merc_spear_militia","TRP_brigand_robber"],
+				"archer": ["TRP_brigand_poacher","TRP_merc_crossbow"],
+
+				"cav": ["TRP_merc_cav"],
+				
+				"ram": ["TRP_ram"],
+				"mangonel": ["TRP_mangonel"],
+				"scorpion": ["TRP_scorpion"],
+
+				"guard": ["TRP_nord_viking"],
+				"decisive": ["TRP_nord_berserker"],
+				"castlehero": ["TRP_nord_hersir"]
+			}
+
+		},
+
+		"imperial": {
+			"name": "Imperium Rtpium",
+			"color": 17,
+
+			"trpTree": {
+				"townsman": ["TRP_imperial_townsman","TRP_imperial_skeleton_worker"],
+				"scout": ["TRP_imperial_probebot"],
+				"healer": ["TRP_dra_maid"],
+
+				"shield": ["TRP_imperial_slime","TRP_imperial_limitanei","TRP_imperial_foederati","TRP_imperial_aux_heavy"],
+				"twohand": ["TRP_imperial_levy_orc","TRP_imperial_aux_spearman","TRP_imperial_minotaur","TRP_imperial_aux_shocktroop"],
+				"archer": ["TRP_goblin_archer","TRP_imperial_archer","TRP_imperial_elite_archer","TRP_imperial_greenskin"],
+				"exfootman": ["TRP_imperial_aux_skirmisher","TRP_imperial_vet_goblin_skirmisher"],
+
+				"cav": ["TRP_imperial_aux_wolfrider","TRP_imperial_cav","TRP_imperial_elite_cav"],
+				"knight": [0,"TRP_imperial_shockcav"],
+				"horsearcher": [0,"TRP_imperial_horse_archer","TRP_imperial_mameluke"],
+				"excav": ["TRP_imperial_camel"],
+
+				"mage": ["TRP_imperial_student","TRP_imperial_goeteia","TRP_imperial_mage","TRP_imperial_elite_mage"],
+
+				"ram": ["TRP_ram","TRP_siege_ram"],
+				"mangonel": ["TRP_mangonel","TRP_imperial_catapult"],
+				"scorpion": ["TRP_scorpion","TRP_imperial_scorpion"],
+
+				"guard": ["TRP_imperial_guard"],
+				"decisive": ["TRP_imperial_cataphract"],
+
+				"bannerman": ["TRP_imperial_comitatenses_banner"],
+
+				"meme": ["TRP_imperial_finalweapon"]
+			},
+
+			"techTree": {
+				"INHERITS": "humantech",
+
+				"ageadv": [0],
+				"watch": ["TECH_field_medic"],
+				"cart": ["TECH_cart2"],
+
+				"food": ["TECH_food2"],
+				"wood": ["TECH_wood2"],
+				"build": [0],
+
+				"magealtar3": ["TECH_arcane_transmission"],
+
+				"siege1": ["TECH_imp_siegeweapons"],
+
+				"unique1": ["TECH_imp_comitatenses","TECH_imp_cataphract","TECH_imp_composite_armor"],
+				"unique2": ["TECH_imp_elastic_defence"],
+				"conscription": ["TECH_conscription","TECH_imp_conventional_warfare"],
+
+				"hidden1": ["TECH_imp_vibroweapon"],
+				"hidden2": ["TECH_imp_loricananos"],
+				"hidden3": ["TECH_imp_anti_reality_warping"]
+			}
+
+		},
+
+		"nord": {
+			"name": "Hyperborea",
+			"color": 10,
+			
+			"trpTree": {
+				"townsman": ["TRP_townsman"],
+				"scout": ["TRP_harpy_scout"],
+				"healer": ["TRP_dra_maid"],
+
+				"shield": ["TRP_merc_spearman","TRP_nord_inf","TRP_nord_vet_inf","TRP_nord_huskarl"],
+				"twohand": [0],
+				"archer": ["TRP_thrall_skirmisher","TRP_merc_crossbow","TRP_nord_marksman","TRP_elven_longbow"],
+				"exfootman": ["TRP_nord_spearman","TRP_nord_vet_spearman"],
+
+				"cav": ["TRP_merc_c","TRP_nord_raider"],
+				"knight": [0],
+				"horsearcher": [0],
+				"excav": [0],
+
+				"mage": ["TRP_nord_raven","TRP_nord_nevermore","TRP_einherjar_napoleonic","TRP_nord_totenkopf"],
+
+				"ram": ["TRP_ram","TRP_siege_ram"],
+				"mangonel": ["TRP_mangonel"],
+				"scorpion": ["TRP_scorpion"],
+
+				"guard": ["TRP_nord_viking"],
+				"decisive": ["TRP_nord_berserker"],
+				"castlehero": ["TRP_nord_hersir"]
+			},
+
+			"techTree": {
+				"INHERITS": "humantech"
+			}
+
+		},
+
+
+		"dra": {
+			"name": "DRAGONS",
+			"color": 6,
+
+			"trpTree": {
+				"townsman": ["TRP_dra_farmer","TRP_dra_artisan"],
+				"scout": ["TRP_harpy_scout"],
+				"healer": ["TRP_dra_maid"],
+
+				"twohand": ["TRP_dra_militia","TRP_dra_inf","TRP_dra_heavy_sword","TRP_dra_champion"],
+				"fodder": ["TRP_merc_spearman","TRP_poteton_pike","TRP_poteton_huscarl"],
+				"archer": ["TRP_dra_crossbow"],
+				"exfootman": ["TRP_dra_depressgon"],
+
+				"cav": ["TRP_dra_knight"],
+				"knight": ["TRP_dra_lancer"],
+				"horsearcher": ["TRP_imperial_mameluke"],
+
+				"mage": ["TRP_dra_wiz","TRP_dra_mage","TRP_dra_flamethrower","TRP_dra_elite"],
+
+				"ram": ["TRP_stone_golem"],
+				"mangonel": [0,"TRP_mangonel"],
+				"scorpion": [0,"TRP_scorpion"],
+				"exsiege": ["TRP_dra_bombargon"],
+
+				"guard": ["TRP_dra_naskarl"],
+				"decisive_unit": ["TRP_dra_elite_naskarl"]
+				
+
+			},
+
+			"techTree": {
+				"INHERITS": "dragontech"
+			}
+
+		},
+
+		"baklava": {
+			"name": "Baklava Emirate",
+			"color": 1,
+
+			"trpTree": {
+				"townsman": ["TRP_baklava_townsman"],
+				"scout": ["TRP_harpy_scout"],
+				"healer": ["TRP_dra_maid"],
+
+				"shield": ["TRP_baklava_inf_shield_t1","TRP_baklava_inf_shield_t2","TRP_baklava_inf_shield_t3"],
+				"twohand": ["TRP_baklava_inf_twohand_t1","TRP_baklava_inf_twohand_t2","TRP_baklava_inf_twohand_t3","TRP_baklava_inf_twohand_t4"],
+				"archer": ["TRP_baklava_archer_t1","TRP_baklava_archer_t2","TRP_baklava_archer_t3","TRP_baklava_archer_t4"],
+				"exfootman": ["TRP_baklava_exbarrack_t1","TRP_baklava_exbarrack_t2"],
+
+				"cav": ["TRP_baklava_cav_t1","TRP_baklava_cav_t2","TRP_baklava_cav_t3"],
+				"knight": [0,"TRP_baklava_camel_t1","TRP_baklava_camel_t2","TRP_baklava_camel_t3"],
+				"horsearcher": [0,"TRP_imperial_horse_archer","TRP_imperial_mameluke"],
+				"excav": [0],
+
+				"mage": ["TRP_baklava_jinn","TRP_baklava_alchemist"],
+
+
+				"ram": ["TRP_ram","TRP_siege_ram"],
+				"mangonel": ["TRP_mangonel"],
+				"scorpion": ["TRP_scorpion"],
+				"exsiege": ["TRP_bombard_cannon"],
+
+				"guard": ["TRP_baklava_hassassin"],
+				"decisive_unit": ["TRP_baklava_elephant"],
+				"castlehero": ["TRP_baklava_assassin_hero"],
+
+				"bannerman": ["TRP_baklava_bannerman"]
+
+			},
+
+			"techTree": {
+				"INHERITS": "humantech"
+			}
 
 
 
+		},
 
+		"legion": {
+			"name": "Imperial Legion",
+			"color": 17
+		},
+
+		"orden": {
+			"name": "Potetonic Order",
+			"color": 0
+		},
+
+
+		"atlantium": {
+			"name": "Atlantium Province",
+			"color": 0
+		},
+
+		"poteton": {
+			"name": "Poteton Rebels",
+			"color": 8,
+
+			"trpTree": {
+				"townsman": ["TRP_townsman"],
+				"scout": ["TRP_harpy_scout"],
+
+				"shield": ["TRP_merc_militia","TRP_poteton_inf","TRP_poteton_guard"],
+				"twohand": [0,"TRP_poteton_levy_pike","TRP_poteton_pike","TRP_poteton_elite_pike"],
+				"archer": ["TRP_brigand_poacher","TRP_merc_crossbow","TRP_poteton_elite_crossbow"],
+				"exfootman": ["TRP_poteton_huscarl"],
+
+				"cav": ["TRP_merc_cav","TRP_poteton_vet_cav","TRP_poteton_raubritter"],
+				"knight": ["TRP_poteton_shockcav"],
+				"horsearcher": [0],
+				"excav": [0],
+
+				"mage": ["TRP_poteton_mage","TRP_poteton_priest","TRP_poteton_high_wizard"],
+
+				"ram": ["TRP_ram","TRP_siege_ram"],
+				"mangonel": ["TRP_mangonel"],
+				"scorpion": ["TRP_scorpion"],
+
+				"guard": ["TRP_poteton_hedgeknight"],
+				"decisive": ["TRP_elven_longbow"],
+
+				"bannerman": ["TRP_poteton_banner"]
+
+			},
+
+			"techTree": {
+				"INHERITS": "humantech",
+
+				"unique1": ["TECH_poteton_anarchy"],
+				"unique2": ["TECH_poteton_perfusion"]
+
+			}
+
+
+		},
+
+
+		"rurik": {
+			"name": "Rurikian-Borsch Alliance",
+			"color": 11,
+
+			"trpTree": {
+				"townsman": ["TRP_townsman"],
+				"scout": ["TRP_harpy_scout"],
+				"healer": ["TRP_rurik_maid"],
+
+				"shield": ["TRP_brigand_thug","TRP_rurik_inf","TRP_rurik_vet_inf","TRP_rurik_champion"],
+				"twohand": ["TRP_rurik_woodsman","TRP_rurik_longaxeman","TRP_rurik_berzerker","TRP_rurik_chosen"],
+				"archer": ["TRP_brigand_poacher","TRP_rurik_archer","TRP_rurik_vet_archer"],
+				"exfootman": ["TRP_rurik_spearman","TRP_rurik_heavy_spearman"],
+
+				"cav": ["TRP_merc_cav","TRP_rurik_raider","TRP_rurik_vet_raider"],
+				"knight": [0],
+				"horsearcher": [0,"TRP_sushi_horse_archer"],
+				"excav": [0],
+
+				"mage": ["TRP_rurik_raven","TRP_rurik_mage","TRP_rurik_frotri"],
+
+				"ram": ["TRP_ram","TRP_siege_ram"],
+				"mangonel": ["TRP_mangonel"],
+				"scorpion": ["TRP_scorpion"],
+
+
+				"guard": ["TRP_rurik_variag"],
+				"decisive_unit": ["TRP_rurik_druzhina"],
+				"castlehero": ["TRP_rurik_bogatyr"],
+
+				"bannerman": ["TRP_rurik_banner"]
+			},
+
+			"techTree": {
+				"INHERITS": "humantech",
+				"ageadv": ["TECH_castle_age","TECH_rurik_age3"],
+
+				"unique1": [0,"TECH_rurik_druzina"],
+				"unique2": ["TECH_rurik_covenmeeting"]
+			}
+
+
+		},
+
+		"dummy1": {},
+		"dummy2": {},
+
+		"sushi": {
+			"name": "Sushi Horde",
+			"color": 12,
+
+			"trpTree": {
+				"townsman": ["TRP_sushi_townsman"],
+				"scout": ["TRP_harpy_scout"],
+				"healer": [0],
+
+				"shield": ["TRP_sushi_ronin","TRP_sushi_boomer"],
+				"twohand": ["TRP_sushi_zako","TRP_sushi_ashigaru","TRP_sushi_vet_ashigaru"],
+				"archer": ["TRP_sushi_fodder","TRP_sushi_bowman","TRP_sushi_crossbow","TRP_sushi_samurai"],
+				"exfootman": ["TRP_sushi_handgonne"],
+
+				"cav": ["TRP_sushi_wolfrider"],
+				"knight": ["TRP_sushi_lancer","TRP_sushi_heavy_lancer","TRP_sushi_khan_guard"],
+				"horsearcher": ["TRP_sushi_horse_archer","TRP_sushi_heavy_horse_archer"],
+				"excav": ["TRP_sushi_destroyer"],
+
+				"mage": ["TRP_sushi_onimiko","TRP_sushi_flame",0,"TRP_sushi_hero_fox"],
+
+				"ram": ["TRP_ram","TRP_siege_ram"],
+				"mangonel": ["TRP_mangonel"],
+				"scorpion": ["TRP_scorpion"],
+				"exsiege": ["TRP_bombard_cannon"],
+
+				"guard": ["TRP_sushi_kamikaze"],
+				"decisive_unit": ["TRP_sushi_kensei"],
+				"castlehero": ["TRP_sushi_shogun"]
+
+			},
+
+			"techTree": {
+				"INHERITS": "humantech",
+
+				"magealtar3": ["TECH_dralchemy","TECH_sushi_chemistry"],
+
+				"unique1": ["TECH_sushi_kamikaze"],
+				"unique2": ["TECH_sushi_tengger_cavalry"]
+			}
+
+
+
+		},
+
+		"elvium": {
+			"name": "Elvium Dominion"
+		}
+	}
+}
+`
+
+
+
+DIS.data.parseDISjson(disjson);
+let test = DIS.data.parseDISjson(disjson_fac);
+
+for (let fac in test.FACTION){
+	deblog(test.FACTION[fac])
+};
+	deblog(DATA.TREETEMP)
+
+*/
+
+
+// without RPG_RT.exe
 if (VIRTUAL_ENV){
 	/*
 	let fucker = Cmd.game.pic.load("camera_ball",10);
@@ -1948,6 +2355,4 @@ if (VIRTUAL_ENV){
 */
 
 }
-// init 2
-//
 

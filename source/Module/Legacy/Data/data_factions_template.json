@@ -130,7 +130,7 @@
 				"healer": ["TRP_dra_maid"],
 
 				"twohand": ["TRP_dra_militia","TRP_dra_inf","TRP_dra_heavy_sword","TRP_dra_champion"],
-				"fodder": ["TRP_merc_spearman","TRP_poteton_pike","TRP_poteton_huscarl"],
+				"fodder": ["TRP_merc_spearman","TRP_poteton_pike"],
 				"archer": ["TRP_dra_crossbow"],
 				"exfootman": ["TRP_dra_depressgon"],
 
@@ -143,7 +143,7 @@
 				"ram": ["TRP_stone_golem"],
 				"mangonel": [0,"TRP_mangonel"],
 				"scorpion": [0,"TRP_scorpion"],
-				"exsiege": ["TRP_dra_bombargon"],
+				"exsiege": [0],
 
 				"guard": ["TRP_dra_naskarl"],
 				"decisive_unit": ["TRP_dra_elite_naskarl"]
@@ -153,7 +153,38 @@
 
 			"techTree": {
 				"INHERITS": "dragontech"
-			}
+			},
+
+			"minorfactions": [
+				{"name": "dummy"},
+
+				{
+					"name": "Empyrean New Order"
+
+				},
+
+				{
+					"name": "Dragons gens Draco",
+					"trpTree": {
+						"fodder": ["TRP_merc_spearman"],
+						"knight": [0],
+						"horsearcher": [0],
+						"mage": ["TRP_dra_wiz",0,"TRP_dra_flamethrower","TRP_dra_elite"],
+						"exsiege": ["TRP_dra_bombargon"]
+					},
+
+					"techTree": {
+
+					}
+
+				},
+
+				{
+					"name": "Dragons gens Drana"
+
+				}
+
+			]
 
 		},
 
