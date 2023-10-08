@@ -1,0 +1,178 @@
+// basically, by including this header you can access all NsLib common functions
+// 
+__if __defined(NsLib_Header_Included) {}.else bl {
+
+
+// java script loading
+#include "./module_NsLib_js_functions.tpc"
+
+#include "./module_NsLib_math_functions.tpc"
+#include "./module_NsLib_system_functions.tpc"
+#include "./module_NsLib_picture_functions.tpc"
+#include "./module_NsLib_utility_functions.tpc"
+
+// string functions
+#include "./module_NsLib_string_functions.tpc"
+
+// control functions
+#include "./module_NsLib_control_functions.tpc"
+
+// GUI functions START
+__if __defined(PROJECT_NAME) {
+	__if PROJECT_NAME == "DIS_LEGACY"{
+		def{
+			DIS_GUI_SETTING_AUTO_SOUND = 1 // 0=off,1=on
+		} 
+	}
+}
+
+
+def {
+	DIS_gui_Layer = 9
+	DIS_simple_switch_skin = "SystemSwitch"
+	DIS_simple_window_skin = "SystemWindow"
+
+
+}
+// AUTO SOUND SYSTEM
+__if DIS_GUI_SETTING_AUTO_SOUND == 1 {
+	
+	def func_DIS_gui_auto_sound_checkbox = {
+		play_system_se("ui\clock01",70,100)
+	}
+}
+
+defv {
+
+	// if you have mouse system already in your project, setting the same var ID is maybe wise 
+	DIS_gui_mouse_click = 43
+	DIS_gui_mouse_pointer_X = 51
+	DIS_gui_mouse_pointer_Y = 52
+
+	guiVar1 = 1952
+	guiVar2
+	guiVar3
+	guiVar4
+	guiVar5
+	guiVar6
+	guiVar7
+	guiVar8
+}
+
+deft {
+	DIS_gui_UI_font = 530
+
+}
+defv {
+	DIS_Font_UI_size =__id(Font_UI_size) 
+
+}
+
+defs {
+// DIS_gui_mouse_L_drag_switch = 11
+}
+
+
+// No need to touch here
+def{
+	DIS_GUI_TYPE_OVERRAY = 1
+	DIS_GUI_TYPE_BUTTON = 2
+
+
+	DIS_GUI_TARGET_TYPE_VAR = 0
+	DIS_GUI_TARGET_TYPE_SWITCH = 1
+	DIS_GUI_TARGET_TYPE_BIT = 2
+	DIS_GUI_TARGET_TYPE_STR = 3
+
+}
+
+// DIS GUI system basically uses picture id directly as UI overlay id to control gui, just for simplification
+
+
+def{
+
+	PRESENTATION_FLAG_Load_Picture = 0x1
+	PRESENTATION_FLAG_Use_Already_Loaded_Picture = 0x2
+
+	PRESENTATION_FLAG_Make_Window = 0x4
+
+		// these flags must used with PRESENTATION_FLAG_Make_Window  
+		// PRESENTATION_FLAG_Window_Type_Simple - if you don't turn on any WindowType flag, just set this simple flag
+
+	// these will decide where is the window's point of reference
+	GUI_OBJ_FLAG_Relative = 0x1
+	GUI_OBJ_FLAG_topLeft = 0x10
+}
+
+def func_strpic_init_check = {
+
+	__if $SystemPictureFile == "" {
+		$SystemPictureFile = DIS_simple_window_skin // try to use default window skin set in TPC 
+	}
+
+	__if $SizeX == "" {
+		$SizeX = 0
+	}
+	__if $SizeY == "" {
+		$SizeY = 0
+	}
+
+
+}
+
+def macro_check_GUI_position_flag = {
+	__if $flags & GUI_OBJ_FLAG_topLeft  {
+		@pic[$picid].move {
+		    .relative
+		    .pos 0, 0 .topLeft
+		    .scale 0
+		    .trans -100
+		    .time 0
+		    .keepRgbs
+		    .keepBlend
+		    .keepFlip
+		}
+
+	}.else bl {
+		@pic[$picid].move {
+		    .relative
+		    .pos 0, 0 .center
+		    .scale 0
+		    .trans -100
+		    .time 0
+		    .keepRgbs
+		    .keepBlend
+		    .keepFlip
+		}
+	}
+}
+
+// Dummy functions for readability
+__fn ON_LOAD $block {
+	$block
+}
+
+__fn ON_RUN $block {
+	$block
+}
+
+__fn ON_CLOSE $block {
+	$block
+}
+// include functions
+#include "./module_NsLib_GUI_functions.tpc"
+// GUI functions END
+
+// Sound system
+defv {
+	//NsLib_SYSTEM_SE_VOLUME = 1
+	//NsLib_SYSTEM_BGM_VOLUME = 2
+}
+__if __defined(NsLib_SYSTEM_SE_VOLUME) {
+	__if __defined(NsLib_SYSTEM_BGM_VOLUME) {
+#include "./module_NsLib_sound_functions.tpc"
+	}
+}
+def NsLib_Header_Included = 1
+
+}

@@ -1,11 +1,11 @@
 cev .id(1924), .name("cev1924"), {
-v[341] = v[1136] + v[1155]
-@pic[v[341]].erase
-@loop v[1136] .dst v[342] {
-    v[343] = v[341] - 1
-    @pic[v[343]].setId .move v[341], 1 .ignoreError
-    v[341] -= 1
-    
-}
-
+v[341] = v[1136] + v[1155]
+@pic[v[341]].erase
+@loop v[1136] .dst v[342] {
+    v[343] = v[341] - 1
+    @pic[v[343]].setId .move v[341], 1 .ignoreError
+    v[341] -= 1
+    
+}
+
 }

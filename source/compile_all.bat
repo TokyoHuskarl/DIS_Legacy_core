@@ -1,85 +1,64 @@
 @echo off
+cd /d %~dp0
+
+set argfile="./PSEUDO_ARG"
 
 rem // TPC exe
-set tpc="./../../tpc.exe"
+set tpc="./../tpc.exe"
 
 rem //log directory
-set log="./../../logs/log_"
+set log="./../logs/log_all_build"
+rem //Alle :D
+set build=1
+
 rem ==================================================================================
-echo *Compile DIS LDB* 
+
+rem set arg
+echo def PSEUDO_ARG_SET = 1 > %argfile%
+echo def MAKE_TYPE  = 1 >> %argfile%
+
+
+rem 日付取得
+echo %date% > %log%"_MAIN.txt"
+
+rem 時間取得
+echo %time% >> %log%"_MAIN.txt"
+
+
+echo *Compile DIS LDB* >> %log%"_MAIN.txt"
+
+
 echo Making Backup.
-call %tpc% "./../headers/MAKE_BACKUP.tpc" -en
-echo; 
-
-set target=module_core_Game_init
-echo Compiling Init Process. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
+call %tpc% "./headers/MAKE_BACKUP_ALLE.tpc" -en >> %log%"_MAIN.txt"
 echo;
 
-set target=module_core_Game_ui_general
-echo Compiling Game UI module. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
-echo; 
 
-set target=module_core_Game_items_general
-echo Compiling Game item module. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
-echo; 
+echo *Compile Start - Attention, if you have bug you have to check by trying compiling each of them* 
 
-set target=module_core_Game_misc_general
-echo Compiling Game misc module. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
-echo; 
-
-set target=module_core_RTS_main
-echo Compiling RTS Core Main. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
+rem //current directory set 
+set current="./Dracore/"
+echo *Compile Dra Core* >> %log%"_MAIN.txt"
+call "./Dracore/compile_core.bat"  >> %log%"_MAIN.txt"
+echo *Dra core Compiled.*  >> %log%"_MAIN.txt"
 echo;
 
-set target=module_core_RTS_drawing
-echo Compiling RTS Unit Drawing Process. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
-echo; 
-
-set target=module_core_RTS_agent_general
-echo Compiling Agent management module. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
+rem //current directory set 
+set current="./preset_databases/"
+echo *Compile Preset Database* >> %log%"_MAIN.txt"
+call "./preset_databases/compile_database.bat" >> %log%"_MAIN.txt"
+echo *Preset Database Compiled.*  >> %log%"_MAIN.txt"
 echo;
 
-set target=module_core_RTS_control_general
-echo Compiling RTS Control module. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
+rem //current directory set 
+set current="./Toolbox/"
+echo *Compile DIS Toolbox* >> %log%"_MAIN.txt"
+call "./Toolbox/compile_toolbox.bat" >> %log%"_MAIN.txt"
+echo *DIS Toolbox Compiled.*  >> %log%"_MAIN.txt"
 echo;
 
-set target=module_core_RTS_ui_general
-echo Compiling RTS UI module. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
-echo;
 
-set target=module_core_RTS_mission_general
-echo Compiling Mission functions. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
-echo; 
 
-set target=module_core_RTS_cohort_general
-echo Compiling RTS cohort manager. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
-echo;
 
-set target=module_core_RTS_battlesystem_general
-echo Compiling RTS battle system module. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
-echo;
-
-set target=module_core_RTS_sightsystem_general
-echo Compiling Sight System. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
-echo;
-
-set target=module_core_RTS_pathfinding_general
-echo Compiling Pathfinding System. - %target%
-call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
-echo;
-
-echo All compile process finished. Es ist vorbei.
+echo All compile process finished - IT'S OVER. 
 pause
+

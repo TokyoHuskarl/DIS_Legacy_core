@@ -1,0 +1,365 @@
+
+//Those switches were named and set before TPC is available, so they're kinda messy
+//some are not even used
+
+defs {
+
+	//LEGS_DEBUG=1
+	LEGS_PAUSE=2
+	//LEGS_GAME INIT=3
+	//LEGS_PAUSE中マウス=4
+	//LEGS_説明文表示しない=5
+	//LEGS_★最初の設定完了=6
+	//LEGS_★Endurance=7
+	//LEGS_ホイール=8
+	//LEGS_左クリックからの移行=9
+	//LEGS_TEST=10
+	//LEGS_左ドラッグ=11
+	//LEGS_中ドラッグ=12
+	//LEGS_右ドラッグ=13
+	//LEGS_ポインタあにめ=14
+	//LEGS_WPつきで動かしたよ=15
+	//LEGS_アタックムーブ=16
+	//LEGS_メッセージうぃんどう=17
+	LEGS_Player_can_control=18
+	//LEGS_演出切る=19
+	LEGS_RTS_MODE=20
+	//LEGS_地点指定しました=21
+	//LEGS_選択しました=22
+	LEGS_ready_for_doubletap=23
+	//LEGS_同じ人たちだけ選択=24
+	//LEGS_敵選択=25
+
+	LEGS_selecting_enemy = 25
+
+	LEGS_selecting_ally_troop=26
+	//LEGS_味方STATIC選択=27
+	//LEGS_敵STATIC選択=28
+	//LEGS_味方Civilian選択=29
+	LEGS_StatusPage2=30
+	//LEGS_SelectedSameFactions=31
+	//LEGS_配置完了=32
+	//LEGS_MAPEDITMODE=33
+	//LEGS_自決させる=34
+	//LEGS_！Obj描画！=35
+	//LEGS_移動地点マーカ表示可=36
+	//LEGS_高速モード=37
+	LEGS_Run_NonLocked_Mouse_Pointer=38
+	LEGS_Mouse_Clip=39
+	//LEGS_ミニマップ移動指示=40
+	//LEGS_カメラ動かしx=41
+	//LEGS_フォーカスカメラ=42
+	LEGS_Fix_Camera_position=43
+	LEGS_Call_CameraWarp=44
+	//LEGS_カメラロック右=45
+	//LEGS_カメラロック左=46
+	//LEGS_カメラロック上=47
+	//LEGS_カメラロック下=48
+	//LEGS_ずれ同期=49
+	//LEGS_ミニマップ強制描画=50
+	LEGS_MousePointer_synch=51
+	//LEGS_キャラ選択時チェック=52
+	//LEGS_スキル地点選択=53
+	//LEGS_建築ページ2 選択終了でオフ=54
+	//LEGS_このフレームにページ切り替えた=55
+	//LEGS_建築呼び出し=56
+	LEGS_RUN_MAPEDITMODE=57
+	//LEGS_InvDetailText=58
+	//LEGS_実績Classic leg  消して可=59
+	LEGS_Showing_PopupWindow_1 = 60
+	//LEGS_PauseUnitInfoChecked=61
+	//LEGS_SelectedOnce=62
+	//LEGS_CohortDetected=63
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//LEGS_CamMoved=71
+	//LEGS_EffectCut=72
+	//
+	//
+	//
+	//LEGS_StaticMinimapStart=76
+	//LEGS_MinimapDrag=77
+	//LEGS_MinimapSet=78
+	//LEGS_Main分割=79
+	//LEGS_Z軸入れ替え=80
+	//LEGS_クイックキャスト=81
+	LEGS_Show_Indicator=82
+	//LEGS_マニュアルキャスト=83
+	//LEGS_Off-BUY ON-SELL=84
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//LEGS_Longer Radio=97
+	//LEGS_Demo Scene=98
+	//LEGS_Radio Dialog with Icon=99
+	//LEGS_Radio Dialog=100
+	//LEGS_反転描画=101
+	//LEGS_壁検知=102
+	LEGS_MAIN_Agent_heading_to_target = 103
+	LEGS_MAIN_Agent_tries_to_stop = 104
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//LEGS_Initial Effect=114
+	//LEGS_Que Cancel=115
+	//LEGS_Get Spell Power(Undercost)=116
+	//LEGS_ResourceWindow=117
+	//LEGS_スキル登録=118
+	//LEGS_バフを呼ぶ=119
+	//LEGS_スキル描画モード=120
+	//LEGS_投射物登録開始=121
+	//LEGS_投射物当たり判定=122
+	//LEGS_投射物捜査関数=123
+	//LEGS_ProjectileHit=124
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//LEGS_BuffResistPen=140
+	//LEGS_エフェクト登録開始=141
+	//LEGS_エフェクト反転=142
+	//LEGS_エフェクト終了=143
+	//LEGS_パーティクルシステム起動=144
+	//
+	//LEGS_TEST=146
+	//
+	//
+	//
+	//LEGS_GetMinionData=150
+	//LEGS_Get Spawn Data=151
+	//LEGS_SpawnSystemLegacy=152
+	//
+	//LEGS_GenOnehandedWeapon=154
+	//LEGS_GenHeadCovered=155
+	//LEGS_Gen_CohortSet=156
+	//LEGS_Gen_NoListAssigningFlag=157
+	//LEGS_Gen_DelHead=158
+	//LEGS_Gen_ArmArmored=159
+	//LEGS_Gen_bigheadflag=160
+	//LEGS_ダメージ二倍=161
+	//LEGS_追加ダメージ=162
+	//LEGS_攻撃的なドラッグ=163
+	//LEGS_BackAttack=164
+	//LEGS_AAatker can be seen=165
+	//LEGS_AAvict can be seen=166
+	//LEGS_AA Static Target=167
+	//LEGS_CRITICAL=168
+	//
+	//LEGS_Nothing but Wall=174
+	//LEGS_Refund=175
+	//LEGS_JustCheckIfBuildable=176
+	//LEGS_(Width%16)=177
+	//LEGS_(Height%16)=178
+	//LEGS_BuildFit2NodeFlag=179
+	//LEGS_WallTypeBuildSwitch=180
+	//LEGS_Switch_Escape=181
+	LEGS_OpenConsole=182
+	LEGS_ClosingConsole=183
+	//LEGS_Switch_Pause=184
+	//LEGS_Switch_FF=185
+	//LEGS_Switch_LOg=186
+	//LEGS_State_Idle_Worker=187
+	//LEGS_Switch_Idle_Worker=188
+	//
+	//LEGS_DelPress=199
+	//LEGS_IdleShortcut=200
+	LEGS_Common_Switch1=201
+	LEGS_Common_Switch2=202
+	//LEGS_汎用処理スイッチ3=203
+	//LEGS_汎用処理スイッチ4=204
+	LEGS_Common_Switch4 = 204
+	LEGS_Common_Switch5 = 205
+	//LEGS_汎用処理スイッチ6=206
+	//LEGS_汎用処理スイッチ7=207
+	//
+	//LEGS_SpawnRangedOrNot=211
+	//LEGS_Brutal Fatality=212
+	//
+	LEGS_DmgCalAtker_can_be_seen=219
+	LEGS_DmgCalVictim_can_be_seen=220
+	//LEGS_a=221
+	//LEGS_Show Cohort Banner=222
+	//LEGS_No wait cohort=223
+
+	LEGS_Request_Refresh_Obs=236
+	LEGS_Request_Refresh_FoW=237
+	//LEGS_CallAdvMap=238
+	//LEGS_Mouse Toggle=239
+	//LEGS_Achievement_DIS:Legacy=240
+	//LEGS_AIアタックムーブ=241
+	//LEGS_AI_pathfinding=242
+
+	//LEGS_Battle Atm Flag=260
+	//LEGS_CommandCall=261
+	//
+	//LEGS_PFneverReach=279
+	//LEGS_PFwalldetection=280
+	//LEGS_汎用戦術AI起動=281
+	//LEGS_Line=282
+	//LEGS_SimpleTrigger=290
+	//LEGS_ScriptBreak=291
+	//LEGS_Wintermap=296
+	//LEGS_CombatDetectionAI=297
+	//LEGS_NightTimeFlag=298
+	LEGS_MapPreRevealed=299
+	//LEGS_視界システム起動=300
+	//LEGS_[設定欄]=301
+	//LEGS_[設定]死体をすぐ消す=302
+	//LEGS_低速モード=303
+	//LEGS_カメラの慣性切る=304
+	//LEGS_[設定]ミニマップトグル切=305
+	//LEGS_[設定]サイドＨＰバートグル=306
+	//LEGS_[設定]ダメージ表示なし=307
+	//LEGS_[設定]オーバーレイ切る=308
+	//LEGS_警報をきる=309
+	//LEGS_[設定]ミニマップkiru=310
+	//LEGS_[設定]ミッション中会話飛ばす=311
+	//LEGS_[設定]天候切る=312
+	//LEGS_[設定]戦闘ログ=313
+	//LEGS_[設定]低スぺ=314
+	//LEGS_[設定]Adv.Maptile=315
+	//LEGS_CHEAT TEST MODE=316
+	//LEGS_[setting]No Autosave=317
+	//LEGS_[引継ぎ]DISLegacy=319
+	//LEGS_[引継ぎ]ドラドラアイランドプレイ=320
+	//LEGS_ドーとやら=321
+	//LEGS_サーガの始まり=322
+	//LEGS_ドラはまた生きてあり=323
+	//LEGS_Twilight of the Thunder God=324
+	//LEGS_黄昏を越えて=325
+	//LEGS_賽は投げられた=326
+	//LEGS_そして伝説へ=327
+	//LEGS_約束なんてしたっけ=328
+	//LEGS_あなたがオトナスちゃんですか=329
+	//LEGS_闇が落ちるとしても=330
+	//LEGS_どこからどう見てもローマ帝国ではない=331
+	//LEGS_帝国の平和=332
+	//LEGS_戦いの地平へ=333
+	//LEGS_旧い世界の遺産=334
+	//LEGS_文明が終わるということ=335
+	//LEGS_Hail the Caesar, Kingdom Come=336
+	//LEGS_あるいは、滅びゆくもののために=337
+	//LEGS_溝口隊長車=338
+	//LEGS_悪ノリしすぎました=339
+	//LEGS_バンザイ！=340
+	//LEGS_介護士不足も解消なのじゃ=341
+	//LEGS_エキノコックス大爆発=342
+	//LEGS_真ハラキリ=343
+	//LEGS_進めや進め諸共に=344
+	//LEGS_Honour, then and become the wind that slowly sweeps the dunes=345
+	//LEGS_君達どこから湧いて出てきたの？=347
+	//LEGS_ウラー！=348
+	//LEGS_頭ラガンバド=349
+	//LEGS_イリヤームーロメツ=350
+	//LEGS_ほぼFrozen Triggers351
+	//LEGS_Back on Northern Shores353
+	//LEGS_中世ファンタジーはまだ遠く=355
+	//LEGS_自由に冠を=356
+	//LEGS_ふしぎの砦のヘレン=357
+	//LEGS_ふんにょう21=358
+	//LEGS_去り行くドラさん=359
+	//LEGS_大いなる風は吹いたか=360
+	//LEGS_ヴァルハラで会おう=361
+	//LEGS_もう終わりだよこの国=362
+	//LEGS_どぼじでこんなことするの！？=363
+	//LEGS_崩壊のわずかな先送り=364
+	//LEGS_軛を断つのみ=365
+	//LEGS_悲歌慷慨の日は去りぬ=366
+	//LEGS_東方の防壁となりて=367
+	//LEGS_天帝プレイ=391
+	//LEGS_天帝クリア=392
+	//LEGS_天帝参議破壊=393
+	//LEGS_天帝ポテチ=394
+	//LEGS_真なる天帝=395
+	//LEGS_真ピースフル=403
+	//LEGS_MAPスイッチ1=404
+	//LEGS_MAPスイッチ2=405
+	//LEGS_MAPスイッチ3=406
+	//LEGS_MAPすっち４=407
+	//LEGS_MAPスイッチ5=408
+	//LEGS_MAPスイッチ6=409
+	//LEGS_MAPスイッチ7=410
+	//LEGS_MAPスイッチ8=411
+	//LEGS_MAPスイッチ9=412
+	//LEGS_MAPスイッチ10=413
+	//LEGS_MAPスイッチ11=414
+	//LEGS_MAP12=415
+	//LEGS_MAP18=421
+	//LEGS_MAPスイッチ21=424
+	//LEGS_MAPスイッチ40=442
+	//LEGS_MAPスイッチ40=443
+	//LEGS_新tech:クロスボウ改良=444
+	//LEGS_新tech:ドラゴンフォージ=445
+	//LEGS_武者修行=446
+	//LEGS_鎧の改造=447
+	//LEGS_子供部屋ドラゴン問題の最終解決=448
+	//LEGS_新tech:射撃訓練=449
+	//LEGS_戦闘訓練=450
+	//LEGS_ナスカールギャオオオオン=451
+	LEGS_SkipBriefing=461
+	//LEGS_RestartMission=462
+	//LEGS_ぴーすふる=463
+	//LEGS_終了フラグ=464
+	//LEGS_最終ウェーブ=465
+	//LEGS_区切り1=466
+	//LEGS_区切り2=467
+	//LEGS_区切り3=468
+	//LEGS_★士気かっと=473
+	//LEGS_ピースフル起動=474
+	//LEGS_ピースフルだよ=475
+	//LEGS_最終大勝利=476
+	//LEGS_★天帝=477
+	//LEGS_ragnarokcoming=478
+	//LEGS_MAP復元=479
+	//LEGS_チュートリアル=480
+	//LEGS_天候カウントやめる=481
+	//LEGS_ラグナロクが待っている=482
+	//LEGS_RAIDERSPAWN=483
+	//LEGS_VIKINGRAID1開始=484
+	//LEGS_VIKINGRAID2開始=485
+	//LEGS_VIKINGRAID3開始=486
+	//LEGS_スパン短縮1=487
+	//LEGS_スパン短縮2=488
+	//LEGS_VIKINGRAID4開始=491
+	//LEGS_帝国の時代=494
+	//LEGS_攻城兵器=495
+	//LEGS_ナスカール=496
+	//LEGS_徴用=497
+	//LEGS_軍兵=498
+	//LEGS_重剣兵=499
+	//LEGS_近衛剣兵=500
+	//LEGS_道具の改良=501
+	//LEGS_貯蔵量拡張=502
+
+}

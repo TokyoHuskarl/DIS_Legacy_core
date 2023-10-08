@@ -1,1098 +1,1665 @@
 
-// "module_core_RTS_ui_unit_management.tpc"
-v[341] = 921
-v[342] = 1
-@loop 6 {
-    @pic[v[341]].show {
-        "pointer_waypoint"
-        .pos 160, 120 .center
-        .chromakey 1
-        .scale 100
-        .trans 100
-        .rgbs 100, 100, 100, 100
-        .grid 6, 1 .cell v[342]
-        .mapLayer 8
-        .eraseWhenTransfer
-        .affectedByShake
-    }
-    v[341..342] += 1
-    
-}
 
-@pic[928].move {
-    .pos v[1041], v[1042] .center
-    .scale 100
-    .trans 100
-    .time 0
-    .rgbs 100, 100, 100, 100
-}
-@pic[929].move {
-    .pos 160, 120 .center
-    .scale 100
-    .trans 100
-    .time 0
-    .rgbs 100, 100, 100, 100
-}
-//// "単体ステータス"
-@if v[81] == 1 {
-    v[325] = v[101] * 300
-    v[618] = v[325] + 4718
-    v[618] = v[v[618]]
-    v[842] = v[325] + 4942
-    v[842] = v[v[842]]
-    v[371] = (v[842] < 4 ? 1 : 0) + (v[618] > 0 ? 2 : 0)
-    @if v[371] >= 2 {
-        //// "Indicate Targeting Enemy"
-        v[325] = v[618] * 300 
-	v[325] += 4707
-        v[v[325]].copy v[341], 2
-	v[350] = v[325] - 6
-        v[350] = v[v[350]]
-        v[345] = v[350] > 0 ? 45 : 100
+__fn UI_CEV_SELECTED_AGENT_MANAGEMENT {
+	// "module_core_RTS_ui_unit_management.tpc"
+	TT1 = 921
+	TT2 = 1
+	@loop 6 {
+	    @pic[TT1].show {
+		"pointer_waypoint"
+		.pos 160, 120 .center
+		.chromakey 1
+		.scale 100
+		.trans 100
+		.rgbs 100, 100, 100, 100
+		.grid 6, 1 .cell TT2
+		.mapLayer 8
+		.eraseWhenTransfer
+		.affectedByShake
+	    }
+	    v[341..342] += 1
+	    
+	}
 
-        @pic[928].show {
-            "enlockon"
-            .pos v[341], v[342] .center
-            .scrollWithMap
-            .chromakey 1
-            .scale 100
-            .trans v[345]
-            .rgbs 0, 200, 0, 100
-            .grid 3, 3 .cell 1
-            .mapLayer 8
-            .eraseWhenTransfer
-            .affectedByShake
-        }
-        v[711] = v[618] * 300
-        v[711] += 4811
-        //// "EnHPgauge"
-        v[371] = v[v[711]] <= 0 ? 0 : v[943]
-        @if v[371] == 0 {
-            //// "HP"
-            //// "配列ゲット"
-            v[302] = v[618] * 300
-            v[302] += 4700
-            v[303] = v[302] + 7
-            v[300] = v[302] + 105
-            v[v[300]].copy v[705], 2
-            @if v[706] > 0 {
-                //// "処理開始"
-                v[706] *= 100
-                //// "#0除算防止"
-                v[705] = max(v[705], 1)
-                v[706] /= v[705] * 5
-                v[706] = max(v[706], 1)
-                //// "HPバーびよ～ん"
-                v[v[303]].copy v[303], 2
-                v[304] -= 16
-                //// "処理終わり"
-                //// "ALT->ARck"
-                @pic[929].show {
-                    "HP_bar3"
-                    .pos v[303], v[304] .center
-                    .scrollWithMap
-                    .chromakey 0
-                    .scale 100
-                    .trans 0
-                    .rgbs 100, 100, 100, 100
-                    .grid 1, 20 .cell v[706]
-                    .mapLayer 8
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            } .else bl {
-                @pic[929].show {
-                    "HP_bar3"
-                    .pos 160, 120 .center
-                    .scrollWithMap
-                    .chromakey 0
-                    .scale 100
-                    .trans 100
-                    .rgbs 100, 100, 100, 100
-                    .grid 1, 20 .cell v[706]
-                    .mapLayer 8
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            }
-            
-        } .else bl {
-            //// "AR=>0 && Ctrl==1"
-            //// "AR"
-            //// "配列ゲット"
-            v[302] = v[618] * 300
-            v[302] += 4700
-            v[303] = v[302] + 7
-            v[299] = v[302] + 138
-            v[705] = v[v[299]]
-            v[706] = v[v[711]]
-            @if v[706] > 0 {
-                // "処理開始"
-                v[706] *= 100
-                // "#0除算防止"
-                v[705] = max(v[705], 1)
-                v[706] /= v[705] * 5
-                v[706] = max(v[706], 1)
-                // "HPバーびよ～ん"
-                v[v[303]].copy v[303], 2
-                v[304] -= 16
-                // "処理終わり"
-                // "ALT->ARck"
-                @pic[929].show {
-                    "HP_bar2"
-                    .pos v[303], v[304] .center
-                    .scrollWithMap
-                    .chromakey 0
-                    .scale 100
-                    .trans 0
-                    .rgbs 100, 100, 100, 100
-                    .grid 1, 20 .cell v[706]
-                    .mapLayer 8
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            } .else bl {
-                @pic[929].show {
-                    "HP_bar2"
-                    .pos 160, 120 .center
-                    .scrollWithMap
-                    .chromakey 0
-                    .scale 100
-                    .trans 100
-                    .rgbs 100, 100, 100, 100
-                    .grid 1, 20 .cell v[706]
-                    .mapLayer 8
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            }
-            
-        }
-        
-    } .else bl {
-        // "Indicate ways the unit goes"
-        v[325] = v[101] * 300
-        v[325] += 4741
-        v[v[325]].copy v[641], 15
-        v[350] = v[v[325] + 201]
-        v[345] = v[350] > 0 ? 35 : 100
-        v[0] = v[341..342] = [641, 642]
-        v[655] = max(0, v[655])
-        v[341..342] += 2 * v[655]
-        v[v[341]].copy v[341], 2
-        v[342] += sin(v[2219] * 10, 1, 7)
-        @pic[928].show {
-            "enlockon"
-            .pos v[341], v[342] .bottom
-            .scrollWithMap
-            .chromakey 1
-            .scale 100
-            .trans v[345]
-            .rgbs 100, 100, 100, 100
-            .grid 3, 3 .cell 2
-            .mapLayer 8
-            .eraseWhenTransfer
-            .affectedByShake
-        }
-        
-    }
-    // "Indicate ways the unit goes"
-    v[325] = v[101] * 300
-    v[325] += 4741
-    v[v[325]].copy v[641], 15
-    // ""
-    v[341] = 921
-    v[342] = 1
-    v[0] = v[343..344] = [641, 642]
-    @loop 6 {
-        v[345] = v[342] <= v[v[101] * 300 + 4755] ? 35 : 100
-        @pic[v[341]].show {
-            "pointer_waypoint"
-            .pos v[v[343]], v[v[344]] .center
-            .scrollWithMap
-            .chromakey 1
-            .scale 100
-            .trans v[345]
-            .rgbs 100, 100, 100, 100
-            .grid 6, 1 .cell v[342]
-            .mapLayer 8
-            .eraseWhenTransfer
-            .affectedByShake
-        }
-        v[341..342] += 1
-        v[343..344] += 2
-        
-    }
-    
-    @loop 1 .dst v[341] {
-        v[350] = 101 + v[341]
-        v[342] = v[4521] + v[341]
-        @if v[944] >= 1 {
-            @if `v[v[v[350]] * 300 + 4701] >= 1 {
-                // "バグ修正町"
-                @pic[v[342]].getInfo .xywh .currentRect v[343], v[343], v[344], v[345]
-                @if v[344] < 1 {
-                    v[355] = v[v[v[350]] * 300 + 4969] / 1000
-                    v[355] *= 2
-                    v[355] += 2
-                    @pic[v[342]].strpic {
-                        ""
-                        .pos 160, 120 .center
-                        .size v[355], v[355]                        .scrollWithMap
-                        .chromakey 1
-                        .scale 100
-                        .trans 100
-                        .rgbs 100, 100, 100, 100
-                        .font "", 12 .noShadow
-                        .spacing 0, 4
-                        .skin "" .nobg .noframe .noGradation .noPadding
-                        .rotate 10
-                        .mapLayer 3
-                        .eraseWhenTransfer
-                        .affectedByFlash
-                        .affectedByShake
-                    }
-                    v[355] -= 2
-                    v[355] /= 2
-                    v[601] = -4194304
-                    // "Draw Circle Function"
-                    v[604] = 3 - 2 * v[355]
-                    v[603] = v[355]
-                    v[605] = v[355]
-                    v[606] = v[355] + v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = v[355]
-                    v[606] = -v[355] + v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = v[355] + v[355]
-                    v[606] = v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = -v[355] + v[355]
-                    v[606] = v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[602] = 0
-                    @while v[602] <= v[603] {
-                        @if v[604] < 0 {
-                            v[604] += 6 + 4 * v[602]
-                            
-                        } .else bl {
-                            v[604] += 10 + 4 * v[602] - 4 * (v[603] - 1)
-                            v[603] -= 1
-                            
-                        }
-                        v[605] = v[603] + v[355]
-                        v[606] = v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[602] + v[355]
-                        v[606] = v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[603] + v[355]
-                        v[606] = v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[602] + v[355]
-                        v[606] = v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[603] + v[355]
-                        v[606] = -v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[602] + v[355]
-                        v[606] = -v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[603] + v[355]
-                        v[606] = -v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[602] + v[355]
-                        v[606] = -v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[602] += 1
-                        
-                    }
-                    
-                    
-                }
-                v[325] = v[v[350]] * 300 + 4707
-                v[v[325]].copy v[607], 2
-                @pic[v[342]].move {
-                    .pos v[607], v[608] .center
-                    .scale 100
-                    .trans 50
-                    .time 0
-                    .rgbs 100, 100, 100, 100
-                }
-                
-            } .else bl {
-                @pic[v[342]].move {
-                    .pos 160, 120 .center
-                    .scale 100
-                    .trans 100
-                    .time 0
-                    .rgbs 100, 100, 100, 100
-                }
-                
-            }
-            
-        } .else bl {
-            @pic[v[342]].move {
-                .pos 160, 120 .center
-                .scale 100
-                .trans 100
-                .time 0
-                .rgbs 100, 100, 100, 100
-            }
-            
-        }
-        
-    }
-    
-    
-}
-@if v[81] == 2 {
-    @if s[36] .isOn() {
-        v[325] = v[101] * 300 + 4741
-        v[v[325]].copy v[641], 15
-        v[350] = v[v[325] + 201]
-        v[345] = v[350] > 0 ? 35 : 100
-        v[0] = v[341..342] = [641, 642]
-        v[655] = max(0, v[655])
-        v[341..342] += 2 * v[655]
-        v[v[341]].copy v[341], 2
-        v[342] += sin(v[2219] * 10, 1, 7)
-        @pic[928].show {
-            "enlockon"
-            .pos v[341], v[342] .bottom
-            .scrollWithMap
-            .chromakey 1
-            .scale 100
-            .trans v[345]
-            .rgbs 100, 100, 100, 100
-            .grid 3, 3 .cell 2
-            .mapLayer 8
-            .eraseWhenTransfer
-            .affectedByShake
-        }
-        // ""
-        v[341] = 921
-        v[342] = 1
-        v[0] = v[343..344] = [641, 642]
-        @loop 6 {
-            v[345] = v[342] <= v[655] ? 35 : 100
-            @pic[v[341]].show {
-                "pointer_waypoint"
-                .pos v[v[343]], v[v[344]] .center
-                .scrollWithMap
-                .chromakey 1
-                .scale 100
-                .trans v[345]
-                .rgbs 100, 100, 100, 100
-                .grid 6, 1 .cell v[342]
-                .mapLayer 8
-                .eraseWhenTransfer
-                .affectedByShake
-            }
-            v[341..342] += 1
-            v[343..344] += 2
-            
-        }
-        
-        
-    }
-    @loop 40 .dst v[341] {
-        v[350] = 101 + v[341]
-        v[342] = v[4521] + v[341]
-        @if v[944] >= 1 {
-            @if `v[v[v[350]] * 300 + 4701] >= 1 {
-                // "バグ修正町"
-                @pic[v[342]].getInfo .xywh .currentRect v[343], v[343], v[344], v[345]
-                @if v[344] < 1 {
-                    v[355] = v[v[v[350]] * 300 + 4969] / 1000
-                    v[355] *= 2
-                    v[355] += 2
-                    @pic[v[342]].strpic {
-                        ""
-                        .pos 160, 120 .center
-                        .size v[355], v[355]                        .scrollWithMap
-                        .chromakey 1
-                        .scale 100
-                        .trans 100
-                        .rgbs 100, 100, 100, 100
-                        .font "", 12 .noShadow
-                        .spacing 0, 4
-                        .skin "" .nobg .noframe .noGradation .noPadding
-                        .rotate 10
-                        .mapLayer 3
-                        .eraseWhenTransfer
-                        .affectedByFlash
-                        .affectedByShake
-                    }
-                    v[355] -= 2
-                    v[355] /= 2
-                    v[601] = -4194304
-                    // "Draw Circle Function"
-                    v[604] = 3 - 2 * v[355]
-                    v[603] = v[355]
-                    v[605] = v[355]
-                    v[606] = v[355] + v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = v[355]
-                    v[606] = -v[355] + v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = v[355] + v[355]
-                    v[606] = v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = -v[355] + v[355]
-                    v[606] = v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[602] = 0
-                    @while v[602] <= v[603] {
-                        @if v[604] < 0 {
-                            v[604] += 6 + 4 * v[602]
-                            
-                        } .else bl {
-                            v[604] += 10 + 4 * v[602] - 4 * (v[603] - 1)
-                            v[603] -= 1
-                            
-                        }
-                        v[605] = v[603] + v[355]
-                        v[606] = v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[602] + v[355]
-                        v[606] = v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[603] + v[355]
-                        v[606] = v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[602] + v[355]
-                        v[606] = v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[603] + v[355]
-                        v[606] = -v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[602] + v[355]
-                        v[606] = -v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[603] + v[355]
-                        v[606] = -v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[602] + v[355]
-                        v[606] = -v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[602] += 1
-                        
-                    }
-                    
-                    
-                }
-                v[325] = v[v[350]] * 300 + 4707
-                v[v[325]].copy v[607], 2
-                @pic[v[342]].move {
-                    .pos v[607], v[608] .center
-                    .scale 100
-                    .trans 50
-                    .time 0
-                    .rgbs 100, 100, 100, 100
-                }
-                
-            } .else bl {
-                @pic[v[342]].move {
-                    .pos 160, 120 .center
-                    .scale 100
-                    .trans 100
-                    .time 0
-                    .rgbs 100, 100, 100, 100
-                }
-                
-            }
-            
-        } .else bl {
-            @pic[v[342]].move {
-                .pos 160, 120 .center
-                .scale 100
-                .trans 100
-                .time 0
-                .rgbs 100, 100, 100, 100
-            }
-            
-        }
-        
-    }
-    
-    
-}
-// "敵ステータス"
-@if v[81] == 3 {
-    v[325] = v[100] * 300
-    v[618] = v[100]
-    v[842] = v[v[325] + 4942]
-    v[371] = v[618] > 0 ? 1 : 0
-    @if v[371] >= 1 {
-        // "EnHPgauge"
-        v[711] = v[618] * 300
-        v[711] += 4811
-        v[371] = v[v[711]] <= 0 ? 1 : v[943]
-        @if v[371] == 0 {
-            // "AR"
-            // "配列ゲット"
-            v[302] = v[618] * 300
-            v[302] += 4700
-            v[303] = v[302] + 7
-            v[299] = v[302] + 138
-            v[705] = v[v[299]]
-            v[706] = v[v[711]]
-            @if v[706] > 0 {
-                // "処理開始"
-                v[706] *= 100
-                // "#0除算防止"
-                v[705] = max(v[705], 1)
-                v[706] /= v[705] * 5
-                v[706] = max(v[706], 1)
-                // "HPバーびよ～ん"
-                v[v[303]].copy v[303], 2
-                v[304] -= 16
-                // "処理終わり"
-                // "ALT->ARck"
-                @pic[929].show {
-                    "HP_bar2"
-                    .pos v[303], v[304] .center
-                    .scrollWithMap
-                    .chromakey 0
-                    .scale 100
-                    .trans 0
-                    .rgbs 100, 100, 100, 100
-                    .grid 1, 20 .cell v[706]
-                    .mapLayer 8
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            } .else bl {
-                @pic[929].show {
-                    "HP_bar2"
-                    .pos 160, 120 .center
-                    .scrollWithMap
-                    .chromakey 0
-                    .scale 100
-                    .trans 100
-                    .rgbs 100, 100, 100, 100
-                    .grid 1, 20 .cell v[706]
-                    .mapLayer 8
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            }
-            
-        } .else bl {
-            // "AR=>0 && Ctrl==1"
-            // "HP"
-            // "配列ゲット"
-            v[302] = v[618] * 300
-            v[302] += 4700
-            v[303] = v[302] + 7
-            v[300] = v[302] + 105
-            v[v[300]].copy v[705], 2
-            @if v[706] > 0 {
-                // "処理開始"
-                v[706] *= 100
-                // "#0除算防止"
-                v[705] = max(v[705], 1)
-                v[706] /= v[705] * 5
-                v[706] = max(v[706], 1)
-                // "HPバーびよ～ん"
-                v[v[303]].copy v[303], 2
-                v[304] -= 16
-                // "処理終わり"
-                // "ALT->ARck"
-                @pic[929].show {
-                    "HP_bar3"
-                    .pos v[303], v[304] .center
-                    .scrollWithMap
-                    .chromakey 0
-                    .scale 100
-                    .trans 0
-                    .rgbs 100, 100, 100, 100
-                    .grid 1, 20 .cell v[706]
-                    .mapLayer 8
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            } .else bl {
-                @pic[929].show {
-                    "HP_bar3"
-                    .pos 160, 120 .center
-                    .scrollWithMap
-                    .chromakey 0
-                    .scale 100
-                    .trans 100
-                    .rgbs 100, 100, 100, 100
-                    .grid 1, 20 .cell v[706]
-                    .mapLayer 8
-                    .eraseWhenTransfer
-                    .affectedByFlash
-                    .affectedByShake
-                }
-                
-            }
-            
-        }
-        
-    } .else bl {
-        // "Indicate ways the unit goes"
-        v[325] += 4741
-        v[v[325]].copy v[641], 15
-        v[350] = v[v[325] + 201]
-        v[345] = v[350] > 0 ? 35 : 100
-        v[0] = v[341..342] = [641, 642]
-        v[655] = max(0, v[655])
-        v[341..342] += 2 * v[655]
-        v[v[341]].copy v[341], 2
-        v[342] += sin(v[2219] * 10, 1, 7)
-        @pic[928].show {
-            "enlockon"
-            .pos v[341], v[342] .bottom
-            .scrollWithMap
-            .chromakey 1
-            .scale 100
-            .trans v[345]
-            .rgbs 100, 100, 100, 100
-            .grid 3, 3 .cell 2
-            .mapLayer 8
-            .eraseWhenTransfer
-            .affectedByShake
-        }
-        // ""
-        v[341] = 921
-        v[342] = 1
-        v[0] = v[343..344] = [641, 642]
-        @loop 6 {
-            v[345] = v[342] <= v[655] ? 35 : 100
-            @pic[v[341]].show {
-                "pointer_waypoint"
-                .pos v[v[343]], v[v[344]] .center
-                .scrollWithMap
-                .chromakey 1
-                .scale 100
-                .trans v[345]
-                .rgbs 100, 100, 100, 100
-                .grid 6, 1 .cell v[342]
-                .mapLayer 8
-                .eraseWhenTransfer
-                .affectedByShake
-            }
-            v[341..342] += 1
-            v[343..344] += 2
-            
-        }
-        
-        
-    }
-    @loop 1 .dst v[341] {
-        v[350] = 100 + v[341]
-        v[342] = v[4521] + v[341]
-        @if v[944] >= 1 {
-            @if `v[v[v[350]] * 300 + 4701] >= 1 {
-                // "バグ修正町"
-                @pic[v[342]].getInfo .xywh .currentRect v[343], v[343], v[344], v[345]
-                @if v[344] < 1 {
-                    v[355] = v[v[v[350]] * 300 + 4969] / 1000
-                    v[355] *= 2
-                    v[355] += 2
-                    @pic[v[342]].strpic {
-                        ""
-                        .pos 160, 120 .center
-                        .size v[355], v[355]                        .scrollWithMap
-                        .chromakey 1
-                        .scale 100
-                        .trans 100
-                        .rgbs 100, 100, 100, 100
-                        .font "", 12 .noShadow
-                        .spacing 0, 4
-                        .skin "" .nobg .noframe .noGradation .noPadding
-                        .rotate 10
-                        .mapLayer 3
-                        .eraseWhenTransfer
-                        .affectedByFlash
-                        .affectedByShake
-                    }
-                    v[355] -= 2
-                    v[355] /= 2
-                    v[601] = -4194304
-                    // "Draw Circle Function"
-                    v[604] = 3 - 2 * v[355]
-                    v[603] = v[355]
-                    v[605] = v[355]
-                    v[606] = v[355] + v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = v[355]
-                    v[606] = -v[355] + v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = v[355] + v[355]
-                    v[606] = v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = -v[355] + v[355]
-                    v[606] = v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[602] = 0
-                    @while v[602] <= v[603] {
-                        @if v[604] < 0 {
-                            v[604] += 6 + 4 * v[602]
-                            
-                        } .else bl {
-                            v[604] += 10 + 4 * v[602] - 4 * (v[603] - 1)
-                            v[603] -= 1
-                            
-                        }
-                        v[605] = v[603] + v[355]
-                        v[606] = v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[602] + v[355]
-                        v[606] = v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[603] + v[355]
-                        v[606] = v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[602] + v[355]
-                        v[606] = v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[603] + v[355]
-                        v[606] = -v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[602] + v[355]
-                        v[606] = -v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[603] + v[355]
-                        v[606] = -v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[602] + v[355]
-                        v[606] = -v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[602] += 1
-                        
-                    }
-                    
-                    
-                }
-                v[325] = v[v[350]] * 300 + 4707
-                v[v[325]].copy v[607], 2
-                @pic[v[342]].move {
-                    .pos v[607], v[608] .center
-                    .scale 100
-                    .trans 50
-                    .time 0
-                    .rgbs 100, 100, 100, 100
-                }
-                
-            } .else bl {
-                @pic[v[342]].move {
-                    .pos 160, 120 .center
-                    .scale 100
-                    .trans 100
-                    .time 0
-                    .rgbs 100, 100, 100, 100
-                }
-                
-            }
-            
-        } .else bl {
-            @pic[v[342]].move {
-                .pos 160, 120 .center
-                .scale 100
-                .trans 100
-                .time 0
-                .rgbs 100, 100, 100, 100
-            }
-            
-        }
-        
-    }
-    
-    
-}
-@if v[81] == 4 {
-    v[325] = v[101] * 300
-    v[618] = v[v[325] + 4718]
-    v[371] = v[618] > 0 ? 2 : 0
-    //// "Indicate ways the unit goes"
-    v[325] = v[101] * 300
-    v[325] += 4741
-    v[v[325]].copy v[641], 15
-    v[350] = v[v[325] + 201]
-    v[345] = v[350] > 0 ? 35 : 100
-    v[0] = v[341..342] = [641, 642]
-    v[655] = max(0, v[655])
-    v[341..342] += 2 * v[655]
-    v[v[341]].copy v[341], 2
-    v[342] += sin(v[2219] * 10, 1, 7)
-    @pic[928].show {
-        "enlockon"
-        .pos v[341], v[342] .bottom
-        .scrollWithMap
-        .chromakey 1
-        .scale 100
-        .trans v[345]
-        .rgbs 100, 100, 100, 100
-        .grid 3, 3 .cell 2
-        .mapLayer 8
-        .eraseWhenTransfer
-        .affectedByShake
-    }
-    @loop 1 .dst v[341] {
-        v[350] = 101 + v[341]
-        v[342] = v[4521] + v[341]
-        @if v[944] >= 1 {
-            @if `v[v[v[350]] * 300 + 4701] >= 1 {
-                //// "バグ修正町"
-                @pic[v[342]].getInfo .xywh .currentRect v[343], v[343], v[344], v[345]
-                @if v[344] < 1 {
-                    v[355] = v[v[v[350]] * 300 + 4969] / 1000
-                    v[355] *= 2
-                    v[355] += 2
-                    @pic[v[342]].strpic {
-                        ""
-                        .pos 160, 120 .center
-                        .size v[355], v[355]                        .scrollWithMap
-                        .chromakey 1
-                        .scale 100
-                        .trans 100
-                        .rgbs 100, 100, 100, 100
-                        .font "", 12 .noShadow
-                        .spacing 0, 4
-                        .skin "" .nobg .noframe .noGradation .noPadding
-                        .rotate 10
-                        .mapLayer 3
-                        .eraseWhenTransfer
-                        .affectedByFlash
-                        .affectedByShake
-                    }
-                    v[355] -= 2
-                    v[355] /= 2
-                    v[601] = -4194304
-                    // "Draw Circle Function"
-                    v[604] = 3 - 2 * v[355]
-                    v[603] = v[355]
-                    v[605] = v[355]
-                    v[606] = v[355] + v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = v[355]
-                    v[606] = -v[355] + v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = v[355] + v[355]
-                    v[606] = v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = -v[355] + v[355]
-                    v[606] = v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[602] = 0
-                    @while v[602] <= v[603] {
-                        @if v[604] < 0 {
-                            v[604] += 6 + 4 * v[602]
-                            
-                        } .else bl {
-                            v[604] += 10 + 4 * v[602] - 4 * (v[603] - 1)
-                            v[603] -= 1
-                            
-                        }
-                        v[605] = v[603] + v[355]
-                        v[606] = v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[602] + v[355]
-                        v[606] = v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[603] + v[355]
-                        v[606] = v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[602] + v[355]
-                        v[606] = v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[603] + v[355]
-                        v[606] = -v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[602] + v[355]
-                        v[606] = -v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[603] + v[355]
-                        v[606] = -v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[602] + v[355]
-                        v[606] = -v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[602] += 1
-                        
-                    }
-                    
-                    
-                }
-                v[325] = v[v[350]] * 300 + 4707
-                v[v[325]].copy v[607], 2
-                @pic[v[342]].move {
-                    .pos v[607], v[608] .center
-                    .scale 100
-                    .trans 50
-                    .time 0
-                    .rgbs 100, 100, 100, 100
-                }
-                
-            } .else bl {
-                @pic[v[342]].move {
-                    .pos 160, 120 .center
-                    .scale 100
-                    .trans 100
-                    .time 0
-                    .rgbs 100, 100, 100, 100
-                }
-                
-            }
-            
-        } .else bl {
-            @pic[v[342]].move {
-                .pos 160, 120 .center
-                .scale 100
-                .trans 100
-                .time 0
-                .rgbs 100, 100, 100, 100
-            }
-            
-        }
-        
-    }
-    
-    
-}
-//// "敵ステータス"
-@if v[81] == 5 {
-    v[325] = v[100] * 300
-    v[618] = v[100]
-    @loop 1 .dst v[341] {
-        v[350] = 100 + v[341]
-        v[342] = v[4521] + v[341]
-        @if v[944] >= 1 {
-            @if `v[v[v[350]] * 300 + 4701] >= 1 {
-                // "バグ修正町"
-                @pic[v[342]].getInfo .xywh .currentRect v[343], v[343], v[344], v[345]
-                @if v[344] < 1 {
-                    v[355] = v[v[v[350]] * 300 + 4969] / 1000
-                    v[355] *= 2
-                    v[355] += 2
-                    @pic[v[342]].strpic {
-                        ""
-                        .pos 160, 120 .center
-                        .size v[355], v[355]                        .scrollWithMap
-                        .chromakey 1
-                        .scale 100
-                        .trans 100
-                        .rgbs 100, 100, 100, 100
-                        .font "", 12 .noShadow
-                        .spacing 0, 4
-                        .skin "" .nobg .noframe .noGradation .noPadding
-                        .rotate 10
-                        .mapLayer 3
-                        .eraseWhenTransfer
-                        .affectedByFlash
-                        .affectedByShake
-                    }
-                    v[355] -= 2
-                    v[355] /= 2
-                    v[601] = -4194304
-                    // "Draw Circle Function"
-                    v[604] = 3 - 2 * v[355]
-                    v[603] = v[355]
-                    v[605] = v[355]
-                    v[606] = v[355] + v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = v[355]
-                    v[606] = -v[355] + v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = v[355] + v[355]
-                    v[606] = v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[605] = -v[355] + v[355]
-                    v[606] = v[355]
-                    @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                    v[602] = 0
-                    @while v[602] <= v[603] {
-                        @if v[604] < 0 {
-                            v[604] += 6 + 4 * v[602]
-                            
-                        } .else bl {
-                            v[604] += 10 + 4 * v[602] - 4 * (v[603] - 1)
-                            v[603] -= 1
-                            
-                        }
-                        v[605] = v[603] + v[355]
-                        v[606] = v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[602] + v[355]
-                        v[606] = v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[603] + v[355]
-                        v[606] = v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[602] + v[355]
-                        v[606] = v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[603] + v[355]
-                        v[606] = -v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = -v[602] + v[355]
-                        v[606] = -v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[603] + v[355]
-                        v[606] = -v[602] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[605] = v[602] + v[355]
-                        v[606] = -v[603] + v[355]
-                        @pic[v[342]].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
-                        v[602] += 1
-                        
-                    }
-                    
-                    
-                }
-                v[325] = v[v[350]] * 300 
+	@pic[928].move {
+	    .pos v[1041], v[1042] .center
+	    .scale 100
+	    .trans 100
+	    .time 0
+	    .rgbs 100, 100, 100, 100
+	}
+	@pic[929].move {
+	    .pos 160, 120 .center
+	    .scale 100
+	    .trans 100
+	    .time 0
+	    .rgbs 100, 100, 100, 100
+	}
+	//// "単体ステータス"
+	@if v[81] == 1 {
+	    v[325] = v[101] * 300
+	    v[618] = v[325] + 4718
+	    v[618] = v[v[618]]
+	    v[842] = v[325] + 4942
+	    v[842] = v[v[842]]
+	    v[371] = (v[842] < 4 ? 1 : 0) + (v[618] > 0 ? 2 : 0)
+	    @if v[371] >= 2 {
+		//// "Indicate Targeting Enemy"
+		v[325] = v[618] * 300 
 		v[325] += 4707
-                v[v[325]].copy v[607], 2
-                @pic[v[342]].move {
-                    .pos v[607], v[608] .center
-                    .scale 100
-                    .trans 50
-                    .time 0
-                    .rgbs 100, 100, 100, 100
-                }
-                
-            } .else bl {
-                @pic[v[342]].move {
-                    .pos 160, 120 .center
-                    .scale 100
-                    .trans 100
-                    .time 0
-                    .rgbs 100, 100, 100, 100
-                }
-                
-            }
-            
-        } .else bl {
-            @pic[v[342]].move {
-                .pos 160, 120 .center
-                .scale 100
-                .trans 100
-                .time 0
-                .rgbs 100, 100, 100, 100
-            }
-            
-        }
-        
-    }
-    
-    
+		v[v[325]].copy TT1, 2
+		TT10 = v[325] - 6
+		TT10 = v[TT10]
+		TT5 = TT10 > 0 ? 45 : 100
+
+		@pic[928].show {
+		    "enlockon"
+		    .pos TT1, TT2 .center
+		    .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans TT5
+		    .rgbs 0, 200, 0, 100
+		    .grid 3, 3 .cell 1
+		    .mapLayer 8
+		    .eraseWhenTransfer
+		    .affectedByShake
+		}
+		v[711] = v[618] * 300
+		v[711] += 4811
+		//// "EnHPgauge"
+		v[371] = v[v[711]] <= 0 ? 0 : v[943]
+		@if v[371] == 0 {
+		    //// "HP"
+		    //// "配列ゲット"
+		    Temp2 = v[618] * 300
+		    Temp2 += 4700
+		    Temp3 = Temp2 + 7
+		    Ptr20 = Temp2 + 105
+		    v[Ptr20].copy v[705], 2
+		    @if v[706] > 0 {
+			//// "処理開始"
+			v[706] *= 100
+			//// "#0除算防止"
+			v[705] = max(v[705], 1)
+			v[706] /= v[705] * 5
+			v[706] = max(v[706], 1)
+			//// "HPバーびよ～ん"
+			v[Temp3].copy Temp3, 2
+			Temp4 -= 16
+			//// "処理終わり"
+			//// "ALT->ARck"
+			@pic[929].show {
+			    "HP_bar3"
+			    .pos Temp3, Temp4 .center
+			    .scrollWithMap
+			    .chromakey 0
+			    .scale 100
+			    .trans 0
+			    .rgbs 100, 100, 100, 100
+			    .grid 1, 20 .cell v[706]
+			    .mapLayer 8
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			
+		    } .else bl {
+			@pic[929].show {
+			    "HP_bar3"
+			    .pos 160, 120 .center
+			    .scrollWithMap
+			    .chromakey 0
+			    .scale 100
+			    .trans 100
+			    .rgbs 100, 100, 100, 100
+			    .grid 1, 20 .cell v[706]
+			    .mapLayer 8
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			
+		    }
+		    
+		} .else bl {
+		    //// "AR=>0 && Ctrl==1"
+		    //// "AR"
+		    //// "配列ゲット"
+		    Temp2 = v[618] * 300
+		    Temp2 += 4700
+		    Temp3 = Temp2 + 7
+		    Ptr19 = Temp2 + 138
+		    v[705] = v[Ptr19]
+		    v[706] = v[v[711]]
+		    @if v[706] > 0 {
+			// "処理開始"
+			v[706] *= 100
+			// "#0除算防止"
+			v[705] = max(v[705], 1)
+			v[706] /= v[705] * 5
+			v[706] = max(v[706], 1)
+			// "HPバーびよ～ん"
+			v[Temp3].copy Temp3, 2
+			Temp4 -= 16
+			// "処理終わり"
+			// "ALT->ARck"
+			@pic[929].show {
+			    "HP_bar2"
+			    .pos Temp3, Temp4 .center
+			    .scrollWithMap
+			    .chromakey 0
+			    .scale 100
+			    .trans 0
+			    .rgbs 100, 100, 100, 100
+			    .grid 1, 20 .cell v[706]
+			    .mapLayer 8
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			
+		    } .else bl {
+			@pic[929].show {
+			    "HP_bar2"
+			    .pos 160, 120 .center
+			    .scrollWithMap
+			    .chromakey 0
+			    .scale 100
+			    .trans 100
+			    .rgbs 100, 100, 100, 100
+			    .grid 1, 20 .cell v[706]
+			    .mapLayer 8
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			
+		    }
+		    
+		}
+		
+	    } .else bl {
+		// "Indicate ways the unit goes"
+		v[325] = v[101] * 300
+		v[325] += 4741
+		v[v[325]].copy v[641], 15
+		TT10 = v[v[325] + 201]
+		TT5 = TT10 > 0 ? 35 : 100
+		v[0] = v[341..342] = [641, 642]
+		v[655] = max(0, v[655])
+		v[341..342] += 2 * v[655]
+		v[TT1].copy TT1, 2
+		TT2 += sin(v[2219] * 10, 1, 7)
+		@pic[928].show {
+		    "enlockon"
+		    .pos TT1, TT2 .bottom
+		    .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans TT5
+		    .rgbs 100, 100, 100, 100
+		    .grid 3, 3 .cell 2
+		    .mapLayer 8
+		    .eraseWhenTransfer
+		    .affectedByShake
+		}
+		
+	    }
+	    // "Indicate ways the unit goes"
+	    v[325] = v[101] * 300
+	    v[325] += 4741
+	    v[v[325]].copy v[641], 15
+	    // ""
+	    TT1 = 921
+	    TT2 = 1
+	    v[0] = v[343..344] = [641, 642]
+	    @loop 6 {
+		TT5 = TT2 <= v[v[101] * 300 + 4755] ? 35 : 100
+		@pic[TT1].show {
+		    "pointer_waypoint"
+		    .pos v[TT3], v[TT4] .center
+		    .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans TT5
+		    .rgbs 100, 100, 100, 100
+		    .grid 6, 1 .cell TT2
+		    .mapLayer 8
+		    .eraseWhenTransfer
+		    .affectedByShake
+		}
+		v[341..342] += 1
+		v[343..344] += 2
+		
+	    }
+	    
+	    @loop 1 .dst TT1 {
+		TT10 = 101 + TT1
+		TT2 = v[4521] + TT1
+		@if v[944] >= 1 {
+		    @if `v[v[TT10] * 300 + 4701] >= 1 {
+			// "バグ修正町"
+			@pic[TT2].getInfo .xywh .currentRect TT3, TT3, TT4, TT5
+			@if TT4 < 1 {
+			    TT15 = v[v[TT10] * 300 + 4969] / 1000
+			    TT15 *= 2
+			    TT15 += 2
+			    @pic[TT2].strpic {
+				""
+				.pos 160, 120 .center
+				.size TT15, TT15                        .scrollWithMap
+				.chromakey 1
+				.scale 100
+				.trans 100
+				.rgbs 100, 100, 100, 100
+				.font "", 12 .noShadow
+				.spacing 0, 4
+				.skin "" .nobg .noframe .noGradation .noPadding
+				.rotate 10
+				.mapLayer 3
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    TT15 -= 2
+			    TT15 /= 2
+			    v[601] = -4194304
+			    // "Draw Circle Function"
+			    v[604] = 3 - 2 * TT15
+			    v[603] = TT15
+			    v[605] = TT15
+			    v[606] = TT15 + TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = TT15
+			    v[606] = -TT15 + TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = TT15 + TT15
+			    v[606] = TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = -TT15 + TT15
+			    v[606] = TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[602] = 0
+			    @while v[602] <= v[603] {
+				@if v[604] < 0 {
+				    v[604] += 6 + 4 * v[602]
+				    
+				} .else bl {
+				    v[604] += 10 + 4 * v[602] - 4 * (v[603] - 1)
+				    v[603] -= 1
+				    
+				}
+				v[605] = v[603] + TT15
+				v[606] = v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[602] + TT15
+				v[606] = v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[603] + TT15
+				v[606] = v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[602] + TT15
+				v[606] = v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[603] + TT15
+				v[606] = -v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[602] + TT15
+				v[606] = -v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[603] + TT15
+				v[606] = -v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[602] + TT15
+				v[606] = -v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[602] += 1
+				
+			    }
+			    
+			    
+			}
+			v[325] = v[TT10] * 300 + 4707
+			v[v[325]].copy v[607], 2
+			@pic[TT2].move {
+			    .pos v[607], v[608] .center
+			    .scale 100
+			    .trans 50
+			    .time 0
+			    .rgbs 100, 100, 100, 100
+			}
+			
+		    } .else bl {
+			@pic[TT2].move {
+			    .pos 160, 120 .center
+			    .scale 100
+			    .trans 100
+			    .time 0
+			    .rgbs 100, 100, 100, 100
+			}
+			
+		    }
+		    
+		} .else bl {
+		    @pic[TT2].move {
+			.pos 160, 120 .center
+			.scale 100
+			.trans 100
+			.time 0
+			.rgbs 100, 100, 100, 100
+		    }
+		    
+		}
+		
+	    }
+	    
+	    
+	}
+	@if v[81] == 2 {
+	    @if s[36] .isOn() {
+		v[325] = v[101] * 300 + 4741
+		v[v[325]].copy v[641], 15
+		TT10 = v[v[325] + 201]
+		TT5 = TT10 > 0 ? 35 : 100
+		v[0] = v[341..342] = [641, 642]
+		v[655] = max(0, v[655])
+		v[341..342] += 2 * v[655]
+		v[TT1].copy TT1, 2
+		TT2 += sin(v[2219] * 10, 1, 7)
+		@pic[928].show {
+		    "enlockon"
+		    .pos TT1, TT2 .bottom
+		    .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans TT5
+		    .rgbs 100, 100, 100, 100
+		    .grid 3, 3 .cell 2
+		    .mapLayer 8
+		    .eraseWhenTransfer
+		    .affectedByShake
+		}
+		// ""
+		TT1 = 921
+		TT2 = 1
+		v[0] = v[343..344] = [641, 642]
+		@loop 6 {
+		    TT5 = TT2 <= v[655] ? 35 : 100
+		    @pic[TT1].show {
+			"pointer_waypoint"
+			.pos v[TT3], v[TT4] .center
+			.scrollWithMap
+			.chromakey 1
+			.scale 100
+			.trans TT5
+			.rgbs 100, 100, 100, 100
+			.grid 6, 1 .cell TT2
+			.mapLayer 8
+			.eraseWhenTransfer
+			.affectedByShake
+		    }
+		    v[341..342] += 1
+		    v[343..344] += 2
+		    
+		}
+		
+		
+	    }
+	    @loop 40 .dst TT1 {
+		TT10 = 101 + TT1
+		TT2 = v[4521] + TT1
+		@if v[944] >= 1 {
+		    @if `v[v[TT10] * 300 + 4701] >= 1 {
+			// "バグ修正町"
+			@pic[TT2].getInfo .xywh .currentRect TT3, TT3, TT4, TT5
+			@if TT4 < 1 {
+			    TT15 = v[v[TT10] * 300 + 4969] / 1000
+			    TT15 *= 2
+			    TT15 += 2
+			    @pic[TT2].strpic {
+				""
+				.pos 160, 120 .center
+				.size TT15, TT15                        .scrollWithMap
+				.chromakey 1
+				.scale 100
+				.trans 100
+				.rgbs 100, 100, 100, 100
+				.font "", 12 .noShadow
+				.spacing 0, 4
+				.skin "" .nobg .noframe .noGradation .noPadding
+				.rotate 10
+				.mapLayer 3
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    TT15 -= 2
+			    TT15 /= 2
+			    v[601] = -4194304
+			    // "Draw Circle Function"
+			    v[604] = 3 - 2 * TT15
+			    v[603] = TT15
+			    v[605] = TT15
+			    v[606] = TT15 + TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = TT15
+			    v[606] = -TT15 + TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = TT15 + TT15
+			    v[606] = TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = -TT15 + TT15
+			    v[606] = TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[602] = 0
+			    @while v[602] <= v[603] {
+				@if v[604] < 0 {
+				    v[604] += 6 + 4 * v[602]
+				    
+				} .else bl {
+				    v[604] += 10 + 4 * v[602] - 4 * (v[603] - 1)
+				    v[603] -= 1
+				    
+				}
+				v[605] = v[603] + TT15
+				v[606] = v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[602] + TT15
+				v[606] = v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[603] + TT15
+				v[606] = v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[602] + TT15
+				v[606] = v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[603] + TT15
+				v[606] = -v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[602] + TT15
+				v[606] = -v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[603] + TT15
+				v[606] = -v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[602] + TT15
+				v[606] = -v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[602] += 1
+				
+			    }
+			    
+			    
+			}
+			v[325] = v[TT10] * 300 + 4707
+			v[v[325]].copy v[607], 2
+			@pic[TT2].move {
+			    .pos v[607], v[608] .center
+			    .scale 100
+			    .trans 50
+			    .time 0
+			    .rgbs 100, 100, 100, 100
+			}
+			
+		    } .else bl {
+			@pic[TT2].move {
+			    .pos 160, 120 .center
+			    .scale 100
+			    .trans 100
+			    .time 0
+			    .rgbs 100, 100, 100, 100
+			}
+			
+		    }
+		    
+		} .else bl {
+		    @pic[TT2].move {
+			.pos 160, 120 .center
+			.scale 100
+			.trans 100
+			.time 0
+			.rgbs 100, 100, 100, 100
+		    }
+		    
+		}
+		
+	    }
+	    
+	    
+	}
+	// "敵ステータス"
+	@if v[81] == 3 {
+	    v[325] = v[100] * 300
+	    v[618] = v[100]
+	    v[842] = v[v[325] + 4942]
+	    v[371] = v[618] > 0 ? 1 : 0
+	    @if v[371] >= 1 {
+		// "EnHPgauge"
+		v[711] = v[618] * 300
+		v[711] += 4811
+		v[371] = v[v[711]] <= 0 ? 1 : v[943]
+		@if v[371] == 0 {
+		    // "AR"
+		    // "配列ゲット"
+		    Temp2 = v[618] * 300
+		    Temp2 += 4700
+		    Temp3 = Temp2 + 7
+		    Ptr19 = Temp2 + 138
+		    v[705] = v[Ptr19]
+		    v[706] = v[v[711]]
+		    @if v[706] > 0 {
+			// "処理開始"
+			v[706] *= 100
+			// "#0除算防止"
+			v[705] = max(v[705], 1)
+			v[706] /= v[705] * 5
+			v[706] = max(v[706], 1)
+			// "HPバーびよ～ん"
+			v[Temp3].copy Temp3, 2
+			Temp4 -= 16
+			// "処理終わり"
+			// "ALT->ARck"
+			@pic[929].show {
+			    "HP_bar2"
+			    .pos Temp3, Temp4 .center
+			    .scrollWithMap
+			    .chromakey 0
+			    .scale 100
+			    .trans 0
+			    .rgbs 100, 100, 100, 100
+			    .grid 1, 20 .cell v[706]
+			    .mapLayer 8
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			
+		    } .else bl {
+			@pic[929].show {
+			    "HP_bar2"
+			    .pos 160, 120 .center
+			    .scrollWithMap
+			    .chromakey 0
+			    .scale 100
+			    .trans 100
+			    .rgbs 100, 100, 100, 100
+			    .grid 1, 20 .cell v[706]
+			    .mapLayer 8
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			
+		    }
+		    
+		} .else bl {
+		    // "AR=>0 && Ctrl==1"
+		    // "HP"
+		    // "配列ゲット"
+		    Temp2 = v[618] * 300
+		    Temp2 += 4700
+		    Temp3 = Temp2 + 7
+		    Ptr20 = Temp2 + 105
+		    v[Ptr20].copy v[705], 2
+		    @if v[706] > 0 {
+			// "処理開始"
+			v[706] *= 100
+			// "#0除算防止"
+			v[705] = max(v[705], 1)
+			v[706] /= v[705] * 5
+			v[706] = max(v[706], 1)
+			// "HPバーびよ～ん"
+			v[Temp3].copy Temp3, 2
+			Temp4 -= 16
+			// "処理終わり"
+			// "ALT->ARck"
+			@pic[929].show {
+			    "HP_bar3"
+			    .pos Temp3, Temp4 .center
+			    .scrollWithMap
+			    .chromakey 0
+			    .scale 100
+			    .trans 0
+			    .rgbs 100, 100, 100, 100
+			    .grid 1, 20 .cell v[706]
+			    .mapLayer 8
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			
+		    } .else bl {
+			@pic[929].show {
+			    "HP_bar3"
+			    .pos 160, 120 .center
+			    .scrollWithMap
+			    .chromakey 0
+			    .scale 100
+			    .trans 100
+			    .rgbs 100, 100, 100, 100
+			    .grid 1, 20 .cell v[706]
+			    .mapLayer 8
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			
+		    }
+		    
+		}
+		
+	    } .else bl {
+		// "Indicate ways the unit goes"
+		v[325] += 4741
+		v[v[325]].copy v[641], 15
+		TT10 = v[v[325] + 201]
+		TT5 = TT10 > 0 ? 35 : 100
+		v[0] = v[341..342] = [641, 642]
+		v[655] = max(0, v[655])
+		v[341..342] += 2 * v[655]
+		v[TT1].copy TT1, 2
+		TT2 += sin(v[2219] * 10, 1, 7)
+		@pic[928].show {
+		    "enlockon"
+		    .pos TT1, TT2 .bottom
+		    .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans TT5
+		    .rgbs 100, 100, 100, 100
+		    .grid 3, 3 .cell 2
+		    .mapLayer 8
+		    .eraseWhenTransfer
+		    .affectedByShake
+		}
+		// ""
+		TT1 = 921
+		TT2 = 1
+		v[0] = v[343..344] = [641, 642]
+		@loop 6 {
+		    TT5 = TT2 <= v[655] ? 35 : 100
+		    @pic[TT1].show {
+			"pointer_waypoint"
+			.pos v[TT3], v[TT4] .center
+			.scrollWithMap
+			.chromakey 1
+			.scale 100
+			.trans TT5
+			.rgbs 100, 100, 100, 100
+			.grid 6, 1 .cell TT2
+			.mapLayer 8
+			.eraseWhenTransfer
+			.affectedByShake
+		    }
+		    v[341..342] += 1
+		    v[343..344] += 2
+		    
+		}
+		
+		
+	    }
+	    @loop 1 .dst TT1 {
+		TT10 = 100 + TT1
+		TT2 = v[4521] + TT1
+		@if v[944] >= 1 {
+		    @if `v[v[TT10] * 300 + 4701] >= 1 {
+			// "バグ修正町"
+			@pic[TT2].getInfo .xywh .currentRect TT3, TT3, TT4, TT5
+			@if TT4 < 1 {
+			    TT15 = v[v[TT10] * 300 + 4969] / 1000
+			    TT15 *= 2
+			    TT15 += 2
+			    @pic[TT2].strpic {
+				""
+				.pos 160, 120 .center
+				.size TT15, TT15                        .scrollWithMap
+				.chromakey 1
+				.scale 100
+				.trans 100
+				.rgbs 100, 100, 100, 100
+				.font "", 12 .noShadow
+				.spacing 0, 4
+				.skin "" .nobg .noframe .noGradation .noPadding
+				.rotate 10
+				.mapLayer 3
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    TT15 -= 2
+			    TT15 /= 2
+			    v[601] = -4194304
+			    // "Draw Circle Function"
+			    v[604] = 3 - 2 * TT15
+			    v[603] = TT15
+			    v[605] = TT15
+			    v[606] = TT15 + TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = TT15
+			    v[606] = -TT15 + TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = TT15 + TT15
+			    v[606] = TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = -TT15 + TT15
+			    v[606] = TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[602] = 0
+			    @while v[602] <= v[603] {
+				@if v[604] < 0 {
+				    v[604] += 6 + 4 * v[602]
+				    
+				} .else bl {
+				    v[604] += 10 + 4 * v[602] - 4 * (v[603] - 1)
+				    v[603] -= 1
+				    
+				}
+				v[605] = v[603] + TT15
+				v[606] = v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[602] + TT15
+				v[606] = v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[603] + TT15
+				v[606] = v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[602] + TT15
+				v[606] = v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[603] + TT15
+				v[606] = -v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[602] + TT15
+				v[606] = -v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[603] + TT15
+				v[606] = -v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[602] + TT15
+				v[606] = -v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[602] += 1
+				
+			    }
+			    
+			    
+			}
+			v[325] = v[TT10] * 300 + 4707
+			v[v[325]].copy v[607], 2
+			@pic[TT2].move {
+			    .pos v[607], v[608] .center
+			    .scale 100
+			    .trans 50
+			    .time 0
+			    .rgbs 100, 100, 100, 100
+			}
+			
+		    } .else bl {
+			@pic[TT2].move {
+			    .pos 160, 120 .center
+			    .scale 100
+			    .trans 100
+			    .time 0
+			    .rgbs 100, 100, 100, 100
+			}
+			
+		    }
+		    
+		} .else bl {
+		    @pic[TT2].move {
+			.pos 160, 120 .center
+			.scale 100
+			.trans 100
+			.time 0
+			.rgbs 100, 100, 100, 100
+		    }
+		    
+		}
+		
+	    }
+	    
+	    
+	}
+	@if v[81] == 4 {
+	    v[325] = v[101] * 300
+	    v[618] = v[v[325] + 4718]
+	    v[371] = v[618] > 0 ? 2 : 0
+	    //// "Indicate ways the unit goes"
+	    v[325] = v[101] * 300
+	    v[325] += 4741
+	    v[v[325]].copy v[641], 15
+	    TT10 = v[v[325] + 201]
+	    TT5 = TT10 > 0 ? 35 : 100
+	    v[0] = v[341..342] = [641, 642]
+	    v[655] = max(0, v[655])
+	    v[341..342] += 2 * v[655]
+	    v[TT1].copy TT1, 2
+	    TT2 += sin(v[2219] * 10, 1, 7)
+	    @pic[928].show {
+		"enlockon"
+		.pos TT1, TT2 .bottom
+		.scrollWithMap
+		.chromakey 1
+		.scale 100
+		.trans TT5
+		.rgbs 100, 100, 100, 100
+		.grid 3, 3 .cell 2
+		.mapLayer 8
+		.eraseWhenTransfer
+		.affectedByShake
+	    }
+	    @loop 1 .dst TT1 {
+		TT10 = 101 + TT1
+		TT2 = v[4521] + TT1
+		@if v[944] >= 1 {
+		    @if `v[v[TT10] * 300 + 4701] >= 1 {
+			//// "バグ修正町"
+			@pic[TT2].getInfo .xywh .currentRect TT3, TT3, TT4, TT5
+			@if TT4 < 1 {
+			    TT15 = v[v[TT10] * 300 + 4969] / 1000
+			    TT15 *= 2
+			    TT15 += 2
+			    @pic[TT2].strpic {
+				""
+				.pos 160, 120 .center
+				.size TT15, TT15                        .scrollWithMap
+				.chromakey 1
+				.scale 100
+				.trans 100
+				.rgbs 100, 100, 100, 100
+				.font "", 12 .noShadow
+				.spacing 0, 4
+				.skin "" .nobg .noframe .noGradation .noPadding
+				.rotate 10
+				.mapLayer 3
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    TT15 -= 2
+			    TT15 /= 2
+			    v[601] = -4194304
+			    // "Draw Circle Function"
+			    v[604] = 3 - 2 * TT15
+			    v[603] = TT15
+			    v[605] = TT15
+			    v[606] = TT15 + TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = TT15
+			    v[606] = -TT15 + TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = TT15 + TT15
+			    v[606] = TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = -TT15 + TT15
+			    v[606] = TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[602] = 0
+			    @while v[602] <= v[603] {
+				@if v[604] < 0 {
+				    v[604] += 6 + 4 * v[602]
+				    
+				} .else bl {
+				    v[604] += 10 + 4 * v[602] - 4 * (v[603] - 1)
+				    v[603] -= 1
+				    
+				}
+				v[605] = v[603] + TT15
+				v[606] = v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[602] + TT15
+				v[606] = v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[603] + TT15
+				v[606] = v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[602] + TT15
+				v[606] = v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[603] + TT15
+				v[606] = -v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[602] + TT15
+				v[606] = -v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[603] + TT15
+				v[606] = -v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[602] + TT15
+				v[606] = -v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[602] += 1
+				
+			    }
+			    
+			    
+			}
+			v[325] = v[TT10] * 300 + 4707
+			v[v[325]].copy v[607], 2
+			@pic[TT2].move {
+			    .pos v[607], v[608] .center
+			    .scale 100
+			    .trans 50
+			    .time 0
+			    .rgbs 100, 100, 100, 100
+			}
+			
+		    } .else bl {
+			@pic[TT2].move {
+			    .pos 160, 120 .center
+			    .scale 100
+			    .trans 100
+			    .time 0
+			    .rgbs 100, 100, 100, 100
+			}
+			
+		    }
+		    
+		} .else bl {
+		    @pic[TT2].move {
+			.pos 160, 120 .center
+			.scale 100
+			.trans 100
+			.time 0
+			.rgbs 100, 100, 100, 100
+		    }
+		    
+		}
+		
+	    }
+	    
+	    
+	}
+	//// "敵ステータス"
+	@if v[81] == 5 {
+	    v[325] = v[100] * 300
+	    v[618] = v[100]
+	    @loop 1 .dst TT1 {
+		TT10 = 100 + TT1
+		TT2 = v[4521] + TT1
+		@if v[944] >= 1 {
+		    @if `v[v[TT10] * 300 + 4701] >= 1 {
+			// "バグ修正町"
+			@pic[TT2].getInfo .xywh .currentRect TT3, TT3, TT4, TT5
+			@if TT4 < 1 {
+			    TT15 = v[v[TT10] * 300 + 4969] / 1000
+			    TT15 *= 2
+			    TT15 += 2
+			    @pic[TT2].strpic {
+				""
+				.pos 160, 120 .center
+				.size TT15, TT15                        .scrollWithMap
+				.chromakey 1
+				.scale 100
+				.trans 100
+				.rgbs 100, 100, 100, 100
+				.font "", 12 .noShadow
+				.spacing 0, 4
+				.skin "" .nobg .noframe .noGradation .noPadding
+				.rotate 10
+				.mapLayer 3
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    TT15 -= 2
+			    TT15 /= 2
+			    v[601] = -4194304
+			    // "Draw Circle Function"
+			    v[604] = 3 - 2 * TT15
+			    v[603] = TT15
+			    v[605] = TT15
+			    v[606] = TT15 + TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = TT15
+			    v[606] = -TT15 + TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = TT15 + TT15
+			    v[606] = TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[605] = -TT15 + TT15
+			    v[606] = TT15
+			    @pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+			    v[602] = 0
+			    @while v[602] <= v[603] {
+				@if v[604] < 0 {
+				    v[604] += 6 + 4 * v[602]
+				    
+				} .else bl {
+				    v[604] += 10 + 4 * v[602] - 4 * (v[603] - 1)
+				    v[603] -= 1
+				    
+				}
+				v[605] = v[603] + TT15
+				v[606] = v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[602] + TT15
+				v[606] = v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[603] + TT15
+				v[606] = v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[602] + TT15
+				v[606] = v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[603] + TT15
+				v[606] = -v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = -v[602] + TT15
+				v[606] = -v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[603] + TT15
+				v[606] = -v[602] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[605] = v[602] + TT15
+				v[606] = -v[603] + TT15
+				@pic[TT2].setPixel .xywh v[605], v[606], 1, 1 .src v[601]
+				v[602] += 1
+				
+			    }
+			    
+			    
+			}
+			v[325] = v[TT10] * 300 
+			v[325] += 4707
+			v[v[325]].copy v[607], 2
+			@pic[TT2].move {
+			    .pos v[607], v[608] .center
+			    .scale 100
+			    .trans 50
+			    .time 0
+			    .rgbs 100, 100, 100, 100
+			}
+			
+		    } .else bl {
+			@pic[TT2].move {
+			    .pos 160, 120 .center
+			    .scale 100
+			    .trans 100
+			    .time 0
+			    .rgbs 100, 100, 100, 100
+			}
+			
+		    }
+		    
+		} .else bl {
+		    @pic[TT2].move {
+			.pos 160, 120 .center
+			.scale 100
+			.trans 100
+			.time 0
+			.rgbs 100, 100, 100, 100
+		    }
+		    
+		}
+		
+	    }
+	    
+	    
+	}
 }
+
+
+// cev 1100
+__fn show_Passive_description {
+
+	@pic[1765].erase
+	@comment "Type"
+	Temp2 = Temp1 + 1
+	reg10 = 0
+	@if v[Temp2] == 0 {
+			@comment "Commoners"
+			@actor[6].name t[20295]
+			@if v[84] == 0 {
+					v[84] = -1
+					
+			}
+			
+	} .else bl {
+			var1 = v[4574] + v[Temp2]
+			t[var1] .split ",", t[2998], v[505]
+			@if Team_Player_Faction == FAC_dra {
+				@if Team_Player_Faction_Hero_Type == HERO_Dra_Orthunass {
+					// replace DRAGONS! with Empyrean New Order
+					t[2999].asg t[20491] // ENO
+				}
+			}
+
+			@actor[6].name t[2999]
+			t[3000] .toNum reg10
+			@loop 36 .dst v[506] {
+					var1 = 3001 + v[506]
+					var2 = v[4575] + v[506] + 5
+					t[var1] .toNum v[31]
+					v[var2] = v[31]
+					
+			}
+			
+			@if v[84] == 0 {
+					v[84] = -1
+					
+			}
+			
+	}
+	@if v[84] == -2 {
+			@if s[31] .isOff() {
+					@actor[6].name t[20296]
+					reg10 = 0
+					
+			}
+			v[84] = -1
+			
+	}
+	v[372] = v[85] != v[84] ? 1 : 0
+	TT1 = Temp1 + 40
+	v[TT1].copy v[861], 20
+	@if v[372] >= 1 {
+			TT2 = TT1 - 121
+			@comment "Get Perks"
+			t[509..510] .asg ""
+			@comment "#Pikewall"
+			@if `v[TT2] & 2 {
+					inputstr .cat LF
+					inputstr .cat t[20297]
+					
+			}
+			@comment "#Shieldwall"
+			@if `v[TT2] & 4 {
+					inputstr .cat LF
+					inputstr .cat t[20298]
+					
+			}
+			@comment "#Skirmish"
+			@if `v[TT2] & 16 {
+					inputstr .cat LF
+					inputstr .cat t[20299]
+					
+			}
+			@comment "#Skirmish"
+			@if `v[TT2] & 8388608 {
+					inputstr .cat LF
+					inputstr .cat t[20300]
+					
+			}
+			@comment "Banner"
+			@if `v[TT2] & 1048576 {
+					inputstr .cat LF
+					inputstr .cat t[20468]
+					
+			}
+			@comment "#Fearsome"
+			@if `v[TT2] & 2048 {
+					inputstr .cat LF
+					inputstr .cat t[20420]
+					
+			}
+			@comment "#Dicipline"
+			@if `v[TT2] & 16384 {
+					inputstr .cat LF
+					inputstr .cat t[20421]
+					
+			}
+			@comment "#P resistance"
+			@if `v[TT2] & 32 {
+					inputstr .cat LF
+					inputstr .cat t[20376]
+					
+			}
+			@comment "#Speed Bonus"
+			@if `v[TT2] & 134217728 {
+					inputstr .cat LF
+					inputstr .cat t[20441]
+					
+			}
+			@comment "Get PerksEND"
+			@comment "Get AntiAAs"
+			TT2 = TT2 - 16
+			@comment "#Inf"
+			@if `v[TT2] & 1 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20382]
+					
+			}
+			@comment "#Arc"
+			TT1 = v[TT2] & 2
+			@if TT1 >= 1 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20383]
+					
+			}
+			@comment "#Cav"
+			TT1 = v[TT2] & 4
+			@if TT1 >= 1 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20384]
+					
+			}
+			@comment "#mage"
+			TT1 = v[TT2] & 8
+			@if TT1 >= 1 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20385]
+					
+			}
+			@comment "siege"
+			@if `v[TT2] & 16 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20386]
+					
+			}
+			@comment "siege"
+			@if `v[TT2] & 256 || v[TT2] & 128 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20387]
+					
+			}
+			@if `v[TT2] & 262144 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20397]
+					
+			}
+			@comment "#Cracking Shield"
+			@if `v[TT2] & 1024 {
+					@if TT3 <= reg1 {
+							
+					} .else bl {
+							
+					}
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					@if `v[TT2] & 131072 {
+							inputstr .cat t[20396]
+							
+					} .else bl {
+							inputstr .cat t[20388]
+							
+					}
+					
+			}
+			@comment "#Devastating Strikes"
+			@if `v[TT2] & 2048 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20389]
+					
+			}
+			@comment "#Great Sword Effect"
+			@if `v[TT2 + 6] == 1251 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20390]
+					
+			}
+			@comment "#"
+			@if `v[TT2] & 8192 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20391]
+					
+			}
+			@comment "#"
+			@if `v[TT2 + 6] == 1264 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20392]
+					
+			}
+			@comment "#"
+			@if `v[TT2 + 6] == 1250 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20393]
+					
+			}
+			@comment "#"
+			@if `v[TT2] & 16384 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20394]
+					
+			}
+			@comment "#"
+			@if `v[TT2] & 65536 {
+					inputstr .cat LF
+					inputstr .cat t[20381]
+					inputstr .cat t[20395]
+					
+			}
+			@comment "Get AntiAAsEND"
+			@comment "Get Movetype"
+			TT3 = v[TT2 - 86]
+			@if `TT3 & 1 {
+					inputstr .cat LF
+					inputstr .cat t[20339]
+					
+			}
+			@if `TT3 & 2 {
+					inputstr .cat LF
+					inputstr .cat t[20340]
+					
+			}
+			@if `TT3 & 4 {
+					inputstr .cat LF
+					inputstr .cat t[20341]
+					
+			}
+			@if `TT3 & 8 {
+					inputstr .cat LF
+					inputstr .cat t[20342]
+					
+			}
+			@if `TT3 & 16 {
+					inputstr .cat LF
+					inputstr .cat t[20343]
+					
+			}
+			@if `TT3 & 32 {
+					inputstr .cat LF
+					inputstr .cat t[20344]
+					
+			}
+			//
+			@if `TT3 & 64 {
+					inputstr .cat LF
+					inputstr .cat t[20345]
+					
+			}
+			// SAND
+			@if `TT3 & 128 {
+					inputstr .cat LF
+					inputstr .cat t[20346]
+					
+			}
+			inputstr .asg  .rep inputstr, "^", LF
+			s[201].off
+			@if v[84] == -1 {
+					@if s[1] .isOn() {
+							@pic[996].strpic {
+									"[\c[\reg10]\n[6]\c[0]]\inputstr"
+									.pos MousePtr_x, v[1065] .bottomLeft
+									.size 0, 0                .chromakey 1
+									.scale 100
+									.trans v[1066]
+									.rgbs 100, 100, 100, 100
+									.font "misaki_gothic_2nd", 10
+									.spacing 0, 0
+									.skin "" .stretch
+									.mapLayer 10
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+							}
+							
+					} .else bl {
+							def STRING_FACTIONNAME = __str("[\c[\v[", __id(reg10), "]]\n[6]\c[0]]\t[", __id(inputstr), "]")
+							t[2999] .asg STRING_FACTIONNAME .extract
+							@pic[996].strpic {
+									t[2999]
+									.pos v[1301], v[1065] .bottomLeft
+									.size 0, 0                .chromakey 1
+									.scale 100
+									.trans v[1066]
+									.rgbs 100, 100, 100, 100
+									.font Font_UI, Font_UI_size
+									.spacing 0, 0
+									.skin "" .stretch
+									.mapLayer 10
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+							}
+							
+					}
+					s[201].on
+					
+			}
+			@if v[84] >= 1 {
+					v[1941] = v[4557] + v[84] - 1
+					t[3000] .asg t[v[1941]]
+					@comment "Init"
+					t[3001..3300] .asg ""
+					@comment "Load"
+					t[3000] .split "^", t[3001], v[1961]
+					t[3000] .asg ""
+					@loop v[1961] .dst v[1962] {
+							v[1963] = v[1211] + v[1962]
+							t[3000] .cat t[v[1963]] .extract
+							t[3000] .cat LF
+							
+					}
+					
+					def STRING_N6andLF = __str("[\c[\v[", __id(reg10), "]]\n[6]\c[0]]")
+					t[2999] .asg STRING_N6andLF .extract
+					t[2999] .cat LF
+					t[2999] .cat t[3000] .extract
+					@pic[996].strpic {
+							t[2999]
+							.pos v[1301], v[1065] .bottomLeft
+							.size 0, 0            .chromakey 1
+							.scale 100
+							.trans v[1066]
+							.rgbs 100, 100, 100, 100
+							.font Font_UI, Font_UI_size
+							.spacing 0, 0
+							.skin "" .stretch
+							.mapLayer 10
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+					s[201].on
+					@if `v[Temp1 + 2] & 6 {
+							@if v[944] == 0 {
+									var1 = 998
+									var2 = -8614
+									@if `v[Temp1 + 2] & 4 {
+											var3 = v[875]
+											
+									} .else bl {
+											var3 = 100
+											
+									}
+									v[199] = Ptr19
+									var4 = Ptr19 * 300 + 4707
+									v[var4].copy var4, 2
+									@call .cev 2163
+									s[82].on
+									
+							}
+							
+					}
+					
+			}
+			@if s[201] .isOff() {
+					@pic[996].erase
+					@pic[1765].erase
+					
+			}
+			
+	}
+
+}
+
+// cev 1200
+__fn show_agent_skill_description {
+	@comment "###############"
+	@comment "Init"
+	t[3000..3300] .asg ""
+	@comment "Type"
+	v[302] = v[301] + 2
+	v[341] = 20200 + v[v[302]]
+	t[506] .asg t[v[341]] .extract
+	@comment "Usage"
+	v[303] = v[v[301] + 3]
+	v[341] = 20221 + v[303]
+	t[507] .asg t[v[341]] .extract
+	@comment "Cost"
+	v[304] = v[301] + 6
+	v[304] = v[v[304]]
+	@comment "CD"
+	v[305] = v[301] + 7
+	v[305] = v[v[305]]
+	@comment "BaseSpellPower"
+	v[306] = v[301] + 17
+	v[306] = v[v[306]]
+	v[372] = v[85] != v[84] ? 1 : 0
+	@comment "#建築は例外"
+	v[372] += v[84] == 17 ? 1 : 0
+	@if v[372] >= 1 {
+			s[201].off
+			@if v[84] == 17 {
+					@call .cev 799
+					
+			} .else bl {
+					@comment "###############"
+					@comment "Init"
+					t[3000..3300] .asg ""
+					@comment "Load"
+					v[1961] = v[4519] + v[84] - 1
+					t[3000] .asg t[v[1961]]
+					t[3000] .split "|", t[3001], v[1961]
+					v[29] = v[306] / 10000
+					@if t[3003] .neq "" {
+							@if t[3003] .contains "AD" {
+									v[30] = muldiv(v[v[300] + 261], v[306] % 1000, 100)
+									
+							}
+							@if t[3003] .contains "AP" {
+									v[30] = muldiv(v[v[300] + 262], v[306] % 1000, 100)
+									
+							}
+							
+					}
+					t[3002] .split "^", t[3201], v[1961]
+					t[3002] .asg ""
+					@comment "###############"
+					@loop v[1961] .dst v[1962] {
+							v[1963] = v[1211] + v[1962]
+							v[1963] += 200
+							t[3002] .cat t[v[1963]] .extract
+							t[3002] .cat t[525]
+							
+					}
+					
+					@comment "###############"
+					t[3003] .split "^", t[3201], v[1961]
+					@if t[3003] .eq "" {
+							t[3003] .asg t[3002]
+							
+					} .else bl {
+							t[3003] .asg ""
+							@comment "###############"
+							@loop v[1961] .dst v[1962] {
+									v[1963] = v[1211] + v[1962]
+									v[1963] += 200
+									t[3003] .cat t[v[1963]] .extract
+									t[3003] .cat t[525]
+									
+							}
+							
+							
+					}
+					@comment "###############"
+					@comment "Tech:"
+					t[501] .asg "\c[2]"
+					t[501] .cat t[3001]
+					t[501] .cat "\c[0]"
+					t[501] .cat t[525]
+					@if s[202] .isOff() {
+							@comment "Costs:"
+							t[502] .asg ""
+							t[502] .cat t[20122]
+							t[502] .cat t[506] .extract
+							t[502] .cat " " .extract
+							@comment "########"
+							t[502] .cat t[20120]
+							t[502] .cat t[507] .extract
+							t[502] .cat "\c[0]"
+							t[502] .cat t[525]
+							v[371] = 0
+							@if v[304] < 999999 {
+									v[371] = 1
+									t[502] .cat t[20113]
+									t[502] .cat "\v[304]" .extract
+									t[502] .cat " " .extract
+									
+							}
+							@if v[305] >= 1 {
+									v[371] = 1
+									t[502] .cat t[20121]
+									t[502] .cat "\v[305]" .extract
+									t[502] .cat " " .extract
+									
+							}
+							@if v[371] == 1 {
+									t[502] .cat t[525]
+									
+							}
+							@comment "#LF"
+							t[503] .asg t[3002]
+							v[35] = 0
+							
+					} .else bl {
+							t[502] .asg t[20118] .extract
+							@comment "#LF"
+							t[503] .asg t[3003]
+							v[35] = 5
+							
+					}
+					t[501] .cat t[502]
+					t[501] .cat "\c[0]"
+					t[501] .cat t[503]
+					t[501] .asg t[501] .extract
+					@pic[996].strpic {
+							t[501]
+							.pos v[1301], v[1065] .bottomLeft
+							.size 0, 0            .chromakey 1
+							.scale 100
+							.trans v[1066]
+							.rgbs 100, 100, 100, 100
+							.font t[530], v[4511]
+							.spacing 0, 0
+							.skin "" .stretch
+							.mapLayer 10
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+					@pic[996].getInfo .ltrb .currentRect v[350], v[351], v[352], v[353]
+					@if s[64] .isOff() {
+							v[11] = 431
+							@call .cev 1890
+							@pic[1765].strpic {
+									t[3000]
+									.pos v[350], v[351] .bottomLeft
+									.size 0, 0                .chromakey 1
+									.scale 100
+									.trans v[1066]
+									.rgbs 100, 100, 100, 100
+									.font Font_UI, Font_UI_size
+									.spacing 0, 0
+									.skin "" .stretch
+									.mapLayer 10
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+							}
+							
+					}
+					s[201].on
+					
+			}
+			
+	}
+
+}
+
+

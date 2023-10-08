@@ -5,180 +5,166 @@ __fn func_bs_morale_recover $agent $power {
 	an ,average untrained human has 30 WILL 
 	trained mercs have 50"*/
 	@if `!(v[$agent * 300 + 4974] & 256) {
-	    //// "roll success var=[pow]+[will]/2"
-	    //// "if roll succeed"
-	    v[$agent * 300 + 4960] -= rnd(0, 99) <= $power + v[$agent * 300 + 4975] / 5 && v[$agent * 300 + 4960] > -1 ? 1 : 0
-	    
+			//// "roll success var=[pow]+[will]/2"
+			//// "if roll succeed"
+			v[$agent * 300 + 4960] -= rnd(0, 99) <= $power + v[$agent * 300 + 4975] / 5 && v[$agent * 300 + 4960] > -1 ? 1 : 0
+			
 	}
 }
 
-__fn func_bs_morale_check $agent $power{
+__fn func_bs_morale_check $agent $power {
 
 	/* "v1=targetobj
 	v2=power"*/
 	// "Does the target have morale check immunity?"
 	@if `(v[$agent * 300 + 4974] & 256) == 0 {
-	    // "if not, you're already in battle field"
-	    v[$agent * 300 + 4780] = v[1240] * v[4571]
-	    // "Ally death morale check power = 36 + [dead ally's lv]/2?... temp"
-	    /* "WILL,,
-	an ,average untrained human has 30 WILL 
-	trained mercs have 50"*/
-	    v[341] = v[$agent * 300 + 4975]
-	    // "roll success var=[pow]-[will]/3"
-	    /* "#alpha
-	$power - (7 - 76 / v[341]) * v[341] / 11
-#beta
-	-((1800)/(-(x+8))+58)"*/
-	    v[342] = $power + min(-(1800 / -(v[341] + 8)) - 58, 24)
-	    v[343] = max(0, v[342])
-	    v[371] = rnd(0, 99) <= v[343] ? 1 : 0
-	    // "if roll succeed"
-	    @if v[371] == 1 {
-		/* "V1 = Target ObjID
-	TT15 =  Buff
-	R1 = Buff Ptr
-	R2 = Buff Timer Ptr"*/
-		v[350] = $agent * 300
-		v[350] += 4960
-		v[v[350]] += 1
-		@if v[v[350]] == 3 {
-		    @if `s[$agent + 500] == 1 {
-			v[342] = $agent * 300 
-			v[342] += 4707
-			v[v[342]].copy v[607], 2
-			// "Is_dragon?"
-			v[355] = v[$agent * 300 + 4764]
-			@if v[355] == 3 {
-			    v[182] += 1
-			    // "#########################"
-			    v[472] = divmul(90, 100, v[2216])
-			    v[473] = rnd(90, 110)
-			    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-			    @se.play "vo\dragon_gyaoo" .opt v[472], v[473], v[474]
-			    /*9.3.23
-			    t[510] .asg "vo\dragon_gyaoo"
-			    v[345] = 510
-			    // "Strings = t[v[341]]"
-			    @cmd 11550, t[v[345]], .args v[472], 3*/
-			    // "#########################"
-			    
-			} .else bl {
-			    //Orkish Troop
-			    @if v[355] == 2 {
-				v[355] = v[$agent * 300 + 4800]
-				@if v[355] == 0 {
-				    v[182] += 1
-				    v[474] = rnd(0, 99)
-				    @if v[474] <= 5 {
-					// "#########################"
-					v[472] = divmul(90, 100, v[2216])
-					v[473] = rnd(90, 110)
-					v[474] = 50
-					@se.play "vo\ork_shamefur_dispray" .opt v[472], v[473], v[474]
-					// "#########################"
+			// "if not, you're already in battle field"
+			v[$agent * 300 + 4780] = v[1240] * v[4571]
+			// "Ally death morale check power = 36 + [dead ally's lv]/2?... temp"
+			/* "WILL,,an ,average untrained human has 30 WILL  trained mercs have 50"*/
+			TT1 = v[$agent * 300 + 4975]
+			// "roll success var=[pow]-[will]/3"
+			/* "#alpha	$power - (7 - 76 / TT1) * TT1 / 11 #beta - ((1800)/(-(x+8))+58)"*/
+			TT2 = $power + min(-(1800 / -(TT1 + 8)) - 58, 24)
+			TT3 = max(0, TT2)
+			v[371] = rnd(0, 99) <= TT3 ? 1 : 0
+			// "if roll succeed"
+			@if v[371] == 1 {
+				/* "V1 = Target ObjID	TT15 =  Buff	R1 = Buff Ptr	R2 = Buff Timer Ptr"*/
+				TT10 = $agent * 300
+				TT10 += 4960
+				v[TT10] += 1
+				@if v[TT10] == 3 {
+						@if `s[$agent + 500] == 1 {
+					TT2 = $agent * 300 
+					TT2 += 4707
+					v[TT2].copy v[607], 2
+					// "Is_dragon?"
+					TT15 = v[$agent * 300 + 4764]
+					@if TT15 == 3 {
+							v[182] += 1
+							// "#########################"
+							v[472] = divmul(90, 100, v[2216])
+							v[473] = rnd(90, 110)
+							v[474] = divmul(v[607] + v[1001], v[1281], 50)
+							@se.play "vo\dragon_gyaoo" .opt v[472], v[473], v[474]
+						
+					} .else bl {
+							//Orkish Troop
+							@if TT15 == 2 {
+						TT15 = v[$agent * 300 + 4800]
+						@if TT15 == 0 {
+								v[182] += 1
+								v[474] = rnd(0, 99)
+								@if v[474] <= 5 {
+							// "#########################"
+							v[472] = divmul(90, 100, v[2216])
+							v[473] = rnd(90, 110)
+							v[474] = 50
+							@se.play "vo\ork_shamefur_dispray" .opt v[472], v[473], v[474]
+							// "#########################"
+							
+								}
+								
+						}
+						
+							} .else bl {
+						
+							}
+							
+					}
 					
-				    }
-				    
+						}
+						@if v[204] < v[1006] {
+					@if s[313] .isOn() {
+							@call .cev 1924
+							TT1 = 2
+							v[601] = 1
+							TT5 = $agent * 300 + 4800
+							TT2 = v[TT5] == 1 ? 5 : 10
+							@pic[v[1155]].strpic {
+						"\c[\TT2]\t[\$agent]\c[0]は\c[15]敗走し始めた"
+						.pos TT1, v[1126] .bottomLeft
+						.size 0, 0                        .chromakey 1
+						.scale 100
+						.trans 30
+						.rgbs 100, 100, 100, 100
+						.font "misaki_gothic", 10
+						.spacing 0, 4
+						.skin "" .nobg .noframe .noPadding
+						.mapLayer 8
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
+							}
+							@call .cev 1925
+							
+					}
+					// "FleePop"
+					@if `s[$agent + 500] == 1 {
+							TT2 = $agent * 300 
+							TT2 += 4707
+							v[TT2].copy v[607], 2
+							// "Is_dragon?"
+							@loop v[1017] .dst Temp20 {
+						v[242] %= v[1017]
+						Temp1 = v[242] * 100
+						Temp1 = Temp1 + v[1018]
+						@if v[Temp1] <= 1 {
+								v[242] %= v[1017]
+								Ptr1 = v[242] * 100
+								Ptr1 = Ptr1 + v[1018]
+								// "まず清掃"
+								v[1301].copy v[Temp1], 100
+								// "ポインタセット開始"
+								Temp10 = v[242] + 801
+								Ptr15 = Temp1 + 99
+								// "設定"
+								v[Temp1] = 1
+								v[Ptr15] = 0
+								// "普通にアニメ"
+								v[607].copy v[361], 2
+								@pic[Temp10].show {
+							"effects\flee"
+							.pos v[361], v[362] .center
+							.scrollWithMap
+							.chromakey 1
+							.scale 100
+							.trans 8
+							.rgbs 100, 100, 100, 100
+							.grid 3, 1 .anim 6 .repeat
+							.mapLayer 7
+							.eraseWhenTransfer
+							.affectedByShake
+								}
+								v[362] -= 48
+								@pic[Temp10].move {
+							.pos v[361], v[362] .center
+							.scale 100
+							.trans 100
+							.time 20
+							.rgbs 100, 100, 100, 100
+								}
+								// "仕上げに登録消す"
+								v[242..242] += 1
+								s[141].off
+								@break
+								
+						}
+						v[242] += 1
+						
+							}
+							
+							
+					}
+					
+						}
+						
 				}
+				v[$agent * 300 + 4960] = min(v[TT10], 3)
 				
-			    } .else bl {
-				
-			    }
-			    
 			}
 			
-		    }
-		    @if v[204] < v[1006] {
-			@if s[313] .isOn() {
-			    @call .cev 1924
-			    v[341] = 2
-			    v[601] = 1
-			    v[345] = $agent * 300 + 4800
-			    v[342] = v[v[345]] == 1 ? 5 : 10
-			    @pic[v[1155]].strpic {
-				"\c[\v[342]]\t[\$agent]\c[0]は\c[15]敗走し始めた"
-				.pos v[341], v[1126] .bottomLeft
-				.size 0, 0                        .chromakey 1
-				.scale 100
-				.trans 30
-				.rgbs 100, 100, 100, 100
-				.font "misaki_gothic", 10
-				.spacing 0, 4
-				.skin "" .nobg .noframe .noPadding
-				.mapLayer 8
-				.eraseWhenTransfer
-				.affectedByFlash
-				.affectedByShake
-			    }
-			    @call .cev 1925
-			    
-			}
-			// "FleePop"
-			@if `s[$agent + 500] == 1 {
-			    v[342] = $agent * 300 
-			    v[342] += 4707
-			    v[v[342]].copy v[607], 2
-			    // "Is_dragon?"
-			    @loop v[1017] .dst v[320] {
-				v[242] %= v[1017]
-				v[301] = v[242] * 100
-				v[301] = v[301] + v[1018]
-				@if v[v[301]] <= 1 {
-				    v[242] %= v[1017]
-				    v[281] = v[242] * 100
-				    v[281] = v[281] + v[1018]
-				    // "まず清掃"
-				    v[1301].copy v[v[301]], 100
-				    // "ポインタセット開始"
-				    v[310] = v[242] + 801
-				    v[295] = v[301] + 99
-				    // "設定"
-				    v[v[301]] = 1
-				    v[v[295]] = 0
-				    // "普通にアニメ"
-				    v[607].copy v[361], 2
-				    @pic[v[310]].show {
-					"effects\flee"
-					.pos v[361], v[362] .center
-					.scrollWithMap
-					.chromakey 1
-					.scale 100
-					.trans 8
-					.rgbs 100, 100, 100, 100
-					.grid 3, 1 .anim 6 .repeat
-					.mapLayer 7
-					.eraseWhenTransfer
-					.affectedByShake
-				    }
-				    v[362] -= 48
-				    @pic[v[310]].move {
-					.pos v[361], v[362] .center
-					.scale 100
-					.trans 100
-					.time 20
-					.rgbs 100, 100, 100, 100
-				    }
-				    // "仕上げに登録消す"
-				    v[242..242] += 1
-				    s[141].off
-				    @break
-				    
-				}
-				v[242] += 1
-				
-			    }
-			    
-			    
-			}
-			
-		    }
-		    
-		}
-		v[$agent * 300 + 4960] = min(v[v[350]], 3)
-		
-	    }
-	    
 	}
 }
 

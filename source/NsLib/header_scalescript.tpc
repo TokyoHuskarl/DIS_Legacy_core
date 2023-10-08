@@ -1,0 +1,663 @@
+//#############################
+//Scale script tokens
+
+
+
+
+//SS process uses picture as a temporary buffer so you must give one picID to SS
+def SS_buffer_picID = 100
+
+
+def SS_picture_export_path = "export/picture"
+
+//
+defv SScmdDynCounter = 508
+vname[__id(SScmdDynCounter)],"SScmdDynCounter" 
+
+
+
+
+defv {
+
+	SSvar1 = 11
+	SSvar2
+	SSvar3
+	SSvar4
+	SSvar5
+	SSvar6
+	SSvar7
+	SSvar8
+	SSvar9
+
+	SSreg1 = 21
+	SSreg2 = 22
+	
+	SSnargs = 29
+	SScmdnum = 30
+}
+
+
+
+def nargs_max = 16
+deft {
+	SScmdStrList = 790
+	str_SS_partsave = 508
+
+	
+
+	str_SSreg1 = 502
+	str_SSreg2
+	str_SSreg3
+	str_SSreg4
+	str_SSreg5
+	str_SSreg6
+	str_SSreg7
+
+	str_SSsystem
+
+	SS_CmdObjType = 2998
+	SScmd
+	SSargs0
+	SSargs1
+	SSargs2
+	SSargs3
+	SSargs4
+	SSargs5
+	SSargs6
+	SSargs7
+	SSargs8
+
+	parsSScmd = __id(SScmd) + nargs_max
+	parsSSargs0
+	parsSSargs1
+	parsSSargs2
+	parsSSargs3
+	parsSSargs4
+	parsSSargs5
+	parsSSargs6
+	parsSSargs7
+	parsSSargs8
+
+}
+
+//String buffer
+def SSstrBuffer_size = 16 // maybe you don't need so many str buffers
+defs {
+	SSstrBuffer0 = __id(parsSScmd) + nargs_max //starts from here
+}
+
+defv ROOT_INDEX = 739348
+defv Var_NEST_DEPTH = 510
+defv NEST_COUNTER = 509
+defs BREAK_SWITCH = 291
+def NEST_HEADER_LENGTHS =12
+
+defv Var_save_offset =282
+
+defv DEBUG_NESTCOUNT=4750
+
+def Const_NEST_VAR_ADDRESS_BEGIN = 739348
+def ROOT_INDEX_ADDRESS = Const_NEST_VAR_ADDRESS_BEGIN
+
+
+
+	def SS_LF ="
+"
+
+
+def regstr = t[__id($regstr)]
+def targstr = t[__id($targstr)]
+def setvar = v[__id($setvar)]
+def getvar = v[__id($getvar)]
+def targvar = v[__id($targvar)]
+def targaddress = $targadd 
+def getaddress = $getadd
+def setaddress = $getadd
+
+
+
+
+//#############################
+
+// ---------------------------------
+// LEGACY PIC BUFFER settings start 
+// ---------------------------------
+
+//SS buffer setting
+
+// ACHTUNG!!!!! 
+// After picture memory bug after save/load has been revealed, picture buffer system is basically abandoned.
+// if should MP's picture editting system get stable in future, these Legacy structures may be a valid option again.
+// On the other hand, unless it happens these systems are literal legacies that are not used in any process.
+
+def {
+	//ATTENTION!
+	// If you just want to use SS just as a developement support tool, 
+	// IT'S HIGHLY RECOMMENDED NOT TO CHANGE THESE CONSTS.
+
+	// Also, the most important const (SS_buffer_picID) that decides which picture ID SS uses as a buffer is not here.
+
+
+	SS_buffer_array_amount = 30 // You can expand if you need to store some datas in SSbuffer
+
+	SS_buffer_array_Size = 256 // array size shouldn't be changed if you don't understand what comments below saying. 
+
+
+	SS_buffer_array_address_index = 0 // SS will basically use the first n byte of each array[n][0] as an index for the array.
+	SS_buffer_index_mask = SS_buffer_array_Size - 1 // in the first setting, mask is set as 0xFF 
+	// Thus if you change array size for some purpose, you should consider about those hex matters.
+
+	// I don't think the further expantion of the array size of SS would be necessary in a regular RM2003 project.
+	//Yes, I do expect people may try changing the buffer array size to 4096 or more bigger number, 
+	//but I don't assure SS's proper work in that setting. 
+	//Don't blame me even if something bad happens after you change array size - Tokyo Huskarl
+
+	// After all, as a result, we will have 
+	//SSarray[SS_buffer_array_amount][SS_buffer_array_Size] as a picture in RM2003 when you use Scale Script.
+
+
+
+	SS_buffer_address_global = 0 //ss use buffer[0][0] as global array for ss process
+
+		SS_buffer_global_adress_str_buffer_index = 1 //SS use buffer[0][1] as index counter for strings that picture buffer cannot contain  
+		SS_buffer_global_adress_func_loop = 2 //SS use buffer[0][2] as function loop counter 
+
+
+	SS_buffer_address_func_process = 3 //use when you try changing 
+
+
+	//FIX_SS_BUFFER = 1 //if you change this to 0, you can use 
+}
+
+
+
+
+
+
+__fn SS_LET_TPC_READ $do {$do}
+
+def Scale_Script_Shebang = "#!SCALE_SCRIPT"
+
+def EOF = "EOF"
+def NEST_START = "[N:"
+def NEST_START_SIZE = 3
+def NEST_INNER_HEAD="*nH"
+def NEST_FOOTER = "*nE"
+def NEST_FOOTER_SIZE_sub1 = 2
+
+//variable types
+//void
+def void = 0
+
+//number
+def var = 1
+//RM var adress
+def refvar = 2
+//string
+def str = 3
+//RM string adress
+def refstr = 4
+//true or false
+def bool = 5
+//RM switch adress
+def refbool = 6 
+//picture data
+def pic = 7
+//picture ID
+def refpic = 8
+
+// ---------------------------------
+// LEGACY PIC BUFFER settings end 
+// ---------------------------------
+
+
+__if __defined(TRUE){}.else bl{def TRUE = 1}
+__if __defined(FALSE){}.else bl{def FALSE = 0}
+
+
+//SScmd Modes!
+def {
+
+	SScmd_Mode_Construct_Link = 1 //Create Link string 
+	SScmd_Mode_Exec = 2 //simply execute function in interpreter process 
+	SScmd_Mode_Call = 3 //execute function from raw string command - slower than Mode_Exec
+	SScmd_Mode_Convert = 4 //when you convert script for interpreter
+	SScmd_Mode_Help = 5 //help helper
+	SScmd_Mode_Dictionary = 6 //[TAB] on shell
+}
+
+//find (), then-> search cmdList -> get 
+
+
+
+//SScmd_Flag
+def {
+	SScmd_Flag_Init_Link = 0x1 
+	SScmd_Flag_Cmdline = 0x2
+}
+
+#include "./header_scalescript_macros.tpc"
+#include "./header_scalescript_str_funcs.tpc"
+
+//################################
+//FUNCTION DECLARATIONS BEGIN 
+//################################
+
+
+SS_funcgroup("SSBuffer functions", {
+
+	/*def bufferfunc_init = {
+		__if FIX_SS_BUFFER == 1 { $badd = SS_buffer_picID } // if you change FIX_SS_BUFFER you can flexiblly set in your project
+	}*/
+
+
+
+	//just init and generate picture for buffer
+	// init_SSb might be better name for this function
+	__fn construct_SSb {
+		construct_picture_buffer(SS_buffer_picID,SS_buffer_array_Size,SS_buffer_array_amount)
+	}
+	
+	__fn pop_element_from_SSb_array $targvar $arrayid {
+		get_SSb_array_index(SSreg1,$arrayid)
+		get_SSb_array_element($targvar,$arrayid,SSreg1)
+		set_SSb_array_element(0,$arrayid,SSreg1)
+		SSreg1 -= 1
+		set_SSb_array_index(SSreg1,$arrayid)
+
+	}
+
+	__fn push_element_to_SSb_array $targvar $arrayid {
+		get_SSb_array_index(SSreg1,$arrayid)
+		SSreg1 += 1
+		set_SSb_array_element($targvar,$arrayid,SSreg1)
+
+	}
+
+
+	//fundamental functions
+
+	//set RM vars starts from startvar to field of an array 
+	__fn set_SSb_array $startvar $arrayid $elm_add $index $amount {
+		set_picture_line(__id($startvar), SS_buffer_picID, $index, $arrayid, $amount)
+	}
+
+	//set setvar to array index
+	__fn set_SSb_array_index $setvar $arrayid {
+		set_picture_pixel(__id($setvar), SS_buffer_picID, SS_buffer_array_address_index, $arrayid)
+	}
+
+	//set setvar to an element adress of an array 
+	__fn set_SSb_array_element $setvar $arrayid $elm_add {
+		set_picture_pixel(__id($setvar), SS_buffer_picID, $elm_add, $arrayid)
+	}
+
+	//extract picked array elements to continuous RM vars starts from $startvar.
+	__fn extract_SSb_array $startvar $arrayid $index $amount {
+		get_picture_horizontal_line(__id($startvar), SS_buffer_picID, $index, $arrayid, $amount)
+	}
+
+	__fn extract_SSb_array_all $startvar $arrayid {
+		get_picture_horizontal_line(__id($startvar), SS_buffer_picID, SS_buffer_array_address_index, $arrayid, SS_buffer_array_Size)
+	}
+
+	//get array index to getvar
+	__fn get_SSb_array_index $getvar $arrayid {
+		get_SSb_array_element(__id(getvar), SS_buffer_picID, SS_buffer_array_address_index, $arrayid)
+	}
+
+	//get array element
+	__fn get_SSb_array_element $getvar $arrayid $elm_add {
+		get_picture_pixel(__id(getvar), SS_buffer_picID,$elm_add, $arrayid)
+	}
+
+
+})
+
+// end
+
+
+
+//################################
+//SScmdObjects structure 
+//################################
+
+//To learn how to build script command Library or Command Package, check SSLib_sample.tpc 
+
+__fn SScmdPackage_Build $pkName $LINKstr $md $counter $given_v_or_str $flags $block {
+
+	__if __id(SScmdnum) == __id($counter) {
+		ERROR_SScmdPackage_DO_NOT_USE_SScmdnum_as_Package_counter
+	}
+
+	v[__id($counter)] = 0
+
+	
+	__if $md == SScmd_Mode_Construct_Link {
+		SScomments_for_RMEditer(__str("t[" __id($LINKstr) "] is initialized to construct Link for SS Command Package named[" $pkName "]"))
+		//init link
+		v[__id($given_v_or_str)]=0
+		t[__id($LINKstr)].asg ""
+		v[__id($counter)] = 0
+
+
+	}.elif $md == SScmd_Mode_Exec { // for DIS Cmd with js, that has several object tree. basically large size package containing multiple command libraries expected.
+		SScmd.toNum(SScmdnum) // already numberfied by js associative array
+
+
+
+	}.elif $md == SScmd_Mode_Call { // for console/simple use. this is slower and expects head element of string order as a name of command which will be called.
+		macro_demiliterset
+		//SScmdPackage_ExecMode_parsing(t[__id($given_v_or_str)])
+		t[__id($given_v_or_str)] .split($delimiter, SScmd, SSnargs)//nargs?
+		SSLink_search_cmd(parsSScmd,SScmd,$LINKstr,0)
+		@if parsSScmd.neq "NULL"{
+			parsSScmd.split(",", parsSScmd, SSvar2)
+			parsSScmd.toNum(SScmdnum)
+		}.else bl{//NULL
+			SScmdnum = -1
+		}
+
+	}
+
+	@if SScmdnum != -1 {
+		@loop 1 {
+			$block
+		}
+		__if $md == SScmd_Mode_Construct_Link {
+			str_SSreg1.asg v[__id($given_v_or_str)]
+			t[__id($LINKstr)].asg .cat(__str("<" $pkName ":" ), str_SSreg1, t[__id($LINKstr)]) // set package name in the first line
+		}
+	}.else bl{ //Failed
+
+
+	}
+
+
+}
+
+
+__fn SScmdLib_Build $LibName $LINKstr $md $i $given_v_or_str $flags $cmdList { //str,str,SScmd_Mode,var,var,SScmd_Flag,[SScommand]
+
+	SScomments_for_RMEditer(__str("Link String t[" __id($LINKstr) "] loads Command Library:[" $LibName "]"))
+
+	//$i = SScommand list size counter var
+
+
+	//Link Construct Mode
+	__if $md == SScmd_Mode_Construct_Link { // SS command library construction mode - in this Mode $given_v_or_str work as just temp var to count down and save command amount 
+		__loop $cmdList $block { // just let them create link
+			v[__id($i)] += 1
+			$block
+			v[__id($given_v_or_str)]+=1
+		}
+
+		// Save amount of commands registered to the link str
+		// in the first line of the link str
+		str_SSreg1.asg v[__id($given_v_or_str)]
+		t[__id($LINKstr)].asg .cat(str_SSreg1, ">", t[__id($LINKstr)]) // use < as a header token - temporary 
+
+
+
+
+
+	// Execute Mode
+	}.elif $md == SScmd_Mode_Exec { // $given_v_or_str work as converted str id:argv[0],argv[1]...
+
+
+		// can this really faster than the old DIS script?
+		__loop $cmdList $block {
+			v[__id($i)] += 1
+			@if SScmdnum == v[__id($i)] {
+				$block
+				@break
+			}
+		}
+
+
+
+	// Script convert mode
+	// cmdname(var arg0,v:mapev1...etc) -> cmdname=cmdid,arg0,arg1
+	}.elif $md == SScmd_Mode_Convert {
+		__loop $cmdList $block {
+			v[__id($i)] += 1
+			//Get command ID type name argc and so on
+			$block
+		}
+
+
+
+	// Execute Mode
+	}.elif $md == SScmd_Mode_Call { // $given_v_or_str work as converted str id:argv[0],argv[1]...
+
+		// can this really faster than the old DIS script?
+		 
+		__loop $cmdList $block {
+			v[__id($i)] += 1
+			@if SScmdnum == v[__id($i)] {
+				$block
+				@break
+			}
+		}
+
+	}
+
+}
+
+SS_funcgroup("SScommand functions",{
+	// Command type function 
+	def nargs_nolimit = -1
+	
+	// Much more simple one
+	__fn NsCmd $LINKstr $mode $ID $NAME $func {
+
+		// Construct Link
+		__if $mode == SScmd_Mode_Construct_Link {
+			t[__id($LINKstr)].cat $NAME
+			t[__id($LINKstr)].cat "="
+			t[__id($LINKstr)].cat $ID
+			t[__id($LINKstr)].cat ";"
+			//end
+
+
+		//Execute Mode / Help Mode
+		}.elif $mode == SScmd_Mode_Exec {//Just execute functions from list
+			$func
+		}
+
+	}
+
+	//SS command !
+	__fn SScommand $LINKstr $mode $ID $type $NAME $nargv $argv_type_list $funclist {
+
+		SScomments_for_RMEditer(__str("COMMAND - " $NAME ":"))
+		
+		//Construct Link
+		__if $mode == SScmd_Mode_Construct_Link {
+			t[__id($LINKstr)].cat $NAME
+			t[__id($LINKstr)].cat "="
+			t[__id($LINKstr)].cat $ID
+			t[__id($LINKstr)].cat ","
+			__loop $argv_type_list $el {
+				t[__id($LINKstr)].cat $el
+				t[__id($LINKstr)].cat ","
+			}
+			t[__id($LINKstr)].cat ";"argv_type_list
+			//end
+
+
+		//Execute Mode / Help Mode
+		}. elif $mode == SScmd_Mode_Exec {//Just execute functions from list
+			SScmdfunc($funclist, $mode)
+
+
+		//Script Convert Mode
+		}.elif $mode == SScmd_Mode_Convert{
+			//Return ID type name argc and alle
+			SSreg1 = $type
+			str_SSreg1.asg $NAME
+			SScmd.asg $ID
+			__loop $argv_type_list $elm $i {
+				$ptr = __id(SSargs0) + $i
+				t[$ptr].asg $elm	
+			}
+			
+		}.elif $mode == SScmd_Mode_Call{
+			//Str
+			SScmdfunc($funclist, $mode)
+
+
+		}
+	}
+
+
+	__fn SScmdfunc $functionlist $callwhat {
+
+		__loop $functionlist $block $i {
+			__if $i == 0 {
+				__if $callwhat != SScmd_Mode_Help { $block }
+
+			}.elif $i == 1 {
+				__if $callwhat == SScmd_Mode_Help { $block }
+			}
+		
+		}
+
+	}
+
+
+	__fn SS_errlog $str {
+		SSreturn_system_string($str)
+		SS_system_popup(str_SSsystem)
+	}
+
+	//return $string to reg1 
+	__fn SSreturn_string $string {
+		str_SSreg1.asg $string
+	}
+
+	__fn SSreturn_system_string $string {
+		str_SSsystem.asg $string
+	}
+
+	__fn SSreturn $type $var {
+
+	}
+
+
+
+
+
+	//This will be called whenever a function's args contains another function 
+	__fn save_current_cmd_to_SSb_array $arrayid $args_index_which_called_this {
+
+		//get current index data to SSvar1 from selected array
+		get_SSb_array_index(SSvar1,$arrayid)
+		SSvar1 &= SS_buffer_index_mask
+
+		SSvar2 = SSvar1+1
+
+		//Convert all 
+		@loop SSnargs .dst(Ssvar3){
+			SSvar3 += __id(SScmd)
+
+		}
+
+
+		set_SSb_array $startvar $arrayid $elm_add $index $amount
+		
+
+	}
+
+
+
+	
+	__fn SScommand_convert_args_into_argv $args_start $amount {
+		__loop $amount $i {
+			$n = $i + __id(SSvar2)
+			$m = __id($args_start) + $i
+			t[$m].toNum v[$n]
+		}
+	}
+
+	__fn SScomments_for_RMEditer $comment {
+		__if __defined(DEBUG_BUILD) {
+			__if DEBUG_BUILD == 1{ // to optimise your game, you can set build infomation
+				@comment __str("ScaleScript:" $comment)
+			}
+		}.else bl{
+			@comment __str("ScaleScript:" $comment)
+		}
+	}
+
+})
+
+
+
+__fn proc_SS_args_var $str $mode {
+	//$ global
+	//v: local
+	//v[n] RMvar
+	//b[n][m] picture buffer 
+	//p[id][n][m] 
+	str_get_char(str_SSreg1,$str,0)
+
+	//Check first char
+	@if str_SSreg1.eq "$" {
+		//GLOBAL
+
+	}.else bl{
+		//NOT GLOBAL
+		//Then get index[1]
+		str_get_char(str_SSreg2,$str,1)
+		@if str_SSreg2.eq ":"{
+			//Looks like local var
+
+		}.elif str_SSreg2.eq "["{
+			//Looks like RM var or picture
+
+
+		}.else bl{
+			//Loos like just a Number,
+		}
+	}
+
+
+}
+
+__fn proc_SS_argv_str $str $mode{}
+
+
+def macro_demiliterset = {
+	__if $flags & SScmd_Flag_Cmdline {
+		$delimiter = " "
+	}.else bl{
+		$delimiter = ","
+	}
+}
+
+
+
+
+__fn GIVE_METAVAR2BLOCK $block $var1 $var2 $var3 $var4 $var5 $var6 $var7 $var8 $var9 $var10 { //is these $vars even needed? idk 
+	$block
+}
+
+
+//dummy
+__fn MAIN $do {$do}
+__fn SETcmd $do {$do}
+__fn HELP $do {$do}
+
+//meaningless dummy just to make source look more clear
+__fn SS_funcgroup $funcgroupname $do {$do}
+
+
+
+
+
+
+
+
+
+

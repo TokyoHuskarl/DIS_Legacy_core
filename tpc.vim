@@ -1,19 +1,19 @@
 " Vim syntax file
 " Language:	TPC for RM2003 Maniacs
 " First Author:	Tokyo Huskarl
-" Last Change:	2023 Mar 24
+" Last Change:	2023 Jun 3
 " garbage syntax file lmao
-
 " quit when a syntax file was already loaded
-if exists("b:current_syntax")
+
+if exists('b:current_syntax')
   finish
 endif
 
-syn match tpcMetaVar "\$\S*" contains=tpcNumber
+syn match tpcMetaVar "\$\w*" contains=tpcNumber,tpcString
 syn match tpcString "__str(\S*)" contains=tpcMetaVar
 syn match tpcNumber "__id(\S*)" contains=tpcMetaVar
 
-syn keyword tpcDelimiter ,
+syn keyword tpcDelimiter , "
 
 " syn match "\." tpcKeyword
 
@@ -31,9 +31,9 @@ syn region tpcComment start=+\/\*+ end=+\*\/+ fold
 syn match tpcComment /\/\/.*/
 syn match tpcComment /@comment\s".*"/ contained
 
-syn keyword tpcFunctions cev mev __fn break
+syn keyword tpcFunctions cev mev __fn break mep ev
  
-syntax keyword tpcOperator copy sub add mul div muldiv divmul max min asg split cat rem ins exrep rep subs file join extract ToFile inStr
+syntax keyword tpcOperator copy sub add mul div muldiv divmul max min asg split cat rem ins exrep rep subs file join extract ToFile inStr deref
 
 
 " syntax region tpcComment start=/@comment\s"/ end=/"/ 
@@ -47,7 +47,7 @@ syntax match tpcHighlight +.*\*\*\/+ contained
 syntax region tpcString  start=+"+ end=+"+ contains=DIS_variables,DIS_colour,DIS_strings
 
 
-syn match tpcCommands +@\S*+ contains=tpcConditional,tpcRepeat,tpcComment,tpcMetaVar
+syn match tpcCommands +@\w*+ contains=tpcConditional,tpcRepeat,tpcComment,tpcMetaVar
 syn match tpcVar "v\[\S*\]" contains=tpcNumber,tpcMetaVar
 syn match tpcChar "t\[\S*\]" contains=tpcNumber,tpcMetaVar
 syn match tpcSwitch "s\[\S*\]" contains=tpcNumber,tpcMetaVar
@@ -100,8 +100,6 @@ highlight link DIS_lang_symbols Character
 highlight link DIS_variables Number 
 highlight link DIS_strings String 
 highlight link DIS_colour Tag 
-
-
 
 
 

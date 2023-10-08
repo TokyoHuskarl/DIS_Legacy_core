@@ -1,19 +1,320 @@
+// misc functions
+
+__fn MAIN_CEV_RTS_FRAME_COUNT {
+	@comment "module_core_main_RTS_Frame_Count.tpc"
+
+	@if s[2] .isOff() {
+	    v[2500..2501] += 1
+	    
+	}
+
+
+	@if s[461] .isOff() {
+	    v[2502] += v[2501] / v[1240]
+	    v[2503] += v[2502] / 60
+	    v[2504] += v[2503] / 60
+
+			// koko iranakunaru
+
+	    v[2502..2503] %= 60
+	    v[2501] %= v[95]
+	    v[2510] -= s[309]== 1 ? 0 : 1 //[1, 0][s[309]]
+	    v[2661] -= 1
+
+	    vname[2505],"Frame-half"
+	    v[2505] = v[2502] / 2 // for col check
+	    
+	}
+			
+
+	@if s[319] .isOn() {
+		@if s[2] .isOff {
+
+				// autosave
+		    @if s[317] .isOff() {
+					@if RTS_Difficulty < DIF_RAGNAROK { // NOT RAGNAROK
+						@if RTS_WORLD_passed_frame > 100 { // avoid starting save spam
+							def AUTOSAVE_FRAME = (2 * 60 + 20) * DIS_Game_FPS // (2min * 60 + 20sec) * baseFPS
+							
+							TT1 = RTS_WORLD_passed_frame % AUTOSAVE_FRAME
+							@if TT1 == 0 {
+								sysfunc_autosave() // this nest looks seriously retarded.
+							}
+						}
+					}
+		    }
+	}
+
+	    @if s[7] .isOn() {
+				@if v[2403] == FAC_imperial {
+						@if v[2503] >= 12 {
+							@if `!(v[2412] & 0x80) {
+									v[472] = divmul(100, 100, v[2216])
+									@se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
+									@se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
+									v[472] = divmul(100, 100, v[2217])
+									Current_BGMFile .asg "[J.R.S. Schattenberg]Aevitas(The Empire in Twilight)"
+									@bgm.play "[J.R.S. Schattenberg]Aevitas(The Empire in Twilight)" .opt 1000, v[472], 100, 50
+									v[2412] |= 128
+									//@comment "#######################"
+									@call .cev 1924
+									TT1 = 2
+									v[601] = 1
+									@pic[v[1155]].strpic {
+										t[20326]
+										.pos TT1, v[1126] .bottomLeft
+										.size 0, 0                        .chromakey 1
+										.scale 100
+										.trans 30
+										.rgbs 100, 100, 100, 100
+										.font Font_UI, Font_UI_size
+										.spacing 0, 4
+										.skin "" .nobg .noframe .noPadding
+										.mapLayer 8
+										.eraseWhenTransfer
+										.affectedByFlash
+										.affectedByShake
+									}
+									@call .cev 1925
+									@loop v[1012] .dst v[141] {
+										//@comment "Check Player Team List"
+										v[601] = v[141] + v[1145 + v[251] % 3]
+										@if v[v[601]] >= 1 {
+												v[602] = v[v[601]] * 300
+												v[602] += 4701
+												@if v[v[602]] == 11 {
+													v[602] += 100
+													@if v[v[602]] == 1 {
+															v[602] += 40
+															v[602] += 3
+															v[v[602]] = 147
+															v[602] += 1
+															v[v[602]] = 48
+															
+													}
+													
+												}
+												
+										}
+										
+									}
+									
+									
+							}
+							
+						}
+						@if v[2503] >= 24 {
+					@if `!(v[2412] & 0x100) {
+							v[2412] |= 256
+							v[472] = divmul(100, 100, v[2216])
+							@se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
+							@se.play "endurance\Onmtp-Impact04-1" .opt v[472], 90, 50
+							@if Current_BGMFile .neq "[Soularflair]We Are Legion(Einherjar)" {
+								v[472] = divmul(100, 100, v[2217])
+								Current_BGMFile .asg "[J.R.S. Schattenberg]Metus(Ruina Imperii)"
+								@bgm.play "[J.R.S. Schattenberg]Metus(Ruina Imperii)" .opt 0, v[472], 100, 50
+						
+							}
+							v[229] = 15
+							s[240].on
+							@comment "#######################"
+							@call .cev 1924
+							TT1 = 2
+							v[601] = 1
+							@pic[v[1155]].strpic {
+								t[20327]
+								.pos TT1, v[1126] .bottomLeft
+								.size 0, 0                        .chromakey 1
+								.scale 100
+								.trans 30
+								.rgbs 100, 100, 100, 100
+								.font Font_UI, Font_UI_size
+								.spacing 0, 4
+								.skin "" .nobg .noframe .noPadding
+								.mapLayer 8
+								.eraseWhenTransfer
+								.affectedByFlash
+								.affectedByShake
+							}
+							@call .cev 1925
+							@comment "#######################"
+							@loop v[1004] .dst v[141] {
+						@comment "Check Player Team List"
+						v[602] = v[141] * 300
+						v[602] += 5001
+						@if v[v[602]] == 11 {
+								@if `v[v[602] + 99] == 0 {
+							v[602] += 100
+							@if v[v[602]] == 23 {
+									v[602] += 40
+									v[v[602]] = 72
+									v[602] += 1
+									@comment "icon"
+									v[602] += 2
+									v[v[602]] = 62
+									v[602] += 1
+									@comment "icon"
+									v[602] += 2
+									v[v[602]] = 86
+									v[602] += 1
+									@comment "icon"
+									v[602] += 2
+									v[v[602]] = 81
+									v[602] += 1
+									@comment "icon"
+									v[602] += 2
+									v[v[602]] = 10305
+									v[602] += 1
+									@comment "icon"
+									v[602] += 2
+									v[v[602]] = 10306
+									v[602] += 1
+									@comment "icon"
+									v[602] += 2
+									v[v[602]] = 10307
+									
+							}
+							
+								}
+								
+						}
+						
+							}
+							
+							
+					}
+					
+						}
+						
+				}
+				
+	    }
+	    
+	}
+}
 
 __fn func_remove_dead_agent_picture $agentid {
-	v[21] = Const_layer_amount * $agentid + v[1202]
+	reg1 = Const_layer_amount * $agentid + v[1202]
 	@comment "safety"
-	@if v[21] <= v[2299] {
-	    v[22] = v[21] + v[4516] - 1
-	    @pic[v[21]..v[22]].erase
-	    v[21] = (v[11] - 1) 
-	    v[21] *= v[4516] + v[1185]
-	    v[1301].copy v[v[21]], v[4516]
+	@if reg1 <= v[2299] {
+	    reg2 = reg1 + v[4516] - 1
+	    @pic[reg1..reg2].erase
+	    //reg1 = (var1 - 1) 
+	    //reg1 *= v[4516] + v[1185]
+	    //v[1301].copy v[reg1], v[4516]
 	    
 	}
 
 }
 
-cev .id(2152), .name("miscfunc:remove dead agent pic"), {
-	func_remove_dead_agent_picture(var1)
+// Tile information functions
+// args[1],[2] must be tile coordinate, not raw map coordinate
+__fn getTileInfoPtr $return $x $y {
+	v[__id($return)] = $y * var_Map_Width
+	v[__id($return)] += v[1182] + $x
 }
+
+// Wall Check
+__fn Is_TileInfo_Wall_to_reg9 $tileptr {
+	reg9 = (v[$tileptr] % 100) > 21 ? 1 : 0
+}
+
+// use var1~4
+// return if wall detected or not to reg1 
+__fn func_tilecheck_RayCast $X0 $Y0 $X1 $Y1 {
+
+	// use Bresenham's line algorithm to check line from Point1 to Point2
+	// use common vars to caluculate
+	defv {
+		RC_deltax = __id(TT1)
+		RC_deltay = __id(TT2)
+
+		RC_x = __id(TT3)
+		RC_y = __id(TT4)
+		RC_err = __id(TT5)
+
+		RC_swapx = __id(TT6)
+		RC_swapy = __id(TT7)
+		RC_err2 = __id(TT8) 
+
+	}
+
+	// RC_deltax = abs($X1 - $X0)
+	RC_deltax = ($X1 - $X0)
+	RC_deltax = abs(RC_deltax)
+
+	// RC_deltay = abs($Y1 - $Y0)
+	RC_deltay = ($Y1 - $Y0)
+	RC_deltay = abs(RC_deltay)
+	RC_deltay *= -1 // only -(dy) used in this proc, so make RC_deltay = (dy * -1) initially to optimize in RM system
+	
+	RC_swapx = $X0 < $X1 ? 1 : -1
+	RC_swapy = $Y0 < $Y1 ? 1 : -1
+	RC_err = RC_deltax + RC_deltay
+
+	RC_x = $X0
+	RC_y = $Y0
+	
+	@loop bl {
+
+		/* check maptile information of the coordinate */
+
+		getTileInfoPtr(reg1,RC_x,RC_y) // get tile info ptr to reg1
+		Is_TileInfo_Wall_to_reg9(reg1) // check if it's wall and return its result to reg9
+		
+		@if reg9 == 1 { // wall found
+			reg1 = 1 // return 1
+			@break
+		}
+
+		/* maptile info check end */
+		
+		// reach the goal coordinate
+		@if RC_x == $X1 {
+			@if RC_y == $Y1 {
+				reg1 = 0 // no obstacle found, return 0
+				@break
+			}
+		}
+
+		RC_err2 = RC_err * 2
+		
+		@if RC_err2 > RC_deltay {
+			RC_err += RC_deltay // -(dy)
+			RC_x += RC_swapx
+		}
+
+		@if RC_err2 < RC_deltax {
+		
+			RC_err += RC_deltax
+			RC_y += RC_swapy
+		}
+		
+	}
+
+}
+
+
+
+__fn get_point_morton_to_reg1 $pos {
+			__loop $pos $e $i {
+				$tp = __id(var1) + $i
+				v[$tp] = $e
+			}
+	    var1 .add v[53], 2
+	    var1 .sub v[76], 2
+	    var1 .div v[74], 2
+	    var1 = (var1 | var1 << 8) & 0xFF00FF
+	    var1 = (var1 | var1 << 4) & 0xF0F0F0F
+	    var1 = (var1 | var1 << 2) & 0x33333333
+	    var1 = (var1 | var1 << 1) & 0x55555555
+	    var2 = (var2 | var2 << 8) & 0xFF00FF
+	    var2 = (var2 | var2 << 4) & 0xF0F0F0F
+	    var2 = (var2 | var2 << 2) & 0x33333333
+	    var2 = ((var2 | var2 << 1) & 0x55555555) << 1
+	    reg1 = var1 | var2
+
+}
+
+
 

@@ -1,6 +1,43 @@
 #include "./../headers/header_common.tpc"
 
-//Achievement
+
+
+cev .id(2003), .name("macro:make vector_old"), {
+	func_make_unit_vector_from_two_points_sqrt(var1,var2,var3,var4)
+}
+
+//Export Bonus Text
+
+cev[2140] .name("func_export_bonus_text") {
+	t[503] .asg "..\BONUS\"
+	t[503] .cat t[502]
+	t[501] .toFile t[503], .utf8
+	@pic[927].strpic {
+	    t[20285] //quickstring 285
+	    .pos v[1115], v[1116] .center
+	    .size 0, 0    .chromakey 1
+	    .scale 100
+	    .trans 0
+	    .rgbs 100, 100, 100, 100
+	    .font t[530], v[4511]
+	    .spacing 0, 4
+	    .skin "" .stretch
+	    .mapLayer 10
+	    .eraseWhenTransfer
+	}
+	@wait 1
+	@pic[927].move {
+	    .pos v[1115], v[1116] .center
+	    .scale 100
+	    .trans 100
+	    .time 9
+	    .rgbs 100, 100, 100, 100
+	}
+}
+
+cev[2091], .name("Game:Global Counter"), .parallel,   {
+	v[2219] += 1
+}
 
 
 //Achievement get effect
@@ -173,3 +210,7 @@ cev .id(83), .name("Game:Achievement Check"), .parallel ,   {
 	    
 	}
 }
+
+
+
+

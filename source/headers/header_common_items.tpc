@@ -8,3 +8,8 @@ __fn func_get_weapon_picture_id $weaponid {
 	t[3030] .toNum v[21]
 
 }
+
+__fn func_get_ranged_weapon_velocity $maxrange $Vmodifier {
+	reg1 = 42 - $Vmodifier
+	reg1 = sqrt(muldiv(g_perFPS * $maxrange, 5000,sin(reg1,1,100)*cos(reg1,1,100)),1)
+}

@@ -1,5 +1,74 @@
 
+
+__if LOAD_HEADER_AGENT != 1 {
+// you need to clean up mess of header files tbh
+
+
+def STATIC_NODE_MOVEMENT_COST = 8
+def STATIC_NODE_MOVEMENT_COST_GATE = 30
+def STATIC_NODE_MOVEMENT_COST_WALL = 24
+
+defv ptr_SpawnAgentMainSpace_Head = 201
+defv gl_lastSpawnedAgent = 436
+defv {
+	spawnSet_Team = 251
+	spawnSet_x = 252
+	spawnSet_y = 253
+	spawnSet_TroopID = 254
+	spawnSet_ParentAgent = 255
+	spawnSet_Cohort = 258
+	spawnSet_Direction = 280
+	spawnSet_Stance = 277
+
+
+}
+defs{
+	bool_SpawnSystemLegacy = 152
+	bool_GenOnehandedWeapon = 154
+	bool_GenHeadCovered = 155
+	bool_Gen_CohortSet = 156
+	bool_Gen_NoListAssigningFlag = 157
+	bool_Gen_DelHead = 158
+	bool_Gen_ArmArmored = 159
+	bool_Gen_bigheadflag = 160
+}
+
+
+defv {
+	MORTON_Dim1Lists_head=1068
+	MORTON_Dim2Lists_head=1069
+	MORTON_Dim3Lists_head=1070
+	MORTON_Dim4Lists_head=4534
+	MORTON_Dim5Lists_head=4535
+
+	MORTON_RootCount_head=1071
+	MORTON_Dim1Count_head=1072
+	MORTON_Dim2Count_head=1073
+	MORTON_Dim3Count_head=1074
+	MORTON_Dim4Count_head=4537
+	MORTON_Dim5Count_head=4538
+
+	 
+}
+def Adr_MORTON_ListsPtrlink_array_head = 4546
+def Adr_MORTON_CountPtrlink_array_head = 4552
+
+#include "./../Dracore/module_core_RTS_agent_misc_functions.tpc"
+//Agent Generate Functions
+#include "./../Dracore/module_core_RTS_agent_generate_basic.tpc"
+
+#include "./../Dracore/module_core_Game_items_functions.tpc"
+
+
+
+
+
+
+
+
 //cev 2007 Skill Cooldown check macro.
+//reg1 Current CD Timer Ptr
+//reg2 Skill CoolDown
 __fn macro_SkillCDck $agent $skillno {
 	/*comment "Var1 = agent 1~
 	Var2 = SkillNo
@@ -7,7 +76,52 @@ __fn macro_SkillCDck $agent $skillno {
 	r2 = SkillCD"*/
 	//TT1 = $agent * 300 + 4794
 	//TT2 = TT1 + 34
-	reg1 = ($agent * 300 + 4794) +$skillno
-	reg2 = v[($agent * 300 + 4828)+($skillno * 20)]
+	reg1 = $agent * 300
+	reg2 = v[reg1 + 4828 + $skillno * 20]
+	reg1 += 4794 + $skillno
+	//reg1 = ($agent * 300 + 4794) +$skillno
+	//reg2 = v[($agent * 300 + 4828)+($skillno * 20)]
+
+}
+
+
+
+// abandoned since AEAB has fatal bug
+/*
+
+__fn macro_get_agent_basic_ptr_from_AEAB $agentid $reg {
+
+	// YOU SHOULDN'T USE THIS MACRO WITH POINTER 
+	@pic.getInfo[PicID_AgentExBuffer] .pixel(AgentExBuffer_SLOT_Ptr_To_BasicArray, $agentid, 1, 1) .dst(v[__id($agentid)])
+
+} 
+
+__fn macro_get_agent_MetaTeam_into_var $agentid $getvar {
+	var1 = $agentid
+	get_AEAB_element(var1,__id($getvar),AgentExBuffer_SLOT_MetaTeam)
+}
+
+
+*/
+
+
+__fn get_agentName_to_inputstr $agentid {
+	reg10 = v[4562] + v[__id($agentid)]
+	inputstr.asg t[reg10]
+}
+
+__fn macro_set_agent_AI_decision_Sub_WEP_Type $AAusage  {
+	var1 = $AAusage
+	var1 = [AI_decision_bits_FLAG_Sub_WEP_is_Melee,AI_decision_bits_FLAG_Sub_WEP_is_Ranged,AI_decision_bits_FLAG_Sub_WEP_is_Magic][var1]
+	agent_AI_decision_bits |= var1//temporary
+
+}
+
+
+__fn save_agent_vars $ptr {
+	    agent_AgentType.copy v[$ptr], 300
+}
+
+def LOAD_HEADER_AGENT = 1
 
 }

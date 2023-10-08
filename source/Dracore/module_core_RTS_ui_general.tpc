@@ -1,37 +1,137 @@
 //Compiling this file updates the DIS-RTS UI system in the ldb 
 //このファイルをコンパイルするとRTSモードのUIシステムが更新されます
 
+
+// The entire UI system of DIS is kinda messy and obsolete... so now we'll attempt total refactoring
+
 #include "./../headers/header_common.tpc"
+#include "./../headers/header_ui.tpc"
+#include "./../headers/header_control.tpc"
+#include "./../headers/header_agent.tpc"
+
+#include "./module_core_RTS_misc_functions.tpc"
+#include  "./module_core_RTS_ui_misc_functions.tpc"
 
 def moduletitle="module_core_RTS_ui_general"
 
 //Map Common UI
-cev .id(26) ,.name("UI:Map Common UI"), .parallel , .cond(Const_Is_RTS_Mode), {
-@comment moduletitle
 #include "./module_core_RTS_ui_map_common.tpc"
+cev .id(26) ,.name("UI:RTS Screen Common UI"), .parallel , .cond(Const_Is_RTS_Mode), {
+	@comment moduletitle
+	UI_CEV_RTS_SCREEN_MANAGEMENT()
 }
 
 //Minimap
-cev .id(27) ,.name("UI:Minimap"), .parallel , .cond(Const_Is_Minimap_Set), {
-@comment moduletitle
 #include "module_core_RTS_ui_minimap.tpc"
+cev .id(27) ,.name("UI:Minimap"), .parallel , .cond(Const_Is_Minimap_Set), {
+	@comment moduletitle
+	UI_CEV_MINIMAP_MANAGER()
 }
 
 //Central monitor
-cev .id(28) ,.name("UI:Cent Monitor"), .parallel , .cond(Const_Is_RTS_Mode), {
-@comment moduletitle
 #include "./module_core_RTS_ui_central_monitor.tpc"
+cev .id(28) ,.name("UI:Cent Monitor"), .parallel , .cond(Const_Is_RTS_Mode), {
+	@comment moduletitle
+	UI_CEV_CENTRAL_MONITOR_MANAGEMENT()
 }
 
 //Unit management
-cev .id(29) ,.name("UI:Unit management"), .parallel , .cond(Const_Is_RTS_Mode), {
-@comment moduletitle
 #include "./module_core_RTS_ui_unit_management.tpc"
+cev .id(29) ,.name("UI:Unit management"), .parallel , .cond(Const_Is_RTS_Mode), {
+	@comment moduletitle
+	UI_CEV_SELECTED_AGENT_MANAGEMENT()
 }
 
 //Mouse Observe
-cev .id(47) ,.name("UI:Mouse Observer"), .parallel , .cond(Const_Is_RTS_Mode), {
-@comment moduletitle
 #include "./module_core_RTS_ui_mouse.tpc"
+cev .id(47) ,.name("UI:Mouse Observer"), .parallel , .cond(Const_Is_RTS_Mode), {
+	@comment moduletitle
+	UI_CEV_MOUSE_OBSERVER()
 }
 
+cev .id(199) ,.name("UIfunc:Show Troop Description"), {
+	@comment moduletitle
+	UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW()
+}
+
+//Resource Window
+cev[84] "Resource Window", {
+	func_refresh_resource_window()
+}
+
+
+
+//Log Manager
+cev .id(70) ,.name("Log:RTS log manager"), .parallel , .cond(Const_Is_RTS_Mode), {
+	
+	@if PUSH_DIS_LOG .isOn() {
+		DISlogQueue.inStr(LF,reg1)
+		reg1 += 1
+		t[3000].asg .subs(DISlogQueue, 0, reg1)
+		DISlogQueue.asg .rem(DISlogQueue, 0, reg1)
+		func_draw_DIS_log(t[3000])
+		DISlogQueue.getlen(reg1)
+		@if reg1 == 0 {
+			PUSH_DIS_LOG.off
+		}
+	}
+	
+
+	@if s[2] .isOff() {
+	    v[238] -= 1
+	    @if v[238] <= 0 {
+				TT1 = v[1155]
+				TT10 = 2
+				TT11 = v[4515]
+				TT5 = v[239]
+				TT6 = divmul(-25, 45, v[1139])
+				@loop v[1136] .dst TT2 {
+						TT2 += TT1
+						@pic[TT2].move {
+					.pos TT10, TT11 .bottomLeft
+					.scale 100
+					.trans 100
+					.time TT6
+					.rgbs 100, 100, 100, 100
+						}
+						TT11 -= v[1137]
+						TT5 = min(TT5 + 5, 100)
+						
+				}
+				
+		
+	    }
+	    
+	}
+
+	// gamelog export
+	@if IS_EXPORTING_LOG_ALLOWED .isOff() {
+		@if RTS_WORLD_passed_frame > 0 {
+			def GAMELOG_FRAME = 90 * DIS_Game_FPS // refresh per 90 sec
+			TT1 = RTS_WORLD_passed_frame % GAMELOG_FRAME
+			@if TT1 == 0 {
+				export_mapautolog()
+			}
+		}
+	}
+}
+
+
+cev[81] "Draw Range Indicator", {
+	func_draw_range_indicator()
+}
+
+cev[1100] "UI:PASSIVE DESCRPTION", {
+	show_Passive_description()
+}
+
+cev[1200] "UI:SKILL DESCRIPTION", {
+	show_agent_skill_description()
+}
+
+cev .id(1924) ,.name("LogFunc:update1"),{
+	func_logupdate_begin()
+}
+cev .id(1925) ,.name("LogFunc:update2"),{
+	func_logupdate_end()
+}

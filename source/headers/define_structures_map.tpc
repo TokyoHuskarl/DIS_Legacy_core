@@ -1,0 +1,99 @@
+// I actually wanted to define those defvs like "agent.brabrabra = n" but in TPC syntax it's invalid, sadly.
+
+def {
+	DIS_MAPHOMEPATH = "../Maps/"
+}
+struct("Terrain",{
+	def {
+		STRING_undefined_terrain = __str("selected terrain is not defined!")
+
+	}
+	
+	// str get series basically return result to str1
+	__fn getTerrainElm $id $elm {
+		var2 = Adrt_terraindata_head + $id
+		splitStrData(t[var2])
+
+		@if strAr0.neq "" { // terrainId exists
+			var1 = __id(strAr0) + $elm
+			regs1.asg t[var1]
+
+		}.else bl{
+			func_errlog(STRING_undefined_terrain)
+			regs1.asg "NULL"
+		}
+	}
+
+})
+
+
+
+
+// Mission
+deft {
+	MissionLogName = 748
+	Str_MissionPath = 749
+	RTSmap_MissionDirectory = 750 // The great separation of mission and map is beginning. Almost all legacy strs with the prefix "Map" will be changed like this
+	RTSmission_MissionName = 752
+}
+
+struct("DISmap",{
+
+	deft { // YOU NEED TO CHANGE ALL NAMES LATER!!!
+			DISmap_MapDirectory = 750 // erase later
+		DISmap_MapID = 751
+			DISmap_MapName = 752 // erase later
+		DISmap_AIscriptfile = 753
+		DISmap_TileName = 754
+
+		RTSmap_MapdefDir = 755
+
+	}
+
+	defs {
+		DISmap_isWintermap = 296
+	}
+	
+	struct("maptile",{
+		defv{
+			//#ElevationLevel[1]+UpperLayer[3]+DownLayer[3]+TerrainID[2]
+		}
+
+		def{
+			maptile_Address_TileInfoArray_Start = Memory_MapInfo //defined in header_common.tpc
+			
+
+			
+		}
+
+	})
+
+	struct("mapnode",{
+		defv RMconst_Node_Array_Address_Start = 4569
+
+		// dafuq
+		vname[4828],"const_Node_ArrayHead_MinusMemSize",bl
+		defv RMconst_Node_Array_Address_Start_MINUS_NODE_MEMSIZE = 4828
+
+		def mapnode_ArraySize = 20 // this one is saved in v[4564]
+		defv RMconst_MapNodeMemSize = 4564
+		defv {
+			mapnode_RefMapX = 581
+			mapnode_RefMapY 
+			mapnode_MovementCost 
+		}
+	})
+
+	struct("sight system",{
+		defv FoWManagementFlagsVar = 516
+
+		def {
+			FoWFlag_Map_PreRevealed = 1073741824
+
+			macro_set_Map_PreRevealed_flag = {
+				FoWManagementFlagsVar |= FoWFlag_Map_PreRevealed 
+
+			}
+		}
+	})
+})

@@ -1,6 +1,6 @@
 __fn func_bs_change_agent_team $agentID $team{
 	// "v1= AgentID 	v2 = team 	r1 = succeed?"
-	v[21] = 0
+	reg1 = 0
 	v[702] = $agentID * 300 
 	v[702] += 4802
 	@if v[v[702]] != 104 {
@@ -8,28 +8,28 @@ __fn func_bs_change_agent_team $agentID $team{
 		// "Team Get	!TEAM LIST!"
 		v[700] = $agentID * 300 
 		v[700] += 4800
-		v[308] = v[v[700]] % 3
+		Temp8 = v[v[700]] % 3
 		// "Check team amount"
 		@if `v[205 + $team] < v[1080] {
 		    // "NOT  neutral"
-		    @if v[308] != 2 {
+		    @if Temp8 != 2 {
 			// "NOT  Gaia"
-			@if v[308] > -1 {
-			    v[310] = v[v[308] + 205]
-			    v[309] = v[1145 + v[308]]
-			    v[310] += v[309]
-			    @while v[309] <= v[310] {
-				v[311] = (v[309] + v[310]) / 2
-				@if v[v[311]] == $agentID {
-				    v[v[311]] = 0
+			@if Temp8 > -1 {
+			    Temp10 = v[Temp8 + 205]
+			    Temp9 = v[1145 + Temp8]
+			    Temp10 += Temp9
+			    @while Temp9 <= Temp10 {
+				Temp11 = (Temp9 + Temp10) / 2
+				@if v[Temp11] == $agentID {
+				    v[Temp11] = 0
 				    @break
 				    
 				} .else bl {
-				    @if v[v[311]] < $agentID {
-					v[310] = v[311] - 1
+				    @if v[Temp11] < $agentID {
+					Temp10 = Temp11 - 1
 					
 				    } .else bl {
-					v[309] = v[311] + 1
+					Temp9 = Temp11 + 1
 					
 				    }
 				    
@@ -37,15 +37,15 @@ __fn func_bs_change_agent_team $agentID $team{
 				
 			    }
 			    
-			    v[309] = v[1145 + v[308]]
-			    v[v[309]].sortDescending v[1012]
-			    v[343] = $agentID * 300 + 4802
+			    Temp9 = v[1145 + Temp8]
+			    v[Temp9].sortDescending v[1012]
+			    TT3 = $agentID * 300 + 4802
 			    // "Coｌなし施設はカウントされてないので引かない"
-			    @if v[308] == 0 {
+			    @if Temp8 == 0 {
 				v[205] -= 1
 				
 			    } .else bl {
-				@if v[308] == 1 {
+				@if Temp8 == 1 {
 				    v[206] -= 1
 				    
 				} .else bl {
@@ -97,12 +97,20 @@ __fn func_bs_change_agent_team $agentID $team{
 		    }
 		    v[$agentID * 300 + 4724] = [1, 2, 3, 4][v[v[700]]]
 		    v[$agentID * 300 + 4800] = $team
-		    v[Const_AgentMetaTeam_begin + (v[__id($agentID)]-1)] = (v[__id($team)] % 3)
+		    reg2 = (v[__id($team)] % 3)
+		    v[Const_AgentMetaTeam_begin + (v[__id($agentID)]-1)] = reg2 
+
+		   __if DIS_EXPERIMENTAL == -1 {
+			    // set MetaTeam in AEAB
+		   	    reg3 = $agentID
+			    set_AEAB_element(reg3,__id(reg2),AgentExBuffer_SLOT_MetaTeam)
+		   }
+		   
 		    
 		} .else bl {
 		    // "最大数超過したらなかったことに"
 		    // "undercostruction"
-		    v[21] = -1
+		    reg1 = -1
 		    
 		}
 		
@@ -110,3 +118,113 @@ __fn func_bs_change_agent_team $agentID $team{
 	    
 	}
 }
+
+
+
+//this one is straightly set into cev 1911
+__fn func_bs_register_buff_old $buff_id $agent {
+	/*// "V1 = Buff ID
+	V2 = Target ObjID
+	R1 = Buff Ptr
+	R2 = Buff Timer Ptr"*/
+	TT1 = $agent * 300
+	TT1 += 4771
+
+	TT4 = TT1 + 203 // get ptr to ProcessObjBit
+	TT4 = v[TT4] // get ProcessObjBit
+
+	reg2 = -1
+	@loop 16 .dst TT10 {
+	    TT3 = TT10 >= 8 ? 0 : $buff_id
+	    TT10 %= 8
+	    TT2 = TT1 + TT10
+	    @if v[TT2] == TT3 {
+				reg1 = TT2
+				v[reg1] = $buff_id
+				reg2 = TT2 + 15
+				@if s[140] .isOff() {
+						//// "Knockback Resist"
+						reg2 = between($buff_id, 1196, 1197) && TT4 & BaseObjBit_FLAG_Immune_to_Knock_back ? (v[reg1] = 0) : reg2
+						//// "#If buff memories are full, return reg2 -1"
+						reg2 = TT4 & BaseObjBit_FLAG_Immune_to_stun && between($buff_id, 1169, 1170) ? (v[reg1] = 0) : reg2
+						
+				}
+				@break
+		
+	    }
+	    
+	}
+
+	s[140].off
+}
+
+//one with time 
+__fn func_bs_register_buff_with_time $buff_id $agent $time{
+	func_bs_register_buff_old($buff_id $agent)
+	v[reg2] = reg2 >= 0 ? $time : v[reg2]
+}
+
+// use only after you have already extracted data to victim buffer
+__fn func_bs_register_buff_to_victim $buff_id $time {
+	/* "V1 = Buff ID
+	V2 = Target ObjID
+	R1 = Buff Ptr
+	R2 = Buff Timer Ptr"*/
+	TT1 = __id(victim_Buff1)
+	@loop 16 .dst TT10 {
+			TT3 = TT10 >= 8 ? 0 : $buff_id
+			TT10 %= 8
+			TT2 = TT1 + TT10
+			@if v[TT2] == TT3 {
+				reg1 = TT2
+				v[reg1] = $buff_id
+				reg2 = TT2 + 15
+				@if s[140] .isOff() {
+						//// "Knockback Resist"
+						reg2 = between($buff_id, 1196, 1197) && victim_ProcessObjBit & 8 ? (v[reg1] = 0) : reg2
+						//// "#If buff memories are full, return reg2 -1"
+						//// "Unstoppable"
+						reg2 = victim_ProcessObjBit & 65536 && between($buff_id, 1169, 1170) ? (v[reg1] = 0) : reg2
+						
+				}
+				@break
+				
+			}
+			
+	}
+
+	s[140].off
+	v[reg2] = reg2 >= 0 ? $time : v[reg2]
+}
+
+
+
+//remove buff
+__fn func_bs_remove_buff $buff_id $agent{
+	/*// "V1 = Buff ID
+	V2 = Target ObjID
+	R1 = Buff Ptr
+	R2 = Buff Timer Ptr"*/
+	TT1 = $agent * 300 
+	TT1 += 4771
+	reg2 = -1
+	@loop 8 .dst TT10 {
+	    TT3 = $buff_id
+	    TT2 = TT1 + TT10
+	    @if v[TT2] == TT3 {
+		reg1 = TT2
+		v[reg1] = 0
+		reg2 = TT2 + 15
+		v[reg2] = 0
+		@break
+		
+	    }
+	    
+	}
+}
+
+
+
+
+
+

@@ -1,13 +1,45 @@
 #include "./../headers/header_drawing.tpc"
 
-//This one is really awful, you will fear 
+
+def {
+
+	STRING_ui_invBase = __str(PATH_ui_dir,"inventoryUIBase")
+	STRING_ui_itemsortbutton = __str(PATH_ui_dir,"Inventory_Item_Sorts_Button")
+	STRING_ui_itemsortbutton2 = __str(PATH_ui_dir,"Inventory_Item_Sorts_Button2")
+	STRING_ui_itemSklsPerksButton = __str(PATH_ui_dir,"Inventory_Item_Skills_Perks_Button")
+	STRING_ui_PerkIcons = __str(PATH_ui_dir,"PerkIcons")
+	STRING_ui_canlvup = __str(PATH_ui_dir,"icon_can_lvUp")
+	STRING_ui_ThatTriangle = __str(PATH_ui_dir,"shittytriangle")
+	STRING_ui_PerkSquare = __str(PATH_ui_dir,"PerkSquare")
+
+	STRING_ui_picon = __str(PATH_Legacy_UI_passive_icon,"picon_0")
+	STRING_str3_with_color5 = __str("\c[5]\v[",__id(str3),"]")
+}
+
+defs S_OpenInv = 64
+
+__fn get_selected_agent_data {
+	    @if s[25] .isOff() {
+		TT1 = v[101]
+		
+	    } .else bl {
+		TT1 = v[100]
+		
+	    }
+	    v[145] = TT1
+	    v[325] = TT1 * 300
+	    v[325] += 4701
+	    v[v[325]].copy v[601], 300
+	    v[159] = v[899]
+	    v[555..556] = 996
+}
+
+
+//This one is really awful, you will fear how this is written 
 cev .id(85), .name("GameUI:Inventory"),{
 
-	@comment "AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL 
-	AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL 
-	AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL AWFUL
 
-	REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE "
+	S_OpenInv.on
 	s[19].on
 	@if s[2] .isOff() {
 	    @call .cev 2094
@@ -21,22 +53,22 @@ cev .id(85), .name("GameUI:Inventory"),{
 	@comment "Inventry Const"
 	v[1247] = 16
 	v[1245] = 11
-	v[341] = v[174] + 1951
-	@call .cev v[341]
+	TT1 = v[174] + 1951
+	@call .cev TT1
 	@comment "Inventry mode"
 	s[18].off
 	s[38].on
 	s[43].on
 	@comment "Inventry mode switches end"
-	v[342] = v[1116] + 9
+	TT2 = v[1116] + 9
 	@comment "def 84 12"
 	v[157] = v[1001] / 6
 	v[158] = v[1002] / 8
-	v[341] = v[157] - 4
-	v[342] = v[158] - 12
+	TT1 = v[157] - 4
+	TT2 = v[158] - 12
 	@pic[1231].show {
-	    "ui\inventoryUIBase"
-	    .pos v[341], v[342] .topLeft
+	    STRING_ui_invBase
+	    .pos TT1, TT2 .topLeft
 	    .chromakey 1
 	    .scale 100
 	    .trans 0
@@ -62,23 +94,12 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    @if s[25] .isOff() {
-		v[341] = v[101]
-		
-	    } .else bl {
-		v[341] = v[100]
-		
-	    }
-	    v[145] = v[341]
-	    v[325] = v[341] * 300
-	    v[325] += 4701
-	    v[v[325]].copy v[601], 300
-	    v[159] = v[899]
-	    v[555..556] = 996
+	    get_selected_agent_data()
+
 	    
 	} .else bl {
 	    @call .cev 1946
-	    v[284] = (v[256] - 1) * 300 + v[1261] - 1
+	    Ptr4 = (v[256] - 1) * 300 + v[1261] - 1
 	    @call .cev 1948
 	    
 	}
@@ -97,22 +118,22 @@ cev .id(85), .name("GameUI:Inventory"),{
 	v[1248] = 248
 	v[1243] = v[157] + v[1248]
 	v[1244] = v[158] + 40
-	v[352] = v[1244]
+	TT12 = v[1244]
 	@if v[661] == 0 {
-	    v[350] = 1233
-	    v[351] = 152
+	    TT10 = 1233
+	    TT11 = 152
 	    @comment "Perks"
 	    v[1243] = v[157] + v[1248]
-	    t[503] .asg ""
-	    t[505] .asg t[20034]
+	    str3 .asg ""
+	    str5 .asg t[20034]
 	    @comment "Load"
 	    v[1942] = v[701]
 	    v[1941] = v[1215] + v[1942]
 	    t[2998] .asg t[v[1941]]
 	    t[2998] .split ",", t[2998], v[1941]
-	    t[503] .asg t[2999]
-	    t[505] .asg t[3000]
-	    t[501] .asg t[503]
+	    str3 .asg t[2999]
+	    str5 .asg t[3000]
+	    str1 .asg str3
 	    @comment "#SetPerks"
 	    v[605..610] = 0
 	    @comment "#Perks1"
@@ -137,24 +158,21 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    }
 	    
-	    @loop 100 .dst v[343] {
-		v[12] = v[343] + 1
+	    @loop 100 .dst TT3 {
+		var2 = TT3 + 1
 		@comment "#####################"
-		v[21] = -1
-		v[22] = 1
-		@comment "v1=CompanionID
-	v2=PerkID
-	reg1 # 0 == cant 1==can be used 2==currently used
-	reg2 # Icon ID"
+		reg1 = -1
+		reg2 = 1
+		@comment "v1=CompanionID v2=PerkID reg1 # 0 == cant 1==can be used 2==currently used reg2 # Icon ID"
 		@comment "Load"
-		v[1941] = v[1214] + v[12]
+		v[1941] = v[1214] + var2
 		t[2999] .asg t[v[1941]]
 		t[2999] .split ",", t[2999], v[1941]
-		t[503] .asg t[2999]
-		t[504] .asg t[3000]
-		v[13] = 600
+		str3 .asg t[2999]
+		str4 .asg t[3000]
+		var3 = 600
 		@if t[2999] .eq "0" {
-		    v[21] = -1
+		    reg1 = -1
 		    
 		} .else bl {
 		    @loop 7 .dst v[1941] {
@@ -172,34 +190,34 @@ cev .id(85), .name("GameUI:Inventory"),{
 	v7 = how much perk points you have to invest in this tree to get"
 		    v[0] = v[14..17] = v[1901..1904]
 		    @comment "Check if the perk used or not"
-		    v[21] = (v[v[13] + 5 + v[15]] & v[14]) == v[14] ? 2 : 1
+		    reg1 = (v[var3 + 5 + var5] & var4) == var4 ? 2 : 1
 		    @comment "If the perk not used, check if the character can get it at the point"
-		    @if v[21] <= 1 {
-			v[21] = v[v[13] + 150 + v[16]] >= v[17] ? 1 : 0
+		    @if reg1 <= 1 {
+			reg1 = v[var3 + 150 + var6] >= var7 ? 1 : 0
 			
 		    }
 		    @comment "Icon Set"
-		    v[22] = v[1905]
+		    reg2 = v[1905]
 		    
 		}
 		@comment "####################"
-		v[21] -= v[v[13] + 91] < 1 && v[21] == 1 ? 1 : 0
+		reg1 -= v[var3 + 91] < 1 && reg1 == 1 ? 1 : 0
 		@comment "####################"
-		v[23] = v[1901]
-		v[24] = v[1902]
+		reg3 = v[1901]
+		reg4 = v[1902]
 		@comment "#####################"
-		v[350] = 1500 + v[343]
-		v[351] = v[1243] + 4 + v[343] % 10 * 21
-		v[352] = v[1244] + 10 + v[343] / 10 * 17
-		@if v[21] == 0 {
-		    @pic[v[350]].show {
-			"ui\PerkIcons"
-			.pos v[351], v[352] .center
+		TT10 = 1500 + TT3
+		TT11 = v[1243] + 4 + TT3 % 10 * 21
+		TT12 = v[1244] + 10 + TT3 / 10 * 17
+		@if reg1 == 0 {
+		    @pic[TT10].show {
+			STRING_ui_PerkIcons
+			.pos TT11, TT12 .center
 			.chromakey 1
 			.scale 100
 			.trans 0
 			.rgbs 20, 20, 20, 0
-			.grid 16, 15 .cell v[22]
+			.grid 16, 15 .cell reg2
 			.mapLayer 9
 			.eraseWhenTransfer
 			.affectedByFlash
@@ -207,15 +225,15 @@ cev .id(85), .name("GameUI:Inventory"),{
 		    }
 		    
 		} .else bl {
-		    @if v[21] == 1 {
-			@pic[v[350]].show {
-			    "ui\PerkIcons"
-			    .pos v[351], v[352] .center
+		    @if reg1 == 1 {
+			@pic[TT10].show {
+			    STRING_ui_PerkIcons
+			    .pos TT11, TT12 .center
 			    .chromakey 1
 			    .scale 100
 			    .trans 0
 			    .rgbs 60, 60, 60, 0
-			    .grid 16, 15 .cell v[22]
+			    .grid 16, 15 .cell reg2
 			    .mapLayer 9
 			    .eraseWhenTransfer
 			    .affectedByFlash
@@ -223,15 +241,15 @@ cev .id(85), .name("GameUI:Inventory"),{
 			}
 			
 		    } .else bl {
-			@if v[21] == 2 {
-			    @pic[v[350]].show {
-				"ui\PerkIcons"
-				.pos v[351], v[352] .center
+			@if reg1 == 2 {
+			    @pic[TT10].show {
+				STRING_ui_PerkIcons
+				.pos TT11, TT12 .center
 				.chromakey 1
 				.scale 100
 				.trans 0
 				.rgbs 100, 100, 100, 100
-				.grid 16, 15 .cell v[22]
+				.grid 16, 15 .cell reg2
 				.mapLayer 9
 				.eraseWhenTransfer
 				.affectedByFlash
@@ -240,9 +258,9 @@ cev .id(85), .name("GameUI:Inventory"),{
 			    
 			} .else bl {
 			    @if s[1] .isOn() {
-				@pic[v[350]].show {
-				    "ui\PerkIcons"
-				    .pos v[351], v[352] .center
+				@pic[TT10].show {
+				    STRING_ui_PerkIcons
+				    .pos TT11, TT12 .center
 				    .chromakey 1
 				    .scale 100
 				    .trans 0
@@ -264,7 +282,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    }
 	    
-	    v[350] = 1233
+	    TT10 = 1233
 	    
 	} .else bl {
 	    v[175] = v[175] <= 0 ? 0 : v[175]
@@ -285,14 +303,14 @@ cev .id(85), .name("GameUI:Inventory"),{
 	    }
 	    
 	}
-	v[350] += 1
-	v[354] = v[157] + 62
-	v[355] = v[158] + 54
-	v[306] = v[158] + 54
-	v[553] = v[350]
-	@pic[v[350]].show {
-	    "passive_icon\picon_0" .repl 1 v[822]
-	    .pos v[354], v[355] .center
+	TT10 += 1
+	TT14 = v[157] + 62
+	TT15 = v[158] + 54
+	Temp6 = v[158] + 54
+	v[553] = TT10
+	@pic[TT10].show {
+	    STRING_ui_picon .repl 1 v[822]
+	    .pos TT14, TT15 .center
 	    .chromakey 1
 	    .scale 100
 	    .trans 0
@@ -301,7 +319,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 	    .affectedByShake
 	}
 	@if s[1] .isOff() {
-	    v[350] += 1
+	    TT10 += 1
 	    @if s[20] .isOn() {
 		@if s[25] .isOff() {
 		    v[340] = v[101]
@@ -315,23 +333,23 @@ cev .id(85), .name("GameUI:Inventory"),{
 		v[340] = 1
 		
 	    }
-	    v[160] = v[350]
+	    v[160] = TT10
 	    v[325] -= 1
 	    @comment "#########################"
-	    function_draw_agent_inv_stats()	
+	    function_draw_agent_inv_stats() // <- module_core_RTS_drawing_functions.tpc	
 	    
 	    v[325] += 1
 	    
 	}
-	v[350] += 3
-	v[341] = v[700] == 0 ? 2 : 17
-	@call .cev 200
-	v[353] = v[157] + 4
-	v[354] = v[158] + 21
-	t[526] .asg t[v[145]]
-	@pic[v[350]].strpic {
-	    "\t[526]"
-	    .pos v[353], v[354] .topLeft
+	TT10 += 3
+	TT1 = v[700] == 0 ? 2 : 17
+	// @call .cev 200 legacy. needless
+	TT13 = v[157] + 4
+	TT14 = v[158] + 21
+	str1 .asg t[v[145]]
+	@pic[TT10].strpic {
+	    str1
+	    .pos TT13, TT14 .topLeft
 	    .size 0, 0    .chromakey 1
 	    .scale 100
 	    .trans 0
@@ -345,23 +363,22 @@ cev .id(85), .name("GameUI:Inventory"),{
 	    .affectedByShake
 	}
 	@call .cev 1933
-	@comment "##
-	Show Equipment"
+	@comment "##Show Equipment"
 	@if v[175] >= 0 {
-	    v[350] += 1
-	    v[11] = v[851]
-	    v[353] = v[157] + 38
-	    v[354] = v[158] + 82
-	    v[355] = v[172] + (v[661] - 1) * 7 + 0
-	    v[0] = v[542..548] = [v[350], v[350] + 1, v[350] + 2, v[350] + 3, v[350] + 4, v[350] + 5, v[350] + 6]
-	    @pic[v[350]].strpic {
-		"\t[\v[355]]"
-		.pos v[353], v[354] .left
+	    TT10 += 1
+	    var1 = v[851]
+	    TT13 = v[157] + 38
+	    TT14 = v[158] + 82
+	    TT15 = v[172] + (v[661] - 1) * 7 + 0
+	    v[0] = v[542..548] = [TT10, TT10 + 1, TT10 + 2, TT10 + 3, TT10 + 4, TT10 + 5, TT10 + 6]
+	    @pic[TT10].strpic {
+		"\t[\TT15]"
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -369,19 +386,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    v[11] = v[852]
-	    v[353] = v[157] + 38
-	    v[354] += 11
-	    v[355] = v[172] + (v[661] - 1) * 7 + 1
-	    @pic[v[350]].strpic {
-		"\t[\v[355]]"
-		.pos v[353], v[354] .left
+	    TT10 += 1
+	    var1 = v[852]
+	    TT13 = v[157] + 38
+	    TT14 += 11
+	    TT15 = v[172] + (v[661] - 1) * 7 + 1
+	    @pic[TT10].strpic {
+		"\t[\TT15]"
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -389,19 +406,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    v[11] = v[853]
-	    v[353] = v[157] + 33
-	    v[354] += 11
-	    v[355] = v[172] + (v[661] - 1) * 7 + 2
-	    @pic[v[350]].strpic {
-		"\t[\v[355]]"
-		.pos v[353], v[354] .left
+	    TT10 += 1
+	    var1 = v[853]
+	    TT13 = v[157] + 33
+	    TT14 += 11
+	    TT15 = v[172] + (v[661] - 1) * 7 + 2
+	    @pic[TT10].strpic {
+		"\t[\TT15]"
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -409,19 +426,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    v[11] = v[854]
-	    v[353] = v[157] + 28
-	    v[354] += 11
-	    v[355] = v[172] + (v[661] - 1) * 7 + 3
-	    @pic[v[350]].strpic {
-		"\t[\v[355]]"
-		.pos v[353], v[354] .left
+	    TT10 += 1
+	    var1 = v[854]
+	    TT13 = v[157] + 28
+	    TT14 += 11
+	    TT15 = v[172] + (v[661] - 1) * 7 + 3
+	    @pic[TT10].strpic {
+		"\t[\TT15]"
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -429,19 +446,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    v[11] = v[855]
-	    v[353] = v[157] + 28
-	    v[354] += 11
-	    v[355] = v[172] + (v[661] - 1) * 7 + 4
-	    @pic[v[350]].strpic {
-		"\t[\v[355]]"
-		.pos v[353], v[354] .left
+	    TT10 += 1
+	    var1 = v[855]
+	    TT13 = v[157] + 28
+	    TT14 += 11
+	    TT15 = v[172] + (v[661] - 1) * 7 + 4
+	    @pic[TT10].strpic {
+		"\t[\TT15]"
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -449,19 +466,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    v[11] = v[856]
-	    v[353] = v[157] + 33
-	    v[354] += 11
-	    v[355] = v[172] + (v[661] - 1) * 7 + 5
-	    @pic[v[350]].strpic {
-		"\t[\v[355]]"
-		.pos v[353], v[354] .left
+	    TT10 += 1
+	    var1 = v[856]
+	    TT13 = v[157] + 33
+	    TT14 += 11
+	    TT15 = v[172] + (v[661] - 1) * 7 + 5
+	    @pic[TT10].strpic {
+		"\t[\TT15]"
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -469,19 +486,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    v[11] = v[857]
-	    v[353] = v[157] + 33
-	    v[354] += 11
-	    v[355] = v[172] + (v[661] - 1) * 7 + 6
-	    @pic[v[350]].strpic {
-		"\t[\v[355]]"
-		.pos v[353], v[354] .left
+	    TT10 += 1
+	    var1 = v[857]
+	    TT13 = v[157] + 33
+	    TT14 += 11
+	    TT15 = v[172] + (v[661] - 1) * 7 + 6
+	    @pic[TT10].strpic {
+		"\t[\TT15]"
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -491,22 +508,21 @@ cev .id(85), .name("GameUI:Inventory"),{
 	    }
 	    
 	} .else bl {
-	    @comment "##
-	Show Equipment"
-	    v[350] += 1
-	    v[11] = v[851]
-	    v[353] = v[157] + 38
-	    v[354] = v[158] + 82
+	    @comment "##	Show Equipment"
+	    TT10 += 1
+	    var1 = v[851]
+	    TT13 = v[157] + 38
+	    TT14 = v[158] + 82
 	    @call .cev 395
-	    v[0] = v[542..548] = [v[350], v[350] + 1, v[350] + 2, v[350] + 3, v[350] + 4, v[350] + 5, v[350] + 6]
-	    @pic[v[350]].strpic {
-		"\t[503]"
-		.pos v[353], v[354] .left
+	    v[0] = v[542..548] = [TT10, TT10 + 1, TT10 + 2, TT10 + 3, TT10 + 4, TT10 + 5, TT10 + 6]
+	    @pic[TT10].strpic {
+		str3
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -514,19 +530,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    v[11] = v[852]
-	    v[353] = v[157] + 38
-	    v[354] += 11
+	    TT10 += 1
+	    var1 = v[852]
+	    TT13 = v[157] + 38
+	    TT14 += 11
 	    @call .cev 396
-	    @pic[v[350]].strpic {
-		"\t[503]"
-		.pos v[353], v[354] .left
+	    @pic[TT10].strpic {
+		str3
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -534,19 +550,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    v[11] = v[853]
-	    v[353] = v[157] + 33
-	    v[354] += 11
+	    TT10 += 1
+	    var1 = v[853]
+	    TT13 = v[157] + 33
+	    TT14 += 11
 	    @call .cev 397
-	    @pic[v[350]].strpic {
-		"\t[503]"
-		.pos v[353], v[354] .left
+	    @pic[TT10].strpic {
+		str3
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -554,19 +570,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    v[11] = v[854]
-	    v[353] = v[157] + 28
-	    v[354] += 11
+	    TT10 += 1
+	    var1 = v[854]
+	    TT13 = v[157] + 28
+	    TT14 += 11
 	    @call .cev 398
-	    @pic[v[350]].strpic {
-		"\t[503]"
-		.pos v[353], v[354] .left
+	    @pic[TT10].strpic {
+		str3
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -574,19 +590,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    v[11] = v[855]
-	    v[353] = v[157] + 28
-	    v[354] += 11
+	    TT10 += 1
+	    var1 = v[855]
+	    TT13 = v[157] + 28
+	    TT14 += 11
 	    @call .cev 399
-	    @pic[v[350]].strpic {
-		"\t[503]"
-		.pos v[353], v[354] .left
+	    @pic[TT10].strpic {
+		str3
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -594,19 +610,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    v[11] = v[856]
-	    v[353] = v[157] + 33
-	    v[354] += 11
+	    TT10 += 1
+	    var1 = v[856]
+	    TT13 = v[157] + 33
+	    TT14 += 11
 	    @call .cev 395
-	    @pic[v[350]].strpic {
-		"\t[503]"
-		.pos v[353], v[354] .left
+	    @pic[TT10].strpic {
+		str3
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -614,19 +630,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByFlash
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    v[11] = v[857]
-	    v[353] = v[157] + 33
-	    v[354] += 11
+	    TT10 += 1
+	    var1 = v[857]
+	    TT13 = v[157] + 33
+	    TT14 += 11
 	    @call .cev 396
-	    @pic[v[350]].strpic {
-		"\t[503]"
-		.pos v[353], v[354] .left
+	    @pic[TT10].strpic {
+		str3
+		.pos TT13, TT14 .left
 		.size 0, 0        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], v[4511] .noShadow
+		.font Font_UI, Font_UI_size .noShadow
 		.spacing 0, 0
 		.skin "" .nobg .noframe .noPadding
 		.mapLayer 9
@@ -640,22 +656,22 @@ cev .id(85), .name("GameUI:Inventory"),{
 	}
 	@comment "Equipment end
 ##"
-	v[350] += 1
+	TT10 += 1
 	@comment "Temp34
 	Top Text Saved"
-	v[541] = v[350]
+	v[541] = TT10
 	v[1251] = 4
 	v[1252] = 0
-	v[353] = v[157] + v[1251]
-	v[354] = v[158] + v[1252]
-	@pic[v[350]].strpic {
+	TT13 = v[157] + v[1251]
+	TT14 = v[158] + v[1252]
+	@pic[TT10].strpic {
 	    ""
-	    .pos v[353], v[354] .left
+	    .pos TT13, TT14 .left
 	    .size 0, 0    .chromakey 1
 	    .scale 100
 	    .trans 0
 	    .rgbs 100, 100, 100, 100
-	    .font "misaki_gothic", 10
+	    .font Font_UI, Font_UI_size
 	    .spacing 0, 0
 	    .skin "" .nobg .noframe .noPadding
 	    .mapLayer 9
@@ -663,16 +679,16 @@ cev .id(85), .name("GameUI:Inventory"),{
 	    .affectedByFlash
 	    .affectedByShake
 	}
-	v[350] += 1
-	v[550] = v[350]
+	TT10 += 1
+	v[550] = TT10
 	@comment "Inventory"
 	@if v[175] == 0 {
 	    @comment "Show Pages"
-	    v[350] += 1
+	    TT10 += 1
 	    v[2457] = v[176] / v[1247]
 	    v[2457] += 1
-	    v[1951] = 1 + v[550]
-	    @pic[v[1951]].strpic {
+	    InvVar1 = 1 + v[550]
+	    @pic[InvVar1].strpic {
 		"\v[2457]/\v[2458]"
 		.pos v[1249], v[1250] .center
 		.size 0, 0        .chromakey 1
@@ -688,8 +704,8 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByShake
 	    }
 	    @comment "#Show Amount of Stash"
-	    v[350] += 1
-	    @pic[v[350]].strpic {
+	    TT10 += 1
+	    @pic[TT10].strpic {
 		"$P \v[2456]/\v[2460]"
 		.pos v[1253], v[1254] .topRight
 		.size 0, 0        .chromakey 1
@@ -705,31 +721,31 @@ cev .id(85), .name("GameUI:Inventory"),{
 		.affectedByShake
 	    }
 	    @comment "Sort Button"
-	    v[350] += 1
-	    v[354] = v[157] + 294
-	    v[355] = v[158] + 220
-	    v[552] = v[350]
-	    v[356] = v[174] + 2
-	    @pic[v[350]].show {
-		"ui\Inventory_Item_Sorts_Button"
-		.pos v[354], v[355] .topLeft
+	    TT10 += 1
+	    TT14 = v[157] + 294
+	    TT15 = v[158] + 220
+	    v[552] = TT10
+	    TT16 = v[174] + 2
+	    @pic[TT10].show {
+		STRING_ui_itemsortbutton
+		.pos TT14, TT15 .topLeft
 		.chromakey 0
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.grid 1, 8 .cell v[356]
+		.grid 1, 8 .cell TT16
 		.mapLayer 9
 		.affectedByShake
 	    }
-	    v[350] += 1
-	    @pic[v[350]].show {
-		"ui\Inventory_Item_Sorts_Button2"
-		.pos v[354], v[355] .topLeft
+	    TT10 += 1
+	    @pic[TT10].show {
+		STRING_ui_itemsortbutton2
+		.pos TT14, TT15 .topLeft
 		.chromakey 0
 		.scale 100
 		.trans 100
 		.rgbs 100, 100, 100, 100
-		.grid 1, 8 .cell v[356]
+		.grid 1, 8 .cell TT16
 		.mapLayer 9
 		.affectedByShake
 	    }
@@ -737,13 +753,14 @@ cev .id(85), .name("GameUI:Inventory"),{
 	} .else bl {
 	    @if v[175] == 2 {
 		@comment "Show Invested Perk Points"
-		v[350] += 1
-		v[354] = v[1253] - 240
-		v[355] = v[1254]
-		v[356] = v[(v[173] - 1) * 300 + v[1261] - 1 + 151 + v[248]]
-		@pic[v[350]].strpic {
-		    "Invested Pt. \v[356]"
-		    .pos v[354], v[355] .topLeft
+		TT10 += 1
+		TT14 = v[1253] - 240
+		TT15 = v[1254]
+		TT16 = v[(v[173] - 1) * 300 + v[1261] - 1 + 151 + v[248]]
+		// LEGACY.
+		@pic[TT10].strpic {
+		    "Invested Pt. \TT16"
+		    .pos TT14, TT15 .topLeft
 		    .size 0, 0            .chromakey 1
 		    .scale 100
 		    .trans 0
@@ -757,10 +774,10 @@ cev .id(85), .name("GameUI:Inventory"),{
 		    .affectedByShake
 		}
 		@comment "#Show Remaining Perk Points"
-		v[350] += 1
-		v[356] = v[(v[173] - 1) * 300 + v[1261] - 1 + 91]
-		@pic[v[350]].strpic {
-		    "Perk Pt. \v[356]"
+		TT10 += 1
+		TT16 = v[(v[173] - 1) * 300 + v[1261] - 1 + 91]
+		@pic[TT10].strpic {
+		    "Perk Pt. \TT16"
 		    .pos v[1253], v[1254] .topRight
 		    .size 0, 0            .chromakey 1
 		    .scale 100
@@ -775,67 +792,67 @@ cev .id(85), .name("GameUI:Inventory"),{
 		    .affectedByShake
 		}
 		@comment "Sort Button"
-		v[350] += 1
-		v[354] = v[157] + 294
-		v[355] = v[158] + 220
-		v[552] = v[350]
-		v[356] = v[174] + 2
-		@pic[v[350]].show {
-		    "ui\Inventory_Item_Sorts_Button"
-		    .pos v[354], v[355] .topLeft
+		TT10 += 1
+		TT14 = v[157] + 294
+		TT15 = v[158] + 220
+		v[552] = TT10
+		TT16 = v[174] + 2
+		@pic[TT10].show {
+		    STRING_ui_itemsortbutton
+		    .pos TT14, TT15 .topLeft
 		    .chromakey 0
 		    .scale 100
 		    .trans 0
 		    .rgbs 100, 100, 100, 100
-		    .grid 1, 8 .cell v[356]
+		    .grid 1, 8 .cell TT16
 		    .mapLayer 9
 		    .affectedByShake
 		}
-		v[350] += 1
-		@pic[v[350]].show {
-		    "ui\Inventory_Item_Sorts_Button2"
-		    .pos v[354], v[355] .topLeft
+		TT10 += 1
+		@pic[TT10].show {
+		    STRING_ui_itemsortbutton2
+		    .pos TT14, TT15 .topLeft
 		    .chromakey 0
 		    .scale 100
 		    .trans 100
 		    .rgbs 100, 100, 100, 100
-		    .grid 1, 8 .cell v[356]
+		    .grid 1, 8 .cell TT16
 		    .mapLayer 9
 		    .affectedByShake
 		}
 		
 	    } .else bl {
-		v[350] += 1
-		v[350] += 1
-		v[350] += 1
-		v[350] += 1
+		TT10 += 1
+		TT10 += 1
+		TT10 += 1
+		TT10 += 1
 		
 	    }
 	    
 	}
 	@comment "#
 	Button"
-	v[350] += 1
-	v[354] = v[157] + 220
-	v[355] = v[158] + 18
-	v[356] = v[175] + 2
-	v[356] = v[175] == -1 ? 8 : v[356]
-	v[551] = v[350]
-	@pic[v[350]].show {
-	    "ui\Inventory_Item_Skills_Perks_Button"
-	    .pos v[354], v[355] .topLeft
+	TT10 += 1
+	TT14 = v[157] + 220
+	TT15 = v[158] + 18
+	TT16 = v[175] + 2
+	TT16 = v[175] == -1 ? 8 : TT16
+	v[551] = TT10
+	@pic[TT10].show {
+	    STRING_ui_itemSklsPerksButton
+	    .pos TT14, TT15 .topLeft
 	    .chromakey 0
 	    .scale 100
 	    .trans 0
 	    .rgbs 100, 100, 100, 100
-	    .grid 1, 8 .cell v[356]
+	    .grid 1, 8 .cell TT16
 	    .mapLayer 9
 	    .affectedByShake
 	}
-	v[350] += 1
-	@pic[v[350]].show {
-	    "ui\Inventory_Item_Skills_Perks_Button"
-	    .pos v[354], v[355] .topLeft
+	TT10 += 1
+	@pic[TT10].show {
+			STRING_ui_itemSklsPerksButton
+	    .pos TT14, TT15 .topLeft
 	    .chromakey 1
 	    .scale 100
 	    .trans 100
@@ -845,25 +862,25 @@ cev .id(85), .name("GameUI:Inventory"),{
 	    .affectedByShake
 	}
 	@comment "LvUp"
-	v[350] += 1
-	v[554] = v[350]
-	v[354] = v[157] + 108
-	v[355] = v[158] + 54
-	v[356] = v[(v[173] - 1) * 300 + v[1261] + 91] > 0 && v[175] >= 0 ? 0 : 100
-	@pic[v[350]].show {
-	    "ui\icon_can_lvUp"
-	    .pos v[354], v[355] .center
+	TT10 += 1
+	v[554] = TT10
+	TT14 = v[157] + 108
+	TT15 = v[158] + 54
+	TT16 = v[(v[173] - 1) * 300 + v[1261] + 91] > 0 && v[175] >= 0 ? 0 : 100
+	@pic[TT10].show {
+	    STRING_ui_canlvup
+	    .pos TT14, TT15 .center
 	    .chromakey 1
 	    .scale 100
-	    .trans v[356]
+	    .trans TT16
 	    .rgbs 100, 100, 100, 100
 	    .mapLayer 9
 	    .affectedByShake
 	}
-	@comment "End
-#"
+	@comment "End#"
 	@loop .inf() {
-	    @key.input .dst v[43] {
+	    get_selected_agent_data()
+	    @key.input .dst Common_Control_Ck {
 		.decision
 		.number
 		.lclick
@@ -886,23 +903,23 @@ cev .id(85), .name("GameUI:Inventory"),{
 	    @comment "This part causes picture bug in RTS game mode"
 	    @if v[175] >= 0 {
 		@comment "Companions"
-		@loop v[1192] .dst v[343] {
-		    v[330] = v[343]
+		@loop v[1192] .dst TT3 {
+		    v[330] = TT3
 		    @comment "CompanionsIndex is not yet completed"
-		    v[329] = v[1263] + v[343] + v[153]
+		    v[329] = v[1263] + TT3 + v[153]
 		    @if v[v[329]] < 999999999 {
-			v[343] = v[v[329]] % v[1264] - 1
-			v[1951] = 1600 + v[330] * 8
-			v[371] = v[343] + 1 != v[256] ? 4 : 0
+			TT3 = v[v[329]] % v[1264] - 1
+			InvVar1 = 1600 + v[330] * 8
+			v[371] = TT3 + 1 != v[256] ? 4 : 0
 			@if v[371] == 4 {
-			    @pic[v[1951]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
-			    v[371] = between(v[51], v[1952] - 11, v[1952] + 11) && between(v[52], v[1953] - 14, v[1953] + 14) && 90 < v[51] ? 4 : 0
+			    @pic[InvVar1].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
+			    v[371] = between(MousePtr_x, InvVar2 - 11, InvVar2 + 11) && between(MousePtr_y, InvVar3 - 14, InvVar3 + 14) && 90 < MousePtr_x ? 4 : 0
 			    @if v[371] == 4 {
-				v[84] = v[343] + 10
-				@loop 6 .dst v[11] {
-				    v[11] = v[1951] + v[11]
-				    @pic[v[11]].move {
-					.pos v[1952], v[1953] .center
+				v[84] = TT3 + 10
+				@loop 6 .dst var1 {
+				    var1 = InvVar1 + var1
+				    @pic[var1].move {
+					.pos InvVar2, InvVar3 .center
 					.scale 100
 					.trans 0
 					.time -2
@@ -913,18 +930,18 @@ cev .id(85), .name("GameUI:Inventory"),{
 				
 				s[201].on
 				@if v[84] != v[85] {
-				    v[1957] = v[343] * 5 + v[1262]
-				    v[1958] = v[v[343] * 300 + v[1261]] == 3 ? 1 : 2
-				    v[353] = v[157] + v[1251]
-				    v[354] = v[158] + v[1252]
+				    InvVar7 = TT3 * 5 + v[1262]
+				    InvVar8 = v[TT3 * 300 + v[1261]] == 3 ? 1 : 2
+				    TT13 = v[157] + v[1251]
+				    TT14 = v[158] + v[1252]
 				    @pic[v[541]].strpic {
-					"\c[\v[1958]]\t[\v[1957]]\c[0]　\t[20053]"
-					.pos v[353], v[354] .left
+					"\c[\InvVar8]\t[\InvVar7]\c[0]　\t[20053]"
+					.pos TT13, TT14 .left
 					.size 0, 0                                .chromakey 1
 					.scale 100
 					.trans 0
 					.rgbs 100, 100, 100, 100
-					.font "misaki_gothic", 10
+					.font Font_UI, Font_UI_size
 					.spacing 0, 0
 					.skin "" .nobg .noframe .noPadding
 					.mapLayer 9
@@ -944,7 +961,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 					@se.play "cursor09" .opt 80, 90, 50
 					v[45] -= 10
 					v[45] += v[45] == 0 ? 10 : 0
-					v[v[343] * 300 + v[1261] + 79] = v[45]
+					v[TT3 * 300 + v[1261] + 79] = v[45]
 					@call .cev 1946
 					
 				    }
@@ -953,18 +970,18 @@ cev .id(85), .name("GameUI:Inventory"),{
 				    v[46] = 0
 				    
 				}
-				@if v[43] == 1006 {
+				@if Common_Control_Ck == 1006 {
 				    @if s[13] .isOff() {
 					s[13].on
 					@comment "#Dismiss"
 					@comment "ALT?"
-					@key.inputEx .keyCode 18 .dst v[14]
-					@if v[14] >= 1 {
-					    v[14] = (v[v[343] * 300 + v[1261] + 9] & 1) != 1 ? 1 : 0
-					    @if v[14] >= 1 {
+					@key.inputEx .keyCode 18 .dst var4
+					@if var4 >= 1 {
+					    var4 = (v[TT3 * 300 + v[1261] + 9] & 1) != 1 ? 1 : 0
+					    @if var4 >= 1 {
 						@se.play "cursor19" .opt 80, 70, 50
-						v[12] = v[343] + 1
-						v[19] = v[1187]
+						var2 = TT3 + 1
+						var9 = v[1187]
 						@call .cev 1979
 						v[84..85] = 0
 						@pic[v[555]..v[556]].erase
@@ -973,16 +990,16 @@ cev .id(85), .name("GameUI:Inventory"),{
 					    } .else bl {
 						@comment "Locked"
 						@se.play "cursor07" .opt 50, 80, 50
-						v[353] = v[157] + v[1251]
-						v[354] = v[158] + v[1252]
+						TT13 = v[157] + v[1251]
+						TT14 = v[158] + v[1252]
 						@pic[v[541]].strpic {
-						    "\t[20044]"
-						    .pos v[353], v[354] .left
+						    t[20044]
+						    .pos TT13, TT14 .left
 						    .size 0, 0                                            .chromakey 1
 						    .scale 100
 						    .trans 0
 						    .rgbs 100, 100, 100, 100
-						    .font "misaki_gothic", 10
+						    .font Font_UI, Font_UI_size
 						    .spacing 0, 0
 						    .skin "" .nobg .noframe .noPadding
 						    .mapLayer 9
@@ -999,10 +1016,10 @@ cev .id(85), .name("GameUI:Inventory"),{
 				    }
 				    
 				}
-				@if v[43] == 1005 {
+				@if Common_Control_Ck == 1005 {
 				    @if s[11] .isOff() {
 					@se.play "Key" .opt 80, 80, 50
-					v[256] = v[343] + 1
+					v[256] = TT3 + 1
 					v[84..85] = 0
 					s[11].on
 					@pic[v[555]..v[556]].erase
@@ -1013,10 +1030,10 @@ cev .id(85), .name("GameUI:Inventory"),{
 				}
 				
 			    } .else bl {
-				@loop 6 .dst v[11] {
-				    v[11] = v[1951] + v[11]
-				    @pic[v[11]].move {
-					.pos v[1952], v[1953] .center
+				@loop 6 .dst var1 {
+				    var1 = InvVar1 + var1
+				    @pic[var1].move {
+					.pos InvVar2, InvVar3 .center
 					.scale 100
 					.trans 0
 					.time -2
@@ -1053,9 +1070,9 @@ cev .id(85), .name("GameUI:Inventory"),{
 		v[959] = 0
 		
 	    }
-	    v[371] = between(v[51], v[157] + 551 - 84 - 3, v[157] + 551 - 84 + 11) && between(v[52], v[158] - 10 - 3, v[158] - 10 + 11) ? 4 : 0
+	    v[371] = between(MousePtr_x, v[157] + 551 - 84 - 3, v[157] + 551 - 84 + 11) && between(MousePtr_y, v[158] - 10 - 3, v[158] - 10 + 11) ? 4 : 0
 	    @if v[371] == 4 {
-		@if v[43] == 1005 {
+		@if Common_Control_Ck == 1005 {
 		    @if s[11] .isOff() {
 			@break
 			
@@ -1066,11 +1083,11 @@ cev .id(85), .name("GameUI:Inventory"),{
 	    }
 	    @if v[175] >= 0 {
 		@comment "Menu Button"
-		v[314] = v[551] + 1
-		@pic[v[551]].getInfo .ltrb .baseRect v[354], v[355], v[348], v[348]
-		@pic[v[314]].show {
-		    "ui\Inventory_Item_Skills_Perks_Button"
-		    .pos v[354], v[355] .topLeft
+		Temp14 = v[551] + 1
+		@pic[v[551]].getInfo .ltrb .baseRect TT14, TT15, TT8, TT8
+		@pic[Temp14].show {
+		    STRING_ui_itemSklsPerksButton
+		    .pos TT14, TT15 .topLeft
 		    .chromakey 1
 		    .scale 100
 		    .trans 100
@@ -1082,13 +1099,13 @@ cev .id(85), .name("GameUI:Inventory"),{
 		    .affectedByShake
 		}
 		@comment "#Items"
-		v[312] = v[157] + 234
-		v[313] = v[158] + 19
-		v[371] = between(v[51], v[312], v[312] + 72) && between(v[52], v[313], v[313] + 18) ? 4 : 0
+		Temp12 = v[157] + 234
+		Temp13 = v[158] + 19
+		v[371] = between(MousePtr_x, Temp12, Temp12 + 72) && between(MousePtr_y, Temp13, Temp13 + 18) ? 4 : 0
 		@if v[371] == 4 {
-		    @pic[v[314]].show {
-			"ui\Inventory_Item_Skills_Perks_Button"
-			.pos v[354], v[355] .topLeft
+		    @pic[Temp14].show {
+			STRING_ui_itemSklsPerksButton
+			.pos TT14, TT15 .topLeft
 			.chromakey 1
 			.scale 100
 			.trans 0
@@ -1099,7 +1116,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 			.affectedByFlash
 			.affectedByShake
 		    }
-		    @if v[43] == 1005 {
+		    @if Common_Control_Ck == 1005 {
 			@if s[11] .isOff() {
 			    @se.play "click1" .opt 80, 100, 50
 			    @comment "Mouse wheel down"
@@ -1113,12 +1130,12 @@ cev .id(85), .name("GameUI:Inventory"),{
 		    
 		}
 		@comment "#Skills"
-		v[312] += 75
-		v[371] = between(v[51], v[312], v[312] + 72) && between(v[52], v[313], v[313] + 18) ? 4 : 0
+		Temp12 += 75
+		v[371] = between(MousePtr_x, Temp12, Temp12 + 72) && between(MousePtr_y, Temp13, Temp13 + 18) ? 4 : 0
 		@if v[371] == 4 {
-		    @pic[v[314]].show {
-			"ui\Inventory_Item_Skills_Perks_Button"
-			.pos v[354], v[355] .topLeft
+		    @pic[Temp14].show {
+			STRING_ui_itemSklsPerksButton
+			.pos TT14, TT15 .topLeft
 			.chromakey 1
 			.scale 100
 			.trans 0
@@ -1129,14 +1146,14 @@ cev .id(85), .name("GameUI:Inventory"),{
 			.affectedByFlash
 			.affectedByShake
 		    }
-		    @if v[43] == 1005 {
+		    @if Common_Control_Ck == 1005 {
 			@if s[11] .isOff() {
 			    @se.play "click1" .opt 80, 100, 50
 			    @comment "Mouse wheel down"
 			    v[176] -= 16
 			    @if v[176] < 0 {
-				v[341] = v[2459] / v[1247]
-				v[176] = v[341] * v[1247]
+				TT1 = v[2459] / v[1247]
+				v[176] = TT1 * v[1247]
 				
 			    }
 			    @call .cev 1950
@@ -1148,12 +1165,12 @@ cev .id(85), .name("GameUI:Inventory"),{
 		    
 		}
 		@comment "#Perks"
-		v[312] += 75
-		v[371] = between(v[51], v[312], v[312] + 72) && between(v[52], v[313], v[313] + 18) ? 4 : 0
+		Temp12 += 75
+		v[371] = between(MousePtr_x, Temp12, Temp12 + 72) && between(MousePtr_y, Temp13, Temp13 + 18) ? 4 : 0
 		@if v[371] == 4 {
-		    @pic[v[314]].show {
-			"ui\Inventory_Item_Skills_Perks_Button"
-			.pos v[354], v[355] .topLeft
+		    @pic[Temp14].show {
+			STRING_ui_itemSklsPerksButton
+			.pos TT14, TT15 .topLeft
 			.chromakey 1
 			.scale 100
 			.trans 0
@@ -1164,7 +1181,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 			.affectedByFlash
 			.affectedByShake
 		    }
-		    @if v[43] == 1005 {
+		    @if Common_Control_Ck == 1005 {
 			@if s[11] .isOff() {
 			    @se.play "click1" .opt 80, 100, 50
 			    v[175] = 2
@@ -1181,56 +1198,56 @@ cev .id(85), .name("GameUI:Inventory"),{
 	    @comment "Inventory"
 	    @if v[175] == 0 {
 		@comment "Sort Button"
-		v[314] = v[552] + 1
-		@pic[v[552]].getInfo .ltrb .baseRect v[354], v[355], v[348], v[348]
-		@pic[v[314]].show {
-		    "ui\Inventory_Item_Sorts_Button2"
-		    .pos v[354], v[355] .topLeft
+		Temp14 = v[552] + 1
+		@pic[v[552]].getInfo .ltrb .baseRect TT14, TT15, TT8, TT8
+		@pic[Temp14].show {
+		    STRING_ui_itemsortbutton2
+		    .pos TT14, TT15 .topLeft
 		    .chromakey 0
 		    .scale 100
 		    .trans 100
 		    .rgbs 100, 100, 100, 100
-		    .grid 1, 8 .cell v[356]
+		    .grid 1, 8 .cell TT16
 		    .mapLayer 9
 		    .affectedByShake
 		}
 		@comment "#Items"
-		v[312] = v[157] + 294
-		v[313] = v[158] + 220
-		v[371] = between(v[51], v[312], v[312] + 15 * 6) && between(v[52], v[313], v[313] + 15) ? 4 : 0
+		Temp12 = v[157] + 294
+		Temp13 = v[158] + 220
+		v[371] = between(MousePtr_x, Temp12, Temp12 + 15 * 6) && between(MousePtr_y, Temp13, Temp13 + 15) ? 4 : 0
 		@if v[371] == 4 {
-		    v[316] = (v[51] - v[312]) / 15
-		    v[315] = 2 + v[316]
-		    @pic[v[314]].show {
-			"ui\Inventory_Item_Sorts_Button2"
-			.pos v[354], v[355] .topLeft
+		    Temp16 = (MousePtr_x - Temp12) / 15
+		    Temp15 = 2 + Temp16
+		    @pic[Temp14].show {
+			STRING_ui_itemsortbutton2
+			.pos TT14, TT15 .topLeft
 			.chromakey 1
 			.scale 100
 			.trans 0
 			.rgbs 100, 100, 100, 100
-			.grid 1, 8 .cell v[315]
+			.grid 1, 8 .cell Temp15
 			.mapLayer 9
 			.eraseWhenTransfer
 			.affectedByFlash
 			.affectedByShake
 		    }
-		    @if v[43] == 1005 {
+		    @if Common_Control_Ck == 1005 {
 			@if s[11] .isOff() {
 			    @se.play "click1" .opt 80, 100, 50
-			    v[341] = v[316] + 1951
-			    @call .cev v[341]
+			    TT1 = Temp16 + 1951
+			    @call .cev TT1
 			    @comment "#Reload sort button"
-			    v[354] = v[157] + 294
-			    v[355] = v[158] + 220
-			    v[356] = v[174] + 2
+			    TT14 = v[157] + 294
+			    TT15 = v[158] + 220
+			    TT16 = v[174] + 2
 			    @pic[v[552]].show {
-				"ui\Inventory_Item_Sorts_Button"
-				.pos v[354], v[355] .topLeft
+				STRING_ui_itemsortbutton
+				.pos TT14, TT15 .topLeft
 				.chromakey 0
 				.scale 100
 				.trans 0
 				.rgbs 100, 100, 100, 100
-				.grid 1, 8 .cell v[356]
+				.grid 1, 8 .cell TT16
 				.mapLayer 9
 				.affectedByShake
 			    }
@@ -1247,7 +1264,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 		v[1249] = 524
 		v[1250] = 220
 		@pic[v[550]].show {
-		    "ui\shittytriangle"
+		    STRING_ui_ThatTriangle
 		    .pos v[1249], v[1250] .center
 		    .chromakey 1
 		    .scale 100
@@ -1260,10 +1277,10 @@ cev .id(85), .name("GameUI:Inventory"),{
 		    .affectedByShake
 		}
 		@comment "#ButtonL"
-		v[371] = between(v[51], v[1249] - 28, v[1249] - 8) && between(v[52], v[1250] - 12, v[1250] + 12) ? 4 : 0
+		v[371] = between(MousePtr_x, v[1249] - 28, v[1249] - 8) && between(MousePtr_y, v[1250] - 12, v[1250] + 12) ? 4 : 0
 		@if v[371] == 4 {
 		    @pic[v[550]].show {
-			"ui\shittytriangle"
+			STRING_ui_ThatTriangle
 			.pos v[1249], v[1250] .center
 			.chromakey 1
 			.scale 100
@@ -1275,14 +1292,14 @@ cev .id(85), .name("GameUI:Inventory"),{
 			.affectedByFlash
 			.affectedByShake
 		    }
-		    @if v[43] == 1005 {
+		    @if Common_Control_Ck == 1005 {
 			@if s[11] .isOff() {
 			    @se.play "click1" .opt 80, 100, 50
 			    @comment "Mouse wheel down"
 			    v[176] -= 16
 			    @if v[176] < 0 {
-				v[341] = (v[2459] - 1) / v[1247]
-				v[176] = v[341] * v[1247]
+				TT1 = (v[2459] - 1) / v[1247]
+				v[176] = TT1 * v[1247]
 				
 			    }
 			    @call .cev 1950
@@ -1294,10 +1311,10 @@ cev .id(85), .name("GameUI:Inventory"),{
 		    
 		}
 		@comment "#ButtonR"
-		v[371] = between(v[51], v[1249] + 8, v[1249] + 28) && between(v[52], v[1250] - 12, v[1250] + 12) ? 4 : 0
+		v[371] = between(MousePtr_x, v[1249] + 8, v[1249] + 28) && between(MousePtr_y, v[1250] - 12, v[1250] + 12) ? 4 : 0
 		@if v[371] == 4 {
 		    @pic[v[550]].show {
-			"ui\shittytriangle"
+			STRING_ui_ThatTriangle
 			.pos v[1249], v[1250] .center
 			.chromakey 1
 			.scale 100
@@ -1309,7 +1326,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 			.affectedByFlash
 			.affectedByShake
 		    }
-		    @if v[43] == 1005 {
+		    @if Common_Control_Ck == 1005 {
 			@if s[11] .isOff() {
 			    @se.play "click1" .opt 80, 100, 50
 			    v[176] += 16
@@ -1326,58 +1343,58 @@ cev .id(85), .name("GameUI:Inventory"),{
 		    
 		}
 		@comment "Right Side"
-		@loop v[1247] .dst v[343] {
-		    v[371] = between(v[51], v[1243], v[1243] + v[1241]) && between(v[52], v[1244] + v[1245] * v[343], v[1244] + v[1242] + v[1245] * v[343]) ? 4 : 0
-		    v[1951] = 1233 + v[343]
-		    v[1959] = v[1951] + v[1247]
-		    @pic[v[1951]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
+		@loop v[1247] .dst TT3 {
+		    v[371] = between(MousePtr_x, v[1243], v[1243] + v[1241]) && between(MousePtr_y, v[1244] + v[1245] * TT3, v[1244] + v[1242] + v[1245] * TT3) ? 4 : 0
+		    InvVar1 = 1233 + TT3
+		    InvVar9 = InvVar1 + v[1247]
+		    @pic[InvVar1].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
 		    @if v[371] == 4 {
-			v[84] = v[343] + 10
-			@pic[v[1951]].move {
-			    .pos v[1952], v[1953] .center
+			v[84] = TT3 + 10
+			@pic[InvVar1].move {
+			    .pos InvVar2, InvVar3 .center
 			    .scale 100
 			    .trans 0
 			    .time -2
 			    .rgbs 0, 200, 0, 100
 			}
-			@pic[v[1959]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
-			v[353] = 135 + sin(v[2219] * 15, 2, 28)
-			v[354] = 100
-			@pic[v[1959]].move {
-			    .pos v[1952], v[1953] .center
+			@pic[InvVar9].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
+			TT13 = 135 + sin(v[2219] * 15, 2, 28)
+			TT14 = 100
+			@pic[InvVar9].move {
+			    .pos InvVar2, InvVar3 .center
 			    .scale 100
 			    .trans 0
 			    .time -2
-			    .rgbs v[353], v[353], v[353], v[354]
+			    .rgbs TT13, TT13, TT13, TT14
 			}
 			s[201].on
-			v[1951] = v[1246] + v[343]
+			InvVar1 = v[1246] + TT3
 			@comment "Is there Valid Item?"
-			@if v[v[1951]] > 0 {
+			@if v[InvVar1] > 0 {
 			    @if v[84] != v[85] {
-				v[84..85] = v[343] + 10
-				v[1951] = v[1187] + v[v[1951]] * 40 + 39 - 40
-				v[11] = v[v[1951]]
-				@if v[11] >= 1 {
-				    v[15] = v[v[1951] - 11]
-				    v[1952] = v[1150] + v[15] - 1
-				    @call .cev v[1952]
+				v[84..85] = TT3 + 10
+				InvVar1 = v[1187] + v[InvVar1] * 40 + 39 - 40
+				var1 = v[InvVar1]
+				@if var1 >= 1 {
+				    var5 = v[InvVar1 - 11]
+				    InvVar2 = v[1150] + var5 - 1
+				    @call .cev InvVar2
 				    v[1943] = v[1903] + 100
 				    v[1944] = v[1908] / 1000
 				    @if s[58] .isOn() {
 					@call .cev 1932
 					
 				    }
-				    v[353] = v[157] + v[1251]
-				    v[354] = v[158] + v[1252]
+				    TT13 = v[157] + v[1251]
+				    TT14 = v[158] + v[1252]
 				    @pic[v[541]].strpic {
-					"\t[20048]"
-					.pos v[353], v[354] .left
+					t[20048]
+					.pos TT13, TT14 .left
 					.size 0, 0                                .chromakey 1
 					.scale 100
 					.trans 0
 					.rgbs 100, 100, 100, 100
-					.font "misaki_gothic", 10
+					.font Font_UI, Font_UI_size
 					.spacing 0, 0
 					.skin "" .nobg .noframe .noPadding
 					.mapLayer 9
@@ -1391,40 +1408,40 @@ cev .id(85), .name("GameUI:Inventory"),{
 				}
 				
 			    }
-			    @if v[43] == 1006 {
-				v[1951] = v[1246] + v[343]
-				v[1951] = v[1187] + v[v[1951]] * 40 + 28 - 40
-				v[1951] = pow(2, v[v[1951]] - 1) & v[v[284] + 250]
+			    @if Common_Control_Ck == 1006 {
+				InvVar1 = v[1246] + TT3
+				InvVar1 = v[1187] + v[InvVar1] * 40 + 28 - 40
+				InvVar1 = pow(2, v[InvVar1] - 1) & v[Ptr4 + 250]
 				@if s[13] .isOff() {
-				    @if v[1951] == 0 {
-					v[1951] = v[v[1246] + v[343]]
-					v[1952] = v[1187] + (v[1951] - 1) * 40 + 28
+				    @if InvVar1 == 0 {
+					InvVar1 = v[v[1246] + TT3]
+					InvVar2 = v[1187] + (InvVar1 - 1) * 40 + 28
 					@comment "#########################"
 					v[471] = 11550
 					v[472] = divmul(90, 100, v[2216])
 					v[473] = 100
 					v[474] = 50
 					@comment "#########################"
-					v[329] = v[v[1952]]
-					t[510] .asg "ui\equip_"
-					t[510] .cat v[329]
-					v[341] = 510
-					@comment "Strings = t[v[341]]"
-					@cmd 11550, t[v[341]], .args v[472], 3
+					v[329] = v[InvVar2]
+					inputstr .asg "ui\equip_"
+					inputstr .cat v[329]
+					TT1 = 510
+					@comment "Strings = t[TT1]"
+					@cmd 11550, t[TT1], .args v[472], 3
 					@comment "################"
-					v[11] = v[1951]
-					v[12] = v[173]
+					var1 = InvVar1
+					var2 = v[173]
 					@comment "setting into reserve is Underdev"
-					v[13] = v[v[1952]]
-					@key.inputEx .keyCode 17 .dst v[14]
-					v[19] = v[1187]
+					var3 = v[InvVar2]
+					@key.inputEx .keyCode 17 .dst var4
+					var9 = v[1187]
 					@call .cev 1961
 					@if s[20] .isOff() {
 					    @call .cev 1948
 					    
 					}
-					v[341] = v[174] + 1951
-					@call .cev v[341]
+					TT1 = v[174] + 1951
+					@call .cev TT1
 					@call .cev 1950
 					@call .cev 1949
 					@call .cev 1946
@@ -1433,16 +1450,16 @@ cev .id(85), .name("GameUI:Inventory"),{
 				    } .else bl {
 					@comment "Locked"
 					@se.play "cursor07" .opt 50, 80, 50
-					v[353] = v[157] + v[1251]
-					v[354] = v[158] + v[1252]
+					TT13 = v[157] + v[1251]
+					TT14 = v[158] + v[1252]
 					@pic[v[541]].strpic {
-					    "\t[20039]"
-					    .pos v[353], v[354] .left
+					    t[20039]
+					    .pos TT13, TT14 .left
 					    .size 0, 0                                    .chromakey 1
 					    .scale 100
 					    .trans 0
 					    .rgbs 100, 100, 100, 100
-					    .font "misaki_gothic", 10
+					    .font Font_UI, Font_UI_size
 					    .spacing 0, 0
 					    .skin "" .nobg .noframe .noPadding
 					    .mapLayer 9
@@ -1463,16 +1480,16 @@ cev .id(85), .name("GameUI:Inventory"),{
 			}
 			
 		    } .else bl {
-			@pic[v[1951]].move {
-			    .pos v[1952], v[1953] .center
+			@pic[InvVar1].move {
+			    .pos InvVar2, InvVar3 .center
 			    .scale 100
 			    .trans 0
 			    .time -2
 			    .rgbs 100, 100, 100, 100
 			}
-			@pic[v[1959]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
-			@pic[v[1959]].move {
-			    .pos v[1952], v[1953] .center
+			@pic[InvVar9].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
+			@pic[InvVar9].move {
+			    .pos InvVar2, InvVar3 .center
 			    .scale 100
 			    .trans 0
 			    .time -2
@@ -1484,7 +1501,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 		}
 		
 		@comment "Mouse wheel up"
-		@if v[43] == 1004 {
+		@if Common_Control_Ck == 1004 {
 		    v[176] += 16
 		    @if v[176] >= v[2459] {
 			v[176] = 0
@@ -1494,11 +1511,11 @@ cev .id(85), .name("GameUI:Inventory"),{
 		    
 		}
 		@comment "Mouse wheel down"
-		@if v[43] == 1001 {
+		@if Common_Control_Ck == 1001 {
 		    v[176] -= 16
 		    @if v[176] < 0 {
-			v[341] = (v[2459] - 1) / v[1247]
-			v[176] = v[341] * v[1247]
+			TT1 = (v[2459] - 1) / v[1247]
+			v[176] = TT1 * v[1247]
 			
 		    }
 		    @call .cev 1950
@@ -1510,16 +1527,16 @@ cev .id(85), .name("GameUI:Inventory"),{
 		@if `v[175] == 2 || v[175] == -1 {
 		    @if v[175] != -1 {
 			@comment "Sort Button"
-			v[314] = v[552] + 1
-			@pic[v[552]].getInfo .ltrb .baseRect v[354], v[355], v[348], v[348]
-			@pic[v[314]].show {
-			    "ui\Inventory_Item_Sorts_Button2"
-			    .pos v[354], v[355] .topLeft
+			Temp14 = v[552] + 1
+			@pic[v[552]].getInfo .ltrb .baseRect TT14, TT15, TT8, TT8
+			@pic[Temp14].show {
+			    STRING_ui_itemsortbutton2
+			    .pos TT14, TT15 .topLeft
 			    .chromakey 0
 			    .scale 100
 			    .trans 100
 			    .rgbs 100, 100, 100, 100
-			    .grid 1, 8 .cell v[356]
+			    .grid 1, 8 .cell TT16
 			    .mapLayer 9
 			    .affectedByShake
 			}
@@ -1528,8 +1545,8 @@ cev .id(85), .name("GameUI:Inventory"),{
 		    @comment "PERK ICONZ"
 		    @comment "Right Side"
 		    @pic[1601].show {
-			"ui\PerkSquare"
-			.pos v[354], v[355] .topLeft
+			STRING_ui_PerkSquare
+			.pos TT14, TT15 .topLeft
 			.chromakey 1
 			.scale 100
 			.trans 100
@@ -1538,13 +1555,13 @@ cev .id(85), .name("GameUI:Inventory"),{
 			.affectedByShake
 		    }
 		    @loop 100 .dst v[330] {
-			v[1951] = 1500 + v[330]
-			@pic[v[1951]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-			v[371] = between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) ? 4 : 0
+			InvVar1 = 1500 + v[330]
+			@pic[InvVar1].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+			v[371] = between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) ? 4 : 0
 			@if v[371] == 4 {
 			    @pic[1601].show {
-				"ui\PerkSquare"
-				.pos v[1952], v[1953] .center
+				STRING_ui_PerkSquare
+				.pos InvVar2, InvVar3 .center
 				.chromakey 1
 				.scale 100
 				.trans 15
@@ -1554,28 +1571,28 @@ cev .id(85), .name("GameUI:Inventory"),{
 			    }
 			    s[201].on
 			    @comment "Is there Valid Perk?"
-			    v[11] = v[173]
-			    v[12] = v[330] + 1
+			    var1 = v[173]
+			    var2 = v[330] + 1
 			    @call .cev 1991
 			    v[84] = v[330] + 1000
-			    @if v[21] > -1 {
+			    @if reg1 > -1 {
 				@if v[84] != v[85] {
 				    v[84..85] = v[330] + 1000
-				    v[51].copy v[353], 2
-				    v[353] -= 16
+				    MousePtr_x.copy TT13, 2
+				    TT13 -= 16
 				    @call .cev 1992
-				    v[353] = v[157] + v[1251]
-				    v[354] = v[158] + v[1252]
+				    TT13 = v[157] + v[1251]
+				    TT14 = v[158] + v[1252]
 				    @if v[175] != -1 {
-					@if v[21] == 2 {
+					@if reg1 == 2 {
 					    @pic[v[541]].strpic {
 						"\c[2]\t[20041]"
-						.pos v[353], v[354] .left
+						.pos TT13, TT14 .left
 						.size 0, 0                                        .chromakey 1
 						.scale 100
 						.trans 0
 						.rgbs 100, 100, 100, 100
-						.font "misaki_gothic", 10
+						.font Font_UI, Font_UI_size
 						.spacing 0, 0
 						.skin "" .nobg .noframe .noPadding
 						.mapLayer 9
@@ -1585,15 +1602,15 @@ cev .id(85), .name("GameUI:Inventory"),{
 					    }
 					    
 					} .else bl {
-					    @if v[21] == 1 {
+					    @if reg1 == 1 {
 						@pic[v[541]].strpic {
-						    "\t[20042]"
-						    .pos v[353], v[354] .left
+						    t[20042]
+						    .pos TT13, TT14 .left
 						    .size 0, 0                                            .chromakey 1
 						    .scale 100
 						    .trans 0
 						    .rgbs 100, 100, 100, 100
-						    .font "misaki_gothic", 10
+						    .font Font_UI, Font_UI_size
 						    .spacing 0, 0
 						    .skin "" .nobg .noframe .noPadding
 						    .mapLayer 9
@@ -1605,12 +1622,12 @@ cev .id(85), .name("GameUI:Inventory"),{
 					    } .else bl {
 						@pic[v[541]].strpic {
 						    "\c[17]\t[20043]"
-						    .pos v[353], v[354] .left
+						    .pos TT13, TT14 .left
 						    .size 0, 0                                            .chromakey 1
 						    .scale 100
 						    .trans 0
 						    .rgbs 100, 100, 100, 100
-						    .font "misaki_gothic", 10
+						    .font Font_UI, Font_UI_size
 						    .spacing 0, 0
 						    .skin "" .nobg .noframe .noPadding
 						    .mapLayer 9
@@ -1629,9 +1646,9 @@ cev .id(85), .name("GameUI:Inventory"),{
 				
 			    }
 			    @if v[175] != -1 {
-				@if v[43] == 1005 {
+				@if Common_Control_Ck == 1005 {
 				    @if s[11] .isOff() {
-					@if v[21] == 1 {
+					@if reg1 == 1 {
 					    @comment "#########################"
 					    v[471] = 11550
 					    v[472] = divmul(70, 100, v[2216])
@@ -1640,16 +1657,16 @@ cev .id(85), .name("GameUI:Inventory"),{
 					    @comment "#########################"
 					    @cmd v[471], "ui\UI_Quirky_39", .args v[472], 3
 					    @comment "#########################"
-					    v[353] = v[157] + v[1251]
-					    v[354] = v[158] + v[1252]
+					    TT13 = v[157] + v[1251]
+					    TT14 = v[158] + v[1252]
 					    @pic[v[541]].strpic {
 						"\t[20040]"
-						.pos v[353], v[354] .left
+						.pos TT13, TT14 .left
 						.size 0, 0                                        .chromakey 1
 						.scale 100
 						.trans 0
 						.rgbs 100, 100, 100, 100
-						.font "misaki_gothic", 10
+						.font Font_UI, Font_UI_size
 						.spacing 0, 0
 						.skin "" .nobg .noframe .noPadding
 						.mapLayer 9
@@ -1658,24 +1675,24 @@ cev .id(85), .name("GameUI:Inventory"),{
 						.affectedByShake
 					    }
 					    @comment "TT12=Points"
-					    v[352] = 3
+					    TT12 = 3
 					    @comment "TT13=Flag"
-					    v[353] = 0
+					    TT13 = 0
 					    @comment "Pic"
-					    v[347] = 1700
-					    v[348] = v[347]
-					    v[345] = v[1115]
-					    v[346] = v[1116] - 24
-					    v[350] = (v[173] - 1) * 300 + v[1261] + 100
-					    v[v[350]].copy v[701], 40
-					    @pic[v[347]].strpic {
+					    TT7 = 1700
+					    TT8 = TT7
+					    TT5 = v[1115]
+					    TT6 = v[1116] - 24
+					    TT10 = (v[173] - 1) * 300 + v[1261] + 100
+					    v[TT10].copy v[701], 40
+					    @pic[TT7].strpic {
 						""
-						.pos v[345], v[346] .center
+						.pos TT5, TT6 .center
 						.size 196, 80                                        .chromakey 1
 						.scale 100
 						.trans 0
 						.rgbs 100, 100, 100, 100
-						.font "misaki_gothic", 11
+						.font Font_UI, Font_UI_size
 						.spacing 0, 0
 						.skin "SystemWindow" .stretch
 						.mapLayer 9
@@ -1683,18 +1700,18 @@ cev .id(85), .name("GameUI:Inventory"),{
 						.affectedByFlash
 						.affectedByShake
 					    }
-					    @pic[v[347]].getInfo .ltrb .currentRect v[1952], v[1953], v[1954], v[1955]
-					    v[347] += 1
-					    v[345] = v[1952] + 48
-					    v[346] = v[1953] + 52
-					    @pic[v[347]].strpic {
+					    @pic[TT7].getInfo .ltrb .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+					    TT7 += 1
+					    TT5 = InvVar2 + 48
+					    TT6 = InvVar3 + 52
+					    @pic[TT7].strpic {
 						"  \t[20036] "
-						.pos v[345], v[346] .center
+						.pos TT5, TT6 .center
 						.size 0, 0                                        .chromakey 1
 						.scale 100
 						.trans 50
 						.rgbs 100, 100, 100, 100
-						.font "misaki_gothic", 11 .noShadow
+						.font Font_UI, Font_UI_size .noShadow
 						.spacing 0, 0
 						.skin "SystemSwitch" .nobg .noGradation
 						.mapLayer 9
@@ -1702,16 +1719,16 @@ cev .id(85), .name("GameUI:Inventory"),{
 						.affectedByFlash
 						.affectedByShake
 					    }
-					    v[347] += 1
-					    v[345] += 84
-					    @pic[v[347]].strpic {
+					    TT7 += 1
+					    TT5 += 84
+					    @pic[TT7].strpic {
 						"\t[20037]"
-						.pos v[345], v[346] .center
+						.pos TT5, TT6 .center
 						.size 0, 0                                        .chromakey 1
 						.scale 100
 						.trans 0
 						.rgbs 100, 100, 100, 100
-						.font "misaki_gothic", 11 .noShadow
+						.font Font_UI, Font_UI_size .noShadow
 						.spacing 0, 0
 						.skin "SystemSwitch" .nobg .noGradation
 						.mapLayer 9
@@ -1719,19 +1736,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 						.affectedByFlash
 						.affectedByShake
 					    }
-					    v[345] = v[1952] + 142
-					    v[346] = v[1953] + 15
-					    v[347] += 1
-					    v[345] = v[1952] + 98
-					    v[346] = v[1953] + 6
-					    @pic[v[347]].strpic {
+					    TT5 = InvVar2 + 142
+					    TT6 = InvVar3 + 15
+					    TT7 += 1
+					    TT5 = InvVar2 + 98
+					    TT6 = InvVar3 + 6
+					    @pic[TT7].strpic {
 						"\t[20038]"
-						.pos v[345], v[346] .top
+						.pos TT5, TT6 .top
 						.size 0, 0                                        .chromakey 1
 						.scale 100
 						.trans 0
 						.rgbs 100, 100, 100, 100
-						.font "misaki_gothic", 11 .noShadow
+						.font Font_UI, Font_UI_size .noShadow
 						.spacing 0, 0
 						.skin "SystemSwitch" .nobg .noframe .noGradation .noPadding
 						.mapLayer 9
@@ -1739,16 +1756,16 @@ cev .id(85), .name("GameUI:Inventory"),{
 						.affectedByFlash
 						.affectedByShake
 					    }
-					    v[347] += 1
-					    v[346] += 14
-					    @pic[v[347]].strpic {
-						"\c[5]\t[503]"
-						.pos v[345], v[346] .top
+					    TT7 += 1
+					    TT6 += 14
+					    @pic[TT7].strpic {
+						STRING_str3_with_color5
+						.pos TT5, TT6 .top
 						.size 0, 0                                        .chromakey 1
 						.scale 100
 						.trans 0
 						.rgbs 100, 100, 100, 100
-						.font "misaki_gothic", 11 .noShadow
+						.font Font_UI, Font_UI_size .noShadow
 						.spacing 0, 0
 						.skin "SystemSwitch" .nobg .noframe .noGradation .noPadding
 						.mapLayer 9
@@ -1756,12 +1773,12 @@ cev .id(85), .name("GameUI:Inventory"),{
 						.affectedByFlash
 						.affectedByShake
 					    }
-					    v[349] = v[347]
-					    v[353] = v[1115] - 98
-					    v[354] = v[1116] - 24
+					    TT9 = TT7
+					    TT13 = v[1115] - 98
+					    TT14 = v[1116] - 24
 					    @call .cev 1992
 					    @loop .inf() {
-						@key.input .dst v[43] {
+						@key.input .dst Common_Control_Ck {
 						    .lclick
 						    .rclick
 						}
@@ -1777,9 +1794,9 @@ cev .id(85), .name("GameUI:Inventory"),{
 						s[201].off
 						@comment "Inv Loop"
 						@comment "Close"
-						v[371] = between(v[51], 551, 551 + 8) && between(v[52], 2, 2 + 8) ? 4 : 0
+						v[371] = between(MousePtr_x, 551, 551 + 8) && between(MousePtr_y, 2, 2 + 8) ? 4 : 0
 						@if v[371] == 4 {
-						    @if v[43] == 1005 {
+						    @if Common_Control_Ck == 1005 {
 							@if s[11] .isOff() {
 							    @break
 							    
@@ -1789,18 +1806,18 @@ cev .id(85), .name("GameUI:Inventory"),{
 						    
 						}
 						@comment "Done"
-						v[347] = v[348] + 1
-						@pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-						v[371] = between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) ? 4 : 0
+						TT7 = TT8 + 1
+						@pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+						v[371] = between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) ? 4 : 0
 						@if v[371] == 4 {
-						    @pic[v[347]].move {
-							.pos v[1952], v[1953] .center
+						    @pic[TT7].move {
+							.pos InvVar2, InvVar3 .center
 							.scale 100
 							.trans 0
 							.time -2
 							.rgbs 0, 200, 0, 100
 						    }
-						    @if v[43] == 1005 {
+						    @if Common_Control_Ck == 1005 {
 							@if s[11] .isOff() {
 							    s[11].on
 							    @comment "#########################"
@@ -1811,13 +1828,13 @@ cev .id(85), .name("GameUI:Inventory"),{
 							    @comment "#########################"
 							    @cmd v[471], "ui\UI_Quirky_46", .args v[472], 3
 							    @comment "#########################"
-							    v[11] = v[173]
-							    v[12] = v[330] + 1
+							    var1 = v[173]
+							    var2 = v[330] + 1
 							    @call .cev 1991
 							    @comment "Spend Perk Points"
 							    v[(v[173] - 1) * 300 + v[1261] - 1 + 91] -= 1
 							    v[(v[173] - 1) * 300 + v[1261] - 1 + 151 + v[248]] += 1
-							    v[(v[173] - 1) * 300 + v[1261] - 1 + 5 + v[24]] |= v[23]
+							    v[(v[173] - 1) * 300 + v[1261] - 1 + 5 + reg4] |= reg3
 							    @call .cev 1993
 							    @break
 							    
@@ -1826,8 +1843,8 @@ cev .id(85), .name("GameUI:Inventory"),{
 						    }
 						    
 						} .else bl {
-						    @pic[v[347]].move {
-							.pos v[1952], v[1953] .center
+						    @pic[TT7].move {
+							.pos InvVar2, InvVar3 .center
 							.scale 100
 							.trans 0
 							.time -2
@@ -1836,18 +1853,18 @@ cev .id(85), .name("GameUI:Inventory"),{
 						    
 						}
 						@comment "Cancel"
-						v[347] = v[348] + 2
-						@pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-						v[371] = between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) ? 4 : 0
+						TT7 = TT8 + 2
+						@pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+						v[371] = between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) ? 4 : 0
 						@if v[371] == 4 {
-						    @pic[v[347]].move {
-							.pos v[1952], v[1953] .center
+						    @pic[TT7].move {
+							.pos InvVar2, InvVar3 .center
 							.scale 100
 							.trans 0
 							.time -2
 							.rgbs 0, 200, 0, 100
 						    }
-						    @if v[43] == 1005 {
+						    @if Common_Control_Ck == 1005 {
 							@if s[11] .isOff() {
 							    s[11].on
 							    @break
@@ -1857,8 +1874,8 @@ cev .id(85), .name("GameUI:Inventory"),{
 						    }
 						    
 						} .else bl {
-						    @pic[v[347]].move {
-							.pos v[1952], v[1953] .center
+						    @pic[TT7].move {
+							.pos InvVar2, InvVar3 .center
 							.scale 100
 							.trans 0
 							.time -2
@@ -1872,7 +1889,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 						    
 						}
 						@wait 0
-						@if v[43] == 1005 {
+						@if Common_Control_Ck == 1005 {
 						    @if s[11] .isOff() {
 							
 						    }
@@ -1887,7 +1904,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 					    
 					    @pic[996].erase
 					    @pic[v[541]].erase
-					    @pic[v[348]..v[349]].erase
+					    @pic[TT8..TT9].erase
 					    @label.jump 10
 					    
 					}
@@ -1909,19 +1926,19 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    }
 	    @comment "Left Side"
-	    v[312] = v[157] + 4
-	    v[313] = v[158] + 82
-	    v[314] = 10
+	    Temp12 = v[157] + 4
+	    Temp13 = v[158] + 82
+	    Temp14 = 10
 	    @if v[175] >= 0 {
 		@comment "Talent"
-		v[371] = between(v[51], v[312], v[312] + 110) && between(v[52], v[158] + 144, v[158] + 144 + 9) && between(v[(v[173] - 1) * 300 + v[1261] + 0], 1, 2) ? 4 : 0
+		v[371] = between(MousePtr_x, Temp12, Temp12 + 110) && between(MousePtr_y, v[158] + 144, v[158] + 144 + 9) && between(v[(v[173] - 1) * 300 + v[1261] + 0], 1, 2) ? 4 : 0
 		@if v[371] == 4 {
 		    s[201].on
 		    v[84] = 1001
 		    @if v[84] != v[85] {
 			@if s[58] .isOn() {
-			    v[353] = v[51]
-			    v[354] = v[52]
+			    TT13 = MousePtr_x
+			    TT14 = MousePtr_y
 			    @call .cev 1945
 			    
 			}
@@ -1931,22 +1948,22 @@ cev .id(85), .name("GameUI:Inventory"),{
 		    
 		}
 		@comment "LvUp"
-		@pic[v[554]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
-		v[371] = between(v[51], v[1952] - 16, v[1952] + 16) && between(v[52], v[1953] - 16, v[1953] + 16) && v[(v[173] - 1) * 300 + v[1261] + 91] > 0 ? 4 : 0
+		@pic[v[554]].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
+		v[371] = between(MousePtr_x, InvVar2 - 16, InvVar2 + 16) && between(MousePtr_y, InvVar3 - 16, InvVar3 + 16) && v[(v[173] - 1) * 300 + v[1261] + 91] > 0 ? 4 : 0
 		@if v[371] == 4 {
 		    s[201].on
 		    v[84] = 1000
 		    @if v[84] != v[85] {
-			v[353] = v[157] + v[1251]
-			v[354] = v[158] + v[1252]
+			TT13 = v[157] + v[1251]
+			TT14 = v[158] + v[1252]
 			@pic[v[541]].strpic {
 			    "\t[20052]"
-			    .pos v[353], v[354] .left
+			    .pos TT13, TT14 .left
 			    .size 0, 0                    .chromakey 1
 			    .scale 100
 			    .trans 0
 			    .rgbs 100, 100, 100, 100
-			    .font "misaki_gothic", 10
+			    .font Font_UI, Font_UI_size
 			    .spacing 0, 0
 			    .skin "" .nobg .noframe .noPadding
 			    .mapLayer 9
@@ -1957,7 +1974,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 			v[85] = 1000
 			
 		    }
-		    @if v[43] == 1005 {
+		    @if Common_Control_Ck == 1005 {
 			@if s[11] .isOff() {
 			    @call .cev 1947
 			    
@@ -1969,32 +1986,32 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    }
 	    @comment "Passive"
-	    v[371] = between(v[51], v[157] + 46, v[157] + 78) && between(v[52], v[158] + 54 - 16, v[158] + 54 + 16) ? 4 : 0
-	    @pic[v[553]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
+	    v[371] = between(MousePtr_x, v[157] + 46, v[157] + 78) && between(MousePtr_y, v[158] + 54 - 16, v[158] + 54 + 16) ? 4 : 0
+	    @pic[v[553]].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
 	    @if v[371] == 4 {
 		s[201].on
-		v[84] = v[175] >= 0 ? v[v[284] + 221] : v[821]
+		v[84] = v[175] >= 0 ? v[Ptr4 + 221] : v[821]
 		@if v[84] != v[85] {
 		    @if s[58] .isOn() {
 			@comment "番号を見る"
-			v[1942] = v[52] + 108
+			v[1942] = MousePtr_y + 108
 			v[1942].swap v[1065], 1
-			v[301] = 821
+			Temp1 = 821
 			@call .cev 1100
 			v[1942].swap v[1065], 1
 			
 		    }
-		    v[85] = v[v[284] + 221]
+		    v[85] = v[Ptr4 + 221]
 		    
 		}
 		
 	    }
 	    @comment "Weapon"
-	    v[371] = between(v[51], v[312], v[312] + 110) && between(v[52], v[313], v[313] + 11) ? 4 : 0
-	    @pic[v[542]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
+	    v[371] = between(MousePtr_x, Temp12, Temp12 + 110) && between(MousePtr_y, Temp13, Temp13 + 11) ? 4 : 0
+	    @pic[v[542]].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
 	    @if v[371] == 4 {
 		@pic[v[542]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2002,36 +2019,36 @@ cev .id(85), .name("GameUI:Inventory"),{
 		}
 		v[84] = 1
 		s[201].on
-		v[11] = v[851]
-		@if v[11] >= 1 {
+		var1 = v[851]
+		@if var1 >= 1 {
 		    @if v[84] != v[85] {
 			v[84..85] = 1
 			@call .cev 395
 			@if v[175] >= 0 {
-			    v[12] = v[173]
-			    v[13] = 1
-			    v[19] = v[171]
+			    var2 = v[173]
+			    var3 = 1
+			    var9 = v[171]
 			    @call .cev 1980
 			    
 			}
 			v[1943] = v[1903] + 100
 			v[1944] = v[1908] / 1000
 			@if s[58] .isOn() {
-			    v[15] = 1
+			    var5 = 1
 			    @call .cev 1932
 			    
 			}
 			@if v[v[175]] == 0 {
-			    v[353] = v[157] + v[1251]
-			    v[354] = v[158] + v[1252]
+			    TT13 = v[157] + v[1251]
+			    TT14 = v[158] + v[1252]
 			    @pic[v[541]].strpic {
 				"\t[20047]"
-				.pos v[353], v[354] .left
+				.pos TT13, TT14 .left
 				.size 0, 0                        .chromakey 1
 				.scale 100
 				.trans 0
 				.rgbs 100, 100, 100, 100
-				.font "misaki_gothic", 10
+				.font Font_UI, Font_UI_size
 				.spacing 0, 0
 				.skin "" .nobg .noframe .noPadding
 				.mapLayer 9
@@ -2044,11 +2061,11 @@ cev .id(85), .name("GameUI:Inventory"),{
 			
 		    }
 		    @if v[175] >= 0 {
-			@if v[43] == 1006 {
-			    v[1951] = 1 & v[v[284] + 250]
+			@if Common_Control_Ck == 1006 {
+			    InvVar1 = 1 & v[Ptr4 + 250]
 			    @if s[13] .isOff() {
-				v[13] = 1
-				v[14] = 0
+				var3 = 1
+				var4 = 0
 				@call .cev 1934
 				
 			    }
@@ -2064,7 +2081,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    } .else bl {
 		@pic[v[542]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2073,12 +2090,12 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    }
 	    @comment "Shield"
-	    v[313] += v[314]
-	    v[371] = between(v[51], v[312], v[312] + 110) && between(v[52], v[313], v[313] + 11) ? 4 : 0
-	    @pic[v[543]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
+	    Temp13 += Temp14
+	    v[371] = between(MousePtr_x, Temp12, Temp12 + 110) && between(MousePtr_y, Temp13, Temp13 + 11) ? 4 : 0
+	    @pic[v[543]].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
 	    @if v[371] == 4 {
 		@pic[v[543]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2086,36 +2103,36 @@ cev .id(85), .name("GameUI:Inventory"),{
 		}
 		v[84] = 2
 		s[201].on
-		v[11] = v[852]
-		@if v[11] >= 1 {
+		var1 = v[852]
+		@if var1 >= 1 {
 		    @if v[84] != v[85] {
 			v[84..85] = v[84]
 			@call .cev 396
 			@if v[175] >= 0 {
-			    v[12] = v[173]
-			    v[13] = 2
-			    v[19] = v[171]
+			    var2 = v[173]
+			    var3 = 2
+			    var9 = v[171]
 			    @call .cev 1980
 			    
 			}
 			v[1943] = v[1903] + 100
 			v[1944] = v[1908] / 1000
 			@if s[58] .isOn() {
-			    v[15] = 2
+			    var5 = 2
 			    @call .cev 1932
 			    
 			}
 			@if v[v[175]] == 0 {
-			    v[353] = v[157] + v[1251]
-			    v[354] = v[158] + v[1252]
+			    TT13 = v[157] + v[1251]
+			    TT14 = v[158] + v[1252]
 			    @pic[v[541]].strpic {
 				"\t[20047]"
-				.pos v[353], v[354] .left
+				.pos TT13, TT14 .left
 				.size 0, 0                        .chromakey 1
 				.scale 100
 				.trans 0
 				.rgbs 100, 100, 100, 100
-				.font "misaki_gothic", 10
+				.font Font_UI, Font_UI_size
 				.spacing 0, 0
 				.skin "" .nobg .noframe .noPadding
 				.mapLayer 9
@@ -2128,11 +2145,11 @@ cev .id(85), .name("GameUI:Inventory"),{
 			
 		    }
 		    @if v[175] >= 0 {
-			@if v[43] == 1006 {
-			    v[1951] = 2 & v[v[284] + 250]
+			@if Common_Control_Ck == 1006 {
+			    InvVar1 = 2 & v[Ptr4 + 250]
 			    @if s[13] .isOff() {
-				v[13] = 2
-				v[14] = 0
+				var3 = 2
+				var4 = 0
 				@call .cev 1934
 				
 			    }
@@ -2148,7 +2165,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    } .else bl {
 		@pic[v[543]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2157,12 +2174,12 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    }
 	    @comment "Armor"
-	    v[313] += v[314]
-	    v[371] = between(v[51], v[312], v[312] + 110) && between(v[52], v[313], v[313] + 11) ? 4 : 0
-	    @pic[v[544]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
+	    Temp13 += Temp14
+	    v[371] = between(MousePtr_x, Temp12, Temp12 + 110) && between(MousePtr_y, Temp13, Temp13 + 11) ? 4 : 0
+	    @pic[v[544]].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
 	    @if v[371] == 4 {
 		@pic[v[544]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2170,36 +2187,36 @@ cev .id(85), .name("GameUI:Inventory"),{
 		}
 		v[84] = 3
 		s[201].on
-		v[11] = v[853]
-		@if v[11] >= 1 {
+		var1 = v[853]
+		@if var1 >= 1 {
 		    @if v[84] != v[85] {
 			v[84..85] = v[84]
 			@call .cev 397
 			@if v[175] >= 0 {
-			    v[12] = v[173]
-			    v[13] = 3
-			    v[19] = v[171]
+			    var2 = v[173]
+			    var3 = 3
+			    var9 = v[171]
 			    @call .cev 1980
 			    
 			}
 			v[1943] = v[1903] + 100
 			v[1944] = v[1908] / 1000
 			@if s[58] .isOn() {
-			    v[15] = 3
+			    var5 = 3
 			    @call .cev 1932
 			    
 			}
 			@if v[v[175]] == 0 {
-			    v[353] = v[157] + v[1251]
-			    v[354] = v[158] + v[1252]
+			    TT13 = v[157] + v[1251]
+			    TT14 = v[158] + v[1252]
 			    @pic[v[541]].strpic {
 				"\t[20047]"
-				.pos v[353], v[354] .left
+				.pos TT13, TT14 .left
 				.size 0, 0                        .chromakey 1
 				.scale 100
 				.trans 0
 				.rgbs 100, 100, 100, 100
-				.font "misaki_gothic", 10
+				.font Font_UI, Font_UI_size
 				.spacing 0, 0
 				.skin "" .nobg .noframe .noPadding
 				.mapLayer 9
@@ -2212,11 +2229,11 @@ cev .id(85), .name("GameUI:Inventory"),{
 			
 		    }
 		    @if v[175] >= 0 {
-			@if v[43] == 1006 {
-			    v[1951] = pow(2, 3 - 1) & v[v[284] + 250]
+			@if Common_Control_Ck == 1006 {
+			    InvVar1 = pow(2, 3 - 1) & v[Ptr4 + 250]
 			    @if s[13] .isOff() {
-				v[13] = 3
-				v[14] = 0
+				var3 = 3
+				var4 = 0
 				@call .cev 1934
 				
 			    }
@@ -2232,7 +2249,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    } .else bl {
 		@pic[v[544]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2241,12 +2258,12 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    }
 	    @comment "Helm"
-	    v[313] += v[314]
-	    v[371] = between(v[51], v[312], v[312] + 110) && between(v[52], v[313], v[313] + 11) ? 4 : 0
-	    @pic[v[545]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
+	    Temp13 += Temp14
+	    v[371] = between(MousePtr_x, Temp12, Temp12 + 110) && between(MousePtr_y, Temp13, Temp13 + 11) ? 4 : 0
+	    @pic[v[545]].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
 	    @if v[371] == 4 {
 		@pic[v[545]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2254,36 +2271,36 @@ cev .id(85), .name("GameUI:Inventory"),{
 		}
 		v[84] = 4
 		s[201].on
-		v[11] = v[854]
-		@if v[11] >= 1 {
+		var1 = v[854]
+		@if var1 >= 1 {
 		    @if v[84] != v[85] {
 			v[84..85] = v[84]
 			@call .cev 398
 			@if v[175] >= 0 {
-			    v[12] = v[173]
-			    v[13] = 4
-			    v[19] = v[171]
+			    var2 = v[173]
+			    var3 = 4
+			    var9 = v[171]
 			    @call .cev 1980
 			    
 			}
 			v[1943] = v[1903] + 100
 			v[1944] = v[1908] / 1000
 			@if s[58] .isOn() {
-			    v[15] = 4
+			    var5 = 4
 			    @call .cev 1932
 			    
 			}
 			@if v[v[175]] == 0 {
-			    v[353] = v[157] + v[1251]
-			    v[354] = v[158] + v[1252]
+			    TT13 = v[157] + v[1251]
+			    TT14 = v[158] + v[1252]
 			    @pic[v[541]].strpic {
 				"\t[20047]"
-				.pos v[353], v[354] .left
+				.pos TT13, TT14 .left
 				.size 0, 0                        .chromakey 1
 				.scale 100
 				.trans 0
 				.rgbs 100, 100, 100, 100
-				.font "misaki_gothic", 10
+				.font Font_UI, Font_UI_size
 				.spacing 0, 0
 				.skin "" .nobg .noframe .noPadding
 				.mapLayer 9
@@ -2296,11 +2313,11 @@ cev .id(85), .name("GameUI:Inventory"),{
 			
 		    }
 		    @if v[175] >= 0 {
-			@if v[43] == 1006 {
-			    v[1951] = pow(2, 4 - 1) & v[v[284] + 250]
+			@if Common_Control_Ck == 1006 {
+			    InvVar1 = pow(2, 4 - 1) & v[Ptr4 + 250]
 			    @if s[13] .isOff() {
-				v[13] = 4
-				v[14] = 0
+				var3 = 4
+				var4 = 0
 				@call .cev 1934
 				
 			    }
@@ -2316,7 +2333,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    } .else bl {
 		@pic[v[545]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2325,12 +2342,12 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    }
 	    @comment "Acc"
-	    v[313] += v[314]
-	    v[371] = between(v[51], v[312], v[312] + 110) && between(v[52], v[313], v[313] + 11) ? 4 : 0
-	    @pic[v[546]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
+	    Temp13 += Temp14
+	    v[371] = between(MousePtr_x, Temp12, Temp12 + 110) && between(MousePtr_y, Temp13, Temp13 + 11) ? 4 : 0
+	    @pic[v[546]].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
 	    @if v[371] == 4 {
 		@pic[v[546]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2338,36 +2355,36 @@ cev .id(85), .name("GameUI:Inventory"),{
 		}
 		v[84] = 5
 		s[201].on
-		v[11] = v[855]
-		@if v[11] >= 1 {
+		var1 = v[855]
+		@if var1 >= 1 {
 		    @if v[84] != v[85] {
 			v[84..85] = v[84]
 			@call .cev 399
 			@if v[175] >= 0 {
-			    v[12] = v[173]
-			    v[13] = 5
-			    v[19] = v[171]
+			    var2 = v[173]
+			    var3 = 5
+			    var9 = v[171]
 			    @call .cev 1980
 			    
 			}
 			v[1943] = v[1903] + 100
 			v[1944] = v[1908] / 1000
 			@if s[58] .isOn() {
-			    v[15] = 5
+			    var5 = 5
 			    @call .cev 1932
 			    
 			}
 			@if v[v[175]] == 0 {
-			    v[353] = v[157] + v[1251]
-			    v[354] = v[158] + v[1252]
+			    TT13 = v[157] + v[1251]
+			    TT14 = v[158] + v[1252]
 			    @pic[v[541]].strpic {
 				"\t[20047]"
-				.pos v[353], v[354] .left
+				.pos TT13, TT14 .left
 				.size 0, 0                        .chromakey 1
 				.scale 100
 				.trans 0
 				.rgbs 100, 100, 100, 100
-				.font "misaki_gothic", 10
+				.font Font_UI, Font_UI_size
 				.spacing 0, 0
 				.skin "" .nobg .noframe .noPadding
 				.mapLayer 9
@@ -2380,11 +2397,11 @@ cev .id(85), .name("GameUI:Inventory"),{
 			
 		    }
 		    @if v[175] >= 0 {
-			@if v[43] == 1006 {
-			    v[1951] = pow(2, 5 - 1) & v[v[284] + 250]
+			@if Common_Control_Ck == 1006 {
+			    InvVar1 = pow(2, 5 - 1) & v[Ptr4 + 250]
 			    @if s[13] .isOff() {
-				v[13] = 5
-				v[14] = 0
+				var3 = 5
+				var4 = 0
 				@call .cev 1934
 				
 			    }
@@ -2400,7 +2417,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    } .else bl {
 		@pic[v[546]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2409,12 +2426,12 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    }
 	    @comment "ResWeapon"
-	    v[313] += v[314]
-	    v[371] = between(v[51], v[312], v[312] + 110) && between(v[52], v[313], v[313] + 11) ? 4 : 0
-	    @pic[v[547]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
+	    Temp13 += Temp14
+	    v[371] = between(MousePtr_x, Temp12, Temp12 + 110) && between(MousePtr_y, Temp13, Temp13 + 11) ? 4 : 0
+	    @pic[v[547]].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
 	    @if v[371] == 4 {
 		@pic[v[547]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2422,36 +2439,36 @@ cev .id(85), .name("GameUI:Inventory"),{
 		}
 		v[84] = 1
 		s[201].on
-		v[11] = v[856]
-		@if v[11] >= 1 {
+		var1 = v[856]
+		@if var1 >= 1 {
 		    @if v[84] != v[85] {
 			v[84..85] = 1
 			@call .cev 395
 			@if v[175] >= 0 {
-			    v[12] = v[173]
-			    v[13] = 6
-			    v[19] = v[171]
+			    var2 = v[173]
+			    var3 = 6
+			    var9 = v[171]
 			    @call .cev 1980
 			    
 			}
 			v[1943] = v[1903] + 100
 			v[1944] = v[1908] / 1000
 			@if s[58] .isOn() {
-			    v[15] = 1
+			    var5 = 1
 			    @call .cev 1932
 			    
 			}
 			@if v[v[175]] == 0 {
-			    v[353] = v[157] + v[1251]
-			    v[354] = v[158] + v[1252]
+			    TT13 = v[157] + v[1251]
+			    TT14 = v[158] + v[1252]
 			    @pic[v[541]].strpic {
 				"\t[20047]"
-				.pos v[353], v[354] .left
+				.pos TT13, TT14 .left
 				.size 0, 0                        .chromakey 1
 				.scale 100
 				.trans 0
 				.rgbs 100, 100, 100, 100
-				.font "misaki_gothic", 10
+				.font Font_UI, Font_UI_size
 				.spacing 0, 0
 				.skin "" .nobg .noframe .noPadding
 				.mapLayer 9
@@ -2464,11 +2481,11 @@ cev .id(85), .name("GameUI:Inventory"),{
 			
 		    }
 		    @if v[175] >= 0 {
-			@if v[43] == 1006 {
-			    v[1951] = 1 & v[v[284] + 250]
+			@if Common_Control_Ck == 1006 {
+			    InvVar1 = 1 & v[Ptr4 + 250]
 			    @if s[13] .isOff() {
-				v[13] = 1
-				v[14] = 1
+				var3 = 1
+				var4 = 1
 				@call .cev 1934
 				
 			    }
@@ -2484,7 +2501,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    } .else bl {
 		@pic[v[547]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2493,12 +2510,12 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    }
 	    @comment "ResShield"
-	    v[313] += v[314]
-	    v[371] = between(v[51], v[312], v[312] + 110) && between(v[52], v[313], v[313] + 11) ? 4 : 0
-	    @pic[v[548]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1954]
+	    Temp13 += Temp14
+	    v[371] = between(MousePtr_x, Temp12, Temp12 + 110) && between(MousePtr_y, Temp13, Temp13 + 11) ? 4 : 0
+	    @pic[v[548]].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar4
 	    @if v[371] == 4 {
 		@pic[v[548]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2506,36 +2523,36 @@ cev .id(85), .name("GameUI:Inventory"),{
 		}
 		v[84] = 2
 		s[201].on
-		v[11] = v[857]
-		@if v[11] >= 1 {
+		var1 = v[857]
+		@if var1 >= 1 {
 		    @if v[84] != v[85] {
 			v[84..85] = v[84]
 			@call .cev 396
 			@if v[175] >= 0 {
-			    v[12] = v[173]
-			    v[13] = 7
-			    v[19] = v[171]
+			    var2 = v[173]
+			    var3 = 7
+			    var9 = v[171]
 			    @call .cev 1980
 			    
 			}
 			v[1943] = v[1903] + 100
 			v[1944] = v[1908] / 1000
 			@if s[58] .isOn() {
-			    v[15] = 2
+			    var5 = 2
 			    @call .cev 1932
 			    
 			}
 			@if v[175] == 0 {
-			    v[353] = v[157] + v[1251]
-			    v[354] = v[158] + v[1252]
+			    TT13 = v[157] + v[1251]
+			    TT14 = v[158] + v[1252]
 			    @pic[v[541]].strpic {
 				"\t[20047]"
-				.pos v[353], v[354] .left
+				.pos TT13, TT14 .left
 				.size 0, 0                        .chromakey 1
 				.scale 100
 				.trans 0
 				.rgbs 100, 100, 100, 100
-				.font "misaki_gothic", 10
+				.font Font_UI, Font_UI_size
 				.spacing 0, 0
 				.skin "" .nobg .noframe .noPadding
 				.mapLayer 9
@@ -2548,11 +2565,11 @@ cev .id(85), .name("GameUI:Inventory"),{
 			
 		    }
 		    @if v[175] >= 0 {
-			@if v[43] == 1006 {
-			    v[1951] = 2 & v[v[284] + 250]
+			@if Common_Control_Ck == 1006 {
+			    InvVar1 = 2 & v[Ptr4 + 250]
 			    @if s[13] .isOff() {
-				v[13] = 2
-				v[14] = 1
+				var3 = 2
+				var4 = 1
 				@call .cev 1934
 				
 			    }
@@ -2568,7 +2585,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    } .else bl {
 		@pic[v[548]].move {
-		    .pos v[1952], v[1953] .center
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -2577,24 +2594,24 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    }
 	    @comment "Skills"
-	    @loop 4 .dst v[343] {
-		v[1951] = 741 + v[343] * 20
-		@if v[v[1951]] >= 1 {
+	    @loop 4 .dst TT3 {
+		InvVar1 = 741 + TT3 * 20
+		@if v[InvVar1] >= 1 {
 		    v[1942] = 320
-		    v[371] = between(v[51], v[312], v[312] + 110) && between(v[52], v[158] + v[1942] + 10 * v[343], v[158] + v[1942] + 11 + 10 * v[343]) ? 4 : 0
+		    v[371] = between(MousePtr_x, Temp12, Temp12 + 110) && between(MousePtr_y, v[158] + v[1942] + 10 * TT3, v[158] + v[1942] + 11 + 10 * TT3) ? 4 : 0
 		    @if v[371] == 4 {
-			v[84] = v[343] + 20
+			v[84] = TT3 + 20
 			s[201].on
 			@if v[84] != v[85] {
 			    @if s[58] .isOn() {
 				@comment "スキルチェック"
-				v[301] = v[1951]
+				Temp1 = InvVar1
 				@comment "番号を見る"
-				v[84] = v[v[301]]
+				v[84] = v[Temp1]
 				@comment "skillが存在するなら文章を見る"
 				@if v[84] >= 1 {
 				    s[202].off
-				    v[1942] = v[52] + 0
+				    v[1942] = MousePtr_y + 0
 				    v[1942].swap v[1065], 1
 				    @call .cev 1200
 				    v[1942].swap v[1065], 1
@@ -2603,16 +2620,16 @@ cev .id(85), .name("GameUI:Inventory"),{
 				}
 				
 			    }
-			    v[353] = v[157] + v[1251]
-			    v[354] = v[158] + v[1252]
+			    TT13 = v[157] + v[1251]
+			    TT14 = v[158] + v[1252]
 			    @pic[v[541]].strpic {
 				"\t[20051]"
-				.pos v[353], v[354] .left
+				.pos TT13, TT14 .left
 				.size 0, 0                        .chromakey 1
 				.scale 100
 				.trans 0
 				.rgbs 100, 100, 100, 100
-				.font "misaki_gothic", 10
+				.font Font_UI, Font_UI_size
 				.spacing 0, 0
 				.skin "" .nobg .noframe .noPadding
 				.mapLayer 9
@@ -2622,14 +2639,14 @@ cev .id(85), .name("GameUI:Inventory"),{
 			    }
 			    
 			}
-			@if v[43] == 1006 {
+			@if Common_Control_Ck == 1006 {
 			    @comment "#Is_Companion"
 			    @if s[13] .isOff() {
 				@if v[555] != 996 {
 				    @se.play "click1" .opt 80, 100, 50
 				    @comment "#Skill AutoCast Lock Check"
-				    v[344] = v[(v[256] - 1) * 300 + v[1261] + 199]
-				    v[0] = (v[344] & pow(2, v[343])) > 0 ? (v[(v[256] - 1) * 300 + v[1261] + 199] = v[344] ^ pow(2, v[343])) : (v[(v[256] - 1) * 300 + v[1261] + 199] = v[344] | pow(2, v[343]))
+				    TT4 = v[(v[256] - 1) * 300 + v[1261] + 199]
+				    v[0] = (TT4 & pow(2, TT3)) > 0 ? (v[(v[256] - 1) * 300 + v[1261] + 199] = TT4 ^ pow(2, TT3)) : (v[(v[256] - 1) * 300 + v[1261] + 199] = TT4 | pow(2, TT3))
 				    @call .cev 1949
 				    
 				}
@@ -2656,7 +2673,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 		
 	    }
 	    @wait 0
-	    @if v[43] == 1005 {
+	    @if Common_Control_Ck == 1005 {
 		@if s[11] .isOff() {
 		    s[58].toggle
 		    v[85..85] = 0
@@ -2670,7 +2687,7 @@ cev .id(85), .name("GameUI:Inventory"),{
 		s[11].off
 		
 	    }
-	    @if v[43] == 1006 {
+	    @if Common_Control_Ck == 1006 {
 		s[13].on
 		
 	    } .else bl {
@@ -2699,6 +2716,321 @@ cev .id(85), .name("GameUI:Inventory"),{
 	    
 	}
 	s[19].off
+	S_OpenInv.off
 	v[959] = 24
 	v[909] = 24
+}
+
+
+cev .id(1933), .name("inv text - core stats"), {
+	TT1 = v[700] == 0 ? v[601] == 3 ? 2 : 1 : 17
+	TT5 = v[717] / 1000
+	TT6 = v[736] + 100
+	@comment "Skill check"
+	t[501..504] .asg ""
+	var1 = v[741]
+	InvVar7 = v[(v[173] - 1) * 300 + v[1261] + 199]
+	@if var1 >= 1 {
+			@call .cev 1102
+			str1 .asg str6
+			InvVar9 = InvVar7 & 1
+			@if InvVar9 == 0 {
+					getQstr(486)
+					str1 .cat t[3000]
+					
+			}
+			
+	}
+	var1 = v[761]
+	@if var1 >= 1 {
+			@call .cev 1102
+			str2 .asg str6
+			InvVar9 = InvVar7 & 2
+			@if InvVar9 == 0 {
+					getQstr(486)
+					str2 .cat t[3000]
+					
+			}
+			
+	}
+	var1 = v[781]
+	@if var1 >= 1 {
+			@call .cev 1102
+			str3 .asg str6
+			InvVar9 = InvVar7 & 4
+			@if InvVar9 == 0 {
+					getQstr(486)
+					str3 .cat t[3000]
+					
+			}
+			
+	}
+	var1 = v[801]
+	@if var1 >= 1 {
+			@call .cev 1102
+			str4 .asg str6
+			InvVar9 = InvVar7 & 8
+			@if InvVar9 == 0 {
+					getQstr(486)
+					str4 .cat t[3000]
+					
+			}
+			
+	}
+
+	@comment "Lv Check"
+	InvVar7 = (v[173] - 1) * 300 + v[1261] + 58
+	v[InvVar7].copy InvVar7, 2
+	@if s[20] .isOn() {
+			v[340] = v[145] + v[4562]
+			
+	} .else bl {
+			v[340] = (v[256] - 1) * 5 + v[1262]
+			
+	}
+
+	@if v[601] == 3 {
+			getQstr(485)
+			@pic[TT10].strpic {
+					t[3000]
+					.pos TT13, TT14 .topLeft
+					.size 0, 0            .chromakey 1
+					.scale 100
+					.trans 0
+					.rgbs 100, 100, 100, 100
+					.font Font_UI, Font_UI_size
+					.spacing 0, 0
+					.skin "" .nobg .noframe .noPadding
+					.mapLayer 9
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+			}
+			
+	} .else bl {
+			s[151].on
+			s[151].off
+			getQstr(477)
+			@pic[TT10].strpic {
+					t[3000]
+					.pos TT13, TT14 .topLeft
+					.size 0, 0            .chromakey 1
+					.scale 100
+					.trans 0
+					.rgbs 100, 100, 100, 100
+					.font Font_UI, Font_UI_size
+					.spacing 0, 0
+					.skin "" .nobg .noframe .noPadding
+					.mapLayer 9
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+			}
+			
+	}
+}
+
+
+// WOW.
+cev .id(1932), .name("invitem texts"), {
+	@if var5 == 1 {
+			var1 = max(v[1918] - 1200, 0)
+			@call .cev 1102
+			getQstr(478)
+			@pic[996].strpic {
+				t[3000]
+				.pos MousePtr_x, MousePtr_y .topLeft
+				.size 0, 0            .chromakey 1
+				.scale 100
+				.trans 10
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, Font_UI_size
+				.spacing 0, 0
+				.skin "" .stretch
+				.mapLayer 10
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			}
+			
+	}
+	@comment "Shield"
+	@if var5 == 2 {
+			getQstr(479)
+			@pic[996].strpic {
+				t[3000]
+				.pos MousePtr_x, MousePtr_y .topLeft
+				.size 0, 0            .chromakey 1
+				.scale 100
+				.trans 10
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, Font_UI_size
+				.spacing 0, 0
+				.skin "" .stretch
+				.mapLayer 10
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			}
+	}
+	@comment "Armor"
+	@if var5 == 3 {
+			getQstr(480)
+			@pic[996].strpic {
+				t[3000]
+				.pos MousePtr_x, MousePtr_y .topLeft
+				.size 0, 0            .chromakey 1
+				.scale 100
+				.trans 10
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, Font_UI_size
+				.spacing 0, 0
+				.skin "" .stretch
+				.mapLayer 10
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			}
+			
+	}
+	@comment "Helm"
+	@if var5 == 4 {
+			getQstr(481)
+			@pic[996].strpic {
+				t[3000]
+				.pos MousePtr_x, MousePtr_y .topLeft
+				.size 0, 0            .chromakey 1
+				.scale 100
+				.trans 10
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, Font_UI_size
+				.spacing 0, 0
+				.skin "" .stretch
+				.mapLayer 10
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			}
+			
+	}
+	@comment "Acc"
+	@if var5 == 5 {
+			// @comment "Add armor"
+			@if v[1901] == 3 {
+				getQstr(482)
+				@pic[996].strpic {
+					t[3000]
+					.pos MousePtr_x, MousePtr_y .topLeft
+					.size 0, 0            .chromakey 1
+					.scale 100
+					.trans 10
+					.rgbs 100, 100, 100, 100
+					.font Font_UI, Font_UI_size
+					.spacing 0, 0
+					.skin "" .stretch
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+				}
+					
+			} .else bl {
+					@comment "horse"
+					@if v[1901] == 2 {
+						getQstr(483)
+						@pic[996].strpic {
+							t[3000]
+							.pos MousePtr_x, MousePtr_y .topLeft
+							.size 0, 0            .chromakey 1
+							.scale 100
+							.trans 10
+							.rgbs 100, 100, 100, 100
+							.font Font_UI, Font_UI_size
+							.spacing 0, 0
+							.skin "" .stretch
+							.mapLayer 10
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+						}
+							
+					} .else bl {
+						getQstr(483)
+						@pic[996].strpic {
+							t[3000]
+							.pos MousePtr_x, MousePtr_y .topLeft
+							.size 0, 0            .chromakey 1
+							.scale 100
+							.trans 10
+							.rgbs 100, 100, 100, 100
+							.font Font_UI, Font_UI_size
+							.spacing 0, 0
+							.skin "" .stretch
+							.mapLayer 10
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+						}
+					}
+					
+			}
+			
+	}
+}
+
+
+cev .id(1991), .name("UI:perk loading"), {
+	v[21] = -1
+	v[22] = 1
+	@comment "v1=CompanionID	v2=PerkID	reg1 # 0 == cant 1==can be used 2==currently used	reg2 # Icon ID"
+	v[13] = (v[11] - 1) * 300 + v[1261]
+	v[13] -= 1
+	@comment "Load"
+	v[1941] = v[1214] + v[12]
+	t[2999] .asg t[v[1941]]
+	t[2999] .split ",", t[2999], v[1941]
+	t[503] .asg t[2999]
+	t[504] .asg t[3000]
+	@if t[2999] .eq "0" {
+			v[21] = -1
+			
+	} .else bl {
+			@loop 7 .dst v[1941] {
+					v[1942] = 3001 + v[1941]
+					v[1943] = 1901 + v[1941]
+					t[v[1942]] .toNum v[1944]
+					v[v[1943]] = v[1944]
+					t[v[1942]] .asg ""
+					
+			}
+			
+			@comment "V4 = Flag	V5 = where to flag Perk Bit 	v6 #1 = Battle 2=magic	v7 = how much perk points you have to invest in this tree to get"
+			v[0] = v[14..17] = v[1901..1904]
+			@comment "Check if the perk used or not"
+			v[21] = (v[v[13] + 5 + v[15]] & v[14]) == v[14] ? 2 : 1
+			@comment "If the perk not used, check if the character can get it at the point"
+			@if v[21] <= 1 {
+					v[21] = v[v[13] + 150 + v[16]] >= v[17] ? 1 : 0
+					
+			}
+			@comment "Icon Set"
+			v[22] = v[1905]
+			
+	}
+	@comment "####################"
+	v[21] -= v[v[13] + 91] < 1 && v[21] == 1 ? 1 : 0
+	@comment "####################"
+	v[23] = v[1901]
+	v[24] = v[1902]
+	@comment "####################"
+	t[3000] .split "^", t[3001], v[1961]
+	t[3000] .asg ""
+	@loop v[1961] .dst v[1962] {
+			v[1963] = v[1211] + v[1962]
+			t[3000] .cat t[v[1963]] .extract
+			t[3000] .cat t[525]
+			
+	}
+	
+	t[504] .asg t[3000] .extract
 }

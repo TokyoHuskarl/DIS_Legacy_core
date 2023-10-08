@@ -1,1092 +1,1098 @@
 
+// well, this one seems different...
 cev .id(32), .name("AgentAct:Worker"), {
-	v[711] = v[300] * 300
-	v[702] = v[711] + 4802
-	v[707] = v[300] * 300
-	v[700] = v[v[707] + 4800]
-	// "Get Civilization"
-	v[822] = v[2403 + v[700] % 3]
-	@if `v[700] % 3 != 0 {
-	    @if v[v[298]] > 0 {
-		s[167].off
-		@if `v[v[300] * 300 + 4701] == 11 {
-		    s[167].on
-		    
-		}
-		// "#Combat Penalty Resist"
-		// "############↓?"
-		v[720] = v[210] + 120
-		v[629] = v[210] + 29
-		v[874] = v[210] + 274
-		// "############	Melee Auto Attack################"
-		// "Access19 = AttackerObjectID 0~	Access20 = TargetObjectID 1~	Access18 = ObjTypeチェックPtr"
-		v[711] = v[300] * 300
-		v[607] = v[711] + 4707
-		v[v[607]].copy v[607], 2
-		// "Effect"
-		v[376] = 0
-		s[166].off
-		@if `s[v[300] + 500] == 1 {
-		    s[166].on
-		    v[376] = 4
-		    v[181] += 1
-		    @if v[181] <= 6 {
-			v[844] = v[299] * 300 
-			v[844] += 4944
-			@loop v[1017] .dst v[320] {
-			    v[244] %= v[1199]
-			    v[351] = v[244] * 50 
-			    v[351] += v[1198]
-			    @if v[v[351]] <= 1 {
-				// "まず清掃"
-				v[1301].copy v[v[351]], 50
-				// "ポインタセット開始"
-				// "設定"
-				v[v[351]] = 1
-				// "F"
-				v[345] = v[351] + 49
-				v[v[345]] = 8
-				// "Set itself"
-				v[345] = v[351] + 3
-				v[v[345]] = 123
-				// "Set size"
-				v[v[351] + 26] = 100
-				// "Set Dire"
-				v[345] = v[351] + 27
-				v[v[345]] = 13 + v[v[844]] * 6
-				// "けす処理をLinkedFuncに入れる"
-				v[345] = v[351] + 10
-				// "XY set"
-				v[357] = v[351] + 6
-				v[607].copy v[361], 2
-				v[361] += rnd(-3, 3)
-				v[362] += rnd(-5, 5)
-				v[361].copy v[v[357]], 2
-				// "仕上げに登録消す"
-				v[244] += 1
-				@break
-				
-			    }
-			    v[244] += 1
-			    
-			}
-			
-			
-		    }
-		    @if v[182] <= 0 {
-			@if v[522] < 30 {
-			    v[182] += 1
-			    // "#Get melee weapon effect"
-			    v[329] = v[v[299] * 300 + 4829] / 10000
-			    // "#########################"
-			    v[472] = divmul(65, 100, v[2216])
-			    v[473] = rnd(80, 105)
-			    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-			    t[510] .asg "weapons\swing"
-			    t[510] .cat v[329]
-			    v[341] = 510
-			    // "Strings = t[v[341]]"
-			    @cmd 11550, t[v[341]], .args v[472], 3
-			    // "#########################"
-			    
-			}
-			
-		    }
-		    
-		}
-		@if s[167] .isOff() {
-		    v[11] = v[299]
-		    @call .cev 42
-		    
-		} .else bl {
-		    v[21] = 1
-		    
-		}
-		@if v[21] == 1 {
-		    // "Hit!"
-		    v[421] = 100
-		    // "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃	ここそのうち用意した関数に置き換える	＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"
-		    // "ADを取得"
-		    v[301] = 25
-		    // "ARかMRか取得"
-		    v[302] = 0
-		    // "Element"
-		    v[303] = 2
-		    // "AABits"
-		    v[19] = 0
-		    v[422] = 0
-		    @call .cev 40
-		    // "############"
-		    // "Effect"
-		    @if s[166] .isOn() {
-			v[342] = v[v[300] * 300 + 4974] & 4096 ? 999999 : v[1138]
-			@if v[22] >= v[342] {
-			    v[342] = v[v[874]] & 4096 ? 999999 : v[1138]
-			    // "Blood stain on 1h weapon"
-			    v[342] = v[299] * 300 + 4959
-			    @if `!(v[v[874]] & 1048576) {
-				v[v[342] + 26] = min(v[v[342] + 26] + 1, 12)
-				
-			    }
-			    s[141].on
-			    @if v[181] <= 4 {
-				v[711] = v[300] * 300
-				v[607] = v[711] + 4707
-				v[v[607]].copy v[607], 2
-				v[607].copy v[361], 2
-				v[182] += 1
-				// "#Get melee weapon effect"
-				v[829] = v[v[299] * 300 + 4829] % 10000
-				v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				@loop 1 {
-				    // "#########################"
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(50, 110)
-				    @cmd 11550, "重いパンチ2", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
-				}
-				
-				// "Get MaxHP of the victim"
-				v[342] = v[300] * 300 + 4805
-				v[343] = v[v[342]]
-				v[342] = rnd(0, 9)
-				// "if the damage amount is higher than 10% of max HP of the victim	more likely bleed effect happens"
-				v[343] /= 10
-				v[342] += v[343] < v[22] ? 3 : 0
-				v[342] *= v[243] < v[1124] ? 1 : 0
-				@if v[342] >= 8 {
-				    v[372] = (v[v[300] * 300 + 4840] & 4096) == 4096 ? 1 : 0
-				    s[141].on
-				    @call .cev 111
-				    
-				}
-				
-			    }
-			    
-			} .else bl {
-			    @if v[181] <= 4 {
-				v[182] += 1
-				// "#Get melee weapon effect"
-				v[829] = v[v[299] * 300 + 4829] % 10000
-				@loop 1 {
-				    v[472] = divmul(70, 100, v[2216])
-				    v[473] = rnd(115, 170)
-				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				    @cmd 11550, "重いパンチ2", .args v[472], 3
-				    // "#########################"
-				    @break
-				    
-				}
-				
-				
-			    }
-			    
-			}
-			
-		    }
-		    
-		} .else bl {
-		    // "Miss!"
-		    // "#SP damage#Evading costs 2 SP"
-		    v[350] = v[300] * 300 
-		    v[350] += 4808
-		    v[v[350]] = max(v[v[350]] - 2, 0)
-		    v[607].copy v[221], 2
-		    @if v[22] == 1 {
-			// "##############	CheckBits##############"
-			@if s[166] .isOn() {
-			    // "Set ShieldMotion Timer"
-			    v[v[300] * 300 + 4783] = 6
-			    @if v[23] == 0 {
-				@if v[182] <= 2 {
-				    // "#########################"
-				    v[472] = divmul(60, 100, v[2216])
-				    v[473] = rnd(115, 120)
-				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				    @cmd 11550, "weapons/shield_hit", .args v[472], 3
-				    // "#########################"
-				    
-				}
-				
-			    } .else bl {
-				// "#Dust Particle Effect"
-				@loop v[1017] .dst v[320] {
-				    v[244] %= v[1199]
-				    v[351] = v[244] * 50 
-				    v[351] += v[1198]
-				    @if v[v[351]] <= 0 {
-					// "まず清掃"
-					v[1301].copy v[v[351]], 50
-					// "ポインタセット開始"
-					// "設定"
-					v[v[351]] = 1
-					v[v[351] + 49] = 3
-					v[v[351] + 3] = 160
-					v[341] = v[351] + 6
-					v[607].copy v[v[341]], 2
-					v[244] += 1
-					@break
-					
-				    }
-				    v[244] += 1
-				    
-				}
-				
-				@if v[182] <= 3 {
-				    // "#########################"
-				    v[472] = divmul(78, 100, v[2216])
-				    v[473] = rnd(87, 100)
-				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				    @cmd 11550, "weapons/shield_cracked01", .args v[472], 3
-				    // "#########################"
-				    
-				}
-				
-			    }
-			    // "Call Shield"
-			    v[342] = v[300] * 300 
-			    v[342] += 4952
-			    v[v[342] + 32] = v[v[342]] > 0 ? 4 : 0
-			    // "#Shield Motion"
-			    v[342] = v[300] * 300 
-			    v[342] += 4943
-			    @if v[v[342]] != 1 {
-				v[v[342]] = 2
-				v[342] -= 215
-				v[v[342]] += v[v[342]] < 1 ? 140 : 0
-				
-			    }
-			    @if s[307] .isOff() {
-				// "#描画範囲内か？"
-				v[220] %= 30
-				v[220] += 1201
-				v[220] += 1
-				v[223] = v[220]
-				v[221] += rnd(-6, 6)
-				v[222] += rnd(-3, 3)
-				v[222] += s[162] == 1 ? 10 : 0
-				// "#サイズは最低100%"
-				v[225] = 100
-				// "AR"
-				v[341] = v[1204] - 10
-				@pic[v[223]].show {
-				    "num\num_block"
-				    .pos v[221], v[222] .center
-				    .scrollWithMap
-				    .chromakey 1
-				    .scale v[225]
-				    .trans v[341]
-				    .rgbs 100, 100, 100, 100
-				    .mapLayer 7
-				    .eraseWhenTransfer
-				    .affectedByFlash
-				    .affectedByShake
-				}
-				v[222] = v[608] - 24
-				v[222] += s[162] == 1 ? 10 : 0
-				@pic[v[223]].move {
-				    .pos v[221], v[222] .center
-				    .scale v[225]
-				    .trans 100
-				    .time 12
-				    .rgbs 100, 100, 100, 100
-				}
-				v[183] += v[184] >= v[1128] ? 2 : 1
-				
-			    }
-			    
-			}
-			
-		    } .else bl {
-			@if v[22] == 2 {
-			    @if s[166] .isOn() {
-				// "Set ShieldMotion Timer"
-				v[v[300] * 300 + 4783] = 6
-				@if v[182] <= 3 {
-				    // "#########################"
-				    @if v[522] < 50 {
-					v[329] = rnd(1, 4)
-					// "#########################"
-					v[472] = divmul(60, 100, v[2216])
-					v[473] = rnd(100, 130)
-					v[474] = divmul(v[607] + v[1001], v[1281], 50)
-					t[510] .asg "weapons\sword_clash_"
-					t[510] .cat v[329]
-					v[341] = 510
-					// "Strings = t[v[341]]"
-					@cmd 11550, t[v[341]], .args v[472], 3
-					
-				    }
-				    
-				}
-				@if s[307] .isOff() {
-				    // "#描画範囲内か？"
-				    v[220] %= 30
-				    v[220] += 1201
-				    v[220] += 1
-				    v[223] = v[220]
-				    v[221] += rnd(-6, 6)
-				    v[222] += rnd(-3, 3)
-				    v[222] += s[162] == 1 ? 10 : 0
-				    // "#サイズは最低100%"
-				    v[225] = 100
-				    // "AR"
-				    v[341] = v[1204] - 10
-				    @pic[v[223]].show {
-					"num\num_block"
-					.pos v[221], v[222] .center
-					.scrollWithMap
-					.chromakey 1
-					.scale v[225]
-					.trans v[341]
-					.rgbs 100, 100, 100, 100
-					.mapLayer 7
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
-				    }
-				    v[222] = v[608] - 24
-				    v[222] += s[162] == 1 ? 10 : 0
-				    @pic[v[223]].move {
-					.pos v[221], v[222] .center
-					.scale v[225]
-					.trans 100
-					.time 12
-					.rgbs 100, 100, 100, 100
-				    }
-				    v[183] += v[184] >= v[1128] ? 2 : 1
-				    
-				}
-				// "#"
-				@if `v[v[300] * 300 + 4974] & 131072 {
-				    // "#バフ番号指定"
-				    v[11] = 1243
-				    v[12] = v[300]
-				    @call .cev 1911
-				    @if v[22] >= 0 {
-					v[v[22]] = 48
-					
-				    }
-				    
-				}
-				// "#バフ番号指定"
-				v[11] = 1171
-				v[12] = v[300]
-				@call .cev 1911
-				@if v[22] >= 0 {
-				    v[v[22]] = 5
-				    
-				}
-				
-			    }
-			    
-			} .else bl {
-			    // "Set Dodge Timer"
-			    v[v[300] * 300 + 4785] = 8
-			    @if s[166] .isOn() {
-				@if v[181] <= 1 {
-				    @if v[522] < 25 {
-					// "#########################"
-					v[472] = divmul(25, 100, v[2216])
-					v[473] = rnd(80, 120)
-					v[474] = divmul(v[607] + v[1001], v[1281], 50)
-					@cmd 11550, "evade2", .args v[472], 3
-					// "#########################"
-					
-				    }
-				    
-				}
-				@if s[307] .isOff() {
-				    // "#描画範囲内か？"
-				    v[220] %= 30
-				    v[220] += 1201
-				    v[220] += 1
-				    v[223] = v[220]
-				    v[221] += rnd(-6, 6)
-				    v[222] += rnd(-3, 3)
-				    v[222] += s[162] == 1 ? 10 : 0
-				    // "#サイズは最低100%"
-				    v[225] = 100
-				    // "AR"
-				    v[341] = v[1204] - 10
-				    @pic[v[223]].show {
-					"num\num_miss"
-					.pos v[221], v[222] .center
-					.scrollWithMap
-					.chromakey 1
-					.scale v[225]
-					.trans v[341]
-					.rgbs 100, 100, 100, 100
-					.mapLayer 7
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
-				    }
-				    v[222] = v[608] - 24
-				    v[222] += s[162] == 1 ? 10 : 0
-				    @pic[v[223]].move {
-					.pos v[221], v[222] .center
-					.scale v[225]
-					.trans 100
-					.time 12
-					.rgbs 100, 100, 100, 100
-				    }
-				    v[183] += v[184] >= v[1128] ? 2 : 1
-				    
-				}
-				
-			    }
-			    
-			}
-			
-		    }
-		    
-		}
-		
-	    } .else bl {
-		
-	    }
-	    
-	} .else bl {
-	    @if v[v[702]] == 105 {
-		// "############	Collecting Resource################"
-		v[881] = v[711] + 4981
-		v[701] = v[707] + 4801
-		v[707] = v[707] + 4808
-		@if v[v[707]] >= 1 {
-		    v[371] = 0
-		    // "farm flag"
-		    @if `v[v[300] * 300 + 4703] & 4096 {
-			v[341] = v[300] * 300 
-			v[341] += 4955
-			// "does this farm belong to someone?"
-			@if `v[v[341]] != 0 && v[v[341]] != v[299] {
-			    // "search ownerless  farm"
-			    v[301] = v[299] * v[1117] 
-			    v[301] += 4700
-			    v[298] = v[299] - 1
-			    // "@Searching Nearest Enemy Process@"
-			    // "#Check Team ID"
-			    // "Access19 = Obj's Behavior	Access20 = Obj's target ID"
-			    v[300] = v[301] + 18
-			    v[299] = v[301] + 241
-			    /* "Temp2 = [3000 or 3200]# [team0, team1] this var works as a pointer to his/her enemy team list
-				Temp3 = Eye sight of this obj
-				Temp4 = Obj X
-				Temp5 = Obj Y
-				Temp7 = Temp2 Backup
-				Temp8 <- WTF IS THIS!?
-				Temp9 = X ptr"*/
-			    v[302] = v[4533]
-			    v[307] = v[302]
-			    v[309] = v[301] + 7
-			    // "ソートする数はここで総数を見て決定"
-			    v[308] = v[v[301] + 230]
-			    v[307] = 0
-			    v[3401..3600] = 999999999
-			    v[534] = v[4579] + (v[1012] + 2) * v[298]
-			    v[v[534]] = 999999999
-			    @doWhile v[v[302]] != 0 {
-				// "Temp1 = [Taken Obj's ID] * 300 + 4707	Temp6 = Calculation List Ptr"
-				v[306] = v[307] + 3601
-				// "If the taken object from list is 0, set [[Temp6]] = 999999999"
-				v[301] = v[v[302]] * 300 
-				v[301] += 4701
-				// "Get ObjectType of the target	TT10"
-				v[301] += 2
-				@if `v[v[301]] & 4096 && v[v[301] + 252] == 0 {
-				    v[301] += 4
-				    v[v[309]].copy v[304], 2
-				    v[304] .sub v[v[301]], 2
-				    v[304] .mul v[304], 2
-				    v[v[306]] = v[304] + v[305]
-				    // "#Check AI eye sight #The last 3 digits are used as ID"
-				    @if v[v[306]] < v[308] {
-					v[341] = v[534] + v[307]
-					v[v[341]] = v[v[306]] * 1000 + v[v[302]]
-					v[307] += 1
-					
-				    }
-				    
-				}
-				v[302] += 1
-				
-			    }
-			    
-			    // "#Check Who's nearest"
-			    v[v[534]].sort v[307]
-			    v[301] = v[299] * v[1117] 
-			    v[301] += 4700
-			    @if v[v[534]] < 999999999 {
-				v[v[534]..v[534] + v[307] - 1] %= 1000
-				v[v[300]] = v[v[534]]
-				v[v[300] + 229] = 1
-				
-			    } .else bl {
-				// "make worker idle"
-				v[v[300]] = 0
-				v[v[299] + 1] = -1
-				v[v[300] + 229] = 0
-				v[307] = 0
-				
-			    }
-			    // "init counter and set amount"
-			    v[306] = 0
-			    v[341] = v[534] + v[1012]
-			    v[306].copy v[v[341]], 2
-			    v[371] = 1
-			    
-			} .else bl {
-			    v[v[341]] = v[299]
-			    
-			}
-			
-		    }
-		    @if v[371] == 0 {
-			v[11] = v[300]
-			v[12] = 1
-			v[13] = -1
-			@call .cev 2006
-			v[11] = v[299]
-			v[12] = 1
-			v[13] = 1
-			@call .cev 2006
-			v[293] = v[299] * 300 
-			v[293] += 4947
-			v[341] = v[299] * 300 
-			v[341] += 4807
-			v[v[341]].copy v[342], 2
-			// "check job"
-			v[358] = v[v[293]]
-			v[v[293]] = v[v[881]] + 1
-			v[341] += 1
-			v[v[341]] = v[v[293]] == v[358] ? v[v[341]] : 0
-			@if `s[v[299] + 500] == 1 {
-			    // "Food"
-			    @if v[v[881]] == 0 {
-				@if v[182] <= 0 {
-				    v[182] += 1
-				    // "#########################"
-				    v[472] = divmul(23, 100, v[2216])
-				    v[473] = rnd(90, 120)
-				    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				    @cmd 11550, "misc\farming", .args v[472], 3
-				    // "#########################"
-				    
-				}
-				
-			    } .else bl {
-				// "Wood"
-				@if v[v[881]] == 1 {
-				    @if v[182] <= 0 {
-					v[182] += 1
-					// "#########################"
-					v[472] = divmul(23, 100, v[2216])
-					v[473] = rnd(90, 120)
-					v[474] = divmul(v[607] + v[1001], v[1281], 50)
-					@cmd 11550, "misc\timber", .args v[472], 3
-					// "#########################"
-					
-				    }
-				    
-				} .else bl {
-				    // "Mining"
-				    @if v[182] <= 0 {
-					v[182] += 1
-					// "#########################"
-					v[472] = divmul(23, 100, v[2216])
-					v[473] = rnd(80, 110)
-					v[474] = divmul(v[607] + v[1001], v[1281], 50)
-					@cmd 11550, "misc\mining", .args v[472], 3
-					// "#########################"
-					
-				    }
-				    
-				}
-				
-			    }
-			    
-			}
-			// "MPを見る"
-			@if v[343] >= v[342] {
-			    v[v[341]] = 0
-			    v[359] = v[4575] + min(v[v[881]] + 1, 4) + 40 * v[700]
-			    v[240] = v[496] * v[1129]
-			    v[240] += v[1130]
-			    v[240] = max(v[v[359]], v[240])
-			    v[v[359]] += 10
-			    // "Food"
-			    @if v[v[881]] == 0 {
-				// "Rurikia-Vorshch"
-				v[v[359]] += v[822] == 9 ? 1 : 0
-				
-			    } .else bl {
-				// "Wood"
-				@if v[v[881]] == 1 {
-				    v[v[359]] += v[2409 + v[700] % 3] & 4 ? 1 : 0
-				    v[v[359]] += v[2409 + v[700] % 3] & 8 ? 1 : 0
-				    
-				} .else bl {
-				    // "Gold"
-				    @if v[v[881]] == 3 {
-					v[v[359]] += v[2409 + v[251] % 3] & 0x20000 ? 1 : 0
-					
-				    } .else bl {
-					
-				    }
-				    // "Mining"
-				    
-				}
-				
-			    }
-			    // "Record"
-			    v[342] = 2524 + v[v[881]]
-			    v[v[342]] += s[498] == 1 ? 12 : 10
-			    v[v[342]] += s[445] == 1 ? 3 : 0
-			    // "Imperials"
-			    @if v[822] == 1 {
-				// "Decadence"
-				v[v[359]] -= v[2503] >= 12 ? 1 : 0
-				v[v[359]] -= v[2503] >= 24 ? 1 : 0
-				
-			    }
-			    // "Dragons"
-			    @if v[822] == 3 {
-				// "ToolTech"
-				v[v[359]] += v[2406 + v[700] % 3] & 0x20 ? 2 : 0
-				// "Limit"
-				v[v[359]] = min(v[v[359]], v[240])
-				
-			    }
-			    @call .cev 84
-			    
-			}
-			
-		    }
-		    
-		} .else bl {
-		    @if v[v[701]] == 12 {
-			// "Remove from UnitList"
-			v[11] = v[300]
-			v[12] = 11
-			@call .cev 1896
-			v[305..306] = v[300] * 300
-			v[306] += 4805
-			v[305] += 4806
-			v[v[305]] = 0
-			// "309 = ID	306 = ActionState"
-			// "-1を死体とする"
-			// "ObjIDを死体に変える"
-			v[331] = v[v[298]]
-			v[v[298]] = s[302] == 1 ? 0 : 0
-			// "ActionStateを死体に変える"
-			v[306] += 4943
-			v[v[306]] = -1
-			v[311] += 4700 + 2
-			v[307] = v[v[311]]
-			v[307] -= 1
-			v[311] += 5
-			v[305] = v[v[311]]
-			v[312] += 4700 + 8
-			v[306] = v[v[312]]
-			// "移動"
-			v[204] -= 1
-			
-		    }
-		    
-		}
-		
-	    } .else bl {
-		@if v[v[702]] == 104 {
-		    // "############	Constructing################"
-		    v[421] = 100
-		    // "Access19 = AttackerObjectID 0~	Access20 = TargetObjectID 1~	Access18 = ObjTypeチェックPtr"
-		    v[607] = v[711] 
-		    v[607] += 4707
-		    v[v[607]].copy v[607], 2
-		    v[843] = v[299] * 300
-		    v[843] += 4943
-		    v[v[843]] = 0
-		    // "#assign job building"
-		    v[v[843] + 4] = 5
-		    @if `s[v[299] + 500] == 1 {
-			@if v[181] <= 2 {
-			    v[182] += 1
-			    @if `v[v[300] * 300 + 4980] == 802 {
-				v[472] = divmul(65, 100, v[2216])
-				v[473] = rnd(70, 100)
-				v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				@cmd 11550, "misc\farming", .args v[472], 3
-				
-			    } .else bl {
-				v[472] = divmul(65, 100, v[2216])
-				v[473] = rnd(140, 150)
-				v[474] = divmul(v[607] + v[1001], v[1281], 50)
-				@cmd 11550, "blow7", .args v[472], 3
-				
-			    }
-			    
-			}
-			// "#Dust Particle Effect"
-			@loop v[1017] .dst v[320] {
-			    v[244] %= v[1199]
-			    v[351] = v[244] * 50 
-			    v[351] += v[1198]
-			    @if v[v[351]] <= 1 {
-				// "まず清掃"
-				v[1301].copy v[v[351]], 50
-				// "ポインタセット開始"
-				// "設定"
-				v[v[351]] = 1
-				// "500F"
-				v[v[351] + 49] = 3
-				// "Set itself"
-				v[v[351] + 3] = 160
-				// "普通にアニメ"
-				v[341] = v[351] + 6
-				v[607].copy v[v[341]], 2
-				// "仕上げに登録消す"
-				s[141].off
-				v[244] += 1
-				@break
-				
-			    }
-			    v[244] += 1
-			    
-			}
-			
-			
-		    }
-		    // "ADを取得"
-		    v[709] = v[843] - 134
-		    v[301] = v[v[709]]
-		    /* "Access19 = AttackerObjectID 1~ +4700
-	Access20 = TargetObjectID 1~ +4700
-	Access18 = ObjTypeチェックPtr
-	temp1 = 建築量"*/
-		    v[305..306] = v[300] * 300
-		    v[306] += 4805
-		    v[305] += 4806
-		    v[v[305]] = v[v[305]] + v[301]
-		    @if v[v[306]] <= v[v[305]] {
-			v[305] = v[300] * 300 + 4802
-			@if v[v[305]] == 104 {
-			    v[305] += 178
-			    v[371] = v[205] < v[1080] ? 1 : 0
-			    // "生産施設は例外的に張りなおせる"
-			    v[371] += v[v[305]] == 802 ? 1 : 0
-			    v[371] += v[v[305]] == 809 ? 1 : 0
-			    v[371] += v[v[305]] == 810 ? 1 : 0
-			    v[371] += v[v[305]] == 835 ? 1 : 0
-			    v[371] += v[v[305]] == 834 ? 1 : 0
-			    v[305] -= 178
-			    @if v[371] >= 1 {
-				v[2538] -= 1
-				// "#建築現場を消去"
-				/* "Access19 = AttackerObjectID
-	Access20 = TargetObjectID
-	Access18 = ObjTypeチェックPtr
-	誤作動防止"*/
-				@if v[300] > 0 {
-				    // "#建築現場を消去"
-				    v[305] = v[300] * 300
-				    v[305] += 4806
-				    v[v[305]] = -1
-				    // "309 = ID	306 = ActionState"
-				    // "-1を死体とする"
-				    // "ObjIDを死体に変える"
-				    v[331] = v[v[298]]
-				    v[v[298]] *= -1
-				    // "ActionStateを死体に変える"
-				    v[306] += 4943
-				    v[v[306]] = -1
-				    v[311] += 4702
-				    v[307] = v[v[311]]
-				    v[307] -= 1
-				    v[311] += 5
-				    v[305] = v[v[311]]
-				    v[312] += 4708
-				    v[306] = v[v[312]]
-				    // "移動"
-				    v[307] += 1
-				    // "Remove from UnitList"
-				    v[11] = v[300]
-				    v[12] = 11
-				    @call .cev 1896
-				    // "Team Get"
-				    v[308] += 4800
-				    v[308] = v[v[308]] % 3
-				    @if v[308] == 0 {
-					v[309] = v[1145]
-					
-				    } .else bl {
-					v[309] = v[1146]
-					
-				    }
-				    @loop v[1012] {
-					@if v[v[309]] == v[300] {
-					    v[v[309]] = 0
-					    @break
-					    
+	v[711] = Ptr20 * 300
+		v[702] = v[711] + 4802
+		v[707] = Ptr20 * 300
+		v[700] = v[707] + 4800
+		v[700] = v[v[700]]
+		// "Get Civilization"
+		v[822] = v[2403 + v[700] % 3]
+		@if `v[700] % 3 != 0 {
+			@if v[Ptr18] > 0 {
+				s[167].off
+					@if `v[Ptr20 * 300 + 4701] == 11 {
+						s[167].on
+
 					}
-					@if v[v[309]] == 0 {
-					    @break
-					    
-					}
-					v[309] += 1
-					
-				    }
-				    
-				    @if v[308] == 0 {
-					v[309] = v[1145]
-					
-				    } .else bl {
-					v[309] = v[1146]
-					
-				    }
-				    v[v[309]].sortDescending v[1012]
-				    v[204] -= 1
-				    
-				}
-				v[305..305] = v[300] * 300
-				v[305..305] += 4707
-				v[v[305]].copy v[252], 2
-				v[305..305] += 93
-				v[251] = v[v[305]]
-				v[305..305] += 180
-				v[378] = 0
-				@if v[v[305]] >= 1 {
-				    v[357] = v[v[305]]
-				    v[294] = v[300]
-				    // "Avoid Cohort setting"
-				    @if v[251] == 0 {
-					v[258] = 0
-					v[2521] += 1
-					
-				    }
-				    @call .cev v[v[305]]
-				    // ""
-				    v[305] = 0
-				    v[302] = v[1145]
-				    v[290] = v[294]
-				    @doWhile v[v[302]] >= 1 {
-					v[303] = v[v[302]] * 300
-					v[304] = v[303] + 4802
-					@if v[v[304]] == 9 {
-					    v[295] = v[303] + 4718
-					    @if v[v[295]] == v[294] {
-						v[305] = v[303] + 4947
-						// "#assign job building"
-						@if v[23] == 105 {
-						    v[v[295]] = v[21]
-						    @if v[22] == 2 {
-							v[378] = 0
-							v[22..23] = 0
-							
-						    } .else bl {
-							v[378] = 1
-							
-						    }
-						    
-						} .else bl {
-						    v[v[305]] = 0
-						    v[v[303] + 4942] = -1
-						    
-						}
-						
-					    }
-					    
-					}
-					v[302] += 1
-					
-				    }
-				    
-				    
-				}
-				// "continue buliding"
-				@if v[378] == 0 {
-				    // "atleastthere's one"
-				    @if v[v[4561]] > 0 {
-					// "save last target to acc10"
-					@loop v[1012] .dst v[301] {
-					    // "Check Player Team List"
-					    // "Check AllyTeam List"
-					    v[300] = v[301] + v[1145 + v[251] % 3]
-					    @if v[v[300]] >= 1 {
-						v[299] = v[v[300]] * 300
-						v[299] += 4700
-						@if `v[v[299] + 102] == 9 {
-						    @if `v[v[299] + 18] == v[290] {
-							v[301] = v[299]
-							v[299] = v[v[300]]
-							v[298] = v[299] - 1
-							// "@Searching Nearest Enemy Process@"
-							/* "Access19 = Obj's Behavior
-	Access20 = Obj's target ID"*/
-							v[300] = v[301] + 18
-							v[299] = v[301] + 241
-							// "#Check Team ID"
-							/* "Temp2 = [3000 or 3200]# [team0, team1] this var works as a pointer to his/her enemy team list
-							Temp3 = Eye sight of this obj
-							Temp4 = Obj X
-							Temp5 = Obj Y
-							Temp7 = Temp2 Backup
-							Temp8 <- WTF IS THIS!?
-							Temp9 = X ptr"*/
-							v[302] = v[4561]
-							v[307] = v[302]
-							v[309] = v[301] + 7
-							// "ソートする数はここで総数を見て決定"
-							v[308] = v[v[301] + 230]
-							v[307] = 0
-							v[3401..3600] = 999999999
-							v[534] = v[4579] + (v[1012] + 2) * v[298]
-							v[v[534]] = 999999999
-							@doWhile v[v[302]] != 0 {
-							    // "Temp1 = [Taken Obj's ID] * 300 + 4707	Temp6 = Calculation List Ptr"
-							    v[306] = v[307] + 3601
-							    // "If the taken object from list is 0, set [[Temp6]] = 999999999"
-							    v[301] = v[v[302]] * 300 + 4701
-							    // "Get ObjectType of the target	TT10"
-							    v[301] += 6
-							    v[v[309]].copy v[304], 2
-							    v[304] .sub v[v[301]], 2
-							    v[304] .mul v[304], 2
-							    v[v[306]] = v[304] + v[305]
-							    // "#Check AI eye sight#The last 3 digits are used as ID"
-							    @if v[v[306]] < v[308] {
-								v[341] = v[534] + v[307]
-								v[v[341]] = v[v[306]] * 1000 + v[v[302]]
-								v[307] += 1
-								
-							    }
-							    v[302] += 1
-							    
-							}
-							
-							// "#Check Who's nearest"
-							v[v[534]].sort v[307]
-							@if v[v[534]] < 999999999 {
-							    v[v[534]..v[534] + v[307] - 1] %= 1000
-							    v[v[300]] = v[v[534]]
-							    v[v[300] + 229] = 5
-							    
-							} .else bl {
-							    v[v[300] + 229] = 0
-							    v[307] = 0
-							    
-							}
-							// "init counter and set amount"
-							v[306] = 0
-							v[341] = v[534] + v[1012]
-							v[306].copy v[v[341]], 2
-							
-						    }
-						    
-						}
-						
-					    } .else bl {
-						@break
-						
-					    }
-					    
-					}
-					
-					
-				    }
-				    
-				}
-				
-			    } .else bl {
-				
-			    }
-			    
-			}
-			
-		    } .else bl {
-			@if `v[v[300] * 300 + 4980] != 802 {
-			    v[v[300] * 300 + 4703] &= ~2097152
-			    
-			}
-			
-		    }
-		    v[421] = 100
-		    
-		} .else bl {
-		    v[371] = v[v[702]] >= 101 ? 1 : 0
-		    v[371] += v[v[702]] == 5 ? 1 : 0
-		    @if v[371] >= 1 {
-			@if v[300002] >= 2 {
-			    v[705] = v[702] + 3
-			    v[706] = v[705] + 1
-			    @if v[v[705]] > v[v[706]] {
-				// "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃	Repairing	＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"
-				@if `s[v[299] + 500] == 1 {
-				    @if v[181] <= 2 {
-					v[182] += 1
+				// "#Combat Penalty Resist"
+				// "############↓?"
+				v[720] = v[210] + 120
+					v[629] = v[210] + 29
+					v[874] = v[210] + 274
+					// "############	Melee Auto Attack################"
+					// "Access19 = AttackerObjectID 0~	Access20 = TargetObjectID 1~	Access18 = ObjTypeチェックPtr"
+					v[711] = Ptr20 * 300
 					v[607] = v[711] + 4707
 					v[v[607]].copy v[607], 2
-					// "#########################"
-					v[472] = divmul(65, 100, v[2216])
-					v[473] = rnd(140, 150)
-					v[474] = divmul(v[607] + v[1001], v[1281], 50)
-					// "need moar metalic features within the sound"
-					@cmd 11550, "blow7", .args v[472], 3
-					// "#########################"
-					
-				    }
-				    // "#Dust Particle Effect"
-				    @loop v[1017] .dst v[320] {
-					v[244] %= v[1199]
-					v[351] = v[244] * 50 + v[1198]
-					@if v[v[351]] <= 1 {
-					    // "まず清掃"
-					    v[1301].copy v[v[351]], 50
-					    // "ポインタセット開始"
-					    // "設定"
-					    v[v[351]] = 1
-					    // "500F"
-					    v[v[351] + 49] = 3
-					    // "Set itself"
-					    v[v[351] + 3] = 160
-					    // "普通にアニメ"
-					    v[341] = v[351] + 6
-					    v[607].copy v[v[341]], 2
-					    // "仕上げに登録消す"
-					    s[141].off
-					    v[244] += 1
-					    @break
-					    
+					// "Effect"
+					v[376] = 0
+					s[166].off
+					@if `s[Ptr20 + 500] == 1 {
+						s[166].on
+							v[376] = 4
+							v[181] += 1
+							@if v[181] <= 6 {
+								v[844] = Ptr19 * 300 
+									v[844] += 4944
+									@loop v[1017] .dst Temp20 {
+										v[244] %= v[1199]
+											TT11 = v[244] * 50 
+											TT11 += v[1198]
+											@if v[TT11] <= 1 {
+												// "まず清掃"
+												v[1301].copy v[TT11], 50
+													// "ポインタセット開始"
+													// "設定"
+													v[TT11] = 1
+													// "F"
+													TT5 = TT11 + 49
+													v[TT5] = 8
+													// "Set itself"
+													TT5 = TT11 + 3
+													v[TT5] = 123
+													// "Set size"
+													v[TT11 + 26] = 100
+													// "Set Dire"
+													TT5 = TT11 + 27
+													v[TT5] = 13 + v[v[844]] * 6
+													// "けす処理をLinkedFuncに入れる"
+													TT5 = TT11 + 10
+													// "XY set"
+													TT17 = TT11 + 6
+													v[607].copy v[361], 2
+													v[361] += rnd(-3, 3)
+													v[362] += rnd(-5, 5)
+													v[361].copy v[TT17], 2
+													// "仕上げに登録消す"
+													v[244] += 1
+													@break
+
+											}
+										v[244] += 1
+
+									}
+
+
+							}
+						@if v[182] <= 0 {
+							@if v[522] < 30 {
+								v[182] += 1
+									// "#Get melee weapon effect"
+									v[329] = v[Ptr19 * 300 + 4829] / 10000
+									// "#########################"
+									v[472] = divmul(65, 100, v[2216])
+									v[473] = rnd(80, 105)
+									v[474] = divmul(v[607] + v[1001], v[1281], 50)
+									inputstr .asg "weapons\swing"
+									inputstr .cat v[329]
+									TT1 = 510
+									// "Strings = t[TT1]"
+									@cmd 11550, t[TT1], .args v[472], 3
+									// "#########################"
+
+							}
+
+						}
+
 					}
-					v[244] += 1
-					
-				    }
-				    
-				    
+
+				@if s[167] .isOff() {
+					var1 = Ptr19
+						@call .cev 42
+
+				} .else bl {
+					reg1 = 1
+
 				}
-				v[300002] -= 2
-				@call .cev 84
-				// "ADを取得"
-				v[301] = -v[v[299] * v[1117] + 4961]
-				// "ARかMRか取得"
-				v[302] = -2
-				// "AABits"
-				v[19] = 0
-				v[421] = 130
-				@call .cev 40
-				
-			    }
-			    
+
+				@if reg1 == 1 {
+					// "Hit!"
+					v[421] = 100
+						// "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃	ここそのうち用意した関数に置き換える	＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"
+						// "ADを取得"
+						Temp1 = 25
+						// "ARかMRか取得"
+						Temp2 = 0
+						// "Element"
+						Temp3 = 2
+						// "AABits"
+						var9 = 0
+						v[422] = 0
+						@call .cev 40
+						// "############"
+						// "Effect"
+						@if s[166] .isOn() {
+							TT2 = v[Ptr20 * 300 + 4974] & 4096 ? 999999 : v[1138]
+								@if reg2 >= TT2 {
+									TT2 = v[v[874]] & 4096 ? 999999 : v[1138]
+										// "Blood stain on 1h weapon"
+										TT2 = Ptr19 * 300 + 4959
+										@if `!(v[v[874]] & 1048576) {
+											v[TT2 + 26] = min(v[TT2 + 26] + 1, 12)
+
+										}
+									s[141].on
+										@if v[181] <= 4 {
+											v[711] = Ptr20 * 300
+												v[607] = v[711] + 4707
+												v[v[607]].copy v[607], 2
+												v[607].copy v[361], 2
+												v[182] += 1
+												// "#Get melee weapon effect"
+												v[829] = v[Ptr19 * 300 + 4829] % 10000
+												v[474] = divmul(v[607] + v[1001], v[1281], 50)
+												@loop 1 {
+													// "#########################"
+													v[472] = divmul(70, 100, v[2216])
+														v[473] = rnd(50, 110)
+														@cmd 11550, "重いパンチ2", .args v[472], 3
+														// "#########################"
+														@break
+
+												}
+
+											// "Get MaxHP of the victim"
+											TT2 = Ptr20 * 300 + 4805
+												TT3 = v[TT2]
+												TT2 = rnd(0, 9)
+												// "if the damage amount is higher than 10% of max HP of the victim	more likely bleed effect happens"
+												TT3 /= 10
+												TT2 += TT3 < reg2 ? 3 : 0
+												TT2 *= v[243] < v[1124] ? 1 : 0
+												@if TT2 >= 8 {
+													v[372] = (v[Ptr20 * 300 + 4840] & 4096) ? 1 : 0
+														s[141].on
+														@call .cev 111
+
+												}
+
+										}
+
+								} .else bl {
+									@if v[181] <= 4 {
+										v[182] += 1
+											// "#Get melee weapon effect"
+											v[829] = v[Ptr19 * 300 + 4829] % 10000
+											@loop 1 {
+												v[472] = divmul(70, 100, v[2216])
+													v[473] = rnd(115, 170)
+													v[474] = divmul(v[607] + v[1001], v[1281], 50)
+													@cmd 11550, "重いパンチ2", .args v[472], 3
+													// "#########################"
+													@break
+
+											}
+
+
+									}
+
+								}
+
+						}
+
+				} .else bl {
+					// "Miss!"
+					// "#SP damage#Evading costs 2 SP"
+					TT10 = Ptr20 * 300 
+						TT10 += 4808
+						v[TT10] = max(v[TT10] - 2, 0)
+						v[607].copy v[221], 2
+						@if reg2 == 1 {
+							// "##############	CheckBits##############"
+							@if s[166] .isOn() {
+								// "Set ShieldMotion Timer"
+								v[Ptr20 * 300 + 4783] = 6
+									@if reg3 == 0 {
+										@if v[182] <= 2 {
+											// "#########################"
+											v[472] = divmul(60, 100, v[2216])
+												v[473] = rnd(115, 120)
+												v[474] = divmul(v[607] + v[1001], v[1281], 50)
+												@cmd 11550, "weapons/shield_hit", .args v[472], 3
+												// "#########################"
+
+										}
+
+									} .else bl {
+										// "#Dust Particle Effect"
+										@loop v[1017] .dst Temp20 {
+											v[244] %= v[1199]
+												TT11 = v[244] * 50 
+												TT11 += v[1198]
+												@if v[TT11] <= 0 {
+													// "まず清掃"
+													v[1301].copy v[TT11], 50
+														// "ポインタセット開始"
+														// "設定"
+														v[TT11] = 1
+														v[TT11 + 49] = 3
+														v[TT11 + 3] = 160
+														TT1 = TT11 + 6
+														v[607].copy v[TT1], 2
+														v[244] += 1
+														@break
+
+												}
+											v[244] += 1
+
+										}
+
+										@if v[182] <= 3 {
+											// "#########################"
+											v[472] = divmul(78, 100, v[2216])
+												v[473] = rnd(87, 100)
+												v[474] = divmul(v[607] + v[1001], v[1281], 50)
+												@cmd 11550, "weapons/shield_cracked01", .args v[472], 3
+												// "#########################"
+
+										}
+
+									}
+
+								// "Call Shield"
+								TT2 = Ptr20 * 300 
+									TT2 += 4952
+									v[TT2 + 32] = v[TT2] > 0 ? 4 : 0
+									// "#Shield Motion"
+									TT2 = Ptr20 * 300 
+									TT2 += 4943
+									@if v[TT2] != 1 {
+										v[TT2] = 2
+											TT2 -= 215
+											v[TT2] += v[TT2] < 1 ? 140 : 0
+
+									}
+								@if s[307] .isOff() {
+									// "#描画範囲内か？"
+									v[220] %= 30
+										v[220] += 1201
+										v[220] += 1
+										v[223] = v[220]
+										v[221] += rnd(-6, 6)
+										v[222] += rnd(-3, 3)
+										v[222] += s[162] == 1 ? 10 : 0
+										// "#サイズは最低100%"
+										v[225] = 100
+
+										// "AR"
+										TT1 = v[1204] - 10
+										@pic[v[223]].show {
+											"num\num_block"
+												.pos v[221], v[222] .center
+												.scrollWithMap
+												.chromakey 1
+												.scale v[225]
+												.trans TT1
+												.rgbs 100, 100, 100, 100
+												.mapLayer 7
+												.eraseWhenTransfer
+												.affectedByFlash
+												.affectedByShake
+										}
+
+									v[222] = v[608] - 24
+										v[222] += s[162] == 1 ? 10 : 0
+										@pic[v[223]].move {
+											.pos v[221], v[222] .center
+												.scale v[225]
+												.trans 100
+												.time 12
+												.rgbs 100, 100, 100, 100
+										}
+
+									v[183] += v[184] >= v[1128] ? 2 : 1
+
+								}
+
+							}
+
+						} .else bl {
+							@if reg2 == 2 {
+								@if s[166] .isOn() {
+									// "Set ShieldMotion Timer"
+									v[Ptr20 * 300 + 4783] = 6
+										@if v[182] <= 3 {
+											// "#########################"
+											@if v[522] < 50 {
+												v[329] = rnd(1, 4)
+													// "#########################"
+													v[472] = divmul(60, 100, v[2216])
+													v[473] = rnd(100, 130)
+													v[474] = divmul(v[607] + v[1001], v[1281], 50)
+													inputstr .asg "weapons\sword_clash_"
+													inputstr .cat v[329]
+													TT1 = 510
+													// "Strings = t[TT1]"
+													@cmd 11550, t[TT1], .args v[472], 3
+
+											}
+
+										}
+									@if s[307] .isOff() {
+										// "#描画範囲内か？"
+										v[220] %= 30
+											v[220] += 1201
+											v[220] += 1
+											v[223] = v[220]
+											v[221] += rnd(-6, 6)
+											v[222] += rnd(-3, 3)
+											v[222] += s[162] == 1 ? 10 : 0
+											// "#サイズは最低100%"
+											v[225] = 100
+											// "AR"
+											TT1 = v[1204] - 10
+											@pic[v[223]].show {
+												"num\num_block"
+													.pos v[221], v[222] .center
+													.scrollWithMap
+													.chromakey 1
+													.scale v[225]
+													.trans TT1
+													.rgbs 100, 100, 100, 100
+													.mapLayer 7
+													.eraseWhenTransfer
+													.affectedByFlash
+													.affectedByShake
+											}
+										v[222] = v[608] - 24
+											v[222] += s[162] == 1 ? 10 : 0
+											@pic[v[223]].move {
+												.pos v[221], v[222] .center
+													.scale v[225]
+													.trans 100
+													.time 12
+													.rgbs 100, 100, 100, 100
+											}
+										v[183] += v[184] >= v[1128] ? 2 : 1
+
+									}
+									// "#"
+									@if `v[Ptr20 * 300 + 4974] & 131072 {
+										// "#バフ番号指定"
+										var1 = 1243
+											var2 = Ptr20
+											@call .cev 1911
+											@if reg2 >= 0 {
+												v[reg2] = 48
+
+											}
+
+									}
+									// "#バフ番号指定"
+									var1 = 1171
+										var2 = Ptr20
+										@call .cev 1911
+										@if reg2 >= 0 {
+											v[reg2] = 5
+
+										}
+
+								}
+
+							} .else bl {
+								// "Set Dodge Timer"
+								v[Ptr20 * 300 + 4785] = 8
+									@if s[166] .isOn() {
+										@if v[181] <= 1 {
+											@if v[522] < 25 {
+												// "#########################"
+												v[472] = divmul(25, 100, v[2216])
+													v[473] = rnd(80, 120)
+													v[474] = divmul(v[607] + v[1001], v[1281], 50)
+													@cmd 11550, "evade2", .args v[472], 3
+													// "#########################"
+
+											}
+
+										}
+										@if s[307] .isOff() {
+											// "#描画範囲内か？"
+											v[220] %= 30
+												v[220] += 1201
+												v[220] += 1
+												v[223] = v[220]
+												v[221] += rnd(-6, 6)
+												v[222] += rnd(-3, 3)
+												v[222] += s[162] == 1 ? 10 : 0
+												// "#サイズは最低100%"
+												v[225] = 100
+												// "AR"
+												TT1 = v[1204] - 10
+												@pic[v[223]].show {
+													"num\num_miss"
+														.pos v[221], v[222] .center
+														.scrollWithMap
+														.chromakey 1
+														.scale v[225]
+														.trans TT1
+														.rgbs 100, 100, 100, 100
+														.mapLayer 7
+														.eraseWhenTransfer
+														.affectedByFlash
+														.affectedByShake
+												}
+											v[222] = v[608] - 24
+												v[222] += s[162] == 1 ? 10 : 0
+												@pic[v[223]].move {
+													.pos v[221], v[222] .center
+														.scale v[225]
+														.trans 100
+														.time 12
+														.rgbs 100, 100, 100, 100
+												}
+											v[183] += v[184] >= v[1128] ? 2 : 1
+
+										}
+
+									}
+
+							}
+
+						}
+
+				}
+
+			} .else bl {
+
 			}
-			v[v[299] * 300 + 4947] = 6
-			
-		    }
-		    
+
+		} .else bl {
+			@if v[v[702]] == 105 {
+				// "############	Collecting Resource################"
+				v[881] = v[711] + 4981
+					v[701] = v[707] + 4801
+					v[707] = v[707] + 4808
+					@if v[v[707]] >= 1 {
+						v[371] = 0
+							// "farm flag"
+							@if `v[Ptr20 * 300 + 4703] & 4096 {
+								TT1 = Ptr20 * 300 
+									TT1 += 4955
+									// "does this farm belong to someone?"
+									@if `v[TT1] != 0 && v[TT1] != Ptr19 {
+										// "search ownerless  farm"
+										Temp1 = Ptr19 * v[1117] 
+											Temp1 += 4700
+											Ptr18 = Ptr19 - 1
+											// "@Searching Nearest Enemy Process@"
+											// "#Check Team ID"
+											// "Access19 = Obj's Behavior	Access20 = Obj's target ID"
+											Ptr20 = Temp1 + 18
+											Ptr19 = Temp1 + 241
+											/* "Temp2 = [3000 or 3200]# [team0, team1] this var works as a pointer to his/her enemy team list
+												 Temp3 = Eye sight of this obj
+												 Temp4 = Obj X
+												 Temp5 = Obj Y
+												 Temp7 = Temp2 Backup
+												 Temp8 <- WTF IS THIS!?
+												 Temp9 = X ptr"*/
+											Temp2 = v[4533]
+											Temp7 = Temp2
+											Temp9 = Temp1 + 7
+											// "ソートする数はここで総数を見て決定"
+											Temp8 = v[Temp1 + 230]
+											Temp7 = 0
+											v[3401..3600] = 999999999
+											v[534] = v[4579] + (v[1012] + 2) * Ptr18
+											v[v[534]] = 999999999
+											@doWhile v[Temp2] != 0 {
+												// "Temp1 = [Taken Obj's ID] * 300 + 4707	Temp6 = Calculation List Ptr"
+												Temp6 = Temp7 + 3601
+													// "If the taken object from list is 0, set [[Temp6]] = 999999999"
+													Temp1 = v[Temp2] * 300 
+													Temp1 += 4701
+													// "Get ObjectType of the target	TT10"
+													Temp1 += 2
+													@if `v[Temp1] & 4096 && v[Temp1 + 252] == 0 {
+														Temp1 += 4
+															v[Temp9].copy Temp4, 2
+															Temp4 .sub v[Temp1], 2
+															Temp4 .mul Temp4, 2
+															v[Temp6] = Temp4 + Temp5
+															// "#Check AI eye sight #The last 3 digits are used as ID"
+															@if v[Temp6] < Temp8 {
+																TT1 = v[534] + Temp7
+																	v[TT1] = v[Temp6] * 1000 + v[Temp2]
+																	Temp7 += 1
+
+															}
+
+													}
+												Temp2 += 1
+
+											}
+
+										// "#Check Who's nearest"
+										v[v[534]].sort Temp7
+											Temp1 = Ptr19 * v[1117] 
+											Temp1 += 4700
+											@if v[v[534]] < 999999999 {
+												v[v[534]..v[534] + Temp7 - 1] %= 1000
+													v[Ptr20] = v[v[534]]
+													v[Ptr20 + 229] = 1
+
+											} .else bl {
+												// "make worker idle"
+												v[Ptr20] = 0
+													v[Ptr19 + 1] = -1
+													v[Ptr20 + 229] = 0
+													Temp7 = 0
+
+											}
+										// "init counter and set amount"
+										Temp6 = 0
+											TT1 = v[534] + v[1012]
+											Temp6.copy v[TT1], 2
+											v[371] = 1
+
+									} .else bl {
+										v[TT1] = Ptr19
+
+									}
+
+							}
+						@if v[371] == 0 {
+							var1 = Ptr20
+								var2 = 1
+								var3 = -1
+								@call .cev 2006
+								var1 = Ptr19
+								var2 = 1
+								var3 = 1
+								@call .cev 2006
+								Ptr13 = Ptr19 * 300 
+								Ptr13 += 4947
+								TT1 = Ptr19 * 300 
+								TT1 += 4807
+								v[TT1].copy TT2, 2
+								// "check job"
+								TT18 = v[Ptr13]
+								v[Ptr13] = v[v[881]] + 1
+								TT1 += 1
+								v[TT1] = v[Ptr13] == TT18 ? v[TT1] : 0
+								@if `s[Ptr19 + 500] == 1 {
+									// "Food"
+									@if v[v[881]] == 0 {
+										@if v[182] <= 0 {
+											v[182] += 1
+												// "#########################"
+												v[472] = divmul(23, 100, v[2216])
+												v[473] = rnd(90, 120)
+												v[474] = divmul(v[607] + v[1001], v[1281], 50)
+												@cmd 11550, "misc\farming", .args v[472], 3
+												// "#########################"
+
+										}
+
+									} .else bl {
+										// "Wood"
+										@if v[v[881]] == 1 {
+											@if v[182] <= 0 {
+												v[182] += 1
+													// "#########################"
+													v[472] = divmul(23, 100, v[2216])
+													v[473] = rnd(90, 120)
+													v[474] = divmul(v[607] + v[1001], v[1281], 50)
+													@cmd 11550, "misc\timber", .args v[472], 3
+													// "#########################"
+
+											}
+
+										} .else bl {
+											// "Mining"
+											@if v[182] <= 0 {
+												v[182] += 1
+													// "#########################"
+													v[472] = divmul(23, 100, v[2216])
+													v[473] = rnd(80, 110)
+													v[474] = divmul(v[607] + v[1001], v[1281], 50)
+													@cmd 11550, "misc\mining", .args v[472], 3
+													// "#########################"
+
+											}
+
+										}
+
+									}
+
+								}
+							// "MPを見る"
+							@if TT3 >= TT2 {
+								v[TT1] = 0
+									TT19 = v[4575] + min(v[v[881]] + 1, 4) + 40 * v[700]
+									v[240] = v[496] * v[1129]
+									v[240] += v[1130]
+									v[240] = max(v[TT19], v[240])
+									v[TT19] += 10
+									// "Food"
+									@if v[v[881]] == 0 {
+										// "Rurikia-Vorshch"
+										v[TT19] += v[822] == 9 ? 1 : 0
+
+									} .else bl {
+										// "Wood"
+										@if v[v[881]] == 1 {
+											v[TT19] += v[2409 + v[700] % 3] & 4 ? 1 : 0
+												v[TT19] += v[2409 + v[700] % 3] & 8 ? 1 : 0
+
+										} .else bl {
+											// "Gold"
+											@if v[v[881]] == 3 {
+												v[TT19] += v[2409 + v[251] % 3] & 0x20000 ? 1 : 0
+
+											} .else bl {
+
+											}
+											// "Mining"
+
+										}
+
+									}
+								// "Record"
+								TT2 = 2524 + v[v[881]]
+									v[TT2] += s[498] == 1 ? 12 : 10
+									v[TT2] += s[445] == 1 ? 3 : 0
+									// "Imperials"
+									@if v[822] == 1 {
+										// "Decadence"
+										v[TT19] -= v[2503] >= 12 ? 1 : 0
+											v[TT19] -= v[2503] >= 24 ? 1 : 0
+
+									}
+								// "Dragons"
+								@if v[822] == 3 {
+									// "ToolTech"
+									v[TT19] += v[2406 + v[700] % 3] & 0x20 ? 2 : 0
+										// "Limit"
+										v[TT19] = min(v[TT19], v[240])
+
+								}
+								@call .cev 84
+
+							}
+
+						}
+
+					} .else bl {
+						@if v[v[701]] == 12 {
+							// "Remove from UnitList"
+							var1 = Ptr20
+								var2 = 11
+								@call .cev 1896
+								v[305..306] = Ptr20 * 300
+								Temp6 += 4805
+								Temp5 += 4806
+								v[Temp5] = 0
+								// "309 = ID	306 = ActionState"
+								// "-1を死体とする"
+								// "ObjIDを死体に変える"
+								v[331] = v[Ptr18]
+								v[Ptr18] = s[302] == 1 ? 0 : 0
+								// "ActionStateを死体に変える"
+								Temp6 += 4943
+								v[Temp6] = -1
+								Temp11 += 4700 + 2
+								Temp7 = v[Temp11]
+								Temp7 -= 1
+								Temp11 += 5
+								Temp5 = v[Temp11]
+								Temp12 += 4700 + 8
+								Temp6 = v[Temp12]
+								// "移動"
+								v[204] -= 1
+
+						}
+
+					}
+
+			} .else bl {
+				@if v[v[702]] == 104 {
+					// "############	Constructing################"
+					v[421] = 100
+						// "Access19 = AttackerObjectID 0~	Access20 = TargetObjectID 1~	Access18 = ObjTypeチェックPtr"
+						v[607] = v[711] 
+						v[607] += 4707
+						v[v[607]].copy v[607], 2
+						v[843] = Ptr19 * 300
+						v[843] += 4943
+						v[v[843]] = 0
+						// "#assign job building"
+						v[v[843] + 4] = 5
+						@if `s[Ptr19 + 500] == 1 {
+							@if v[181] <= 2 {
+								v[182] += 1
+									@if `v[Ptr20 * 300 + 4980] == 802 {
+										v[472] = divmul(65, 100, v[2216])
+											v[473] = rnd(70, 100)
+											v[474] = divmul(v[607] + v[1001], v[1281], 50)
+											@cmd 11550, "misc\farming", .args v[472], 3
+
+									} .else bl {
+										v[472] = divmul(65, 100, v[2216])
+											v[473] = rnd(140, 150)
+											v[474] = divmul(v[607] + v[1001], v[1281], 50)
+											@cmd 11550, "blow7", .args v[472], 3
+
+									}
+
+							}
+							// "#Dust Particle Effect"
+							@loop v[1017] .dst Temp20 {
+								v[244] %= v[1199]
+									TT11 = v[244] * 50 
+									TT11 += v[1198]
+									@if v[TT11] <= 1 {
+										// "まず清掃"
+										v[1301].copy v[TT11], 50
+											// "ポインタセット開始"
+											// "設定"
+											v[TT11] = 1
+											// "500F"
+											v[TT11 + 49] = 3
+											// "Set itself"
+											v[TT11 + 3] = 160
+											// "普通にアニメ"
+											TT1 = TT11 + 6
+											v[607].copy v[TT1], 2
+											// "仕上げに登録消す"
+											s[141].off
+											v[244] += 1
+											@break
+
+									}
+								v[244] += 1
+
+							}
+
+
+						}
+					// "ADを取得"
+					v[709] = v[843] - 134
+						Temp1 = v[v[709]]
+						/* "Access19 = AttackerObjectID 1~ +4700 	Access20 = TargetObjectID 1~ +4700	Access18 = ObjTypeチェックPtr	temp1 = 建築量"*/
+						v[305..306] = Ptr20 * 300
+						Temp6 += 4805
+						Temp5 += 4806
+						v[Temp5] = v[Temp5] + Temp1
+						@if v[Temp6] <= v[Temp5] {
+							Temp5 = Ptr20 * 300 + 4802
+								@if v[Temp5] == 104 {
+									Temp5 += 178
+										v[371] = v[205] < v[1080] ? 1 : 0
+										// "生産施設は例外的に張りなおせる"
+										//???? WTF
+										v[371] += v[Temp5] == 802 ? 1 : 0
+										v[371] += v[Temp5] == 809 ? 1 : 0
+										v[371] += v[Temp5] == 810 ? 1 : 0
+										v[371] += v[Temp5] == 835 ? 1 : 0
+										v[371] += v[Temp5] == 834 ? 1 : 0
+										Temp5 -= 178
+										@if v[371] >= 1 {
+											v[2538] -= 1
+												// "#建築現場を消去"
+												/* "Access19 = AttackerObjectID
+													 Access20 = TargetObjectID
+													 Access18 = ObjTypeチェックPtr
+													 誤作動防止"*/
+												@if Ptr20 > 0 {
+													// "#建築現場を消去"
+													Temp5 = Ptr20 * 300
+														Temp5 += 4806
+														v[Temp5] = -1
+														// "309 = ID	306 = ActionState"
+														// "-1を死体とする"
+														// "ObjIDを死体に変える"
+														v[331] = v[Ptr18]
+														v[Ptr18] *= -1
+														// "ActionStateを死体に変える"
+														Temp6 += 4943
+														v[Temp6] = -1
+														Temp11 += 4702
+														Temp7 = v[Temp11]
+														Temp7 -= 1
+														Temp11 += 5
+														Temp5 = v[Temp11]
+														Temp12 += 4708
+														Temp6 = v[Temp12]
+														// "移動"
+														Temp7 += 1
+														// "Remove from UnitList"
+														var1 = Ptr20
+														var2 = 11
+														@call .cev 1896
+														// "Team Get"
+														Temp8 += 4800
+														Temp8 = v[Temp8] % 3
+														@if Temp8 == 0 {
+															Temp9 = v[1145]
+
+														} .else bl {
+															Temp9 = v[1146]
+
+														}
+													@loop v[1012] {
+														@if v[Temp9] == Ptr20 {
+															v[Temp9] = 0
+																@break
+
+														}
+														@if v[Temp9] == 0 {
+															@break
+
+														}
+														Temp9 += 1
+
+													}
+
+													@if Temp8 == 0 {
+														Temp9 = v[1145]
+
+													} .else bl {
+														Temp9 = v[1146]
+
+													}
+													v[Temp9].sortDescending v[1012]
+														v[204] -= 1
+
+												}
+											v[305] = Ptr20 * 300
+												v[305] += 4707
+												v[Temp5].copy v[252], 2
+												v[305] += 93
+												v[251] = v[Temp5]
+												v[305] += 180
+												v[378] = 0
+												@if v[Temp5] >= 1 {
+													TT17 = v[Temp5]
+														Ptr14 = Ptr20
+														// "Avoid Cohort setting"
+														@if v[251] == 0 {
+															v[258] = 0
+																v[2521] += 1
+
+														}
+													@call .cev v[Temp5]
+														// ""
+														Temp5 = 0
+														Temp2 = v[1145]
+														Ptr10 = Ptr14
+														@doWhile v[Temp2] >= 1 {
+															Temp3 = v[Temp2] * 300
+																Temp4 = Temp3 + 4802
+																@if v[Temp4] == 9 {
+																	Ptr15 = Temp3 + 4718
+																		@if v[Ptr15] == Ptr14 {
+																			Temp5 = Temp3 + 4947
+																				// "#assign job building"
+																				@if reg3 == 105 {
+																					v[Ptr15] = reg1
+																						@if reg2 == 2 {
+																							v[378] = 0
+																								v[22..23] = 0
+
+																						} .else bl {
+																							v[378] = 1
+
+																						}
+
+																				} .else bl {
+																					v[Temp5] = 0
+																						v[Temp3 + 4942] = -1
+
+																				}
+
+																		}
+
+																}
+															Temp2 += 1
+
+														}
+
+
+												}
+											// "continue buliding"
+											@if v[378] == 0 {
+												// "atleastthere's one"
+												@if v[v[4561]] > 0 {
+													// "save last target to acc10"
+													@loop v[1012] .dst Temp1 {
+														// "Check Player Team List"
+														// "Check AllyTeam List"
+														Ptr20 = Temp1 + v[1145 + v[251] % 3]
+															@if v[Ptr20] >= 1 {
+																Ptr19 = v[Ptr20] * 300
+																	Ptr19 += 4700
+																	@if `v[Ptr19 + 102] == 9 {
+																		@if `v[Ptr19 + 18] == Ptr10 {
+																			Temp1 = Ptr19
+																				Ptr19 = v[Ptr20]
+																				Ptr18 = Ptr19 - 1
+																				// "@Searching Nearest Enemy Process@"
+																				/* "Access19 = Obj's Behavior
+																					 Access20 = Obj's target ID"*/
+																				Ptr20 = Temp1 + 18
+																				Ptr19 = Temp1 + 241
+																				// "#Check Team ID"
+																				/* "Temp2 = [3000 or 3200]# [team0, team1] this var works as a pointer to his/her enemy team list
+																					 Temp3 = Eye sight of this obj
+																					 Temp4 = Obj X
+																					 Temp5 = Obj Y
+																					 Temp7 = Temp2 Backup
+																					 Temp8 <- WTF IS THIS!?
+																					 Temp9 = X ptr"*/
+																				Temp2 = v[4561]
+																				Temp7 = Temp2
+																				Temp9 = Temp1 + 7
+																				// "ソートする数はここで総数を見て決定"
+																				Temp8 = v[Temp1 + 230]
+																				Temp7 = 0
+																				v[3401..3600] = 999999999
+																				v[534] = v[4579] + (v[1012] + 2) * Ptr18
+																				v[v[534]] = 999999999
+																				@doWhile v[Temp2] != 0 {
+																					// "Temp1 = [Taken Obj's ID] * 300 + 4707	Temp6 = Calculation List Ptr"
+																					Temp6 = Temp7 + 3601
+																						// "If the taken object from list is 0, set [[Temp6]] = 999999999"
+																						Temp1 = v[Temp2] * 300 + 4701
+																						// "Get ObjectType of the target	TT10"
+																						Temp1 += 6
+																						v[Temp9].copy Temp4, 2
+																						Temp4 .sub v[Temp1], 2
+																						Temp4 .mul Temp4, 2
+																						v[Temp6] = Temp4 + Temp5
+																						// "#Check AI eye sight#The last 3 digits are used as ID"
+																						@if v[Temp6] < Temp8 {
+																							TT1 = v[534] + Temp7
+																								v[TT1] = v[Temp6] * 1000 + v[Temp2]
+																								Temp7 += 1
+
+																						}
+																					Temp2 += 1
+
+																				}
+
+																			// "#Check Who's nearest"
+																			v[v[534]].sort Temp7
+																				@if v[v[534]] < 999999999 {
+																					v[v[534]..v[534] + Temp7 - 1] %= 1000
+																						v[Ptr20] = v[v[534]]
+																						v[Ptr20 + 229] = 5
+
+																				} .else bl {
+																					v[Ptr20 + 229] = 0
+																						Temp7 = 0
+
+																				}
+																			// "init counter and set amount"
+																			Temp6 = 0
+																				TT1 = v[534] + v[1012]
+																				Temp6.copy v[TT1], 2
+
+																		}
+
+																	}
+
+															} .else bl {
+																@break
+
+															}
+
+													}
+
+
+												}
+
+											}
+
+										} .else bl {
+
+										}
+
+								}
+
+						} .else bl {
+							@if `v[Ptr20 * 300 + 4980] != 802 {
+								v[Ptr20 * 300 + 4703] &= ~2097152
+
+							}
+
+						}
+					v[421] = 100
+
+				} .else bl {
+					v[371] = v[v[702]] >= 101 ? 1 : 0
+						v[371] += v[v[702]] == 5 ? 1 : 0
+						@if v[371] >= 1 {
+							@if v[300002] >= 2 {
+								v[705] = v[702] + 3
+									v[706] = v[705] + 1
+									@if v[v[705]] > v[v[706]] {
+										// "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃	Repairing	＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"
+										@if `s[Ptr19 + 500] == 1 {
+											@if v[181] <= 2 {
+												v[182] += 1
+													v[607] = v[711] + 4707
+													v[v[607]].copy v[607], 2
+													// "#########################"
+													v[472] = divmul(65, 100, v[2216])
+													v[473] = rnd(140, 150)
+													v[474] = divmul(v[607] + v[1001], v[1281], 50)
+													// "need moar metalic features within the sound"
+													@cmd 11550, "blow7", .args v[472], 3
+													// "#########################"
+
+											}
+											// "#Dust Particle Effect"
+											@loop v[1017] .dst Temp20 {
+												v[244] %= v[1199]
+													TT11 = v[244] * 50 + v[1198]
+													@if v[TT11] <= 1 {
+														// "まず清掃"
+														v[1301].copy v[TT11], 50
+															// "ポインタセット開始"
+															// "設定"
+															v[TT11] = 1
+															// "500F"
+															v[TT11 + 49] = 3
+															// "Set itself"
+															v[TT11 + 3] = 160
+															// "普通にアニメ"
+															TT1 = TT11 + 6
+															v[607].copy v[TT1], 2
+															// "仕上げに登録消す"
+															s[141].off
+															v[244] += 1
+															@break
+
+													}
+												v[244] += 1
+
+											}
+
+
+										}
+										v[300002] -= 2
+											@call .cev 84
+											// "ADを取得"
+											Temp1 = -v[Ptr19 * v[1117] + 4961]
+											// "ARかMRか取得"
+											Temp2 = -2
+											// "AABits"
+											var9 = 0
+											v[421] = 130
+											@call .cev 40
+
+									}
+
+							}
+							v[Ptr19 * 300 + 4947] = 6
+
+						}
+
+				}
+
+			}
+
 		}
-		
-	    }
-	    
-	}
 }

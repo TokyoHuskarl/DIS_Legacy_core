@@ -1,0 +1,20 @@
+
+
+
+
+
+
+
+
+
+
+/////////////////
+// misc functions
+/////////////////
+
+__fn export_simple_text $text $title $location {
+	str3 .asg $location
+	str3 .cat $title
+	str1.asg $text
+	str1 .toFile str3, .utf8
+}

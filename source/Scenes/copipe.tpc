@@ -1,0 +1,1046 @@
+
+// first page of Title Screen
+
+@if v[2300] == 0 {
+    s[313].on
+    v[2218] = 2
+    v[2402] = 1
+    v[2403] = 3
+    v[2300] = 1
+    v[2217] = 90
+    v[2216] = 85
+    v[2221] = 60
+    v[2225] = 50
+    @gsave.open
+    gs[301].copyFrom s[301], 20
+    gv[1].copyFrom v[2201], 100
+    @gsave.saveAndClose
+    v[1181] = 5000
+    
+}
+@call .cev 1
+v[330] = sys.version
+v[330] &= -1 >> 12
+@sys.menuAccess .off
+v[341] = v[1002] / 2
+v[342] = muldiv(100, v[1001], 800)
+@if s[327] .isOn() {
+    @if v[2227] == 0 {
+        v[472] = divmul(90, 100, v[2217])
+        @bgm.play "[Cnoc]world_end(Rtpia in Late Antiquity)" .opt 0, v[472], 100, 50
+        @pic[800].show {
+            "..\assets\title"
+            .pos v[1115], v[341] .center
+            .chromakey 0
+            .scale v[342]
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .grid 1, 1 .cell 1
+            .mapLayer 1
+            .affectedByTint
+        }
+        
+    } .else bl {
+        @if v[2227] == 1 {
+            v[472] = divmul(90, 100, v[2217])
+            @bgm.play "[Cnoc]voyage02(D.I.S.)" .opt 0, v[472], 100, 50
+            @pic[800].show {
+                "..\assets\title_old"
+                .pos v[1115], v[341] .center
+                .chromakey 0
+                .scale v[342]
+                .trans 0
+                .rgbs 100, 100, 100, 100
+                .grid 1, 1 .cell 1
+                .mapLayer 1
+                .affectedByTint
+            }
+            
+        } .else bl {
+            
+        }
+        
+    }
+    
+} .else bl {
+    v[472] = divmul(90, 100, v[2217])
+    @bgm.play "[Cnoc]world_end(Rtpia in Late Antiquity)" .opt 0, v[472], 100, 50
+    @pic[800].show {
+        "..\assets\title_pre"
+        .pos v[1115], v[341] .center
+        .chromakey 0
+        .scale v[342]
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .grid 1, 1 .cell 1
+        .mapLayer 1
+        .affectedByTint
+    }
+    
+}
+@call .mev 2, 1
+v[343] += 1
+v[341] = rnd(0, 0)
+v[281] = v[343]
+@if v[341] == 0 {
+    @actor[2].name "I will drink from your skull!"
+    
+}
+v[341] = sys.date
+@if v[341] < 200000 {
+    
+}
+t[510] .asg "..\Languages\"
+t[510] .cat t[528]
+t[510] .cat "lang_title"
+t[510] .asg  .file t[510], .utf8, .extract
+t[510] .split "*/", t[509], v[341]
+t[510] .split t[525], t[3001], v[341]
+v[341] = rnd(1, v[341]) + 3000
+t[3000] .asg t[v[341]]
+v[351] = v[1001] - 116
+v[352] = 24
+@pic[v[343]].strpic {
+    t[3000]
+    .pos v[351], v[352] .center
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 40
+    .rgbs 100, 100, 100, 100
+    .font "k8x12S", 12 .noShadow
+    .spacing 0, 4
+    .skin "system5" .nobg .noframe .noGradation .noPadding
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+v[343] += 1
+v[282] = v[343]
+v[1140] = 210915
+@comment "Ex"
+v[1140] = v[330]
+@if v[330] == v[1140] {
+    @if `v[1001] >= 640 && v[1002] >= 360 {
+        t[510] .asg  .file "..\Data\version_info", .utf8
+        t[510] .asg  .rep t[510], t[525], ""
+        @if .testPlay() {
+            @if s[316] .isOn() {
+                t[510] .cat " / \c[17]DEBUG MODE!"
+                
+            } .else bl {
+                t[510] .cat " / \c[1]Developer Mode"
+                
+            }
+            
+        }
+        @pic[v[343]].strpic {
+            t[510]
+            .pos v[1001], v[1002] .bottomRight
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 100, 100, 100, 100
+            .font "k8x12S", 12
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noGradation .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    } .else bl {
+        @pic[v[343]].strpic {
+            "\c[5]警告！最低必要解像度は640*360です\c[0]"
+            .pos v[1001], v[1002] .bottomRight
+            .size 0, 0            .chromakey 1
+            .scale 100
+            .trans 0
+            .rgbs 200, 0, 0, 100
+            .font "RUNE", 11 .noShadow
+            .spacing 0, 4
+            .skin "" .nobg .noframe .noGradation .noPadding
+            .mapLayer 9
+            .eraseWhenTransfer
+            .affectedByFlash
+            .affectedByShake
+        }
+        
+    }
+    
+} .else bl {
+    @pic[v[343]].strpic {
+        t[20375]
+        .pos v[1001], v[1002] .bottomRight
+        .size 0, 0        .chromakey 1
+        .scale 100
+        .trans 0
+        .rgbs 200, 0, 0, 100
+        .font "RUNE", 11 .noShadow
+        .spacing 0, 4
+        .skin "" .nobg .noframe .noGradation .noPadding
+        .mapLayer 9
+        .eraseWhenTransfer
+        .affectedByFlash
+        .affectedByShake
+    }
+    
+}
+v[343] += 1
+@pic[999].strpic {
+    ""
+    .pos 0, 0 .topLeft
+    .size v[1001], v[1002]    .chromakey 1
+    .scale 100
+    .trans 65
+    .rgbs 100, 100, 100, 100
+    .font "", 12
+    .spacing 0, 4
+    .skin "" .stretch .noframe
+    .mapLayer 1
+    .affectedByFlash
+    .affectedByShake
+}
+@pic[999].strpic {
+    ""
+    .pos 0, 0 .topLeft
+    .size v[1001], v[1002]    .chromakey 1
+    .scale 100
+    .trans 85
+    .rgbs 100, 100, 100, 100
+    .font "", 12
+    .spacing 0, 4
+    .skin "" .stretch .noframe
+    .mapLayer 1
+    .affectedByFlash
+    .affectedByShake
+}
+@pic[v[343]].move {
+    .pos 160, 120 .center
+    .scale 100
+    .trans 45
+    .time 0
+    .rgbs 100, 100, 100, 100
+}
+@scr.tint .rgbs 100, 100, 100, 100 .time 4
+@scr.show 19
+@wait 4
+@if s[6] .isOff() {
+    v[49] = 160
+    v[50] = 120
+    v[51] = 160
+    v[52] = 120
+    
+}
+v[300] = v[343]
+@loop .inf() {
+    @label.set 1
+    s[201].off
+    s[202].off
+    @key.input .dst v[43] {
+        .decision
+        .number
+        .lclick
+        .rclick
+        .wheelDown
+        .wheelUp
+    }
+    @if v[43] == 1005 {
+        s[202].on
+        
+    }
+    v[341] = 2
+    v[342] = 8
+    v[343] = 1
+    v[344] = 20
+    @pic[v[343]].move {
+        .pos v[341], v[342] .left
+        .scale 100
+        .trans 0
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    @if s[201] .isOff() {
+        @if v[51] <= 142 {
+            @if v[52] <= v[344] {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 0, 200, 0, 100
+                }
+                @if v[42] != v[343] {
+                    v[42] = v[343]
+                    @comment "#########################"
+                    v[472] = divmul(80, 100, v[2216])
+                    @se.play "Cursor1" .opt v[472], 90, 50
+                    @comment "#########################"
+                    
+                }
+                s[201].on
+                @if s[202] .isOn() {
+                    @comment "#########################"
+                    v[472] = divmul(90, 100, v[2216])
+                    @se.play "cursor09" .opt v[472], 100, 50
+                    @comment "#########################"
+                    @call .mev 10005, 2
+                    @call .mev 2, 1
+                    @label.jump 1
+                    
+                }
+                
+            } .else bl {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @pic[v[343]].move {
+            .pos v[341], v[342] .left
+            .scale 100
+            .trans 0
+            .time 0
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    @comment ""
+    v[342] += 16
+    v[343] += 1
+    v[344] += 16
+    @pic[v[343]].move {
+        .pos v[341], v[342] .left
+        .scale 100
+        .trans 0
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    @if s[201] .isOff() {
+        @if v[51] <= 142 {
+            @if v[52] <= v[344] {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 0, 200, 0, 100
+                }
+                @if v[42] != v[343] {
+                    v[42] = v[343]
+                    @comment "#########################"
+                    v[472] = divmul(80, 100, v[2216])
+                    @se.play "Cursor1" .opt v[472], 90, 50
+                    @comment "#########################"
+                    
+                }
+                s[201].on
+                @if s[202] .isOn() {
+                    @actor[1].face "Actor1" 0
+                    @actor[1].name "操作説明"
+                    @comment "#########################"
+                    v[472] = divmul(90, 100, v[2216])
+                    @se.play "cursor09" .opt v[472], 100, 50
+                    @comment "#########################"
+                    @scr.hide 19
+                    s[4].toggle
+                    s[2].on
+                    @pic.erase .all
+                    @msg.opt {
+                        .trans
+                        .bottom
+                        .size 0, 0
+                        .font "", 0
+}
+                    s[4].toggle
+                    s[2].off
+                    @scr.hide 19
+                    @map[54].setPlayerPos .pos 15, 15 .retain
+                    
+                }
+                
+            } .else bl {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @pic[v[343]].move {
+            .pos v[341], v[342] .left
+            .scale 100
+            .trans 0
+            .time 0
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    v[342] += 16
+    v[343] += 1
+    v[344] += 16
+    @pic[v[343]].move {
+        .pos v[341], v[342] .left
+        .scale 100
+        .trans 0
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    @if s[201] .isOff() {
+        @if v[51] <= 142 {
+            @if v[52] <= v[344] {
+                @if v[42] != v[343] {
+                    v[42] = v[343]
+                    @comment "#########################"
+                    v[472] = divmul(80, 100, v[2216])
+                    @se.play "Cursor1" .opt v[472], 90, 50
+                    @comment "#########################"
+                    
+                }
+                s[201].on
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 0, 200, 0, 100
+                }
+                @if s[202] .isOn() {
+                    @comment "#########################"
+                    v[472] = divmul(90, 100, v[2216])
+                    @se.play "cursor09" .opt v[472], 100, 50
+                    @comment "#########################"
+                    @call .cev 2055
+                    @if s[1] .isOff() {
+                        
+                    } .else bl {
+                        @comment "#########################"
+                        v[472] = divmul(90, 100, v[2216])
+                        @se.play "cursor14" .opt v[472], 100, 50
+                        @comment "#########################"
+                        v[11] = 270
+                        @call .cev 1890
+                        @pic[995].strpic {
+                            t[3000]
+                            .pos v[1115], v[1116] .top
+                            .size 0, 0                            .chromakey 1
+                            .scale 100
+                            .trans 0
+                            .rgbs 100, 100, 100, 100
+                            .font "", 12 .noShadow
+                            .spacing 0, 4
+                            .skin "" .stretch
+                            .mapLayer 10
+                            .eraseWhenTransfer
+                            .affectedByFlash
+                            .affectedByShake
+                        }
+                        
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @pic[v[343]].move {
+            .pos v[341], v[342] .left
+            .scale 100
+            .trans 0
+            .time 0
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    @comment "実績"
+    v[342] += 16
+    v[343] += 1
+    v[344] += 16
+    @pic[v[343]].move {
+        .pos v[341], v[342] .left
+        .scale 100
+        .trans 0
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    @if s[201] .isOff() {
+        @if v[51] <= 142 {
+            @if v[52] <= v[344] {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 0, 200, 0, 100
+                }
+                @if v[42] != v[343] {
+                    v[42] = v[343]
+                    @comment "#########################"
+                    v[472] = divmul(80, 100, v[2216])
+                    @se.play "Cursor1" .opt v[472], 90, 50
+                    @comment "#########################"
+                    
+                }
+                s[201].on
+                @if s[202] .isOn() {
+                    s[201].on
+                    @if s[202] .isOn() {
+                        @scr.tint .rgbs 50, 50, 50, 100 .time 0
+                        v[472] = divmul(90, 100, v[2216])
+                        @se.play "cursor09" .opt v[472], 100, 50
+                        @pic[995].erase
+                        @sys.transition .transfer_hide 20
+                        @map[57].setPlayerPos .pos 5, 1 .retain
+                        
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @pic[v[343]].move {
+            .pos v[341], v[342] .left
+            .scale 100
+            .trans 0
+            .time 0
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    @comment "記録"
+    v[342] += 16
+    v[343] += 1
+    v[344] += 16
+    @pic[v[343]].move {
+        .pos v[341], v[342] .left
+        .scale 100
+        .trans 0
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    @if s[201] .isOff() {
+        @if v[51] <= 142 {
+            @if v[52] <= v[344] {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 0, 200, 0, 100
+                }
+                @if v[42] != v[343] {
+                    v[42] = v[343]
+                    v[472] = divmul(80, 100, v[2216])
+                    @se.play "Cursor1" .opt v[472], 90, 50
+                    
+                }
+                s[201].on
+                @if s[202] .isOn() {
+                    s[201].on
+                    @if s[202] .isOn() {
+                        @if v[2214] >= 59 {
+                            v[229] = 60
+                            s[59].on
+                            
+                        }
+                        v[472] = divmul(90, 100, v[2216])
+                        @se.play "cursor09" .opt v[472], 100, 50
+                        @pic[995].erase
+                        @scr.tint .rgbs 50, 50, 50, 100 .time 0
+                        @sys.transition .transfer_hide 20
+                        @map[7].setPlayerPos .pos 15, 6 .retain
+                        
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @pic[v[343]].move {
+            .pos v[341], v[342] .left
+            .scale 100
+            .trans 0
+            .time 0
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    v[342] += 16
+    v[343] += 1
+    v[344] += 16
+    @pic[v[343]].move {
+        .pos v[341], v[342] .left
+        .scale 100
+        .trans 0
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    @if s[201] .isOff() {
+        @if v[51] <= 142 {
+            @if v[52] <= v[344] {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 0, 200, 0, 100
+                }
+                @if v[42] != v[343] {
+                    v[42] = v[343]
+                    v[472] = divmul(80, 100, v[2216])
+                    @se.play "Cursor1" .opt v[472], 90, 50
+                    
+                }
+                s[201].on
+                @if s[202] .isOn() {
+                    s[201].on
+                    @if s[202] .isOn() {
+                        v[472] = divmul(90, 100, v[2216])
+                        @se.play "cursor09" .opt v[472], 100, 50
+                        v[341] = v[1002] / 2
+                        @pic[800].move {
+                            .pos v[1115], v[341] .center
+                            .scale 100
+                            .trans 0
+                            .time 0
+                            .rgbs 50, 50, 50, 100
+                        }
+                        @pic[995].erase
+                        @sys.transition .transfer_hide 20
+                        @map[20].setPlayerPos .pos 0, 0 .retain
+                        
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @pic[v[343]].move {
+            .pos v[341], v[342] .left
+            .scale 100
+            .trans 0
+            .time 0
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    @comment "ベンチ"
+    v[344] += 16
+    v[342] += 16
+    v[343] += 1
+    @pic[v[343]].move {
+        .pos v[341], v[342] .left
+        .scale 100
+        .trans 0
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    @if s[201] .isOff() {
+        @if v[51] <= 142 {
+            @if v[52] <= v[344] {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 0, 200, 0, 100
+                }
+                @if v[42] != v[343] {
+                    v[42] = v[343]
+                    v[472] = divmul(80, 100, v[2216])
+                    @se.play "Cursor1" .opt v[472], 90, 50
+                    
+                }
+                s[201].on
+                @if s[202] .isOn() {
+                    s[201].on
+                    @if s[202] .isOn() {
+                        v[472] = divmul(90, 100, v[2216])
+                        @se.play "cursor09" .opt v[472], 100, 50
+                        @scr.tint .rgbs 0, 0, 0, 100 .time 1.wait
+                        s[4].toggle
+                        s[2].on
+                        @msg.opt {
+                            .trans
+                            .bottom
+                            .size 0, 0
+                            .font "", 0
+}
+                        s[4].toggle
+                        s[2].off
+                        @key.input .dst v[341] {
+                            .decision
+                            .cancel
+                            .shift
+                        }
+                        @if v[341] >= 6 {
+                            @map[58].setPlayerPos .pos 97, 128 .retain
+                            
+                        } .else bl {
+                            @if s[1] .isOn() {
+                                @map[51].setPlayerPos .pos 0, 1 .retain
+                                @map[48].setPlayerPos .pos 195, 112 .retain
+                                @map[42].setPlayerPos .pos 240, 57 .retain
+                                v[256] = 1
+                                @call .cev 85
+                                @map[52].setPlayerPos .pos 31, 24 .retain
+                                @scr.tint .rgbs 100, 100, 100, 100 .time 2.wait
+                                @map[44].setPlayerPos .pos 231, 158 .retain
+                                
+                            } .else bl {
+                                @map[43].setPlayerPos .pos 60, 106 .retain
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            } .else bl {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @pic[v[343]].move {
+            .pos v[341], v[342] .left
+            .scale 100
+            .trans 0
+            .time 0
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    v[342] += 16
+    v[343] += 1
+    v[344] += 16
+    @pic[v[343]].move {
+        .pos v[341], v[342] .left
+        .scale 100
+        .trans 0
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    @if s[201] .isOff() {
+        @if v[51] <= 142 {
+            @if v[52] <= v[344] {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 0, 200, 0, 100
+                }
+                @if v[42] != v[343] {
+                    v[42] = v[343]
+                    v[472] = divmul(80, 100, v[2216])
+                    @se.play "Cursor1" .opt v[472], 90, 50
+                    
+                }
+                s[201].on
+                @if s[202] .isOn() {
+                    v[472] = divmul(90, 100, v[2216])
+                    @se.play "cursor09" .opt v[472], 100, 50
+                    @call .mev 10005, 1
+                    @call .mev 2, 1
+                    @label.jump 1
+                    
+                }
+                
+            } .else bl {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @pic[v[343]].move {
+            .pos v[341], v[342] .left
+            .scale 100
+            .trans 0
+            .time 0
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    @comment "オプション"
+    v[342] += 16
+    v[343] += 1
+    v[344] += 16
+    @pic[v[343]].move {
+        .pos v[341], v[342] .left
+        .scale 100
+        .trans 0
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    @if s[201] .isOff() {
+        @if v[51] <= 142 {
+            @if v[52] <= v[344] {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 0, 200, 0, 100
+                }
+                @if v[42] != v[343] {
+                    v[42] = v[343]
+                    v[472] = divmul(80, 100, v[2216])
+                    @se.play "Cursor1" .opt v[472], 90, 50
+                    
+                }
+                s[201].on
+                @if s[202] .isOn() {
+                    v[472] = divmul(90, 100, v[2216])
+                    @se.play "cursor09" .opt v[472], 100, 50
+                    v[11] = 269
+                    @call .cev 1890
+                    @pic[995].strpic {
+                        t[3000]
+                        .pos v[1115], v[1116] .top
+                        .size 0, 0                        .chromakey 1
+                        .scale 100
+                        .trans 0
+                        .rgbs 100, 100, 100, 100
+                        .font t[530], v[4511]
+                        .spacing 0, 4
+                        .skin "" .stretch
+                        .mapLayer 10
+                        .eraseWhenTransfer
+                        .affectedByFlash
+                        .affectedByShake
+                    }
+                    @wait 0
+                    @sys.optionMenu
+                    
+                }
+                @pic[995].erase
+                
+            } .else bl {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @pic[v[343]].move {
+            .pos v[341], v[342] .left
+            .scale 100
+            .trans 0
+            .time 0
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    @if .testPlay() {
+        @comment "Mapeditor"
+        v[342] += 16
+        v[343] += 1
+        v[344] += 16
+        @pic[v[343]].move {
+            .pos v[341], v[342] .left
+            .scale 100
+            .trans 0
+            .time 0
+            .rgbs 100, 100, 100, 100
+        }
+        @if s[201] .isOff() {
+            @if v[51] <= 142 {
+                @if v[52] <= v[344] {
+                    @pic[v[343]].move {
+                        .pos v[341], v[342] .left
+                        .scale 100
+                        .trans 0
+                        .time 0
+                        .rgbs 0, 200, 0, 100
+                    }
+                    @if v[42] != v[343] {
+                        v[42] = v[343]
+                        v[472] = divmul(80, 100, v[2216])
+                        @se.play "Cursor1" .opt v[472], 90, 50
+                        
+                    }
+                    s[201].on
+                    @if s[202] .isOn() {
+                        @scr.hide 19
+                        t[750] .asg "mapgentest"
+                        @map[61].setPlayerPos .pos 0, 1 .retain
+                        
+                    }
+                    
+                } .else bl {
+                    @pic[v[343]].move {
+                        .pos v[341], v[342] .left
+                        .scale 100
+                        .trans 0
+                        .time 0
+                        .rgbs 100, 100, 100, 100
+                    }
+                    
+                }
+                
+            }
+            
+        } .else bl {
+            @pic[v[343]].move {
+                .pos v[341], v[342] .left
+                .scale 100
+                .trans 0
+                .time 0
+                .rgbs 100, 100, 100, 100
+            }
+            
+        }
+        
+    }
+    @comment "シャットダウン"
+    v[342] += 16
+    v[343] += 1
+    v[344] += 16
+    @pic[v[343]].move {
+        .pos v[341], v[342] .left
+        .scale 100
+        .trans 0
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+    @if s[201] .isOff() {
+        @if v[51] <= 142 {
+            @if v[52] <= v[344] {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 0, 200, 0, 100
+                }
+                @if v[42] != v[343] {
+                    v[42] = v[343]
+                    v[472] = divmul(80, 100, v[2216])
+                    @se.play "Cursor1" .opt v[472], 90, 50
+                    
+                }
+                s[201].on
+                @if s[202] .isOn() {
+                    @sys.shutdown
+                    
+                }
+                
+            } .else bl {
+                @pic[v[343]].move {
+                    .pos v[341], v[342] .left
+                    .scale 100
+                    .trans 0
+                    .time 0
+                    .rgbs 100, 100, 100, 100
+                }
+                
+            }
+            
+        }
+        
+    } .else bl {
+        @pic[v[343]].move {
+            .pos v[341], v[342] .left
+            .scale 100
+            .trans 0
+            .time 0
+            .rgbs 100, 100, 100, 100
+        }
+        
+    }
+    @if s[201] .isOff() {
+        v[42] = 0
+        
+    }
+    @wait 0
+    
+}
+

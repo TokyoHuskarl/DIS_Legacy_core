@@ -1,17 +1,7 @@
 
-	
-v[1276]とv[1278]が取り違えられている事例に注意
-マップ描画もズレる
-
-
-	どこかでバグって弩兵生産や初期化などのおかしなイベントを参照することがあるので原因を突き止める
-
-	撤退の処理がおかしいときがある
-	
 	AI回りの再考
 遠距離武器システム再考(RAtkの設定)
 	魔法攻撃システム再考
-隊列指定で壁に引っかかると悲惨
 
 
 戦闘終了時のコンパニオンの処理
@@ -29,56 +19,10 @@ Perk
 
 ***********************
 
-mapheight決めた後文字列クリア
 
-
-UI回りの文字列頻度…STATICは？
-
-801->ConstPic変数への置き換え
-
-
-
-スコラエ魔導兵は作り直す
-
-
-詠唱モーションにバグあり？
-
-スキル文字書き換え
 
 Inv　v[145]にユニット番号挿入<-v[340]が同じ機能果たしてるので抜く　類型3のユニットに対応させよ　尚ゲーム外での動作等に難があると思われる　
 
-
-	まとめて自殺させると表示位置がずれることあり？
-
-
-視界外から攻撃食らった時の動きがおかしい
-
-
-
-バックショットチェック必要？
-
-帝国投石器の判定が残る？
-			
-		
-
-
-士気周り再チェック
-
-604と602の変換
-
-
-避難状態を作る
-
-
-
-もしかするとノックバック壊れてるかも←敗走中壊れてる
-
-
-
-
-
-たまにチラついて兜が外れる？
-インベントリ欄の性能表記をちゃんとインベントリ内の性能から見る
 
 ブレイク作る
 画像用意する
@@ -102,7 +46,7 @@ Inv　v[145]にユニット番号挿入<-v[340]が同じ機能果たしてるの
 Fatalities
 
 
-strings
+strings strid
 	#1-400 unitsname
 	#401-410 ConstLoadPath #1=Body,2=Head,3=Helm,4=RHand,5=LHand,6=Horse,7=Minion
 	
@@ -125,17 +69,43 @@ strings
 	
 	531~630=footstepsoundload
 
+	631 = 
+
 	701 = Envloop1
 	
+	UI_ORDER = 731
+
 	740 = cache
 
-	750 = MapDirectory
+
+	748 = MissionLogName
+	749 = MissionPath
+	750 = MissionDirectory
 	751 = MapID
-	752 = MapName
+	752 = MissionName
 	753 = AIscriptfile
 	754 = TileName
+	755 = MapDirectory
 	
 	760 = BGMName
+	761 = missiondef.js
+	762 = mapdef.js
+	763 = saveSimpleTriggers
+	
+	771 = Cmd.map
+
+	774 = Cmd.game
+
+	781 = DISPushLogQueue
+	782 = ShellLog
+
+	
+	785 = dialogQueue
+	789 = ShellCmd
+	790 = SScmdList
+	
+	
+	795 = CMD_ORDER
 
 	800 = scriptconst
 	801 = troopIDtable
@@ -147,7 +117,17 @@ strings
 	807 = helmIDD
 	808 = accID
 	
-	LEG1001~1300=ItemInvString
+
+	
+	854 = weapon_file
+
+	861 = subsetR
+	862 = subsetL
+
+	LEG1001~1300=ItemInvString 
+
+// ATTENTION, 1001-1300 will be erased by saving game data
+
 	/*LEG1301~1742=EquipmentString [7]*63
 		#521-3010 PictureFileName[6]
 		#		511-1015 63*[8]
@@ -421,13 +401,15 @@ Set 601-900
 //225001~243000 Projectile [100]*180 Pict [1]*180 1001-1180
 //243001~255000 Effect [100]*120 Pict [1]*120 801-920
 
-273901~274000 TerrainBits
+// 273901~274000 TerrainBits -> header_common.tpc
 274001~274500 MapSimpleTriggersConditions 500
 274501~275000 MapSimpleTriggersVar 500
 275001~280000 ParticleEffecter [50]*100
 280001~290000 ObjSort
 290001~300000 ObjSort_save
 
+
+//Factional Vars should be relocated into pic buffer
 FactionResources[4]+[36]
 300001~300040 PL 
 300041~300080 En
@@ -436,20 +418,24 @@ FactionResources[4]+[36]
 
 #300120~300220 TerrainBits
 300221~300316 MinimapProc
-300317~460317 CurrentMapInfo [400][400] #HeightLevel[1]+UpperLayer[3]+DownLayer[3]+MapID[2]
+300317~460317 CurrentMapInfo [400][400] #ElevationLevel[1]+UpperLayer[3]+DownLayer[3]+TerrainID[2]
 #460318~460817 DrawnList [500]
 #460818~461317 DrawnListLayers
 
-460318~461317 AgentTeam%3[1000]
+460318~461317 AgentTeam%3[1000] METATEAM 
 
 461318-462319 InSightTimer [1000] 
 
 **new test Ally List 462319~462820 [500]
 			enemy List 462821~463321  [500]
 			
-#461318~463717 ObjectPictureIDs 400*[6] Body/Head/Helm/Weapon/Shield/Misc ***
-463718~463758 159528
 
+463616~463717 Terrain Bits
+#461318~463717 ObjectPictureIDs 400*[6] Body/Head/Helm/Weapon/Shield/Misc ***
+463718~463758 159528 ///?????????????????????????????????? camera group!!!
+
+
+// cohort settis can also be relocate into Pic Buffer
 463759~463959 Ally cohort_vars[20]*10
 
 	SideHPBar:
@@ -464,11 +450,9 @@ FactionResources[4]+[36]
 		ranktype = 10
 		rankdent = 11
 		rank_average_size
-		
+	
 		StanceOrder = 20	#0 = alert(search enemies), 1 =  standby, 2 = attack, 3= deffend, 4= player
 
-#463718~466022 NewMiniMaps 56*36
-	#464631~465543 NewMiniMapsEn 56*36
 471544~525544  UnitIDJoiningBattle 4500*[4]*[3] OverallAmount,KillCount,DeathCount,FleeCount; Player,Enemy,Ally
 525545~530344 MinimapChecker
 530345~530444 SpawnEquipmentDeployingTemp
@@ -476,13 +460,16 @@ FactionResources[4]+[36]
 550445~560445 pixel upto100*100
 #561446~562445 ObjColSizeXY [2]*400**
 562447~572446 FogOfWar [100]*[100]// 5*5 space 0x1=insight_ALLY 0x2=observed_ALLY 0x3=insight_lastck_ALLY
-572447~572946 ObjFoWSight
+
+
+572447~572946 ObjFoWSight //is this even working!?
+
 572947~732946 MapTileFunction #[4]…resourceamount+[1]…type+[3]blockfuncID+[1]…pushflag!
 
 732947~733946 DeadbodyList
 733947~734946 LandUnitsList
 734947~735946 StaticList
-735947~736446 BasementListAlly
+735947~736446 BasementListAlly 
 
 736447~737446 OBJDrawnList [1000]
 737447~738446 DrawnListLayers [1000]
@@ -493,14 +480,20 @@ FactionResources[4]+[36]
 #125001~125400 GroupSelect [40]*10
 738946-739347 GroupSelect [40]*10
 
-739348~740000 MapScriptNestChecker
+739348~740000 MapScriptNestChecker // will be open
 
+740000~740300 BufferForVictimAgent [300]
+740301~740400 BufferForProjectiles [99]
 
-740948~746948 ObjectPictureIDs 1000*[6] Body/Head/Helm/Weapon/Shield/Misc
-746949~748948 ObjColSizeXY [2]*1000
-+64000..NewObjWPs[2]*32*1000
+	//740948~746948 ObjectPictureIDs 1000*[6] Body/Head/Helm/Weapon/Shield/Misc // this will be needless I guess?
+// So instead..740001~750000 AgentLink 0x00(possible flags?)+0x000(Link2)+0x000(Link1) - basically use only first 3 digits // ???????
+	-> relocate into AEBA
+
+746949~748948 ObjColSizeXY [2]*1000 // this will be soon needless//64000..NewObjWPs[2]1000
 748949~764741 FINALMinimap upto 168*94
 764742~ Minimap Table [minimapsizeX]+[minimapsizeY]
+
+// how about this one?
 +Obj Minimap Colour[1000]
 
 //764742~1548949 Mapnodes [20]*200*200 
@@ -541,10 +534,17 @@ Mapnodeのあとにzantei Mort
 #+1~Parties
 #	300
 
+picid
 ピクチャ番号973~UI:
+	
+	100 = ScaleScript Buffer
+
+
 
 	200~ = Experimental Cache
-	
+
+	699 = control_manager
+	700 = agent_arraybuffer
 	701~740=UnitsFormIndicator
 	
 	751~760=cohort_banners
@@ -561,6 +561,7 @@ Mapnodeのあとにzantei Mort
 	928 = show_where_unit_goes
 	929 = enHPbar
 	#928~930 = [FREE]
+	930 = stuff ptr
 	931-970...HP Bar
 
 	971-972=minimap
@@ -713,11 +714,11 @@ Mapnodeのあとにzantei Mort
 Object:
 	ObjectType = 1	#1 = Minions, 2 = Heroes, 3 = UserCharactors, 4=CustomCharactors 8= Animals,9 = civilians, 11 = Static
 	PicID = 2
-	Agent_bit = 3# 1=in_badterrain,2=in_suitable_terrain　4=in_water_terrain, 4:8=horse_in_forest,5:16=inertia, 6:32=on_ice,7=?, 7:64=collided 8:128=in_endpoint_collision_trouble,9:256=moving_gaveup_flag 10:512=Discipline_Col 
-				   11:1024 =hovering,12:2048=best_terrain
-				   19:262144=invisible_from_enemy, 20:524288=EnableSkillcastingAI,　21:1048576=EnablebasicAI, 22:2097152=EnableCivAI, 23:4194304=ForcemoveFlag, 24:8388608=walldetected 
-				   25:16777216=NeedWpToReachObj,26:33554432=PFwalldetectionSwitchLeg, 27:67108864=1fprocessed 28:134217728=dirchange_skip
-				   268435456=HERO
+	AgentBits = 3# 1=in_badterrain,2=in_suitable_terrain　4=in_water_terrain, 4:8=horse_in_forest,5:16=inertia, 6:32=on_ice,7=?, 7:64=collided 8:128=in_endpoint_collision_trouble,9:256=moving_gaveup_flag 10:512=Discipline_Col 
+				   11:1024 = hovering,12:2048=best_terrain 13:? 14:? 16:65536=clickable // KILLED!
+				   19:262144 = invisible_from_enemy, 20:524288=EnableSkillcastingAI,　21:1048576=EnablebasicAI, 22:2097152=EnableCivAI, 23:4194304 = ForcemoveFlag, 24:8388608 = walldetected 
+				   25:16777216 = NeedWpToReachObj, 26:33554432 = PFwalldetectionSwitch, 27:67108864 = 1fprocessed 28:134217728 = dirchange_skip
+				   268435456 = HERO, 30:536870912 = pushed_by_terrain, 31:1073741824 = Drawn_in_screen
 	UnitLuck = 4
 	//DamagedSpriteVarArray=4 #[Armor,Head,Helm]　4~ User it's
 	x*10000 = 5
@@ -733,7 +734,7 @@ Object:
 	
 	#Choketimer = 15
 	tracecheck_dir=15 #0up1right2down3left
-	unused? Ax*1000 = 15
+	Ax*1000 = 15
 	Ay*1000 = 16
 		#LastTarget = 16
 	CamoValue = 17
@@ -760,18 +761,19 @@ Object:
 		#AttackObject = 31
 		#AttackPointx = 32	
 		#AttackPointx = 33
+	AI_decision_bits = 33
 
 	#AI_behavior_flag=34 #0 = standard,1=siege_ram,2=skirmisher,4=assassin,8=ranged
 	AI_routine_bit=34 #1=siegeweapon_flag,2:2=skirmisher,3:4=assassin,4:8=ranged,5:16=targetting_ally,6:32=target_switched_by_AI,7:64=IdleAfterEnemySearch,8:128=AICohortGatheringAttack 12:4096=tracing_flag,13:8192=tracing_wp/*tracing_lefthand*/,
- 											14:16384=PATHFINDING 15:32768=PFcontinue 16:65536=PFskip 17:131072=manual　18:262144=wannastop 19:524288=towardobj 
-											20:524288=waypoint_priority,21:1048576=hit_and_run_tactics,22:2097152=AIskip,23:8388608=pathblocked,24:16777216=group_path
+ 											14:16384=PATHFINDING 15:32768=PFcontinue 16:65536=PFskip 17:131072=manual　/*18:262144=wannastop 19:524288=towardobj*/ 
+											20:524288=waypoint_priority,/*21:1048576=hit_and_run_tactics*/,22:2097152=AIskip,23:8388608=pathblocked,24:16777216=group_path, 25:Raycast
 
 
 	Cohort_ID= 35 //31=Comitatenses			
 	
 	SpriteX = 36
 	SpriteY = 37
-	MoveTypeBits = 38 #0 = default, 1 = flying,2 = horse, 3:4=forest_runner,4:8=ice_skater,5:16=movetypeice, 6:32=roller, 7:64=Amphibious
+	MoveTypeBits = 38 #0 = default, 1 = flying,2 = horse, 3:4=forest_runner,4:8=ice_skater,5:16=movetypeice, 6:32=roller, 7:64=Amphibious, 8:128=Desert
 		ColDimension = 39#-1= have no col// basically for STATIC.
 	
 	TerrainIDstanding = 40
@@ -790,16 +792,16 @@ Object:
 	WayPoint6X	= 53
 	WayPoint6Y = 54
 	LeftWPtoChase =  55
-	MarchingDirection=56
+	MarchingDirection = 56
 	getTerrainElevation = 57 #
 
-    SaveActualTeamID=58
+    	SaveActualTeamID=58
 	#interactEV = 58 #
 	#deathtrigger = 58　#-=mapevent
-	killXP = 59
-	gotXP = 60
+	#killXP = 59
+	XPgain = 60
 	
-	UniqueCharIndex=61#if <0, refer PartyCompanions
+	#UniqueCharIndex=61#if <0, refer PartyCompanions
 	Skin=63# 0=Rtpian, 1=Nord, 2= Azghazi, 6= female ...This parameter is for UserCharactors
 	Race=64# 0=Human,1=Goblin,2=Orc,3=Dragons,
 	PerkFlagBits1 = 65 # 1=ShieldMaster,2=Brawny,4=BattleForged,8=Nimble,16=Stalwart,32=Dodge,64=Anticipation,128=Pathfinder,256=Fearsome
@@ -811,7 +813,7 @@ Object:
 	#BreakFlags = 68　#1=have_head,2=have_body,4=have_arm,8=have_leg,16=have_wing,32=have_tail,64=reserve,128=reserve,256=reserve,512=reserve
 					 #*2**14=BREAK
 	HeadID =69 #999999=fullcovered
-	Hair =70
+	Hair = 70
 	 
 	Buff1 = 71
 	Buff2 = 72
@@ -868,13 +870,14 @@ Object:
 	AA_ARorMR = 122
 	AAelement = 123 # 0 = Cut, 1 = Pierce, 2 = Blunt, 3 = Energy, 4=fire, 5=ice
 	AAbits = 124 #BITS:  1 = AntiInf,2 = AntiArcher, 3:4 = AntiCav, 4:8= AntiMagi, 5:16 = AntiSiege,6:32 = reserved, 7:64= AntiCiv, 8:128=AntiStatic, 9:256=SlayStatic, 10:512=NOTantiStatic , 11:1024 = ShieldCracking, 12:2048 = DevastatingStrikes
-				　#13:4096 = Trample  14:8192=AntiHero 15:16384=AntiDragon , 17:65536=AntiAir, 18:131072 = ShieldDestroyerBonus　19:262144 = bladedanceflag
-　	AdditionalMotionBits/Atkres? = 125 #1=Armor_has_second_sprite_line,2=has_battle_move_animation,3:4=weapon_double_grip_motion 4:8=melee_double_handed_weapon_motion, 5:16=have_no_idle_motion, /*6:32=bladedanceflag*/ 7:64=blinkstart, 8:128=blink_close, 9:256=blinkend, 10:512=have_cached_obj
+				　#13:4096 = Trample  14:8192=AntiHero 15:16384=AntiDragon , 17:65536=AntiAir, 18:131072 = ShieldDestroyerBonus　19:262144 = bladedanceflag, 20:524288 = camel
+		// AddMotionFlags
+　	AdditionalMotionBits/Atkres? = 125 #1=Armor_has_second_sprite_line,2=has_battle_move_animation,3:4=weapon_double_grip_motion 4:8=melee_double_handed_weapon_motion, 5:16=have_no_idle_motion, /*6:32=bladedanceflag*/ 7:64=blinkstart, 8:128=blink_close, 9:256=blinkend, 10:512=have_cached_obj, 11:1024: camel
 										11:
 										20:524288=fully_covered
 	Have_extra_motion = 126 #1:0000001 = have AA cooldown(pic4), 2:0000010 = have Move Motion(pic5), 3:0000100 = have Skill Motion(pic5) 4:0001000 = slimy/*have Skill Motion(pic4)*/,  5:0010000 = have Move Motion(pic4), 6:32 = Decapitatable, 7:64 = Smashable_head, 8:128= has_skullpicture, 9:256=reserve,10:512=Having_Extra_moving_animation,11:1024=dont_have_footstepsound,12:2048=no_fatigue,13:4096=upsidedown
 							#14:8192=CanBeDamaged_Armor, 15:16384=ArmorNotYetDamaged, 16:32768=CanBeDamaged_Head, 17:65536=HeadNotYetDamaged
-							20:524288=LivingMoveAgent,Static(21:1048576=flatStatic) 22:2097152=hold_weapons 23:4194304=wield_weapon_vertical 24:8388608=holdweaponlock 25:16777216=horseback 26:33554432=kiteflag 27:67108864=backshotflag 28:134217728=inflippable_weapon 29:134217728*2=Anim_weapon
+							20:524288=LivingMoveAgent,Static(21:1048576=flatStatic) 22:2097152=hold_weapons 23:4194304=wield_weapon_vertical 24:8388608=holdweaponlock 25:16777216=horseback 26:33554432=kiteflag 27:67108864=backshotflag 28:134217728=inflippable_weapon 29:134217728*2=Anim_weapon,30:134217728*4=Anim_helm 31 = ExMotionFlags_FLAG_Shield_With_Anim
 	#Hero_SpriteTimer = 126 have bug issue ->280
 	AAvelocity/AAamount = 127
 	AAtime = 128
@@ -883,17 +886,17 @@ Object:
 	AAfunction = 130
 	BaseRegHP = 131
 	BaseRegMP = 132
-	RegHP_type = 133#0= per_second
-	RegMP_type = 134#0= per_second
+	//RegHP_type = 133#0= per_second
+	//RegMP_type = 134#0= per_second
 	Shield_Value = 135#check this value when the unit gets hit.  if ranged attack -> *2 else ->*1. if roll<shieldvalue, show shield motion 
 	AReff = 136#100%+this
 	ARpen = 137#n% to target HP
 	ARMax = 138#
 	Will = 139
 
-	ObjBits = 140#1:1b = ambushflag, 2:10b = canspearwall, 3:100b = canshieldwall,4:1000b = wontgetKnockback,5:10000b = canSkirmish, 6:100000b = HalveRangedDamage 7:1000000b = HalveAll 8:10000000b = wontgetCombatDebuff
+	ObjBits = 140 #1:1b = ambushflag, 2:10b = canspearwall, 3:100b = canshieldwall,4:1000b = wontgetKnockback,5:10000b = canSkirmish, 6:100000b = HalveRangedDamage 7:1000000b = HalveAll 8:10000000b = wontgetCombatDebuff
 				 #9:100000000b = has_no_mind 10:1000000000b = flee!,11:1024 = flip_sprite, 12:2048 = fearsome , 13:4096 = wontbleed, 14:8192 = shieldbash, 15:16384 = Discipline, 16:32768 = Relentless
-				 #17:65536=ImmuneToStun,18:131072=DuelistActivated,19:262144=silence,20: =bigflag,21:1048576=standard_bearer, 22:2097152=explosive 23:4194304 = HERO UNIT　24:8388608=canMagicSupport　25:16777216=can_parry 26:33554432=lancecharge_flag,27:67108864=Brokenshield,28:134217728=SpeedBonus
+				 #17:65536=ImmuneToStun,18:131072=DuelistActivated,19:262144=silence,20: =bigflag,21:1048576=standard_bearer, 22:2097152=explosive 23:4194304 = HERO UNIT　24:8388608=canMagicSupport　25:16777216=can_parry 26:33554432=lancecharge_flag,27:67108864=Brokenshield,28:134217728=SpeedBonus	31:1073741824= Invincible
 	Skill1_ID = 141
 	Skill1_func = 142
 	Skill1_type = 143#0 = passive, 1 = liner, 2 = Point, 3 = Target, 4 = AoE ,5=self, 6=passive
@@ -919,21 +922,20 @@ Object:
 	Passive_Type_Flag = 223 # 1:1=timer,2:2=aura effect, 3:4=bannerman_effect
 	Passive_Function = 224
 	Passive_stack = 225
-	/aura_range = 226
+	aura_range = 226
 	ChokeTimer =227
 	
 	HeadSPregPenalty = 228
 	TakenDamageMultiplier = 229
 	UnitEyesight? = 230
 
-	AmmoMax = 231
+	//AmmoMax = 231
 	CurrentAmmo = 232
 	
 	ShieldType = 233
 	ShieldBreakResistance = 234
     
-    MHit = 236
-    RHit = 237
+  RHit/MHit = 236
 
 	#Head?
 	ArmorWeightSum = 238
@@ -945,14 +947,14 @@ Object:
 		
 	#
 	#241~Behavior
-	StanceOrder = 241	#0 = alert(search enemies), 1 =  standby, 2 = attack, 3= deffend, 4= player,5=worker
+	StanceOrder = 241	#0 = alert(search enemies), 1 =  standby, 2 = attack, 3= deffend, 4= player,5=worker, 6=scout
 	MovementOrder = 242 #-3 = WP_chasing_end -2 = returned -1 = do_not_move, 0 = free, 1 = moving, 2 = move_ordered, 3= force_moving, 4 = dashorknockback 5=mounting, 6=garrison 11= fleeing
 	ActionState = 243 #-1 = dead, 0 = free , 1 = attack, 2 = cooldown, 3 = reloading, 4 = Skill1, 5 = Skill2, 6 = Skill3, 7 = Skill4, 14 = Skill1_motion
 	Direction = 244 # 0=right, 1=left
-	ActionFlag = 245 //Hold==1
+	ActionFlag = 245 //Hold==1 
 	CastSkillOrder = 246 # 0 = free, 1 = Skill1, 2 = Skill2, 3 = Skill3, 4 = Skill4
 	CastReserved2 = 247 #Assign Farmer jobs. 0 = free, 1 = harvest, 2=woodcutting, 3=stonemining, 4=goldmining,5=building, 6=repairing
-	ExtraFightingOrderFlag = 248 # 1= Pikewall, 2 = weakShieldwall,4 = Shieldwall, 8 = Skirmish, 16=MagicSupport, 32=Testudo, 64=Rallying, 128=Observation
+	ExtraFightingOrderFlag = 248 # 1= Pikewall, 2 = weakShieldwall,4 = Shieldwall, 8 = Skirmish, 16=MagicSupport, 32=Testudo, 64=Rallying, 128=Observation, 31:1073741824=garrison
 	KnockBackTimer = 249 #
 	ForceSprite = 250 # 101:Sweep
 
@@ -988,8 +990,9 @@ Object:
 		ProcessRegMP = 273
 		ProcessObjBit = 274
 		ProcessWill = 275
-		ProcessAttackValue = 276 //<-? Camo
+		ProcessCamoValue = 276 //<-? Camo
 		ProcExstate = 277 //1:1=overheal 2:2=Blind 3:4=MagicNullfying, 4:8=Bladedance
+
 		//ProcessEyeSight = 277
 	Dead Body:
 		261 = WpX*10000
@@ -1021,15 +1024,14 @@ Object:
 			281 = initialOffsetX*2
 			282 = initialOffsetY*2
 
-	283 = SpriteOrder
-	#[idle,attack,CD,move,Skill]
+	283 = SpriteOrder // AEBA abandoned and this returns
 	
 	284 = shield_flash
 	285 = 2hweapon_stain
 	286 = FootstepSoundTimer
 	287 = FootstepSoundType
 	
-		
+	
 	288 = SpriteLinkX
 	289 = SpriteLinkY
 	
@@ -1277,8 +1279,8 @@ Effect:
 	Timer = 100
 
 Static:
-	Agent_bit = 3# 1=producing_tech, /*2:2=gateflag*/ 3:4=gate_open,4:8=gate_lock,5:16=wallflag,6:32=building_basement,7:64=houseflag,8:128=have_generated_picture 9:256=gateflag 10:1024=have_no_function 11:2048=inflammable 12:4096=farmflag 13:8192=marketflag, 14:16384=Newly Generated Static,15:32768:auto_que 19:262144=invisible_from_enemy, 21:1048576=EnablebasicAI
-				22:2097152=do_not_register_morton
+	Agent_bit = 3# 1=producing_tech, /*2:2=gateflag*/ 3:4=gate_open,4:8=gate_lock,5:16=wallflag,6:32=building_basement,7:64=houseflag,8:128=have_generated_picture 9:256=gateflag 10:1024=have_no_function 11:2048=inflammable 12:4096=farmflag 13:8192=marketflag, 14:16384=Newly Generated Static,15:32768:auto_que  65536=KILLED  19:262144=invisible_from_enemy, 21:1048576=EnablebasicAI
+				22:2097152=do_not_register_morton 30:sameasagent 31:not on screen
 
 	Producing_Unit = 138
 	Producing_Cost = 139
@@ -1364,7 +1366,7 @@ maptilefunction:
 MapNodes:[20]
 	refmapX=1
 	refmapY=2
-	movementcost=3
+	movementcost = 3
 	setup =4 
 	
 	

@@ -1,0 +1,461 @@
+
+
+__fn console_cmd_call {
+
+	__if DIS_EXPERIMENTAL == 1 {
+		ShellCommandPackage(SHELL_CMD_PACK,SScmd_Mode_Call,SScmdDynCounter,SHELL_INPUT_STRING,SScmd_Flag_Cmdline)
+		func_devlog( __str("EXPERIMENTAL - Scale Script Called! " SScmdnum) )
+
+	}.elif DIS_EXPERIMENTAL == 0 {
+
+		@if t[v[523]] .eq "export unit" {
+		    @se.play "decide1" .opt 90, 100, 50
+		    v[45] %= v[45] == 10 ? 20 : 10
+		    v[302] = 100
+		    v[335] = 101
+		    v[341] = 101
+		    @comment "User"
+		    @if s[1] .isOff() {
+			v[342] = v[v[341]] * 300
+			v[342] += 4701
+			@comment "Count Picture Layer Array"
+			v[899] = v[v[v[341]] * 300 + 4999]
+			v[345] = v[899]
+			@comment "#get damaged variation"
+			v[604] = v[v[v[341]] * 300 + 4704]
+			v[0] = v[343..352] = [v[604] % 10, v[604] / 10 % 10, v[604] / 100 % 10]
+			@pic[v[302]].strpic {
+			    ""
+			    .pos -166, -166 .center
+			    .size 64, 64            .chromakey 1
+			    .scale 100
+			    .trans 100
+			    .rgbs 100, 100, 100, 100
+			    .font "", 12 .noShadow
+			    .spacing 0, 4
+			    .skin "" .nobg .noframe .noGradation .noPadding
+			    .mapLayer 8
+			    .eraseWhenTransfer
+			    .affectedByFlash
+			    .affectedByShake
+			}
+			v[463] = 5
+			v[464] = 1
+			v[726] = v[v[v[341]] * 300 + 4826]
+			v[4101..4110] = v[463]
+			v[4106] = v[726] & 16777216 ? 7 : 5
+			v[4107] = v[726] & 512 ? 7 : 5
+			v[4101] = v[726] & 512 ? 7 : 5
+			v[4121..4130] = 1
+			v[4124] = v[726] & 134217728 ? 2 : 1
+			v[725] = v[v[341]] * 300 + 4825
+			v[4121] = [1, 2][(v[v[725]] & 1)]
+			@while v[899] >= 1 {
+			    v[341] = v[899] % 10
+			    v[286] = 900 + v[341] + 10 * v[v[341] + 342]
+			    v[463] = v[4100 + v[341]]
+			    v[464] = v[4120 + v[341]]
+			    @comment "#########################
+		Layer own Setting"
+			    v[891] = v[314] + 291
+			    v[341] = (v[341] - 1) % 6
+			    @comment "Layer own Setting END
+#########################"
+			    v[320] = v[(v[v[335]] - 1) * 6 + v[341] + v[1185]]
+			    @comment "Strings = t[v[286]]"
+			    v[11] = v[302]
+			    v[12..13] = 32
+			    @pic[2599].show {
+				t[v[286]] .repl 1 v[320]
+				.pos -111, -111 .center
+				.chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.grid v[463], v[464] .cell 2
+				.mapLayer 7
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+			    }
+			    @pic[2599].getInfo .cewh .currentRect v[360], v[360], v[355], v[356]
+			    @pic[2599].getInfo .pixel 0, 0, v[355], v[356] .dst 550445
+			    v[18] = 550445
+			    @loop v[356] .dst v[15] {
+				@loop v[355] .dst v[16] {
+				    v[17] = v[v[18]]
+				    @if `(v[17] & 0xFF000000) == 0xFF000000 {
+					v[358] = v[12] + v[16]
+					v[359] = v[13] + v[15]
+					v[358] -= v[355] / 2
+					v[359] -= v[356] / 2
+					@pic[v[11]].setPixel .xywh v[358], v[359], 1, 1 .src v[17]
+					
+				    }
+				    v[18] += 1
+				    
+				}
+				
+				
+			    }
+			    
+			    v[899] /= 10
+			    
+			}
+			
+			
+		    }
+		    @img.save .pic v[11] .static .dst "user\debug"
+		    
+		}
+
+		@if t[v[523]] .contains "loadtile" {
+			
+		}
+		//opens a map
+		@if t[v[523]] .contains "openmap" {
+		    @call .cev 3
+		    v[523] = 511
+		    v[501] = 0
+		    t[v[523]] .split " ", t[501], v[342]
+		    t[501] .asg  .file "../Maps/define_maps", .utf8
+		    t[503] .asg "\t[502]@.*" .extract
+		    t[501].exMatch {
+			t[503]
+			t[501]
+			v[341]
+			.beg 0
+			.extract
+		    }
+		    t[750] .asg t[502]
+		    @if t[501] .neq "" {
+			t[501] .split "=", t[501], v[341]
+			t[502] .toNum v[501]
+			
+		    }
+		    @map[62].setPlayerPos .pos 12, 6 .retain
+		    @wait 0
+		    @if v[501] != 0 {
+			v[341] = 0
+			@map[v[501]].setPlayerPos .pos v[341] v[341]
+			
+		    } .else bl {
+			@map[60].setPlayerPos .pos 0, 0 .retain
+			
+		    }
+		    s[2].off
+		    
+		}
+		@if t[v[523]] .contains "genmappic" {
+		    @call .cev 1854
+		    
+		}
+		@if t[v[523]] .contains "gentilemap" {
+		    @call .cev 1853
+		    
+		}
+		@if t[v[523]] .contains "genheightmap" {
+		    @call .cev 1804
+		    t[510] .asg "\Maps\"
+		    t[510] .cat t[750]
+		    t[510] .cat "\"
+		    t[501] .asg t[510]
+		    t[501] .cat "heightmap_light"
+		    @img.save .pic PicID_elevation_add .static .dst t[501]
+		    t[501] .cat t[510]
+		    t[501] .asg t[510]
+		    t[501] .cat "heightmap_dark"
+		    @img.save .pic PicID_elevation_multi .static .dst t[501]
+		    
+		}
+		@if t[v[523]] .contains "mapcmd" {
+		    t[v[523]] .split " ", t[509], v[342]
+		    
+		}
+		@if t[v[523]] .contains "exec" {
+		    t[v[523]] .split " ", t[501], v[342]
+		    t[501] .asg "..\\Scripts\\"
+		    t[501] .cat t[502]
+		    t[510] .asg  .file t[501], .utf8
+		    @call .cev 1840
+		    t[510] .split t[525], t[v[1219]], v[505]
+		    @loop v[505] .dst v[506] {
+			v[11] = v[1219] + v[506]
+			t[510] .asg t[v[11]]
+			@call .cev 1821
+			t[3000..3300] .asg ""
+			
+		    }
+		    
+		    
+		}
+		@if t[v[523]] .contains "exagent" {
+		    t[v[523]] .split " ", t[501], v[342]
+		    t[503].toNum var1
+		    var1=var1*300+4700
+		    t[504].toNum var2
+		    func_export_deblog_array(t[502] var1 var2)
+		}
+		@if t[v[523]] .contains "exarray" {
+		    t[v[523]] .split " ", t[501], v[342]
+		    t[503].toNum var1 .extract
+		    var1 = v[var1]
+		    t[504].toNum var2
+		    func_export_deblog_array(t[502] var1 var2)
+		}
+		@if t[v[523]] .eq "convert_text" {
+		    @se.play "decide1" .opt 90, 100, 50
+		    t[501] .asg  .file "import", .utf8
+		    t[501] .split "@", t[3000], v[342]
+		    t[510] .asg ""
+		    @loop v[342] .dst v[11] {
+			v[12] = 3000 + v[11]
+			@if t[v[12]] .contains "msg.show" {
+			    t[v[12]] .split "msg.show ", t[2998], v[343]
+			    t[2999] .split """", t[2998], v[343]
+			    t[2999] .split t[525], t[502], v[343]
+			    t[2999] .asg ""
+			    @loop v[343] .dst v[355] {
+				v[13] = 502 + v[355]
+				t[2999] .cat t[v[13]]
+				t[2999] .cat "\t[525]"
+				
+			    }
+			    
+			    t[510] .cat t[2999]
+			    t[510] .cat t[525]
+			    
+			}
+			
+		    }
+		    
+		    t[510] .asg  .rep t[510], """\t[525]\t[525]", ""
+		    t[510] .toFile "export", .utf8
+		    
+		}
+		@if t[v[523]] .eq "see u all" {
+		    @se.play "decide1" .opt 90, 100, 50
+		    v[562447..572446] |= 1
+		    
+		}
+		@if t[v[523]] .eq "reveal map" {
+		    @se.play "decide1" .opt 90, 100, 50
+		    v[v[4527]..v[4527]+80*80] |= 7
+		    
+		}
+		@if t[v[523]] .eq "wanna test cont" {
+		    @se.play "decide1" .opt 90, 100, 50
+		    v[2759] = 4
+		    v[2760] = 4
+		    v[2503] = 20
+		    v[2520] = 19
+		    v[2758] += 7
+		    
+		}
+		@if t[v[523]] .eq "editmap export" {
+		    t[509] .asg ""
+		    @loop v[1004] .dst v[341] {
+			v[202] = v[341] + 1
+			@comment "配列ゲット"
+			v[300] = v[202]
+			v[298] = v[202] * 300 + 4700
+			v[601] = v[298] + 1
+			@if v[v[601]] >= 1 {
+			    @comment "ordinary unit"
+			    @if v[v[601]] != 11 {
+				v[254] = v[v[298] + 101]
+				v[251] = v[v[298] + 100]
+				v[280] = v[v[298] + 244]
+				v[277] = v[v[298] + 241]
+				v[258] = v[v[298] + 35]
+				v[341] = v[298] + 26
+				v[v[341]].copy v[341], 2
+				v[342] -= 1
+				t[509] .cat "spawn_unit(\v[254],\v[341],\v[342],\v[251],\v[258],\v[280],\v[277])" .extract
+				t[509] .cat t[525]
+				
+			    } .else bl {
+				@comment "#spawnStatic"
+				@if v[v[601]] == 11 {
+				    v[254] = v[v[298] + 102]
+				    @if v[v[254]] != 107 {
+					v[254] = v[v[298] + 101]
+					@if v[254] > 0 {
+					    v[251] = v[v[298] + 100]
+					    v[258] = v[v[298] + 35]
+					    v[341] = v[298] + 26
+					    v[v[341]].copy v[341], 2
+					    v[342] -= 1
+					    t[509] .cat "spawn_static(\v[254],\v[341],\v[342],\v[251],\v[258])" .extract
+					    t[509] .cat t[525]
+					    
+					}
+					
+				    } .else bl {
+					
+				    }
+				    
+				}
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		    @comment "*get map str*"
+		    t[510] .asg "..\Maps\map_"
+		    t[510] .cat t[751]
+		    t[510] .cat "\\"
+		    t[510] .cat "export"
+		    t[509] .toFile t[510], .utf8 //not sjis
+		    
+		}
+		@if t[v[523]] .eq "editmap finish" {
+		    @call .cev 1852
+		    
+		}
+		@if t[v[523]] .eq "editmap" {
+		    @call .cev 1851
+		    
+		}
+		@if t[v[523]] .eq "kill all enemy" {
+		    @se.play "encounter_sea_raider_5" .opt 90, 100, 50
+		    @wait 5
+		    v[313..314] = 0
+		    @loop v[1004] .dst v[341] {
+			v[202] = v[341] + 1
+			@comment "配列ゲット"
+			v[300] = v[202]
+			v[298] = v[202] * 300
+			v[700] = 4800 + v[298]
+			@comment "Safety 味方のみ"
+			@if v[v[700]] == 1 {
+			    v[700] += 6
+			    @comment "Safety HPある"
+			    @if v[v[700]] > 0 {
+				v[298] += 4701
+				v[305..312] = v[300] * 300
+				v[701] = v[298] + 100
+				v[229] = v[v[701]] == 40 ? 47 : 0
+				s[34].on
+				@call .cev 41
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		    
+		}
+		@if t[v[523]] .eq "kill all ally" {
+		    @se.play "encounter_sea_raider_5" .opt 90, 100, 50
+		    @wait 5
+		    v[313..314] = 0
+		    @loop v[1004] .dst v[341] {
+			v[202] = v[341] + 1
+			@comment "配列ゲット"
+			v[300] = v[202]
+			v[298] = v[202] * 300
+			v[700] = 4800 + v[298]
+			@comment "Safety 味方のみ"
+			@if v[v[700]] == 0 {
+			    v[700] += 6
+			    @comment "Safety HPある"
+			    @if v[v[700]] > 0 {
+				v[298] += 4701
+				v[305..312] = v[300] * 300
+				v[701] = v[298] + 100
+				v[229] = v[v[701]] == 40 ? 47 : 0
+				s[34].on
+				@call .cev 41
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		    
+		}
+		@if t[v[523]] .eq "Good morning I hate dragons" {
+		    @se.play "encounter_sea_raider_5" .opt 90, 100, 50
+		    @wait 5
+		    v[313..314] = 0
+		    @loop v[1004] .dst v[341] {
+			v[202] = v[341] + 1
+			@comment "配列ゲット"
+			v[300] = v[202]
+			v[298] = v[202] * 300
+			v[700] = 4800 + v[298]
+			@comment "Safety 味方のみ"
+			@if v[v[700]] == 0 {
+			    v[700] += 6
+			    @comment "Safety HPある"
+			    @if v[v[700]] > 0 {
+				@if `v[v[298] + 4764] == 3 {
+				    v[298] += 4701
+				    v[305..312] = v[300] * 300
+				    v[701] = v[298] + 100
+				    v[229] = v[v[701]] == 40 ? 47 : 0
+				    s[59].on
+				    @if v[v[701]] == 71 {
+					@comment "天帝を殺した"
+					s[440].on
+					
+				    }
+				    s[34].on
+				    @call .cev 41
+				    
+				}
+				
+			    }
+			    
+			}
+			
+		    }
+		    
+		    
+		}
+		@if t[v[523]] .eq "Robin hood" {
+		    @se.play "encounter_sea_raider_nv10" .opt 90, 100, 50
+		    v[300004] += 1000
+		    @call .cev 84
+		    
+		}
+		@if t[v[523]] .eq "How do you turn this on" {
+		    @se.play "Panzervor" .opt 100, 100, 50
+		    @loop 1 {
+			v[251] = 0
+			v[51].copy v[252], 2
+			@call .cev 253
+			
+		    }
+		    
+		    
+		}
+		@if t[v[523]] .eq "Lets all love dragons" {
+		    @se.stop
+		    @loop 4 {
+			v[251] = 0
+			v[51].copy v[252], 2
+			@call .cev 238
+			@wait 8
+			
+		    }
+		    
+		    
+		}
+		t[v[523]] .asg ""
+	}
+
+}
+
+//LEGACY cev
+__if PROJECT_NAME == "DIS_LEGACY" {
+	def cevid_ConsoleCmd=1850
+	cev .id(cevid_ConsoleCmd), .name("*Console Cmd*"),{
+		console_cmd_call()
+	}
+}

@@ -1,0 +1,22 @@
+// loaded by header_ai.tpc
+
+// clear ai agent list - cev 1748
+__fn aiList_clear {
+	v[ptr_null].copy v[Const_save_var_Adr_aiAgentlistHead],aiListSize // init List
+	aiListAgentCounter = 0 // init counter
+	aiListPtr = Const_save_var_Adr_aiAgentlistHead // reset ptr address into listhead
+}
+
+__fn aiList_push $arg {
+
+	v[aiListPtr] = $arg
+	aiListAgentCounter += 1 // increment counter
+	aiListPtr += 1 // increment Ptr
+	
+	__if DEBUG_BUILD == 1 { // alert 
+		@if aiListAgentCounter > aiListSize {
+			func_errlog("Too many agents are pushed in the AI agent list!")
+		}
+	}
+
+}

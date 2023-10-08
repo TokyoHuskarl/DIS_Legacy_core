@@ -1,0 +1,98 @@
+//you need to inlcude module_scalescript_main.tpc before inplementing SSLibs into your project...
+
+
+//Use defs to set which RM str becomes link of your Package
+//t[114514] used as sample package linker here.
+defs SS_sample_yourLINKstr = 114514 
+
+//declaration of EXAMPLE PACKAGE
+//パッケージ宣言（testのほうに書いたので省略）
+__fn SScmdPackage_Sample $LINKstr $md $counter $given_v_or_str $flags {
+	SScmdPackage_Build({
+		//you must init $counter in the first line of Package
+		SScmdPackage_Init($md $counter $given_v_or_str)
+		//And first lib must have First Library flag like this:
+		$firstlib = $flags + SScmd_Flag_FirstLib
+		libsample($LINKstr $md $counter $given_v_or_str $firstlib)
+		//then feel free to add your libs like this
+
+		//just put lib fucntions with these same arguments given from SScmdPackage. 
+		//By doing that, those libs will be automatically added into your cmd package.
+		//well that's only if your libs were made correctly with SScmdLib_Build(...), though.
+		additional_lib($LINKstr $md $counter $given_v_or_str $flags)
+	})
+}
+
+//ライブラリ宣言
+//Sample Libとして一つのライブラリにまとめる
+__fn libsample $LINKstr $md $i $given_v_or_str $flags {
+//use SScmdLib_Build function to build command library
+//基本的にコマンド内容以外は名前をつけられるだけ（現状）
+SScmdLib_Build("Sample Lib",$LINKstr, $md, $i, $given_v_or_str, $flags, [
+	//set your commands with SScommand(...) function to build your command library
+	//{SScommand($LINKstr, $md, return_type, "Name", argv_type_list, [main function block,help function block])},
+
+	//一行で済む書き方
+	//引数は順番に　
+	//データベース文字列変数，モード，パッケージ汎用変数，返り値の型（現在定義できるだけで機能していない），コマンド名（これを入力/記述すればコマンドが呼び出される），
+	//引数の型（仕様上無限だが文字列変数に展開するのでheaderの最初の部分で最大数を調節できるようにするつもり），[メインブロック,ヘルプ時のブロック]<-たぶんフラグとか使えば拡張できる
+	//各ブロック内には自由にTPCイベントコマンドが記述でき，headerに定義されているSSargs0~から引数を取得して処理できる（ただし文字列変数なので数字にするにはtoNum等が必要）
+
+	//If you want to make lib look less messy, you can define your command even in just one line like this:
+	{SScommand($LINKstr, $md,$i, void, "rmmsg", nargs_nolimit,[str],[{@msg.show SSargs0},{SSreturn_string("help helper")}])},
+
+	//or you can use dummy functons (MAIN,HELP) to make it look more fancy  
+	//headerの下のほうに置いてるMAIN() HELP()といった，渡されたブロックを実行するだけのダミー関数を使ってこんな感じで定義することもできる
+	{SScommand($LINKstr, $md, $i,
+		//RegType, Name, [argtype,...],[functionlist]
+		var, "hi",nargs_nolimit,[str,var],[
+		//The former block will usually be executed when the command is called 
+		MAIN({
+			//you can insert basically whatever tpc command to function block
+			//but you shouldn't call RM default battle process via SScmd I guess
+			@msg.show "hi"
+			//if you use any arguments, use SSargs0~ RMstr.
+			//Initially arguments are given to a command as string (since it's the simplest way with 2003MP's system)
+			//here simply show SSargs0 str via RMmsg
+			@msg.show SSargs0
+			//SSargs1 is defined as var type arg, but if you use your argvs as number, 
+			//you need to convert given SSargs into RMvar with .toNum like this
+			SSargs1.toNum(SSreg1)
+			SSreg1 += 4545
+			@msg.show SSargs0
+			
+			//Command RegType
+		}),
+		//The latter block is for help(), you can insert other functions as well but you maybe should just let it return string into str_SSreg1
+		HELP({
+			//Using SSreturn_string function is maybe the most simple way to set help function for a SScommand
+			SSreturn_string("help helper")
+		})]
+	)},
+
+	//to get more practical sample, check module_SSbasiclib.tpc 
+
+])
+
+}
+
+//追加ライブラリ
+//another sample command library
+__fn additional_lib $LINKstr $md $i $given_v_or_str $flags {
+SScmdLib_Build("Sample Lib part2",$LINKstr, $md, $i, $given_v_or_str, $flags, [
+
+	{SScommand($LINKstr, $md, $i,
+			void,  "dragonkiller",nargs_nolimit,[],[
+			MAIN({
+				@msg.show "I hate dragons so much it's unreal"
+			}),
+			HELP({
+				SSreturn_string("help helper")
+			})]
+		)
+	},
+
+
+])
+
+}

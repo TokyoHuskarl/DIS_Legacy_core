@@ -2,14 +2,334 @@
 //このファイルをコンパイルするとRTSモードの操作システムが更新されます
 
 #include "./../headers/header_common.tpc"
+#include "./../headers/header_ui.tpc"
+#include "./../headers/header_control.tpc"
+#include "./../headers/header_scripts.tpc" 
+// #include "./../headers/header_agent.tpc" -> imported in header_scripts.tpc
+
+
+#include "./module_core_RTS_misc_functions.tpc"
 
 def moduletitle="module_core_RTS_control_general.tpc"
 
+#include "./module_core_RTS_mission_map_functions.tpc"
+#include "./module_core_RTS_control_mapedit.tpc"
+#include "./module_core_RTS_control_moveorders.tpc"
 
 cev .id(45) ,.name("Control:Mouse"), .parallel , .cond(Const_Is_RTS_Mode), {
 #include "./module_core_RTS_control_mouse.tpc"
 }
 
-cev .id(52) ,.name("Control:Keyboard"), .parallel , .cond(Const_Is_RTS_Mode), {
 #include "./module_core_RTS_control_keyboard.tpc"
+cev .id(52) ,.name("Control:Keyboard"), .parallel , .cond(Const_Is_RTS_Mode), {
+	CEV_CONTROL_KEYBOARD()
 }
+
+#include "./module_core_RTS_control_selecting_agents.tpc"
+cev .id(50),.name("cont:Selecting Group"), {
+	CEV_CONTROL_SELECT_AGENTS_GROUP()
+}
+
+cev .id(51) ,.name("Control:MilMoveOrder"), {
+	func_control_moveorder_mil()
+
+}
+
+cev .id(1901), .name("search unit"), {
+	@comment "v1=UnitID v2=UnitType"
+	s[24..29].off
+	reg1 = -1
+	v[202] = 101
+	@if v[942] >= 1 {
+			v[141] = 0
+			
+	}
+	@loop v[1012] {
+			@if v[202] >= 141 {
+					@break
+					
+			}
+			v[141] %= v[1012]
+			@comment "Check Player Team List"
+			TT1 = v[141] + v[1145]
+			@if v[TT1] >= 1 {
+					TT2 = v[TT1] * 300 + 4701
+					Temp10 = TT2 + 23
+					@if v[TT2] == var2 {
+							s[27].off
+							@if v[TT2] == 11 {
+									s[27].on
+									
+							}
+							TT2 += 99
+							@comment "team"
+							@if v[TT2] == 0 {
+									TT2 += 1
+									@comment "ID"
+									@if v[TT2] == var1 {
+											@if reg1 == -1 {
+													v[99] = 1
+													v[101..140] = 0
+													v[100..101] = v[TT1]
+													reg1 = v[TT1]
+													v[Temp10] = 0
+													
+											} .else bl {
+													s[24].on
+													v[202] += 1
+													v[99] += 1
+													v[v[202]] = v[TT1]
+													
+											}
+											@if v[942] < 1 {
+													v[141] += 1
+													@break
+													
+											}
+											
+									}
+									
+							}
+							
+					}
+					
+			}
+			v[141] += 1
+			
+	}
+
+	@if reg1 >= 1 {
+			@if v[942] >= 1 {
+					@loop v[1012] {
+							s[22].off
+							v[141] %= v[1012]
+							@comment "Check Player Team List"
+							TT1 = v[141] + v[1145]
+							@if v[TT1] >= 1 {
+									TT2 = v[TT1] * 300 + 4701
+									Temp20 = TT2 + 99
+									Temp10 = TT2 + 23
+									@if v[TT2] == var2 {
+											TT2 += 99
+											@comment "team"
+											@if v[TT2] == 0 {
+													TT2 += 1
+													@comment "ID"
+													@if v[TT2] == var1 {
+															s[22].on
+															v[Temp10] = 0
+															
+													}
+													
+											}
+											
+									}
+									@if s[22] .isOff() { // LMFAO it's fucking retarded
+											@if v[Temp20] == 0 {
+													v[Temp10] = 1
+													
+											} .else bl {
+													@if v[Temp20] == 1 {
+															v[Temp10] = 2
+															
+													} .else bl {
+															@if v[Temp20] == 2 {
+																	v[Temp10] = 3
+																	
+															} .else bl {
+																	@if v[Temp20] == 3 {
+																			v[Temp10] = 4
+																			
+																	} .else bl {
+																			
+																	}
+																	
+															}
+															
+													}
+													
+											}
+											
+									}
+									
+							}
+							v[141] += 1
+							
+					}
+					
+					
+			} .else bl {
+					@loop v[1012] {
+							s[22].off
+							v[141] %= v[1012]
+							@comment "Check Player Team List"
+							TT1 = v[141] + v[1145]
+							@if v[TT1] >= 1 {
+									TT2 = v[TT1] * 300 + 4701
+									Temp20 = TT2 + 99
+									Temp10 = TT2 + 23
+									@if v[Temp20] == 0 {
+											v[Temp10] = 1
+											
+									} .else bl {
+											@if v[Temp20] == 1 {
+													v[Temp10] = 2
+													
+											} .else bl {
+													@if v[Temp20] == 2 {
+															v[Temp10] = 3
+															
+													} .else bl {
+															@if v[Temp20] == 3 {
+																	v[Temp10] = 4
+																	
+															} .else bl {
+																	
+															}
+															
+													}
+													
+											}
+											
+									}
+									
+							}
+							v[141] += 1
+							
+					}
+					
+					TT2 = reg1 * 300 + 4724
+					v[TT2] = 0
+					
+			}
+			@call .cev 48
+			
+	}
+	s[22].off
+}
+
+cev .id(2099), .name("cont:Search Worker"), {
+	defv cev2099_SearchHIT = __id(TempFlag1)
+	cev2099_SearchHIT = 0
+	Ptr10 = 101
+	@if GETKEY_Ctrl > 0 { // pick just one unit
+		v[141] = 0
+	}
+	Temp11 = v[1012] // loop 
+	@loop Temp11 {
+			v[141] %= Temp11
+			@comment "Check Player Team List"
+			TT1 = v[141] + v[1145]
+			@if v[TT1] >= 1 {
+					TT2 = v[TT1] * 300
+					TT2 += 4802
+					TT3 = v[TT2] == 9 || v[TT2 - 101] == 9 || v[TT2 - 99] & 2097152 ? 0 : 1
+					TT2 -= 101
+					@if TT3 == 0 {
+							@comment "Not otherteam"
+							@if `v[TT2 + 99] == 0 {
+									TT2 += 241
+									@comment "今度さんこうえんざんにする"
+									@if v[TT2] <= 0 {
+											TT2 += 1
+											@comment "State Free"
+											@if v[TT2] == 0 {
+													TT2 += 4
+													@comment "Job Free"
+													@if v[TT2] == 0 {
+															@if cev2099_SearchHIT == 0 {
+																v[101..140] = 0
+																v[99] = 0
+																v[98] = 0
+																v[100] = v[TT1]
+																reg1 = v[TT1]
+															}
+															cev2099_SearchHIT = 1
+															s[24..29].off
+															s[26].on
+															v[Ptr10] = v[TT1]
+															v[375] = 1 // civil unit
+															v[98] += v[v[TT1] * 300 + 4805]
+															v[99] += 1
+															Ptr10 += 1
+															@if GETKEY_Ctrl <= 0 {
+																v[141] += 1
+																@break
+															}
+															@if v[99] >= 40 {
+																@break
+															}
+															
+													}
+													
+											}
+											
+									}
+									
+							}
+							
+					}
+					
+			} .else bl {
+					@comment "assigned unit not found"
+					reg1 = -1
+					
+			}
+			v[141] += 1
+			
+	}
+	
+
+	@if cev2099_SearchHIT == 1 {
+			@call .cev 48
+			@comment "マーカーの色調整"
+			@comment "#########################"
+			v[472] = divmul(70, 100, v[2216])
+			@se.play "ui\clock01" .opt v[472], 110, 50
+			@comment "#########################"
+			@loop v[1004] .dst Temp1 {
+					Temp2 = Temp1 * 300
+					Temp2 += 5001
+					@if v[Temp2] > 0 {
+							Temp10 = Temp2 + 23
+							Temp20 = Temp2 + 99
+							@if v[Temp20] == 0 {
+									v[Temp10] = 1
+									
+							}
+							@if v[Temp20] == 1 {
+									v[Temp10] = 2
+									
+							}
+							
+					}
+					
+			}
+
+
+			// colour change selected ones
+			Temp1 = 101
+			@loop v[99] {
+				TT1 = v[Temp1] * 300
+				TT1 += 4724
+				v[TT1] = 0
+				Temp1 += 1
+			}
+			
+			
+			@if GETKEY_Ctrl <= 0 {
+				// move camera
+				TT1 = v[101] * 300
+				TT1 += 4705
+				v[TT1].copy var1, 2
+				@call .cev 1999
+				reg1.copy v[66], 2
+				s[44].on
+				s[200].on
+			}
+			
+	}
+
+}
+
+#include "./module_core_RTS_control_camera.tpc"

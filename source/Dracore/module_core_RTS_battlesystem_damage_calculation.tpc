@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 def damage_base_morale_check = 15
 
 
@@ -730,3 +731,766 @@ __fn func_damage_calculation {
 	    // "r1=raw damage	r2=damage to HP"
 	}
 }
+=======
+def  damage_base_morale_check = 15
+
+
+#include "./../preset_databases/particles/module_psp_particle_register.tpc"
+
+
+
+__fn func_damage_calculation {
+	/* Access19 = AttackerObjectID 1~ +4700
+	Access20 = TargetObjectID 1~ +4700
+	Access18 = ObjTypeチェックPtr
+	Ptr10 = Ptr20*300
+	temp1 = ダメージ量
+	temp2 = 計算　#0=AR 1=MR 2=True Damage
+	temp3 = 属性
+	AttackerAABits  = AttackBits
+	var10 = DefBits
+	reg1= damage
+	reg2= damage-armor*/
+
+	defv {
+		argv_raw_dmg_amount = __id(Temp1)
+		argv_damage_cal_type =  __id(Temp2)
+		argv_damage_attribution = __id(Temp3)
+
+		reg_actual_dmg = __id(reg1)
+		reg_actual_dmg_after_armor = __id(reg2)
+
+
+		damage_multiplier = 421
+		
+		AttackerAABits = __id(var9) 
+
+	}
+
+	@comment "module_core_RTS_battlesystem_damage_calculation.tpc"
+	v[36] = Ptr20
+	s[219..220].off
+	s[168].off
+	@if argv_raw_dmg_amount != 0 {
+		// Ptr19 = AttackerID
+		// Ptr20 = VictimID
+		Ptr19.copy TT1,2
+		v[__id(TT1)..__id(TT2)] += 500
+		@if s[TT1].isOn() {
+			LEGS_DmgCalAtker_can_be_seen.on
+		}.else bl {
+			LEGS_DmgCalAtker_can_be_seen.off
+		}
+
+		@if s[TT2].isOn() {
+			LEGS_DmgCalVictim_can_be_seen.on
+		}.else bl {
+			LEGS_DmgCalVictim_can_be_seen.off
+		}
+		// ? is this really faster???
+
+		v[190] = argv_damage_attribution
+		// "#ダメージポップカラーもみておく"
+		LEGV_PopColour = argv_damage_cal_type
+		Ptr10 = Ptr20 * agent_Basic_Array_size // victimID * 300
+		Ptr11 = Ptr10 + 4701 // Ptr to victim data
+
+		v[Ptr11].copy victim_AgentType, agent_Basic_Array_size // copy victim data to victim buffer
+		
+
+		Ptr9 = Ptr19 * agent_Basic_Array_size // attackID * 300
+		Ptr1 = Ptr9 + 4701 // Ptr to atker data
+		v[Ptr1].copy agent_AgentType, agent_Basic_Array_size
+
+		// Temp2 is calculation type
+		@if Temp2 == 2 { // TRUE DAMAGE!
+			v[21..22] = argv_raw_dmg_amount
+			// "#HP check"
+			val_sub(victim_HP,reg2) // victim_HP -= reg2
+			victim_HP = min(victim_HP, victim_MaxHP)
+			
+		} .else bl {
+			// "102にARかMRを取得"
+			//var1 = Ptr20
+			var2 = SLOT_CURRENT_AR + Temp2
+			macro_get_agent_slot_to_r1(Ptr20 var2) // can be removed
+			
+			// "#Indomitable Perk gives victim AR/MR bonus 
+			reg1 += victim_PerkFlagBits1 & PerkFlagBits1_FLAG_Indomitable ? victim_ProcessWill : 0
+			// "回復属性に注意"
+			argv_damage_cal_type = argv_damage_cal_type <= -1 ? 0 : reg1
+
+
+			// AA flags which won't affect result here are set off in Melee AA cev(34) to improve performance"
+			@if AttackerAABits > 0 {
+				@if victim_UnitType >= 100 { // static
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiBuilding ? 200 : 0
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiBuilding_SUPER ? 2300 : 0
+
+				}.elif victim_UnitType == UNIT_CLASS_INF {
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiInf ? 70 : 0
+					
+				}.elif victim_UnitType == UNIT_CLASS_ARCHER {
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiArcher ? 70 : 0
+
+				}.elif victim_UnitType == UNIT_CLASS_CAV {
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiCav ? 70 : 0
+					damage_multiplier += AttackerAABits & AABits_FLAG_Camel && victim_ExMotionFlags & ExMotionFlags_FLAG_horseback && !(victim_AddMotionBits & AddMotionFlags_FLAG_Camel) ? 30 : 0
+
+				}.elif victim_UnitType == UNIT_CLASS_MAGE {
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiMage ? 70 : 0
+
+				}.elif victim_UnitType == UNIT_CLASS_SIEGE {
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiSiege ? 70 : 0
+
+				}
+					damage_multiplier += AttackerAABits & AABits_FLAG_DevastatingStrikes ? 20 : 0
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiHero && victim_BaseObjBit & 4194304 ? 70 : 0
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiDragon && victim_Race == 3 ? 70 : 0 // DRAGONS
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiAir && victim_MoveTypeBIts & MoveTypeBits_Flying ? 50 : 0
+					
+			}
+			// "Check Obj Bit"
+			// "#RangedDamageResist"
+			damage_multiplier /= argv_damage_attribution == 1 && victim_ProcessObjBit & BaseObjBit_FLAG_RangedDamageResist ? 2 : 1
+			// "#Halve All  Damage"
+			damage_multiplier /= victim_ProcessObjBit & BaseObjBit_FLAG_HalveAllDamage ? 2 : 1
+			// "##############	CheckBitsEND##############"
+
+
+			
+			@if LEGV_PopColour > -1 { // 224 = popcolour
+					
+					// "#Get AReff/pen #if the damage is magical, set both 0"
+					agent_AA_AR_effectiveness = LEGV_PopColour == 0 ? __id(agent_AA_AR_effectiveness) : 1301
+					v[agent_AA_AR_effectiveness].copy agent_AA_AR_effectiveness, 2
+
+					// "#If Crit, AR pen gets amplified"
+					agent_AA_AR_penetration = min(agent_AA_AR_penetration * (damage_multiplier > 200 ? 2 : 1), 100)
+					@if damage_multiplier >= 200 {
+						s[168].on
+				
+					}
+
+					/*// "(実際に受けるダメージ)=	(計算前のダメージ)×(100 / (100 +(AR.MR)))×(ダメージ倍率)	(temp1)X(temp4*(100 + temp2)*100)/100	ARならARから引いていく	Pen分はHPに通る"*/
+					reg_actual_dmg = muldiv(argv_raw_dmg_amount, damage_multiplier, 100 + muldiv(Temp2, 100 - agent_AA_AR_penetration, 100))
+
+					// "#AR check"
+					// "#[70%] of AR covers HP"
+					reg_actual_dmg_after_armor = reg_actual_dmg - muldiv(muldiv(victim_BaseAR, 70, 100), 100 - agent_AA_AR_penetration, 100)
+
+					// "#Nimble"
+					reg_actual_dmg_after_armor = muldiv(reg_actual_dmg_after_armor, victim_TakenDamageMultiplier, 100)
+
+					// "#AR adjustment"
+					// "##Battle Forge...10%"
+					victim_BaseAR = max(0, victim_BaseAR - max(1, muldiv(reg_actual_dmg / 2, 100 + agent_AA_AR_effectiveness - (victim_PerkFlagBits1 & PerkFlagBits1_FLAG_BattleForged ? muldiv(victim_BaseAR, 10, 100) : 0), 100)))
+					// "#HP check"
+					victim_HP = victim_HP - reg_actual_dmg_after_armor
+					victim_HP = min(victim_HP, victim_MaxHP)
+
+					// "not in sight Alert "
+					// "########	ALERT#######"
+					@if LEGS_DmgCalVictim_can_be_seen .isOff() {
+						@if victim_TeamID == 0 {
+							@if v[2510] <= 0 {
+								v[2509] = victim_UnitType // get troop type
+								victim_MapX.copy v[2507], 2
+								// "Minimap ぶち込み"
+								v[2507] = muldiv(v[2507], 100, v[430])
+								v[2508] = muldiv(v[2508], 100, v[431])
+								v[2510] = 250 // f
+								
+							}
+								
+						}
+						
+					}
+
+					// "########	ALERT END####### "
+
+
+					// Cohort battle move
+					@if v[2661] < 0 {
+						// "Has Cohort"
+						@if victim_Cohort_ID > 0 {
+								v[2665] = victim_Cohort_ID
+								@if victim_TeamID == 1 { // CPU unit
+									v[2664] = victim_TeamID
+									v[2661] = victim_AgentType
+									victim_MapX.copy v[2662], 2
+									
+								}
+								
+						}
+						
+					}
+
+					@if victim_AgentType < 9 {
+				// "#If the victim has no target obj AND is in the alert stance AND not civs nor static, then try to target the attacker"
+						@if victim_TargetAgentID == 0 {
+								@if `!(victim_AI_routine_bits & 1) {
+									victim_TargetAgentID = victim_TeamID != agent_TeamID && victim_StanceOrder == 0 && victim_MovementOrder != 3 ? Ptr19 : 0
+							
+								}
+								
+						}
+				
+					}
+
+					victim_InCombatTimer = v[1240] * v[4571]
+					
+			} .else bl { // OTHERWISE HEAL AGENT...
+					// "#Heal wont affect those who don't bleed"
+					reg2 = Temp1
+					@if LEGV_PopColour == -1 {
+						v[21..22] = Temp1 * (victim_ProcessObjBit & BaseObjBit_FLAG_Immune_to_bleed ? 0 : 1)
+				
+					}
+					LEGV_PopColour = -1
+					// "#Overheal"
+					v[21..22] /= victim_ProcessInstantState & 1 ? 5 : 1
+					// "#Just Heal"
+					victim_HP -= reg2
+					victim_HP = min(victim_HP, victim_MaxHP)
+					
+			}
+			
+		}
+
+
+		// copy back buffer data to the victim's actual agent data 
+
+		// ----------------------------
+		// DAMAGE CALCULATION END
+		// ----------------------------
+
+		// damage popup
+		victim_RelativeX.copy v[221], 2
+		v[225] = damage_multiplier
+		// "#描画範囲内か？"
+		@if LEGS_DmgCalAtker_can_be_seen .isOn() {
+			dmg_popup()
+		}
+
+		@if s[313] .isOn() { // ?
+			@if v[2218] == 0 {
+					@call .cev 1924
+					TT1 = 2
+					TT2 = [10, 5, 8, 1][victim_TeamID]
+					v[330] = v[4562] + Ptr20
+					@pic[v[1155]].strpic {
+						t[20307]
+						.pos TT1, v[1126] .bottomLeft
+						.size 0, 0                .chromakey 1
+						.scale 100
+						.trans 30
+						.rgbs 100, 100, 100, 100
+						.font Font_UI, Font_UI_size
+						.spacing 0, 4
+						.skin "" .nobg .noframe .noPadding
+						.mapLayer 8
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
+					}
+					@call .cev 1925
+					
+			}
+			
+		}
+		
+		// "ダメージポップアップ処理end"
+		// "KILL"
+		v[371] = victim_HP <= 0 ? 1 : 0
+		v[371] += victim_AgentType > 0 ? 1 : 0
+		@if v[371] >= 2 {
+			// "ninelives"
+			@if `victim_PerkFlagBits1 & PerkFlagBits1_FLAG_Ninelives {
+					victim_PerkFlagBits1 &= -2049 //~2048 - kill ninelives available flag
+					victim_HP = rnd(80, 100) // set random slight HP
+					copyback_victim_data(Ptr11) // copy back to the agent data before setting ninelives buff, since the buff register function below directory add to the data memory array
+					func_bs_register_buff_with_time(1173,Ptr20,DIS_Game_FPS*3) // give the buff for 3secs
+
+
+					// "Bless Particle"
+					@loop v[1017] .dst Temp20 {
+						v[244] %= v[1199]
+						v[331] = v[244] * 50 + v[1198]
+						@if v[v[331]] <= 1 {
+								// "まず清掃"
+								v[1301].copy v[v[331]], 50
+								// "ポインタセット開始"
+								// "設定"
+								v[v[331]] = 1
+								// "500F"
+								v[v[331] + 49] = 48 * 3
+								// "Set itself"
+								v[v[331] + 3] = 126
+								// "Set Parent Obj"
+								v[v[331] + 9] = Ptr20
+								// "普通にアニメ"
+								TT1 = v[331] + 6
+								victim_RelativeX.copy v[TT1], 2
+								// "Colour"
+								v[0] = v[v[331] + 31..v[331] + 38] = [150, 150, 0, 90, 150, 150, 0, 60]
+								// "仕上げに登録消す"
+								v[244] += 1
+								@break
+								
+						}
+						v[244] += 1
+						
+					}
+					
+					@if LEGS_DmgCalVictim_can_be_seen .isOn() {
+						v[472] = divmul(85, 100, v[2216])
+						v[473] = 100
+						v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
+						@se.play "Raise3" .opt v[472], v[473], v[474]
+				
+					}
+					
+			} .else bl {
+					// "Increment Attacker TroopID KillCount"
+					//if not static
+					@if agent_ObjectType < 11 {
+						v[v[1259] + (agent_UnitID - 1) * 4 + 1 + agent_SaveActualTeamID * v[1260] * 4] += 1
+					}
+
+					// "#####################Fatality Check"
+					// "#At least you need 85 dmg to cause fatality"
+					var1 = 0
+					var10 = reg2
+					@if reg2 >= 85 {
+						TT1 = reg2 / 15
+						// "#Critical Quadruple the possibility#Headhunter gives additional bonus"
+						TT1 *= (agent_PerkFlagBits2 & 8 ? 1 : 0) + (damage_multiplier >= 200 ? 4 : 1)
+						// "ROLL!"
+						var1 = TT1 >= rnd(1, 100)// ? 1 : 0 //opt
+						
+					}
+					// "Fatality Check END#####################"
+
+
+					
+					copyback_victim_data(Ptr11) // copy back victim data - this might not be needed in near future
+
+					// before killing!
+					@if agent_PerkFlagBits2 > 0 { //atker perk2
+
+						// "Battle Flow"
+						@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_BattleFlow {
+								// "#gain 18% WeaponSkill CD per kill"
+								agent_Skill1CDtimer -= divmul(agent_skill1_CD, 100, 18)
+								
+						}
+						// "Berserk"
+						@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_Berserk {
+								// "#regain SP*20% per kill#THIS MIGHT BE TOO STRONG be careful to adjust"
+								agent_SP = min(agent_MaxSP, agent_SP + muldiv(agent_MaxSP, 20, 100))
+								// "#regain HP*8% per kill#THIS MIGHT BE TOO STRONG be careful to adjust"
+								agent_HP = min(agent_MaxHP, agent_HP + muldiv(agent_MaxHP, 8, 100))
+								
+						}
+
+						// refresh atker data
+						save_agent_vars(Ptr1)
+						// perk checks after re-inserting atker data 
+						// "Killing Frenzy"
+						@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_KillingFrenzy {
+								// "#Gain Rage for about 5sec "
+								func_bs_register_buff_with_time(1181,Ptr19,250)
+								// "KF Particle"
+								@loop v[1017] .dst Temp20 {
+									v[244] %= v[1199]
+									v[331] = v[244] * 50
+									v[331] = v[331] + v[1198]
+									@if v[v[331]] <= 1 {
+											// "まず清掃"
+											v[1301].copy v[v[331]], 50
+											// "ポインタセット開始"
+											// "設定"
+											v[v[331]] = 1
+											// "500F"
+											v[v[331] + 49] = 250
+											// "Set itself"
+											v[v[331] + 3] = 125
+											// "Set Parent Obj"
+											v[v[331] + 9] = Ptr19
+											// "普通にアニメ"
+											TT1 = v[331] + 6
+											v[361].copy v[TT1], 2
+											// "仕上げに登録消す"
+											v[244] += 1
+											@break
+											
+									}
+									v[244] += 1
+									
+								}
+								
+								
+						}	
+					}
+
+
+					// "Element"
+					var2 = v[190]
+					// "#####################Call Command Preparation"
+					v[472] = 0
+					v[473] = 41
+					v[474] = 16
+					v[471] = 12330
+					@cmd v[471], "", .args v[472], 3 // call kill event via @cmd! 
+					v[Ptr1].copy agent_AgentType, agent_Basic_Array_size
+					
+
+					
+			}
+			
+		} .else bl {
+			@if LEGV_PopColour != -1 {
+
+					// "#Damaged Flag Check"
+					// "#below 50%"
+					@if `victim_HP < victim_MaxHP / 2 { // recover to normal sprite variation
+						@if `(victim_ExMotionFlags & 98304) == 98304 {
+							victim_ExMotionFlags &= ~ExMotionFlags_FLAG_HeadNotYetDamaged 
+							
+						}
+						@if `(victim_ExMotionFlags & 24576) == 24576 {
+							victim_ExMotionFlags &= ~ExMotionFlags_FLAG_ArmorNotYetDamaged
+							
+						}
+						
+					}
+					
+			} .else bl { // recover to normal sprite variation
+					// "#upper 50%"
+					@if `victim_HP > victim_MaxHP / 2 {
+						@if `(victim_ExMotionFlags & 98304) == 32768 { // body (head part) damaged..
+								victim_ExMotionFlags |= ExMotionFlags_FLAG_HeadNotYetDamaged
+								
+						}
+						@if `(victim_ExMotionFlags & 24576) == 8192 { // armor damaged...
+								victim_ExMotionFlags |= ExMotionFlags_FLAG_ArmorNotYetDamaged
+								
+						}
+				
+					}
+					
+			}
+			// copy back victim data since it's not ovah
+			copyback_victim_data(Ptr11)
+
+
+
+			var2 = min((((reg2 / 8) + damage_base_morale_check) * agent_ProcessObjBit & BaseObjBit_FLAG_Cause_Demoralizing ? 2 : 1), 100)
+			func_bs_morale_check(Ptr20,var2)
+			// "Morale Check End################"
+		}
+
+		damage_multiplier = 100
+		v[422] = 0
+		v[ptr_null].copy v[19],2 // v[19..20] = 0
+		s[162].off
+		// "r1=raw damage	r2=damage to HP"
+	}
+}
+
+__fn dmg_popup {
+	@if reg1 != 0 {
+		reg1 = min(9999, reg1)
+		@if v[183] < v[4572] {
+			// "Set Hit Timer"
+			victim_HitMoveTimer = 6
+			v[220] = (v[220] + 1)
+			v[220] %= 30
+			v[223] = v[220] + 1202
+			v[221] += rnd(-6, 6)
+			v[222] += rnd(-3, 3) - 13 - [0, 10][s[162]]
+			// "#サイズは最低100%"
+			v[225] += reg1 >= 300 ? 25 : 0
+			v[225] += reg1 >= 500 ? 25 : 0
+			v[225] = max(110, v[225])
+			// "#サイズは最高150%"
+			v[225] = min(160, v[225])
+			reg1 = abs(reg1)
+			@if LEGV_PopColour == -1 {
+					@if s[307] .isOff() {
+						// "Heal"
+						TT1 = v[1204] - 10
+						reg1 = min(9999, reg1)
+						TT11 = reg1 + 1
+						@pic[v[223]].show {
+								PATH_pic_numdir_number
+								.pos v[221], v[222] .center
+								.scrollWithMap
+								.chromakey 1
+								.scale v[225]
+								.trans TT1
+								.rgbs 100, 180, 100, 100
+								.grid 100, 200 .cell TT11
+								.mapLayer 7
+								.eraseWhenTransfer
+								.affectedByFlash
+								.affectedByShake
+						}
+						reg1 *= -1
+						v[221] += rnd(-14, 14)
+						v[222] = victim_RelativeY + rnd(18, 24) - [0, 10][s[162]]
+						TT1 = v[225] - 40
+						@pic[v[223]].move {
+								.pos v[221], v[222] .center
+								.scale TT1
+								.trans 100
+								.time 12
+								.rgbs 100, 180, 100, 100
+						}
+				
+					} .else bl {
+						reg1 *= -1
+				
+					}
+
+					@if v[247] <= 16 {
+						s[141].on
+						v[247] += 1
+						// "#Heal Eff"
+						var1 = reg1 / - 6
+						var1 = min(var1, 15)
+						set_particle_simple(119,victim_RelativeX,var1,2)
+						s[141].off
+						
+					}
+					
+			} .else bl {
+					// "Not overkilled"
+					@if victim_HP > 0 { // this setting can be causing what is not intended (killed units won't flash)
+						@if victim_AgentType > 0 { // the victim is alive
+							@if reg2 >= 1 { // "#Red Flash"
+								victim_FlashType = 1
+								TT1 = 100
+								v[ptr_null].copy TT2,2
+								TT1.copy victim_R,3 // [100,0,0]
+								
+							} .else bl { // "#White Flash"
+								victim_FlashType = 4
+								v[__id(victim_R)..__id(victim_B)] = 80 // RGB
+								
+							}
+							
+						}
+				
+					}
+					
+			}
+
+			@if LEGV_PopColour == 0 {
+					@if s[307] .isOff() {
+						// "AR"
+						TT1 = v[1204] - 10
+						reg1 = max(0, reg1)
+						reg1 = min(9999, reg1)
+						TT11 = reg1 + 1
+						@if v[225] >= 150 {
+								v[221] += 4
+								TT11 += 10000
+								@pic[v[223]].show {
+									PATH_pic_numdir_number
+									.pos v[221], v[222] .center
+									.scrollWithMap
+									.chromakey 1
+									.scale v[225]
+									.trans TT1
+									.rgbs 180, 100, 100, 100
+									.grid 100, 200 .cell TT11
+									.mapLayer 7
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+								}
+								
+						} .else bl {
+								@pic[v[223]].show {
+									PATH_pic_numdir_number
+									.pos v[221], v[222] .center
+									.scrollWithMap
+									.chromakey 1
+									.scale v[225]
+									.trans TT1
+									.rgbs 180, 100, 100, 100
+									.grid 100, 200 .cell TT11
+									.mapLayer 7
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+								}
+								
+						}
+						v[221] += rnd(-14, 14)
+						v[222] = victim_RelativeY + rnd(18, 24) - [0, 10][s[162]]
+						TT1 = v[225] - 40
+						@pic[v[223]].move {
+							.pos v[221], v[222] .center
+							.scale TT1
+							.trans 100
+							.time 12
+							.rgbs 180, 100, 100, 100
+						}
+						
+					}
+					@if v[247] <= 4 {
+						s[141].on
+						v[247] += 1
+						@if reg2 >= 1 {
+								// "#Not Magical Element"
+								@if argv_damage_attribution < 3 {
+									// "#Blood"
+									var1 = reg2 / 15
+									var1 = min(var1, 30)
+									@if `victim_ProcessObjBit & BaseObjBit_FLAG_Immune_to_bleed {
+										//metal chips
+												set_particle_simple(118 victim_RelativeX var1 3)
+									}.else{
+										//blood particle
+												set_particle_simple(117 victim_RelativeX var1 2)
+									}
+									
+								}
+								
+						} .else bl {
+								// "#AR"
+								var1 = reg1 / 6
+								var1 = min(var1, 24)
+								//var2 = 0
+								//v[607].copy v[361], 2
+								//@call .cev 118
+								//Set metal chips 
+								set_particle_simple(118 victim_RelativeX var1 3)
+								
+						}
+						s[141].off
+						
+					}
+					
+			}.elif LEGV_PopColour == 1 {
+					@if s[307] .isOff() {
+						// "MR"
+						TT1 = v[1204] - 10
+						reg1 = max(0, reg1)
+						reg1 = min(9999, reg1)
+						TT11 = reg1 + 1
+						@if v[225] >= 150 {
+								v[221] += 4
+								TT11 += 10000
+								@pic[v[223]].show {
+									PATH_pic_numdir_number
+									.pos v[221], v[222] .center
+									.scrollWithMap
+									.chromakey 1
+									.scale v[225]
+									.trans TT1
+									.rgbs 200, 100, 200, 100
+									.grid 100, 200 .cell TT11
+									.mapLayer 7
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+								}
+								
+						} .else bl {
+								@pic[v[223]].show {
+									PATH_pic_numdir_number
+									.pos v[221], v[222] .center
+									.scrollWithMap
+									.chromakey 1
+									.scale v[225]
+									.trans TT1
+									.rgbs 200, 100, 200, 100
+									.grid 100, 200 .cell TT11
+									.mapLayer 7
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+								}
+								
+						}
+						v[221] += rnd(-14, 14)
+						v[222] = victim_RelativeY + rnd(18, 24) - [0, 10][s[162]]
+						TT1 = v[225] - 40
+						@pic[v[223]].move {
+								.pos v[221], v[222] .center
+								.scale TT1
+								.trans 100
+								.time 12
+								.rgbs 180, 100, 180, 100
+						}
+						
+					}
+					
+			}.elif LEGV_PopColour == 2 {
+					@if s[307] .isOff() {
+						// "MR"
+						TT1 = v[1204] - 10
+						reg1 = max(0, reg1)
+						reg1 = min(9999, reg1)
+						TT11 = reg1 + 1
+						@if v[225] >= 150 {
+								v[221] += 4
+								TT11 += 10000
+								@pic[v[223]].show {
+									PATH_pic_numdir_number
+									.pos v[221], v[222] .center
+									.scrollWithMap
+									.chromakey 1
+									.scale v[225]
+									.trans TT1
+									.rgbs 100, 100, 100, 0
+									.grid 100, 200 .cell TT11
+									.mapLayer 7
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+								}
+								
+						} .else bl {
+								@pic[v[223]].show {
+									PATH_pic_numdir_number
+									.pos v[221], v[222] .center
+									.scrollWithMap
+									.chromakey 1
+									.scale v[225]
+									.trans TT1
+									.rgbs 100, 100, 100, 0
+									.grid 100, 200 .cell TT11
+									.mapLayer 7
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+								}
+								
+						}
+						v[221] += rnd(-14, 14)
+						v[222] = victim_RelativeY + rnd(18, 24) - [0, 10][s[162]]
+						TT1 = v[225] - 40
+						@pic[v[223]].move {
+								.pos v[221], v[222] .center
+								.scale TT1
+								.trans 100
+								.time 12
+								.rgbs 180, 100, 180, 100
+						}
+						
+					}
+					
+			}
+			v[183] += v[184] >= v[1128] ? 2 : 1
+			
+		}
+		
+	}
+				
+}
+>>>>>>> 88b5194136650670640ef002a8086e2b5f7f7357

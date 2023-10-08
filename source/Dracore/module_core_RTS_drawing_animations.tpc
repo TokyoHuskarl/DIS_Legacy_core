@@ -1,13 +1,13 @@
 //id:101
 __fn animation_sweeping_strike {
-	@if `v[v[301] + 29] == 0 {
+	@if agent_AttackFrame == 0 {
                             v[4111..4120] = 4
                             
                         } .else bl {
-                            v[321] = 3
-                            v[4111..4120] = v[321]
+                            expected_action_sprite = 3
+                            v[4111..4120] = expected_action_sprite
                             v[4134] = 3
-                            v[4144] = 900000 / v[720] * (v[720] - v[v[301] + 29] - 1) * (1 - 2 * v[325])
+                            v[4144] = 900000 / v[720] * (v[720] - agent_AttackFrame - 1) * (1 - 2 * v[325])
                             v[4154] = 10000
                             v[4044] -= v[325]
                             
@@ -16,40 +16,40 @@ __fn animation_sweeping_strike {
 
 //id:102
 __fn animation_repel {
-	v[321] = 3
-	v[4111..4120] = v[321]
+	expected_action_sprite = 3
+	v[4111..4120] = expected_action_sprite
 	v[4044] -= v[v[301] + 29] * [1, -1][v[325]]
 }
 
 //id:103
 __fn animation_throwing_skill {
-	v[321] = 3
-	v[4111..4120] = v[321]
+	expected_action_sprite = 3
+	v[4111..4120] = expected_action_sprite
 	v[4064] = 100
-	@if `v[v[301] + 29] <= 0 {
+	@if agent_AttackFrame <= 0 {
 		v[4041..4050] += 1 - 2 * v[455] / 4096			    
 	}
 }
 
 //id:104
 __fn animation_knockout {
-    @if `v[v[301] + 29] <= 0 {
+    @if agent_AttackFrame <= 0 {
 	v[4111..4120] = 4
 	
-    }.elif `(v[v[301]+29]<=2) {
-	v[321] = 3
-	v[4111..4120] = v[321]
+    }.elif agent_AttackFrame<=2 {
+	expected_action_sprite = 3
+	v[4111..4120] = expected_action_sprite
 	v[4134] = 3
-	v[4144] = (850000 + (50000 * v[v[301] + 29])) * (1 - 2 * v[325])
+	v[4144] = (850000 + (50000 * agent_AttackFrame)) * (1 - 2 * v[325])
 	v[4154] = 10000
 	v[4044] -= v[325]
 	
     }.else bl {
-	v[321] = 3
-	v[4111..4120] = v[321]
+	expected_action_sprite = 3
+	v[4111..4120] = expected_action_sprite
 	v[4134] = 3
 	//v[4144] = 1200000 / v[720] * (v[720] - (v[v[301] + 29]-2)) * (1 - 2 * v[325])
-	v[4144] = (1100000 -  min(34333*(pow(v[v[301] + 29]-2,2)),1300000)) * (1 - 2 * v[325])
+	v[4144] = (1100000 -  min(34333*(pow(agent_AttackFrame-2,2)),1300000)) * (1 - 2 * v[325])
 	v[4154] = 10000
 	v[4044] -= v[325]
 	
@@ -60,7 +60,7 @@ __fn animation_knockout {
 //Walking motions
 __fn animation_foot_archer{
 	//in combat
-	@if v[680] > 0 {
+	@if agent_InCombatTimer > 0 {
 	    v[4134] = 3
 	    v[4144] = (180000 + sin(v[341], 1, 30000)) * (1 - 2 * v[325])
 	    v[4154] = 10000
@@ -72,7 +72,7 @@ __fn animation_foot_archer{
 
 __fn animation_foot_spear{
 	//in combat
-	@if v[v[680]] > 0 {
+	@if agent_InCombatTimer > 0 {
 	    v[4134] = 3
 	    v[4144] = (-450000 + sin(v[341], 1, 49000)) * (1 - 2 * v[325])
 	    v[4154] = 10000
@@ -83,17 +83,17 @@ __fn animation_foot_spear{
 
 //Attack motions
 __fn animation_pike_attack {
-	@if `v[v[301] + 29] == 0 {
+	@if agent_AttackFrame == 0 {
 	    v[341] = 1 - 2 * v[325]
 	    v[4044] += v[341] 
 	    //Horse back
-            @if `(v[v[726]] & 16777216) {
+            @if `(agent_ExMotionFlags & 16777216) {
 	    	v[4041..4043] += v[341]
             }
 	    v[4054] -= 1
 	    
 	} .else bl {
-	    @if `v[v[301] + 29] >= 2 {
+	    @if agent_AttackFrame >= 2 {
 		v[4044] -= 1 - 2 * v[325]
 		
 	    }

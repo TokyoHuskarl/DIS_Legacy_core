@@ -1,5 +1,60 @@
+//UI system Design is very mountain blade WB-ish
+
+def limitOfHpBars_in_screen = 70
+
+def {
+	CENTMODE_FREE = 0
+	CENTMODE_ALLY_SINGLE
+	CENTMODE_ALLY_MULTI
+	CENTMODE_ENEMY_SINGLE
+}
+
+defs {
+	Is_Selecting_Civilian = 29
+}
+
+defv {
+	ui_workers_amount = 2941
+	ui_workers_for_food = 2942
+	ui_workers_for_wood = 2943
+	ui_workers_for_stone = 2944
+	ui_workers_for_gold = 2945
+	ui_workers_amount_save = 2946
+	ui_workers_for_food_save
+	ui_workers_for_wood_save
+	ui_workers_for_stone_save
+	ui_workers_for_gold_save
+}
+vname[__id(ui_workers_for_gold_save)],"ui_workers_for_gold_save"
 
 
+__fn func_ui_DIS_basic_mouse_control {
+		    @wait 0
+		    //Check LMB 
+		    @if v[43] != 1005 {
+			s[11].off
+			
+		    }.else bl {
+			s[11].on
+		    }
+
+		    @if s[39] .isOff() {
+			@mouse.getPos v[49], v[50]
+			
+		    }
+		    v[49].copy v[51], 2
+		    v[51..52] -= 3
+		    v[52..52] += 1
+		    @key.input .dst v[43] {
+			.decision
+			.number
+			.lclick
+			.rclick
+			.wheelDown
+			.wheelUp
+		    }
+
+}
 
 
 //Simple Gauge Series
@@ -82,4 +137,6 @@ __fn ui_simple_gauge_draw $picid $targetptr $X $Y {
 	    
 	}
 }
+
+
 

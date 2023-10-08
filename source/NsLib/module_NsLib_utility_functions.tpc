@@ -1,0 +1,89 @@
+// They can be useful, but, not organized for other projects than DIS 
+
+
+
+__fn func_take_screenshot $location {
+	@se.play "system\scrshot" .opt 100, 100, 50
+	v[4507] = 4
+	v[4081] = sys.date
+	v[4082] = sys.time
+	t[3000] .asg $location //"user\screenshots\"
+	t[3000] .cat "\v[4081]_\v[4082]" .extract
+	@img.save .screen .dst t[3000]
+}
+
+__fn func_calculate_tick_delay {
+
+	v[1] = 100
+	v[2] = 101
+	v[100] = 222
+	v[101] = 239
+	v[1].deref v[1], 2
+	@msg.show "\v[1] \v[2]"
+	@bgm.play "That's life" .opt 0, 100, 100, 50
+	@pic[1].show {
+	    "mapdata"
+	    .pos 160, 120 .center
+	    .chromakey 1
+	    .scale 100
+	    .trans 0
+	    .rgbs 100, 100, 100, 100
+	    .mapLayer 7
+	    .eraseWhenTransfer
+	    .affectedByFlash
+	    .affectedByShake
+	}
+	@pic[1].getInfo .xywh .baseRect v[1], v[2], v[3], v[4]
+	@pic[1].getInfo .pixel v[1], v[2], v[3], v[4] .dst 1
+	@msg.show ""
+	@msg.show ""
+	v[4813] = 10000
+	v[4814] = 10000
+	v[295..300] = 10000
+	@sys.gameOpt .picLimit 10000
+	@loop .inf() {
+	    @wait 0
+	    v[2] = sys.tick
+	    @loop 10000 {
+		
+	    }
+	    
+	    v[2] = sys.tick - v[2]
+	    @wait 0
+	    v[3] = sys.tick
+	    @comment "insert proc1 here"
+	    v[2065] = 0
+	    v[1] = 0
+	    v[4805] = 1000
+	    @loop 10000000 {
+		v[3401] = 999999999
+		v[3401].copy v[3402], 199
+		
+	    }
+	    
+	    v[3] = sys.tick - v[3]
+	    @wait 0
+	    v[4] = sys.tick
+	    @comment "insert proc2 here"
+	    @loop 10000000 {
+		v[3401..3600] = 999999999
+		
+	    }
+	    
+	    v[4] = sys.tick - v[4]
+	    @msg.show "nuffin \v[2]
+	c1 \v[3]
+	c2 \v[4]"
+	    
+	}
+
+}
+
+
+
+__fn RMarray_pop $Ptr_Head $ArraySize $ElementSize {
+
+
+}
+
+

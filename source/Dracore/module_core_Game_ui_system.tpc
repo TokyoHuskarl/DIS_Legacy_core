@@ -1,0 +1,770 @@
+// ->
+
+__fn UI_GAME_CEV_JS_UI_SYSTEM {
+	
+
+}
+
+
+__fn func_open_y_or_n_menu $picid_begin $str_main $str_y $str_n {
+
+	__if DIS_EXPERIMENTAL == 0 {
+		TT7 = 2186
+		@pic[TT7].strpic {
+				""
+				.pos v[1115], v[1116] .center
+				.size 240, 120    .chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.font "", 12 .noShadow
+				.spacing 0, 4
+				.skin "SystemWindow" .stretch .noGradation .noPadding
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+		}
+		TT7 += 1
+		TT1 = v[1115]
+		TT2 = v[1116] - 24
+		@pic[TT7].strpic {
+				t[3000]
+				.pos TT1, TT2 .center
+				.size 0, 0    .chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, 11
+				.spacing 0, 4
+				.skin "SystemSwitch" .nobg .noframe .noGradation .noPadding
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+		}
+		TT7 += 1
+		TT1 = v[1115] - 74
+		TT2 = v[1116] + 40
+		@pic[TT7].strpic {
+				"Yes"
+				.pos TT1, TT2 .center
+				.size 0, 0    .chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, 11
+				.spacing 0, 4
+				.skin "SystemSwitch" .nobg
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+		}
+		TT7 += 1
+		TT1 = v[1115] + 74
+		@pic[TT7].strpic {
+				"No"
+				.pos TT1, TT2 .center
+				.size 0, 0    .chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.font Font_UI, 11
+				.spacing 0, 4
+				.skin "SystemSwitch" .nobg
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+		}
+		
+		@loop .inf() {
+				@if s[39] .isOff() {
+					@mouse.getPos Mouse_x, Mouse_y
+			
+				}
+				Mouse_x.copy MousePtr_x, 2
+				v[51..52] -= 3
+				v[52..52] += 1
+				@key.input .dst Common_Control_Ck {
+					.decision
+					.number
+					.lclick
+					.rclick
+					.wheelDown
+					.wheelUp
+				}
+				@comment "#Y"
+				TT7 = 2188
+				@pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+				@if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+			@pic[TT7].move {
+					.pos InvVar2, InvVar3 .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 0, 200, 0, 100
+			}
+			@if Common_Control_Ck == 1005 {
+					@if s[11] .isOff() {
+				v[2381] = 1
+				@break
+				
+					}
+					
+			}
+			
+				} .else bl {
+			@pic[TT7].move {
+					.pos InvVar2, InvVar3 .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 100, 100, 100, 100
+			}
+			
+				}
+				// @comment "#N"
+				TT7 += 1
+				@pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+				@if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+			@pic[TT7].move {
+					.pos InvVar2, InvVar3 .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 0, 200, 0, 100
+			}
+
+			@if Common_Control_Ck == 1005 {
+					@if s[11] .isOff() {
+				v[2381] = 0
+				@break
+				
+					}
+					
+			}
+			
+				} .else bl {
+			@pic[TT7].move {
+					.pos InvVar2, InvVar3 .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 100, 100, 100, 100
+			}
+			
+				}
+				@wait 0
+				@if Common_Control_Ck != 1005 {
+			s[11].off
+			
+				}
+				
+		}
+
+		@pic[2186..2189].erase
+		s[11].on
+
+	}.else bl {
+
+	//exactly the same function but with new GUI building support
+		def {
+		PicID_START = 2186
+		PicID_Y = 2188
+		PicID_N = 2189
+		}
+
+		ui_start_simple_presentation("Yes or No",0,0,0,0,
+			ON_LOAD({
+				$PicID = 2186
+				ui_create_window($PicID,v[1115],v[1116],240,120,0)
+				$PicID += 1
+				TT1 = v[1115]
+				TT2 = v[1116] - 24
+				ui_create_textbox($PicID,t[3000], TT1, TT2,0,0)
+				$PicID += 1
+				$UI_Yes_PicID = $PicID
+				TT1 = v[1115] - 74
+				TT2 = v[1116] + 40
+				ui_create_simple_button($PicID, "Yes",TT1, TT2,0,0)
+				$PicID += 1
+				$UI_No_PicID = $PicID
+				TT1 = v[1115] + 74
+				ui_create_simple_button($PicID, "No",TT1, TT2,0,0)
+			}),
+
+			ON_RUN({
+				func_ui_DIS_basic_mouse_control()
+						//YES
+				ui_simple_button_process(PicID_Y, 
+					PROC({//L
+						v[2381] = 1
+						@break
+					})
+				) 
+				//No
+				ui_simple_button_process(PicID_N, 
+					PROC({//L
+						v[2381] = 0
+						@break
+					})
+				)
+
+			}),
+
+			ON_CLOSE({
+				@pic[2186..2189].erase
+				s[11].on
+			}),
+		)
+
+	}
+
+}
+
+
+def macro_set_faction_default = {
+
+			v[2223] = FAC_dra
+			v[2224] = 1
+
+}
+
+//picking faction window
+def PATH_LegacyGUI_faction_select = __str(PATH_gui_setting,"def_selectable_factions")
+def PATH_LegacyGUI_faction_select_language = "lang_selectable_factions"
+
+
+
+__fn func_ui_start_pick_faction_window {
+	// @comment "Inventry mode switches end"
+	@pic[1231].show {
+			"ui\FactionUIBase"
+			.pos v[1115], v[1116] .center
+			.chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.mapLayer 9
+			.affectedByShake
+	}
+
+	// @comment "Inventry mode switches end"
+	inputstr .asg  .file PATH_LegacyGUI_faction_select, .utf8
+	inputstr .split "*/", str9, TT1
+	inputstr .split LF, t[0], TT1
+
+	str1 .asg PATH_moduleLang
+	str1 .cat Str_LanguagePath
+	str1 .cat PATH_LegacyGUI_faction_select_language
+	readLangFile(str1,str1)
+	@if str1.neq "" { // have lang file
+		str1 .split LF, t[99], TT2 // split to t[100~]
+	}.else bl { // english
+		@loop TT1 .dst TT3 {
+			var1 = 1 + TT3 // ptr to fac setting data
+			t[var1] .split ",", t[3000], TT1
+			var2 = 100 + TT3 // ptr to fac setting data
+			t[var2].asg t[3000]
+			t[var2].cat ","
+			t[var2].cat t[3015]
+		}
+	}
+
+	v[1243] = v[157] + v[1248]
+	@pic[1231].getInfo .ltrb .baseRect TT19, TT20, TT3, v[34]
+	@if `v[2223] <= 0 || v[2223] == 3 && v[2224] <= 0 {
+			macro_set_faction_default
+	}.elif `v[2223] != 3 && v[2224] > 0 { //No hero currently
+			macro_set_faction_default
+	}
+
+	@loop 16 .dst TT3 {
+			var1 = v[173]
+			var2 = TT3 + 1
+			t[2999] .asg t[var2]
+			t[2999] .split ",", t[3000], v[1941]
+			t[3001] .toNum TT1
+			@if TT1 >= 1 {
+		TT8 = 100
+		@if v[2223] == TT1 {
+				v[345..347] = 100
+				
+		} .else bl {
+				v[345..347] = 45
+				
+		}
+
+		TT10 = 1500 + TT3
+		TT11 = TT19 + 42 + TT3 % 4 * 63
+		TT12 = TT20 + 62 + TT3 / 4 * 63
+		t[2999] .asg PATH_Legacy_UI_passive_icon
+		t[2999] .cat t[3003]
+		@pic[TT10].show {
+				t[2999]
+				.pos TT11, TT12 .center
+				.chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs TT5, TT6, TT7, TT8
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+		}
+		
+			}
+			
+	}
+
+	v[40] = v[2223]
+	v[39] = v[2224]
+	// @comment "def 84 12"
+	TT1 = v[1115] - 208
+	TT2 = v[1116] + 160
+	@pic[2138].strpic {
+			"Cancel"
+			.pos TT1, TT2 .center
+			.size 45, 28    .chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.font Font_UI, 11
+			.spacing 0, 4
+			.skin "SystemSwitch" .nobg
+			.mapLayer 9
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+	}
+
+	TT1 = v[1115] + 208
+	@pic[2137].strpic {
+			"Confirm"
+			.pos TT1, TT2 .center
+			.size 50, 28    .chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.font Font_UI, 11
+			.spacing 0, 4
+			.skin "SystemSwitch" .nobg
+			.mapLayer 9
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+	}
+
+	TT1 = v[1115] - 208
+	TT2 = v[1116] + 160
+	@pic[1231].getInfo .ltrb .baseRect TT19, TT20, TT3, InvVar5
+	TT1 = TT19 + 8
+	TT2 = TT20 + 6
+	@pic[1603].strpic {
+			t[20334]
+			.pos TT1, TT2 .topLeft
+			.size 0, 0    .chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.font Font_Common, Font_Common_size
+			.spacing 0, 4
+			.skin "" .nobg .noframe .noPadding
+			.mapLayer 9
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+	}
+	s[207].off
+	@loop .inf() {
+			@if s[39] .isOff() {
+		@mouse.getPos Mouse_x, Mouse_y
+		
+			}
+			Mouse_x.copy MousePtr_x, 2
+			v[51..52] -= 3
+			v[52..52] += 1
+			@key.input .dst Common_Control_Ck {
+		.decision
+		.number
+		.lclick
+		.rclick
+		.wheelDown
+		.wheelUp
+			}
+			// @comment "Close"
+			@pic[1231].getInfo .ltrb .baseRect TT1, TT2, TT3, TT4
+			TT2 += 5
+			TT3 -= 5
+			@if `between(MousePtr_x, TT3 - 4, TT3 + 4) && between(MousePtr_y, TT2 - 5, TT2 + 5) {
+		@if Common_Control_Ck == 1005 {
+				@if s[11] .isOff() {
+			s[201].off
+			s[207].on
+			@break
+			
+				}
+				
+		}
+		
+			}
+			// @comment "Buttons"
+			TT7 = 2136
+			// @comment "#Resume"
+			TT7 = TT7 + 1
+			@pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+			@if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+		@pic[TT7].move {
+				.pos InvVar2, InvVar3 .center
+				.scale 100
+				.trans 0
+				.time -2
+				.rgbs 0, 200, 0, 100
+		}
+		@if Common_Control_Ck == 1005 {
+				@if s[11] .isOff() {
+			v[2223] = v[40]
+			@if v[2223] == 1 {
+					v[229] = 11
+					s[240].on
+					
+			}
+			@if v[2223] == 8 {
+					v[229] = 32
+					s[240].on
+					
+			}
+			@if v[2223] == 9 {
+					v[229] = 26
+					s[240].on
+					
+			}
+			@if v[2223] == 12 {
+					v[229] = 19
+					s[240].on
+					
+			}
+			v[2224] = v[39]
+			s[201].on
+			v[472] = divmul(90, 100, v[2216])
+			@se.play "cursor09" .opt v[472], 100, 50
+			@break
+			
+				}
+				
+		}
+		
+			} .else bl {
+		@pic[TT7].move {
+				.pos InvVar2, InvVar3 .center
+				.scale 100
+				.trans 0
+				.time -2
+				.rgbs 100, 100, 100, 100
+		}
+		
+			}
+			@comment "#2"
+			TT7 = TT7 + 1
+			@pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+			@if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+		@pic[TT7].move {
+				.pos InvVar2, InvVar3 .center
+				.scale 100
+				.trans 0
+				.time -2
+				.rgbs 0, 200, 0, 100
+		}
+		@if Common_Control_Ck == 1005 {
+				@if s[11] .isOff() {
+			v[472] = divmul(90, 100, v[2216])
+			@se.play "cursor09" .opt v[472], 100, 50
+			s[11].on
+			s[201].off
+			s[207].on
+			@break
+			
+				}
+				
+		}
+		
+			} .else bl {
+		@pic[TT7].move {
+				.pos InvVar2, InvVar3 .center
+				.scale 100
+				.trans 0
+				.time -2
+				.rgbs 100, 100, 100, 100
+		}
+		
+			}
+			// @comment "#Factions"
+			@pic[1601].show {
+		"ui\facselect"
+		.pos TT14, TT15 .topLeft
+		.chromakey 1
+		.scale 100
+		.trans 100
+		.rgbs 100, 100, 100, 100
+		.mapLayer 9
+		.affectedByShake
+			}
+			s[202].off
+			s[203].off
+			v[31] = v[40]
+			v[33] = v[39]
+			@loop 16 .dst TT3 {
+		TT7 = 1500 + TT3
+		@pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+		v[1954..1955] = 46
+		var2 = TT3 + 1
+		t[2999] .asg t[var2]
+		t[2999] .split ",", t[3000], v[1941]
+		t[3001] .toNum TT1
+		t[3002] .toNum TT2
+		var2 = TT3 + 100 // pick what is splitted from language file 
+		str1 .asg t[var2]
+		str1 .split ",", str2, var1 // str2 = facname, str3 = fac description
+
+		@if `between(MousePtr_x, InvVar2 - InvVar4 / 2 - 8, InvVar2 + InvVar4 / 2 + 8) && between(MousePtr_y, InvVar3 - InvVar5 / 2 - 8, InvVar3 + InvVar5 / 2 + 8) {
+				@if `TT1 == v[40] && TT2 == v[39] {
+			@pic[TT7].move {
+					.pos InvVar2, InvVar3 .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 100, 100, 100, 100
+			}
+			inputstr .asg str3
+			
+				} .else bl {
+			@pic[TT7].move {
+					.pos InvVar2, InvVar3 .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 70, 70, 70, 100
+			}
+			v[31] = TT1
+			v[33] = TT2
+			str9 .asg str3
+			s[203].on
+			
+				}
+				@if Common_Control_Ck == 1005 {
+			@if s[11] .isOff() {
+					v[472] = divmul(90, 100, v[2216])
+					@se.play "ui\UI_Quirky_39" .opt v[472], 100, 50
+					s[11].on
+					v[40] = TT1
+					v[39] = TT2
+					@break
+					
+			}
+			
+				}
+				
+		} .else bl {
+				@if `TT1 == v[40] && TT2 == v[39] {
+			@pic[TT7].move {
+					.pos InvVar2, InvVar3 .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 100, 100, 100, 100
+			}
+			inputstr .asg str3
+			
+				} .else bl {
+			@pic[TT7].move {
+					.pos InvVar2, InvVar3 .center
+					.scale 100
+					.trans 0
+					.time -2
+					.rgbs 40, 40, 40, 100
+			}
+			
+				}
+				
+		}
+		
+			}
+			
+			@if s[203] .isOff() {
+		t[3000] .asg inputstr
+		
+			} .else bl {
+		t[3000] .asg str9
+		
+			}
+			@if `v[31] != v[32] || v[34] != v[33] {
+		@if s[203] .isOn() {
+				v[472] = divmul(60, 100, v[2216])
+				@se.play "cursor1" .opt v[472], 100, 50
+				s[203].off
+				
+		}
+		v[32] = v[31]
+		v[34] = v[33]
+		@comment "Init"
+		t[3001..3300] .asg ""
+		@comment "Load"
+		t[3000] .split "^", t[3001], v[1961]
+		t[3000] .asg ""
+		@loop v[1961] .dst v[1962] {
+				v[1963] = v[1211] + v[1962]
+				t[3000] .cat t[v[1963]] .extract
+				t[3000] .cat LF
+				
+		}
+		
+		t[3000] .asg t[3000] .extract
+		// @comment "def 84 12"
+		@pic[1231].getInfo .ltrb .baseRect TT19, TT20, TT3, InvVar5
+		TT1 = TT3 - 224
+		TT2 = TT20 + 32
+		@pic[1602].strpic {
+				t[3000]
+				.pos TT1, TT2 .topLeft
+				.size 0, 0            .chromakey 1
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.font Font_Common, v[4510]
+				.spacing 0, 4
+				.skin "" .nobg .noframe .noPadding
+				.mapLayer 9
+				.eraseWhenTransfer
+				.affectedByFlash
+				.affectedByShake
+		}
+		
+			}
+			@if v[31] == 0 {
+		@pic[1602].erase
+		
+			}
+			@wait 0
+			@if Common_Control_Ck != 1005 {
+		s[11].off
+		
+			}
+			
+	}
+
+	@pic[1231].erase
+	@pic[1500..1516].erase
+	@pic[1600..1604].erase
+	@pic[2136..2138].erase
+
+}
+
+
+
+def {
+	STRING_TIPS = __str("TIPS:\t[3000]")
+	STRING_NOWLOADING = "　NOW LOADING..."
+}
+
+__fn func_ui_show_nowloading {
+
+	@bgm.stop
+	@call .cev 1915
+	v[342] = 20
+	v[343] = v[1002] - 30
+	@pic[1001].strpic {
+			STRING_TIPS
+			.pos v[1115], v[342] .center
+			.size 0, 0    .chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.font Font_Common, v[4510]
+			.spacing 0, 4
+			.skin "" .nobg .noframe
+			.mapLayer 10
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+	}
+	@pic[999].strpic {
+			STRING_NOWLOADING
+			.pos v[1115], v[343] .center
+			.size 0, 0    .chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.font Font_Common, v[4510]
+			.spacing 0, 4
+			.skin "" .nobg .noframe
+			.mapLayer 10
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+	}
+	v[342] = muldiv(100, v[1001], 800)
+	@if v[342] > 100 {
+			v[342] += 5
+			
+	}
+	v[344] = v[1001] / 2
+	v[345] = v[1002] / 2
+	@if v[2223] != FAC_imperial {
+			@pic[997].show {
+					"..\assets\logo"
+					.pos v[344], v[345] .center
+					.chromakey 1
+					.scale v[342]
+					.trans 0
+					.rgbs 100, 100, 100, 100
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+			}
+			v[341] = rnd(1, 3)
+			@pic[996].show {
+					"..\assets\dis_backn" .repl 1 v[341]
+					.pos v[344], v[345] .center
+					.chromakey 0
+					.scale v[342]
+					.trans 0
+					.rgbs 100, 100, 100, 100
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+			}
+			
+	} .else bl {
+			@pic[997].show {
+					"..\assets\logo_2"
+					.pos v[344], v[345] .center
+					.chromakey 1
+					.scale v[342]
+					.trans 0
+					.rgbs 100, 100, 100, 100
+					.overlay
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+			}
+			@pic[996].show {
+					"..\assets\legback"
+					.pos v[344], v[345] .center
+					.chromakey 0
+					.scale v[342]
+					.trans 0
+					.rgbs 100, 100, 100, 100
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+			}
+			
+	}
+}
+

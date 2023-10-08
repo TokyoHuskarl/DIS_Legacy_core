@@ -1,0 +1,155 @@
+
+
+defv Var_MouseMode = 87
+defv current_descriptionID = 84
+defv save_descID_1fpast = 85
+
+
+defv{
+	Contvar1 = 150
+	Contvar2 = 151
+}
+
+def{
+	MODE_Normal=0
+	MODE_Minion=3
+	MODE_Static=2
+	MODE_Elevation=10
+}
+
+
+def{
+	LMB = 1005
+	RMB = 1006
+	WheelUp = 1004
+	WheelDown = 1001
+
+
+
+}
+
+defv {
+	Var_MAINCONT_get= 43
+	Var_SUBCONT_get= 428
+
+}
+
+defv { // ordinary shits
+	GETKEY_A=901
+	GETKEY_B=902
+	GETKEY_C=903
+	GETKEY_D=904
+	GETKEY_E=905
+	GETKEY_F=906
+	GETKEY_G=907
+	GETKEY_H=908
+	GETKEY_I=909
+	GETKEY_J=910
+	GETKEY_K=911
+	GETKEY_L=912
+	GETKEY_M=913
+	GETKEY_N=914
+	GETKEY_O=915
+	GETKEY_P=916
+	GETKEY_Q=917
+	GETKEY_R=918
+	GETKEY_S=919
+	GETKEY_T=920
+	GETKEY_U=921
+	GETKEY_V=922
+	GETKEY_W=923
+	GETKEY_X=924
+	GETKEY_Y=925
+	GETKEY_Z=926
+	GETKEY_Enter=941
+	GETKEY_Shift=942
+	GETKEY_Ctrl=943
+	GETKEY_Alt=944
+	GETKEY_SPACE=945
+
+	GETKEY_A_PRESS=951
+	GETKEY_B_PRESS=952
+	GETKEY_C_PRESS=953
+	GETKEY_D_PRESS=954
+	GETKEY_E_PRESS=955
+	GETKEY_F_PRESS=956
+	GETKEY_G_PRESS=957
+	GETKEY_H_PRESS=958
+	GETKEY_I_PRESS=959
+	GETKEY_J_PRESS=960
+	GETKEY_K_PRESS=961
+	GETKEY_L_PRESS=962
+	GETKEY_M_PRESS=963
+	GETKEY_N_PRESS=964
+	GETKEY_O_PRESS=965
+	GETKEY_P_PRESS=966
+	GETKEY_Q_PRESS=967
+	GETKEY_R_PRESS=968
+	GETKEY_S_PRESS=969
+	GETKEY_T_PRESS=970
+	GETKEY_U_PRESS=971
+	GETKEY_V_PRESS=972
+	GETKEY_W_PRESS=973
+	GETKEY_X_PRESS=974
+	GETKEY_Y_PRESS=975
+	GETKEY_Z_PRESS=976
+	GETKEY_Enter_PRESS=991
+	GETKEY_Shift_PRESS=992
+	GETKEY_Ctrl_PRESS=993
+	GETKEY_Alt_PRESS=994
+	GETKEY_SPACE_PRESS=995
+
+	GEYKEY_Mouse5=1235
+	GEYKEY_Mouse4=1236
+	GEYKEY_key_comma=1237
+	GEYKEY_key_period=1238
+}
+
+__fn func_draw_pointer $R $G $B $C {
+		@pic[1000].show {
+                    t[522]
+                    .pos v[41], v[48] .center
+                    .chromakey 1
+                    .scale 100
+                    .trans 0
+                    .rgbs $R, $G, $B, $C
+                    .mapLayer 10
+                    .eraseWhenTransfer
+                    .affectedByFlash
+                    .affectedByShake
+                }
+
+}
+
+__fn func_get_mouse {
+
+    @comment "#そのうち整理"
+    @key.input .dst Var_MAINCONT_get {
+        .decision
+        .number
+        .lclick
+        .rclick
+        .wheelDown
+        .wheelUp
+    }
+    @key.input .dst Var_SUBCONT_get {
+        .lclick
+        .wheelDown
+        .wheelUp
+    }
+}
+
+
+def forceRefresh_popwindow = {
+	save_descID_1fpast = 0
+}
+
+// kek
+def MACRO_ck_if_current_agent_is_clickable_to_reg6 = {
+	reg6 = between(MousePtr_x,(agent_RelativeX - agent_Width - (agent_Width <= 18 ? v[1122] : 0)),(agent_RelativeX + agent_Width + (agent_Width <= 18 ? v[1122] : 0))) && between(MousePtr_y,(agent_RelativeY - agent_Height - (agent_Height <= 18 ? v[1123] : 0)),(agent_RelativeY + agent_Height + (agent_Height <= 18 ? v[1123] : 0))) ? 1 : 0
+
+}
+defv Control_ClickableStaticHolder = 4857
+vname[__id(Control_ClickableStaticHolder)], "control_clickablestaticholder"
+defv Control_ClickableAgentHolder = 4858
+vname[__id(Control_ClickableAgentHolder)], "control_clickableagentholder"

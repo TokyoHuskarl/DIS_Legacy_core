@@ -4,12 +4,18 @@
 
 def moduletitle="module_preset_particles_general.tpc"
 
+def Const_str_basic_particle_sheet = "effects/particles"
 
 defv{
 
 
 }
 
-//Preset Effect Common Events 
-#include "./particles/psp_balista_bolt_shade.tpc"
 
+//Preset Effect Common Events 
+cev .id(cevid_balista_blot_shade), .name("part_balista_shade"), {
+#include "./particles/psp_balista_bolt_shade.tpc"
+}
+cev .id(cevid_particle_NewArrowShade), .name("Particle:NewArrowShade"), {
+#include "./particles/psp_newarrowshade.tpc"
+}

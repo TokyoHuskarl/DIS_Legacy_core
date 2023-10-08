@@ -1,0 +1,71 @@
+// Are these functions even needed after js implemented? - Tokyo Huskarl
+
+
+//&str target_string
+__fn remove_comment_out_from_refstr $ptr_target_str {
+
+	// var1=index
+	//Check //Comment Out
+	var1 = 0
+	//$ptr_target_str
+	@loop .inf() {
+		t[$ptr_target_str] .inStr "//" var2 .beg(var1) 
+		@if var2 == -1 {
+			@break
+		} .else bl {
+			t[$ptr_target_str] .inStr (StrConst_LF,var3,.beg(var2))
+			@if var3 == -1 {//underconstruction, the last line
+			} .else bl {//erase coment out
+				var3 -= var2
+				t[$ptr_target_str] .asg .remove(t[$ptr_target_str],var2,var3)
+			}
+		}
+	}
+
+	//check /**/ Type comment out
+	var1 = 0
+	@loop .inf() {
+		t[$ptr_target_str] .inStr "/*" var2 .beg(var1) 
+		@if var2 == -1 {
+			@break
+		} .else bl {
+			t[$ptr_target_str] .inStr ("*/",var3,.beg(var2))
+			@if var3 == -1 {//underconstruction, illegal comment out, cannot find */!
+				msg("\c[17]ERROR:String comment out funciton - Illegal comment out! Couldn't find */")
+
+			} .else bl {//erase coment out
+				var3 = var3 - var2 + 2
+				t[$ptr_target_str] .asg .remove(t[$ptr_target_str],var2,var3)
+			}
+		}
+	}
+
+	// finally erase indent
+	t[$ptr_target_str] .asg .exrep(t[$ptr_target_str],"\t","")
+
+
+}
+
+__fn str_toNum_array $getT $setV $amount {
+	var1 =__id($getT) 
+	var2 =__id($setV) 
+	var3 = $amount
+	@loop var3 {
+		t[var1].toNum reg1
+		v[var2] = reg1
+		var1 += 1
+		var2 += 1
+	}
+
+}
+
+
+
+/*
+__fn str_replace_string_all $ptr_target_str $pat $sub {
+	
+}*/
+
+__fn str_get_char $regstr $targstr $index {
+	t[__id($regstr)].asg  .subs($targstr, $index, 1)
+}

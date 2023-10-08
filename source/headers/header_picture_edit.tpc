@@ -2,9 +2,10 @@
 
 
 //cev 2011 Stamp pic[2599] T[501] to pic[v1] v2v3 v4
-def heap_for_pixel_information = 550445
+def heap_for_pixel_information = 550445 // it's not heap. retard
+def buffer_for_pixel_information_head = 550445
 __fn func_stamp_picture_on_pic_id $string_stamp_picture_path $picid $x $y $bool_center{
-	@comment "V4  #0, 1= center"
+	//@comment "V4  #0, 1= center"
 	@pic[2599].show {
 	    $string_stamp_picture_path
 	    .pos -111, -111 .center

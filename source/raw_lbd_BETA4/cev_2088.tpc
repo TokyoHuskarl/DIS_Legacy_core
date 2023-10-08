@@ -1,59 +1,59 @@
 cev .id(2088), .name("cev2088"), {
-v[367] = 235
-@if s[97] .isOn() {
-    v[367] += 60
-    
-}
-v[341] = v[1115]
-v[342] = 3
-@pic[1767].strpic {
-    ""
-    .pos v[341], v[342] .top
-    .size 240, 64    .chromakey 1
-    .scale 100
-    .trans 50
-    .rgbs 100, 100, 100, 100
-    .font "k8x12S", 12
-    .spacing 0, 4
-    .skin "system5" .stretch
-    .mapLayer 9
-    .eraseWhenTransfer
-    .affectedByFlash
-    .affectedByShake
-}
-v[341] -= 118
-v[342] += 2
-@pic[1768].strpic {
-    t[3000]
-    .pos v[341], v[342] .topLeft
-    .size 0, 0    .chromakey 1
-    .scale 100
-    .trans 0
-    .rgbs 100, 100, 100, 100
-    .font t[529], v[4510]
-    .spacing 0, 4
-    .skin "" .nobg .noframe .noPadding
-    .mapLayer 9
-    .eraseWhenTransfer
-    .affectedByFlash
-    .affectedByShake
-}
-@if s[1] .isOn() {
-    v[342] = 2
-    @pic[1769].show {
-        "..\assets\face\nasu1"
-        .pos v[341], v[342] .topLeft
-        .chromakey 1
-        .scale 50
-        .trans 0
-        .rgbs 100, 100, 100, 100
-        .grid 4, 4 .cell 13
-        .mapLayer 9
-        .eraseWhenTransfer
-        .affectedByShake
-    }
-    s[99].off
-    
-}
-s[100].on
+v[367] = 235
+@if s[97] .isOn() {
+    v[367] += 60
+    
+}
+v[341] = v[1115]
+v[342] = 3
+@pic[1767].strpic {
+    ""
+    .pos v[341], v[342] .top
+    .size 240, 64    .chromakey 1
+    .scale 100
+    .trans 50
+    .rgbs 100, 100, 100, 100
+    .font "k8x12S", 12
+    .spacing 0, 4
+    .skin "system5" .stretch
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+v[341] -= 118
+v[342] += 2
+@pic[1768].strpic {
+    t[3000]
+    .pos v[341], v[342] .topLeft
+    .size 0, 0    .chromakey 1
+    .scale 100
+    .trans 0
+    .rgbs 100, 100, 100, 100
+    .font t[529], v[4510]
+    .spacing 0, 4
+    .skin "" .nobg .noframe .noPadding
+    .mapLayer 9
+    .eraseWhenTransfer
+    .affectedByFlash
+    .affectedByShake
+}
+@if s[1] .isOn() {
+    v[342] = 2
+    @pic[1769].show {
+        "..\assets\face\nasu1"
+        .pos v[341], v[342] .topLeft
+        .chromakey 1
+        .scale 50
+        .trans 0
+        .rgbs 100, 100, 100, 100
+        .grid 4, 4 .cell 13
+        .mapLayer 9
+        .eraseWhenTransfer
+        .affectedByShake
+    }
+    s[99].off
+    
+}
+s[100].on
 }

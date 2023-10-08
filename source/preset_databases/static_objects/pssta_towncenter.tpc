@@ -1,0 +1,283 @@
+cev .id(801), .name("cev801"), {
+	@comment "NonWallType"
+		v[35] = 0
+		reg1 = 0
+		str1 .asg "町の中心"
+		@if v[2201] == 1 {
+
+		} .else bl {
+
+		}
+	var1 = 56
+		var2 = 50
+		var3 = 800
+		v[31..34] = 0
+		v[32] = 150
+		v[33] = 200
+		v[91] = 0
+		@if s[151] .isOff() {
+			@if v[204] < v[1004] {
+				v[204] += 1
+					@loop v[1004] .dst Temp20 {
+						v[201] %= v[1004]
+							Temp1 = v[201] * 300
+							Temp1 += 5000
+							Ptr20 = Temp1 + 1
+							@if v[Ptr20] <= 0 {
+								@comment "まず清掃"
+									v[1301].copy v[601], 300
+									v[1301].copy v[Ptr20], 300
+									@comment "出る場所セット"
+									v[252].copy v[605], 2
+									@comment "チームセット"
+									v[700] = v[251]
+									v[624] = v[700] + 1
+									v[822] = v[2403 + v[700] % 3]
+									@comment "ObjTyp"
+									v[601] = 11
+									@comment "生成場所の数値を入れる"
+									v[605].copy v[607], 2
+									v[605].copy v[641], 2
+									v[310..311] = 10000
+									v[605] .mul Temp10, 2
+									@comment "あたり判定"
+									v[610] = var1
+									v[611] = var2
+									@comment "Offset"
+									@comment "Staticなので生産目標地点をセット"
+									v[252].copy v[641], 2
+									v[642] += v[611]
+									@comment "パラメータ等入力begin"
+									@comment "#Unit ID"
+									v[701] = 1
+									@comment "#AAType"
+									v[703] = 2
+									@comment "#Unit Type"
+									v[702] = 101
+									@comment "#AAType"
+									v[703] = 0
+									@comment "#Level"
+									v[704] = 100
+									@comment "#HP"
+									v[705..706] = 5000
+									@comment "#MP"
+									v[707..707] = v[95] * 2000
+									@comment "Poteton works 10% faster"
+									@if v[822] == 8 {
+										v[707] = muldiv(v[707], 95, 100)
+
+									}
+								@if s[316] .isOn() {
+									v[707..707] = 1
+
+								}
+								@if .testPlay() {
+									@if s[460] .isOn() {
+										v[707..707] = 1
+
+									}
+
+								}
+								v[708..708] = -1
+									@comment "#AD"
+									v[709] = 63
+									@comment "#AP"
+									v[710] = 0
+									@comment "#AR"
+									v[711] = 320
+									@comment "#MR"
+									v[712] = 170
+									@comment "#Apen"
+									v[713] = 64
+									@comment "#Mpen"
+									v[714] = 2
+									@comment "#AttackSpeed"
+									v[719] = 90
+									@comment "#Crit"
+									v[715] = 0
+									@comment "#MS"
+									v[716] = 0
+									@comment "#Range Melee"
+									v[717] = 190000
+									v[717] = 0
+									@comment "#Range Ranged"
+									v[718] = -1
+									@comment "#AttackSpeed"
+									v[719] = 150
+									@comment "#AttackMotion"
+									v[720] = 1
+									@comment "#Watch"
+									v[756] = 10248
+									v[757] = 0
+									@if `v[2409 + v[251] % 3] & 0x1000000 {
+										v[756] = 10283
+											v[757] = 25
+
+									}
+
+								@if v[822] == FAC_dra {
+									@comment "#生産兵士1"
+										v[741] = 10
+										v[742] = 25
+										@comment "#生産兵士2"
+										v[744] = 30
+										v[745] = 26
+										@comment "#生産兵士3"
+										v[747] = 31
+										v[748] = 27
+										@comment "#生産兵士4"
+										v[750] = 74
+										v[751] = 41
+										@comment "Hero:Embla Drana Wurdahein"
+										@if v[2402] == 3 {
+											@comment "#生産兵士4"
+												v[750] = 26
+												v[751] = 29
+												@comment "#Kill Civil Flag"
+												v[811] &= ~1
+
+										}
+
+										@comment "#件きゅ"
+										v[753] = 10201
+										v[754] = 1
+
+
+									v[759] = 0
+										@if `v[2409 + v[251] % 3] & 268435456 {
+											@if v[2402] == 1 {
+												@comment "#件きゅ"
+													v[759] = 10282
+
+											}
+											@if v[2402] == 2 {
+												@comment "#件きゅ"
+													v[753] = 10219
+													v[754] = 42
+
+											}
+
+										}
+
+								} .else bl {
+									v[753] = 10266
+										v[754] = 5
+										v[759] = 0
+										v[760] = 22
+										@if `v[2409 + v[251] % 3] & 268435456 {
+											@comment "#件きゅ"
+												v[759] = 10257
+												@if v[822] == 8 {
+													v[747] = 97
+														v[748] = 36
+
+												}
+											@if v[822] == 9 {
+												v[759] = 10258
+
+											}
+
+										}
+									@if v[822] == 1 {
+										@comment "#Decadence"
+											@if `v[2412 + v[251] % 3] & 0x80 {
+												v[744] = 147
+													v[745] = 48
+
+											}
+										@comment "#生産兵士3"
+											v[747] = 31
+											v[748] = 27
+											@comment "#Unit Pic"
+											v[602] = 1001
+
+											@comment "#Watch"
+											v[756] = 10283
+											v[757] = 25
+
+											v[759] = 10258
+											v[760] = 23
+											v[753] = 0
+											v[751] = 41
+											@comment "#生産兵士4"
+											v[750] = 179
+											v[751] = 66
+
+									}
+									@comment "#Poteton"
+										@if v[822] == 8 {
+											@comment "##Anarchy"
+												@if `v[2412 + v[251] % 3] & 1 {
+													v[744] = 159
+														v[745] = 49
+
+												}
+
+										}
+
+									@if v[822] == FAC_rurik {
+											// age 3
+											@if `v[2409 + v[251] % 3] & 268435456 { // kari
+													v[753] = 10310 
+													v[754] = 33
+
+											}
+											v[602] = 9001
+											@comment "#生産兵士3"
+											v[747] = 149
+											v[748] = 27
+											v[751] = 41
+
+									}
+
+									@if v[822] == 12 {
+										@comment "#Unit Pic"
+											v[602] = 12001
+											v[843] = rnd(0, 3)
+
+									}
+									@comment "#生産兵士1"
+										v[741] = v[v[4575] + 4 + 1 + 40 * (v[700] % 3)]
+										@comment "#Scout"
+										v[750] = v[v[4575] + 4 + 24 + 40 * (v[700] % 3)]
+
+								}
+								@comment "#Civil Flag"
+									v[811] |= 1
+									@comment "描画"
+									@if s[19] .isOff() {
+										@comment "Terrain"
+											@call .cev 791
+
+									}
+								@comment "DEBUG"
+									@if v[700] == 0 {
+										@if s[19] .isOff() {
+											v[472] = divmul(80, 100, v[2216])
+												@se.play "Ensnare" .opt v[472], 100, 50
+
+										}
+										v[496] += 1
+
+									}
+								@comment "HOUSE"
+									v[603] |= 64
+									@call .cev 1903
+									@comment "敵味方峻別リストに登録"
+									@break
+
+							}
+						@if Temp20 >= v[1004] {
+							@comment "Obj多すぎ"
+								@break
+
+						}
+						v[201] += 1
+
+					}
+
+
+			}
+
+		}
+}

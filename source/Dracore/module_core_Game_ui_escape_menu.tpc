@@ -6,30 +6,31 @@ __fn func_restartmap $inputstrnum {
 }
 
 cev .id(2050), .name("GameRestarter"), .auto .cond(459){
-
+	@wait 0
 	v[501] = 0
-	t[501] .asg  .file "../Maps/define_maps", .utf8
-	t[502] .asg t[511]
-	t[503] .asg "\t[502]@.*" .extract
-	t[501].exMatch {
-		t[503]
-		t[501]
-		v[341]
+	str1 .asg  .file "../Maps/define_maps", .utf8
+	str2 .asg t[511]
+	def STRING_str2_mapID = __str("\v[",__id(str2),"]=.*")
+	str3 .asg STRING_str2_mapID .extract 
+	str1.exMatch {
+		str3
+		str1
+		TT1
 		.beg 0
 		.extract
 	}
-	t[750] .asg t[502]
+	t[750] .asg str2
 	@map[62].setPlayerPos .pos 12, 6 .retain
 	@scr.hide 19
 	@wait 0
-	@if t[501] .neq "" {
-		t[501] .split "@", t[501], v[341]
-		t[502] .toNum v[501]
+	@if str1 .neq "" {
+		str1 .split "=", str1, TT1
+		str2 .toNum v[501]
 		
 	}
 	@if v[501] != 0 {
-		v[341] = 0
-		@map[v[501]].setPlayerPos .pos v[341] v[341]
+		TT1 = 0
+		@map[v[501]].setPlayerPos .pos TT1 TT1
 		
 	} .else bl {
 		@map[60].setPlayerPos .pos 0, 0 .retain
@@ -60,15 +61,15 @@ cev .id(2053), .name("-Drawing EscMenu"),{
 	    .affectedByFlash
 	    .affectedByShake
 	}
-	v[342] = v[1116] - 88 -22
+	TT2 = v[1116] - 88 -22
 	@pic[2137].strpic {
 	    "       Resume"
-	    .pos v[1115], v[342] .center
+	    .pos v[1115], TT2 .center
 	    .size 118, 28    .chromakey 1
 	    .scale 100
 	    .trans 0
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
+	    .font Font_UI, 11
 	    .spacing 0, 4
 	    .skin "SystemSwitch" .nobg
 	    .mapLayer 9
@@ -76,16 +77,16 @@ cev .id(2053), .name("-Drawing EscMenu"),{
 	    .affectedByFlash
 	    .affectedByShake
 	}
-	v[342] = v[1116] - 44-22
+	TT2 = v[1116] - 44-22
 	@if v[2401] <= 4 {
 	    @pic[2138].strpic {
 		"        Save"
-		.pos v[1115], v[342] .center
+		.pos v[1115], TT2 .center
 		.size 118, 28        .chromakey 1
 		.scale 100
 		.trans 0
 		.rgbs 100, 100, 100, 100
-		.font t[530], 11
+		.font Font_UI, 11
 		.spacing 0, 4
 		.skin "SystemSwitch" .nobg
 		.mapLayer 9
@@ -95,15 +96,15 @@ cev .id(2053), .name("-Drawing EscMenu"),{
 	    }
 	    
 	}
-	v[342] = v[1116] - 0-22
+	TT2 = v[1116] - 0-22
 	@pic[2139].strpic {
 	    "        Load"
-	    .pos v[1115], v[342] .center
+	    .pos v[1115], TT2 .center
 	    .size 118, 28    .chromakey 1
 	    .scale 100
 	    .trans 0
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
+	    .font Font_UI, 11
 	    .spacing 0, 4
 	    .skin "SystemSwitch" .nobg
 	    .mapLayer 9
@@ -111,15 +112,15 @@ cev .id(2053), .name("-Drawing EscMenu"),{
 	    .affectedByFlash
 	    .affectedByShake
 	}
-	v[342] = v[1116] + 44-22
+	TT2 = v[1116] + 44-22
 	@pic[2140].strpic {
 	    "       Options"
-	    .pos v[1115], v[342] .center
+	    .pos v[1115], TT2 .center
 	    .size 118, 28    .chromakey 1
 	    .scale 100
 	    .trans 0
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
+	    .font Font_UI, 11
 	    .spacing 0, 4
 	    .skin "SystemSwitch" .nobg
 	    .mapLayer 9
@@ -127,15 +128,16 @@ cev .id(2053), .name("-Drawing EscMenu"),{
 	    .affectedByFlash
 	    .affectedByShake
 	}
-	v[342] = v[1116] + 88-22
+	TT2 = v[1116] + 88-22
+	/*
 	@pic[2141].strpic {
 	    "       Restart"
-	    .pos v[1115], v[342] .center
+	    .pos v[1115], TT2 .center
 	    .size 118, 28    .chromakey 1
 	    .scale 100
 	    .trans 0
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
+	    .font Font_UI, 11
 	    .spacing 0, 4
 	    .skin "SystemSwitch" .nobg
 	    .mapLayer 9
@@ -143,15 +145,17 @@ cev .id(2053), .name("-Drawing EscMenu"),{
 	    .affectedByFlash
 	    .affectedByShake
 	}
-	v[342] = v[1116] + 132-22
+	*/
+
+	TT2 = v[1116] + 132-22
 	@pic[2142].strpic {
 	    "        Quit"
-	    .pos v[1115], v[342] .center
+	    .pos v[1115], TT2 .center
 	    .size 118, 28    .chromakey 1
 	    .scale 100
 	    .trans 0
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
+	    .font Font_UI, 11
 	    .spacing 0, 4
 	    .skin "SystemSwitch" .nobg
 	    .mapLayer 9
@@ -159,7 +163,7 @@ cev .id(2053), .name("-Drawing EscMenu"),{
 	    .affectedByFlash
 	    .affectedByShake
 	}
-	v[11] = 288
+	var1 = 288
 	@call .cev 1890
 	@pic[2144].strpic {
 	    t[3000]
@@ -168,7 +172,7 @@ cev .id(2053), .name("-Drawing EscMenu"),{
 	    .scale 100
 	    .trans 0
 	    .rgbs 100, 100, 100, 100
-	    .font t[530], 11
+	    .font Font_UI, 11
 	    .spacing 0, 4
 	    .skin "" .nobg .noframe .noPadding
 	    .mapLayer 9
@@ -185,14 +189,12 @@ cev .id(2051),.name("[System]Escape Menu"),{
 	s[51].off
 	@label.set 15
 	@if s[476] .isOn() {
-	    @gsave.open
-	    gs[301].copyTo s[301], 100
-	    gv[1].copyTo v[2201], 100
-	    @gsave.close
-	    @call .cev 1790
-	    @call .cev 1795
-	    @call .cev 1794
-	    s[476].off
+		@if .rightAfterLoad() {
+			// if you load a save data, rebooting function will be called in main1f loop cev
+		}.else bl{
+			sysfunc_reload_RTS_data()
+
+		}
 	    
 	}
 	@pic[996].erase
@@ -241,13 +243,13 @@ cev .id(2051),.name("[System]Escape Menu"),{
 	s[35].off
 	@loop .inf() {
 	    @if s[39] .isOff() {
-		@mouse.getPos v[49], v[50]
+		@mouse.getPos Mouse_x, Mouse_y
 		
 	    }
-	    v[49].copy v[51], 2
+	    Mouse_x.copy MousePtr_x, 2
 	    v[51..52] -= 3
 	    v[52..52] += 1
-	    @key.input .dst v[43] {
+	    @key.input .dst Common_Control_Ck {
 		.decision
 		.number
 		.lclick
@@ -256,10 +258,10 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		.wheelUp
 	    }
 	    @comment "Check if it's okay"
-	    @pic[2136].getInfo .cewh .baseRect v[341], v[342], v[343], v[344]
+	    @pic[2136].getInfo .cewh .baseRect TT1, TT2, TT3, TT4
 	    @comment "If pic2135 is gone, consider something bad is habbening"
-	    @if v[341] != v[1115] {
-		@if v[341] != v[1116] {
+	    @if TT1 != v[1115] {
+		@if TT2 != v[1116] {
 		    @comment "So break loop"
 		    @break
 		    
@@ -267,11 +269,11 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		
 	    }
 	    @comment "Close"
-	    @pic[2136].getInfo .ltrb .baseRect v[341], v[342], v[343], v[344]
-	    v[342] += 2
-	    v[343] -= 2
-	    @if `between(v[51], v[343] - 4, v[343] + 4) && between(v[52], v[342] - 5, v[342] + 5) {
-		@if v[43] == 1005 {
+	    @pic[2136].getInfo .ltrb .baseRect TT1, TT2, TT3, TT4
+	    TT2 += 2
+	    TT3 -= 2
+	    @if `between(MousePtr_x, TT3 - 4, TT3 + 4) && between(MousePtr_y, TT2 - 5, TT2 + 5) {
+		@if Common_Control_Ck == 1005 {
 		    @if s[11] .isOff() {
 			@break
 			
@@ -281,19 +283,19 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		
 	    }
 	    @comment "Buttons"
-	    v[347] = 2136
+	    TT7 = 2136
 	    @comment "#Resume"
-	    v[347] = v[347] + 1
-	    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-	    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+	    TT7 = TT7 + 1
+	    @pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+	    @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
 		    .rgbs 0, 200, 0, 100
 		}
-		@if v[43] == 1005 {
+		@if Common_Control_Ck == 1005 {
 		    @if s[11] .isOff() {
 			@break
 			
@@ -302,8 +304,8 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		}
 		
 	    } .else bl {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -312,73 +314,65 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		
 	    }
 	    @comment "#2"
-	    v[347] = v[347] + 1
-	    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-	    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+	    TT7 = TT7 + 1
+	    @pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+	    @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
 		    .rgbs 0, 200, 0, 100
 		}
-		@if v[43] == 1005 {
+		@if Common_Control_Ck == 1005 {
 		    @if s[11] .isOff() {
-			s[11].on
-			@call .cev 2054
-			@call .cev 2053
-			@if v[2381] == -1 {
-			    t[501] .asg  .map[v[501]].name
-			    @if t[501] .eq "CustomMap" {
-				t[501] .asg t[750]
-				
-			    }
-			    @actor[1].name t[501]
-			    v[371..380] = 0
-			    v[561..900] = 0
-			    v[1901..1963] = 0
-			    v[3201..4160] = 0
-			    v[v[4568]..v[4600]] = 0
-			    v[v[1067]..v[1079]] = 0
-			    @comment "pixel extract"
-			    v[550445..560445] = 0
-			    @loop v[1004] .dst v[301] {
-				v[302] = v[301] * 300 + 5001
-				@if v[v[302]] == 0 {
-				    @comment "not gate"
-				    @if `!(v[v[316] + 2] & 256) {
-					v[1301].copy v[v[302]], 300
+					s[11].on
+					@call .cev 2054
+					@call .cev 2053
+					@if v[2381] == -1 {
+							str1 .asg  .map[v[501]].name
+							@if str1 .eq "CustomMap" {
+								str1 .asg t[750]
+						
+							}
+							@actor[1].name str1
+							@loop v[1004] .dst Temp1 {
+								Temp2 = Temp1 * 300 + 5001
+								@if v[Temp2] == 0 {
+										@comment "not gate"
+										@if `!(v[Temp16 + 2] & 256) {
+											v[1301].copy v[Temp2], 300
+									
+										}
+										
+								}
+								
+							}
+
+							// sysfunc
+							sysfunc_compress_savedata()
+							s[476].on
+
+							// save js system
+							save_DIS_js_RTS_system()
+
+							@save[v[2382]].save
+							s[11].on
+							@if s[57] .isOn() {
+								@sys.gameOpt .fatal 48, 2, 0
+						
+							}
+							@label.jump 15
+							
+					}
 					
-				    }
-				    
-				}
-				
-			    }
-
-			    //24.4.23
-			    t[502..510] .asg ""
-			    t[1001..1300] .asg ""
-
-			    t[3001..4000] .asg ""
-			    t[5001..30000] .asg ""
-			    s[476].on
-			    @save[v[2382]].save
-			    s[11].on
-			    @if s[57] .isOn() {
-				@sys.gameOpt .fatal 48, 2, 0
-				
-			    }
-			    @label.jump 15
-			    
-			}
-			
 		    }
 		    
 		}
 		
 	    } .else bl {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -387,17 +381,17 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		
 	    }
 	    @comment "#3"
-	    v[347] = v[347] + 1
-	    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-	    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+	    TT7 = TT7 + 1
+	    @pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+	    @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
 		    .rgbs 0, 200, 0, 100
 		}
-		@if v[43] == 1005 {
+		@if Common_Control_Ck == 1005 {
 		    @if s[11] .isOff() {
 			s[11].on
 			@call .cev 2055
@@ -408,8 +402,8 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		}
 		
 	    } .else bl {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -418,17 +412,17 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		
 	    }
 	    @comment "#4"
-	    v[347] = v[347] + 1
-	    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-	    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+	    TT7 = TT7 + 1
+	    @pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+	    @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
 		    .rgbs 0, 200, 0, 100
 		}
-		@if v[43] == 1005 {
+		@if Common_Control_Ck == 1005 {
 		    @if s[11] .isOff() {
 			s[11].on
 			@call .cev 2111
@@ -439,8 +433,8 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		}
 		
 	    } .else bl {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -449,17 +443,17 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		
 	    }
 		//5 restart
-		v[347] = v[347] + 1
-	    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-	    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+		TT7 = TT7 + 1
+	    @pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+	    @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
 		    .rgbs 0, 200, 0, 100
 		}
-		@if v[43] == 1005 {
+		@if Common_Control_Ck == 1005 {
 		    @if s[11] .isOff() {
 			s[11].on
 			t[3000] .asg t[20455]
@@ -473,8 +467,8 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		}
 
 	    } .else bl {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -483,17 +477,17 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		
 	    }	
 	    @comment "#5"
-	    v[347] = v[347] + 1
-	    @pic[v[347]].getInfo .cewh .currentRect v[1952], v[1953], v[1954], v[1955]
-	    @if `between(v[51], v[1952] - v[1954] / 2, v[1952] + v[1954] / 2) && between(v[52], v[1953] - v[1955] / 2, v[1953] + v[1955] / 2) {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+	    TT7 = TT7 + 1
+	    @pic[TT7].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+	    @if `between(MousePtr_x, InvVar2 - InvVar4 / 2, InvVar2 + InvVar4 / 2) && between(MousePtr_y, InvVar3 - InvVar5 / 2, InvVar3 + InvVar5 / 2) {
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
 		    .rgbs 0, 200, 0, 100
 		}
-		@if v[43] == 1005 {
+		@if Common_Control_Ck == 1005 {
 		    @if s[11] .isOff() {
 			s[11].on
 			t[3000] .asg t[20098]
@@ -508,8 +502,8 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		}
 		
 	    } .else bl {
-		@pic[v[347]].move {
-		    .pos v[1952], v[1953] .center
+		@pic[TT7].move {
+		    .pos InvVar2, InvVar3 .center
 		    .scale 100
 		    .trans 0
 		    .time -2
@@ -518,22 +512,25 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		
 	    }
 	    @wait 0
-	    @if v[43] != 1005 {
+	    @if Common_Control_Ck != 1005 {
 		s[11].off
 		
 	    }
 	    
 	}
 
-	@comment "#########################"
-	v[0] = v[472..477] = [7, 17, 161, 162, 6, 0]
-	@comment "#########################"
-	v[471] = 11060
+	//@comment "#########################"
+	//v[0] = v[472..477] = [7, 17, 161, 162, 6, 0]
+	//@comment "#########################"
+	//v[471] = 11060
 	v[161] = max(v[161], v[517])
 	v[162] = max(v[162], v[518])
 	v[0] = v[165..166] = [v[161] / 16, v[162] / 16]
-	@comment "#Safety"
-	@cmd v[471], "", .args v[472], 6
+	//@comment "#Safety"
+	//@cmd v[471], "", .args v[472], 6
+
+	func_general_camera_move(v[161],v[162])
+
 	@pic[2135..2144].erase
 	@if v[2401] >= 5 {
 	    s[2].off
@@ -560,7 +557,7 @@ cev .id(2052), .name("-Esc Cmds"),{
 	s[18].off
 	s[38].on
 	v[951] = 1
-	@mouse.setPos v[49], v[50]
+	@mouse.setPos Mouse_x, Mouse_y
 	@call .cev 2051
 	@pic[996].erase
 	@if s[201] .isOff() {

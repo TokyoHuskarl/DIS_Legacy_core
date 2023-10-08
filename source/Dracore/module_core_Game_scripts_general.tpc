@@ -1,7 +1,115 @@
 #include "./../headers/header_common.tpc"
-//Actual script commands -> header_scripts_functions
-#include "./../headers/header_scripts.tpc"
 
+
+#include "./../headers/header_scripts.tpc"
+#include "./../headers/header_ai.tpc"
+
+// This weird shit will be gone after Scale Script completed
+#include "./../headers/header_scripts_functions.tpc"
+
+
+
+cev[2041], .name("Script:DIS command interpriter"), .parallel , .cond(__id(BOOL_CMD_RUN)), {
+	BOOL_CMD_CALLING.on
+	// split ORDER string given from js UI manager object 
+	Str_CmdQueue.split(";", Str_Deploy_head, guiVar7)
+	guiVar8 = __id(Str_Deploy_head)
+	guiVar1 = 0
+	@loop bl  {
+		@if guiVar7 <= guiVar1 {@break} //
+
+		// CHECK objtype and execute actual cmd
+		DIS_Cmd_callPackageTree(SScmdDynCounter,guiVar8)
+
+		guiVar1 += 1
+		guiVar8 += 1  // get current shit
+	
+	}
+	Str_CmdQueue.asg "" // init 
+	eval_js("Cmd.ReturnQueue = [];") // init Cmd.ReturnQueue after executing DIS commands
+	BOOL_CMD_RUN.off
+	BOOL_CMD_CALLING.off
+}
+
+
+// dialog manager
+cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_Dialog)), {
+	deft {
+		dialog_treeid = 2998
+		dialog_orderid = 2999
+		dialog_string = 3000
+		dialog_timer
+		dialog_iconinfo
+		dialog_opensnd
+		dialog_open
+		dialog_fontdata
+		dialog_stopworld
+		dialog_size
+		dialog_end
+	}
+
+	// check dialog queue
+	dialogQueue.inStr(";",Temp1)
+
+	// cut current dialog information
+	t[__id(dialog_string)..__id(dialog_end)].asg ""
+	dialog_string.asg .subs(dialogQueue,0,Temp1)
+	dialog_string.split(",",dialog_treeid,Temp2) // now you have extracted elements in the dialog order to dialog_ array.
+	dialog_timer.toNum RadioDialogTimer
+	
+	TT1 = v[1115] // ?
+	TT2 = 3
+	@pic[PicID_Radio_Dialog_Back].strpic {
+			""
+			.pos TT1, TT2 .top
+			.size 240, 64    .chromakey 1
+			.scale 100
+			.trans 50
+			.rgbs 100, 100, 100, 100
+			.font "", 12
+			.spacing 0, 4
+			.skin "system5" .stretch
+			.mapLayer 9
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+	}
+
+	TT1 -= 118
+	TT2 += 2
+	@pic[PicID_Radio_Dialog_Text].strpic {
+			dialog_string
+			.pos TT1, TT2 .topLeft
+			.size 0, 0    .chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.font Font_Common, v[4510]
+			.spacing 0, 4
+			.skin "" .nobg .noframe .noPadding
+			.mapLayer 9
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+	}
+	
+
+	
+	@loop bl {
+		@wait 0
+		RadioDialogTimer -= Is_Paused == 1 ? 0 : 1
+		@if RadioDialogTimer <= 0 {
+				@pic[1767..1769].erase
+				RUN_Radio_Dialog.off
+				@break
+		}
+	}
+
+}
+
+
+
+// LEGACY
 
 cev .id(1821), .name("*MapScriptGeneral*"), {
 	/*
@@ -12,48 +120,115 @@ cev .id(1821), .name("*MapScriptGeneral*"), {
 	t[510] .inStr "//", 321,  .beg 0
 	// "#""//""Comment out"
 	@if v[321] == -1 {
-	    @loop 1 {
-		@if t[510] .contains "cond_" {
-		    //@call .cev 1825
-		    scripts_cond()
-		    @break
-		    
-		}
-		@if t[510] .contains "map_" {
-		    //@call .cev 1824
-		    scripts_map()
-		    @break
-		    
-		}
-		@if t[510] .contains "AI_" {
-		    //@call .cev 1822
-		    scripts_AI()
-		    @break
-		    
-		}
-		@if t[510] .contains "team_" {
-		    //@call .cev 1823
-		    scripts_team()
-		    @break
-		    
-		}
-		@if t[510] .contains "player_" {
-		    //@call .cev 1826
-		    scripts_player()
-		    @break
-		    
-		}
-		@if t[510] .contains "var_" {
-		    //@call .cev 1827
-		    scripts_var()
-		    @break
-		    
-		}
-		scripts_misc()
+	    t[509].asg .subs(t[510],0,3)
+	    @if t[509].eq "TPC"{
+		
+	    }.else bl{
+		    @loop 1 {
+			@if t[510] .contains "cond_" {
+			    //@call .cev 1825
+			    scripts_cond()
+			    @break
+			    
+			}
+			@if t[510] .contains "map_" {
+			    //@call .cev 1824
+			    scripts_map()
+			    @break
+			    
+			}
+			@if t[510] .contains "AI_" {
+			    //@call .cev 1822
+			    scripts_AI()
+			    @break
+			    
+			}
+			@if t[510] .contains "team_" {
+			    //@call .cev 1823
+			    scripts_team()
+			    @break
+			    
+			}
+			@if t[510] .contains "player_" {
+			    //@call .cev 1826
+			    scripts_player()
+			    @break
+			    
+			}
+			@if t[510] .contains "var_" {
+			    //@call .cev 1827
+			    scripts_var()
+			    @break
+			    
+			}
+			scripts_misc()
+		    }
 	    }
-	    
 	    
 	}
 	s[261].off
+
+}
+
+
+cev .id(1840), .name("ScriptPreproc"), {
+
+	t[800] .split t[525], t[Const_save_var_Adr_ScriptsBufferHead], v[505]
+	@loop v[505] .dst v[506] {
+	    v[11] = Const_save_var_Adr_ScriptsBufferHead + v[506]
+	    t[v[11]] .split "=", t[3000], v[341]
+	    @if v[341] == 2 {
+		@if t[3000] .neq "" {
+		    t[510] .asg  .rep t[510], t[3000], t[3001]
+		    
+		}
+		
+	    }
+	    
+	}
+
+	t[801] .split t[525], t[Const_save_var_Adr_ScriptsBufferHead], v[505]
+	@loop v[505] .dst v[506] {
+	    v[11] = Const_save_var_Adr_ScriptsBufferHead + v[506]
+	    t[v[11]] .split "=", t[3000], v[341]
+	    @if v[341] == 2 {
+		@if t[3000] .neq "" {
+		    t[510] .asg  .rep t[510], t[3000], t[3001]
+		    
+		}
+		
+	    }
+	    
+	}
+
+	t[802] .split t[525], t[Const_save_var_Adr_ScriptsBufferHead], v[505]
+	@loop v[505] .dst v[506] {
+	    v[11] = Const_save_var_Adr_ScriptsBufferHead + v[506]
+	    t[v[11]] .split "=", t[3000], v[341]
+	    @if v[341] == 2 {
+		@if t[3000] .neq "" {
+		    t[510] .asg  .rep t[510], t[3000], t[3001]
+		    
+		}
+		
+	    }
+	    
+	}
+
+	t[803] .split t[525], t[Const_save_var_Adr_ScriptsBufferHead], v[505]
+	@loop v[505] .dst v[506] {
+	    v[11] = Const_save_var_Adr_ScriptsBufferHead + v[506]
+	    t[v[11]] .split "=", t[3000], v[341]
+	    @if v[341] == 2 {
+		@if t[3000] .neq "" {
+		    t[510] .asg  .rep t[510], t[3000], t[3001]
+		    
+		}
+		
+	    }
+	    
+	}
+
+	t[3000..3001] .asg ""
 
 }
