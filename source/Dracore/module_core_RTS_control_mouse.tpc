@@ -317,7 +317,8 @@ s[70].off
 						MousePtr_x.copy var1, 2
 						var1 += 8
 						var2 -= 8
-						@call .cev 2000
+						// @call .cev 2000
+						macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
 						// "######################Get Terrain and Elevation info"
 						var3 = v[v[1182] + reg1 - Map_LimitCoordX_min + (reg2 - Map_LimitCoordY_min) * var_Map_Width] % 100
 						@if `var3 == 18 || var3 == 22 {

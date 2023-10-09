@@ -29,14 +29,15 @@ __fn func_nodecheck_RayCast $X0 $Y0 $X1 $Y1 {
 	RC_swapx = $X0 < $X1 ? 1 : -1
 	RC_swapy = $Y0 < $Y1 ? 1 : -1
 	RC_err = RC_deltax + RC_deltay
-
-	RC_x = $X0
-	RC_y = $Y0
+	
+	
+	val_asg(RC_x,$X0) // RC_x = $X0
+	val_asg(RC_y,$Y0) // RC_y = $Y0
 
 	// get Start Node Ptr
 	defv RC_PF_NodePtr = __id(TT9)
 	RC_PF_NodePtr = LEGV_MapNodeAmountX * RC_y
-	RC_PF_NodePtr += RC_x
+	val_add(RC_PF_NodePtr,RC_x) // RC_PF_NodePtr += RC_x
 	RC_PF_NodePtr *= Node_Data_Size
 	RC_PF_NodePtr += RMconst_Node_Array_Address_Start_MINUS_NODE_MEMSIZE
 
@@ -63,15 +64,17 @@ __fn func_nodecheck_RayCast $X0 $Y0 $X1 $Y1 {
 		RC_err2 = RC_err * 2
 		
 		@if RC_err2 > RC_deltay {
-			RC_err += RC_deltay // -(dy)
-			RC_x += RC_swapx
+			val_add(RC_err,RC_deltay) // RC_err += RC_deltay // -(dy)
+			val_add(RC_x,RC_swapx) // RC_x += RC_swapx
+
 			// Node X diff
 			RC_PF_NodePtr += RC_swapx * Node_Data_Size
 		}
 
 		@if RC_err2 < RC_deltax {
-			RC_err += RC_deltax
-			RC_y += RC_swapy
+			val_sub(RC_err,RC_deltax) // RC_err += RC_deltax
+			val_add(RC_y,RC_swapy) // RC_y += RC_swapy
+
 			// Node Y diff
 			// use reg1 to temp var
 			reg1 = RC_swapy * LEGV_MapNodeAmountX
@@ -225,18 +228,18 @@ __fn func_pathfinding_move(){
 
 __fn func_pathfinding_open_Node(){
 	// "check"
-	v[380] = 0
-	Temp10 = v[4582]
-	Temp9 = v[4568]
-	Temp10 += Temp9
+	v[ptr_null].copy v[380],1 // v[380] = 0
+	val_asg(Temp10,v[4582]) // Temp10 = v[4582]
+	val_asg(Temp9,v[4568]) // Temp9 = v[4568]
+	val_add(Temp10,Temp9) // Temp10 += Temp9
 	@loop v[4582] .dst Temp10 {
 	    Temp11 = v[4568] + Temp10
 	    @if v[Temp11] == var9 {
-		v[380] = 1
+		val_asg(v[380],N1) // v[380] = 1
 		Temp11 += 40000
 		// "compare cost"
 		@if v[Temp11] > var10 {
-		    v[Temp11] = var10
+		    ptr_asg(Temp11,var10) // v[Temp11] = var10
 		    // v[v[4600] + var9 - 1] = v[4590]
 		    v[Const_save_var_PFNodesLinkMINUS1 + var9] = v[4590]
 		    
@@ -249,17 +252,17 @@ __fn func_pathfinding_open_Node(){
 	}
 
 
-	Temp10 = v[4583]
-	Temp9 = Const_save_var_ClosedNodesListHead
-	Temp10 += Temp9
+	val_asg(Temp10,v[4583]) // Temp10 = v[4583]
+	val_asg(Temp9,Const_save_var_ClosedNodesListHead) // Temp9 = Const_save_var_ClosedNodesListHead
+	val_add(Temp10,Temp9) // Temp10 += Temp9
 	@while Temp9 <= Temp10 {
 	    //opt 28.4.23
 	    //Temp11 = (Temp9 + Temp10) / 2
 	    Temp11 = (Temp9 + Temp10) 
 	    Temp11 /= 2
 	    @if v[Temp11] == var9 {
-		v[380] = 1
-		@break
+				val_asg(v[380],N1) // v[380] = 1
+				@break
 		
 	    } .else bl {
 		@if v[Temp11] < var9 {
@@ -283,7 +286,7 @@ __fn func_pathfinding_open_Node(){
 	    // v[v[4600] + var9 - 1] = v[4590]
 			TT1 = Const_save_var_PFNodesLinkMINUS1 + var9
 			v[TT1] = v[4590]
-	    v[4582] += 1
+	    val_add(v[4582],N1) // v[4582] += 1
 	    
 	}
 }
@@ -355,7 +358,7 @@ __fn restore_path_from_nodes $firstnode $nodelisttail {
 	restorepath_StartNode = $firstnode
 	restorepath_CurrentNode = $nodelisttail
 
-	v[379] = 0
+	val_init(v[379])
 	v[ptr_null].copy v[2066],2
 	v[ptr_null].copy v[4350],31
 
@@ -450,20 +453,19 @@ __fn convert_Path_to_WP $WPamt {
 
 	@loop var1 {
 		CurNodeMINUS1 = v[Ptr7] - 1
-		v[2070] += 1
-		v[4592] = 0
+		val_add(v[2070],N1) // v[2070] += 1
+		val_init(v[4592]) // v[4592] = 0
 		Temp11 = CurNodeMINUS1 * Const_save_var_NodeDataSize
-		Temp11 += Const_save_var_NodeArrayHead
+		val_add(Temp11,Const_save_var_NodeArrayHead) // Temp11 += Const_save_var_NodeArrayHead
 		v[Temp11].copy var1, 2
 		@map[v[501]].setVehiclePos .boat .pos var1, var2 .retain
 		reg2 = boat.scrx
 		reg3 = boat.scry
-		reg2 += 8
+		val_add(reg2,N8) // reg2 += 8
 
 		reg2.copy v[Ptr8], 2	
-		// msg("\v[287]のざぎょうを\v[288]に書きました")
-		Ptr7 += 1
-		Ptr8 += 2
+		val_add(Ptr7,N1) // Ptr7 += 1
+		val_add(Ptr8,N2) // Ptr8 += 2
 	}
 
 }

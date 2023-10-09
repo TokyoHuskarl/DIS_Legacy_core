@@ -5,11 +5,16 @@
 //$regX and $regY must be vars set at address in a row
 __fn macro_convert_relativeXY_into_maptileXY $TileX $TileY $regX $regY {
 	v[__id($TileX)].copy $regX, 2
-	v[__id($regX)] += 8
-	v[__id($regY)] += 24
+
+	val_add($regX,N8) // v[__id($regX)] += 8
+	// v[__id($regY)] += 24
+	val_add($regY,N8)
+	val_add($regY,N16)
+
 	v[__id($regX)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
-	v[__id($regX)] /= 16
-	v[__id($regY)] /= 16
+	val_shr($regX,N4) // v[__id($regX)] /= 16
+	val_shr($regY,N4) // v[__id($regY)] /= 16
+
 }
 
 //cev 2001
@@ -17,7 +22,7 @@ __fn macro_convert_maptileXY_into_relativeXY $TileX $TileY $regX $regY {
 	@map[v[501]].setVehiclePos .airship .pos $TileX, $TileY .retain
 	v[__id($regX)] = airship.scrx
 	v[__id($regY)] = airship.scry
-	v[__id($regY)] -= 8
+	val_sub($regY,N8) // v[__id($regY)] -= 8
 }
 
 
@@ -66,6 +71,11 @@ __fn increment_var $targv {
 	v[__id($targv)].add N1,1 
 }
 
+__fn val_init $v1 {
+	v[ptr_null].copy v[__id($v1)],1
+
+}
+
 __fn val_asg $v1 $v2 {
 	v[__id($v2)].copy v[__id($v1)],1
 }
@@ -89,6 +99,16 @@ __fn val_div $v1 $v2 {
 __fn val_mod $v1 $v2 {
 	v[__id($v1)].mod v[__id($v2)],1
 }
+
+__fn val_shl $v1 $v2 {
+	v[__id($v1)].shl v[__id($v2)],1
+}
+
+__fn val_shr $v1 $v2 {
+	v[__id($v1)].shr v[__id($v2)],1
+}
+
+
 
 // ptr series
 __fn ptr_asg $v1 $v2 {

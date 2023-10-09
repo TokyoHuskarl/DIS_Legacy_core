@@ -19,15 +19,16 @@ def moduletitle="module_core_RTS_pathfinding_general"
 cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode), {
 	
 	// count up how many times PF processes are called in 1f, to adjust lag 
-	PF_done_per_1f = 0
+	val_init(PF_done_per_1f)
 
-	PF_Manager_Loop_AgentPtr = v[4532]
+	val_asg(PF_Manager_Loop_AgentPtr,v[4532])
+
 	@while v[PF_Manager_Loop_AgentPtr] > 0 {
 		@if PF_done_per_1f < PF_Limit_per1f {
 		    // set ptrs
 		    v[4596] = v[PF_Manager_Loop_AgentPtr] - 1
 		    Pathfinding_AgentData_head_ptr = v[PF_Manager_Loop_AgentPtr] * 300 
-		    Pathfinding_AgentData_head_ptr += 4700
+		    val_add(Pathfinding_AgentData_head_ptr,N4700) // Pathfinding_AgentData_head_ptr += 4700
 
 		    // deploy agent data
 		    v[Pathfinding_AgentData_head_ptr].copy v[600], 300
@@ -86,14 +87,18 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 								// underconstruction
 
 								// get target Map Coord.
-								TT2 =__id(agent_HoldPointX) // Pathfinding_AgentData_head_ptr + 41
+								TT2 = __id(agent_HoldPointX) // Pathfinding_AgentData_head_ptr + 41
 								
 								Temp17 = max(agent_LeftWPtoChase, 0) // Use Temp17 to count how many wps left to chase 
-								TT2 += Temp17 * 2
+								// TT2 += Temp17 * 2
+								val_mul(Temp17,N2)
+								val_add(TT2,Temp17)
+
 								v[TT2].copy var1, 2 // get WP coord from agent WP array
 								// convert into tile coordinate - maybe you can deal with this without this func if the PF agent has the target agent
-								@call .cev 2000
-								reg1.copy var3, 2
+								// @call .cev 2000
+								// reg1.copy var3, 2
+								macro_convert_relativeXY_into_maptileXY(var1,var2,var3,var4)
 
 								// get raycasting agent's Coord.
 								agent_MapX.copy var1, 2
@@ -176,7 +181,8 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 											@if `!(agent_AgentBits & AgentBits_FLAG_walldetected) { // and the situation is not around wall detection
 										
 										// then, retarded PF is not done many times (the limit setting is as half as the one for A*)
-										@if PF_done_per_1f <= 8 {
+										// will be removed completely
+										@if PF_done_per_1f <= 12 {
 											// start dumb "pathfinding" to look as if the agent is searching the path
 											func_pathfinding_retarded()
 											PF_done_per_1f += 1
@@ -196,7 +202,7 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 											
 										// go for the A*!
 										func_pathfinding_Astar()
-										PF_done_per_1f += 1
+										val_add(PF_done_per_1f,N1) // PF_done_per_1f += 1
 
 										// Use TT1 as a Ptr to agent_AI_routine_bits
 										TT1 = Pathfinding_AgentData_head_ptr + 34
@@ -215,7 +221,7 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 						
 					}
 		    }
-		    PF_Manager_Loop_AgentPtr += 1
+		    increment_var(PF_Manager_Loop_AgentPtr) // PF_Manager_Loop_AgentPtr += 1
 
 		}.else bl {
 			@break

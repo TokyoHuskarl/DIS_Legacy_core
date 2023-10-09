@@ -322,8 +322,8 @@ __fn func_ui_start_pick_faction_window {
 	v[40] = v[2223]
 	v[39] = v[2224]
 	// @comment "def 84 12"
-	TT1 = v[1115] - 208
-	TT2 = v[1116] + 160
+	TT1 = v[1115] - 284
+	TT2 = v[1116] + 162 // 180
 	@pic[2138].strpic {
 			"Cancel"
 			.pos TT1, TT2 .center
@@ -340,7 +340,7 @@ __fn func_ui_start_pick_faction_window {
 			.affectedByShake
 	}
 
-	TT1 = v[1115] + 208
+	TT1 += 164
 	@pic[2137].strpic {
 			"Confirm"
 			.pos TT1, TT2 .center
@@ -358,7 +358,7 @@ __fn func_ui_start_pick_faction_window {
 	}
 
 	TT1 = v[1115] - 208
-	TT2 = v[1116] + 160
+	TT2 = v[1116] + 72
 	@pic[1231].getInfo .ltrb .baseRect TT19, TT20, TT3, InvVar5
 	TT1 = TT19 + 8
 	TT2 = TT20 + 6
@@ -623,7 +623,7 @@ __fn func_ui_start_pick_faction_window {
 		t[3000] .asg t[3000] .extract
 		// @comment "def 84 12"
 		@pic[1231].getInfo .ltrb .baseRect TT19, TT20, TT3, InvVar5
-		TT1 = TT3 - 224
+		TT1 = TT3 - 384
 		TT2 = TT20 + 32
 		@pic[1602].strpic {
 				t[3000]
