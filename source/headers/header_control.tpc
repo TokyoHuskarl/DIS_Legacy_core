@@ -146,7 +146,7 @@ def forceRefresh_popwindow = {
 
 // kek
 def MACRO_ck_if_current_agent_is_clickable_to_reg6 = {
-	reg6 = between(MousePtr_x,(agent_RelativeX - agent_Width - (agent_Width <= 18 ? v[1122] : 0)),(agent_RelativeX + agent_Width + (agent_Width <= 18 ? v[1122] : 0))) && between(MousePtr_y,(agent_RelativeY - agent_Height - (agent_Height <= 18 ? v[1123] : 0)),(agent_RelativeY + agent_Height + (agent_Height <= 18 ? v[1123] : 0))) ? 1 : 0
+	reg6 = between(MousePtr_x,(agent_RelativeX - agent_Width - (agent_Width <= 18 ? 4 : 0)),(agent_RelativeX + agent_Width + (agent_Width <= 18 ? 4 : 0))) && between(MousePtr_y,(agent_RelativeY - agent_Height - (agent_Height <= 18 ? 4 : 0)),(agent_RelativeY + agent_Height + (agent_Height <= 18 ? 4 : 0))) ? 1 : 0
 
 }
 
