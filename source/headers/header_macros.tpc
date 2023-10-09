@@ -17,6 +17,7 @@ __fn macro_convert_relativeXY_into_maptileXY $TileX $TileY $regX $regY {
 
 }
 
+
 //cev 2001
 __fn macro_convert_maptileXY_into_relativeXY $TileX $TileY $regX $regY {
 	@map[v[501]].setVehiclePos .airship .pos $TileX, $TileY .retain
