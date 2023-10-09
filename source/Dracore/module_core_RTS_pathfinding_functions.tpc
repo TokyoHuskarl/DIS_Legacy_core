@@ -72,7 +72,7 @@ __fn func_nodecheck_RayCast $X0 $Y0 $X1 $Y1 {
 		}
 
 		@if RC_err2 < RC_deltax {
-			val_sub(RC_err,RC_deltax) // RC_err += RC_deltax
+			val_add(RC_err,RC_deltax) // RC_err += RC_deltax
 			val_add(RC_y,RC_swapy) // RC_y += RC_swapy
 
 			// Node Y diff

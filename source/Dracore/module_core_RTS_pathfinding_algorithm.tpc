@@ -98,20 +98,21 @@ __fn func_pathfinding_Astar() {
 	    v[TT2].copy var1, 2
 
 	    // convert into tile coordinate - maybe you can deal with this without this func if the PF agent has the target agent
-	    @call .cev 2000
-	    reg1.copy Temp11, 2
+	    // @call .cev 2000
+	    // reg1.copy Temp11, 2
+			macro_convert_relativeXY_into_maptileXY(var1,var2,Temp11,Temp12)
 
 	    
 	}
 
 	// The goal node is set, now to run actual node check process
 	// "safety in order not to set out of map as a goal node"
-	@if `between(reg2, v[70], v[72]) {
-	    @if `between(reg1, v[69], v[71]) {
+	@if `between(Temp12, v[70], v[72]) {
+	    @if `between(Temp11, v[69], v[71]) {
 
 		Temp11.sub v[69],2
-		Temp11.div N2,2
-		// v[311..312] /= 2
+		// Temp11.div N2,2
+		v[311..312] /= 2
 
 		//opt 27.4.23
 		//var2 = Temp11 + v[312] * v[433] + 1
@@ -123,7 +124,8 @@ __fn func_pathfinding_Astar() {
 		//v[TT2].copy Temp11, 2
 		pfagent_MapX.copy Temp11, 2
 		Temp11.sub v[69],2
-		Temp11.div N2,2
+		v[311..312] /= 2
+		// Temp11.div N2,2
 
 		// var1 = start node id
 		var1 = Temp11 + 1 
@@ -142,11 +144,15 @@ __fn func_pathfinding_Astar() {
 
 		// check from start node
 		PF_current_checking_Node = PF_start_Node
-		var10 = PF_start_Node
 
 		// "######add start Node to openlist"
-		v[v[4568] + v[4582]] = var10
-		v[4582] += 1
+		// var10 = PF_start_Node
+		// v[v[4568] + v[4582]] = var10
+		var10 = v[4568] + v[4582]
+		PF_start_Node.copy v[var10],1
+
+
+		val_add(v[4582],N1) // v[4582] += 1
 
 		v[v[4568]].sortDescending v[4582]
 		v[4588] = (PF_goal_Node - 1) * Const_save_var_NodeDataSize + Const_save_var_NodeArrayHead
@@ -188,7 +194,7 @@ __fn func_pathfinding_Astar() {
 							PFckPtr += Const_save_var_NodeArrayHead - Const_save_var_NodeDataSize
 
 							v[4004] = PFckPtr + 2
-							v[4004] = v[v[4004]]
+							v[4004].deref v[4004],1 // v[4004] = v[v[4004]]
 							@if v[4004] <= 105 {
 									v[PFckPtr].copy v[4001], 2
 									v[4001] .sub v[4588], 2
@@ -210,7 +216,7 @@ __fn func_pathfinding_Astar() {
 									val_add(v[4591],N1) // v[4591] += 1
 									//optimise
 									//v[3609 + v[2065]] = v[v[4581]] / 10
-									TT13 += 8 // since TT13 is 3601 + v[2065]
+									val_add(TT13,N8) // TT13 += 8 // since TT13 is 3601 + v[2065]
 									//Now TT13 = 3609 + v[2065]...  
 									ptr_asg(TT13,TT11) // v[TT13] = TT11
 									
@@ -278,7 +284,7 @@ __fn func_pathfinding_Astar() {
 			v[4003] = v[PF_current_checking_Node - 1 + v[4555]]
 			@loop 8 .dst v[2065] {
 				var9 = 3609 + v[2065]
-				var9 = v[var9]
+				var9.deref var9 // var9 = v[var9]
 				@if var9 > 0 {
 						var10 = 3601 + v[2065]
 						var10.deref var10,1 // var10 = v[var10]
@@ -290,7 +296,7 @@ __fn func_pathfinding_Astar() {
 			}
 
 			// "######	add var10 to closelist"
-			v[19] = PF_current_checking_Node
+			val_asg(var9,PF_current_checking_Node) // v[19] = PF_current_checking_Node
 			v[Const_save_var_ClosedNodesListHead + v[4583]] = v[19]
 
 			val_add(v[4583],N1) // v[4583] += 1
@@ -318,7 +324,8 @@ __fn func_pathfinding_Astar() {
 			v[v[4555]].sort v[4582] .sync v[v[4568]]
 			PF_current_checking_Node = v[v[4568]]
 			// "######"
-			@if `v[2064] % 24 == 23 {
+			reg9 = v[2064] % 32
+			@if reg9 == 31 {
 				// refresh PF counter
 				v[ptr_null].copy PF_done_per_1f,1 // PF_done_per_1f = 0 
 				@wait 0
