@@ -10,11 +10,12 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 				@if v[684] == 1 {
 					v[207] = v[v[536]] - 1
 						v[210] = v[207] * v[1117] 
-						v[210] += 5000
+						val_add(v[210],N5000) // v[210] += 5000
 						//@comment "Auto Attack"
 						@if agent_ActionState == 1 {
 							//@comment "Set Timer"
-							v[v[210] + 84] = 3
+							TT1 = v[210] + 84
+							v[TT1] = 3
 								//@comment "Auto Attack"
 								Ptr20 = v[210] + 18
 								v[340] = 34 + agent_AAType
@@ -43,15 +44,15 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 										//v[Ptr18].copy v[581], 20
 										func_extract_skill_data_from_agent_slot(Ptr19,skill_Slot_in_agent,EXTRACT_FLAG_Data_extracted)
 										@if agent_CastSkillOrder > 0 {
-											//@comment "#スキル番号取得ついでにCDセット"
-											//var1 = Ptr19
-											//var2 = skill_Slot_in_agent
-											//@call .cev 2007
-											macro_SkillCD_set_data_already_extracted(skill_Slot_in_agent)
+												//@comment "#スキル番号取得ついでにCDセット"
+												//var1 = Ptr19
+												//var2 = skill_Slot_in_agent
+												//@call .cev 2007
+												macro_SkillCD_set_data_already_extracted(skill_Slot_in_agent)
 												//@comment "#CDセット End"
 												//@comment "#CDセット End"
 												//v[Ptr8] = 0
-												agent_AttackFrame=0
+												agent_AttackFrame = 0
 												//@comment "#Spend Cost"
 												//v[Ptr17+4808] -= v[587]
 												agent_SP -= skill_Cost
@@ -61,7 +62,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 												//v[Ptr17+4946] = 0
 												agent_CastSkillOrder = 0
 												@if `v[599] & 1 {
-													s[114].on
+														s[114].on
 														//TT1 = v[210] + 7
 														v[590] .add agent_RelativeX, 2
 														//Temporary Save changes
@@ -74,17 +75,17 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 												}
 
 										}
-									//@comment "詠唱モーション処理"
-									//v[v[210] + 84] = 2
-									agent_ActionTimer = 2
+										//@comment "詠唱モーション処理"
+										//v[v[210] + 84] = 2
+										agent_ActionTimer = 2
 										//add 1 frame to attack frame
 										//v[Ptr8] += 1
 										agent_AttackFrame += 1
 
 										@if agent_AttackFrame == skill_MotionFrame {
-											//@comment "Initialize AI Timer"
-											//v[v[210] + 84] = v[v[210] + 300] % v[1195]
-											agent_ActionTimer = agent_generated_ID % v[1195]
+												//@comment "Initialize AI Timer"
+												//v[v[210] + 84] = v[v[210] + 300] % v[1195]
+												agent_ActionTimer = agent_generated_ID % v[1195]
 												//@comment "If dmg skill then in combat"
 												//v[v[210] + 80] = v[584] == 0 ? v[1240] * v[4571] : v[v[210] + 80]
 												agent_InCombatTimer = skill_Usage == Usage_Damage? v[1240] * v[4571] : agent_InCombatTimer 
@@ -185,25 +186,25 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 
 				}
 			//@comment "++"
-			v[536] += 1
+			increment_var(v[536]) // v[536] += 1
 
 		}
 
 	//@comment "STATIC"
 	v[536] = v[4533]
 		@while v[v[536]] != 0 {
-			v[207] = v[v[536]] - 1
+				v[207] = v[v[536]] - 1
 				v[210] = v[207] * v[1117] 
-				v[210] += 5001
-				Ptr1 = v[210]
+				val_add(v[210],N5001) // v[210] += 5001
+				val_asg(Ptr1,v[210]) // Ptr1 = v[210]
 				v[Ptr1].copy agent_ObjectType, 300
 				@if agent_ActionTimer == 1 {
-					v[210] -= 1
+						v[210] -= 1
 						//agent_ActionState = v[210] + 243
 						//@comment "Auto Attack"
 						@if agent_ActionState == 1 {
-							//@comment "Set Timer"
-							agent_ActionTimer = 3
+								//@comment "Set Timer"
+								agent_ActionTimer = 3
 								//@comment "Auto Attack"
 								//v[703] = v[210] + 103
 								agent_ObjectType.copy v[Ptr1], 300
@@ -220,28 +221,28 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 			@if `v[v[210] + 83] == 1 {
 			v[210] -= 1
 			agent_ActionState = v[210] + 243
-//@comment "Auto Attack"
-@if v[agent_ActionState] == 1 {
-//@comment "Set Timer"
-v[v[210] + 84] = 3
-//@comment "Auto Attack"
-v[703] = v[210] + 103
-Ptr20 = v[210] + 18
-v[340] = 34 + v[v[703]]
-@call .cev v[340]
+	//@comment "Auto Attack"
+	@if v[agent_ActionState] == 1 {
+	//@comment "Set Timer"
+	v[v[210] + 84] = 3
+	//@comment "Auto Attack"
+	v[703] = v[210] + 103
+	Ptr20 = v[210] + 18
+	v[340] = 34 + v[v[703]]
+	@call .cev v[340]
 
-}
+	}
 
-}*/
-//@comment "++"
-v[536] += 1
+	}*/
+	//@comment "++"
+	increment_var(v[536]) // v[536] += 1
 
-}
+	}
 }
 
 //reg1 Current CD Timer Ptr
 __fn macro_SkillCD_set_data_already_extracted $skillno {
-	reg1 = __id(agent_PassiveTimer) + $skillno 
+		reg1 = __id(agent_PassiveTimer) + $skillno 
 		//reg2 = skill_Cooldown_Time
-		v[reg1] = skill_Cooldown_Time
+		ptr_asg(reg1,skill_Cooldown_Time) // v[reg1] = skill_Cooldown_Time
 }
