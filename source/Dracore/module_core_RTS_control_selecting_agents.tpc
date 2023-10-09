@@ -38,7 +38,6 @@ __fn CEV_CONTROL_SELECT_AGENTS_GROUP {
 			// kek this proc is fucking retarded, need to be remade tbh
 			@if Control_ClickableAgentHolder > 0 {
 					Temp1 = Control_ClickableAgentHolder - 1
-					Control_ClickableAgentHolder = -1
 					pick_agents_with_Temp1_ptr()
 			}
 		
@@ -270,17 +269,29 @@ __fn pick_agents_with_Temp1_ptr {
 	@if v[Temp2] > 0 {
 			v[Temp2].copy v[601], 11
 			// "左上"
+	
 			
-			Temp3 = v[607] - v[610] - (v[610] <= 18 ? v[1122] : 0)
-			Temp4 = v[608] - v[611] - (v[611] <= 18 ? v[1123] : 0)
-			Temp5 = v[607] + v[610] + (v[610] <= 18 ? v[1122] : 0)
-			Temp6 = v[608] + v[611] + (v[611] <= 18 ? v[1123] : 0)
+			TT1 = Control_ClickableAgentHolder -1
+			@if TT1 != Temp1 { 
+				Temp3 = v[607] - v[610] - (v[610] <= 18 ? v[1122] : 0)
+				Temp4 = v[608] - v[611] - (v[611] <= 18 ? v[1123] : 0)
+				Temp5 = v[607] + v[610] + (v[610] <= 18 ? v[1122] : 0)
+				Temp6 = v[608] + v[611] + (v[611] <= 18 ? v[1123] : 0)
+				// further condition check
+				TT2 = (Temp3 <= v[3] && v[1] <= Temp5 && Temp4 <= v[4] && v[2] <= Temp6 && s[62] == 0)
+
+			}.else bl{
+				TT2 = 1 // it's clickable
+				Control_ClickableAgentHolder = -1
+
+			}
+
 
 			Temp10 = Temp2 + 23
 			Temp11 = Temp2 + 100
 			Temp20 = Temp2 + 99
 			@if Control_ClickableAgentHolder <= 0 { // for click system reforgement
-				@if `Temp3 <= v[3] && v[1] <= Temp5 && Temp4 <= v[4] && v[2] <= Temp6 && s[62] == 0 {
+				@if TT2 == 1 {
 					change_selected_agents_state_old()
 				}
 			}

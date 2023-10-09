@@ -9,7 +9,7 @@ def {
 
 def macro_extract_selecting_unit_param = {
 	    Ptr1 = v[Adr_PlayerSelectList_Head] * 300
-	    Ptr1 += 4701
+	    val_add(Ptr1,N4701) // Ptr1 += 4701
 	    v[Ptr1].copy agent_ObjectType,300
 
 }
@@ -2375,19 +2375,19 @@ __fn check_clickable_units $maskcondbl $flag {
 
 		@while v[agent_pointer] != 0 {
 			Ptr1 = v[agent_pointer] * agent_Basic_Array_size
-			Ptr1 += 4701
+			val_add(Ptr1,N4701) // Ptr1 += 4701
 			v[Ptr1].copy agent_AgentType,12
 			@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { // temporarily exclude static
 				$maskcondbl // use reg10 as a masking condition for agent picking up.
 				@if reg10 == 1 { 
-					MACRO_ck_if_current_agent_is_clickable_to_reg6 // change here for static agent later
+					MACRO_ck_if_current_static_is_clickable_to_reg6 // change here for static agent later
 					@if reg6 == 1 { // clickable!
 						Control_ClickableStaticHolder = v[agent_pointer]
 						@break
 					}
 				}
 			}
-			agent_pointer += 1
+			increment_var(agent_pointer)
 		}
 	}
 
@@ -2396,7 +2396,7 @@ __fn check_clickable_units $maskcondbl $flag {
 	// ------------------------
 
 	
-	def click_rectangle_size = 4
+	def click_rectangle_size = 8
 
 	// check morton id of where mouse pointer is
 
@@ -2423,7 +2423,7 @@ __fn check_clickable_units $maskcondbl $flag {
 	// setting up pointer and counter
 
 	// get ptr
-	TT5 /= 2
+	TT5 >>= 1
 	agent_pointer = Adr_MORTON_ListsPtrlink_array_head - TT5
 	agent_counter = Adr_MORTON_CountPtrlink_array_head - TT5
 
@@ -2432,7 +2432,7 @@ __fn check_clickable_units $maskcondbl $flag {
 
 	// goto each addresses for the morton id
 	agent_pointer += TT6 * Const_save_var_Agents_Limit
-	agent_counter += TT6
+	val_add(agent_counter,TT6) // agent_counter += TT6
 	agent_counter.deref agent_counter,1 // deref again
 
 	/*
@@ -2445,7 +2445,7 @@ __fn check_clickable_units $maskcondbl $flag {
 
 	@loop agent_counter {
 		Ptr1 = v[agent_pointer] * agent_Basic_Array_size
-		Ptr1 += 4701
+		val_add(Ptr1,N4701) // Ptr1 += 4701
 		v[Ptr1].copy agent_AgentType,12
 		@if agent_AgentType != 11 { // not STATIC
 			@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
@@ -2461,7 +2461,8 @@ __fn check_clickable_units $maskcondbl $flag {
 				}
 			}
 		}
-		agent_pointer += 1
+
+		increment_var(agent_pointer) // agent_pointer += 1
 	}
 
 	@if Control_ClickableAgentHolder == -1 { // cannot click movable agents

@@ -352,8 +352,7 @@ s[70].off
 
 										@if s[9] .isOff() {
 												v[42] -= 1
-												v[1] += v[53]
-												v[2] += v[54]
+												v[1].add v[53],2
 												v[1].copy TT1, 2
 												TT1 = max(v[1008], min(TT1, v[1009]))
 												TT2 = max(v[1010], min(TT2, v[1011]))
@@ -364,14 +363,20 @@ s[70].off
 												@if v[42] <= 0 {
 														v[5] = abs(v[7])
 														v[6] = abs(v[8])
+
+														v[5] = v[5] <= 7 ? 8 : v[5]
+														/*
 														@if v[5] <= 7 {
 																v[5] = 8
-																
 														}
+														*/
+														v[6] = v[6] <= 7 ? 8 : v[6]
+														/*
 														@if v[6] <= 7 {
 																v[6] = 8
-																
 														}
+														*/
+
 														@sys.skin "Odinscall_drag" .stretch .gothic
 														@if v[7] > 0 {
 																@if v[8] > 0 {

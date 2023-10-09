@@ -279,13 +279,16 @@ __fn func_pathfinding_open_Node(){
 
 	@if v[380] == 0 {
 			TT1 = v[4568] + v[4582]
-	    v[TT1] = var9
+	    // v[TT1] = var9
+			ptr_asg(TT1,var9)
+
 			TT1 = v[4555] + v[4582]
-	    v[TT1] = var10
+			// v[TT1] = var10
+			ptr_asg(TT1,var10)
 
 	    // v[v[4600] + var9 - 1] = v[4590]
 			TT1 = Const_save_var_PFNodesLinkMINUS1 + var9
-			v[TT1] = v[4590]
+			ptr_asg(TT1,v[4590]) // v[TT1] = v[4590]
 	    val_add(v[4582],N1) // v[4582] += 1
 	    
 	}
@@ -313,7 +316,7 @@ __fn set_Path_gotten_from_jscontainer { // temporary
 		v[2871].copy v[2869], 2
 		v[2873].copy v[2871], 2
 		v[2851].copy v[2873], 2
-		v[2071] += 2
+		val_add(v[2071],N2) // v[2071] += 2
 	}
 
 }
@@ -356,7 +359,7 @@ __fn restore_path_from_nodes $firstnode $nodelisttail {
 		// if you need to choose different direction to reach the current node
 		@if v[2066] != v[2067] {
 			// then this becomes possible WPs
-			Ptr5 -= 1
+			val_sub(Ptr5,N1) // Ptr5 -= 1
 			restorepath_CurrentNode.copy v[Ptr5],1
 			
 			// then get its pos and save
@@ -380,7 +383,7 @@ __fn restore_path_from_nodes $firstnode $nodelisttail {
 				reg2.copy v[v[2071]], 2
 			}
 			// count up possible WPs
-			v[2875] += 1
+			val_add(v[2875],N1) // v[2875] += 1
 		}
 
 		restorepath_CurrentNode = Const_save_var_PFNodesLink + CurNodeMINUS1
@@ -403,7 +406,7 @@ __fn restore_path_from_nodes $firstnode $nodelisttail {
 		// send rest path to js pf manager 
 		// sending array v[Ptr7..Ptr6]
 		PF_Manager_Loop_AgentPtr.deref var1,1 
-		Ptr6 -= 1
+		val_sub(Ptr6,N1) // Ptr6 -= 1
 		def JSCMD_GET_PATH_ARRAY = __str("RTS.path.storePath(\v[",__id(var1),"],getv([\v[",__id(Ptr7),"],\v[",__id(Ptr6),"]]))")
 		eval_js(JSCMD_GET_PATH_ARRAY)
 		// deblog_js(js_StringBuffer)
@@ -478,7 +481,7 @@ __fn pf_agent_move {
 			v[ptr_null].copy v[LEGV_ConstAIselectedListHead],200
 			v[LEGV_ConstAIselectedListHead] = v[4596] + 1
 			v[2880] = LEGV_ConstAIselectedListHead + 1
-			v[2841] = 1
+			val_asg(v[2841],N1) // v[2841] = 1
 			
 	} .else bl {
 
