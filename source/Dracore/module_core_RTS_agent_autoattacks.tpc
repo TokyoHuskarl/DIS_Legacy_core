@@ -1085,7 +1085,7 @@ cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
 								v[372] = v[Ptr10 + 4840] & 4096 ? 1 : 0
 								//@call .cev 111
 								var4 = reg2 >= mini_blood_damage_threshold ? 0 : 1
-								func_call_mini_blood_f_effect(v[361] v[362] v[372] var4)
+								func_call_mini_blood_f_effect(effectArgX,effectArgY,v[372],var4)
 								
 						}
 						

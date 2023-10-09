@@ -447,13 +447,14 @@ __fn func_damage_calculation {
 					}
 					
 			}
-			// copy back victim data since it's not ovah
-			copyback_victim_data(Ptr11)
 
 
 
 			var2 = min((((reg2 / 8) + damage_base_morale_check) * agent_ProcessObjBit & BaseObjBit_FLAG_Cause_Demoralizing ? 2 : 1), 100)
-			func_bs_morale_check(Ptr20,var2)
+			func_bs_morale_check_victim(var2)
+
+			// copy back victim data since it's not ovah
+			copyback_victim_data(Ptr11)
 			// "Morale Check End################"
 		}
 

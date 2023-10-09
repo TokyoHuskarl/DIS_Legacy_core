@@ -331,7 +331,7 @@ __fn func_ui_start_pick_faction_window {
 			.scale 100
 			.trans 0
 			.rgbs 100, 100, 100, 100
-			.font Font_UI, 11
+			.font Font_UI, Font_UI_size
 			.spacing 0, 4
 			.skin "SystemSwitch" .nobg
 			.mapLayer 9
@@ -348,7 +348,7 @@ __fn func_ui_start_pick_faction_window {
 			.scale 100
 			.trans 0
 			.rgbs 100, 100, 100, 100
-			.font Font_UI, 11
+			.font Font_UI, Font_UI_size
 			.spacing 0, 4
 			.skin "SystemSwitch" .nobg
 			.mapLayer 9
@@ -369,7 +369,7 @@ __fn func_ui_start_pick_faction_window {
 			.scale 100
 			.trans 0
 			.rgbs 100, 100, 100, 100
-			.font Font_Common, Font_Common_size
+			.font Font_UI, Font_UI_size
 			.spacing 0, 4
 			.skin "" .nobg .noframe .noPadding
 			.mapLayer 9
@@ -632,7 +632,7 @@ __fn func_ui_start_pick_faction_window {
 				.scale 100
 				.trans 0
 				.rgbs 100, 100, 100, 100
-				.font Font_Common, v[4510]
+				.font Font_UI, Font_UI_size
 				.spacing 0, 4
 				.skin "" .nobg .noframe .noPadding
 				.mapLayer 9
@@ -664,7 +664,7 @@ __fn func_ui_start_pick_faction_window {
 
 
 def {
-	STRING_TIPS = __str("TIPS:\t[3000]")
+	STRING_TIPS = __str("TIPS:\t[",3000,"]")
 	STRING_NOWLOADING = "　NOW LOADING..."
 }
 
@@ -681,7 +681,7 @@ __fn func_ui_show_nowloading {
 			.scale 100
 			.trans 0
 			.rgbs 100, 100, 100, 100
-			.font Font_Common, v[4510]
+			.font Font_Common, Font_Common_size
 			.spacing 0, 4
 			.skin "" .nobg .noframe
 			.mapLayer 10
@@ -696,7 +696,7 @@ __fn func_ui_show_nowloading {
 			.scale 100
 			.trans 0
 			.rgbs 100, 100, 100, 100
-			.font Font_Common, v[4510]
+			.font Font_UI, v[4510]
 			.spacing 0, 4
 			.skin "" .nobg .noframe
 			.mapLayer 10
