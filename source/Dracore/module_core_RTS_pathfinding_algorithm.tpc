@@ -94,7 +94,9 @@ __fn func_pathfinding_Astar() {
 
 	    TT2 =__id(pfagent_HoldPointX) // Pathfinding_AgentData_head_ptr + 41
 	    Temp17 = max(pfagent_LeftWPtoChase, 0)
-	    TT2 += Temp17 * 2
+	    // TT2 += Temp17 * 2
+	    val_mul(Temp17,N2)
+			val_add(Temp17,TT2)
 	    v[TT2].copy var1, 2
 
 	    // convert into tile coordinate - maybe you can deal with this without this func if the PF agent has the target agent
@@ -284,7 +286,7 @@ __fn func_pathfinding_Astar() {
 			v[4003] = v[PF_current_checking_Node - 1 + v[4555]]
 			@loop 8 .dst v[2065] {
 				var9 = 3609 + v[2065]
-				var9.deref var9 // var9 = v[var9]
+				var9.deref var9,1 // var9 = v[var9]
 				@if var9 > 0 {
 						var10 = 3601 + v[2065]
 						var10.deref var10,1 // var10 = v[var10]
@@ -306,13 +308,13 @@ __fn func_pathfinding_Astar() {
 			v[var1].copy v[v[4568]], v[4582]
 			// v[v[4568] + v[4582]] = 0
 			var2 = v[4568] + v[4582]
-			v[ptr_null].copy v[var2].1
+			v[ptr_null].copy v[var2],1
 
 			var1 = v[4555] + 1
 			v[var1].copy v[v[4555]], v[4582]
 			// v[v[4555] + v[4582]] = 0
 			var2 = v[4555] + v[4582]
-			v[ptr_null].copy v[var2].1
+			v[ptr_null].copy v[var2],1
 
 			val_sub(v[4582],N1) // v[4582] -= 1
 
@@ -400,7 +402,7 @@ __fn func_pathfinding_Astar() {
 			v[2871].copy v[2869], 2
 			v[2873].copy v[2871], 2
 			v[2851].copy v[2873], 2
-			v[2071] += 2
+			val_add(v[2071],N2) // v[2071] += 2
 			
 		}
 		

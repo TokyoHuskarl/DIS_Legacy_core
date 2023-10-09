@@ -292,37 +292,6 @@ __fn func_pathfinding_open_Node(){
 }
 
 
-// this function seems unused I guess?
-// WHAT THE FUCK IS Temp11?
-__fn func_pathfinding_remove_OpenNode(){
-	Temp10 = v[4582]
-	Temp9 = v[4568]
-	Temp10 += Temp9
-	// searching TT11 I guess
-	@while Temp9 <= Temp10 {
-	    Temp11 = (Temp9 + Temp10) 
-	    Temp11 /= 2
-	    @if v[Temp11] == var9 {
-		//ugh this one looks brutal
-		// 
-		v[0] = v[Temp11..v[4568] + v[4582]] = v[Temp11 + 1..v[4568] + v[4582] + 1]
-		v[0] = v[Temp11 + 200..v[4555] + v[4582]] = v[Temp11 + 201..v[4555] + v[4582] + 1]
-		v[4582] -= 1
-		@break
-		
-	    } .else bl {
-		@if v[Temp11] < var9 {
-		    Temp10 = Temp11 - 1
-		    
-		} .else bl {
-		    Temp9 = Temp11 + 1
-		    
-		}
-		
-	    }
-	    
-	}
-}
 
 
 __fn set_Path_gotten_from_jscontainer { // temporary

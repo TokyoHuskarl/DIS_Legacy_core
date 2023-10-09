@@ -12,8 +12,10 @@ __fn macro_convert_relativeXY_into_maptileXY $TileX $TileY $regX $regY {
 	val_add($regY,N16)
 
 	v[__id($regX)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
-	val_shr($regX,N4) // v[__id($regX)] /= 16
-	val_shr($regY,N4) // v[__id($regY)] /= 16
+	v[__id($regX)] /= 16
+	v[__id($regY)] /= 16
+	//val_shr($regX,N4) // v[__id($regX)] /= 16
+	//val_shr($regY,N4) // v[__id($regY)] /= 16
 
 }
 
