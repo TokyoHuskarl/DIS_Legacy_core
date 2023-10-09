@@ -781,7 +781,7 @@ __fn init_DIS_database $already_loaded {
 	// t[__id(data_troopID)..__id(data_accessoryID)].asg ""
 
 	@comment "##################"
-	t[510] .asg  .file "..\\config\\language_config", .utf8
+	t[510] .asg  .file "..\\Data\\language_config", .utf8
 	t[510] .split LF, t[2999], TT1
 	v[1] = v[2201] + 3000
 	t[v[1]] .split ",", t[3100], TT1
@@ -801,6 +801,7 @@ __fn init_DIS_database $already_loaded {
 	t[527] .asg """
 	 "
 	v[1211] = 3001
+	/*
 	t[510] .asg  .file "..\\config\preload_pictures", .utf8
 	t[510] .split LF, t[v[1211]], TT1
 	@loop TT1 .dst TT2 {
@@ -820,6 +821,7 @@ __fn init_DIS_database $already_loaded {
 			t[TT2] .asg ""
 			
 	}
+	*/
 
 	v[4517] = 4000
 	v[1216] = 4001
