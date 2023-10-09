@@ -26,7 +26,7 @@ syntax keyword tpcRepeat loop countUp countDown doWhile while foreach __loop
 
 
 " +@\S*+"
-syn region tpcComment start=+\/\*+ end=+\*\/+ fold
+syn region tpcComment start=+\/\*+ end=+\*\/+ fold contains=tpcFold
 "contains=tpcHighlight
 syn match tpcComment /\/\/.*/
 syn match tpcComment /@comment\s".*"/ contained
