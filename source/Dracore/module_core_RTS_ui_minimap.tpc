@@ -6,15 +6,16 @@ __fn UI_CEV_MINIMAP_MANAGER {
 		s[76].on
 
 	}
-	v[439] = v[1258]
+
+	index_MinimapPicId = v[1258]
 		@if Bool_Refresh_Static_Minimap .isOn() { //STATIC REFRESH
 			@if s[76] .isOn() {
 				v[2511] = (v[2511] + 1) 
 					v[2511] %= 8
 					@if v[2511] == 1 {
-						@pic[v[439]].getInfo .cewh .currentRect reg1, reg1, reg2, reg3
+						@pic[index_MinimapPicId].getInfo .cewh .currentRect reg1, reg1, reg2, reg3
 						@if reg3 < v[1276] {
-							@pic[v[439]].show {
+							@pic[index_MinimapPicId].show {
 								"ui\minimapback"
 									.pos v[1282], v[1283] .topLeft
 									.chromakey 1
@@ -28,7 +29,7 @@ __fn UI_CEV_MINIMAP_MANAGER {
 						//v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
 						TT1 = v[1277] * v[1276]
 						v[ptr_null].copy v[v[4563]],TT1
-						@pic[v[439]].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
+						@pic[index_MinimapPicId].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
 
 
 							v[536] = v[4533]
@@ -37,12 +38,12 @@ __fn UI_CEV_MINIMAP_MANAGER {
 								// get in sight switch adr
 								TT1 = v[v[536]] + 2000
 									@if s[TT1] .isOn() {
-										v[401] = v[v[536]] - 1
+											v[401] = v[v[536]] - 1
 											Temp1 = v[401] * v[1117] 
 											val_add(Temp1,N5000) // Temp1 += 5000
 											v[Temp1].copy Address_agent_array_head,agent_Basic_Array_size // deploy
 											@if agent_UnitType != 104 { // agent is not foundation
-												v[335] = v[4804] + v[401]
+													v[335] = v[4804] + v[401]
 													v[335].deref v[335],1 // v[335] = v[v[335]]
 
 													// Ptr19 = Temp1 + 233
@@ -67,7 +68,7 @@ __fn UI_CEV_MINIMAP_MANAGER {
 
 							}
 
-						@pic[v[439]].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
+						@pic[index_MinimapPicId].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
 							Bool_Refresh_Static_Minimap.off
 					}
 
@@ -76,7 +77,7 @@ __fn UI_CEV_MINIMAP_MANAGER {
 
 	//@comment "##################"
 	@wait 0
-		v[439] += 1
+		index_MinimapPicId += v[1258] + 1
 		TT1 = 2 + (v[189] >= v[1128] ? 1 : 0) + (s[314] == 1 ? 1 : 0)
 		v[2512] = (v[2512] + 1) % TT1
 		@if v[2512] == 1 {
@@ -84,9 +85,9 @@ __fn UI_CEV_MINIMAP_MANAGER {
 				TT1 = v[1282]
 				TT2 = v[1283] - 2
 
-				@pic[v[439]].getInfo .cewh .currentRect reg1, reg1, reg2, reg3
+				@pic[index_MinimapPicId].getInfo .cewh .currentRect reg1, reg1, reg2, reg3
 				@if reg3 < v[1276] {
-					@pic[v[439]].show {
+					@pic[index_MinimapPicId].show {
 						"ui\minimapback"
 							.pos v[1282], v[1283] .topLeft
 							.chromakey 1
@@ -100,7 +101,7 @@ __fn UI_CEV_MINIMAP_MANAGER {
 
 				TT1 = v[1277] * v[1276]
 				v[ptr_null].copy v[v[4563]],TT1
-				@pic[v[439]].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
+				@pic[index_MinimapPicId].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
 
 				v[536] = v[4532]
 				@while v[v[536]] != 0 {
@@ -128,7 +129,7 @@ __fn UI_CEV_MINIMAP_MANAGER {
 
 				}
 
-			@pic[v[439]].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
+			@pic[index_MinimapPicId].setPixel .xywh 0, 0, v[1277], v[1276] .src v[748949]
 
 		}
 
