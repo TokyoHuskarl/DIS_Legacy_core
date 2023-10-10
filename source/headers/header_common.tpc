@@ -600,11 +600,11 @@ def {
 
 	PATH_language = "../Languages/"
 
-	PATH_module = "/Modules/Legacy/" // currently fixed
+	PATH_module = "../Modules/Legacy/" // currently fixed
 		
-		PATH_moduleLang = __str("../",PATH_module,"Languages/")
+		PATH_moduleLang = __str(PATH_module,"Languages/")
 
-	PATH_gui_setting = __str("../",PATH_module,"gui/") // new gui setting put in module directory
+	PATH_gui_setting = __str(PATH_module,"gui/") // new gui setting put in module directory
 
 	PATH_core_data = "..\data\"
 	

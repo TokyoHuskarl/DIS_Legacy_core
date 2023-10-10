@@ -39,9 +39,12 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 
 
 
-	t[510] .asg  .file "..\Data\version_info", .utf8
+
+	/*
+	t[510] .asg  .file inputstr, .utf8
 	t[510] .split " /", t[3000], TT1
 	t[520] .asg t[3000]
+	*/
 
 	@sys.gameOpt .picLimit 9200
 	v[2299] = 9200
@@ -781,7 +784,7 @@ __fn init_DIS_database $already_loaded {
 	// t[__id(data_troopID)..__id(data_accessoryID)].asg ""
 
 	@comment "##################"
-	t[510] .asg  .file "..\\Data\\language_config", .utf8
+	t[510] .asg  .file "..\Data\language_config", .utf8
 	t[510] .split LF, t[2999], TT1
 	v[1] = v[2201] + 3000
 	t[v[1]] .split ",", t[3100], TT1
@@ -1546,7 +1549,7 @@ __fn init_DIS_database $already_loaded {
 	
 	// new loading
 	getModulePathTo(inputstr)
-	inputstr.cat "Data/data_factions_template.json"
+	inputstr.cat "Data\data_factions_template.json"
 	load_json_to(inputstr,str_moduleData_FacTemplate_json)
 	remove_comment_out_from_refstr(__id(str_moduleData_FacTemplate_json))
 
@@ -2041,6 +2044,12 @@ cev .id(2120), .name("Game:Boot"),{
 			@gsave.saveAndClose
 			
 	}
+
+	t[510] .asg PATH_module
+	t[510] .cat "moduleinfo.json", .utf8
+	load_json_to(inputstr,Str_moduleinfo)
+	execute_js("DISmoduleloader.js")
+	
 
 
 	@map[4].setPlayerPos .pos 9, 1 .retain

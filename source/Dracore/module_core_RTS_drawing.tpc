@@ -232,7 +232,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 							v[188] = v[178] = v[340] * Const_layer_amount + v[1201]
 							val_asg(v[177],v[186]) // v[177] = v[186]
 							TT1 = Temp1 + 290
-							ptr_asg(v[186]) // v[TT1] = v[186]
+							ptr_asg(TT1,v[186]) // v[TT1] = v[186]
 
 							//@comment "#get damaged variation"
 				//this part might be needless in new system
@@ -945,8 +945,9 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 											}
 											//@comment "Set List"
 											v[189] += 1
-											v[v[1184] + v[189]] = v[340] + 1
-											v[v[1184] + v[189] + v[1004]] = v[187]
+											TT1 = v[1184] + v[189]
+											v[TT1] = v[340] + 1
+											v[TT1 + v[1004]] = v[187]
 											
 									} .else bl {
 											v[Temp1 + 3] &= -16385//~16384
@@ -1068,9 +1069,10 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													//@comment "Get ID From Cache"
 													@pic[v[178]].setId .swap v[177], v[187] .ignoreError
 													//@comment "Set List"
-													val_add(v[189],1) // v[189] += 1
-													v[v[1184] + v[189]] = v[340] + 1
-													v[v[1184] + v[189] + v[1004]] = v[187]
+													val_add(v[189],N1) // v[189] += 1
+													TT1 = v[1184] + v[189]
+													v[TT1] = v[340] + 1
+													v[TT1 + v[1004]] = v[187]
 													
 											} .else bl {
 													@if agent_AgentType == -3 {
@@ -1191,13 +1193,14 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																	.affectedByFlash
 																	.affectedByShake
 															}
-															v[186..188] += 1
+															v[186].add N1,4 // v[186..188] += 1
 															//@comment "Get ID From Cache"
 															@pic[v[178]].setId .swap v[177], v[187] .ignoreError
 															//@comment "Set List"
-															v[189] += 1
-															v[v[1184] + v[189]] = v[340] + 1
-															v[v[1184] + v[189] + v[1004]] = v[187]
+															TT1 = v[1184] + v[189]
+															v[TT1] = v[340] + 1
+															val_add(TT1,v[1004]) // TT1 += v[1004]
+															v[TT1] = v[187]
 															
 													}
 													
