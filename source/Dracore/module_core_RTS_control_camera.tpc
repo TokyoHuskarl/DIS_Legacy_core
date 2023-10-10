@@ -1,5 +1,10 @@
 
 
+def macro_getMilDiff = {
+	FrameCamDiff_MilX = FrameCamDiff_X * 10000
+	FrameCamDiff_MilY = FrameCamDiff_Y * 10000
+}
+
 cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 
 	@if .rightAfterLoad() {
@@ -307,13 +312,14 @@ cev[9] .name("Camera:WatchDiff1"), .parallel , .cond(Const_Is_RTS_Mode),{
 	v[53] = ev[1].scrx //- v[55]
 	v[54] = ev[1].scry //- v[56]
 	v[53].sub v[55],2
+	macro_getMilDiff
 	v[92] = v[53] * 1000 
 	v[92] += v[54]
 	// "#そのうちループで置き換える"
 	TT1 = 1021
 	@loop 8 {
 	    v[53].copy v[TT1], 2
-	    TT1 += 2
+	    val_add(TT1,N2)
 	    
 	}
 
@@ -322,7 +328,7 @@ cev[9] .name("Camera:WatchDiff1"), .parallel , .cond(Const_Is_RTS_Mode),{
 	v[2806] .add v[53], 2
 	s[49].on
 
-	}
+}
 cev[10] .name("Camera:WatchDiff2"), .parallel , .cond(49),{
 	v[63] = ev[1].scrx
 	v[64] = ev[1].scry
@@ -330,11 +336,12 @@ cev[10] .name("Camera:WatchDiff2"), .parallel , .cond(49),{
 	v[53] = ev[1].scrx // - v[63]
 	v[54] = ev[1].scry // - v[64]
 	v[53].sub v[63],2
+	macro_getMilDiff
 	// "#そのうちループで置き換える"
 	TT1 = 1021
 	@loop 8 {
 	    v[53].copy v[TT1], 2
-	    TT1 += 2
+	    val_add(TT1,N2)
 	    
 	}
 

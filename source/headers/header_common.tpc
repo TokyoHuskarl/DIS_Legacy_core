@@ -293,6 +293,10 @@ def Const_Is_Minimap_Set = 78
 
 defs Bool_Refresh_Static_Minimap = 75
 
+
+vname[__id(FrameCamDiff_MilX)], "FrameCamDifMilX"
+vname[__id(FrameCamDiff_MilY)], "FrameCamDifMilY"
+
 //vars
 defv{
 
@@ -302,6 +306,10 @@ defv{
 	Mouse_y = 50
 	MousePtr_X = 51
 	MousePtr_Y = 52
+	FrameCamDiff_X = 53
+	FrameCamDiff_Y = 54
+	FrameCamDiff_MilX = 4861
+	FrameCamDiff_MilY = 4862
 
 	AllFrameCount = 2501
 	ConstPtr_ObjPicSort_begin = 1112
@@ -535,7 +543,7 @@ __fn macro_cord_diff $x $y {
 	    //this one is far faster
 	    v[__id($x)..__id($y)] /= 10000
 	    v[__id($x)] .sub v[403], 2
-	    v[__id($x)] .add v[53], 2
+	    v[__id($x)] .add FrameCamDiff_X, 2
 	    v[__id($x)..__id($y)] /= 16
 }
 

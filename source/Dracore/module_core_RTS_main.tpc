@@ -177,16 +177,23 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    // "set mapXY"
 	    Temp3.copy v[626], 2
+
 	    // "X座標"
 	    // "#カメラずらして"
-	    v[605] += v[53] * 10000
-	    // "#座標を反映"
-	    v[607] = v[605] / 10000
+	    val_add(agent_MilPixX,FrameCamDiff_MilX) // v[605] += v[53] * 10000
 	    // "Y座標"
 	    // "#カメラずらして"
-	    v[606] += v[54] * 10000
+			val_add(agent_MilPixY,FrameCamDiff_MilY) // agent_MilPixY += v[54] * 10000
+
+			/*
+	    // "#座標を反映"
+	    v[607] = v[605] / 10000
 	    // "#座標を反映"
 	    v[608] = v[606] / 10000
+			*/
+			agent_MilPixX.copy agent_RelativeX,2
+			v[__id(agent_RelativeX)..__id(agent_RelativeY)] /= 10000
+
 	    // "###################"
 	    /* "#############
 	    #Set Y Position EV
@@ -233,8 +240,8 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 								// "#"
 								// "#描画範囲内であれば保存"
 								v[v[1112] + v[184]] = (v[608] + v[611] + v[1011]) * 1000 + v[401]
-								v[v[1113] + v[184]]=v[401]
-								v[184] += 1
+								v[v[1113] + v[184]] = v[401]
+								val_add(v[184],N1) // v[184] += 1
 								
 					    }
 				   }
@@ -284,10 +291,10 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    }
 
 			// shield fall
-	    @if v[873] < v[874] {
+	    @if v[873] < agent_ProcessObjBit {
 				v[872] += g_perFPS //98000 / 48
 				v[869] .add v[871], 2
-				val_add(v[875],v[876]) // v[875] += v[876]
+				val_add(v[875],agent_ProcessCamoValue) // v[875] += agent_ProcessCamoValue
 				val_add(v[873],N1) // v[873] += 1
 		
 	    }
@@ -339,7 +346,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[612] = 500 >= abs(v[612]) ? 0 : v[612]
 	    v[605] += Temp13 < 20 ? v[612] : 0
 	    // "#カメラずらして"
-	    v[605] += v[53] * 10000
+	    v[605] += FrameCamDiff_MilX
 	    // "#座標を反映"
 	    v[607] = v[605] / 10000
 	    // "Y座標"
@@ -352,7 +359,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[613] = 500 >= abs(v[613]) ? 0 : v[613]
 	    v[606] += Temp13 < 20 ? v[613] : 0
 	    // "#カメラずらして"
-	    v[606] += v[54] * 10000
+	    v[606] += FrameCamDiff_MilY
 	    // "#座標を反映"
 	    v[608] = v[606] / 10000
 	    // "慣性終わり"
@@ -501,28 +508,28 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[401] + 501] == 1 {
 						@if `agent_ActionFlag & ActionFlag_FLAG_Walking { // DIS_EXPERIMENTAL s[v[401] + v[4558]] == 1 {
 							// "#Sub timer"
-							v[886] -= 2
+							val_sub(v[886],N2)
 							@if v[886] <= 0 {
 									TT1 = v[1179] + v[640] + 20 * v[887]
 									v[685] = 13
-									@if `agent_MoveTypeBIts & 1 {
+									@if `agent_MoveTypeBIts & MoveTypeBits_Flying {
 										@if v[182] < 1 {
-												@if v[522] < 32 {
-											v[182] += 1
-											// "#########################"
-											v[472] = divmul(18, 100, v[2216])
-											v[473] = rnd(95, 105)
-											v[474] = divmul(v[607] + v[1001], v[1281], 50)
-											v[329] = rnd(0, 2)
-											inputstr .asg "footsteps\fly"
-											inputstr .cat v[329]
-											TT2 = 510
-											// "Strings = t[TT2]"
-											@cmd 11550, t[TT2], .args v[472], 3
-											// "#########################"
-											
-												}
-												
+											@if v[522] < 32 {
+												v[182] += 1
+													// "#########################"
+													v[472] = divmul(18, 100, v[2216])
+													v[473] = rnd(95, 105)
+													v[474] = divmul(v[607] + v[1001], v[1281], 50)
+													v[329] = rnd(0, 2)
+													inputstr .asg "footsteps\fly"
+													inputstr .cat v[329]
+													TT2 = 510
+													// "Strings = t[TT2]"
+													@cmd 11550, t[TT2], .args v[472], 3
+													// "#########################"
+
+											}
+
 										}
 										v[886] = v[868] / 4 
 										v[886]+= rnd(7, 11)
@@ -576,7 +583,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 												
 												
 										} .else bl {
-												@if `v[874] & 512 {
+												@if `agent_ProcessObjBit & 512 {
 											@loop v[1017] .dst Temp20 {
 													v[244] %= v[1199]
 													TT11 = v[244] * 50 
@@ -714,34 +721,35 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[340] = v[4505] + v[640]
 	    v[340].deref v[340],1 // v[340] = v[v[340]]
 	    /* "###############Camo Check###############"*/
-	    val_asg(v[876],v[617]) // v[876] = v[617]
+	    val_asg(agent_ProcessCamoValue,v[617]) // agent_ProcessCamoValue = v[617]
 
 	    // Ambush setting
 
 	    // "#Bush"
 			// |= cond ? BaseObjBit_FLAG_Ambushing : 0
-	    v[874] |= (v[340] & 4 && v[680] <= 0) // v[340] & 4 && v[680] <= 0 ? v[874] | 1 : v[874]
+	    agent_ProcessObjBit |= (v[340] & 4 && v[680] <= 0) // v[340] & 4 && v[680] <= 0 ? agent_ProcessObjBit | 1 : agent_ProcessObjBit
 
 	    // "##big units cannot ambush"
-	    // v[874] = v[874] & 524288 || v[843] > 3 ? v[874] & ~1 : v[874]
-	    v[874] &= ~(v[874] & BaseObjBit_FLAG_big_unit || v[843] > 3)
+	    // agent_ProcessObjBit = agent_ProcessObjBit & 524288 || v[843] > 3 ? agent_ProcessObjBit & ~1 : agent_ProcessObjBit
+	    agent_ProcessObjBit &= ~(agent_ProcessObjBit & BaseObjBit_FLAG_big_unit || v[843] > 3)
 
 	    // "##in melee combat"
-	    // v[874] = v[681] >= 1 ? v[874] & ~1 : v[874]
-	    v[874] &= ~(v[681] >= 1)
+	    // agent_ProcessObjBit = v[681] >= 1 ? agent_ProcessObjBit & ~1 : agent_ProcessObjBit
+	    agent_ProcessObjBit &= ~(v[681] >= 1)
 
 	    val_asg(v[898],v[880]) // v[898] = v[880]
 			
 
-	    @if `v[874] & 1 {
+	    @if `agent_ProcessObjBit & 1 {
 				v[898] = 40 + v[880]
-				v[876] += 38000
-				v[v[4518] + v[401]] = 0
+				agent_ProcessCamoValue += 38000
+				TT1 = v[4518] + v[401]
+				v[TT1] = 0
 		
 	    }
 
 	    // "##is fleeing?"
-	    v[876] += v[860] >= 3 ? 40000 : 0
+	    agent_ProcessCamoValue += v[860] >= 3 ? 40000 : 0
 	    // "###############Camo Check end##############"
 	    func_main_save_agent_vars()
 	    // "++"
@@ -1786,8 +1794,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							@call .cev v[824]
 							
 					}
-					v[874] = Temp1 + 274
-					@if `v[v[874]] & 1048576 {
+					agent_ProcessObjBit = Temp1 + 274
+					@if `v[agent_ProcessObjBit] & 1048576 {
 							// "standard_bearer"
 							Ptr19 = v[401] + 1
 							@if v[217] < v[4559] {
@@ -1990,7 +1998,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    @if `!(agent_MoveTypeBIts & MoveTypeBits_Flying) {
 				// "#Water"
 				// agent_MoveTypeBIts = b1000000
-				agent_AgentBits |= StandingTerrainInfoBits & FLAG_TERRAIN_Water ? (4 + (~agent_MoveTypeBIts & MoveTypeBits_Amphibious) >> 6) : 0 // (4 + (agent_MoveTypeBIts & 64 ? 0 : 1)) : 0
+				agent_AgentBits |= StandingTerrainInfoBits & FLAG_TERRAIN_Water ? (4 + ((~agent_MoveTypeBIts & MoveTypeBits_Amphibious) >> 6)) : 0 // (4 + (agent_MoveTypeBIts & 64 ? 0 : 1)) : 0
 				
 				// "#Ice"
 				agent_AgentBits |= (StandingTerrainInfoBits & FLAG_TERRAIN_Ice) << 1 // |= MoveTypeBits_Roller
@@ -2130,7 +2138,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    @if `agent_AgentBits & AgentBits_FLAG_EnableCivAI { //Worker AI flag is on
 				val_add(ui_workers_amount,N1) // count up
 				// "Escape time"
-				agent_InCombatTimer -= 4
+				val_sub(agent_InCombatTimer,N4) // agent_InCombatTimer -= 4
 				@if agent_TeamID == 0 {
 						// check idle workers
 						@if agent_worker_JobType == 0 {

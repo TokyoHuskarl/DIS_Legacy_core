@@ -774,7 +774,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					
 					}
 					//@comment "#カメラずらして"
-					agent_MilPixX += v[53] * 10000
+					val_add(agent_MilPixX,FrameCamDiff_MilX) // agent_MilPixX += FrameCamDiff_MilX // v[53] * 10000
+
 					//@comment "#座標を反映"
 					agent_RelativeX = agent_MilPixX / 10000
 					agent_SpriteX = agent_RelativeX + v[896]
@@ -800,7 +801,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					
 					}
 					//@comment "#カメラずらして"
-					agent_MilPixY += v[54] * 10000
+					val_add(agent_MilPixY,FrameCamDiff_MilY) // agent_MilPixY += v[54] * 10000
 					//@comment "#座標を反映"
 					agent_RelativeY = agent_MilPixY / 10000
 					agent_SpriteY = agent_RelativeY + agent_OneTimeOffsetY
