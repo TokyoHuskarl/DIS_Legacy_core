@@ -1,191 +1,191 @@
 cev .id(1798), .name("*Set Weather*"), {
 	@comment "bit cloudy"
-	@if v[2420] == 1 {
+		@if v[2420] == 1 {
 			t[701] .asg "environment\cloud2_16b"
-			v[2903] = 80
-			v[2904] = 640
-			v[2905] = 480
-			v[2904..2905] *= 2
-			v[2910] = 200
-			v[2908] = v[2908] == 0 ? -300 : v[2908]
-			@comment "#"
-			v[341] = v[2901] - v[2904] / 2
-			v[342] = v[2902] - v[2905] / 2
-			@pic[2191].show {
-		t[701]
-		.pos v[341], v[342] .center
-		.chromakey 1
-		.scale v[2910]
-		.trans v[2903]
-		.rgbs 100, 100, 100, 100
-		.multi
-		.mapLayer 7
-		.eraseWhenTransfer
-			}
+				v[2903] = 80
+				v[2904] = 640
+				v[2905] = 480
+				v[2904..2905] *= 2
+				v[2910] = 200
+				v[2908] = v[2908] == 0 ? -300 : v[2908]
+				@comment "#"
+				v[341] = v[2901] - v[2904] / 2
+				v[342] = v[2902] - v[2905] / 2
+				@pic[2191].show {
+					t[701]
+						.pos v[341], v[342] .center
+						.chromakey 1
+						.scale v[2910]
+						.trans v[2903]
+						.rgbs 100, 100, 100, 100
+						.multi
+						.mapLayer 7
+						.eraseWhenTransfer
+				}
 			v[342] = v[2902] + v[2905] / 2
-			@pic[2192].show {
-		t[701]
-		.pos v[341], v[342] .center
-		.chromakey 1
-		.scale v[2910]
-		.trans v[2903]
-		.rgbs 100, 100, 100, 100
-		.multi
-		.mapLayer 7
-		.eraseWhenTransfer
-			}
+				@pic[2192].show {
+					t[701]
+						.pos v[341], v[342] .center
+						.chromakey 1
+						.scale v[2910]
+						.trans v[2903]
+						.rgbs 100, 100, 100, 100
+						.multi
+						.mapLayer 7
+						.eraseWhenTransfer
+				}
 			v[341] = v[2901] + v[2904] / 2
-			v[342] = v[2902] - v[2905] / 2
-			@pic[2193].show {
-		t[701]
-		.pos v[341], v[342] .center
-		.chromakey 1
-		.scale v[2910]
-		.trans v[2903]
-		.rgbs 100, 100, 100, 100
-		.multi
-		.mapLayer 7
-		.eraseWhenTransfer
-			}
+				v[342] = v[2902] - v[2905] / 2
+				@pic[2193].show {
+					t[701]
+						.pos v[341], v[342] .center
+						.chromakey 1
+						.scale v[2910]
+						.trans v[2903]
+						.rgbs 100, 100, 100, 100
+						.multi
+						.mapLayer 7
+						.eraseWhenTransfer
+				}
 			v[342] = v[2902] + v[2905] / 2
-			@pic[2194].show {
-		t[701]
-		.pos v[341], v[342] .center
-		.chromakey 1
-		.scale v[2910]
-		.trans v[2903]
-		.rgbs 100, 100, 100, 100
-		.multi
-		.mapLayer 7
-		.eraseWhenTransfer
-			}
-			
-	}
+				@pic[2194].show {
+					t[701]
+						.pos v[341], v[342] .center
+						.chromakey 1
+						.scale v[2910]
+						.trans v[2903]
+						.rgbs 100, 100, 100, 100
+						.multi
+						.mapLayer 7
+						.eraseWhenTransfer
+				}
+
+		}
 	@if s[1] .isOn() {
-			@if v[2420] == 1 {
-		t[701] .asg "environment\cloud2"
-		v[2903] = 80
-		v[2904] = 640
-		v[2905] = 480
-		v[2904..2905] *= 2
-		v[2910] = 200
-		v[2908] = v[2908] == 0 ? -300 : v[2908]
-		@comment "#"
-		v[341] = v[2901] - v[2904] / 2
-		v[342] = v[2902] - v[2905] / 2
-		@pic[2191].show {
-				t[701]
-				.pos v[341], v[342] .center
-				.chromakey 1
-				.scale v[2910]
-				.trans v[2903]
-				.rgbs 80, 80, 80, 100
-				.multi
-				.mapLayer 7
-				.eraseWhenTransfer
+		@if v[2420] == 1 {
+			t[701] .asg "environment\cloud2"
+				v[2903] = 80
+				v[2904] = 640
+				v[2905] = 480
+				v[2904..2905] *= 2
+				v[2910] = 200
+				v[2908] = v[2908] == 0 ? -300 : v[2908]
+				@comment "#"
+				v[341] = v[2901] - v[2904] / 2
+				v[342] = v[2902] - v[2905] / 2
+				@pic[2191].show {
+					t[701]
+						.pos v[341], v[342] .center
+						.chromakey 1
+						.scale v[2910]
+						.trans v[2903]
+						.rgbs 80, 80, 80, 100
+						.multi
+						.mapLayer 7
+						.eraseWhenTransfer
+				}
+			v[342] = v[2902] + v[2905] / 2
+				@pic[2192].show {
+					t[701]
+						.pos v[341], v[342] .center
+						.chromakey 1
+						.scale v[2910]
+						.trans v[2903]
+						.rgbs 80, 80, 80, 100
+						.multi
+						.mapLayer 7
+						.eraseWhenTransfer
+				}
+			v[341] = v[2901] + v[2904] / 2
+				v[342] = v[2902] - v[2905] / 2
+				@pic[2193].show {
+					t[701]
+						.pos v[341], v[342] .center
+						.chromakey 1
+						.scale v[2910]
+						.trans v[2903]
+						.rgbs 80, 80, 80, 100
+						.multi
+						.mapLayer 7
+						.eraseWhenTransfer
+				}
+			v[342] = v[2902] + v[2905] / 2
+				@pic[2194].show {
+					t[701]
+						.pos v[341], v[342] .center
+						.chromakey 1
+						.scale v[2910]
+						.trans v[2903]
+						.rgbs 80, 80, 80, 100
+						.multi
+						.mapLayer 7
+						.eraseWhenTransfer
+				}
+
 		}
-		v[342] = v[2902] + v[2905] / 2
-		@pic[2192].show {
-				t[701]
-				.pos v[341], v[342] .center
-				.chromakey 1
-				.scale v[2910]
-				.trans v[2903]
-				.rgbs 80, 80, 80, 100
-				.multi
-				.mapLayer 7
-				.eraseWhenTransfer
-		}
-		v[341] = v[2901] + v[2904] / 2
-		v[342] = v[2902] - v[2905] / 2
-		@pic[2193].show {
-				t[701]
-				.pos v[341], v[342] .center
-				.chromakey 1
-				.scale v[2910]
-				.trans v[2903]
-				.rgbs 80, 80, 80, 100
-				.multi
-				.mapLayer 7
-				.eraseWhenTransfer
-		}
-		v[342] = v[2902] + v[2905] / 2
-		@pic[2194].show {
-				t[701]
-				.pos v[341], v[342] .center
-				.chromakey 1
-				.scale v[2910]
-				.trans v[2903]
-				.rgbs 80, 80, 80, 100
-				.multi
-				.mapLayer 7
-				.eraseWhenTransfer
-		}
-		
-			}
-			
+
 	}
 	@comment "cold districts"
-	@if v[2420] == 2 {
+		@if v[2420] == 2 {
 			t[701] .asg "environment\coldcloud_16"
-			t[701] .asg "environment\coldcloud"
-			v[2903] = 86
-			v[2904] = 640
-			v[2905] = 480
-			v[2904..2905] *= 2
-			v[2910] = 200
-			v[2908] = -600
-			@comment "#"
-			v[341] = v[2901] - v[2904] / 2
-			v[342] = v[2902] - v[2905] / 2
-			@pic[2191].show {
-		t[701]
-		.pos v[341], v[342] .center
-		.chromakey 1
-		.scale v[2910]
-		.trans v[2903]
-		.rgbs 125, 125, 125, 100
-		.mapLayer 7
-		.eraseWhenTransfer
-			}
+				t[701] .asg "environment\coldcloud"
+				v[2903] = 86
+				v[2904] = 640
+				v[2905] = 480
+				v[2904..2905] *= 2
+				v[2910] = 200
+				v[2908] = -600
+				@comment "#"
+				v[341] = v[2901] - v[2904] / 2
+				v[342] = v[2902] - v[2905] / 2
+				@pic[2191].show {
+					t[701]
+						.pos v[341], v[342] .center
+						.chromakey 1
+						.scale v[2910]
+						.trans v[2903]
+						.rgbs 125, 125, 125, 100
+						.mapLayer 7
+						.eraseWhenTransfer
+				}
 			v[342] = v[2902] + v[2905] / 2
-			@pic[2192].show {
-		t[701]
-		.pos v[341], v[342] .center
-		.chromakey 1
-		.scale v[2910]
-		.trans v[2903]
-		.rgbs 125, 125, 125, 100
-		.mapLayer 7
-		.eraseWhenTransfer
-			}
+				@pic[2192].show {
+					t[701]
+						.pos v[341], v[342] .center
+						.chromakey 1
+						.scale v[2910]
+						.trans v[2903]
+						.rgbs 125, 125, 125, 100
+						.mapLayer 7
+						.eraseWhenTransfer
+				}
 			v[341] = v[2901] + v[2904] / 2
-			v[342] = v[2902] - v[2905] / 2
-			@pic[2193].show {
-		t[701]
-		.pos v[341], v[342] .center
-		.chromakey 1
-		.scale v[2910]
-		.trans v[2903]
-		.rgbs 125, 125, 125, 100
-		.mapLayer 7
-		.eraseWhenTransfer
-			}
+				v[342] = v[2902] - v[2905] / 2
+				@pic[2193].show {
+					t[701]
+						.pos v[341], v[342] .center
+						.chromakey 1
+						.scale v[2910]
+						.trans v[2903]
+						.rgbs 125, 125, 125, 100
+						.mapLayer 7
+						.eraseWhenTransfer
+				}
 			v[342] = v[2902] + v[2905] / 2
-			@pic[2194].show {
-		t[701]
-		.pos v[341], v[342] .center
-		.chromakey 1
-		.scale v[2910]
-		.trans v[2903]
-		.rgbs 125, 125, 125, 100
-		.mapLayer 7
-		.eraseWhenTransfer
-			}
-			
-	}
+				@pic[2194].show {
+					t[701]
+						.pos v[341], v[342] .center
+						.chromakey 1
+						.scale v[2910]
+						.trans v[2903]
+						.rgbs 125, 125, 125, 100
+						.mapLayer 7
+						.eraseWhenTransfer
+				}
+
+		}
 	@if v[2420] == 3 {
-			t[701] .asg "environment\grapecloud"
+		t[701] .asg "environment\grapecloud"
 			v[2903] = 80
 			v[2904] = 640
 			v[2905] = 480
@@ -196,57 +196,57 @@ cev .id(1798), .name("*Set Weather*"), {
 			v[341] = v[2901] - v[2904] / 2
 			v[342] = v[2902] - v[2905] / 2
 			@pic[2191].show {
-		t[701]
-		.pos v[341], v[342] .center
-		.chromakey 1
-		.scale v[2910]
-		.trans v[2903]
-		.rgbs 100, 100, 100, 100
-		.multi
-		.mapLayer 7
-		.eraseWhenTransfer
+				t[701]
+					.pos v[341], v[342] .center
+					.chromakey 1
+					.scale v[2910]
+					.trans v[2903]
+					.rgbs 100, 100, 100, 100
+					.multi
+					.mapLayer 7
+					.eraseWhenTransfer
 			}
-			v[342] = v[2902] + v[2905] / 2
+		v[342] = v[2902] + v[2905] / 2
 			@pic[2192].show {
-		t[701]
-		.pos v[341], v[342] .center
-		.chromakey 1
-		.scale v[2910]
-		.trans v[2903]
-		.rgbs 100, 100, 100, 100
-		.multi
-		.mapLayer 7
-		.eraseWhenTransfer
+				t[701]
+					.pos v[341], v[342] .center
+					.chromakey 1
+					.scale v[2910]
+					.trans v[2903]
+					.rgbs 100, 100, 100, 100
+					.multi
+					.mapLayer 7
+					.eraseWhenTransfer
 			}
-			v[341] = v[2901] + v[2904] / 2
+		v[341] = v[2901] + v[2904] / 2
 			v[342] = v[2902] - v[2905] / 2
 			@pic[2193].show {
-		t[701]
-		.pos v[341], v[342] .center
-		.chromakey 1
-		.scale v[2910]
-		.trans v[2903]
-		.rgbs 100, 100, 100, 100
-		.multi
-		.mapLayer 7
-		.eraseWhenTransfer
+				t[701]
+					.pos v[341], v[342] .center
+					.chromakey 1
+					.scale v[2910]
+					.trans v[2903]
+					.rgbs 100, 100, 100, 100
+					.multi
+					.mapLayer 7
+					.eraseWhenTransfer
 			}
-			v[342] = v[2902] + v[2905] / 2
+		v[342] = v[2902] + v[2905] / 2
 			@pic[2194].show {
-		t[701]
-		.pos v[341], v[342] .center
-		.chromakey 1
-		.scale v[2910]
-		.trans v[2903]
-		.rgbs 100, 100, 100, 100
-		.multi
-		.mapLayer 7
-		.eraseWhenTransfer
+				t[701]
+					.pos v[341], v[342] .center
+					.chromakey 1
+					.scale v[2910]
+					.trans v[2903]
+					.rgbs 100, 100, 100, 100
+					.multi
+					.mapLayer 7
+					.eraseWhenTransfer
 			}
-			
+
 	}
 	v[2904].copy v[2913], 2
-	v[2913..2914] /= 2
+		v[2913..2914] /= 2
 }
 
 cev .id(80),  .name("Mission:Environment Effect"), .parallel, .cond(20), {
@@ -254,111 +254,111 @@ cev .id(80),  .name("Mission:Environment Effect"), .parallel, .cond(20), {
 	//@comment "#########Env test########"
 	//@comment "#########Adv maptile########"
 	__if DIS_EXPERIMENTAL ==1 {
-			v[341] = ev[3].scrx - 8
+		v[341] = ev[3].scrx - 8
 			v[342] = ev[3].scry - 16
 			@pic[PicID_elevation_add].move {
-		.pos v[341], v[342] .topLeft
-		.scale v[438]
-		.trans 0
-		.add
-		.time 0
+				.pos v[341], v[342] .topLeft
+					.scale v[438]
+					.trans 0
+					.add
+					.time 0
 			}
-			@pic[PicID_elevation_multi].move {
-		.pos v[341], v[342] .topLeft
-		.scale v[438]
-		.trans 0
-		.time 0
-		.rgbs 100, 100, 100, 100
-		.multi
-			}
+		@pic[PicID_elevation_multi].move {
+			.pos v[341], v[342] .topLeft
+				.scale v[438]
+				.trans 0
+				.time 0
+				.rgbs 100, 100, 100, 100
+				.multi
+		}
 
 	}
 	@if s[315] .isOn() {
-			v[341] = ev[3].scrx - 8
+		v[341] = ev[3].scrx - 8
 			v[342] = ev[3].scry - 16
 			@pic[1].move {
-		.pos v[341], v[342] .topLeft
-		.scale v[438]
-		.trans 0
-		.time 0
-		.rgbs 100, 100, 100, 100
+				.pos v[341], v[342] .topLeft
+					.scale v[438]
+					.trans 0
+					.time 0
+					.rgbs 100, 100, 100, 100
 			}
-			@pic[3].move {
-		.pos v[341], v[342] .topLeft
-		.scale v[438]
-		.trans 0
-		.time 0
-		.rgbs 100, 100, 100, 100
-			}
-			v[341] -= 1
+		@pic[3].move {
+			.pos v[341], v[342] .topLeft
+				.scale v[438]
+				.trans 0
+				.time 0
+				.rgbs 100, 100, 100, 100
+		}
+		v[341] -= 1
 			v[342] += 1
 			@pic[2].move {
-		.pos v[341], v[342] .topLeft
-		.scale v[438]
-		.trans 89
-		.time 0
-		.rgbs 40, 40, 40, 30
-		.multi
+				.pos v[341], v[342] .topLeft
+					.scale v[438]
+					.trans 89
+					.time 0
+					.rgbs 40, 40, 40, 30
+					.multi
 			}
-			
+
 	}
 	//@comment "########"
 	v[2911] .sub v[161], 2
-	v[2901] .add v[2911], 2
-	@if s[2] .isOff() {
+		v[2901] .add v[2911], 2
+		@if s[2] .isOff() {
 			v[2906] .add v[2908], 2
-			v[2901] += abs(v[2906]) >= 1000 ? (v[2906] = v[2906] / 1000) : 0
-			v[2902] += abs(v[2907]) >= 1000 ? (v[2907] = v[2907] / 1000) : 0
-			
-	}
+				v[2901] += abs(v[2906]) >= 1000 ? (v[2906] = v[2906] / 1000) : 0
+				v[2902] += abs(v[2907]) >= 1000 ? (v[2907] = v[2907] / 1000) : 0
+
+		}
 	v[2901] .add v[2904], 2
-	v[2901] .mod v[2904], 2
-	v[161].copy v[2911], 2
-	//@comment "#########Bit Cloudy########"
-	v[341] = v[2901] - v[2913]
-	v[342] = v[2902] - v[2914]
-	@pic[2191].move {
+		v[2901] .mod v[2904], 2
+		v[161].copy v[2911], 2
+		//@comment "#########Bit Cloudy########"
+		v[341] = v[2901] - v[2913]
+		v[342] = v[2902] - v[2914]
+		@pic[2191].move {
 			.pos v[341], v[342] .center
-			.scale v[2910]
-			.trans v[2903]
-			.time 0
-			.keepRgbs
-			.keepEffect
-			.keepBlend
-			.keepFlip
-	}
+				.scale v[2910]
+				.trans v[2903]
+				.time 0
+				.keepRgbs
+				.keepEffect
+				.keepBlend
+				.keepFlip
+		}
 	v[342] = v[2902] + v[2914]
-	@pic[2192].move {
+		@pic[2192].move {
 			.pos v[341], v[342] .center
-			.scale v[2910]
-			.trans v[2903]
-			.time 0
-			.keepRgbs
-			.keepEffect
-			.keepBlend
-			.keepFlip
-	}
+				.scale v[2910]
+				.trans v[2903]
+				.time 0
+				.keepRgbs
+				.keepEffect
+				.keepBlend
+				.keepFlip
+		}
 	v[341] = v[2901] + v[2913]
-	v[342] = v[2902] - v[2914]
-	@pic[2193].move {
+		v[342] = v[2902] - v[2914]
+		@pic[2193].move {
 			.pos v[341], v[342] .center
-			.scale v[2910]
-			.trans v[2903]
-			.time 0
-			.keepRgbs
-			.keepEffect
-			.keepBlend
-			.keepFlip
-	}
+				.scale v[2910]
+				.trans v[2903]
+				.time 0
+				.keepRgbs
+				.keepEffect
+				.keepBlend
+				.keepFlip
+		}
 	v[342] = v[2902] + v[2914]
-	@pic[2194].move {
+		@pic[2194].move {
 			.pos v[341], v[342] .center
-			.scale v[2910]
-			.trans v[2903]
-			.time 0
-			.keepRgbs
-			.keepEffect
-			.keepBlend
-			.keepFlip
-	}
+				.scale v[2910]
+				.trans v[2903]
+				.time 0
+				.keepRgbs
+				.keepEffect
+				.keepBlend
+				.keepFlip
+		}
 }
