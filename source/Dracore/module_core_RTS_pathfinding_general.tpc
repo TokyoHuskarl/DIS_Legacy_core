@@ -41,33 +41,37 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 
 						// Ray Casting bits check
 						@if `agent_AI_routine_bits & AI_routine_bits_FLAG_RayCast {
-							@if agent_TargetAgentID > 0 { // has target
+							// cast ray to the target only when they prioritize attacking
+							reg1 = agent_StanceOrder != ORD_MANU && (agent_MovementOrder <= MovementOrder_TYPE_move_ordered || agent_StanceOrder == ORD_ATK) ? agent_TargetAgentID : 0
+							@if reg1 > 0 { // has target
 								// get target Map Coord.
 								var1 = agent_TargetAgentID * 300 
 								var1 += 4726
 								v[var1].copy var3, 2
-								var3.sub v[69],2 // convert into tile coord
+								var3.sub ConstMapTileX0,2 // convert into tile coord
 
 								// get raycasting agent's one.
 								agent_MapX.copy var1, 2
-								var1.sub v[69],2 // convert into tile coord
+								var1.sub ConstMapTileX0,2 // convert into tile coord
 								
 								// then convert both into Node Coord
-								v[__id(var1)..__id(var4)] /= 2
+								var1.shr N1,4 // v[__id(var1)..__id(var4)] /= 2
 
 								// Then do node ray casting
 								func_nodecheck_RayCast(var1,var2,var3,var4)
 								@if reg1 == 1 { // wall found
 									@if `!(agent_ai_routine_bits & ai_routine_bits_flag_wp_set_by_raycast || agent_AgentBits & AgentBits_FLAG_walldetected) {
-										// agent_AgentBits |= AgentBits_FLAG_NeedWpToReachObj
-										agent_AI_routine_bits |= (AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_WP_set_by_RayCast) // + AgentBits_FLAG_walldetected
+										agent_AgentBits |= AgentBits_FLAG_NeedWpToReachObj
+										agent_AI_routine_bits |= (AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_1secDelay_PF) // + AgentBits_FLAG_walldetected
+										agent_AI_routine_bits &= AI_routine_bits_KILL_FLAG_PFcontinue // search path from the beginning
+
 									}
-
-
+									
 								}.else bl {
 
+									// if the agent is chasing WP set by raycast
 									@if `agent_ai_routine_bits & ai_routine_bits_flag_wp_set_by_raycast {
-										// agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
+										agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
 										
 										agent_AI_routine_bits &= ~AI_routine_bits_FLAG_WP_set_by_RayCast // kill Raycast flag
 										agent_LeftWPtoChase = -1 // Agent does not chase left WPs anymore
@@ -105,20 +109,21 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 								var1.sub v[69],2 // convert into tile coord
 								
 								// then convert both into Node Coord
-								v[__id(var1)..__id(var4)] /= 2
+								var1.shr N1,4 // v[__id(var1)..__id(var4)] /= 2
 
 								// node ray casting
 								func_nodecheck_RayCast(var1,var2,var3,var4)
 								@if reg1 == 1 { // obstacle found
 									agent_AI_routine_bits |= (AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_WP_set_by_RayCast)
 									agent_AgentBits |= AgentBits_FLAG_PF_walldetection_switch
+									agent_AI_routine_bits &= AI_routine_bits_KILL_FLAG_PFcontinue // search path from the beginning
 
 								}.else bl { // no obstacle found
 									def KILL_FLAG_raycast = ~(AI_routine_bits_FLAG_RayCast + AI_routine_bits_FLAG_WP_set_by_RayCast)
-									agent_AI_routine_bits &= KILL_FLAG_raycast
 									agent_AgentBits &= ~AgentBits_FLAG_PF_walldetection_switch
 
 								}
+								agent_AI_routine_bits &= KILL_FLAG_raycast
 							}
 
 							// after raycasting, kill the flag
@@ -180,17 +185,16 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 									@if `agent_AI_routine_bits & AI_routine_bits_FLAG_Pathblocked { // If not
 											@if `!(agent_AgentBits & AgentBits_FLAG_walldetected) { // and the situation is not around wall detection
 										
-										// then, retarded PF is not done many times (the limit setting is as half as the one for A*)
-										// will be removed completely
-										@if PF_done_per_1f <= 12 {
+										// call PF again only if there's few agents proced (the limit setting is as half as the one for A*)
+										@if PF_done_per_1f <= 7 {
 											// start dumb "pathfinding" to look as if the agent is searching the path
-											func_pathfinding_retarded()
+											func_pathfinding_Astar()
+											v[TT1] &= AI_routine_bits_KILL_FLAG_PATHFINDING // -16385//~16384
 											PF_done_per_1f += 1
 										}
 
 										// Use TT1 as a Ptr to agent_AI_routine_bits
 										TT1 = Pathfinding_AgentData_head_ptr + 34
-										v[TT1] &= ~AI_routine_bits_FLAG_RayCast 
 										v[TT1] &= KILL_AI_routine_bits_FLAG_Pathblocked // -8388609 ~8388608
 
 										v[TT1] |= AI_routine_bits_FLAG_1secDelay_PF
@@ -206,10 +210,13 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 
 										// Use TT1 as a Ptr to agent_AI_routine_bits
 										TT1 = Pathfinding_AgentData_head_ptr + 34
-										v[TT1] &= ~AI_routine_bits_FLAG_RayCast // kill raycasting flag
-										@if `!(v[TT1] & AI_routine_bits_FLAG_Pathblocked) { // the agent seemingly cannot reach the goal node
+										v[TT1] |= v[TT1] & AI_routine_bits_FLAG_RayCast || agent_AgentBits & AgentBits_FLAG_walldetected ? AI_routine_bits_FLAG_1secDelay_PF : 0 // if raycasting is on, let it wait for 1 sec
+										v[TT1] &= AI_routine_bits_KILL_FLAG_PATHFINDING // -16385//~16384
+										@if `v[TT1] & AI_routine_bits_FLAG_Pathblocked { // the agent seemingly cannot reach the goal node
 											// then end Pathfinding
-											v[TT1] &= AI_routine_bits_KILL_FLAG_PATHFINDING // -16385//~16384
+											v[TT1] &= ~AI_routine_bits_FLAG_RayCast // kill raycasting flag
+
+
 										}
 											
 											
@@ -231,7 +238,8 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 }
 
 cev .id(1769), .name("Pathfinding:retarded") , {   
-	func_pathfinding_retarded()
+	@comment "it's removed."
+	// func_pathfinding_retarded()
 }
 
 cev .id(1770), .name("Pathfinding:AStar"), {   

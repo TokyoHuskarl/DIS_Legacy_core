@@ -356,6 +356,8 @@ struct("agent",{
 	AgentBits_FLAG_Pushed_by_terrain = 536870912
 	AgentBits_FLAG_Drawn_in_screen = 1073741824 //31bit
 
+		AgentBits_MASK_for_initilizing_pathfinding = ~(AgentBits_FLAG_walldetected + AgentBits_FLAG_NeedWpToReachObj + AgentBits_FLAG_PF_walldetection_switch)
+
 
 	MoveTypeBits_Flying = 1
 	MoveTypeBits_Horse = 2
@@ -414,6 +416,9 @@ struct("agent",{
 	AI_routine_bits_FLAG_RayCast = 33554432
 	AI_routine_bits_FLAG_WP_set_by_RayCast = 67108864
 	AI_routine_bits_FLAG_1secDelay_PF = 134217728
+
+		AI_routine_bits_MASK_for_initilizing_pathfinding = ~(AI_routine_bits_FLAG_tracing_flag + AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_GroupPath + AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_RayCast)
+
 
 	//ObjBits
 	BaseObjBit_FLAG_Ambushing = 1

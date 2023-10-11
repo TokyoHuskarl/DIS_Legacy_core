@@ -10,7 +10,7 @@ __fn debug_selecting_agt $agtidptr $block {
 v[4599] = 0
 v[535] += 1
 v[533] = (v[204] / 52 + 1) * v[1134]
-v[535] %= v[533]
+val_mod(v[535],v[533]) // v[535] %= v[533]
 v[536] = v[4532]
 
 v[4031] = v[1146]
@@ -378,6 +378,12 @@ v[4100..4112] = 100000000
 												
 											}
 
+											def MACRO_set_flag_RayCastAndPF = {v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_RayCast + AI_routine_bits_FLAG_PATHFINDING}
+											def MACRO_set_flag_walldetection = {
+												v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
+												v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
+											}
+
 											// checking tile terrain information
 											v[286] = v[4529] + Temp11 - v[69] + (v[312] - v[70]) * v[2061]
 
@@ -391,40 +397,43 @@ v[4100..4112] = 100000000
 														@if v[Temp1] == 11 {
 															v[agent_AI_routine_bits] &= -193 // ~192//(64 + 128)
 
-															@if `v[Temp1 + 99] != agent_TeamID {
+															@if `v[Temp1 + 99] != agent_TeamID { // not ally wall
 																@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_Pathblocked { // v[v[212] + 34] & 8388608 {
-																		v[v[534]] = Temp2
+																		v[v[534]] = Temp2 // set target
+																		v[v[212] + 241] = ORD_ATK
+																		v[v[212] + 242] = 2
 
 																		def AIFLAG_SkipAndPF = AI_routine_bits_FLAG_AIskip + AI_routine_bits_FLAG_PATHFINDING
 																		v[agent_AI_routine_bits] |= AIFLAG_SkipAndPF // 2097152+16384
 																		val_add(Temp7,N1) // Temp7 += 1
 																		
 																} .else bl {
-																		@if `v[agent_AI_routine_bits] & 1 { // v[v[212] + 34] & 1 
-																				v[agent_StanceOrder] = 2
-																				v[v[534]] = Temp2
+																		@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_siegeweapon_flag { // it's siege unit
+																				v[v[212] + 241] = ORD_ATK
+																				v[v[212] + 242] = 2
+																				v[v[534]] = Temp2 // set target
 																				v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_AIskip
 																				val_add(Temp7,N1) // Temp7 += 1
-																				v[v[212] + 3] |= 37748736 // 33554432 + 4194304 ~ AgentBits_FLAG_PF_walldetection_switch + AgentBits_FLAG_ForcemoveFlag
+																				v[v[212] + 3] |= 37748736 // 33554432 + 4194304 -> AgentBits_FLAG_PF_walldetection_switch + AgentBits_FLAG_ForcemoveFlag
 																				
 																		} .else bl {
 																				//@comment "stuck"
 																				@if agent_AAType == 0 { // melee
-																						TT1 = agent_TeamID != 0 ? rnd(0, 99) : 100
+																						TT1 = rnd(0, 99)
 																						@if TT1 <= 30 { // target stucked wall
 																								v[v[534]] = Temp2
 																								v[v[212] + 34] |= AI_routine_bits_FLAG_AIskip
 																								val_add(Temp7,N1) // Temp7 += 1
 																								
-																						} .else bl {
-																								v[agent_AI_routine_bits] |= AgentBits_FLAG_PF_walldetection_switch + AI_routine_bits_FLAG_PATHFINDING
+																						} .else bl { // choose raycast and seek way 
+																							MACRO_set_flag_RayCastAndPF
 																							
 																						}
 																						
-																				} .else bl {
-																						v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
-																						v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
-																						
+																				} .else bl { // not melee
+																						// MACRO_set_flag_walldetection
+																						MACRO_set_flag_RayCastAndPF // start raycasting
+
 																				}
 																				
 																		}
@@ -432,17 +441,15 @@ v[4100..4112] = 100000000
 																}
 																
 															} .else bl {
-																v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
-																v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
-																
+																// MACRO_set_flag_walldetection
+																MACRO_set_flag_RayCastAndPF
 															}
 															
 														}
 														
 												} .else bl {
-													@if `!(v[agent_AI_routine_bits] & AI_routine_bits_FLAG_tracing_flag) {
-														v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
-														v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
+													@if `!(v[agent_AI_routine_bits] & AI_routine_bits_FLAG_tracing_flag) { // just a obstacle
+														MACRO_set_flag_walldetection
 														
 													}
 													
@@ -550,7 +557,7 @@ v[4100..4112] = 100000000
 											@break
 											
 										}
-										v[v[297]] += 1
+										ptr_add(v[297],N1) // v[v[297]] += 1
 										increment_var(v[296]) // v[296] += 1
 										
 								}

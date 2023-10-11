@@ -2,7 +2,7 @@
 def click_waittime = 18 //12
 
 def click_animation = {v[47] = 3} 
-								
+
 @key.inputEx .keybdWithBind .dst GETKEY_A
 
 // save PointerXY to TT1,2
@@ -709,8 +709,9 @@ s[70].off
 														}
 														
 												} .else bl {
+														
+													@if s[13] .isOff() {
 														@if s[15] .isOn() {
-																@if s[13] .isOff() {
 																		@if GETKEY_Alt >= 1 {
 																				s[16].on
 																				
@@ -723,7 +724,6 @@ s[70].off
 																				
 																		}
 																		
-																}
 																
 														} .else bl {
 																@if GETKEY_Alt >= 1 {
@@ -739,6 +739,7 @@ s[70].off
 																}
 																
 														}
+													}
 														
 												}
 												

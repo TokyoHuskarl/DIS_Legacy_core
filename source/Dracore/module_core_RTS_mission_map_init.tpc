@@ -346,6 +346,43 @@ __fn CEV_MISSION_INIT {
 		}
 		
 	}
+
+	// @comment "BodySet"
+	
+	Str_PATH_spr_head.split ("spr_head_0",str1,TT1)
+	str9 .asg str1
+	str1 .asg .cat(PATH_pictureHome,"\",str1)
+	str1 .cat "preload_setting"
+	inputstr.asg .file str1, .utf8
+	inputstr .split LF, t[1], v[505]
+	@loop v[505] .dst v[506] {
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
+		@comment "#""//""Comment out"
+		@if v[321] == -1 {
+			@if inputstr .neq "" {
+				str1 .asg str9
+				str1 .cat inputstr
+				@pic[v[4801]].show {
+					str1
+					.pos -10000, -10000 .center
+					.chromakey 1
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 10
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+				}
+				v[4801] += 1
+				
+			}
+			
+		}
+		
+	}
 	log_push("Picture Cache Load")
 
 	// UI setting

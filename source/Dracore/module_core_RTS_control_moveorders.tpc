@@ -672,169 +672,7 @@ __fn func_control_moveorder_mil {
 				
 		} .else bl {
 				// "移動指示Center(x.y)=(wheretox,wheretoy)"
-				v[390] = 0
-				@loop v[1004] .dst v[340] {
-			@if v[v[202]] == 0 {
-					// "とぎれた"
-					@break
-					
-			}
-			@if v[202] > v[1007] {
-					// "とりあえず40体までしか選択できない"
-					@break
-					
-			}
-			// "skip foundation "
-			// "配列ゲット"
-			Temp1 = v[v[202]] * 300
-			Temp1 += 4700
-			@if `v[Temp1 + 102] != 104 {
-					Ptr20 = Temp1 + 242
-					Ptr19 = Temp1 + 41
-					Ptr18 = Temp1 + 42
-					Ptr17 = Temp1 + 18
-					Ptr15 = Temp1 + 241
-					Ptr14 = Temp1 + 55
-					Ptr13 = Temp1 + 35
-					v[629] = Temp1 + 29
-					v[Temp1 + 34] &= ~4096
-					// "処理開始"
-					@if v[Ptr20] != 4 {
-				v[Ptr20] = s[16] == 1 ? 2 : 3
-				
-					}
-					@if `v[Temp1 + 1] != 11 {
-				v[Temp1 + 3] &= ~384
-				// "#ForceMoveFlag"
-
-				//is attack move?
-				@if s[16] .isOn() {
-						v[Temp1 + 3] &= ~AgentBits_FLAG_ForcemoveFlag
-						@if `v[Temp1 + 80] <= -10000 {
-					v[Temp1 + 80] = v[1178]
-					
-						}
-						
-				} .else bl {
-						v[Temp1 + 3] |= AgentBits_FLAG_ForcemoveFlag
-						
-				}
-
-				// "#アタックムーブじゃなければActionチェック"
-				v[843] = Temp1 + 243
-				TT1 = s[16] != 1 ? v[v[843]] : -999
-				// "#if Action==Attack, Set Action 0"
-				v[v[843]] = TT1 == 1 ? 0 : v[v[843]]
-				// "#if Forcemove, AA MotionTimer Reset"
-				v[v[629]] = TT1 == 1 ? 0 : v[v[629]]
-				// "#if Attack Stance, set stance alert"
-				v[Ptr15] = v[Ptr15] == 2 ? 0 : v[Ptr15]
-				// "#Manual"
-				v[Ptr15] = v[Temp1 + 34] & AI_routine_bits_FLAG_Manual_Ordered ? 4 : v[Ptr15]
-				
-					}
-
-					@if LEGV_WPamount_to_set >= 1 {
-				Ptr13 = 273
-				Ptr13 -= LEGV_WPamount_to_set * 2
-				@loop LEGV_WPamount_to_set {
-						v[Ptr13].copy v[Ptr19], 2
-						Ptr13 += 2
-						Ptr19 += 2
-						
-				}
-				
-				v[Ptr13].copy v[Ptr19], 2
-				// "#Set 現在目指してるWPと総WP数"
-				v[Ptr14] = LEGV_WPamount_to_set
-				v[273].copy v[361], 2
-				v[273] .add v[395], 2
-				
-					} .else bl {
-				v[Temp1 + 34] &= ~(AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_tracing_wp)
-				@if s[40] .isOn() {
-						v[Temp1 + 34] |= AI_routine_bits_FLAG_PATHFINDING
-						@if `between(v[Ptr13], 1, 10) {
-					v[Temp1 + 34] |= 16793600
-					
-						}
-						
-				} .else bl {
-						v[Temp1 + 34] &= ~16809984
-						@if s[112] .isOn() {
-					v[Temp1 + 34] |= AI_routine_bits_FLAG_PATHFINDING
-					@if `between(v[Ptr13], 1, 10) {
-							v[Temp1 + 34] |= 16793600
-							
-					}
-					
-						}
-						
-				}
-				// "#Set 移動するX"
-				v[Ptr19] = v[391]
-				// "#Set 移動するY"
-				v[Ptr18] = v[392]
-				// "#Set 現在目指してるWPと総WP数"
-				v[Ptr14] = -1
-				v[391].copy v[361], 2
-				v[391] .add v[395], 2
-				
-					}
-					// "Formation Indicator"
-					@if s[40] .isOn() {
-				@if v[99] > 1 {
-						TT1 = v[1165] + v[340]
-						@pic[TT1].show {
-					"ui\direction_indicator"
-					.pos v[361], v[362] .center
-					.scrollWithMap
-					.chromakey 1
-					.scale 100
-					.trans 35
-					.rgbs 100, 100, 100, 100
-					.angle v[389], 1000
-					.mapLayer 3
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
-						}
-						
-				}
-				
-					}
-					// "#Set 目標なし"
-					v[Ptr17] = 0
-					Ptr13 = Temp1 + 245
-					v[Ptr13] = 0
-					// "Make 2nd line"
-					v[390] += 1
-					v[390] %= v[399]
-					@if v[390] == 0 {
-				@if LEGV_WPamount_to_set >= 1 {
-						v[393].copy v[273], 2
-						v[273] .add v[397], 2
-						v[273].copy v[393], 2
-						
-				} .else bl {
-						v[393].copy v[391], 2
-						v[391] .add v[397], 2
-						v[391].copy v[393], 2
-						
-				}
-				
-					}
-					@if `v[Temp1 + 1] <= 8 {
-				v[Temp1 + 3] = v[Temp1 + 241] <= 4 ? [v[Temp1 + 3] | 1048576, v[Temp1 + 3] | 1048576, v[Temp1 + 3] & ~1048576, v[Temp1 + 3] | 1048576, v[Temp1 + 3] & ~1048576][v[Temp1 + 241]] : v[Temp1 + 3]
-				
-					}
-					// "処理終わり"
-					s[21].on
-					
-			}
-			v[202] += 1
-			
-				}
+				func_control_moveorder_proc_move()
 				
 				s[163].on
 				
@@ -1023,9 +861,11 @@ __fn func_control_moveorder_proc_let_units_attack {
 	    v[Temp1 + 34] &= ~16809984 //
 	    v[Temp1 + 34] &= ~(8388608 + AI_routine_bits_FLAG_tracing_wp)
 	    @if `v[Temp1 + 1] != 11 {
-		v[Temp1 + 3] &= ~384
+				v[Temp1 + 3] &= ~384
+				v[Temp1 + 34] &= AI_routine_bits_MASK_for_initilizing_pathfinding
 		
 	    }
+
 	    @if s[16] .isOn() {
 
 		// no matter if attack move key is pressed or not, once attack order is given, just give the agents force move flag 
@@ -1052,7 +892,6 @@ __fn func_control_moveorder_proc_let_units_attack {
 		v[Ptr13].copy v[Ptr19], 2
 		// "#Set 現在目指してるWPと総WP数"
 		v[Ptr14] = LEGV_WPamount_to_set
-		v[Temp1 + 242] = 3
 		v[Temp1 + 242] = 2
 		
 	    } .else bl {
@@ -1063,6 +902,7 @@ __fn func_control_moveorder_proc_let_units_attack {
 		v[Ptr18] = v[392]
 		// "#Set 現在目指してるWPと総WP数"
 		v[Temp1 + 242] = 2
+		v[Temp1 + 34] |= AI_routine_bits_FLAG_RayCast // set raycast anyway
 		
 	    }
 	    @if s[13] .isOff() {
@@ -1085,4 +925,178 @@ __fn func_control_moveorder_proc_let_units_attack {
 	
     }
 
+}
+
+__fn func_control_moveorder_proc_move {
+	v[390] = 0
+	@loop v[1004] .dst v[340] {
+		@if v[v[202]] == 0 {
+			// "とぎれた"
+			@break
+
+		}
+		@if v[202] > v[1007] {
+			// "とりあえず40体までしか選択できない"
+			@break
+
+		}
+		// "skip foundation "
+		// "配列ゲット"
+		Temp1 = v[v[202]] * 300
+		val_add(Temp1,N4700) // Temp1 += 4700
+		@if `v[Temp1 + 102] != 104 {
+			Ptr20 = Temp1 + 242
+				Ptr19 = Temp1 + 41
+				Ptr18 = Temp1 + 42
+				Ptr17 = Temp1 + 18
+				Ptr15 = Temp1 + 241
+				Ptr14 = Temp1 + 55
+				Ptr13 = Temp1 + 35
+				v[629] = Temp1 + 29
+				v[Temp1 + 34] &= ~4096
+				// "処理開始"
+				@if v[Ptr20] != 4 {
+					v[Ptr20] = s[16] == 1 ? 2 : 3
+
+				}
+			@if `v[Temp1 + 1] != 11 {
+				v[Temp1 + 3] &= ~384
+				v[Temp1 + 3] &= AgentBits_MASK_for_initilizing_pathfinding
+					// "#ForceMoveFlag"
+
+					//is attack move?
+					@if s[16] .isOn() {
+						v[Temp1 + 3] &= ~AgentBits_FLAG_ForcemoveFlag // on attack move, kill forcemove flag
+						
+							@if `v[Temp1 + 80] <= -10000 {
+								v[Temp1 + 80] = v[1178]
+
+							}
+
+					} .else bl {
+						v[Temp1 + 3] |= AgentBits_FLAG_ForcemoveFlag
+
+					}
+
+					v[Temp1 + 34] &= AI_routine_bits_MASK_for_initilizing_pathfinding
+					
+
+				// "#アタックムーブじゃなければActionチェック"
+				v[843] = Temp1 + 243
+					TT1 = s[16] != 1 ? v[v[843]] : -999
+					// "#if Action==Attack, Set Action 0"
+					v[v[843]] = TT1 == 1 ? 0 : v[v[843]]
+					// "#if Forcemove, AA MotionTimer Reset"
+					v[v[629]] = TT1 == 1 ? 0 : v[v[629]]
+					// "#if Attack Stance, set stance alert"
+					v[Ptr15] = v[Ptr15] == 2 ? 0 : v[Ptr15]
+					// "#Manual"
+					v[Ptr15] = v[Temp1 + 34] & AI_routine_bits_FLAG_Manual_Ordered ? 4 : v[Ptr15]
+
+			}
+
+			@if LEGV_WPamount_to_set >= 1 {
+					Ptr13 = 273
+					Ptr13 -= LEGV_WPamount_to_set * 2
+					@loop LEGV_WPamount_to_set {
+						v[Ptr13].copy v[Ptr19], 2
+							Ptr13 += 2
+							Ptr19 += 2
+
+					}
+
+				v[Ptr13].copy v[Ptr19], 2
+					// "#Set 現在目指してるWPと総WP数"
+					v[Ptr14] = LEGV_WPamount_to_set
+					v[273].copy v[361], 2
+					v[273] .add v[395], 2
+
+			} .else bl {
+				v[Temp1 + 34] |= v[Temp1 + 103] == 0 ? AI_routine_bits_FLAG_RayCast : 0 // set raycast anyway
+				v[Temp1 + 34] &= ~(AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_tracing_wp)
+					@if s[40] .isOn() {
+						v[Temp1 + 34] |= AI_routine_bits_FLAG_PATHFINDING
+							@if `between(v[Ptr13], 1, 10) {
+								v[Temp1 + 34] |= 16793600
+
+							}
+
+					} .else bl {
+						v[Temp1 + 34] &= ~16809984
+							@if s[112] .isOn() {
+								v[Temp1 + 34] |= AI_routine_bits_FLAG_PATHFINDING
+									@if `between(v[Ptr13], 1, 10) {
+										v[Temp1 + 34] |= 16793600
+
+									}
+
+							}
+
+					}
+					// "#Set 移動するX"
+					v[Ptr19] = v[391]
+					// "#Set 移動するY"
+					v[Ptr18] = v[392]
+					// "#Set 現在目指してるWPと総WP数"
+					v[Ptr14] = -1
+					v[391].copy v[361], 2
+					v[391] .add v[395], 2
+
+			}
+
+			// "Formation Indicator"
+			@if s[40] .isOn() {
+				@if v[99] > 1 {
+					TT1 = v[1165] + v[340]
+						@pic[TT1].show {
+							"ui\direction_indicator"
+								.pos v[361], v[362] .center
+								.scrollWithMap
+								.chromakey 1
+								.scale 100
+								.trans 35
+								.rgbs 100, 100, 100, 100
+								.angle v[389], 1000
+								.mapLayer 3
+								.eraseWhenTransfer
+								.affectedByFlash
+								.affectedByShake
+						}
+
+				}
+
+			}
+
+			// "#Set 目標なし"
+			v[Ptr17] = 0
+				Ptr13 = Temp1 + 245
+				v[Ptr13] = 0
+				// "Make 2nd line"
+				v[390] += 1
+				v[390] %= v[399]
+				@if v[390] == 0 {
+					@if LEGV_WPamount_to_set >= 1 {
+						v[393].copy v[273], 2
+							v[273] .add v[397], 2
+							v[273].copy v[393], 2
+
+					} .else bl {
+						v[393].copy v[391], 2
+							v[391] .add v[397], 2
+							v[391].copy v[393], 2
+
+					}
+
+				}
+			@if `v[Temp1 + 1] <= 8 {
+				v[Temp1 + 3] = v[Temp1 + 241] <= 4 ? [v[Temp1 + 3] | 1048576, v[Temp1 + 3] | 1048576, v[Temp1 + 3] & ~1048576, v[Temp1 + 3] | 1048576, v[Temp1 + 3] & ~1048576][v[Temp1 + 241]] : v[Temp1 + 3]
+
+			}
+			// "処理終わり"
+			s[21].on
+
+		}
+		v[202] += 1
+
+	}
 }

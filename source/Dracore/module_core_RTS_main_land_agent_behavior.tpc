@@ -143,7 +143,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 							//@comment "Obj指定があり、そちらに行きたいとき
 							@if victim_AgentType >= 1 { // the target is valid agent
 								@if agent_TargetAgentID != agent_LastTarget { // check if Target is switched
-										@if `!(agent_AgentBits & AgentBits_FLAG_ForcemoveFlag) { // Forcemove order isn't given to the agent
+										@if `!(agent_AgentBits & AgentBits_FLAG_ForcemoveFlag) || agent_StanceOrder == ORD_ATK { // Forcemove order isn't given to the agent
 
 											// RayCast to check if the agent can reach the target straightly AND it's melee troop
 											agent_AI_routine_bits |= agent_AAType == 0 ? AI_routine_bits_FLAG_RayCast : 0 
@@ -180,8 +180,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 										//@comment "#目標OBJ優先"
 										// go for the target
 										victim_RelativeX.copy agent_MovePointX, 2
-										@if agent_StanceOrder == 2 {
-											agent_MovementOrder = 2
+										@if agent_StanceOrder == ORD_ATK {
+											agent_MovementOrder = MovementOrder_TYPE_move_ordered
 											victim_RelativeX.copy agent_HoldPointX, 2
 									
 										}
@@ -220,6 +220,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 									v[1301].copy v[643], 13
 									agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj //~16777216 AgentBits_FLAG_NeedWpToReachObj
 									agent_AI_routine_bits &= ~AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue // 
+									MAIN_macro_agent_WP_Array_init()
 									
 								}
 
@@ -388,7 +389,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						} .else bl {
 
 							//@comment "If the unit is not in any fighting situation, Set OffsetX = 0"
-							agent_OneTimeOffsetX = 0
+							val_init(agent_OneTimeOffsetX) // agent_OneTimeOffsetX = 0
 
 							// @comment "before: 6700"
 							// v[340] = v[v[294]] > 0 ? (v[610] / 2 + 2) * 1000 : 6700
@@ -407,49 +408,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 									// reach at WP?
 									@if `agent_TargetAgentID == 0 || (agent_StanceOrder == ORD_STD || agent_StanceOrder == ORD_DEF || agent_MovementOrder == MovementOrder_TYPE_prioritize_moving || agent_LeftWPtoChase > 0) {
-										
-										//@comment "WPがあるならWP処理"
-										@if agent_LeftWPtoChase > 0 {
-
-											// Refresh WP arrays
-											MAIN_macro_agent_WP_Array_pop()
-
-											// ?
-											Reaching_Target_Way_Point.on
-											
-
-											// has target and still chasing WP
-											@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj || agent_AI_routine_bits & AI_routine_bits_FLAG_WP_set_by_RayCast  {
-												@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_ForcemoveFlag) { // does this forcemove flag work...?
-													agent_AI_routine_bits |= AI_routine_bits_FLAG_RayCast
-													
-												}
-											}
-											
-										}
-
-										def Main_KILLAgentBits_FLAG_PF_walldetection_switch = ~AgentBits_FLAG_PF_walldetection_switch
-										agent_AgentBits &= Main_KILLAgentBits_FLAG_PF_walldetection_switch // kill wall detection flag
-										
-										// If the agent has no WP anymore
-										@if agent_LeftWPtoChase == 0 {
-											// kill Chasing Wp to Reach Target flag
-											agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
-
-											// If continue Pathfinding flag is on
-											@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFcontinue {
-												// then pathfinding
-												agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
-											}
-
-											Reaching_Target_Way_Point.on
-											agent_ActionFlag = 0
-											agent_LeftWPtoChase -= 1
-
-										}
-
-										agent_AI_routine_bits &= -12289 //~12288 
-									
+										MAIN_agent_reached_ChasePoint()
 									}
 
 									// Already reached or something
@@ -921,4 +880,57 @@ __fn MAIN_macro_agent_WP_Array_pop {
 	//@comment "#WPへらす"
 	agent_ActionFlag &= -2//~1
 	val_sub(agent_LeftWPtoChase,N1) // agent_LeftWPtoChase -= 1
+}
+
+__fn MAIN_macro_agent_WP_Array_init {
+	agent_LeftWPtoChase = -1 // Agent does not chase left WPs anymore
+
+}
+
+// 
+__fn MAIN_agent_reached_ChasePoint {
+
+	//@comment "WPがあるならWP処理"
+	@if agent_LeftWPtoChase > 0 {
+
+		// Refresh WP arrays
+		MAIN_macro_agent_WP_Array_pop()
+
+			// ?
+			Reaching_Target_Way_Point.on
+
+
+			// has target and still chasing WP
+			@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj && agent_AI_routine_bits & AI_routine_bits_FLAG_WP_set_by_RayCast  {
+				@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_ForcemoveFlag) { // does this forcemove flag work...?
+					agent_AI_routine_bits |= AI_routine_bits_FLAG_RayCast
+
+				}
+			}
+
+	}
+
+	def Main_KILLAgentBits_FLAG_PF_walldetection_switch = ~AgentBits_FLAG_PF_walldetection_switch
+		agent_AgentBits &= Main_KILLAgentBits_FLAG_PF_walldetection_switch // kill wall detection flag
+
+		// If the agent has no WP anymore
+		@if agent_LeftWPtoChase == 0 {
+			// kill Chasing Wp to Reach Target flag
+			agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
+
+				// If continue Pathfinding flag is on
+				@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFcontinue {
+					// then pathfinding
+					agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+				}
+
+			Reaching_Target_Way_Point.on
+				agent_ActionFlag = 0
+				agent_LeftWPtoChase -= 1
+
+		}
+
+	agent_AI_routine_bits &= -12289 //~12288 
+
+
 }
