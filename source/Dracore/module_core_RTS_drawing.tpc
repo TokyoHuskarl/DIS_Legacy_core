@@ -141,7 +141,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 			//@comment "MINIONS"
 			@if `agent_ExMotionFlags & 524288 {
 				AgentIDholder = v[340] + 1
-				v[ptr_null].copy v[460] // v[460] = 0
+				val_init(v[460]) // v[ptr_null].copy v[460],1 // v[460] = 0
 				//@comment "#描画範囲内か？T3 T4 Constx Consty"
 				@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[340] + 501] {
 				//11.5.23
@@ -909,7 +909,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 											TT1 = Temp1 + 288
 											Temp5.copy v[TT1], 2
 											//@comment "#"
-											v[186..188] += 1
+											// v[186..188] += 1
+											v[186].add N1,3 // v[186..188] += 1
 											//@comment "Get ID From Cache"
 											@pic[v[178]].setId .swap v[177], v[187] .ignoreError
 											//@comment "#Check"

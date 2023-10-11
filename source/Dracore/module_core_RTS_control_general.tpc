@@ -30,6 +30,10 @@ cev .id(50),.name("cont:Selecting Group"), {
 	CEV_CONTROL_SELECT_AGENTS_GROUP()
 }
 
+cev .id(33) ,.name("Control:CivMoveOrder"), {
+	func_control_moveorder_civ()
+
+}
 cev .id(51) ,.name("Control:MilMoveOrder"), {
 	func_control_moveorder_mil()
 

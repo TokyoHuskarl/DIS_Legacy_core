@@ -36,15 +36,19 @@ v[4100..4112] = 100000000
 
 				//If worker AI flag is on
 				@if `agent_AgentBits & AgentBits_FLAG_EnableCivAI {
+
+						
 						@if `agent_AgentBits & AgentBits_FLAG_walldetected {
-								@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_tracing_flag) {
-										s[280].on
-										TT1 = v[212] + 34
-										v[TT1] |= AI_routine_bits_FLAG_PATHFINDING
+								@if `!(agent_AI_routine_bits & (AI_routine_bits_FLAG_tracing_flag + agent_AI_routine_bits & AI_routine_bits_FLAG_WP_set_by_RayCast)){
+										TT1 = v[212] + 3
+										v[TT1] |= AgentBits_FLAG_PF_walldetection_switch
+										TT1 += 31
+										v[TT1] |= AI_routine_bits_FLAG_1secDelay_PF
 										
 								}
 								
 						}
+						
 						
 				} .else bl {
 						@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI { //9.5.23
@@ -378,10 +382,16 @@ v[4100..4112] = 100000000
 												
 											}
 
-											def MACRO_set_flag_RayCastAndPF = {v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_RayCast + AI_routine_bits_FLAG_PATHFINDING}
+											def MACRO_set_flag_RayCastAndPF = {
+												v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
+												v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_RayCast 
+
+												}
 											def MACRO_set_flag_walldetection = {
 												v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
-												v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
+												// v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
+												// v[agent_AI_routine_bits] &= AI_routine_bits_KILL_FLAG_PFcontinue //~32768
+
 											}
 
 											// checking tile terrain information
@@ -405,6 +415,7 @@ v[4100..4112] = 100000000
 
 																		def AIFLAG_SkipAndPF = AI_routine_bits_FLAG_AIskip + AI_routine_bits_FLAG_PATHFINDING
 																		v[agent_AI_routine_bits] |= AIFLAG_SkipAndPF // 2097152+16384
+																		v[agent_AI_routine_bits] &= AI_routine_bits_KILL_FLAG_PFcontinue //~32768
 																		val_add(Temp7,N1) // Temp7 += 1
 																		
 																} .else bl {

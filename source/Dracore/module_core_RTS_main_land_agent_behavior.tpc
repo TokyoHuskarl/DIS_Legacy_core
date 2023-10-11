@@ -415,7 +415,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 									@if Reaching_Target_Way_Point .isOff() {
 										agent_AI_routine_bits &= -49153 // ~49152
 										agent_AgentBits &= -37748737 // ~37748736 // (4194304 + 33554432)
-										agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
+										
+										agent_Direction = agent_AI_routine_bits & AI_routine_bits_FLAG_IdleAfterEnemySearch ? (cos(agent_MarchingDirection, 1000, -100) + 200) / 200 : agent_Direction
 										LEGS_MAIN_Agent_tries_to_stop.on
 
 										@if `!(agent_AgentBits & AgentBits_Collided_Other_Agent) {
@@ -767,8 +768,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					
 				}
 				@if `agent_AgentBits & AgentBits_FLAG_walldetected {//walldetected
-					@if agent_StanceOrder == ORD_ATK {
+					@if agent_StanceOrder == ORD_ATK { // Attack mode
 						agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+						agent_AI_routine_bits &= AI_routine_bits_KILL_FLAG_PFcontinue 
 					
 					}
 					

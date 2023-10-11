@@ -91,14 +91,16 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 								// underconstruction
 
 								// get target Map Coord.
-								TT2 = __id(agent_HoldPointX) // Pathfinding_AgentData_head_ptr + 41
+
+								TT2 = agent_LeftWPtoChase > 0 ? __id(agent_WayPoint1X) : __id(agent_HoldPointX) // Pathfinding_AgentData_head_ptr + 41
 								
-								Temp17 = max(agent_LeftWPtoChase, 0) // Use Temp17 to count how many wps left to chase 
+								// Temp17 = max(agent_LeftWPtoChase, 0) // Use Temp17 to count how many wps left to chase 
 								// TT2 += Temp17 * 2
-								val_mul(Temp17,N2)
-								val_add(TT2,Temp17)
+								// val_mul(Temp17,N2)
+								// val_add(TT2,Temp17)
 
 								v[TT2].copy var1, 2 // get WP coord from agent WP array
+
 								// convert into tile coordinate - maybe you can deal with this without this func if the PF agent has the target agent
 								// @call .cev 2000
 								// reg1.copy var3, 2
@@ -109,13 +111,33 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 								var1.sub v[69],2 // convert into tile coord
 								
 								// then convert both into Node Coord
-								var1.shr N1,4 // v[__id(var1)..__id(var4)] /= 2
+								var1.shr N1,2 // v[__id(var1)..__id(var4)] /= 2
+								var3.div N2,2 // safety
 
 								// node ray casting
-								func_nodecheck_RayCast(var1,var2,var3,var4)
+
+								// if it has WPs already, just check how much the distance is before casting ray
+								defv {
+									RC_justmove_Deltax = __id(TT1)
+									RC_justmove_Deltay = __id(TT2)
+								}
+
+								@if agent_LeftWPtoChase > 0 { 
+									var1.copy RC_justmove_Deltax,2
+									RC_justmove_Deltax.sub var3,2
+									RC_justmove_Deltax.mul RC_justmove_Deltax,2
+									RC_justmove_Deltax.add RC_justmove_Deltay,1
+								}.else bl { // if it's the first time ray,
+									val_asg(RC_justmove_Deltax,N16)
+								}
+								@if RC_justmove_Deltax > 6 { // if it's not too close 
+									func_nodecheck_RayCast(var1,var2,var3,var4)
+								}.else bl{
+									val_init(reg1) // omit raycast calc and return 0
+								}
+
 								@if reg1 == 1 { // obstacle found
 									agent_AI_routine_bits |= (AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_WP_set_by_RayCast)
-									agent_AgentBits |= AgentBits_FLAG_PF_walldetection_switch
 									agent_AI_routine_bits &= AI_routine_bits_KILL_FLAG_PFcontinue // search path from the beginning
 
 								}.else bl { // no obstacle found
@@ -133,6 +155,7 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 
 						// Pathfinding bits check
 						@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PATHFINDING {
+
 								
 								// If continue Pathfinding flag is on, ask js path container for path
 								@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFcontinue {

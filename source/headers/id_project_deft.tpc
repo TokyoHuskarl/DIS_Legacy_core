@@ -165,7 +165,7 @@ deft {
 }
 
 __fn getModulePathTo $strid {
-	t[__id($strid)].asg "../Module/"
+	t[__id($strid)].asg "../Modules/"
 	t[__id($strid)].cat str_moduleName
 	t[__id($strid)].cat "/"
 }

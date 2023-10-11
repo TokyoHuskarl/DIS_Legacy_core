@@ -1,10 +1,576 @@
 
+	def JSCMD_INITPATH = __str("RTS.path.initPath_list(getv(", Adr_PlayerSelectList_Head, ",\v[", __id(SelectedAmount) ,"]))")
 
+__fn func_control_moveorder_civ {
+	eval_js(JSCMD_INITPATH)
+	v[391] = s[40] == 1 ? var1 : MousePtr_x
+	v[392] = s[40] == 1 ? var2 : MousePtr_y
+	v[202] = 101
+	s[201].off
+	s[203].off
+	s[21].off
+	@if v[v[202]] > 0 {
+	    @comment "#味方イベントで重なってるやつを検索"
+	    @if s[40] .isOff() {
+		Temp5 = 0
+		MousePtr_x.copy var1, 2
+		@call .cev 2002
+		Temp2 = v[4533]
+		@doWhile v[Temp2] >= 1 {
+		    Temp3 = v[Temp2] * 300
+		    Temp3 += 4800
+		    @if v[Temp2] != v[101] {
+			@if v[Temp3] == 0 {
+			    Temp3 -= 93
+			    s[202].off
+			    @if s[201] .isOff() {
+				v[Temp3].copy v[607], 5
+				@call .cev 1910
+				@if s[202] .isOn() {
+				    @comment "#指定された"
+				    Temp4 = v[Temp2] * 300 + 4701
+				    TT1 = v[Temp4] > 0 ? 1 : 0
+				    TT1 += v[Temp4] != 11 ? 1 : 0
+				    @if TT1 == 2 {
+					
+				    } .else bl {
+					Temp3 = Temp3 + 17
+					v[Temp3] = -1
+					@if Temp5 == 0 {
+					    @comment "STATIC保存しておく"
+					    Temp5 = v[Temp2]
+					    
+					} .else bl {
+					    @comment "STATIC保存があるのにStatic見たらスルー"
+					    Temp3 = Temp3 + 17
+					    v[Temp3] = 1
+					    
+					}
+					
+				    }
+				    
+				} .else bl {
+				    Temp3 = Temp3 + 17
+				    v[Temp3] = v[Temp3] != 0 ? 1 : 0
+				    
+				}
+				
+			    } .else bl {
+				Temp3 = Temp3 + 17
+				v[Temp3] = 1
+				
+			    }
+			    
+			}
+			
+		    }
+		    Temp2 += 1
+		    
+		}
+		
+		@if Temp5 <= 0 {
+		    Temp2 = v[1145]
+		    @doWhile v[Temp2] >= 1 {
+			Temp3 = v[Temp2] * 300
+			Temp3 += 4800
+			@if v[Temp3] == 0 {
+			    Temp3 -= 93
+			    s[202].off
+			    @if s[201] .isOff() {
+				v[Temp3].copy v[607], 5
+				@call .cev 1910
+				@if s[202] .isOn() {
+				    @comment "#指定された"
+				    Temp4 = v[Temp2] * 300 + 4701
+				    TT1 = v[Temp4] > 0 ? 1 : 0
+				    TT1 += v[Temp4 + 101] == 5 ? 1 : 0
+				    @if TT1 == 2 {
+					Temp3 = Temp3 + 17
+					v[Temp3] = -1
+					v[100] = v[Temp2]
+					s[201].on
+					@comment "非STATICを見た"
+					s[203].on
+					@comment "STATIC保存しておく"
+					Temp5 = v[Temp2]
+					@break
+					
+				    }
+				    
+				} .else bl {
+				    Temp3 = Temp3 + 17
+				    v[Temp3] = v[Temp3] != 0 ? 1 : 0
+				    
+				}
+				
+			    } .else bl {
+				Temp3 = Temp3 + 17
+				v[Temp3] = 1
+				
+			    }
+			    
+			}
+			Temp2 += 1
+			
+		    }
+		    
+		    
+		}
+		v[379] = 0
+		@comment "かつSTATICをひとつ見ている"
+		@if Temp5 >= 1 {
+		    @comment "非STATICを見てない"
+		    @if s[203] .isOff() {
+			v[100] = Temp5
+			Temp3 = v[100] * 300
+			Temp3 += 4724
+			v[Temp3] = -1
+			@comment "Basement?"
+			v[379] = v[v[100] * 300 + 4802] == 104 ? 1 : 0
+			@if v[379] == 0 {
+			    v[379] = v[v[100] * 300 + 4802] == 105 ? 0 : 2
+			    
+			}
+			s[201].on
+			
+		    } .else bl {
+			v[100] = Temp5
+			Temp3 = v[100] * 300
+			Temp3 += 4724
+			v[Temp3] = -1
+			@comment "Siege?"
+			v[379] = v[v[100] * 300 + 4802] == 5 ? 2 : 0
+			s[201].on
+			
+		    }
+		    
+		}
+		@if s[201] .isOff() {
+		    @if s[40] .isOff() {
+			Temp5 = 0
+			Temp2 = v[1146]
+			@doWhile v[Temp2] >= 1 {
+			    @if `s[2000 + v[Temp2]] == 1 {
+				Temp3 = v[Temp2] * 300
+				Temp3 += 4707
+				s[202].off
+				@if s[201] .isOff() {
+				    v[Temp3].copy v[607], 5
+				    @call .cev 1910
+				    @if s[202] .isOn() {
+					@comment "#指定された"
+					Temp3 = Temp3 + 17
+					v[Temp3] = -1
+					Temp4 = v[Temp2] * 300 + 4701
+					TT1 = v[Temp4] > 0 ? 1 : 0
+					TT1 += v[Temp4] != 11 ? 1 : 0
+					@if TT1 == 2 {
+					    v[100] = v[Temp2]
+					    s[201].on
+					    @comment "非STATICを見た"
+					    s[203].on
+					    
+					} .else bl {
+					    @if Temp5 == 0 {
+						@comment "STATIC保存しておく"
+						Temp5 = v[Temp2]
+						
+					    } .else bl {
+						@comment "STATIC保存があるのにStatic見たらスルー"
+						Temp3 = Temp3 + 17
+						v[Temp3] = 2
+						
+					    }
+					    
+					}
+					
+				    } .else bl {
+					Temp3 = Temp3 + 17
+					v[Temp3] = 2
+					
+				    }
+				    
+				} .else bl {
+				    Temp3 = Temp3 + 17
+				    v[Temp3] = 2
+				    
+				}
+				
+			    }
+			    Temp2 += 1
+			    
+			}
+			
+			@comment "非STATICを見てない"
+			@if s[203] .isOff() {
+			    @comment "かつSTATICをひとつ見ている"
+			    @if Temp5 >= 1 {
+				v[100] = Temp5
+				Temp3 = v[100] * 300
+				Temp3 += 4724
+				v[Temp3] = -1
+				s[201].on
+				
+			    }
+			    
+			}
+			@if s[201] .isOff() {
+			    Temp5 = 0
+			    Temp2 = v[4533]
+			    @comment "#StaticCk... in order to target walls"
+			    @doWhile v[Temp2] >= 1 {
+				@if `s[2000 + v[Temp2]] == 1 {
+				    Temp3 = v[Temp2] * 300
+				    Temp3 += 4707
+				    s[202].off
+				    @if s[201] .isOff() {
+					v[Temp3].copy v[607], 5
+					@call .cev 1910
+					@if s[202] .isOn() {
+					    Temp4 = v[Temp2] * 300 + 4701
+					    @if v[Temp4] > 0 {
+						@if `v[Temp4 + 99] % 3 == 1 {
+						    Temp3 = Temp3 + 17
+						    v[Temp3] = -1
+						    v[100] = v[Temp2]
+						    s[201].on
+						    @break
+						    
+						}
+						
+					    }
+					    
+					}
+					
+				    }
+				    
+				}
+				Temp2 += 1
+				
+			    }
+			    
+			    
+			}
+			
+		    }
+		    
+		}
+		@comment "#####################
+	direction"
+		@loop 40 .dst Temp1 {
+		    Temp1 = v[v[202] + Temp1]
+		    @if v[Temp1] >= 1 {
+			Temp1 *= v[1117]
+			Temp1 += 4700
+			Ptr19 = Temp1 + 1
+			@if v[Ptr19] > 0 {
+			    Temp15 += 1
+			    Ptr20 = Temp1 + 7
+			    v[Ptr20].copy Temp13, 2
+			    TT1 = v[391]
+			    TT2 = v[392]
+			    TT1 .sub Temp13, 2
+			    v[Temp1 + 56] = atan2(TT2, TT1, 1000)
+			    
+			}
+			
+		    } .else bl {
+			@break
+			
+		    }
+		    
+		}
+		
+		
+	    }
+	    @if v[275] >= 1 {
+		@comment "WPをとおる"
+		v[263].copy v[261], 2
+		v[265].copy v[263], 2
+		v[267].copy v[265], 2
+		v[269].copy v[267], 2
+		v[271].copy v[269], 2
+		v[273].copy v[271], 2
+		@comment "#Set 移動するX"
+		@comment "#Set 移動するY"
+		v[391].copy v[273], 2
+		s[15].on
+		
+	    }
+	    @if s[201] .isOn() {
+		@comment "労働指示"
+		@loop .inf() {
+		    @if v[v[202]] == 0 {
+			@comment "とぎれた"
+			@break
+			
+		    }
+		    @if v[202] >= v[1007] {
+			@comment "とりあえず40体までしか選択できない"
+			@break
+			
+		    }
+		    @comment "配列ゲット"
+		    Temp1 = v[v[202]] * 300
+		    Temp1 += 4700
+		    Ptr20 = Temp1 + 242
+		    Ptr19 = Temp1 + 19
+		    Ptr18 = Temp1 + 20
+		    Ptr17 = Temp1 + 18
+		    Ptr16 = Temp1 + 241
+		    Ptr15 = Temp1 + 242
+		    Ptr14 = Temp1 + 55
+		    v[Temp1 + 34] &= ~4096
+				v[Temp1 + 34] &= AI_routine_bits_MASK_for_initilizing_pathfinding
+		    @comment "#######"
+		    @comment "処理開始"
+		    v[Ptr16] = v[Ptr16] != 4 ? 2 : 4
+		    @if v[275] >= 1 {
+			Ptr13 = 273
+			Ptr13 -= v[275] * 2
+			Ptr19 = Temp1 + 41
+			@loop v[275] {
+			    v[Ptr13].copy v[Ptr19], 2
+			    Ptr13 += 2
+			    Ptr19 += 2
+			    
+			}
+			
+			v[Ptr13].copy v[Ptr19], 2
+			@comment "#Set 現在目指してるWPと総WP数"
+			v[Ptr14] = v[275]
+			v[Ptr15] = 3
+			v[Ptr15] = 2
+			
+		    } .else bl {
+			v[Ptr14] = -1
+			@comment "#Set 移動するX"
+			v[Ptr19] = v[391]
+			@comment "#Set 移動するY"
+			v[Ptr18] = v[392]
+			@comment "#Set 現在目指してるWPと総WP数"
+			v[Ptr15] = 2
+			Ptr19 = Temp1 + 41
+			v[391].copy v[Ptr19], 2
+			v[Temp1 + 34] |= AI_routine_bits_FLAG_RayCast // set raycast anyway
+			
+		    }
+		    @comment "#Set Target"
+		    v[Ptr17] = v[100]
+		    @comment "#assign job free"
+		    Ptr13 = Temp1 + 247
+		    @comment "#If basement selected"
+		    @if v[379] == 1 {
+			@comment "#set buildingjob "
+			v[Ptr13] = 5
+			
+		    }
+		    @if v[379] == 2 {
+			@comment "#set repairing job"
+			v[Ptr13] = 6
+			
+		    }
+		    @comment "#Set Direｃ"
+		    Ptr13 = Temp1 + 245
+		    v[Ptr13] = 0
+		    @comment "処理終わり"
+		    v[202] += 1
+		    
+		}
+		
+		
+	    } .else bl {
+		@comment "移動指示"
+		@loop .inf() {
+		    @if v[v[202]] == 0 {
+			@comment "とぎれた"
+			@break
+			
+		    }
+		    @if v[202] > v[1007] {
+			@comment "とりあえず40体までしか選択できない"
+			@break
+			
+		    }
+		    @comment "配列ゲット"
+		    Temp1 = v[v[202]] * 300
+		    Temp1 += 4700
+		    Ptr20 = Temp1 + 242
+		    Ptr19 = Temp1 + 41
+		    Ptr18 = Temp1 + 42
+		    Ptr17 = Temp1 + 18
+		    Ptr15 = Temp1 + 241
+		    Ptr14 = Temp1 + 55
+		    @comment "#assign job free"
+		    Ptr13 = Temp1 + 247
+		    v[Ptr13] = 0
+				v[Temp1 + 34] &= AI_routine_bits_MASK_for_initilizing_pathfinding
+
+		    @if s[1] .isOn() {
+			Ptr13 = Temp1 + 247
+			v[Ptr13] = 0
+			
+		    }
+		    v[Temp1 + 34] &= ~4096
+		    @if `v[Temp1 + 1] != 11 {
+			@comment "処理開始"
+			v[Ptr20] = s[16] == 1 ? 2 : 3
+			@comment "#アタックムーブじゃなければActionチェック"
+			v[843] = Temp1 + 243
+			TT1 = s[16] != 1 ? v[v[843]] : -999
+			@comment "#if Action==Attack, Set Action 0"
+			v[v[843]] = TT1 == 1 ? 0 : v[v[843]]
+			v[629] = Temp1 + 29
+			@comment "#if Forcemove, AA MotionTimer Reset"
+			v[v[629]] = TT1 == 1 ? 0 : v[v[629]]
+			@comment "#if Attack Stance, set stance alert"
+			v[Ptr15] = v[Ptr15] == 2 ? 0 : v[Ptr15]
+			
+		    }
+		    @if v[275] >= 1 {
+			Ptr13 = 273
+			Ptr13 -= v[275] * 2
+			@loop v[275] {
+			    v[Ptr13].copy v[Ptr19], 2
+			    Ptr13 += 2
+			    Ptr19 += 2
+			    
+			}
+			
+			v[Ptr13].copy v[Ptr19], 2
+			@comment "#Set 現在目指してるWPと総WP数"
+			v[Ptr14] = v[275]
+			
+		    } .else bl {
+			v[Temp1 + 34] &= ~(8388608 + 8192)
+			@if s[40] .isOn() {
+			    v[Temp1 + 34] |= 16384
+			    
+			} .else bl {
+			    v[Temp1 + 34] &= ~32768
+			    
+			}
+			@comment "#Set 移動するX"
+			v[Ptr19] = v[391]
+			@comment "#Set 移動するY"
+			v[Ptr18] = v[392]
+			@comment "#Set 現在目指してるWPと総WP数"
+			v[Ptr14] = -1
+			v[Temp1 + 34] |= AI_routine_bits_FLAG_RayCast // set raycast anyway
+		    }
+		    @comment "#Set 目標なし"
+		    v[Ptr17] = 0
+		    Ptr13 = Temp1 + 245
+		    v[Ptr13] = 0
+		    @comment "処理終わり"
+		    s[21].on
+		    v[202] += 1
+		    
+		}
+		
+		
+	    }
+	    @if s[201] .isOn() {
+		@if s[13] .isOff() {
+		    @comment "#########################"
+		    v[472] = divmul(95, 100, v[2216])
+		    @se.play "Cursor1" .opt v[472], 65, 50
+		    @comment "#########################"
+		    
+		}
+		@call .cev 48
+		MousePtr_x.copy Temp2, 2
+		Temp3 -= 6
+		Temp2 += 5
+		@pic[999].show {
+		    "pointer_hammer"
+		    .pos Temp2, Temp3 .center
+		    .scrollWithMap
+		    .chromakey 1
+		    .scale 100
+		    .trans 0
+		    .rgbs 100, 100, 100, 100
+		    .grid 3, 1 .anim 5 .repeat
+		    .mapLayer 10
+		    .eraseWhenTransfer
+		    .affectedByFlash
+		    .affectedByShake
+		}
+		Temp3 += 10
+		@pic[999].move {
+		    .pos Temp2, Temp3 .center
+		    .scale 100
+		    .trans 100
+		    .time 5
+		    .rgbs 100, 100, 100, 100
+		}
+		
+	    }
+	    @if s[21] .isOn() {
+		@if s[13] .isOff() {
+		    @comment "#########################"
+		    v[472] = divmul(95, 100, v[2216])
+		    @se.play "ui\tap" .opt v[472], 100, 50
+		    @comment "#########################"
+		    
+		}
+		MousePtr_x.copy Temp2, 2
+		Temp3 -= 6
+		Temp2 += s[40] == 0 ? 5 : 1
+		Temp4 = s[40] == 0 ? 100 : 50
+		@if s[16] .isOn() {
+		    @pic[999].show {
+			"pointer_attackmove"
+			.pos Temp2, Temp3 .center
+			.scrollWithMap
+			.chromakey 1
+			.scale Temp4
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.grid 3, 1 .anim 5 .repeat
+			.mapLayer 10
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+		    }
+		    
+		} .else bl {
+		    @pic[999].show {
+			"pointer_flag"
+			.pos Temp2, Temp3 .center
+			.scrollWithMap
+			.chromakey 1
+			.scale Temp4
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.grid 3, 1 .anim 5 .repeat
+			.mapLayer 10
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+		    }
+		    
+		}
+		Temp3 += s[40] == 0 ? 10 : 0
+		@pic[999].move {
+		    .pos Temp2, Temp3 .center
+		    .scale Temp4
+		    .trans 100
+		    .time 5
+		    .rgbs 100, 100, 100, 100
+		}
+		
+	    }
+	    
+	}
+	v[261..280] = 0
+	s[201].off
+	s[16].off
+}
 
 
 __fn func_control_moveorder_mil {
 
-	def JSCMD_INITPATH = __str("RTS.path.initPath_list(getv(", Adr_PlayerSelectList_Head, ",\v[", __id(SelectedAmount) ,"]))")
 	eval_js(JSCMD_INITPATH)
 
 
@@ -219,8 +785,6 @@ __fn func_control_moveorder_mil {
 				@label.set 10
 				v[489].copy v[391], 2
 				Mouse_x.copy MousePtr_x, 2
-				v[51..52] -= 3
-				v[52..52] += 1
 				@if v[47] > 0 {
 						v[41] = Mouse_x - 1
 						v[48] = Mouse_y - 1

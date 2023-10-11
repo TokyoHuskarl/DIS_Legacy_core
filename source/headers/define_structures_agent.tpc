@@ -349,7 +349,7 @@ struct("agent",{
 	AgentBits_FLAG_ForcemoveFlag = 4194304
 	AgentBits_FLAG_walldetected = 8388608
 	AgentBits_FLAG_NeedWpToReachObj = 16777216
-	AgentBits_FLAG_PF_walldetection_switch = 33554432 // triggered in search AI proc 
+	AgentBits_FLAG_PF_walldetection_switch = 33554432 // if this switch is on for seconds, start checking if the agent is stuck on wall or sth
 	AgentBits_FLAG_1fprocessed = 67108864
 
 	AgentBits_FLAG_DirChange_skip = 134217728
@@ -416,8 +416,11 @@ struct("agent",{
 	AI_routine_bits_FLAG_RayCast = 33554432
 	AI_routine_bits_FLAG_WP_set_by_RayCast = 67108864
 	AI_routine_bits_FLAG_1secDelay_PF = 134217728
+	AI_routine_bits_FLAG_StuckCheckReady = 268435456
+		AI_routine_bits_KILL_StuckCheckReady = ~AI_routine_bits_FLAG_StuckCheckReady
 
-		AI_routine_bits_MASK_for_initilizing_pathfinding = ~(AI_routine_bits_FLAG_tracing_flag + AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_GroupPath + AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_RayCast)
+		AI_routine_bits_MASK_init_raycasting = (AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_RayCast+AI_routine_bits_FLAG_Prioritize_Raycasting)
+		AI_routine_bits_MASK_for_initilizing_pathfinding = ~(AI_routine_bits_FLAG_tracing_flag + AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_GroupPath + AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_RayCast+AI_routine_bits_FLAG_StuckCheckReady)
 
 
 	//ObjBits

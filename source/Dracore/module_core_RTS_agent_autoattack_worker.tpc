@@ -1096,3 +1096,258 @@ cev .id(32), .name("AgentAct:Worker"), {
 
 		}
 }
+
+cev[39], .name("WorkerAct:setting build foundation"), {
+
+	v[11..12] *= 10000
+		@call .cev 1999
+		v[22] -= 1
+		@map.getTerrain .pos v[21], v[22] .dst v[350]
+		v[40] = v[350] < 18 && v[350] != 5 ? 1 : 0
+		@comment "#Data get"
+		v[14] = v[88] + 800
+		@if v[14] >= 9 {
+			s[151].on
+				@call .cev v[14]
+				s[151].off
+				v[31].copy v[497], 4
+				v[341] = v[300001] >= v[31] ? 1 : 0
+				v[341] += v[300002] >= v[32] ? 1 : 0
+				v[341] += v[300003] >= v[33] ? 1 : 0
+				v[341] += v[300004] >= v[34] ? 1 : 0
+				v[40] -= v[341] != 4 ? 1 : 0
+				@comment "＃＃＃＃＃＃＃＃＃＃
+				地形チェック
+				＃＃＃＃＃＃＃＃＃＃"
+				@if v[91] == 1 {
+					v[40] += v[350] == 18 && v[91] & 1 ? 2 : 0
+
+				} .else bl {
+					v[350] -= 1
+						v[350] = 1 << v[350]
+						v[39] = v[91] != 0 ? v[91] : v[350]
+						v[350] &= v[39]
+						v[40] += v[350] > 0 ? 1 : 0
+
+				}
+			@comment "＃＃＃＃＃＃＃＃＃＃
+				地形チェック終
+				＃＃＃＃＃＃＃＃＃＃"
+				@comment "#V357以下にコピー"
+				v[11].copy v[357], 4
+				@comment "#弾の判定使いまわし"
+				v[252].copy v[381], 2
+				v[11].copy v[383], 2
+				@comment "#範囲攻撃処理分岐
+#0なら当たり判定を持たない"
+				v[51].copy v[11], 2
+				v[11] .sub v[357], 2
+				@call .cev 2002
+				v[351] = v[21]
+				v[51].copy v[11], 2
+				v[11] .add v[357], 2
+				@call .cev 2002
+				v[341] = v[351]
+				v[342] = v[21]
+				@comment "TT1 = upper left morton
+				TT2 = bottom right morton
+				TT5 = shift num"
+				v[343] = v[341] ^ v[342]
+				@comment "00ではない一番上位の空間にしょぞく"
+				@comment "#mask with 11000000"
+				@comment "#mask with 110000"
+				@comment "#mask with 001100"
+				@comment "#mask with 000011"
+				v[345] = v[343] & 192 ? 8 : v[343] & 48 ? 6 : v[343] & 12 ? 4 : v[343] & 3 ? 2 : 0
+				@comment "#mask end"
+				v[346] = v[342] >> v[345]
+				@comment "#mask end"
+				v[340] = v[4545 - v[345] / 2]
+				v[340] += v[346] * v[1004]
+				v[327] = v[v[4551 - v[345] / 2] + v[346]]
+				@comment "STATIC"
+				v[536] = v[4533]
+				@if v[35] == 1 {
+					@comment "Walltype"
+						@while v[v[536]] != 0 {
+							v[312] = v[536]
+								v[311] = v[v[312]] * v[1117] + 4701
+								v[311] += 2
+								@comment "Walltype"
+								@if `!(v[v[311]] & 16 | v[v[311] + 97] != v[251]) {
+									@comment "当たり判定"
+										v[311] += 4
+										v[v[311]].copy v[327], 5
+										@comment "とりあえず矩形判定"
+										v[341] = v[381] - v[327]
+										v[341] = abs(v[341])
+										v[342] = v[383] + v[330]
+										v[342] -= 4
+										@if v[341] < v[342] {
+											v[341] = v[382] - v[328]
+												v[341] = abs(v[341])
+												v[342] = v[384] + v[331]
+												v[342] -= 4
+												@if v[341] < v[342] {
+													@comment "ＨＩＴ！"
+														v[40] = 0
+														@break
+
+												}
+
+										}
+
+								}
+							@comment "++"
+								v[536] += 1
+
+						}
+
+
+				} .else bl {
+					@while v[v[536]] != 0 {
+						v[312] = v[536]
+							v[311] = v[v[312]] * v[1117] + 4701
+							@comment "当たり判定"
+							v[311] += 6
+							v[v[311]].copy v[327], 5
+							@comment "とりあえず矩形判定"
+							v[341] = v[381] - v[327]
+							v[341] = abs(v[341])
+							v[342] = v[383] + v[330]
+							v[342] -= 4
+							@if v[341] < v[342] {
+								v[341] = v[382] - v[328]
+									v[341] = abs(v[341])
+									v[342] = v[384] + v[331]
+									v[342] -= 4
+									@if v[341] < v[342] {
+										@comment "ＨＩＴ！"
+											v[40] = 0
+											@break
+
+									}
+
+							}
+						@comment "++"
+							v[536] += 1
+
+					}
+
+
+				}
+			@if v[2538] <= 40 {
+				@if v[40] >= 2 {
+					v[300001] .sub v[497], 4
+						@call .cev 84
+						v[357].copy v[11], 4
+						@comment "#"
+						@call .cev 804
+						v[472] = divmul(90, 100, v[2216])
+						@se.play "Earth7" .opt v[472], 150, 50
+
+
+						
+						@comment "#"
+						v[202] = Adr_PlayerSelectList_Head
+						@loop .inf() {
+							@if v[v[202]] == 0 {
+								@comment "とぎれた"
+									@break
+
+							}
+							@if v[202] >= v[1007] {
+								@comment "とりあえず40体までしか選択できない"
+									@break
+
+							}
+							@comment "配列ゲット"
+								v[301] = v[v[202]] * 300
+								v[301] += 4700
+								v[601] = v[301] + 1
+								v[300] = v[301] + 242
+								v[299] = v[301] + 19
+								v[298] = v[301] + 20
+								v[297] = v[301] + 18
+								v[296] = v[301] + 241
+								v[295] = v[301] + 242
+								v[Temp1 + 34] &= AI_routine_bits_MASK_for_initilizing_pathfinding
+								v[Temp1 + 34] |= AI_routine_bits_FLAG_RayCast // set raycast anyway
+								@comment "処理開始"
+								v[v[296]] = v[v[296]] != 4 ? 2 : 4
+								@comment "#Set 移動するX"
+								v[v[299]] = v[51]
+								@comment "#Set 移動するY"
+								v[v[298]] = v[52]
+								@comment "Reserve Set"
+								v[v[295]] = 2
+								@if `v[v[301] + 18] > 0 && v[v[v[301] + 18] * 300 + 4802] == 104 {
+									v[342] = v[301] + 41
+										v[v[299]].copy v[v[342]], 2
+										@loop 6 .dst v[343] {
+											v[341] = v[301] + 51 - v[343] * 2
+												v[342] = v[301] + 53 - v[343] * 2
+												v[v[341]].copy v[v[342]], 2
+
+										}
+
+									v[342] = v[301] + 43
+										v[v[342]].copy v[342], 2
+										v[v[301] + 55] -= 1
+
+								} .else bl {
+									@comment "#Set Target"
+										v[v[297]] = v[v[301] + 102] == 9 ? v[21] : v[v[297]]
+
+								}
+							@if s[1] .isOn() {
+								v[293] = v[301] + 247
+									v[v[293]] = 5
+
+							}
+							@comment "処理終わり"
+								v[202] += 1
+
+						}
+
+					v[40] = 0
+
+				} .else bl {
+					v[472] = divmul(80, 100, v[2216])
+						@se.play "Buzzer3" .opt v[472], 100, 50
+						v[40] = -1
+
+				}
+
+			} .else bl {
+				@call .cev 1918
+					v[472] = divmul(80, 100, v[2216])
+					@se.play "Buzzer1" .opt v[472], 100, 50
+					@call .cev 1924
+					v[341] = 2
+					v[601] = 1
+					@comment "#call quickstrings"
+					v[11] = 199
+					@call .cev 1890
+					@pic[v[1155]].strpic {
+						"\c[8]\t[3001]"
+							.pos v[341], v[1126] .bottomLeft
+							.size 0, 0            .chromakey 1
+							.scale 100
+							.trans 30
+							.rgbs 100, 100, 100, 100
+							.font t[530], v[4511]
+							.spacing 0, 4
+							.skin "" .nobg .noframe .noPadding
+							.mapLayer 8
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+				@call .cev 1925
+					@comment "#ACHIEVEMENT"
+
+			}
+
+		}
+}

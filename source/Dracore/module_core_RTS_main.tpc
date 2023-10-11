@@ -875,7 +875,22 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						*/
 
 						// kill Pathfinding 1 sec delay by wall detection
-						v[634] &= ~AI_routine_bits_FLAG_1secDelay_PF
+						@if `!(v[634] & AI_routine_bits_FLAG_1secDelay_PF) {
+							@if `v[603] & AgentBits_FLAG_PF_walldetection_switch {
+								v[634] |= v[634] & AI_routine_bits_FLAG_StuckCheckReady ? AI_routine_bits_FLAG_PATHFINDING : AI_routine_bits_FLAG_StuckCheckReady
+								v[634] &= v[634] & AI_routine_bits_FLAG_PATHFINDING ? ~(AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_StuckCheckReady) : v[634]
+								v[603] &= ~AgentBits_FLAG_PF_walldetection_switch
+
+							}.else bl{
+								v[634] &= AI_routine_bits_KILL_StuckCheckReady
+
+							}
+						}.else bl {
+							v[634] &= ~AI_routine_bits_FLAG_1secDelay_PF
+
+						}
+
+
 
 
 						//v[680] = Temp1 + 80 

@@ -76,7 +76,7 @@ __fn func_nodecheck_RayCast $X0 $Y0 $X1 $Y1 {
 			val_add(RC_y,RC_swapy) // RC_y += RC_swapy
 
 			// Node Y diff
-			// use reg1 to temp var
+			// use reg1 as a temp var
 			reg1 = RC_swapy * LEGV_MapNodeAmountX
 			RC_PF_NodePtr += reg1 * Node_Data_Size
 		}
@@ -172,7 +172,7 @@ __fn func_pathfinding_move(){
 			
 		    }
 
-				@if `v[378] != -1 {
+				@if v[378] != -1 { // if only agents can go through
 					@if v[2875] >= 1 {
 						v[293] = 2873
 							v[293] -= v[2875] * 2
