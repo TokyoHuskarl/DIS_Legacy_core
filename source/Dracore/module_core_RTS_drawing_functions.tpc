@@ -20,7 +20,7 @@ __fn func_load_cache $string {
 		    .affectedByShake
 		}
                 t[__id(str_agent_cache)].cat $string
-		t[__id(str_agent_cache)].cat t[525]
+		t[__id(str_agent_cache)].cat LF
 	}*/
 }
 
@@ -173,38 +173,38 @@ __fn function_agent_init_set_picture_strs {
 
 __fn function_draw_moving_agent {
 	
-	v[11] =  v[340]*10
-	v[11] = Const_str_agent_pictures_strings_start + v[11]
+	var1 =  v[340]*10
+	var1 = Const_str_agent_pictures_strings_start + var1
 	@while v[899] >= 1 {
-		v[341] = v[899] % 10
-		v[286] = v[341] + v[11]
+		TT1 = v[899] % 10
+		Ptr6 = TT1 + var1
 		//@comment "Layer Setting"
-		v[356].copy v[449], 4
+		TT16.copy v[449], 4
 		
-		v[455] = 4030 + v[341]
-		v[305] = 4040 + v[341]
-		v[306] = 4050 + v[341]
-		v[447] = 4060 + v[341]
-		v[342] = 4080 + v[341]
-		v[463] = 4100 + v[341]
-		v[464] = 4120 + v[341]
-		v[321] = 4110 + v[341]
-		v[453] = 4130 + v[341]
-		v[454] = 4140 + v[341]
-		v[456] = 4150 + v[341]
+		v[455] = 4030 + TT1
+		Temp5 = 4040 + TT1
+		Temp6 = 4050 + TT1
+		v[447] = 4060 + TT1
+		TT2 = 4080 + TT1
+		v[463] = 4100 + TT1
+		v[464] = 4120 + TT1
+		v[321] = 4110 + TT1
+		v[453] = 4130 + TT1
+		v[454] = 4140 + TT1
+		v[456] = 4150 + TT1
 		//surprise, but this seems faster than above... opt 25.4.23
-		v[305].deref v[305],2
+		Temp5.deref Temp5,2
 		v[447] = v[v[447]]
-		v[342] = v[v[342]]
+		TT2 = v[TT2]
 		v[463].deref v[463],2
 		v[321] = v[v[321]]
 		v[453].deref v[453],4
 
-		v[449] .add v[v[342]], 4
+		v[449] .add v[TT2], 4
 		// @comment "Layer Setting END"
 		// this @if is for safety, set in order not to load false id picture 
 		@if v[188] > 0 {
-		    @cmd 11110, t[v[286]], .args v[441], v[480]
+		    @cmd 11110, t[Ptr6], .args v[441], v[480]
 		    
 		}
 		v[186..188] += 1
@@ -260,25 +260,25 @@ __fn function_draw_agent_inv_stats {
 	    @comment "Colour"
 	    v[449..452] = 100
 	    @comment "Get Picture Layer Array"
-	    v[358] = v[159]
-	    v[11] = (v[340] - 1) * 10
-	    v[11] = Const_str_agent_pictures_strings_start + v[11]
-	    @while v[358] >= 1 {
-				v[305] = v[157] + 24
-				v[306] = v[158] + 54
+	    TT18 = agent_PictArray // v[159]
+	    var1 = (v[340] - 1) * 10
+	    var1 = Const_str_agent_pictures_strings_start + var1
+	    @while TT18 >= 1 {
+				Temp5 = v[157] + 24
+				Temp6 = v[158] + 54
 				@comment "Add Initial Offsets to SpriteXY"
-				v[305].add v[881],2
+				Temp5.add v[881],2
 				// v[0] = v[305..306] += v[881..882]
-				v[306] += v[4050 + v[341]]
+				Temp6 += v[4050 + TT1]
 				@comment "Add Initial Offsets to SpriteXY#End"
-				v[341] = v[358] % 10
-				v[463] = v[4100 + v[341]]
-				v[464] = v[4120 + v[341]]
-				v[286] = v[341] + v[11]
-				@comment "Strings = t[v[286]]"
-				@cmd 11110, t[v[286]], .args v[441], 30
-				v[350] += 1
-				v[358] /= 10
+				TT1 = TT18 % 10
+				v[463] = v[4100 + TT1]
+				v[464] = v[4120 + TT1]
+				Ptr6 = TT1 + var1
+				@comment "Strings = t[Ptr6]"
+				@cmd 11110, t[Ptr6], .args v[441], 30
+				TT10 += 1
+				TT18 /= 10
 		
 	    }
 

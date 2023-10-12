@@ -9,6 +9,7 @@ def moduletitle="module_core_RTS_pathfinding_general"
 // Both of A* and legacy pathfinding function combined in this one tpc file
 #include "./module_core_RTS_pathfinding_algorithm.tpc"
 
+defv PF_is_there_valid_path = 379
 
 
 //##################
@@ -111,8 +112,8 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 								var1.sub v[69],2 // convert into tile coord
 								
 								// then convert both into Node Coord
-								var1.shr N1,2 // v[__id(var1)..__id(var4)] /= 2
-								var3.div N2,2 // safety
+								var1.shr N1,4 // v[__id(var1)..__id(var4)] /= 2
+								// var3.div N2,2 // safety
 
 								// node ray casting
 
@@ -168,7 +169,7 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 									@if reg2 > 0 { // only if the agent has managed to receive array
 										@if reg1 == 0 { // the agent will reach goal node in this attempt
 											refresh_deployed_agent_data()
-											v[379] = 1 // will reach the goal..
+											PF_is_there_valid_path = 1 // will reach the goal..
 											// get path
 											set_Path_gotten_from_jscontainer()
 											pf_agent_move()
@@ -212,8 +213,9 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 										@if PF_done_per_1f <= 7 {
 											// start dumb "pathfinding" to look as if the agent is searching the path
 											func_pathfinding_Astar()
+											TT1 = Pathfinding_AgentData_head_ptr + 34 // ACHTUNG!!!! maybe lacking of this was the reason of that bug!
 											v[TT1] &= AI_routine_bits_KILL_FLAG_PATHFINDING // -16385//~16384
-											PF_done_per_1f += 1
+											val_add(PF_done_per_1f,N1) // PF_done_per_1f += 1
 										}
 
 										// Use TT1 as a Ptr to agent_AI_routine_bits
