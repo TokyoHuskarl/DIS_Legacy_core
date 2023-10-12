@@ -77,7 +77,7 @@ __fn UI_CEV_MINIMAP_MANAGER {
 
 	//@comment "##################"
 	@wait 0
-		index_MinimapPicId += v[1258] + 1
+		index_MinimapPicId = v[1258] + 1
 		TT1 = 2 + (v[189] >= v[1128] ? 1 : 0) + (s[314] == 1 ? 1 : 0)
 		v[2512] = (v[2512] + 1) % TT1
 		@if v[2512] == 1 {

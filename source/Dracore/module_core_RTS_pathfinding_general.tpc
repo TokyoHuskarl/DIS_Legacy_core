@@ -213,15 +213,14 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 										@if PF_done_per_1f <= 7 {
 											// start dumb "pathfinding" to look as if the agent is searching the path
 											func_pathfinding_Astar()
+
+											// Use TT1 as a Ptr to agent_AI_routine_bits
 											TT1 = Pathfinding_AgentData_head_ptr + 34 // ACHTUNG!!!! maybe lacking of this was the reason of that bug!
 											v[TT1] &= AI_routine_bits_KILL_FLAG_PATHFINDING // -16385//~16384
-											val_add(PF_done_per_1f,N1) // PF_done_per_1f += 1
+											v[TT1] &= KILL_AI_routine_bits_FLAG_Pathblocked // -8388609 ~8388608
+
 										}
-
-										// Use TT1 as a Ptr to agent_AI_routine_bits
 										TT1 = Pathfinding_AgentData_head_ptr + 34
-										v[TT1] &= KILL_AI_routine_bits_FLAG_Pathblocked // -8388609 ~8388608
-
 										v[TT1] |= AI_routine_bits_FLAG_1secDelay_PF
 										
 											}

@@ -17,6 +17,9 @@ __fn func_nodecheck_RayCast $X0 $Y0 $X1 $Y1 {
 		RC_err2 = __id(TT8) 
 	}
 
+
+
+
 	// RC_deltax = abs($X1 - $X0)
 	RC_deltax = ($X1 - $X0)
 	RC_deltax = abs(RC_deltax)
@@ -455,6 +458,8 @@ __fn convert_Path_to_WP $WPamt {
 		reg2 = boat.scrx
 		reg3 = boat.scry
 		val_add(reg2,N8) // reg2 += 8
+		// add diff
+		reg2.add v[53],2
 
 		reg2.copy v[Ptr8], 2	
 		val_add(Ptr7,N1) // Ptr7 += 1

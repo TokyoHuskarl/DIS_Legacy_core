@@ -42,7 +42,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 			val_add(TT5,TT10)
 
 	    // TT10 = TT10 & 1 ? 100 : v[TT5] & 2 ? 50 : 0
-			TT10 = ((v[TT5] & 3) << 5) + 4 // replaced for fast proc :D
+			TT10 = ((v[TT5] & 3) << 5) | ((v[TT5] & 2) << 1) // replaced for fast proc :D
 			
 			/*
 	    TT3 = 80 * TT8
