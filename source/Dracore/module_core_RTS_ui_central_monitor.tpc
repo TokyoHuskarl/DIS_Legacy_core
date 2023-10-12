@@ -1401,7 +1401,7 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 
 		}
 
-		@if LEGV_State_of_Central_Monitor == 4 {
+		@if LEGV_State_of_Central_Monitor == CENTMODE_ALLY_STATIC {
 			v[341] = v[4556]
 				@loop 4 {
 					@pic[v[341]].move {
