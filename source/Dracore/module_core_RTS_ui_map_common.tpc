@@ -8,7 +8,7 @@
 
 def MACRO_getAgentData_from_Temp1 = {
 	agent_AgentType = v[Temp1] * agent_Basic_Array_size 
-	agent_AgentType += 4701
+	val_add(agent_AgentType,N4701) // agent_AgentType += 4701
 	v[agent_AgentType].copy agent_AgentType,agent_Basic_Array_size // deploy agent data
 }
 
@@ -26,7 +26,11 @@ __fn UI_CEV_RTS_SCREEN_MANAGEMENT {
 	}.elif LEGV_State_of_Central_Monitor == CENTMODE_ALLY_SINGLE {
 		showScreenHPbars_player_selected()
 
+	}.elif LEGV_State_of_Central_Monitor == CENTMODE_ALLY_STATIC {
+		showScreenHPbars_player_selected()
+
 	}.else bl {
+		
 		showScreenHPbars()
 
 	}
