@@ -1229,6 +1229,8 @@ let RTS = {
 				path[i + 1] = buf.shift();
 			};
 
+			if (isNaN(path)){return -1}; // if generation of path array failed, return -1
+
 			setv(22,path); // deploy path array to reg2 ~ reg9. 
 			let t = "RTS.path: give " + path + " to id:" + agentid; // tesT
 			deblog(t);
@@ -1382,7 +1384,7 @@ let RTS = {
 
 // DIS Command types -> module_Game_scripts_functions.tpc
 const CTYP_MAP = 1,
-	CTYP_SND = 2,
+	CTYP_SYS = 2,
 	CTYP_MISSION = 3,
 	CTYP_GAME = 4,
 	CTYP_AGENT = 5,
@@ -1394,7 +1396,7 @@ const CTYP_MAP = 1,
 
 // DIS Command string container <- module_Game_scripts_functions.tpc
 const LINKSTR_map = 771,
-	LINKSTR_snd = 772,
+	LINKSTR_sys = 772,
 	LINKSTR_mission = 773,
 	LINKSTR_game = 774,
 	LINKSTR_agent = 775,
@@ -1523,19 +1525,19 @@ var Cmd = {
 	game: {
 		CmdType: CTYP_GAME,
 
-		exec: function(jsfile) { // execute js file
-			Cmd.Qset(this.CmdType,"exec",`${jsfile}`);
+
+		playGlobalSE: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
+			Cmd.Qset(this.CmdType,"pGSE",`${file},${vol},${tempo},${ballance}`);
 		},
 
-		importDISdata: function(jsonfile){},
+		playBGM: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
+			Cmd.Qset(this.CmdType,"pBGM",`${file},${vol},${tempo},${ballance}`);
+		},
+	
 
 		wait: function(RMwaittime) { // RMwaittime: 10 = 1sec, 0 = 1f, -n = {n}f. 
 			Cmd.Qset(this.CmdType,"wait",`${RMwaittime}`);
 			Cmd.runFlags.RMwaitDetect = true;
-		},
-
-		eval: function(jsSentence) { // eval(jsSentence) on the DISCmd interpreter. might be dangerous 
-			Cmd.Qset(this.CmdType,"eval",`${jsSentence}`);
 		},
 
 		pic: { // Cmd.pic
@@ -1658,17 +1660,21 @@ var Cmd = {
 
 	},
 
-	//Cmd.snd
-	snd: {
-		CmdType: CTYP_SND, 
-		playGlobalSE: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
-			Cmd.Qset(this.CmdType,"pGSE",`${file},${vol},${tempo},${ballance}`);
+	//Cmd.sys
+	sys: {
+		CmdType: CTYP_SYS, 
+	
+		exec: function(jsfile) { // execute js file
+			Cmd.Qset(this.CmdType,"exec",`${jsfile}`);
 		},
 
-		playBGM: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
-			Cmd.Qset(this.CmdType,"pBGM",`${file},${vol},${tempo},${ballance}`);
+		eval: function(jsSentence) { // eval(jsSentence) on the DISCmd interpreter. might be dangerous 
+			Cmd.Qset(this.CmdType,"eval",`${jsSentence}`);
 		},
-		
+
+		importDISdata: function(jsonfile){},
+
+	
 	},
 
 	// -------------

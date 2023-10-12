@@ -4,7 +4,7 @@
 
 def {
 	CTYP_MAP = 1
-	CTYP_SYS = 2 // ex-SND, will be reformed
+	CTYP_SYS = 2 // ex-sys, will be reformed
 	CTYP_MISSION = 3
 	CTYP_GAME = 4
 	CTYP_AGENT = 5
@@ -26,7 +26,7 @@ def {
 
 deft {
 	str_link_Cmd_map = 771
-	str_link_Cmd_snd
+	str_link_Cmd_sys
 	str_link_Cmd_mission
 	str_link_Cmd_game
 	str_link_Cmd_agent
@@ -109,8 +109,8 @@ __fn DIS_Cmd_PackTree $chosenobj $md $counter $given_v_or_str $flags {
 	@if $chosenobj == CTYP_MAP { // Cmd.map
 		DIS_Cmd_map(str_link_Cmd_map,$md,$counter,$given_v_or_str,$flags)
 
-	}.elif $chosenobj == CTYP_SYS { // Cmd.snd
-		DIS_Cmd_snd(str_link_Cmd_snd,$md,$counter,$given_v_or_str,$flags)
+	}.elif $chosenobj == CTYP_SYS { // Cmd.sys
+		DIS_Cmd_sys(str_link_Cmd_sys,$md,$counter,$given_v_or_str,$flags)
 
 	}.elif $chosenobj == CTYP_MISSION { // Cmd.mission
 		DIS_Cmd_mission(str_link_Cmd_mission,$md,$counter,$given_v_or_str,$flags)
@@ -146,9 +146,9 @@ __fn DIS_Cmd_map $LINKstr $md $counter $given_v_or_str $flags {
 	})
 }
 
-__fn DIS_Cmd_snd $LINKstr $md $counter $given_v_or_str $flags {
+__fn DIS_Cmd_sys $LINKstr $md $counter $given_v_or_str $flags {
 	SScmdPackage_Build("sn",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
-		DIS_snd_methods($LINKstr $md $counter $given_v_or_str $flags)
+		DIS_sys_methods($LINKstr $md $counter $given_v_or_str $flags)
 	})
 }
 
@@ -208,14 +208,18 @@ __fn DIS_map_methods $LINKstr $md $i $given_v_or_str $flags {
 	])
 }
 
-// Cmd.snd
-__fn DIS_snd_methods $LINKstr $md $i $given_v_or_str $flags {
-	SScmdLib_Build("snd", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+// Cmd.sys
+__fn DIS_sys_methods $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("sys", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		// let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "pGSE",{cmd_play_global_sound(SSargs0,SSargs1,SSargs2,SSargs3)})}, // snd.playGlobalSE
-		{NsCmd($LINKstr, $md, $i, "pBGM",{cmd_play_global_music(SSargs0,SSargs1,SSargs2,SSargs3)})}, // snd.playBGM
-		
+		{NsCmd($LINKstr, $md, $i, "exec",{execute_js(SSargs0)})}, // <- NsLib_js
+		{NsCmd($LINKstr, $md, $i, "eval",{@js .run SSargs0})},
+			// export text
+		{NsCmd($LINKstr, $md, $i, "exportText",{
+			t2v(SSargs0,var1)
+			t[var1].toFile SSargs1, .utf8
+		})},	
 
 	])
 }
@@ -234,9 +238,7 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("game", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "exec",{execute_js(SSargs0)})}, // <- NsLib_js
 		{NsCmd($LINKstr, $md, $i, "wait",{@wait (SSargs0)})},
-		{NsCmd($LINKstr, $md, $i, "eval",{@js .run SSargs0})},
 		{NsCmd($LINKstr, $md, $i, "gotoRMmap",{
 			t2v(SSargs0,var1)
 			t2v(SSargs1,var2)
@@ -251,12 +253,10 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 			t2v(SSargs0,var1)
 			@pic.erase [var1]
 		})},
+		{NsCmd($LINKstr, $md, $i, "pGSE",{cmd_play_global_sound(SSargs0,SSargs1,SSargs2,SSargs3)})}, // sys.playGlobalSE
+		{NsCmd($LINKstr, $md, $i, "pBGM",{cmd_play_global_music(SSargs0,SSargs1,SSargs2,SSargs3)})}, // sys.playBGM
 
-		// export text
-		{NsCmd($LINKstr, $md, $i, "exportText",{
-			t2v(SSargs0,var1)
-			t[var1].toFile SSargs1, .utf8
-		})},
+
 		
     
 

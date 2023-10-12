@@ -920,15 +920,21 @@ __fn MAIN_agent_reached_ChasePoint {
 			// kill Chasing Wp to Reach Target flag
 			agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
 
-				// If continue Pathfinding flag is on
-				@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFcontinue {
-					// then pathfinding
-					agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
-				}
+			// If continue Pathfinding flag is on
+			@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFcontinue {
+				// then pathfinding
+				agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+			}.else `agent_AI_routine_bits & AI_routine_bits_FLAG_Pathblocked { // can't reach goal node
+				// then give up moving
+				LEGS_MAIN_Agent_tries_to_stop.on
+				agent_MovementOrder = MovementOrder_TYPE_do_not_move
+				agent_RelativeX.copy agent_HoldPointX, 2
+				agent_AI_routine_bits &= AI_routine_bits_MASK_for_initilizing_pathfinding
+			}
 
 			Reaching_Target_Way_Point.on
-				agent_ActionFlag = 0
-				agent_LeftWPtoChase -= 1
+			agent_ActionFlag = 0
+			agent_LeftWPtoChase -= 1
 
 		}
 

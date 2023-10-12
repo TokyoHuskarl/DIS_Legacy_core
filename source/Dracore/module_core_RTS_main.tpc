@@ -879,6 +879,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							@if `v[603] & AgentBits_FLAG_PF_walldetection_switch {
 								v[634] |= v[634] & AI_routine_bits_FLAG_StuckCheckReady ? AI_routine_bits_FLAG_PATHFINDING : AI_routine_bits_FLAG_StuckCheckReady
 								v[634] &= v[634] & AI_routine_bits_FLAG_PATHFINDING ? ~(AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_StuckCheckReady) : v[634]
+								v[634] &= agent_LeftWPtoChase <= 0 ? ~AI_routine_bits_FLAG_1secDelay_PF : v[634]
 								v[603] &= ~AgentBits_FLAG_PF_walldetection_switch
 
 							}.else bl{

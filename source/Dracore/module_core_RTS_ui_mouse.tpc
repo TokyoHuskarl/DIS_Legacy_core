@@ -1633,9 +1633,11 @@ __fn UI_CEV_MOUSE_OBSERVER {
 							@if Control_ClickableAgentHolder <= 0 {
 								// ????
 								// "#Check Terrain"
-								LEGV_MousePointer_X.copy var1, 2
-									v[12] -= 8
-									@call .cev 2000
+									LEGV_MousePointer_X.copy var1, 2
+									val_sub(var2,N8) // v[12] -= 8
+
+									// @call .cev 2000
+									macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
 
 									// "######################Get Terrain and Elevation info"
 									v[313] = v[v[1182] + v[21] - v[69] + (v[22] - v[70]) * v[2061]]
@@ -1645,14 +1647,14 @@ __fn UI_CEV_MOUSE_OBSERVER {
 									v[351] = LEGV_MousePointer_Y - 16
 									TT2 = v[1239] + TT2
 									// "######################"
-									TT1 = v[21]
-									TT2 = v[22]
-									@call .cev 2001 // 
+									reg1.copy TT1,2
+									// @call .cev 2001 // 
+									macro_convert_maptileXY_into_relativeXY(TT1,TT2,reg2,reg3)
 									v[344] = 63
 									@if Var_MouseMode != MODE_Elevation {
 										@pic[PicID_pointer_sub].show {
-											"ui\terrainsquare"
-												.pos v[22], v[23] .center
+												"ui\terrainsquare"
+												.pos reg2, reg3 .center
 												.chromakey 1
 												.scale 100
 												.trans v[344]
