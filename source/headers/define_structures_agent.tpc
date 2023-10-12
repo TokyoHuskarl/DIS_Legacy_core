@@ -420,7 +420,7 @@ struct("agent",{
 		AI_routine_bits_KILL_StuckCheckReady = ~AI_routine_bits_FLAG_StuckCheckReady
 
 		AI_routine_bits_MASK_init_raycasting = (AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_RayCast+AI_routine_bits_FLAG_Prioritize_Raycasting)
-		AI_routine_bits_MASK_for_initilizing_pathfinding = ~(AI_routine_bits_FLAG_tracing_flag + AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_GroupPath + AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_RayCast+AI_routine_bits_FLAG_StuckCheckReady)
+		AI_routine_bits_MASK_for_initilizing_pathfinding = ~(AI_routine_bits_FLAG_tracing_flag + AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_GroupPath + AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_RayCast+AI_routine_bits_FLAG_StuckCheckReady + AI_routine_bits_FLAG_1secDelay_PF)
 
 
 	//ObjBits
