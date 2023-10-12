@@ -23,6 +23,14 @@ vname[4594], "PF_Const_NodesLink_MINUS1"
 // 100 = neutral, one obstacle tile = 6
 def Node_Obstacle_Threshold = 112
 
+def {
+	MVCOST_LAND_DENSE_FOREST = 1
+	MVCOST_LAND_STONE_ROAD = -3
+	MVCOST_LAND_DIRT_ROAD = -2
+	MVCOST_LAND_DIRT_WATER = 2
+	MVCOST_LAND_WALL = 6
+}
+
 // this one decides up to how many agent can try to carry out pathfinding 
 def PF_Limit_per1f = 16
 

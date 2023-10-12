@@ -1465,14 +1465,14 @@ __fn CEV_MISSION_MAP_INIT {
 			Temp15 = 0
 			@comment "DENSE FOREST"
 			@if Temp14 == 5 {
-			    Temp15 = 1
+			    Temp15 = MVCOST_LAND_DENSE_FOREST
 			    
 			}
 			@comment "Stone Road"
 			@if Temp14 == 11 {
 			    Temp16 += 2
-			    @if Temp16 >= 5 {
-				Temp15 = -3
+			    @if Temp16 >= 4 {
+							Temp15 = MVCOST_LAND_STONE_ROAD
 				
 			    }
 			    
@@ -1480,19 +1480,22 @@ __fn CEV_MISSION_MAP_INIT {
 			@comment "Dirt Road"
 			@if Temp14 == 12 {
 			    Temp16 += 1
-			    @if Temp16 >= 2 {
-				Temp15 = -2
+			    @if Temp16 >= 3 {
+						Temp15 = MVCOST_LAND_DIRT_ROAD
 				
 			    }
 			    
 			}
 			@comment "WATER"
 			@if Temp14 == 18 {
-			    Temp15 = 1
+					Temp16 -= 1
+			    @if Temp16 <= -2 {
+						Temp15 = MVCOST_LAND_DIRT_WATER
+			    }
 			    
 			}
 			@if Temp14 >= 21 {
-			    Temp15 = 4
+			    Temp15 = 6
 			    
 			}
 			v[Ptr6 + 2] += Temp15

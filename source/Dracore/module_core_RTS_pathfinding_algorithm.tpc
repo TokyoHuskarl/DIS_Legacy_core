@@ -182,7 +182,7 @@ __fn func_pathfinding_Astar() {
 
 			// 
 			@if GlNdSr_nodeArraySize > 0 {
-				v[GlNdSr_nodeElmArrHead].sort(GlNdSr_nodeArraySize), .sync(GlNdSr_nodeIdArrHead)
+				v[GlNdSr_nodeElmArrHead].sort(GlNdSr_nodeArraySize), .sync(v[GlNdSr_nodeIdArrHead])
 				// return reg1 to var2 
 				GlNdSr_nodeIdArrHead.deref var2,1
 			}
