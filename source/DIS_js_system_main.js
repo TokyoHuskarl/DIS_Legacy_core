@@ -1361,7 +1361,7 @@ class RTSmap {
 		if (!RTS.mission.conf.isLEGACYmission){
 			const Adr_mapTerrainSourceType = 2055;
 			setv(Adr_mapTerrainSourceType,2)
-			let filename = this.terrainSource.split(".")[0]; // ignore extention
+			let filename = this.terrainSource.split(".")[0]; // ignore extension
 			sett(adr_DISstr1,filename) // return to t[501]
 		}
 	
@@ -1972,9 +1972,9 @@ var Cmd = {
 		importData: function(path){
 			const lastDotIndex = path.lastIndexOf('.');
 			if (lastDotIndex !== -1) {
-				let extention = path.slice(lastDotIndex + 1);
-				if (extention != "json"){
-					errorlog(`Cmd.sys.importData(${path}) loads only json/json.txt file. Also you need not to write extention`)
+				let extension = path.slice(lastDotIndex + 1);
+				if (extension != "json"){
+					errorlog(`Cmd.sys.importData(${path}) loads only json/json.txt file. Also you need not to write extension`)
 
 				}
 			} else {
