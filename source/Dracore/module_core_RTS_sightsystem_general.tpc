@@ -29,11 +29,12 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 
 
 	// set consts for loop below
-	v[4001..4016] = 7
+	v[4001].repeat 7,16 // v[4001..4016] = 7
 
 	@loop v[4526] .dst TT1 {
-	    TT8 = TT1 % TT6
-	    TT9 = TT1 / TT6
+			TT8.repeat TT1,2
+	    val_mod(TT8,TT6) // TT8 = TT1 % TT6
+	    val_div(TT9,TT6) // TT9 = TT1 / TT6
 
 	    TT5 = v[2931] + TT8
 	    // TT5 += TT9 * v[2927]
@@ -232,7 +233,12 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 	@if s[20] .isOn() {
 	    @wait 0
 	    @if s[2] .isOff() {
-				v[v[4527]..v[4527] + 100 * 100] &= -2 //~1
+				// v[v[4527]..v[4527] + 100 * 100] &= -2 //~1
+				val_const(TT2,-2)
+				val_const(TT3,100)
+				val_mul(TT3,100)
+				v[v[4527]].and TT2,TT3
+
 		
 	    }
 

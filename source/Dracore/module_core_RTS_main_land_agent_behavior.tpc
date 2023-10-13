@@ -648,10 +648,10 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			//v[314] = v[432] + Temp18 //horizontal maptile col
 			//v[314] = v[v[314]]
 
-			v[313..314] = v[1182] // v[432]
+			v[313].repeat v[432],2 // v[313..314] = v[1182] // v[432]
 			Temp13.add Temp17,2
 			Temp13.deref Temp13,2
-			v[313..314]  %= 100
+			v[313..314] %= 100
 			
 			v[315] = Temp13 / 20 
 			v[315] += v[314] / 20

@@ -20,7 +20,8 @@ v[4035..4036] = v[205]
 //Check ground type troops agents all
 
 // set expanding temp array for copying
-v[4100..4112] = 100000000
+// v[4100..4112] = 100000000
+v[4100].repeat 100000000, 13
 // WITHOUT AEAB, above part is necessarily
 
 
@@ -629,8 +630,8 @@ v[4100..4112] = 100000000
 							v[534] = v[4579] + (v[1012] + 2) * v[211]
 							v[v[534]] = 0
 
-							Temp6 = 3601 // deploy v[3601] 'n check it
-							Temp7 = 0
+							val_const(Temp6,3601) // Temp6 = 3601 // deploy v[3601] 'n check it
+							val_const(Temp7,0) // Temp7 = 0
 							@doWhile v[Temp2] != 0 {
 									Temp1 = v[Temp2] * 300 
 									val_add(Temp1,N4700) // Temp1 += 4700
