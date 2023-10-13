@@ -87,39 +87,53 @@ var scene = scene || {};
 
 // global variables
 let g_PLAYER; // {DIS_RTSplayer}
+let LOCAL;
 
 
 
 // ------------------------------------------------
 // DIS Data Objects
 // ------------------------------------------------
-
 class DATA_entity {
 	constructor(id){this.id=id;};
+	i = -1; // set in DATA.{datatype}.register()
 
 	/**
 	 * getElmAsString
 	 * @param {string} key
+	 * @return {string}
 	 */
-	
 	getElmAsString(key){
-	let elm;
-	let ary = key.split(":"); // check if element expects array
-	if(this.hasOwnProperty(ary[0])){
-		if(ary.length == 1){ // not array
-			elm = String(this[key]);
-		} else {
-			key = ary[0];
-			let i = ary[1];
-			elm = String(this[key][i])
+		let elm;
+		let ary = key.split(":"); // check if element expects array
+
+		const stringify_to_DIScsvParam = (input) => {
+			if (typeof input == "object") {
+				return make_Array_DIStable(input);
+			} else {
+				return String(input);
+			};
 		};
-	} else { // if key is undefined, return "0"
-		elm = "0";
-	};
-	return elm
+
+		if(this.hasOwnProperty(ary[0])){
+			if(ary.length == 1){ // not array element
+				elm = stringify_to_DIScsvParam(this[key]);
+
+			} else {
+				key = ary[0];
+				let i = ary[1];
+				elm = stringify_to_DIScsvParam(this[key][i]);
+
+			};
+		} else { // if key is undefined, return "0"
+			elm = "0";
+
+		};
+		return elm
 	};
 
 };
+
 
 const TREETYPE_TEMPLATE = 0,
 	TREETYPE_TRP = 1,
@@ -197,7 +211,7 @@ class DATA_tree extends DATA_entity {
 class DATA_faction extends DATA_entity {
 	constructor(id){
 		super(id);
-		// this.minors = [0]; // you can set minorfactions to each faction. (like Dracos, Dranas) but minors[0] must be always blank - I mean number 0.
+		this.minors = [0]; // you can set minorfactions to each faction. (like Dracos, Dranas) but minors[0] must be always blank - I mean number 0.
 	};
 
 	trpTree = {}; // you need to import tree from json template 
@@ -224,18 +238,13 @@ class DATA_troop extends DATA_entity {
 		// copy given troop template
 		DATA.giveSrcParamToData(this,src);
 
+		const pewpew = (key,idcon) => {this[key] = typeof this[key] != "number" ? idcon[this[key]] : this[key]};
 		// convert strings to DIS number id
-		this.faction = facid[this.faction];
-		this.race = raceid[this.race];
-		
-		// convert arrays into simple number
+		pewpew("faction",facid);
+		pewpew("race",raceid);
 
-		/*
-		this.Skill_Q = SkillSet1[0]
-		this.Skill_W = SkillSet1[1]
-		this.Skill_E = SkillSet1[2]
-		this.Skill_R = SkillSet1[3]
-		*/
+
+		// convert arrays into simple number
 	};
 
 };
@@ -468,6 +477,7 @@ function make_Array_DIStable(array) {
 	return string.slice(0,-1);
 };
 
+
 // DIS object is basically container for fundamental data of DIS on quickjs.
 // Whenever you want to access DIS game data, the DIS object serves you as a way to get/set the data..
 //
@@ -482,6 +492,22 @@ var staid = staid || {}; // building ID table
 var facid = facid || {}; // faction ID table
 var raceid = raceid || {}; // race ID table
 var techid =  techid || {}; // ["techid",[group,flagbit]]
+
+// consts
+DIS.consts = {
+	
+	Adrv:{},
+	Adrs:{},
+
+	Adrt: { // address for RM string variables
+		TroopCsvDataHead: getv(1215),
+	},
+	
+}
+
+const ADRV = DIS.consts.Adrv
+const ADRS = DIS.consts.Adrs
+const ADRT = DIS.consts.Adrt
 
 DIS = { // DIS fundamental components
 	init: {
@@ -557,10 +583,11 @@ DIS = { // DIS fundamental components
 				let i = 0;
 				// parse string to array
 				lines.forEach(line => { parse_DISid(line,table); i++;});
-				return initIDlog(i,Adrt);
+				initIDlog(i,Adrt);
+				return i;
 			}
 
-			let initIDlog = function(amount,type){
+			const initIDlog = function(amount,type){
 				let text = "DIS.initID():";
 				if (amount > 1){
 					if (type == 801){
@@ -578,13 +605,25 @@ DIS = { // DIS fundamental components
 				}
 				return DIS.log.push(text)
 			}
+			// --------------------
+			// load race ID
+			// --------------------
+
+			// temp
+			raceid.RACE_humankind = 0;
+			raceid.RACE_goblin = 1;
+			raceid.RACE_ork = 2;
+			raceid.RACE_dragon = 3;
+			raceid.RACE_undead = 4;
+			raceid.RACE_skeleton = 5;
+			raceid.RACE_minotaur = 6;
 
 			// --------------------
 			// load troop ID
 			// --------------------
 			// you can use troopID by writing like this: trpid["TRP_sushi_kensei"] 
 			trpid = {}; // init trpid
-			store_ID_table(trpid,801); // get from ~/scripts/const_troops.
+			DIS.data.TROOP.count = store_ID_table(trpid,801); // get from ~/scripts/const_troops.
 
 			// --------------------
 			// load static ID
@@ -602,6 +641,9 @@ DIS = { // DIS fundamental components
 			// load tech ID
 			// --------------------
 			techid = {}; // init facid
+
+
+
 					
 			DIS.log.push("ID table init done.")
 		},
@@ -700,7 +742,7 @@ DIS.agent = {
 	// BUT, it has several problems:
 	// 1. It must be very slow.
 	// 2. How can it sync the result after inserting some Cmd.game.wait(n)?
-	// so this will need improvement anyway...
+	// so this needs improvement anyway I suppose...
 
 	searchEmptySpace: function(){ // this must be fugging slow. just experimental 
 
@@ -760,12 +802,24 @@ function createKeyArrayFromCsvLine(tmp){
 
 DIS.data = { // DIS.data
 	csvtemp: {
-		TROOP: createKeyArrayFromCsvLine(`id,name,agentDefaultGrp,agentType,agentSprite,race,skin,width,height,faction,passiveId,unitclass,Lv,HP,SP,AD,AP,AR,MR,HIT,EVA,Crit,MS,WILL,MainWeapon,WEPvariations,Shield,SHDvariations,Armor,AMRvariations,Helmet,HELvariations,Accessory,ACCvariations,SubWeapon,SubWEPvariations,ReserveSetL,?,ActiveSkill:0,ActiveSkill:1,ActiveSkill:2,ActiveSkill:3,PassiveSkill,Perks1,Perks2,Perks3,Perks4,motionFlags,ObjFlags,AABits,ExtraSettingEv,ExtraParts,Hpreg,Spreg,AS,MoveTypeBits,AArangeMax,AArangeMin,AAmotiontime,AAcost,AAFunction,reserve,AtkTime,AAarmorEff,AAarmorPen,AAeffect,,AIFlag,spriteOffset_x,spriteOffset_y,,,,,,,,train_speed,food,wood,stone,gold,iconsprite,spawnsound,ex_spawn_cev,Description,Lore`),
+		TROOP: createKeyArrayFromCsvLine(`id,name,agentDefaultGrp,agentType,agentSprite,race,skin,size:0,size:1,faction,passiveId,unitclass,Lv,HP,SP,AD,AP,AR,MR,HIT,EVA,Crit,MS,WILL,MainWeapon,WEPvariations,Shield,SHDvariations,Armor,AMRvariations,Helmet,HELvariations,Accessory,ACCvariations,SubWeapon,SubWEPvariations,ReserveSetL,?,ActiveSkill:0,ActiveSkill:1,ActiveSkill:2,ActiveSkill:3,PassiveSkill,Perks1,Perks2,Perks3,Perks4,motionFlags,objFlags,AABits,ExtraSettingEv,ExtraParts,Hpreg,Spreg,AS,MoveTypeBits,AArangeMax,AArangeMin,AAmotiontime,AAcost,AAfunction,reserve,AtkTime,AAarmorEff,AAarmorPen,AAeffect,,AIFlag,spriteOffset_x,spriteOffset_y,,,,,,,,train_speed,food,wood,stone,gold,iconsprite,spawnsound,ex_spawn_cev,Description,Lore`),
 
 	},
 
 	init: function(){
 		this.FACTION.init();
+	},
+
+	// called by Cmd.sys.importData on RM command interpreter
+	autoregister: function(obj){
+		//
+		// kek fucking retarded if nesting
+		if(obj.hasOwnProperty("TROOP")){
+			for (let trp of obj.TROOP){
+				this.TROOP.register(trp);
+			};
+		};
+
 	},
 
 	/**
@@ -861,8 +915,9 @@ DIS.data = { // DIS.data
 	 */
 	makeDataInherit: function(child,datatype,src){
 		if (src.hasOwnProperty("INHERITS")){ // if inheritance setting exists
+			let savid = child.id;
 			child.INHERITS = src.INHERITS;
-			deblog(`let ${child} inherit ${child.INHERITS}`)
+			deblog(`let ${child} inherit ${src.INHERITS}`)
 			let ptr2Parent = DATA[datatype][child.INHERITS];
 			for (let aryname in ptr2Parent){
 				if (typeof ptr2Parent[aryname] == "object"){
@@ -871,8 +926,13 @@ DIS.data = { // DIS.data
 						clone.push(elm);
 					};
 					child[aryname] = clone; // save clone of array of parent tree
+				} else {
+					if (datatype != "TREETEMP") {
+						child[aryname] = ptr2Parent[aryname];
+					};
 				};
 			};
+			child.id = savid;
 		} else {
 			child.INHERITS = "";
 		};
@@ -895,8 +955,6 @@ DIS.data = { // DIS.data
 					
 				};
 				
-
-
 				this.register(fac,i); // even if it's dummy faction, register to as far as it's written in const_factions.txt
 				i++;
 			};
@@ -928,6 +986,7 @@ DIS.data = { // DIS.data
 
 	TROOP: {
 
+		count: 0,
 		/**
 		 * .
 		 * @method createNew
@@ -941,25 +1000,48 @@ DIS.data = { // DIS.data
 		/**
 		 * register troop data to id array.
 		 * Newly registered data will be pushed into id array.
+		 * If you want to add mod troop data to the game, use this method.
 		 *
 		 * @method register
 		 * @param {DATA_troop} trpdata
 		 */
 		register: function(trpdata){
+			let ls4nuTrp = [];
+			if (Array.isArray(trpdata)){
+				for (let elm of trpdata){
+					ls4nuTrp.push(elm);
+				}
+			} else {
+				ls4nuTrp.push(trpdata);
+			};
 
+			for (let nutrp of ls4nuTrp) {
+				this.count++; // increment troop data counter
+				let ck = "TRP_" + nutrp.id;
+				if (trpid.hasOwnProperty(ck)) { // override
+					this.writeIntoRM(nutrp,trpid[ck])
+
+				} else {
+					this.writeIntoRM(nutrp,this.count);
+				}
+			};
+			deblog(this.count);
 		},
 
 		/**
 		 * convert troop data into actual DIS troop data CSV string on RM system and write it into RPG maker string system.
 		 * using this method allows you to override already existing troop data on RM.
+		 * If you just want to add mod troop data to the game, you should use DATA.TROOP.register() than this method.
 		 *
 		 * @param {} index
 		 * @param {DATA_troop} trpdata
 		 */
 		writeIntoRM: function(trpdata,index){
-			
-			trpid[trpdata.id] = index; // trpid newly set 
-			
+			const where2write = ADRT.TroopCsvDataHead + index;
+			deblog("writign nao")
+			let idfied = "TRP_" + trpdata.id;
+			trpid[idfied] = trpdata.i = index; // set index number into trpid container  
+			sett(where2write,this.convertIntoCsvLine(trpdata)); // go for it
 		},
 
 		convertIntoCsvLine: function(trpdata){ 
@@ -1079,8 +1161,12 @@ class RTSmission {
 
 	local = { // mission local instances
 		Cmd: {
-				
+			importData: path=>{
+				//unco
+			}
 		},
+
+		
 		
 	};
 	
@@ -1296,7 +1382,9 @@ class DIS_RTSplayer extends DISentity {
 		this.isHuman = false;
 
 		// get troop tree data from
-		this.trpTree = DATA.FACTION.ptrs[factionid]();
+		
+		// underconst
+		// this.trpTree = DATA.FACTION.ptrs[factionid]();
 
 
 		// check if it's game player
@@ -1874,8 +1962,39 @@ var Cmd = {
 			Cmd.Qset(this.CmdType,"eval",`${jsSentence}`);
 		},
 
-		importDISdata: function(jsonfile){},
+		/**
+		 * automatically import game data written in json format.
+		 * if you want to import mission local data, then try using 
+		 * -> MISSION.local.importData() 
+		 * @method importData
+		 * @param {string} path Root directory is the game directory. Also you need not to write .json.txt
+		 */
+		importData: function(path){
+			const lastDotIndex = path.lastIndexOf('.');
+			if (lastDotIndex !== -1) {
+				let extention = path.slice(lastDotIndex + 1);
+				if (extention != "json"){
+					errorlog(`Cmd.sys.importData(${path}) loads only json/json.txt file. Also you need not to write extention`)
 
+				}
+			} else {
+				path += ".json"
+
+			}
+
+			Cmd.Qset(this.CmdType,"importDISDjson",`${path}`);
+		},
+
+
+		/**
+		 * danger. never use this cmd unless you're aware of DIS RM string memory allocation
+		 *
+		 * @param {string} path Starts from game directory.
+		 * @param {RM_ADRT} Adrt 
+		 */
+		loadtext: function(path,Adrt){
+			Cmd.Qset(this.CmdType,"loadtxt",`${path},${Adrt}`);
+		},
 	
 	},
 
@@ -2073,15 +2192,19 @@ if (!VIRTUAL_ENV){
 	DIS.init.initID();
 	// DIS.data.init(); // reset DIS data
 	Cmd.init();
-
 }
 
+
+
+// without RPG_RT.exe
+if (VIRTUAL_ENV){
+	
 const sampletrp = `
 {
 	"TROOP": {
 		"dra_hero_orthunass": {
 			"name": "Orthunass the Empyrean Lord",
-			"agenttype": 1,
+			"agentType": 1,
 			"size": [10,12],
 			"agentSprite": 71,
 			"race": "RACE_dragon",
@@ -2096,15 +2219,26 @@ const sampletrp = `
 			"MR": 100,
 			"HIT": 0,
 			"EVA": 0,
+			"WILL": 100,
 			"Crit": 0,
 			"MS": 90,
 
 			"AAtype": 4,
 			"AAfunction": 1267,
 			"AS": 45,
+			"AArangeMax": 140000,
+			"AAframe": 1,
+
+			"motionFlags": [2,10],
 
 			"ActiveSkill": [1229,1293,1232,1210],
-			"PassiveSkill": 1231
+			"PassiveSkill": 1231,
+
+			"objFlags": [15,23],
+			"Perks": [
+				[0,12]
+
+			]
 
 		}
 
@@ -2112,14 +2246,24 @@ const sampletrp = `
 }
 `
 
+const inheritancetest = `
+{
+"TROOP": {
+	"visuna": {
+		"INHERITS": "dra_hero_orthunass"
 
-// without RPG_RT.exe
-if (VIRTUAL_ENV){
+	}
+
+}
+}
+`
 	facid.FAC_dra = 114514;
 	raceid.RACE_dragon = 4545;
 	DATA.parseDISjson(sampletrp)
 	DATA.TROOP.convertIntoCsvLine(DATA.TROOP.dra_hero_orthunass);
-
+	DATA.autoregister(DATA.parseDISjson(inheritancetest))
+	Cmd.sys.importData("test.json")
+	RTS.mission.setPlayer(9,1)
 	/*
 	let fucker = Cmd.game.pic.load("camera_ball",10);
 	fucker.refreshPicInfo();

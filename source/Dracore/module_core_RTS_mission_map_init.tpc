@@ -13,15 +13,15 @@ def {
 // INIT MISSION - this one is called whenever you open new mission
 __fn CEV_MISSION_INIT {
 	v[ptr_null] = 0 // allocate memory
+	// @comment "init map id"
+	t[751] .asg ""
+	t[752] .asg ""
 	log_start("Initializing Mission")
 	eval_js("RTS.init()") // js RTS object init
 	v[1080] = v[1012]
 	s[18].off
 	s[43].on
 	@sys.gameOpt .runWhenInactive
-	// @comment "init map id"
-	t[751] .asg ""
-	t[752] .asg ""
 	// @comment "init BGM string"
 	Current_BGMFile .asg ""
 	v[216574..1548949] = 0 // ????????????????????
@@ -774,7 +774,7 @@ __fn CEV_MISSION_INIT {
 	// @comment "＃＃＃＃＃＃Camera Set Up"
 	@map.getPlayerPos v[68] TT11 TT12
 	// @map[v[68]].setVehiclePos .pos Map_LimitCoordX_min, Map_LimitCoordY_min .retain
-	@map[v[68]].setPlayerPos .pos Map_LimitCoordX_min Map_LimitCoordY_min
+	@map[v[68]].setPlayerPon .pos Map_LimitCoordX_min Map_LimitCoordY_min
 	
 	@loop v[1276] .dst TT4 {
 		v[v[4802] + TT4] = (muldiv(TT4, v[431], 100) + Map_LimitCoordY_min) / 5

@@ -215,6 +215,9 @@ __fn DIS_sys_methods $LINKstr $md $i $given_v_or_str $flags {
 		// let javascript interpreter execute what is written in file
 		{NsCmd($LINKstr, $md, $i, "exec",{execute_js(SSargs0)})}, // <- NsLib_js
 		{NsCmd($LINKstr, $md, $i, "eval",{@js .run SSargs0})},
+		{NsCmd($LINKstr, $md, $i, "importDISDjson",{cmd_sys_importDISjson(SSargs0)})},
+
+		{NsCmd($LINKstr, $md, $i, "loadtxt",{cmd_sys_loadtxt(SSargs0,SSargs1)})},
 			// export text
 		{NsCmd($LINKstr, $md, $i, "exportText",{
 			t2v(SSargs0,var1)
@@ -253,8 +256,8 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 			t2v(SSargs0,var1)
 			@pic.erase [var1]
 		})},
-		{NsCmd($LINKstr, $md, $i, "pGSE",{cmd_play_global_sound(SSargs0,SSargs1,SSargs2,SSargs3)})}, // sys.playGlobalSE
-		{NsCmd($LINKstr, $md, $i, "pBGM",{cmd_play_global_music(SSargs0,SSargs1,SSargs2,SSargs3)})}, // sys.playBGM
+		{NsCmd($LINKstr, $md, $i, "pGSE",{cmd_play_global_sound(SSargs0,SSargs1,SSargs2,SSargs3)})}, // game.playGlobalSE
+		{NsCmd($LINKstr, $md, $i, "pBGM",{cmd_play_global_music(SSargs0,SSargs1,SSargs2,SSargs3)})}, // game.playBGM
 
 
 		
@@ -587,6 +590,26 @@ __fn cmd_ui_dialog_set_legacy {
 
 }
 
+
+//
+// sys com
+//
+
+__fn cmd_sys_importDISjson $path {
+	inputstr.asg PATH_gamedir
+	inputstr.cat $path
+	load_json(inputstr)
+	inputstr.asg DIS_js_buffer
+	eval_js("DATA.autoregister(DATA.parseDISjson(gett(510));") // inputstr
+}
+
+__fn cmd_sys_loadtxt $path $adrt {
+	// maybe load slot should be limited
+	inputstr.asg PATH_gamedir
+	inputstr.cat $path
+	t2v($adrt,var1)
+	t[var1].asg .file(inputstr), .utf8 
+}
 
 
 //#########################
