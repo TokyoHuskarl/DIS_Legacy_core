@@ -2,7 +2,7 @@
 * @module DIS_js_main_module
 */
 
-// if setv() is undefined, it's virtual enviroment on node.js or sth.
+// if setv() is undefined, it's virtual enviroment on node.js, qjs or sth.
 let VIRTUAL_ENV = (typeof setv == "undefined") ? true : false;
 
 
@@ -95,8 +95,29 @@ let g_PLAYER; // {DIS_RTSplayer}
 // ------------------------------------------------
 
 class DATA_entity {
-	constructor(){};
-	inherit(){}; // override me
+	constructor(id){this.id=id;};
+
+	/**
+	 * getElmAsString
+	 * @param {string} key
+	 */
+	
+	getElmAsString(key){
+	let elm;
+	let ary = key.split(":"); // check if element expects array
+	if(this.hasOwnProperty(ary[0])){
+		if(ary.length == 1){ // not array
+			elm = String(this[key]);
+		} else {
+			key = ary[0];
+			let i = ary[1];
+			elm = String(this[key][i])
+		};
+	} else { // if key is undefined, return "0"
+		elm = "0";
+	};
+	return elm
+	};
 
 };
 
@@ -105,11 +126,16 @@ const TREETYPE_TEMPLATE = 0,
 	TREETYPE_TECH = 2;
 
 class DATA_tree extends DATA_entity {
-	constructor(typ,tree){ // {string}
-		super();
+	constructor(id,typ,tree){ // {string}
+		super(id);
 		this.TREETYPE = typ;
-		this.INHERITS = "";
-		// inherit DATA_tree object
+
+		// inherit DATA_troop object
+		DATA.makeDataInherit(this,"TREETEMP",tree);
+		// copy given troop template
+		DATA.giveSrcParamToData(this,tree);
+
+		/*
 		if (tree.hasOwnProperty("INHERITS")){ // if inheritance setting exists
 			this.INHERITS = tree.INHERITS;
 			deblog(`inherit ${this.INHERITS}`)
@@ -124,8 +150,10 @@ class DATA_tree extends DATA_entity {
 				};
 			};
 		};
+		*/
 
 		// copy given tree template
+		/*
 		for (let key in tree){
 			if (typeof key == "object"){ // copy only array
 				let clone = [];
@@ -137,6 +165,7 @@ class DATA_tree extends DATA_entity {
 				this[key] = tree[key]; // copy numbers and strings
 			};
 		};
+		*/
 
 		let idcontainer;
 		// finally replace idtokens with number id
@@ -149,7 +178,6 @@ class DATA_tree extends DATA_entity {
 		} else {
 			idcontainer = 0
 		};
-
 
 		if (idcontainer != 0){ // debug
 			for (let Ary in this){
@@ -167,13 +195,13 @@ class DATA_tree extends DATA_entity {
 
 // template class for factions
 class DATA_faction extends DATA_entity {
-	constructor(){
-		super();
-		this.minors = [0]; // you can set minorfactions to each faction. (like Dracos, Dranas) but minors[0] must be always blank - I mean number 0.
+	constructor(id){
+		super(id);
+		// this.minors = [0]; // you can set minorfactions to each faction. (like Dracos, Dranas) but minors[0] must be always blank - I mean number 0.
 	};
 
-	trpTree = {}; // you need to import from json template 
-	techTree = {}; // you need to import from json template 
+	trpTree = {}; // you need to import tree from json template 
+	techTree = {}; // you need to import tree from json template 
 
 	getTroopTree(){
 		return JSON.parse(JSON.stringify(this.trpTree));
@@ -189,8 +217,25 @@ class DATA_faction extends DATA_entity {
 
 // template class for troops
 class DATA_troop extends DATA_entity {
-	constructor(){
-		super();
+	constructor(id,src){
+		super(id);
+		// inherit DATA_troop object
+		DATA.makeDataInherit(this,"TROOP",src);
+		// copy given troop template
+		DATA.giveSrcParamToData(this,src);
+
+		// convert strings to DIS number id
+		this.faction = facid[this.faction];
+		this.race = raceid[this.race];
+		
+		// convert arrays into simple number
+
+		/*
+		this.Skill_Q = SkillSet1[0]
+		this.Skill_W = SkillSet1[1]
+		this.Skill_E = SkillSet1[2]
+		this.Skill_R = SkillSet1[3]
+		*/
 	};
 
 };
@@ -200,7 +245,7 @@ class DATA_troop extends DATA_entity {
 // DIS objects
 // ------------------------------------------------
 
-// actually DISentity on js system is not a real entity that manages DIS agents in the game. 
+// DISentities on js system are not real parameters of DIS agents in the game. 
 // It's rather something like a bundle of links to actual entities on RPGMaker.
 // so unless you refresh its information through functions, data in DISentity can be diffrent from the actual value stored in RPGMaker. 
 
@@ -435,6 +480,7 @@ const Adrt_ShLog = 782; // same as Shell Log address
 var trpid = trpid || {}; // troop ID table
 var staid = staid || {}; // building ID table
 var facid = facid || {}; // faction ID table
+var raceid = raceid || {}; // race ID table
 var techid =  techid || {}; // ["techid",[group,flagbit]]
 
 DIS = { // DIS fundamental components
@@ -705,55 +751,133 @@ DIS.control = {
 
 // set DATA global pointer
 
+function createKeyArrayFromCsvLine(tmp){
+	let elms = tmp.trim().split(",")
+	let elmary = [];
+	elms.forEach(elm=>{elmary.push(elm);});
+	return elmary;
+}
+
 DIS.data = { // DIS.data
+	csvtemp: {
+		TROOP: createKeyArrayFromCsvLine(`id,name,agentDefaultGrp,agentType,agentSprite,race,skin,width,height,faction,passiveId,unitclass,Lv,HP,SP,AD,AP,AR,MR,HIT,EVA,Crit,MS,WILL,MainWeapon,WEPvariations,Shield,SHDvariations,Armor,AMRvariations,Helmet,HELvariations,Accessory,ACCvariations,SubWeapon,SubWEPvariations,ReserveSetL,?,ActiveSkill:0,ActiveSkill:1,ActiveSkill:2,ActiveSkill:3,PassiveSkill,Perks1,Perks2,Perks3,Perks4,motionFlags,ObjFlags,AABits,ExtraSettingEv,ExtraParts,Hpreg,Spreg,AS,MoveTypeBits,AArangeMax,AArangeMin,AAmotiontime,AAcost,AAFunction,reserve,AtkTime,AAarmorEff,AAarmorPen,AAeffect,,AIFlag,spriteOffset_x,spriteOffset_y,,,,,,,,train_speed,food,wood,stone,gold,iconsprite,spawnsound,ex_spawn_cev,Description,Lore`),
+
+	},
+
 	init: function(){
 		this.FACTION.init();
 	},
 
-	parseDISjson(src){ // returns object
+	/**
+	* @method parseDISjson
+	* @param {string} Raw json string. 
+	* @return {object} An object that contains datatype array And the datatype arrays contain source objects for DIS data - still need to be thrown into DATA entity constructors.
+	*/
+	parseDISjson(src){ 
 		let result = {};
 		let dataobj = JSON.parse(src);
-		deblog(`DIS.data.parseDISjson:`)
+		deblog(`DIS.data.parseDISjson:`);
+
+		// call this at the beginning of each nest 
+		const neststart = (typ)=>{
+			deblog(`${typ} data found`);
+			result[typ] = result[typ] || [];
+			return result[typ];
+		};
+
 		for (let typ in dataobj){
-			if (typ == "FACTION"){ // faction data
-				deblog(`FACTION template data found.`)
-				result.FACTION = result.FACTION || [];
-				let ptr2Res = result.FACTION;
-				for (let temp in dataobj.FACTION){
+			let ptr2Res;
+
+			// FACTION data
+			if (typ == "FACTION"){
+				ptr2Res = neststart(typ,ptr2Res);
+				for (let temp in dataobj[typ]){
 					let fac = this.FACTION.createNew(temp);
 					let TEMPFAC = dataobj.FACTION[temp]
-					// try {
 					if (TEMPFAC.name != ""){
-						fac.name  = TEMPFAC.name; // value copy 
-						fac.color = TEMPFAC.color; // value copy
+						fac.name  = TEMPFAC.name; 
+						fac.color = TEMPFAC.color;
 						
 						var givenTree = TEMPFAC.trpTree || {};
-						fac.trpTree  = new DATA_tree(TREETYPE_TRP,givenTree);
+						fac.trpTree  = new DATA_tree("trpTree",TREETYPE_TRP,givenTree);
 						givenTree = TEMPFAC.techTree || {};
-						fac.techTree  = new DATA_tree(TREETYPE_TECH,givenTree);
+						fac.techTree  = new DATA_tree("techTree",TREETYPE_TECH,givenTree);
 
 					}
 					ptr2Res.push(fac);
 
 				};
 
-			} else if (typ == "TREETEMP"){ // tree template data
-				deblog(`TREETEMP data found.`)
-				result.TREETEMP = result.TREETEMP || [];
-				let ptr2Res = result.TREETEMP;
-				for (let name in dataobj.TREETEMP){
+			// TREE TEMPLATE data
+			} else if (typ == "TREETEMP"){
+				ptr2Res = neststart(typ,ptr2Res);
+				for (let strid in dataobj[typ]){
 					let type = dataobj.TREETEMP.TREETYPE || 0; //
-					let tree = this.TREETEMP.createNew(type,name,dataobj.TREETEMP[name]);
+					let tree = this.TREETEMP.createNew(type,strid,dataobj[typ][strid]);
 					ptr2Res.push(tree)
 				};
 
-			};
+			} else if (typ == "TROOP");{ // troop data 
+				ptr2Res = neststart(typ,ptr2Res);
+				for (let strid in dataobj[typ]){
+					let nutrp = this.TROOP.createNew(strid,dataobj[typ][strid]);
+					ptr2Res.push(nutrp);
+				};
+			}
 
 		};
 		deblog("DISjson parsing finished.\n result:")
 		deblog(result)
 		return result;
 	},
+
+	/**
+	* @method giveSrcParamToData
+	* @param {DATA_entity} data DIS DATA entity that receives parameters copied from src.
+	* @param {object} src Source object that generated by parsing json.
+	*/
+	giveSrcParamToData: function(data,src){
+		for (let key in src){
+			if (typeof key == "object"){ // copy only array
+				let clone = [];
+				for (let elm of src[key]){ // make clone
+					clone.push(elm);
+				};
+				data[key] = clone; // save new clone of array of parent tree
+			} else {
+				data[key] = src[key]; // copy numbers and strings
+			};
+		};
+	},
+	
+	/**
+	 * If given src object imported from json has INHERITS property, copy parent properties to the child data object.
+	 * This method is usually called in constructor of DATA entity.
+	 *
+	 * @method makeDataInherit
+	 * @param {DATA_entity} child DIS Data entity that inherits properties.
+	 * @param {string} datatype Datatype property under DIS.data, where parent object exists. e.g. "TROOP", "TREETEMP".
+	 * @param {object} src Source Object that generated by parsing json.
+	 */
+	makeDataInherit: function(child,datatype,src){
+		if (src.hasOwnProperty("INHERITS")){ // if inheritance setting exists
+			child.INHERITS = src.INHERITS;
+			deblog(`let ${child} inherit ${child.INHERITS}`)
+			let ptr2Parent = DATA[datatype][child.INHERITS];
+			for (let aryname in ptr2Parent){
+				if (typeof ptr2Parent[aryname] == "object"){
+					let clone = [];
+					for (let elm of ptr2Parent[aryname]){ // make clone
+						clone.push(elm);
+					};
+					child[aryname] = clone; // save clone of array of parent tree
+				};
+			};
+		} else {
+			child.INHERITS = "";
+		};
+	},
+
 
 	
 	FACTION: {
@@ -780,10 +904,20 @@ DIS.data = { // DIS.data
 
 		ptrs: [0],
 
+		/**
+		 * @method createNew
+		 * @param {string} strid
+		 */
 		createNew: function(strid){
-			return this[strid] = new DATA_faction(); // do not resgister to ptrs yet
+			return this[strid] = new DATA_faction(strid); // do not resgister to ptrs yet
 		},
 
+  /**
+   * register.
+   * @method register
+   * @param {DATA_faction} Dfac
+   * @param {int} index
+   */
 		register(Dfac,index){
 			index = index || this.ptr[0] + 1; // if index is not set,then just push
 			this.ptrs[index] = Dfac;
@@ -791,12 +925,73 @@ DIS.data = { // DIS.data
 		},
 
 	},
-	TROOP: {}, 
+
+	TROOP: {
+
+		/**
+		 * .
+		 * @method createNew
+		 * @param {} strid
+		 * @param {} srcdata
+		 */
+		createNew: function(strid,srcdata){
+			return this[strid] = new DATA_troop(strid,srcdata); // do not resgister to ptrs yet
+		},
+
+		/**
+		 * register troop data to id array.
+		 * Newly registered data will be pushed into id array.
+		 *
+		 * @method register
+		 * @param {DATA_troop} trpdata
+		 */
+		register: function(trpdata){
+
+		},
+
+		/**
+		 * convert troop data into actual DIS troop data CSV string on RM system and write it into RPG maker string system.
+		 * using this method allows you to override already existing troop data on RM.
+		 *
+		 * @param {} index
+		 * @param {DATA_troop} trpdata
+		 */
+		writeIntoRM: function(trpdata,index){
+			
+			trpid[trpdata.id] = index; // trpid newly set 
+			
+		},
+
+		convertIntoCsvLine: function(trpdata){ 
+			let str="";
+
+			const pushKeyStr = (key) => {
+				return trpdata.getElmAsString(key) + ",";
+			}; 
+	
+			deblog(DATA.csvtemp.TROOP)
+			for (let elm of DATA.csvtemp.TROOP){
+				str+=pushKeyStr(elm)
+			};
+
+			deblog(str)
+			return str;
+
+		},
+
+	}, 
 	STATIC: {}, 
 	TECH: {},
 	TREETEMP: {
+		/**
+		 * .
+		 * @method createNew
+		 * @param {int} typ
+		 * @param {string} strid
+		 * @param {object} treedata
+		 */
 		createNew: function(typ,strid,treedata){
-			return this[strid] = new DATA_tree(typ,treedata); // do not resgister to ptrs yet
+			return this[strid] = new DATA_tree(strid,typ,treedata); // do not resgister to ptrs yet
 		},
 
 	},
@@ -1470,7 +1665,14 @@ var Cmd = {
 	CmCon: {}, // command name associative array
 
 
-	Qset: function(typ,name,ord){ // quick queue set
+	/**
+	 * command order Queue set.
+	 *
+	 * @param {CTYP} typ
+	 * @param {string} name
+	 * @param {string} ord
+	 */
+	Qset: function(typ,name,ord){
 		let cmdid = Cmd.CmCon[name];
 		Cmd.CmdQueue += (typ + "," + cmdid + "," + ord + ";");
 	},
@@ -1874,10 +2076,51 @@ if (!VIRTUAL_ENV){
 
 }
 
+const sampletrp = `
+{
+	"TROOP": {
+		"dra_hero_orthunass": {
+			"name": "Orthunass the Empyrean Lord",
+			"agenttype": 1,
+			"size": [10,12],
+			"agentSprite": 71,
+			"race": "RACE_dragon",
+			"faction": "FAC_dra",
+
+			"Lv": 30,
+			"unitclass": 3,
+			"HP": 1800,
+			"SP": 4500,
+			"AD": 5,
+			"AP": 185,
+			"MR": 100,
+			"HIT": 0,
+			"EVA": 0,
+			"Crit": 0,
+			"MS": 90,
+
+			"AAtype": 4,
+			"AAfunction": 1267,
+			"AS": 45,
+
+			"ActiveSkill": [1229,1293,1232,1210],
+			"PassiveSkill": 1231
+
+		}
+
+	}
+}
+`
 
 
 // without RPG_RT.exe
 if (VIRTUAL_ENV){
+	facid.FAC_dra = 114514;
+	raceid.RACE_dragon = 4545;
+	DATA.parseDISjson(sampletrp)
+	DATA.TROOP.convertIntoCsvLine(DATA.TROOP.dra_hero_orthunass);
+
+	/*
 	let fucker = Cmd.game.pic.load("camera_ball",10);
 	fucker.refreshPicInfo();
 	Cmd.run()
@@ -1890,5 +2133,6 @@ if (VIRTUAL_ENV){
 	DIS.log.crash("test")
 	
 	DIS.data.init(); // reset DIS data
+	*/
 }
 
