@@ -774,7 +774,7 @@ __fn CEV_MISSION_INIT {
 	// @comment "＃＃＃＃＃＃Camera Set Up"
 	@map.getPlayerPos v[68] TT11 TT12
 	// @map[v[68]].setVehiclePos .pos Map_LimitCoordX_min, Map_LimitCoordY_min .retain
-	@map[v[68]].setPlayerPon .pos Map_LimitCoordX_min Map_LimitCoordY_min
+	@map[v[68]].setPlayerPos .pos Map_LimitCoordX_min Map_LimitCoordY_min
 	
 	@loop v[1276] .dst TT4 {
 		v[v[4802] + TT4] = (muldiv(TT4, v[431], 100) + Map_LimitCoordY_min) / 5

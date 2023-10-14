@@ -38,11 +38,11 @@ __fn fuction_drawing_set_grid {
 }
 __fn drawing_set_grid_raw $Exmotion $Addmotion {
 	//in this function you can use v[725] and v[726] pointer to get bits flag 
-	v[4102] = Const_head_spr_gridX //grid X
-	v[4122] = Const_head_spr_gridY //grid Y
+	val_const(v[4102],Const_head_spr_gridX) // v[4102] = Const_head_spr_gridX //grid X
+	val_const(v[4122],Const_head_spr_gridY) // v[4122] = Const_head_spr_gridY //grid Y
 	@if `$Exmotion & ExMotionFlags_FLAG_MoveAnim {
-		v[4101] = 7 // armor
-		v[4107] = 7 // minionspr
+		val_const(v[4101],7) // v[4101] = 7 // armor
+		val_const(v[4107],7) // v[4107] = 7 // minionspr
 	}
 
 	v[4104] = $Exmotion & ExMotionFlags_FLAG_Weapon_With_Anim ? 7 : 5 // animation weapons
@@ -58,7 +58,7 @@ __fn function_agent_init_set_picture_strs {
 	@if v[601] == 3 {
 		t[var2].asg Const_str_hair // hair setting is... oh-wow.
 		t[var2].cat "\v[670]" .extract
-		@if v[670]>0{ func_load_cache(t[var2]) }
+		@if v[670] > 0{ func_load_cache(t[var2]) }
 		var2 = var1 + 1
 		// t[var2].asg Const_str_armor
 		// t[var2].cat "\v[886]" .extract
@@ -164,7 +164,7 @@ __fn function_agent_init_set_picture_strs {
 	}.elif v[601] == 9 {//worker
 		var2 = var1 + 1
 		t[var2].asg Str_slot_minionfile
-		@if v[602]>0{ func_load_cache(t[var2]) }
+		@if v[602] > 0 { func_load_cache(t[var2]) }
 		var2 = var1 + 7
 		t[var2].asg Str_slot_minionfile
 	}
@@ -173,7 +173,7 @@ __fn function_agent_init_set_picture_strs {
 
 __fn function_draw_moving_agent {
 	
-	var1 =  v[340]*10
+	var1 =  v[340] * 10
 	var1 = Const_str_agent_pictures_strings_start + var1
 	@while v[899] >= 1 {
 		TT1 = v[899] % 10
@@ -194,10 +194,10 @@ __fn function_draw_moving_agent {
 		v[456] = 4150 + TT1
 		//surprise, but this seems faster than above... opt 25.4.23
 		Temp5.deref Temp5,2
-		v[447] = v[v[447]]
-		TT2 = v[TT2]
+		v[447].deref v[447],1 // v[447] = v[v[447]]
+		TT2.deref TT2,1 // TT2 = v[TT2]
 		v[463].deref v[463],2
-		v[321] = v[v[321]]
+		v[321].deref v[321],1 // v[321] = v[v[321]]
 		v[453].deref v[453],4
 
 		v[449] .add v[TT2], 4
@@ -207,7 +207,7 @@ __fn function_draw_moving_agent {
 		    @cmd 11110, t[Ptr6], .args v[441], v[480]
 		    
 		}
-		v[186..188] += 1
+		v[186].add N1,3 // v[186..188] += 1
 		v[899] /= 10
 	}	
 

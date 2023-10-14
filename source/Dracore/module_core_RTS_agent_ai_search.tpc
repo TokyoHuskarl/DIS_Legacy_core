@@ -29,9 +29,16 @@ v[4100].repeat 100000000, 13
 		v[212] = v[v[536]] * 300 
 		val_add(v[212],N4700) // v[212] += 4700
 		v[v[212]].copy v[600], 301
+
 		//Check agent timer to run search AI
-		@if `(v[900] + v[535]) % v[533] == 0 { //9.5.23
-			v[211] = v[v[536]] - 1
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// NEVER SAVE BACK agent_generated_ID in this proc!
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// @if `(v[900] + v[535]) % v[533] == 0 { //9.5.23
+		val_add(agent_generated_ID,v[535])
+		val_mod(agent_generated_ID,v[533])
+		@if agent_generated_ID == 0 {
+				v[211] = v[v[536]] - 1
 				AgentIDholder = v[v[536]] 
 				v[v[212] + 3] &= -134217729//~134217728
 
@@ -139,6 +146,10 @@ v[4100].repeat 100000000, 13
 
 
 										UnitAI_agent_eyesight.copy v[316],1 // UnitAI_agent_eyesight is v[315]
+
+
+
+										// DEBUG
 										debug_selecting_agt(v[536],{
 											agent_RelativeX.copy TT1, 2
 											TT1 .sub UnitAI_agent_eyesight,2 // v[341..342] -= UnitAI_agent_eyesight
@@ -290,7 +301,7 @@ v[4100].repeat 100000000, 13
 											AISearch_morton_ptr = v[4546 - TT5] + TT6 * v[1004] // morton agent list head
 											v[327] = v[v[4552 - TT5] + TT6] // morton agent list length
 											Temp33 = [1, 0, -2][Temp14]
-											Temp6 = 3601
+											val_const(Temp6,3601) // Temp6 = 3601
 
 											// deb
 											debug_selecting_agt(v[536],{
@@ -475,8 +486,13 @@ v[4100].repeat 100000000, 13
 											
 										}
 										@if v[v[534]] < 999999999 {
-											v[v[534]..v[534] + Temp7 - 1] %= 1000
-											v[Ptr20] = v[v[534]]
+
+											// v[v[534]..v[534] + Temp7 - 1] %= 1000
+											v[buffer_for_pixel_information_head].repeat 1000,Temp7
+											v[v[534]].mod v[buffer_for_pixel_information_head],Temp7
+
+											v[Ptr20].copyFrom v[v[534]],1 // v[Ptr20] = v[v[534]]
+
 											def KILL_AI_routine_bits_FLAG_IdleAfterEnemySearch = ~AI_routine_bits_FLAG_IdleAfterEnemySearch
 											v[agent_AI_routine_bits] &= KILL_AI_routine_bits_FLAG_IdleAfterEnemySearch //-65//~64
 
@@ -539,7 +555,7 @@ v[4100].repeat 100000000, 13
 			v[Ptr1].copy agent_AgentType,300
 
 			@if agent_ActionTimer <= 0 {
-				agent_ActionTimer = v[1195] //init ActionTimer
+				val_asg(agent_ActionTimer,v[1195]) // agent_ActionTimer = v[1195] //init ActionTimer
 
 				@if `agent_AgentBits & AgentBits_FLAG_EnableCivAI { //peasant
 					agent_Morale = agent_InCombatTimer > 0 && !(agent_BaseObjBit & BaseObjBit_FLAG_Immune_to_bleed) ? 3 : 0

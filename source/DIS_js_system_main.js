@@ -249,6 +249,24 @@ class DATA_troop extends DATA_entity {
 
 };
 
+class DATA_troop_csv extends DATA_entity { // shadow of csv troops. doesn't have any value unless it's referred
+	constructor(id,index){
+		super(id);
+		this.i = index;
+	};
+
+	/**
+	 * called by INHERITS proc.
+	 * @method deploy
+	 */
+	deploy(){
+		
+	};
+	
+
+
+};
+
 
 // ------------------------------------------------
 // DIS objects
@@ -404,11 +422,11 @@ class RTSagentGroup { // list object for DISagent.
 		}
 		
 		this.team = team || "undefined";
-	}
+	};
 
 	getids(){ return this.idlist; };
 	
-}
+};
 
 
 
@@ -1077,7 +1095,17 @@ DIS.data = { // DIS.data
 		},
 
 	},
+	RACE: {},
+	SKIN: {},
 	SKILL: {},
+	ITEM: {
+		WEAPON = {};
+		SHIELD = {};
+		ARMOR = {};
+		HELMET = {};
+		ACCESSORY = {};
+
+	},
 
 };
 
@@ -1372,8 +1400,6 @@ class RTSmap {
 	};
 };
 	
-
-
 class DIS_RTSplayer extends DISentity {
 	constructor(id,factionid){
 		super();
@@ -1394,11 +1420,23 @@ class DIS_RTSplayer extends DISentity {
 		};
 	};
 
+	cohorts = [];
+
 	restore(){ 
 		// restore tech info
 	};
 
 };
+
+class DIS_cohort extends DISentity {
+	constructor(team,id,grp){
+		super();
+		this.team = team;
+		this.id = id;
+	};
+
+};
+
 
 
 // RTStrigger - old simple trigger.

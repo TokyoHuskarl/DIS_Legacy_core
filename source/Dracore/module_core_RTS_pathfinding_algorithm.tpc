@@ -225,7 +225,7 @@ __fn func_pathfinding_Astar() {
 			v[2075] = v[2064] + 1
 			v[4581] = (PF_current_checking_Node - 1) * Const_save_var_NodeDataSize + Const_save_var_NodeArrayHead + 11
 			//ACHTUNG - need to change into .copy proc
-			v[3601..3608] = 999999999
+			v[3601].repeat 999999999,8 // v[3601..3608] = 999999999
 
 			//ACHTUNG - need to change into .copy proc   
 			v[ptr_null].copy v[3609],8 // v[3609..3617] = 0

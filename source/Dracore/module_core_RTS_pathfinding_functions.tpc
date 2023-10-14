@@ -246,7 +246,7 @@ __fn func_pathfinding_move {
 		    
 		}
 	}
-	v[2861..2875] = 0
+	v[ptr_null].copy v[2861],15 // v[2861..2875] = 0
 	v[2875] = 0
 }
 
@@ -327,7 +327,7 @@ __fn set_Path_gotten_from_jscontainer { // temporary
 	v[2071] = Adr_PFWayPointDeployArray_Head
 	@if v[2875] > 6 { // only 6 wp an agent can hold
 		v[379] = 0
-		v[2875] = 6
+		v[2875].repeat 6,1 // v[2875] = 6
 	}
 
 	// set waypoints to the agent
