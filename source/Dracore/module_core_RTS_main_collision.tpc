@@ -196,9 +196,17 @@ __fn MAIN_CEV_RTS_COLLISION_MANAGER { // ->
 
 __fn ColCheck {
 	// extract agent data....
-	v[Temp1].copy v[600], 243
-	@if `(v[401] + LEGV_Frame_count_half) % v[625] == 0 {
+	v[Temp1].copy v[600], 301
 
+
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// NEVER SAVE BACK agent_generated_ID in this proc!
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+	// @if `(v[401] + LEGV_Frame_count_half) % v[625] == 0 {
+	val_add(agent_generated_ID,LEGV_Frame_count_half)
+	val_mod(agent_generated_ID,v[625])
+	@if agent_generated_ID == 0 {
 			//save ptr to slot3
 			//ptr to agent_AgentBits.
 			defv Col_Ptr2AgentBits = __id(Temp32) 
@@ -307,7 +315,8 @@ __fn ColCheck {
 				v[327] = v[v[4552 - TT6] + agent_Morton]
 				//@comment "##############"
 				Ptr14 = Temp1 + 25
-				v[Ptr14] = 2 + v[327] / v[4522] + v[610] / 19 - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0) // (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
+				// v[Ptr14] = 2 + v[327] / v[4522] + v[610] / 19 - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0) // (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
+				v[Ptr14] = 2 + v[327] / v[4522] + (v[610] >> 4) - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0) // (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
 					//@comment "DisciplineCheck"
 				//opt
 

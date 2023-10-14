@@ -31,9 +31,11 @@ v[4100].repeat 100000000, 13
 		v[v[212]].copy v[600], 301
 
 		//Check agent timer to run search AI
+
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		// NEVER SAVE BACK agent_generated_ID in this proc!
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 		// @if `(v[900] + v[535]) % v[533] == 0 { //9.5.23
 		val_add(agent_generated_ID,v[535])
 		val_mod(agent_generated_ID,v[533])
