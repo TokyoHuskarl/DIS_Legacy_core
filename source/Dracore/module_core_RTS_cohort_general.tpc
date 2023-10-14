@@ -43,11 +43,11 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 				s[223].off
 
 		}
-			TT20 = TT2
+			TT2.copy TT20,1 // TT20 = TT2
 			TT11 = LEGV_Selected_Cohort_Number - 1
-			TT10 = TT2
+			TT2.copy TT10,1 // TT10 = TT2
 			v[202] = PlayerSelectList_Size * TT20 
-			v[202] += v[4524] //ptr to cohort member list
+			val_add(v[202],v[4524]) // v[202] += v[4524] //ptr to cohort member list
 			TT1 = 10 + v[1118] 
 			val_add(TT1,TT20) // TT1 += TT20
 			@if v[v[202]] >= 1 {
@@ -64,11 +64,11 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 
 					Temp13 = CohortArrayPtr + 7
 					v[1301].copy v[Temp13], 2
-					Temp14 = 0
+					val_init(Temp14) // Temp14 = 0
 					Temp20 = CohortArrayPtr + 9
 					v[1301].copy v[Temp20], 2
 					s[201..202].off
-					v[330] = 0
+					val_init(v[330]) // v[330] = 0
 					@while v[v[202]] != 0 .dst var10 {
 						@if var10 >= PlayerSelectList_Size {
 							@break
@@ -86,7 +86,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 											//@comment "Get current HP"
 											val_add(Temp3,agent_MaxHP) // Temp3 += agent_MaxHP
 											@if agent_ObjectType >= 1 {
-												Temp4 += agent_HP
+												val_add(Temp4,agent_HP) // Temp4 += agent_HP
 													@if agent_Morale < 3 {
 														Temp14 += 1
 															//Temp16 = Temp1 + 26

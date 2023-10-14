@@ -52,10 +52,10 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 												//@comment "#CDセット End"
 												//@comment "#CDセット End"
 												//v[Ptr8] = 0
-												agent_AttackFrame = 0
+												val_init(agent_AttackFrame) // agent_AttackFrame = 0
 												//@comment "#Spend Cost"
 												//v[Ptr17+4808] -= v[587]
-												agent_SP -= skill_Cost
+												val_sub(agent_SP,skill_Cost) // agent_SP -= skill_Cost
 												//@comment "#Spend Cost END"
 												//@comment "#Set SkillOrder 0"
 												//Ptr17 += 138
@@ -79,15 +79,12 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 										//v[v[210] + 84] = 2
 										agent_ActionTimer = 2
 										//add 1 frame to attack frame
-										//v[Ptr8] += 1
-										agent_AttackFrame += 1
+										val_add(agent_AttackFrame,N1) // agent_AttackFrame += 1
 
 										@if agent_AttackFrame == skill_MotionFrame {
 												//@comment "Initialize AI Timer"
-												//v[v[210] + 84] = v[v[210] + 300] % v[1195]
 												agent_ActionTimer = agent_generated_ID % v[1195]
 												//@comment "If dmg skill then in combat"
-												//v[v[210] + 80] = v[584] == 0 ? v[1240] * v[4571] : v[v[210] + 80]
 												agent_InCombatTimer = skill_Usage == Usage_Damage? v[1240] * v[4571] : agent_InCombatTimer 
 
 												//@comment "ちゃんとFuncが存在してるなら"
@@ -105,6 +102,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 													//@comment "#Log"
 													@if skill_MainFunction != Const_Function_do_nothing {
 														@if s[313] .isOn() {
+															/*
 															@if v[2218] <= 1 {
 																@call .cev 1924
 																	TT1 = 2
@@ -135,12 +133,12 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 																@call .cev 1925
 
 															}
-
+														*/
 														}
 
 													} .else bl {
 														@if s[313] .isOn() {
-															func_errlog("Illegal skill casted in agent action!")
+															func_errlog("Illegal skill casted in Agent:Unit Action process.")
 														}
 
 													}
@@ -216,24 +214,6 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 
 				}
 
-			/*
-			//@comment "AITimer==1 "
-			@if `v[v[210] + 83] == 1 {
-			v[210] -= 1
-			agent_ActionState = v[210] + 243
-	//@comment "Auto Attack"
-	@if v[agent_ActionState] == 1 {
-	//@comment "Set Timer"
-	v[v[210] + 84] = 3
-	//@comment "Auto Attack"
-	v[703] = v[210] + 103
-	Ptr20 = v[210] + 18
-	v[340] = 34 + v[v[703]]
-	@call .cev v[340]
-
-	}
-
-	}*/
 	//@comment "++"
 	increment_var(v[536]) // v[536] += 1
 
