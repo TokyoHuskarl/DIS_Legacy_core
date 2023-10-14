@@ -1,6 +1,14 @@
 
 def ParticleArraySize = 50
 
+def {
+	PARTICLE_TYP_NORMAL = 1
+
+	PARTICLE_TYP_SCRIPTABLE = 10
+
+
+}
+
 defv {
 emitter_ParticleType = 4101
 emitter_ParticleAmount = 4102
@@ -34,7 +42,7 @@ emitter_G2 = 4136
 emitter_B2 = 4137
 emitter_Saturation2 = 4138
 emitter_particlebits=4139//?
-emitter_is_out_screen_flag = 4149
+emitter_is_out_screen_flag = 4149 // 1 = out_of_screen
 emitter_Timer = 4150
 
 
@@ -50,4 +58,12 @@ def{
 
 //Victims var for attack check
 defv{
+}
+
+__fn extract_particle_emitter_data $id {
+	
+}
+
+__fn save_particle_emitter_data $id {
+
 }

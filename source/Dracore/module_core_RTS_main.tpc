@@ -432,7 +432,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[884] -= v[884] > 0 ? 1 : 0
 	    // "Flash Effect"
 	    @if v[895] >= 4 {
-				v[358..360] = 20
+				v[358].repeat 20,3 // v[358..360] = 20
 				
 	    } .else bl {
 				// "Can be improved"
@@ -467,7 +467,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						// "#Out of Breath"
 						// "#Hit Timer ==0&&current SP is below 35%&&the unit has fatigue"
 						@if `v[682] <= 0 && divmul(v[707], 100, 35) > v[708] && !(v[726] & 2048) {
-					v[682] = 48
+						v[682] = 48
 					// "Sweat Particle"
 					@loop v[1017] .dst Temp20 {
 							v[244] %= v[1199]
