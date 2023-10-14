@@ -20,517 +20,517 @@ def {
 //Cohort manager
 cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode), {
 	@comment moduletitle
-	@if LEGV_Selected_Cohort_Number < 1 {
-	    @pic[v[4811]].show {
-		PATH_ui_mmcircle
-		.pos TT4, TT5 .center
-		.chromakey 1
-		.scale 100
-		.trans 100
-		.rgbs 100, 100, 100, 100
-		.mapLayer 10
-		.eraseWhenTransfer
-	    }
-	    
-	}
+		@if LEGV_Selected_Cohort_Number < 1 {
+			@pic[v[4811]].show {
+				PATH_ui_mmcircle
+					.pos TT4, TT5 .center
+					.chromakey 1
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 10
+					.eraseWhenTransfer
+			}
+
+		}
 	@loop 10 .dst TT2 {
-	    @if `v[944] == 1 || s[2] == 1 {
-		s[222].on
-		s[223].on
-		
-			} .else bl {
-		s[222].off
-		s[223].off
-		
-	    }
-	    TT20 = TT2
-	    TT11 = LEGV_Selected_Cohort_Number - 1
-	    TT10 = TT2
-	    v[202] = PlayerSelectList_Size * TT20 
-	    v[202] += v[4524] //ptr to cohort member list
-	    TT1 = 10 + v[1118] 
-	    TT1 += TT20
-	    @if v[v[202]] >= 1 {
-		//@comment "#"
-		v[302..304] = 0
+		@if `v[944] == 1 || s[2] == 1 {
+			s[222].on
+				s[223].on
 
-		//opt 27.4.23
-		//CohortArrayPtr = v[4530] + TT20 * 20
-		defv CohortArrayPtr = __id(Temp10)
-		CohortArrayPtr = v[4530] 
-		CohortArrayPtr += TT20 * 20
-		Ptr2=CohortArrayPtr+1
-		v[Ptr2].copy cohort_LeaderID,20//extract cohort data into v[581]~
+		} .else bl {
+			s[222].off
+				s[223].off
 
-		Temp13 = CohortArrayPtr + 7
-		v[1301].copy v[Temp13], 2
-		Temp14 = 0
-		Temp20 = CohortArrayPtr + 9
-		v[1301].copy v[Temp20], 2
-		s[201..202].off
-		v[330] = 0
-		@while v[v[202]] != 0 .dst var10 {
-		    @if var10 >= PlayerSelectList_Size {
-			@break
-			
-		    }
-		    Temp1 = v[v[202]] * 300 
-		    Temp1 += v[1005] - 300
-		    Ptr1 = Temp1+1
-		    v[Ptr1].copy agent_ObjectType, 300 //extract data
-		    //@comment "Have max hp?"
-		    @if agent_TeamID == 0 {
-					@if `agent_Cohort_ID == TT20 + 1 {
-							@if agent_MaxHP >= 1 {
-								Temp2 += 1
-								//@comment "Get current HP"
-								Temp3 += agent_MaxHP
-								@if agent_ObjectType >= 1 {
-										Temp4 += agent_HP
-										@if agent_Morale < 3 {
-											Temp14 += 1
-											//Temp16 = Temp1 + 26
-											v[Temp13] .add agent_MapX, 2
-											//Temp16 = Temp1 + 7
-											v[Temp20] .add agent_RelativeX, 2
-											@if s[201] .isOff() {
-													@if agent_StanceOrder == 0 {
-														@if agent_TargetAgentID > 0 {
-																v[330] = agent_TargetAgentID
-																v[331] = v[330] * 300
-																//@comment "is enemy"
-																@if `v[v[331] + 4800] % 3 == 1 {
-																	@if `v[v[331] + 4960] != 3 {
-																			s[201].on
-																			
+		}
+		TT20 = TT2
+			TT11 = LEGV_Selected_Cohort_Number - 1
+			TT10 = TT2
+			v[202] = PlayerSelectList_Size * TT20 
+			v[202] += v[4524] //ptr to cohort member list
+			TT1 = 10 + v[1118] 
+			TT1 += TT20
+			@if v[v[202]] >= 1 {
+				//@comment "#"
+				v[302..304] = 0
+
+					//opt 27.4.23
+					//CohortArrayPtr = v[4530] + TT20 * 20
+					defv CohortArrayPtr = __id(Temp10)
+					CohortArrayPtr = v[4530] 
+					CohortArrayPtr += TT20 * 20
+					Ptr2=CohortArrayPtr+1
+					v[Ptr2].copy cohort_LeaderID,20//extract cohort data into v[581]~
+
+					Temp13 = CohortArrayPtr + 7
+					v[1301].copy v[Temp13], 2
+					Temp14 = 0
+					Temp20 = CohortArrayPtr + 9
+					v[1301].copy v[Temp20], 2
+					s[201..202].off
+					v[330] = 0
+					@while v[v[202]] != 0 .dst var10 {
+						@if var10 >= PlayerSelectList_Size {
+							@break
+
+						}
+						Temp1 = v[v[202]] * 300 
+							Temp1 += v[1005] - 300
+							Ptr1 = Temp1+1
+							v[Ptr1].copy agent_ObjectType, 300 //extract data
+							//@comment "Have max hp?"
+							@if agent_TeamID == 0 {
+								@if `agent_Cohort_ID == TT20 + 1 {
+									@if agent_MaxHP >= 1 {
+										Temp2 += 1
+											//@comment "Get current HP"
+											Temp3 += agent_MaxHP
+											@if agent_ObjectType >= 1 {
+												Temp4 += agent_HP
+													@if agent_Morale < 3 {
+														Temp14 += 1
+															//Temp16 = Temp1 + 26
+															v[Temp13] .add agent_MapX, 2
+															//Temp16 = Temp1 + 7
+															v[Temp20] .add agent_RelativeX, 2
+															@if s[201] .isOff() {
+																@if agent_StanceOrder == 0 {
+																	@if agent_TargetAgentID > 0 {
+																		v[330] = agent_TargetAgentID
+																			v[331] = v[330] * 300
+																			//@comment "is enemy"
+																			@if `v[v[331] + 4800] % 3 == 1 {
+																				@if `v[v[331] + 4960] != 3 {
+																					s[201].on
+
+																				}
+																				v[CohortArrayPtr + 4] |= cohort_StateFlag_FLAG_fighting
+
+																			} .else bl {
+																			}
+
 																	}
-																	v[CohortArrayPtr + 4] |= cohort_StateFlag_FLAG_fighting
-																	
-																} .else bl {
+
 																}
-																
-														}
-														
+
+															}
+
 													}
-													
+
 											}
-											
-										}
-										
+
+									}
+
+								} .else bl {
+									//@comment "not the same cohort"
+									v[v[202]] = 0
+										s[202].on
+
 								}
-								
+
+							} .else bl {
+								//@comment "not my team"
+								v[v[202]] = 0
+									s[202].on
+
 							}
-							
-					} .else bl {
-							//@comment "not the same cohort"
-							v[v[202]] = 0
-							s[202].on
-							
+						v[202] += 1
+
 					}
-					
-		    } .else bl {
-					//@comment "not my team"
-					v[v[202]] = 0
-					s[202].on
-			
-		    }
-		    v[202] += 1
-		    
-		}
-		
-		v[CohortArrayPtr + 6] = Temp14
-		@if s[202] .isOn() {
-		    v[202] = PlayerSelectList_Size * TT20 
-		    v[202] += v[4524]
-		    v[v[202]].sortDescending PlayerSelectList_Size
-		    
-		}
-		Temp15 = Temp14
-		v[Temp13] .div Temp14, 2
-		v[Temp20] .div Temp14, 2
-		//@comment "やっぱりちょっと危険な気がする"
-		@if cohort_CohortType == cohort_CohortType_TYPE_normal { //0 = normalunits
-		    @if s[201] .isOn() {
-					//@comment "Alert and fighting"
-					@if cohort_StanceOrder == 0 {
-							@if v[330] > 0 {
-								v[202] = PlayerSelectList_Size * TT20 
-								v[202] += v[4524]
-								@while v[v[202]] != 0 .dst var10 {
-										@if var10 >= PlayerSelectList_Size {
-											@break
-									
-										}
-										Temp1 = v[v[202]] * 300 
-										Temp1 += v[1005] - 300
-										Ptr1 = Temp1 + 1
-										v[Ptr1].copy agent_ObjectType, 300 //extract data
-										@if agent_ObjectType >= 1 {
-											@if agent_MovementOrder <= 2 {
-													@if agent_StanceOrder == 0 {
-														//enemy searched and still idle
-														@if `agent_AI_routine_bits & AI_routine_bits_FLAG_IdleAfterEnemySearch {
+
+				v[CohortArrayPtr + 6] = Temp14
+					@if s[202] .isOn() {
+						v[202] = PlayerSelectList_Size * TT20 
+							v[202] += v[4524]
+							v[v[202]].sortDescending PlayerSelectList_Size
+
+					}
+				Temp15 = Temp14
+					v[Temp13] .div Temp14, 2
+					v[Temp20] .div Temp14, 2
+					//@comment "やっぱりちょっと危険な気がする"
+					@if cohort_CohortType == cohort_CohortType_TYPE_normal { //0 = normalunits
+						@if s[201] .isOn() {
+							//@comment "Alert and fighting"
+							@if cohort_StanceOrder == 0 {
+								@if v[330] > 0 {
+									v[202] = PlayerSelectList_Size * TT20 
+										v[202] += v[4524]
+										@while v[v[202]] != 0 .dst var10 {
+											@if var10 >= PlayerSelectList_Size {
+												@break
+
+											}
+											Temp1 = v[v[202]] * 300 
+												Temp1 += v[1005] - 300
+												Ptr1 = Temp1 + 1
+												v[Ptr1].copy agent_ObjectType, 300 //extract data
+												@if agent_ObjectType >= 1 {
+													@if agent_MovementOrder <= 2 {
+														@if agent_StanceOrder == 0 {
+															//enemy searched and still idle
+															@if `agent_AI_routine_bits & AI_routine_bits_FLAG_IdleAfterEnemySearch {
 																@if agent_LeftWPtoChase < 1 {
 																	agent_AgentBits |= 1048576
-																	agent_TargetAgentID = v[330]
-																	agent_AI_routine_bits |= 128
-																	agent_AI_routine_bits &= -65//~64
+																		agent_TargetAgentID = v[330]
+																		agent_AI_routine_bits |= 128
+																		agent_AI_routine_bits &= -65//~64
 																}
-																
+
+															}
+
 														}
-														
+
 													}
-													
-											}
-											
+
+												}
+											agent_ObjectType.copy v[Ptr1], 300//save alle :D
+												v[202] += 1
+
 										}
-										agent_ObjectType.copy v[Ptr1], 300//save alle :D
-										v[202] += 1
-										
+
+
 								}
-								
-						
+
 							}
-							
-					}
-					
-		    } .else bl {
-			//@comment "Fighting end"
-			@if `cohort_StateFlag & cohort_StateFlag_FLAG_fighting {
-			    @if v[330] == 0 {
-				v[202] = PlayerSelectList_Size * TT20 
-				v[202] += v[4524]
-				s[202].off
-				@while v[v[202]] != 0 .dst var10 {
-				    @if var10 >= PlayerSelectList_Size {
-					@break
-					
-				    }
-				    Temp1 = v[v[202]] * 300 
-				    Temp1 += v[1005] - 300
-		    		    Temp1.copy Address_agent_array_head, 300 //extract data
-				    @if agent_ObjectType >= 1 {
-							@if agent_Morale < 3 {
-									@if agent_MovementOrder > 1 {
-								s[202].on
-								
+
+						} .else bl {
+							//@comment "Fighting end"
+							@if `cohort_StateFlag & cohort_StateFlag_FLAG_fighting {
+								@if v[330] == 0 {
+									v[202] = PlayerSelectList_Size * TT20 
+										v[202] += v[4524]
+										s[202].off
+										@while v[v[202]] != 0 .dst var10 {
+											@if var10 >= PlayerSelectList_Size {
+												@break
+
+											}
+											Temp1 = v[v[202]] * 300 
+												Temp1 += v[1005] - 300
+												Temp1.copy Address_agent_array_head, 300 //extract data
+												@if agent_ObjectType >= 1 {
+													@if agent_Morale < 3 {
+														@if agent_MovementOrder > 1 {
+															s[202].on
+
+														}
+
+													}
+
+												}
+											v[202] += 1
+
+										}
+
+									@if s[202] .isOff() {
+										v[CohortArrayPtr + 20] = cohort_StanceOrder == 2 ? 0 : cohort_StanceOrder
+											v[CohortArrayPtr + 4] &= -5//~4
+											//@comment "try restore formation"
+											var2 = TT20
+											var3 = 0
+											var4 = Temp14
+											@call .cev 2155//call reform line event - this can be improved 
+
 									}
-									
+
+								}
+
 							}
-					
-				    }
-				    v[202] += 1
-				    
-				}
-				
-				@if s[202] .isOff() {
-				    v[CohortArrayPtr + 20] = cohort_StanceOrder == 2 ? 0 : cohort_StanceOrder
-				    v[CohortArrayPtr + 4] &= -5//~4
-				   //@comment "try restore formation"
-				    var2 = TT20
-				    var3 = 0
-				    var4 = Temp14
-				    @call .cev 2155//call reform line event - this can be improved 
-				    
-				}
-				
-			    }
-			    
-			}
-			
-		    }
-		    
-		}
-		TT1 = 10 + v[1118] 
-		TT1 += TT20
-		//@comment "Check if the resistered units destroyed"
-		@if Temp4 == 0 {
-		    //@comment "Completely wiped out"
-		    @pic[TT1].show {
-			"ui\HP_bar_side_0" .repl 1 TT2
-			.pos v[1119], TT3 .right
-			.chromakey 1
-			.scale 100
-			.trans 100
-			.rgbs 100, 100, 100, 100
-			.grid 1, 20 .cell Temp6
-			.mapLayer 8
-			.eraseWhenTransfer
-			.affectedByFlash
-			.affectedByShake
-		    }
-		    TT1 -= 10
-		    @pic[TT1].move {
-			.pos Temp5, Temp6 .center
-			.scale 100
-			.trans 100
-			.time 0
-			.rgbs 100, 100, 100, 100
-		    }
-		    TT6 = TT20 + v[4809]
-		    @pic[TT6].move {
-			.pos Temp5, Temp6 .center
-			.scale 100
-			.trans 100
-			.time 0
-			.rgbs 100, 100, 100, 100
-		    }
-		    v[0] = v[PlayerSelectList_Size * TT2 + v[4524]..PlayerSelectList_Size * TT2 + v[4524] + 39] = 0
-		    s[222].off
-		    @if s[19] .isOff() {
-			@if s[313] .isOn() {
-			    @call .cev 1924
-			    TT1 = 2
-			    v[601] = 1
-			    var1 = TT20 + 1
-			    @pic[v[1155]].strpic {
-				t[20443]
-				.pos TT1, v[1126] .bottomLeft
-				.size 0, 0                        .chromakey 1
-				.scale 100
-				.trans 30
-				.rgbs 100, 100, 100, 100
-				.font Font_UI, Font_UI_size
-				.spacing 0, 4
-				.skin "" .nobg .noframe .noPadding
-				.mapLayer 8
-				.eraseWhenTransfer
-				.affectedByFlash
-				.affectedByShake
-			    }
-			    @call .cev 1925
-			    
-			}
-			
-		    }
-		    
-		} .else bl {
-		    //@comment "損耗率計算"
-		    Temp6 = Temp4 * 100
-		    //@comment "#0除算防止"
-		    Temp5 = max(Temp3, 1)
-		    Temp6 /= Temp5
-		    Temp7 = Temp6
-		    Temp6 = max(Temp6 / 5, 1)
-		    //@comment ""
-		    TT3 = 24 * TT10 
-		    TT3 += v[1120]
-		    TT2 += 1
-		    TT2 %= 10
-		    TT15 = TT10 == TT11 ? 0 : transparency
-		    @pic[TT1].show {
-			"ui\HP_bar_side_0" .repl 1 TT2
-			.pos v[1119], TT3 .right
-			.chromakey 1
-			.scale 100
-			.trans TT15
-			.rgbs 100, 100, 100, 100
-			.grid 1, 20 .cell Temp6
-			.mapLayer 8
-			.eraseWhenTransfer
-			.affectedByFlash
-			.affectedByShake
-		    }
-		    TT1 -= 10
-		    Temp5 = v[1119] - 10
-		    Temp6 = TT3 + 20 
-		    Temp6 -= 32
-		    @pic[TT1].move {
-			.pos Temp5, Temp6 .center
-			.scale 100
-			.trans TT15
-			.time 0
-			.rgbs 100, 100, 100, 100
-		    }
-		    //@comment ""
-		    @if Temp14 > 0 {
-			TT4 = muldiv(v[Temp13], 100, v[430])
-			TT5 = muldiv(v[Temp13 + 1], 100, v[431])
-			TT4 = v[1282] + TT4
-			TT5 = v[1283] + TT5
-			TT6 = TT20 + v[4809]
-			TT2 = TT20 + 1
-			@if s[296] .isOn() {
-			    v[356..359] = 0
-			    TT17 = 160
-			    TT15 += 5
-			    
+
+						}
+
+					}
+				TT1 = 10 + v[1118] 
+					TT1 += TT20
+					//@comment "Check if the resistered units destroyed"
+					@if Temp4 == 0 {
+						//@comment "Completely wiped out"
+						@pic[TT1].show {
+							"ui\HP_bar_side_0" .repl 1 TT2
+								.pos v[1119], TT3 .right
+								.chromakey 1
+								.scale 100
+								.trans 100
+								.rgbs 100, 100, 100, 100
+								.grid 1, 20 .cell Temp6
+								.mapLayer 8
+								.eraseWhenTransfer
+								.affectedByFlash
+								.affectedByShake
+						}
+						TT1 -= 10
+							@pic[TT1].move {
+								.pos Temp5, Temp6 .center
+									.scale 100
+									.trans 100
+									.time 0
+									.rgbs 100, 100, 100, 100
+							}
+						TT6 = TT20 + v[4809]
+							@pic[TT6].move {
+								.pos Temp5, Temp6 .center
+									.scale 100
+									.trans 100
+									.time 0
+									.rgbs 100, 100, 100, 100
+							}
+						v[0] = v[PlayerSelectList_Size * TT2 + v[4524]..PlayerSelectList_Size * TT2 + v[4524] + 39] = 0
+							s[222].off
+							@if s[19] .isOff() {
+								@if s[313] .isOn() {
+									@call .cev 1924
+										TT1 = 2
+										v[601] = 1
+										var1 = TT20 + 1
+										@pic[v[1155]].strpic {
+											t[20443]
+												.pos TT1, v[1126] .bottomLeft
+												.size 0, 0                        .chromakey 1
+												.scale 100
+												.trans 30
+												.rgbs 100, 100, 100, 100
+												.font Font_UI, Font_UI_size
+												.spacing 0, 4
+												.skin "" .nobg .noframe .noPadding
+												.mapLayer 8
+												.eraseWhenTransfer
+												.affectedByFlash
+												.affectedByShake
+										}
+									@call .cev 1925
+
+								}
+
+							}
+
+					} .else bl {
+						//@comment "損耗率計算"
+						Temp6 = Temp4 * 100
+							//@comment "#0除算防止"
+							Temp5 = max(Temp3, 1)
+							Temp6 /= Temp5
+							Temp7 = Temp6
+							Temp6 = max(Temp6 / 5, 1)
+							//@comment ""
+							TT3 = 24 * TT10 
+							TT3 += v[1120]
+							TT2 += 1
+							TT2 %= 10
+							TT15 = TT10 == TT11 ? 0 : transparency
+							@pic[TT1].show {
+								"ui\HP_bar_side_0" .repl 1 TT2
+									.pos v[1119], TT3 .right
+									.chromakey 1
+									.scale 100
+									.trans TT15
+									.rgbs 100, 100, 100, 100
+									.grid 1, 20 .cell Temp6
+									.mapLayer 8
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+							}
+						TT1 -= 10
+							Temp5 = v[1119] - 10
+							Temp6 = TT3 + 20 
+							Temp6 -= 32
+							@pic[TT1].move {
+								.pos Temp5, Temp6 .center
+									.scale 100
+									.trans TT15
+									.time 0
+									.rgbs 100, 100, 100, 100
+							}
+						//@comment ""
+						@if Temp14 > 0 {
+							TT4 = muldiv(v[Temp13], 100, v[430])
+								TT5 = muldiv(v[Temp13 + 1], 100, v[431])
+								TT4 = v[1282] + TT4
+								TT5 = v[1283] + TT5
+								TT6 = TT20 + v[4809]
+								TT2 = TT20 + 1
+								@if s[296] .isOn() {
+									v[356..359] = 0
+										TT17 = 160
+										TT15 += 5
+
+								} .else bl {
+									v[356..359] = 100
+
+								}
+							@pic[TT6].show {
+								"ui\latin_num"
+									.pos TT4, TT5 .center
+									.chromakey 1
+									.scale 100
+									.trans TT15
+									.rgbs TT16, TT17, TT18, TT19
+									.grid 1, 10 .cell TT2
+									.mapLayer 10
+									.eraseWhenTransfer
+							}
+							@if TT15 < 45 {
+								TT15 += 20
+									@pic[v[4811]].show {
+										PATH_ui_mmcircle
+											.pos TT4, TT5 .center
+											.chromakey 1
+											.scale 100
+											.trans TT15
+											.rgbs 100, 100, 100, 100
+											.mapLayer 10
+											.eraseWhenTransfer
+									}
+								TT15 -= 20
+									v[429] -= 1
+									s[222].on
+
+							}
+
+						} .else bl {
+							TT6 = TT20 + v[4809]
+								@pic[TT6].move {
+									.pos TT2, TT3 .center
+										.scale 100
+										.trans 100
+										.time 0
+										.rgbs 100, 100, 100, 100
+								}
+							s[222].off
+
+						}
+
+					}
+				//@comment "End"
+				TT1 += 10
+
 			} .else bl {
-			    v[356..359] = 100
-			    
+				//@comment "Not Registered"
+				@pic[TT1].show {
+					"ui\HP_bar_side_0" .repl 1 TT2
+						.pos v[1119], TT3 .right
+						.chromakey 1
+						.scale 100
+						.trans 100
+						.rgbs 100, 100, 100, 100
+						.grid 1, 20 .cell Temp6
+						.mapLayer 8
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
+				}
+				TT1 -= 10
+					@pic[TT1].move {
+						.pos Temp5, Temp6 .center
+							.scale 100
+							.trans 100
+							.time 0
+							.rgbs 100, 100, 100, 100
+					}
+				TT6 = TT20 + v[4809]
+					@pic[TT6].move {
+						.pos Temp5, Temp6 .center
+							.scale 100
+							.trans 100
+							.time 0
+							.rgbs 100, 100, 100, 100
+					}
+				s[222].off
+
 			}
-			@pic[TT6].show {
-			    "ui\latin_num"
-			    .pos TT4, TT5 .center
-			    .chromakey 1
-			    .scale 100
-			    .trans TT15
-			    .rgbs TT16, TT17, TT18, TT19
-			    .grid 1, 10 .cell TT2
-			    .mapLayer 10
-			    .eraseWhenTransfer
+		TT1 = v[4513] + TT20
+			@if s[222] .isOn() {
+				v[Temp20].copy Temp20, 2
+					@if TT15 < transparency {
+						TT15 = 30
+							@if v[944] == 1 {
+								TT15 -= 30
+
+							}
+						@if s[223] .isOn() {
+							@pic[TT1].move {
+								.pos Temp20, v[321] .bottom
+									.scale 100
+									.trans TT15
+									.time 0
+									.rgbs 100, 100, 100, 100
+							}
+
+						} .else bl {
+							TT15 = min(100, 100 - v[429] * 15)
+								@pic[TT1].move {
+									.pos Temp20, v[321] .bottom
+										.scale 100
+										.trans TT15
+										.time 0
+										.rgbs 100, 100, 100, 100
+								}
+
+						}
+
+					} .else bl {
+						@if s[223] .isOn() {
+							TT15 = 60
+								@if v[944] == 1 {
+									TT15 -= 35
+
+								}
+							@pic[TT1].move {
+								.pos Temp20, v[321] .bottom
+									.scale 100
+									.trans TT15
+									.time 0
+									.rgbs 100, 100, 100, 100
+							}
+
+						} .else bl {
+							TT15 = 100
+
+						}
+
+					}
+				TT1 += 10
+					v[321] -= 50
+					TT20 += 1
+					@pic[TT1].show {
+						"ui\cohor_bannernum_latin"
+							.pos Temp20, v[321] .bottom
+							.scrollWithMap
+							.chromakey 1
+							.scale 100
+							.trans TT15
+							.rgbs 100, 100, 100, 100
+							.grid 1, 10 .cell TT20
+							.mapLayer 8
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+
+			} .else bl {
+				@pic[TT1].move {
+					.pos Temp20, v[321] .bottom
+						.scale 100
+						.trans 100
+						.time 0
+						.rgbs 100, 100, 100, 100
+				}
+				TT1 += 10
+					@pic[TT1].move {
+						.pos Temp20, v[321] .bottom
+							.scale 100
+							.trans 100
+							.time 0
+							.rgbs 100, 100, 100, 100
+					}
+
 			}
-			@if TT15 < 45 {
-			    TT15 += 20
-			    @pic[v[4811]].show {
-				PATH_ui_mmcircle
-				.pos TT4, TT5 .center
-				.chromakey 1
-				.scale 100
-				.trans TT15
-				.rgbs 100, 100, 100, 100
-				.mapLayer 10
-				.eraseWhenTransfer
-			    }
-			    TT15 -= 20
-			    v[429] -= 1
-			    s[222].on
-			    
-			}
-			
-		    } .else bl {
-			TT6 = TT20 + v[4809]
-			@pic[TT6].move {
-			    .pos TT2, TT3 .center
-			    .scale 100
-			    .trans 100
-			    .time 0
-			    .rgbs 100, 100, 100, 100
-			}
-			s[222].off
-			
-		    }
-		    
+		@if s[223] .isOff() {
+			@wait 0
+
 		}
-		//@comment "End"
-		TT1 += 10
-		
-	    } .else bl {
-		//@comment "Not Registered"
-		@pic[TT1].show {
-		    "ui\HP_bar_side_0" .repl 1 TT2
-		    .pos v[1119], TT3 .right
-		    .chromakey 1
-		    .scale 100
-		    .trans 100
-		    .rgbs 100, 100, 100, 100
-		    .grid 1, 20 .cell Temp6
-		    .mapLayer 8
-		    .eraseWhenTransfer
-		    .affectedByFlash
-		    .affectedByShake
-		}
-		TT1 -= 10
-		@pic[TT1].move {
-		    .pos Temp5, Temp6 .center
-		    .scale 100
-		    .trans 100
-		    .time 0
-		    .rgbs 100, 100, 100, 100
-		}
-		TT6 = TT20 + v[4809]
-		@pic[TT6].move {
-		    .pos Temp5, Temp6 .center
-		    .scale 100
-		    .trans 100
-		    .time 0
-		    .rgbs 100, 100, 100, 100
-		}
-		s[222].off
-		
-	    }
-	    TT1 = v[4513] + TT20
-	    @if s[222] .isOn() {
-		v[Temp20].copy Temp20, 2
-		@if TT15 < transparency {
-		    TT15 = 30
-		    @if v[944] == 1 {
-			TT15 -= 30
-			
-		    }
-		    @if s[223] .isOn() {
-			@pic[TT1].move {
-			    .pos Temp20, v[321] .bottom
-			    .scale 100
-			    .trans TT15
-			    .time 0
-			    .rgbs 100, 100, 100, 100
-			}
-			
-		    } .else bl {
-			TT15 = min(100, 100 - v[429] * 15)
-			@pic[TT1].move {
-			    .pos Temp20, v[321] .bottom
-			    .scale 100
-			    .trans TT15
-			    .time 0
-			    .rgbs 100, 100, 100, 100
-			}
-			
-		    }
-		    
-		} .else bl {
-		    @if s[223] .isOn() {
-			TT15 = 60
-			@if v[944] == 1 {
-			    TT15 -= 35
-			    
-			}
-			@pic[TT1].move {
-			    .pos Temp20, v[321] .bottom
-			    .scale 100
-			    .trans TT15
-			    .time 0
-			    .rgbs 100, 100, 100, 100
-			}
-			
-		    } .else bl {
-			TT15 = 100
-			
-		    }
-		    
-		}
-		TT1 += 10
-		v[321] -= 50
-		TT20 += 1
-		@pic[TT1].show {
-		    "ui\cohor_bannernum_latin"
-		    .pos Temp20, v[321] .bottom
-		    .scrollWithMap
-		    .chromakey 1
-		    .scale 100
-		    .trans TT15
-		    .rgbs 100, 100, 100, 100
-		    .grid 1, 10 .cell TT20
-		    .mapLayer 8
-		    .eraseWhenTransfer
-		    .affectedByFlash
-		    .affectedByShake
-		}
-		
-	    } .else bl {
-		@pic[TT1].move {
-		    .pos Temp20, v[321] .bottom
-		    .scale 100
-		    .trans 100
-		    .time 0
-		    .rgbs 100, 100, 100, 100
-		}
-		TT1 += 10
-		@pic[TT1].move {
-		    .pos Temp20, v[321] .bottom
-		    .scale 100
-		    .trans 100
-		    .time 0
-		    .rgbs 100, 100, 100, 100
-		}
-		
-	    }
-	    @if s[223] .isOff() {
-		@wait 0
-		
-	    }
-	    
+
 	}
 
 	@wait 0
