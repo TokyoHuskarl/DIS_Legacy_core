@@ -933,23 +933,37 @@ DIS.data = { // DIS.data
 	 */
 	makeDataInherit: function(child,datatype,src){
 		if (src.hasOwnProperty("INHERITS")){ // if inheritance setting exists
+			const DtypPtr = DATA[datatype];
 			let savid = child.id;
-			child.INHERITS = src.INHERITS;
-			deblog(`let ${child} inherit ${src.INHERITS}`)
-			let ptr2Parent = DATA[datatype][child.INHERITS];
-			for (let aryname in ptr2Parent){
-				if (typeof ptr2Parent[aryname] == "object"){
-					let clone = [];
-					for (let elm of ptr2Parent[aryname]){ // make clone
-						clone.push(elm);
-					};
-					child[aryname] = clone; // save clone of array of parent tree
-				} else {
-					if (datatype != "TREETEMP") {
-						child[aryname] = ptr2Parent[aryname];
+			let heritage_array = [src.INHERITS];
+			
+			// make parent object array until the root object whose INHERITS is blank
+			for (let i = 0; DtypPtr.hasOwnProperty(heritage_array[i]) && DtypPtr[heritage_array[i]].INHERITS != ""; i++ ){
+				heritage_array.push(DtypPtr[heritage_array[i]].INHERITS);
+			};
+
+			// then let current child object inherit
+			while (heritage_array.length != 0){
+				let what2inherit = heritage_array.pop();
+				deblog(`let ${child} inherit ${what2inherit}`)
+
+				let ptr2Parent = DtypPtr[what2inherit];
+				for (let aryname in ptr2Parent){
+					if (typeof ptr2Parent[aryname] == "object"){
+						let clone = [];
+						for (let elm of ptr2Parent[aryname]){ // make clone
+							clone.push(elm);
+						};
+						child[aryname] = clone; // save clone of array of parent tree
+					} else {
+						if (datatype != "TREETEMP") {
+							child[aryname] = ptr2Parent[aryname];
+						};
 					};
 				};
+
 			};
+
 			child.id = savid;
 		} else {
 			child.INHERITS = "";
@@ -1099,11 +1113,11 @@ DIS.data = { // DIS.data
 	SKIN: {},
 	SKILL: {},
 	ITEM: {
-		WEAPON = {};
-		SHIELD = {};
-		ARMOR = {};
-		HELMET = {};
-		ACCESSORY = {};
+		WEAPON: {},
+		SHIELD: {},
+		ARMOR: {},
+		HELMET: {},
+		ACCESSORY: {},
 
 	},
 
@@ -2237,10 +2251,31 @@ if (!VIRTUAL_ENV){
 // without RPG_RT.exe
 if (VIRTUAL_ENV){
 	
+const roottroop = `
+{
+	"TROOP": {
+		"dra_ancestor_ragonass": {
+			"name": "Ragonass",
+			"size": [20,22],
+			"race": "RACE_dragon",
+			"faction": "FAC_dra",
+
+			"SP": 10000,
+
+			"personality": "brutal",
+			"color": "blue"
+
+		}
+
+	}
+}
+`
+
 const sampletrp = `
 {
 	"TROOP": {
 		"dra_hero_orthunass": {
+			"INHERITS": "dra_ancestor_ragonass",
 			"name": "Orthunass the Empyrean Lord",
 			"agentType": 1,
 			"size": [10,12],
@@ -2297,6 +2332,7 @@ const inheritancetest = `
 `
 	facid.FAC_dra = 114514;
 	raceid.RACE_dragon = 4545;
+	DATA.parseDISjson(roottroop)
 	DATA.parseDISjson(sampletrp)
 	DATA.TROOP.convertIntoCsvLine(DATA.TROOP.dra_hero_orthunass);
 	DATA.autoregister(DATA.parseDISjson(inheritancetest))

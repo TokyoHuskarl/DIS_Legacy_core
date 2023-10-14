@@ -111,7 +111,7 @@ __fn MAIN_CEV_RTS_NORMAL_EFFECT_MANAGER {
 // cev .id(23), .name("Main:Particle Effect") , .parallel , .cond(Const_Is_RTS_Mode), {   
 //@comment "Check whether each emitter is in screen or not per 4f->6f "
 __fn MAIN_CEV_RTS_PARTICLE_MANAGER {
-	defv ptr_emitter_head = __id(ptr_emitter_head)
+	defv ptr_emitter_head = __id(Temp1)
 	
 	val_asg(TT1,v[2219])
 	val_const(TT2,6)
