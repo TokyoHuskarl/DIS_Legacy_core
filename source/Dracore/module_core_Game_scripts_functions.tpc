@@ -299,6 +299,8 @@ __fn DIS_group_methods $LINKstr $md $i $given_v_or_str $flags {
 		//let javascript interpreter execute what is written in file
 		{NsCmd($LINKstr, $md, $i, "setCgrp",{cmd_grp_setCgrp()})},
 		{NsCmd($LINKstr, $md, $i, "registerCohort",{cmd_grp_registerCohort()})},
+		{NsCmd($LINKstr, $md, $i, "convertPath",{})},
+		{NsCmd($LINKstr, $md, $i, "move",{cmd_grp_move(SSargs0,SSargs1,SSargs2)})},
 		
 	])
 }
@@ -812,6 +814,83 @@ __fn cmd_grp_registerCohort {
 	register_cohort_for_player(Temp16,Temp17,Temp18,Temp19)
 }
 
+__fn cmd_grp_move $x $y $fl {
+	t2v($x,var1) // x
+	t2v($y,var2) // y
+	t2v($fl,var3) // flag
+	macro_convert_maptileXY_into_relativeXY(var1,var2,v[2853],v[2854])
+	@call .cev 1750
+
+}
+
+/*
+		@if inputstr .contains "_get_mapcord(" {
+		    inputstr .split "(", t[3000], TT1
+		    t[3001] .split ")", t[3000], TT1
+		    t[3000] .split ",", t[3000], TT1
+		    t[3000] .toNum var1
+		    t[3001] .toNum var2
+		    @map[v[501]].setVehiclePos .boat .pos var1, var2 .retain
+		    v[2853] = boat.scrx
+		    v[2854] = boat.scry
+		    v[2854] -= 8
+		    @break
+		    
+		}
+		// "AI_cmd_add_waypoint_simple()"
+		@if inputstr .contains "_add_waypoint_simple(" {
+		    v[2853].copy v[2851], 2
+		    @call .cev 1749
+		    @break
+		    
+		}
+		// "AI_cmd_add_waypoint_mev(mevid)"
+		@if inputstr .contains "_add_waypoint_mev(" {
+		    inputstr .split "(", t[3000], TT1
+		    t[3001] .split ")", t[3000], TT1
+		    t[3000] .split ",", t[3000], TT1
+		    t[3000] .toNum var1
+		    var2 = 1
+		    @call .mev var1, var2
+		    @call .cev 1749
+		    @break
+		    
+		}
+		// "AI_cmd_move_simple([Attackmove],[pathfinding])"
+		@if inputstr .contains "_move_simple(" {
+		    inputstr .split "(", t[3000], TT1
+		    t[3001] .split ")", t[3000], TT1
+		    t[3000] .toNum var1
+		    t[3001] .toNum var2
+		    v[0] = s[241] = var1
+		    v[0] = s[242] = var2
+		    @call .cev 1750
+		    s[241].off
+		    s[242].off
+		    @break
+		    
+		}
+		// "AI_cmd_move_line(var [Attackmove],[pathfinding])"
+		@if inputstr .contains "_move_line(" {
+		    inputstr .split "(", t[3000], TT1
+		    t[3001] .split ")", t[3000], TT1
+		    @call .cev 1761
+		    v[2853].copy v[2851], 2
+		    v[2851].copy var7, 2
+		    var7 .sub reg1, 2
+		    v[17..18] *= 2
+		    v[2851].copy var5, 2
+		    t[3000] .toNum var1
+		    t[3001] .toNum var2
+		    v[0] = s[241] = var1
+		    v[0] = s[242] = var2
+		    @call .cev 1751
+		    s[241].off
+		    s[242].off
+		    @break
+		    
+		}
+*/
 
 //##########################
 // misc commands

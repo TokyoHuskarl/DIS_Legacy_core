@@ -436,15 +436,44 @@ class RTSagentGroup { // list object for DISagent.
 		this.team = team || "undefined";
 	};
 
+	info = {
+		Schewerpunkt: [0,0],
+	};
+
 	compoundAgtGroup(grp){
+		this.agentlist = this.agentlist.concat(grp.agentlist);
 		this.idlist = this.idlist.concat(grp.idlist);
 	};
 
-	compoundAgtArray(arr){
+	compoundAgtArray(arr){ // underconst
 		this.idlist = this.idlist.concat(arr);
 	};
 
 	getids(){ return this.idlist; };
+
+	// return tile[X,Y]
+	getSchwerpunkt(){
+		let SP = [0,0];
+		let counter = 0;
+
+		for (let ag of this.agentlist){
+			if (ag.getAgentSlot(1) > 0 ){ // if it's valid agent
+				let pnt = [ag.getAgentSlot(26),ag.getAgentSlot(27)];
+				const lv = ag.getAgentSlot(104);
+				for (let elmi = 0; elmi < 2; elmi++){
+					SP[elmi] += (pnt[elmi] * lv);
+				};
+				counter += lv;
+			};
+		};
+
+		for (let i = 0; i < 2; i++){
+			SP[i] = (SP[i] /= counter) | 0;
+		};
+
+		return (this.Schewerpunkt = SP);
+	};
+
 	
 };
 
@@ -1892,6 +1921,7 @@ var Cmd = {
 		SpawnDetect: false, // init this flag
 		RMwaitDetect: false, //
 		CalledDialogQueue: false, //
+		spawnagent_lastdir: 0,
 
 		initAll: function() {
 			this.SpawnDetect = false;
@@ -2026,12 +2056,14 @@ var Cmd = {
 		// {int}, array[x,y]
 		spawnAgent: function(troopid,tilepos,team,dir,stance,flag){ // returns DISagent
 			troopid = trpid.convert(troopid);
-			dir = dir || 0;
+			dir = dir || Cmd.runFlags.spawnagent_lastdir;
 			stance = stance || 0;
 			flag = flag || 0;
 			
 			Cmd.Qset(this.CmdType,"spnAg",`${troopid},${tilepos[0]},${tilepos[1]},${team},${dir},${stance}`);
 			let protoagent = new DISagent(DIS.agent.searchEmptySpace(),troopid,team,false);
+
+			Cmd.runFlags.spawnagent_lastdir = dir
 			return protoagent;
 		},
 
@@ -2228,14 +2260,14 @@ var Cmd = {
 			return new DIS_cohort(player,cohortid,grp.idlist);
 		},
 
-		move: function(grp,path,flag){ // kari
-			checkCurrentGroup(grp);
-			
-			Cmd.Qset(this.CmdType,"move",`${grp},${path},${flag}`);
+		move: function(grp,path,flag){
+			this.checkCurrentGroup(grp);
+			let goal = path; // kari
+			Cmd.Qset(this.CmdType,"move",`${goal[0]},${goal[1]},${flag}`);
 		},
 
 		attack: function(grp,targetid){
-			checkCurrentGroup(grp);
+			this.checkCurrentGroup(grp);
 			Cmd.Qset(this.CmdType,"attack",`${targetid}`);
 
 		},
@@ -2458,6 +2490,7 @@ const inheritancetest = `
 	Cmd.group.registerCohort(cohort1,0,1);
 	Cmd.map.spawnAgent("TRP_imperial_comitatenses_menavlion",[27,32],0,[0,-2],8);
 	deblog(Cmd.CmdQueue)
+	Cmd.group.move(cohort1,[1,1],0);
 	Cmd.run();
 	/*
 	let fucker = Cmd.game.pic.load("camera_ball",10);
