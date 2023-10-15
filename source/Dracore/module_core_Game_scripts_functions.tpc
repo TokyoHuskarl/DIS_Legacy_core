@@ -198,8 +198,8 @@ __fn DIS_map_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("map", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		// let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "spnAg",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})}, // map.spawnAgent
-		{NsCmd($LINKstr, $md, $i, "spnSt",{cmd_spawnStatic(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // map.spawnStatic
+		{NsCmd($LINKstr, $md, $i, "spnAg",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,"0",SSargs5,SSargs6)})}, // map.spawnAgent
+		{NsCmd($LINKstr, $md, $i, "spnSt",{cmd_spawnStatic(SSargs0,SSargs1,SSargs2,SSargs3,"0")})}, // map.spawnStatic
 		{NsCmd($LINKstr, $md, $i, "spawnPalisade",{cmd_spawnPalisade(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnPalisade
 		{NsCmd($LINKstr, $md, $i, "spawnWall",{cmd_spawnWall(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnWall
 		{NsCmd($LINKstr, $md, $i, "genHeightmap",{cmd_genHeightmap()})}, // genHeightmap
@@ -366,12 +366,10 @@ __fn cmd_spawn_agent $troop_id $TileX $TileY $TeamID $CohortID $Dir $Stance {
 	t[__id($TileX)] .toNum TT1
 	t[__id($TileY)] .toNum TT2
 	t[__id($TeamID)] .toNum spawnSet_Team
-	t[__id($CohortID)] .toNum spawnSet_Cohort
+	spawnSet_Cohort = 0 // t[__id($CohortID)] .toNum spawnSet_Cohort
 	//lmao retarded
 	bool_Gen_CohortSet.off
-	@if spawnSet_Cohort >= 1 {
-		bool_Gen_CohortSet.on
-	}
+
 	t[__id($Dir)] .toNum spawnSet_Direction
 	t[__id($Stance)] .toNum spawnSet_Stance
 	//@call .cev 2001
@@ -382,14 +380,6 @@ __fn cmd_spawn_agent $troop_id $TileX $TileY $TeamID $CohortID $Dir $Stance {
 	//call fn
 	@call .cev 300
 
-	@if spawnSet_Team == 0 {
-		//Was?
-		@if bool_Gen_CohortSet .isOn() {
-		    @call .cev 1906 // -> cohort_general.tpc
-		    
-		}
-
-	}
 
 }
 
@@ -456,7 +446,7 @@ __fn cmd_spawnStatic $staticID $x $y $team $cohort {
 		}
 		reg2.copy spawnSet_x, 2
 		t[__id($team)] .toNum spawnSet_Team
-		t[__id($cohort)] .toNum spawnSet_Cohort
+		spawnSet_Cohort = 0// t[__id($cohort)] .toNum spawnSet_Cohort
 		s[177..180].off
 	
 	} .else bl {
@@ -466,7 +456,7 @@ __fn cmd_spawnStatic $staticID $x $y $team $cohort {
 		reg3 += 8
 		reg2.copy spawnSet_x, 2
 		t[__id($team)] .toNum spawnSet_Team
-		t[__id($cohort)] .toNum spawnSet_Cohort
+		spawnSet_Cohort = 0 // t[__id($cohort)] .toNum spawnSet_Cohort
 		
 		}
 	t[__id($staticID)] .toNum spawnSet_TroopID
@@ -600,7 +590,7 @@ __fn cmd_sys_importDISjson $path {
 	inputstr.cat $path
 	load_json(inputstr)
 	inputstr.asg DIS_js_buffer
-	eval_js("DATA.autoregister(DATA.parseDISjson(gett(510));") // inputstr
+	eval_js("DATA.autoregister(DATA.parseDISjson(gett(510)));") // inputstr
 }
 
 __fn cmd_sys_loadtxt $path $adrt {

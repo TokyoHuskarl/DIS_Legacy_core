@@ -41,7 +41,9 @@ function devmsg(text) {
 // debug log function for debug mode 
 function deblog(text) {
 	console.log(text);
-	Cmd.game.log_debug(text);
+	if (!VIRTUAL_ENV){
+		Cmd.game.log_debug(text);
+	};
 };
 
 function debObj(obj) {
@@ -473,6 +475,12 @@ const adr_DISstr1 = 501;
 // parse ids and save into container on js
 function parse_DISid(line,myArray) {
 	const [key, value] = line.split('=');
+	myArray.register(key,parseInt(value,10));
+};
+
+// without id dictionary
+function parse_simpleid(line,myArray) {
+	const [key, value] = line.split('=');
 	myArray[key] = parseInt(value,10);
 };
 
@@ -523,11 +531,45 @@ var DIS = DIS || {};
 const Adrt_ShLog = 782; // same as Shell Log address 
 
 // should I make them const?
-var trpid = trpid || {}; // troop ID table
-var staid = staid || {}; // building ID table
-var facid = facid || {}; // faction ID table
-var raceid = raceid || {}; // race ID table
-var techid =  techid || {}; // ["techid",[group,flagbit]]
+class IDdict {
+	constructor(prefix){this.prefix = prefix + "_";}
+	reserved = new Set(["prefix","reserved","convert","register"]); // never change
+
+	/**
+	 * convert given key to int.
+	 *
+	 * @method convert
+	 * @param {string OR int} given
+	 * @return {int} 
+	 */
+	convert(given) {
+		let id = given;
+		if (typeof given == "string"){
+			if (given.lastIndexOf(this.prefix) != -1){
+				id = this[given];
+			} else {
+				errorlog(`"${given}" has no expected "${this.prefix}" prefix!`);
+				id = -1;
+			};
+		};
+		return id;
+	};
+
+	register(key,val){
+		if (this.reserved.has(key)){
+			return errorlog(`The name of the new key "${key}" is reserved word for DIS ID dictionary!`);
+		};
+		return this[key] = val;
+	};
+
+};
+
+var trpid = new IDdict("TRP"); // troop ID table
+var staid = new IDdict("STA"); // building ID table
+var facid = new IDdict("FAC"); // faction ID table
+var raceid = new IDdict("RACE"); // race ID table
+
+var techid =  new IDdict("TECH"); // ["techid",[group,flagbit]]
 
 // consts
 DIS.consts = {
@@ -658,25 +700,25 @@ DIS = { // DIS fundamental components
 			// load troop ID
 			// --------------------
 			// you can use troopID by writing like this: trpid["TRP_sushi_kensei"] 
-			trpid = {}; // init trpid
+			trpid = new IDdict("TRP"); // init trpid
 			DIS.data.TROOP.count = store_ID_table(trpid,801); // get from ~/scripts/const_troops.
 
 			// --------------------
 			// load static ID
 			// --------------------
-			staid = {}; // init staid
+			staid = new IDdict("STA"); // init staid
 			store_ID_table(staid,802) // get from ~/scripts/const_statics.
 
 			// --------------------
 			// load faction ID
 			// --------------------
-			facid = {}; // init facid
+			facid = new IDdict("FAC"); // init facid
 			store_ID_table(facid,803) // get from ~/scripts/const_factions.
 			
 			// --------------------
 			// load tech ID
 			// --------------------
-			techid = {}; // init facid
+			techid = new IDdict("TECH"); // init facid
 
 
 
@@ -848,7 +890,6 @@ DIS.data = { // DIS.data
 
 	// called by Cmd.sys.importData on RM command interpreter
 	autoregister: function(obj){
-		//
 		// kek fucking retarded if nesting
 		if(obj.hasOwnProperty("TROOP")){
 			for (let trp of obj.TROOP){
@@ -1090,7 +1131,8 @@ DIS.data = { // DIS.data
 			const where2write = ADRT.TroopCsvDataHead + index;
 			deblog("writign nao")
 			let idfied = "TRP_" + trpdata.id;
-			trpid[idfied] = trpdata.i = index; // set index number into trpid container  
+			trpdata.i = index; // set index number into trpid container  
+			trpid.register(idfied, index);
 			sett(where2write,this.convertIntoCsvLine(trpdata)); // go for it
 		},
 
@@ -1291,7 +1333,6 @@ class RTSmission {
 			// but how?
 			let newQue = this.queue;
 			let isTriggered = 0b0;
-
 			for (let TRIGGER of this.queue) {
 				let result = TRIGGER.run(); // run the trigger!
 				if (result & 0b10){ // if end flag is TRUE
@@ -1607,6 +1648,12 @@ let RTS = {
 		},
 
 
+		convertArrayIntoPath: function(array){
+			
+
+		}
+
+
 
 
 	},
@@ -1865,7 +1912,7 @@ var Cmd = {
 			container = container.replace(/<.*?>/g, "");
 			let lines = container.trim().split(";");
 			lines.forEach(line => {
-					parse_DISid(line,this.CmCon);
+					parse_simpleid(line,this.CmCon);
 			});
 		}
 
@@ -1879,6 +1926,7 @@ var Cmd = {
 		sett(adr_RMStr_CmdOrder,this.CmdQueue);
 		// turn on RM switch to run interpreter as cev
 		sets(adr_RMbool_RUN_CMD,1);
+		// deblog(Cmd.CmdQueue)
 		Cmd.CmdQueue = ""; // initialize Command Order
 		 
 		// return queue is cleared after TPC finishes actual Cmd processes
@@ -1976,32 +2024,32 @@ var Cmd = {
 		} need to consider well */ 
 
 		// {int}, array[x,y]
-		spawnAgent: function(troopid,tilepos,team,cohort,dir,stance,flag){ // returns DISagent
-			cohort = cohort || 0;
+		spawnAgent: function(troopid,tilepos,team,dir,stance,flag){ // returns DISagent
+			troopid = trpid.convert(troopid);
 			dir = dir || 0;
 			stance = stance || 0;
 			flag = flag || 0;
 			
-			Cmd.Qset(this.CmdType,"spnAg",`${troopid},${tilepos[0]},${tilepos[1]},${team},${cohort},${dir},${stance}`);
+			Cmd.Qset(this.CmdType,"spnAg",`${troopid},${tilepos[0]},${tilepos[1]},${team},${dir},${stance}`);
 			let protoagent = new DISagent(DIS.agent.searchEmptySpace(),troopid,team,false);
 			return protoagent;
 		},
 
-		spawnAgentgroup: function(troopid,tilepos,team,delta,amount,cohort,dir,stance,flag){
+		spawnAgentgroup: function(troopid,tilepos,team,delta,amount,dir,stance,flag){
 			// temp
+			troopid = trpid.convert(troopid);
 			let pos = tilepos
 			let agentslist = [];
 			for (let i = 0; i < amount; i++){ // this one is too slow 
-				agentslist[i] = this.spawnAgent(troopid,pos,team,cohort,dir,stance,flag);
+				agentslist[i] = this.spawnAgent(troopid,pos,team,dir,stance,flag);
 				for (let p = 0; p < 2; p++){pos[p] += delta[p];}; // add delta
 			};
 			let expected_agentgroup = new RTSagentGroup(agentslist,team);
 			return expected_agentgroup;
 		},
 
-		spawnStatic: function(staticID,tilepos,team,cohort){
-			cohort = cohort || 0; // ok?
-			Cmd.Qset(this.CmdType,"spnSt",`${staticID},${tilepos[0]},${tilepos[1]},${team},${cohort}`);
+		spawnStatic: function(staticID,tilepos,team){
+			Cmd.Qset(this.CmdType,"spnSt",`${staticID},${tilepos[0]},${tilepos[1]},${team}`);
 			let protostatic = new DISagent(DIS.agent.searchEmptySpace(),staticID,team,false);
 			return protostatic;
 			
@@ -2173,12 +2221,16 @@ var Cmd = {
 
 		registerCohort: function(grp,player,cohortid) {
 			this.checkCurrentGroup(grp);
-			Cmd.Qset(this.CmdType,"registerCohort",`${player},${cohortid},${this.Adr_cgrp_list_head},${grp.idlist.length}`);
+			// temporary only for player
+			if (player == 0){
+				Cmd.Qset(this.CmdType,"registerCohort",`${player},${cohortid},${this.Adr_cgrp_list_head},${grp.idlist.length}`);
+			}
 			return new DIS_cohort(player,cohortid,grp.idlist);
 		},
 
-		move: function(grp,path,flag){
+		move: function(grp,path,flag){ // kari
 			checkCurrentGroup(grp);
+			
 			Cmd.Qset(this.CmdType,"move",`${grp},${path},${flag}`);
 		},
 
@@ -2277,7 +2329,6 @@ if (!VIRTUAL_ENV){
 
 // without RPG_RT.exe
 if (VIRTUAL_ENV){
-	
 const roottroop = `
 {
 	"TROOP": {
@@ -2301,8 +2352,43 @@ const roottroop = `
 const sampletrp = `
 {
 	"TROOP": {
+
+		"imperial_legion_banner": {
+			"name": "Imperial Legion Signifer",
+			"agentType": 1,
+			"size": [10,12],
+			"agentSprite": 68,
+			"race": "RACE_human",
+			"faction": "FAC_legion",
+
+			"Lv": 21,
+			"unitclass": 3,
+			"HP": 1400,
+			"HPreg": 5,
+			"SP": 2500,
+			"SPreg": 5,
+			"AD": 50,
+			"AP": 50,
+			"AR": 180,
+			"MR": 195,
+			"HIT": 20,
+			"WILL": 92,
+			"EVA": 10,
+			"Crit": 0,
+			"MoveSpeed": -5,
+
+			"AAtype": 4,
+			"AAframe": 1,
+			"AArangeMax": 80000,
+			"AArangeMin": 60000,
+			"AAfunction": 1267,
+			"AS": 45,
+
+			"ActiveSkill": [1232,1248,0,0],
+			"PassiveSkill": 1231
+		},
+
 		"dra_hero_orthunass": {
-			"INHERITS": "dra_ancestor_ragonass",
 			"name": "Orthunass the Empyrean Lord",
 			"agentType": 1,
 			"size": [10,12],
@@ -2323,7 +2409,7 @@ const sampletrp = `
 			"Crit": 0,
 			"MS": 90,
 
-			"AAtype": 4,
+			"AAType": 4,
 			"AAfunction": 1267,
 			"AS": 45,
 			"AArangeMax": 140000,
@@ -2361,12 +2447,18 @@ const inheritancetest = `
 	raceid.RACE_dragon = 4545;
 	DATA.parseDISjson(roottroop)
 	DATA.parseDISjson(sampletrp)
+	deblog("\n\n\n")
 	DATA.TROOP.convertIntoCsvLine(DATA.TROOP.dra_hero_orthunass);
+	deblog("\n\n\n")
 	DATA.autoregister(DATA.parseDISjson(inheritancetest))
+	
 	Cmd.sys.importData("test.json")
 	RTS.mission.setPlayer(9,1)
-	let cohort1 = Cmd.map.spawnAgentgroup(trpid["TRP_imperial_comitatenses_menavlion"],[27,32],0,[0,-2],8,0,0);
+	let cohort1 = Cmd.map.spawnAgentgroup("TRP_imperial_comitatenses_menavlion",[27,32],0,[0,-2],8);
 	Cmd.group.registerCohort(cohort1,0,1);
+	Cmd.map.spawnAgent("TRP_imperial_comitatenses_menavlion",[27,32],0,[0,-2],8);
+	deblog(Cmd.CmdQueue)
+	Cmd.run();
 	/*
 	let fucker = Cmd.game.pic.load("camera_ball",10);
 	fucker.refreshPicInfo();

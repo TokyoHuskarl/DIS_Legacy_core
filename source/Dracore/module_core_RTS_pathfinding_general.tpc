@@ -42,116 +42,122 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 
 						// Ray Casting bits check
 						@if `agent_AI_routine_bits & AI_routine_bits_FLAG_RayCast {
-							// cast ray to the target only when they prioritize attacking
-							reg1 = agent_StanceOrder != ORD_MANU && (agent_MovementOrder <= MovementOrder_TYPE_move_ordered || agent_StanceOrder == ORD_ATK) ? agent_TargetAgentID : 0
-							@if reg1 > 0 { // has target
-								// get target Map Coord.
-								var1 = agent_TargetAgentID * 300 
-								var1 += 4726
-								v[var1].copy var3, 2
-								var3.sub ConstMapTileX0,2 // convert into tile coord
+							@if agent_StanceOrder != ORD_STD {
+								// cast ray to the target only when they prioritize attacking
+								reg1 = agent_StanceOrder != ORD_MANU && (agent_MovementOrder <= MovementOrder_TYPE_move_ordered || agent_StanceOrder == ORD_ATK) ? agent_TargetAgentID : 0
+									@if reg1 > 0 { // has target
+										// get target Map Coord.
+										var1 = agent_TargetAgentID * 300 
+											var1 += 4726
+											v[var1].copy var3, 2
+											var3.sub ConstMapTileX0,2 // convert into tile coord
 
-								// get raycasting agent's one.
-								agent_MapX.copy var1, 2
-								var1.sub ConstMapTileX0,2 // convert into tile coord
-								
-								// then convert both into Node Coord
-								var1.shr N1,4 // v[__id(var1)..__id(var4)] /= 2
+											// get raycasting agent's one.
+											agent_MapX.copy var1, 2
+											var1.sub ConstMapTileX0,2 // convert into tile coord
 
-								// Then do node ray casting
-								func_nodecheck_RayCast(var1,var2,var3,var4)
-								@if reg1 == 1 { // wall found
-									@if `!(agent_ai_routine_bits & ai_routine_bits_flag_wp_set_by_raycast || agent_AgentBits & AgentBits_FLAG_walldetected) {
-										agent_AgentBits |= AgentBits_FLAG_NeedWpToReachObj
-										agent_AI_routine_bits |= (AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_1secDelay_PF) // + AgentBits_FLAG_walldetected
-										agent_AI_routine_bits &= AI_routine_bits_KILL_FLAG_PFcontinue // search path from the beginning
+											// then convert both into Node Coord
+											var1.shr N1,4 // v[__id(var1)..__id(var4)] /= 2
 
+											// Then do node ray casting
+											func_nodecheck_RayCast(var1,var2,var3,var4)
+											@if reg1 == 1 { // wall found
+												@if `!(agent_ai_routine_bits & ai_routine_bits_flag_wp_set_by_raycast || agent_AgentBits & AgentBits_FLAG_walldetected) {
+													agent_AgentBits |= AgentBits_FLAG_NeedWpToReachObj
+														agent_AI_routine_bits |= (AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_1secDelay_PF) // + AgentBits_FLAG_walldetected
+														agent_AI_routine_bits &= AI_routine_bits_KILL_FLAG_PFcontinue // search path from the beginning
+
+												}
+
+											}.else bl {
+
+												// if the agent is chasing WP set by raycast
+												@if `agent_ai_routine_bits & ai_routine_bits_flag_wp_set_by_raycast {
+													agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
+
+														agent_AI_routine_bits &= ~AI_routine_bits_FLAG_WP_set_by_RayCast // kill Raycast flag
+														agent_LeftWPtoChase = -1 // Agent does not chase left WPs anymore
+														agent_AI_routine_bits &= ~AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue
+												}
+
+												@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_ForcemoveFlag) {
+													// if it's not forced prioritizing movement, then 
+													agent_MovementOrder = MovementOrder_TYPE_move_ordered
+
+												}
+
+												agent_AI_routine_bits &= ~AI_routine_bits_FLAG_RayCast
+											}
+
+									}.else bl { // what if you have no target?
+										// underconstruction
+
+										// get target Map Coord.
+
+										TT2 = agent_LeftWPtoChase > 0 ? __id(agent_WayPoint1X) : __id(agent_HoldPointX) // Pathfinding_AgentData_head_ptr + 41
+
+											// Temp17 = max(agent_LeftWPtoChase, 0) // Use Temp17 to count how many wps left to chase 
+											// TT2 += Temp17 * 2
+											// val_mul(Temp17,N2)
+											// val_add(TT2,Temp17)
+
+											v[TT2].copy var1, 2 // get WP coord from agent WP array
+
+											// convert into tile coordinate - maybe you can deal with this without this func if the PF agent has the target agent
+											// @call .cev 2000
+											// reg1.copy var3, 2
+											macro_convert_relativeXY_into_maptileXY(var1,var2,var3,var4)
+
+											// get raycasting agent's Coord.
+											agent_MapX.copy var1, 2
+											var1.sub v[69],2 // convert into tile coord
+
+											// then convert both into Node Coord
+											var1.shr N1,4 // v[__id(var1)..__id(var4)] /= 2
+											// var3.div N2,2 // safety
+
+											// node ray casting
+
+											// if it has WPs already, just check how much the distance is before casting ray
+											defv {
+												RC_justmove_Deltax = __id(TT1)
+													RC_justmove_Deltay = __id(TT2)
+											}
+
+										@if agent_LeftWPtoChase > 0 { 
+											var1.copy RC_justmove_Deltax,2
+												RC_justmove_Deltax.sub var3,2
+												RC_justmove_Deltax.mul RC_justmove_Deltax,2
+												RC_justmove_Deltax.add RC_justmove_Deltay,1
+										}.else bl { // if it's the first time ray,
+											val_asg(RC_justmove_Deltax,N16)
+										}
+										@if RC_justmove_Deltax > 6 { // if it's not too close 
+											func_nodecheck_RayCast(var1,var2,var3,var4)
+										}.else bl{
+											val_init(reg1) // omit raycast calc and return 0
+										}
+
+										@if reg1 == 1 { // obstacle found
+											agent_AI_routine_bits |= (AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_WP_set_by_RayCast)
+												agent_AI_routine_bits &= AI_routine_bits_KILL_FLAG_PFcontinue // search path from the beginning
+
+										}.else bl { // no obstacle found
+											def KILL_FLAG_raycast = ~(AI_routine_bits_FLAG_RayCast + AI_routine_bits_FLAG_WP_set_by_RayCast)
+												agent_AgentBits &= ~AgentBits_FLAG_PF_walldetection_switch
+
+										}
+										agent_AI_routine_bits &= KILL_FLAG_raycast
 									}
-									
-								}.else bl {
 
-									// if the agent is chasing WP set by raycast
-									@if `agent_ai_routine_bits & ai_routine_bits_flag_wp_set_by_raycast {
-										agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
-										
-										agent_AI_routine_bits &= ~AI_routine_bits_FLAG_WP_set_by_RayCast // kill Raycast flag
-										agent_LeftWPtoChase = -1 // Agent does not chase left WPs anymore
-										agent_AI_routine_bits &= ~AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue
-									}
+								// after raycasting, kill the flag
+								Ptr1 = Pathfinding_AgentData_head_ptr + 1
+									agent_AgentType.copy v[Ptr1], 250
 
-									@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_ForcemoveFlag) {
-										// if it's not forced prioritizing movement, then 
-										agent_MovementOrder = MovementOrder_TYPE_move_ordered
-
-									}
-									
-									agent_AI_routine_bits &= ~AI_routine_bits_FLAG_RayCast
-								}
-
-							}.else bl { // what if you have no target?
-								// underconstruction
-
-								// get target Map Coord.
-
-								TT2 = agent_LeftWPtoChase > 0 ? __id(agent_WayPoint1X) : __id(agent_HoldPointX) // Pathfinding_AgentData_head_ptr + 41
-								
-								// Temp17 = max(agent_LeftWPtoChase, 0) // Use Temp17 to count how many wps left to chase 
-								// TT2 += Temp17 * 2
-								// val_mul(Temp17,N2)
-								// val_add(TT2,Temp17)
-
-								v[TT2].copy var1, 2 // get WP coord from agent WP array
-
-								// convert into tile coordinate - maybe you can deal with this without this func if the PF agent has the target agent
-								// @call .cev 2000
-								// reg1.copy var3, 2
-								macro_convert_relativeXY_into_maptileXY(var1,var2,var3,var4)
-
-								// get raycasting agent's Coord.
-								agent_MapX.copy var1, 2
-								var1.sub v[69],2 // convert into tile coord
-								
-								// then convert both into Node Coord
-								var1.shr N1,4 // v[__id(var1)..__id(var4)] /= 2
-								// var3.div N2,2 // safety
-
-								// node ray casting
-
-								// if it has WPs already, just check how much the distance is before casting ray
-								defv {
-									RC_justmove_Deltax = __id(TT1)
-									RC_justmove_Deltay = __id(TT2)
-								}
-
-								@if agent_LeftWPtoChase > 0 { 
-									var1.copy RC_justmove_Deltax,2
-									RC_justmove_Deltax.sub var3,2
-									RC_justmove_Deltax.mul RC_justmove_Deltax,2
-									RC_justmove_Deltax.add RC_justmove_Deltay,1
-								}.else bl { // if it's the first time ray,
-									val_asg(RC_justmove_Deltax,N16)
-								}
-								@if RC_justmove_Deltax > 6 { // if it's not too close 
-									func_nodecheck_RayCast(var1,var2,var3,var4)
-								}.else bl{
-									val_init(reg1) // omit raycast calc and return 0
-								}
-
-								@if reg1 == 1 { // obstacle found
-									agent_AI_routine_bits |= (AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_WP_set_by_RayCast)
-									agent_AI_routine_bits &= AI_routine_bits_KILL_FLAG_PFcontinue // search path from the beginning
-
-								}.else bl { // no obstacle found
-									def KILL_FLAG_raycast = ~(AI_routine_bits_FLAG_RayCast + AI_routine_bits_FLAG_WP_set_by_RayCast)
-									agent_AgentBits &= ~AgentBits_FLAG_PF_walldetection_switch
-
-								}
+							} else bl { // the agent is standing by mode
 								agent_AI_routine_bits &= KILL_FLAG_raycast
+								agent_AgentType.copy v[Ptr1], 250
 							}
-
-							// after raycasting, kill the flag
-							Ptr1 = Pathfinding_AgentData_head_ptr + 1
-							agent_AgentType.copy v[Ptr1], 250
 						}
 
 						// Pathfinding bits check
