@@ -241,7 +241,10 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("game", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "wait",{@wait (SSargs0)})},
+		{NsCmd($LINKstr, $md, $i, "wait",{
+			t2v(SSargs0,var1)
+			@wait (SSargs0)})},
+
 		{NsCmd($LINKstr, $md, $i, "gotoRMmap",{
 			t2v(SSargs0,var1)
 			t2v(SSargs1,var2)
@@ -249,6 +252,16 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 			@map[var1].setPlayerPos .pos var2, var3
 		})},
 		{NsCmd($LINKstr, $md, $i, "msg",{func_show_msg(SSargs0)})},
+		{NsCmd($LINKstr, $md, $i, "tintScreen",{
+			t2v(SSargs0,var1)
+			t2v(SSargs1,var2)
+			t2v(SSargs2,var3)
+			t2v(SSargs3,var4)
+			t2v(SSargs4,var5)
+			cmd_game_tintScreen(var1,var2,var3,var4,var5)
+			// @cmd 11030, "", .args var1, 6 //@scr.tint .rgbs(var1, var2, var3, var4), .time(var5)
+			})},
+
 
 		// pic series
 		{NsCmd($LINKstr, $md, $i, "loadPic",{cmd_pic_simpleload(SSargs0,SSargs1)})},
@@ -353,6 +366,19 @@ __fn cmd_play_global_music $filename $volume $tempo $balance {
 }
 
 
+//##########################
+// game commands
+//##########################
+
+__fn cmd_game_tintScreen $R $G $B $S $frame {
+	var1 = $R
+	var2 = $G
+	var3 = $B
+	var4 = $S
+	var5 = $frame
+	var6 = 0
+	@cmd 11030, "", .args var1, 6 //@scr.tint .rgbs(var1, var2, var3, var4), .time(var5)
+}
 
 //##########################
 //spawn commands

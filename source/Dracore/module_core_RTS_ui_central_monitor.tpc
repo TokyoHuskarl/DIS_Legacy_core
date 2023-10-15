@@ -3855,7 +3855,7 @@ __fn func_ui_show_clickable_agent {
 // string consts
 def {
 	STRING_terrainfo_basic = __str(RAWSTR_LF, "    \t[20110] \t[", __id(regs1),"] \t[20111]\v[", __id(TT1),"]")
-		STRING_terrainfo_debug = __str(RAWSTR_LF,STRING_terrainfo_basic, " (\v[", __id(reg1), "],\v[", __id(reg2),"])")
+		STRING_terrainfo_debug = __str(RAWSTR_LF,STRING_terrainfo_basic, " (\v[", __id(reg3), "],\v[", __id(reg4),"])")
 
 }
 
@@ -3867,15 +3867,21 @@ __fn func_ui_show_terrain_info {
 			v[51].copy var1, 2
 				var2 -= 8
 				//@call .cev 2000
-				macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
-				@if `v[1974] != reg1 || v[1975] != reg2 {
+				macro_convert_relativeXY_into_maptileXY(var1,var2,reg3,reg4)
+				@if `v[1974] != reg3 || v[1975] != reg4 {
 					//// "######################Get Terrain and Elevation info"
-					v[313] = v[v[1182] + reg1 - v[69] + (reg2 - v[70]) * v[2061]]
+					v[313] = v[v[1182] + reg3 - v[69] + (reg4 - v[70]) * v[2061]]
 						v[341] = v[313] / 100000000
 						v[350] = v[51]
 						v[351] = v[52] - 16
 						v[342] = v[313] % 100
 						getTerrainElm(TT2,1) // get name data to regs1
+
+
+						//// "######################"
+						v[1974] = reg3
+						v[1975] = reg4
+
 						@if .testPlay() {
 							t[501] .asg STRING_terrainfo_debug .extract
 
@@ -3884,9 +3890,6 @@ __fn func_ui_show_terrain_info {
 
 						}
 
-					//// "######################"
-					v[1974] = reg1
-						v[1975] = reg2
 						@pic[PicID_Unit_SP].strpic {
 							t[501]
 								.pos v[1296], v[1297] .topLeft

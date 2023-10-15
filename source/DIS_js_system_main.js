@@ -2021,6 +2021,12 @@ var Cmd = {
 		},
 
 
+		tintScreen: function(RGBS,f) {
+			f = f || 0;
+			let st = RGBS.join(",") + "," + f;
+			Cmd.Qset(this.CmdType,"tintScreen",st);
+			deblog(st)
+		},
 
 		gotoRMmap: function(RMmapid,tilepos) { //
 			tilepos = tilepos || [0,0]

@@ -632,7 +632,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			
 			// get TileXY where the agent goes
 			Temp3 .add agent_MilPixVx, 2
-			macro_cord_diff(Temp3 Temp4)
+			macro_cord_diff(Temp3,Temp4)
 
 			// now sub to fit DIS map
 			Temp3.sub v[69], 2
@@ -648,7 +648,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			//v[314] = v[432] + Temp18 //horizontal maptile col
 			//v[314] = v[v[314]]
 
-			v[313].repeat v[432],2 // v[313..314] = v[1182] // v[432]
+			v[313].repeat v[1182],2 // v[313..314] = v[1182] // v[432]
 			Temp13.add Temp17,2
 			Temp13.deref Temp13,2
 			v[313..314] %= 100

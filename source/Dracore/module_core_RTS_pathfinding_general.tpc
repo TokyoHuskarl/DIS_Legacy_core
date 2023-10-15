@@ -154,7 +154,8 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 								Ptr1 = Pathfinding_AgentData_head_ptr + 1
 									agent_AgentType.copy v[Ptr1], 250
 
-							} else bl { // the agent is standing by mode
+							}.else bl { // the agent is standing by mode
+								Ptr1 = Pathfinding_AgentData_head_ptr + 1
 								agent_AI_routine_bits &= KILL_FLAG_raycast
 								agent_AgentType.copy v[Ptr1], 250
 							}

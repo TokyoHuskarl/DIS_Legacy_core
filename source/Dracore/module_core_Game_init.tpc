@@ -838,7 +838,10 @@ __fn init_DIS_database $already_loaded {
 	inputstr .split "*/", t[509], TT1
 	inputstr .split LF, t[v[1213]], TT1
 	v[1206] = 5000
-	inputstr .asg  .file "..\data\data_weapons", .utf8
+	getModulePathTo(inputstr)
+	inputstr .cat "\data\data_weapons", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
+	// inputstr .asg  .file "..\data\data_weapons", .utf8
 	inputstr .split "*/", t[509], TT1
 	inputstr .split LF, t[v[1206]], TT1
 	t[801] .asg ""
@@ -915,7 +918,10 @@ __fn init_DIS_database $already_loaded {
 			
 	}
 	v[1207] = 6000
-	inputstr .asg  .file "..\data\data_shields", .utf8
+	getModulePathTo(inputstr)
+	inputstr .cat "\data\data_shields", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
+	// inputstr .asg  .file "..\data\data_shields", .utf8
 	inputstr .split "*/", t[509], TT1
 	inputstr .split LF, t[v[1207]], TT1
 	t[801] .asg ""
@@ -993,7 +999,10 @@ __fn init_DIS_database $already_loaded {
 			
 	}
 	v[1208] = 7000
-	inputstr .asg  .file "..\data\data_armors", .utf8
+	getModulePathTo(inputstr)
+	inputstr .cat "\data\data_armors", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
+	// inputstr .asg  .file "..\data\data_armors", .utf8
 	inputstr .split "*/", t[509], TT1
 	inputstr .split LF, t[v[1208]], TT1
 	t[801] .asg ""
@@ -1070,7 +1079,10 @@ __fn init_DIS_database $already_loaded {
 			
 	}
 	v[1209] = 8000
-	inputstr .asg  .file "..\data\data_helms", .utf8
+	getModulePathTo(inputstr)
+	inputstr .cat "\data\data_helms", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
+	// inputstr .asg  .file "..\data\data_helms", .utf8
 	inputstr .split "*/", t[509], TT1
 	inputstr .split LF, t[v[1209]], TT1
 	t[801] .asg ""
@@ -1148,7 +1160,10 @@ __fn init_DIS_database $already_loaded {
 			
 	}
 	v[1210] = 9000
-	inputstr .asg  .file "..\data\data_accessories", .utf8
+	getModulePathTo(inputstr)
+	inputstr .cat "\data\data_accessories", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
+	//inputstr .asg  .file "..\data\data_accessories", .utf8
 	inputstr .split "*/", t[509], TT1
 	inputstr .split LF, t[v[1210]], TT1
 	t[801] .asg ""
@@ -1226,7 +1241,10 @@ __fn init_DIS_database $already_loaded {
 			
 	}
 	v[1215] = 10000
-	inputstr .asg  .file "..\data\data_minions", .utf8 //this was once sjis so this might cause some trouble
+	getModulePathTo(inputstr)
+	inputstr .cat "\data\data_minions", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
+	// inputstr .asg  .file "..\data\data_minions", .utf8 //this was once sjis so this might cause some trouble
 	inputstr .split "*/", t[509], TT1
 	t[803] .asg  .file "..\scripts\const_factions_id", .utf8
 	t[804] .asg  .file "..\scripts\const_weapons_id", .utf8

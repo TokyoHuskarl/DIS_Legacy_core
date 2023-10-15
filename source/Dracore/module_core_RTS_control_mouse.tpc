@@ -788,12 +788,14 @@ s[70].off
 												var1 = MousePtr_x
 												var2 = MousePtr_y
 												var2 += 8
-												v[11..12] *= 10000
-												@call .cev 1999
+												macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
+												// v[11..12] *= 10000
+												// @call .cev 1999
 												reg1.copy TT1, 2
 												TT2 -= 1
-												@call .cev 2001
-												reg2.copy v[1], 2
+												macro_convert_maptileXY_into_relativeXY(TT1,TT2,v[1],v[2])
+												// @call .cev 2001
+												// reg2.copy v[1], 2
 												v[7] = 0
 												v[8] = 0
 												@pic[973].strpic {
@@ -818,8 +820,9 @@ s[70].off
 												var1 -= 16 * (Map_LimitCoordX_min % 2)
 												var2 -= 16 * (Map_LimitCoordY_min % 2)
 												var2 -= 8
-												v[11..12] *= 10000
-												@call .cev 1999
+												macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
+												// v[11..12] *= 10000
+												// @call .cev 1999
 												reg1.copy TT1, 2
 												TT1 += 1
 												TT2 -= 1
@@ -827,8 +830,7 @@ s[70].off
 												TT2 += Map_LimitCoordY_min % 2
 												v[341..342] /= 2
 												v[341..342] *= 2
-												@call .cev 2001
-												reg2.copy v[1], 2
+												macro_convert_maptileXY_into_relativeXY(TT1,TT2,v[1],v[2])
 												v[1..2] -= 16
 												v[1] -= 8
 												v[2] += 24

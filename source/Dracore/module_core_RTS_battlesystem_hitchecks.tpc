@@ -116,7 +116,7 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 
  
 		}.else bl { // not broken
-			Temp2 =  victim_TacticsOrderFlag & 6 ? muldiv(victim_Shield_Value, 250, 100) : victim_Shield_Value << 1 // * 2
+			Temp2 =  victim_TacticsOrderFlag & 6 ? muldiv(victim_Shield_Value, 23, 10) : victim_Shield_Value << 1 // * 2
 			//if you're covered with shield wall brother ... then?
 			
 		}
