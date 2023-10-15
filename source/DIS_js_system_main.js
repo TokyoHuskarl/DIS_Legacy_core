@@ -88,8 +88,16 @@ var scene = scene || {};
 
 
 // global variables
-let g_PLAYER; // {DIS_RTSplayer}
+
+/**
+ * @global {DIS_RTSplayer} ptr to RTS player object
+ */
+let g_PLAYER;  
+/**
+ * @LOCAL {RTS.mission.local} ptr to RTS mission local properties.
+ */
 let LOCAL;
+
 
 
 
@@ -403,8 +411,14 @@ class DISagent extends DISentity { // agents for RTS mode
 		return res; 
 	};
 
-	isAlive(){ // check if it's alive
-		
+	isAlive(){ // check if the agent is alive
+		if(getv((1 + DIS.agent.getPtrToMainParam(this.agentid))) > 0){
+			return true;
+
+		} else {
+			return (this.activated = false);
+
+		}
 	};
 
 }
@@ -440,6 +454,10 @@ class RTSagentGroup { // list object for DISagent.
 		Schewerpunkt: [0,0],
 	};
 
+	pushAgent(agt){
+		this.agentlist.push(agt);
+	}
+
 	compoundAgtGroup(grp){
 		this.agentlist = this.agentlist.concat(grp.agentlist);
 		this.idlist = this.idlist.concat(grp.idlist);
@@ -457,7 +475,7 @@ class RTSagentGroup { // list object for DISagent.
 		let counter = 0;
 
 		for (let ag of this.agentlist){
-			if (ag.getAgentSlot(1) > 0 ){ // if it's valid agent
+			if (ag.isAlive()){ // if it's valid agent
 				let pnt = [ag.getAgentSlot(26),ag.getAgentSlot(27)];
 				const lv = ag.getAgentSlot(104);
 				for (let elmi = 0; elmi < 2; elmi++){
@@ -1290,16 +1308,13 @@ class RTSmission {
 		}
 	};
 
-	local = { // mission local instances
-		Cmd: {
-			importData: path=>{
-				//unco
-			}
-		},
-
-		
-		
+	Cmd = { // mission commands - basically load files from the mission directory
+		importData: path=>{
+			//unco
+		}
 	};
+
+	local = {}; // mission local instances - restored when you reload the game.
 	
 
 	conf = { // these matter only at the setting up mission part
@@ -2130,7 +2145,7 @@ var Cmd = {
 			if (lastDotIndex !== -1) {
 				let extension = path.slice(lastDotIndex + 1);
 				if (extension != "json"){
-					errorlog(`Cmd.sys.importData(${path}) loads only json/json.txt file. Also you need not to write extension`)
+					errorlog(`Cmd.sys.importData(${path}) loads only json/json.txt file. Also you need not to put extension`)
 
 				}
 			} else {
@@ -2269,6 +2284,12 @@ var Cmd = {
 		attack: function(grp,targetid){
 			this.checkCurrentGroup(grp);
 			Cmd.Qset(this.CmdType,"attack",`${targetid}`);
+
+		},
+		setStance: function(grp,stanceid,flag){
+			flag = flag || 0;
+			this.checkCurrentGroup(grp);
+			Cmd.Qset(this.CmdType,"setStance",`${stanceid}`);
 
 		},
 
