@@ -434,7 +434,11 @@ class RTSagentGroup { // list object for DISagent.
 		this.team = team || "undefined";
 	};
 
-	compoundArray(arr){
+	compoundAgtGroup(grp){
+		this.idlist = this.idlist.concat(grp.idlist);
+	};
+
+	compoundAgtArray(arr){
 		this.idlist = this.idlist.concat(arr);
 	};
 
