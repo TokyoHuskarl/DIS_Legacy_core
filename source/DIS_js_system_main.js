@@ -263,7 +263,17 @@ class DATA_troop_csv extends DATA_entity { // shadow of csv troops. doesn't have
 		
 	};
 	
+};
 
+
+// skin data for troop
+class DATA_skin extends DATA_entity {
+	constructor(id,src){
+		super(id);
+		this.i = index;
+		// copy given troop template
+		DATA.giveSrcParamToData(this,src);
+	};
 
 };
 
@@ -422,6 +432,10 @@ class RTSagentGroup { // list object for DISagent.
 		}
 		
 		this.team = team || "undefined";
+	};
+
+	compoundArray(arr){
+		this.idlist = this.idlist.concat(arr);
 	};
 
 	getids(){ return this.idlist; };
@@ -1224,7 +1238,7 @@ class RTSmission {
 
 	essential = { // these elements must be restored when you reload the game via save/load.
 		players: [],
-		difficulty: 0,
+		difficulty: getv(2401), // <- RTS_Difficulty
 		weatherType: 0,
 		mapDataDirectory: this.mapDataDirectory, // set in constructor
 	};
@@ -1443,10 +1457,16 @@ class DIS_RTSplayer extends DISentity {
 };
 
 class DIS_cohort extends DISentity {
-	constructor(team,id,grp){
+	constructor(team,id,agtarray){
 		super();
 		this.team = team;
 		this.id = id;
+		this.agents = agtarray;
+		
+		if (team == 0){ // single player
+			// unco
+		};
+
 	};
 
 };
@@ -2130,6 +2150,7 @@ var Cmd = {
 	group: { 
 		CmdType: CTYP_GROUP,
 		cgrp: [], // agentid array
+		Adr_cgrp_list_head: getv(1212),
 
 		// {RTSagentGroup}
 		setCgrp: function(grp){
@@ -2137,6 +2158,7 @@ var Cmd = {
 			for (let elm of grp.getids()) {
 				agentlist += elm + "|";
 			};
+			deblog(agentlist)
 			Cmd.Qset(this.CmdType,"setCgrp",agentlist);
 			this.cgrp = grp;
 		},
@@ -2145,18 +2167,19 @@ var Cmd = {
 			if(grp != this.cgrp){this.setCgrp(grp);};
 		},
 
-		registerCohort: function(grp,player,cohortid) { // jissoumati
-			checkCurrentGroup(grp)
-			Cmd.Qset(this.CmdType,"registerCohort",`${player},${cohortid}`);
+		registerCohort: function(grp,player,cohortid) {
+			this.checkCurrentGroup(grp);
+			Cmd.Qset(this.CmdType,"registerCohort",`${player},${cohortid},${this.Adr_cgrp_list_head},${grp.idlist.length}`);
+			return new DIS_cohort(player,cohortid,grp.idlist);
 		},
 
 		move: function(grp,path,flag){
-			checkCurrentGroup(grp)
-			Cmd.Qset(this.CmdType,"move",`${player},${cohortid}`);
+			checkCurrentGroup(grp);
+			Cmd.Qset(this.CmdType,"move",`${grp},${path},${flag}`);
 		},
 
 		attack: function(grp,targetid){
-			checkCurrentGroup(grp)
+			checkCurrentGroup(grp);
 			Cmd.Qset(this.CmdType,"attack",`${targetid}`);
 
 		},
@@ -2338,6 +2361,8 @@ const inheritancetest = `
 	DATA.autoregister(DATA.parseDISjson(inheritancetest))
 	Cmd.sys.importData("test.json")
 	RTS.mission.setPlayer(9,1)
+	let cohort1 = Cmd.map.spawnAgentgroup(trpid["TRP_imperial_comitatenses_menavlion"],[27,32],0,[0,-2],8,0,0);
+	Cmd.group.registerCohort(cohort1,0,1);
 	/*
 	let fucker = Cmd.game.pic.load("camera_ball",10);
 	fucker.refreshPicInfo();

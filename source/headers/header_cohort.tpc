@@ -6,6 +6,17 @@ defv {
 	//LEGV_PreRegisterGroup = 143
 }
 
+defv CohortArrayPtr = __id(Temp10)
+
+def {
+	PATH_ui_cohortflagbase = __str(PATH_ui_dir,"\cohortflagbase")
+
+		PATH_ui_mmcircle = __str(PATH_ui_dir,"\mmcircle")
+		PATH_ui_cohortflagbase_1 = __str(PATH_ui_cohortflagbase,"1")
+		PATH_ui_cohortflagbase_0 = __str(PATH_ui_cohortflagbase,"0")
+}
+
+
 defv{
 
 cohort_LeaderID = 581
@@ -36,3 +47,6 @@ cohort_StateFlag_FLAG_annihilated = 1
 cohort_StateFlag_FLAG_alive = 2
 cohort_StateFlag_FLAG_fighting = 4
 }
+
+
+#include "./../Dracore/module_core_RTS_cohort_functions.tpc"
