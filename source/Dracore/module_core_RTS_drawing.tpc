@@ -255,15 +255,15 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 
 
-			v[4005] = agent_2hweapon_stain * 3
-			v[4006] = agent_2hweapon_stain * -4
-			//v[4007] = agent_2hweapon_stain * -4
-			val_asg(v[4007],v[4006]) // v[4007] = v[4006]
-			v[4008] = agent_2hweapon_stain * -5
-			//v[4009] =v[Temp1 + 284] * 30
-			v[4009] = v[884] * 30
-			v[4010].repeat v[4009],2 // v[4010..4011] = v[4009]
-			v[4012] = 0
+								v[4005] = agent_2hweapon_stain * 3
+								v[4006] = agent_2hweapon_stain * -4
+								//v[4007] = agent_2hweapon_stain * -4
+								val_asg(v[4007],v[4006]) // v[4007] = v[4006]
+								v[4008] = agent_2hweapon_stain * -5
+								//v[4009] =v[Temp1 + 284] * 30
+								v[4009] = v[884] * 30
+								v[4010].repeat v[4009],2 // v[4010..4011] = v[4009]
+								v[4012] = 0
 
 									v[4001] .add v[4013], 4
 									v[4009] .add v[4013], 4
@@ -704,30 +704,30 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									
 							} .else bl {// doesn't have layered picture
 
-									@if `agent_ExMotionFlags & 8 {
-											v[480] = 32
-											val_asg(v[461],N16)// v[461] = 16
-											val_asg(TT2,N8) // TT2 = 8
-											@if expected_action_sprite != 2 {
-													TT1 = (v[340] + v[2500]) % 360 * 8
-													v[446] = 100 
-				v[446] += sin(TT1, 1, TT2)
-													v[472] = 100 
-				v[472] += cos(TT1, 1, TT2)
-													
-											} .else bl {
-													TT1 = (v[340] + v[2500]) % 360 * 5
-													TT2 = 10
-													v[446] = 100
-													v[472] = 100 
-				v[472] += cos(TT1, 1, TT2)
-													
-											}
-											
-									}
+								@if `agent_ExMotionFlags & ExMotionFlags_FLAG_slimy {
+									v[480] = 32
+										val_asg(v[461],N16)// v[461] = 16
+										val_asg(TT2,N8) // TT2 = 8
+										@if expected_action_sprite != 2 {
+											TT1 = (v[340] + v[2500]) % 360 * 8
+												v[446] = 100 
+												v[446] += sin(TT1, 1, TT2)
+												v[472] = 100 
+												v[472] += cos(TT1, 1, TT2)
+
+										} .else bl {
+											TT1 = (v[340] + v[2500]) % 360 * 5
+												TT2 = 10
+												v[446] = 100
+												v[472] = 100 
+												v[472] += cos(TT1, 1, TT2)
+
+										}
+
+								}
 									@if expected_action_sprite == 5 {
-											@if `agent_ExMotionFlags & 512 {
-													v[4117] = 6 + sin((v[340] + v[2500]) % 360 * (1 + v[868] / 15), 1, 9999) / 5000
+											@if `agent_ExMotionFlags & ExMotionFlags_FLAG_MoveAnim {
+													v[4117] = agent_ExMotionFlags & ExMotionFlags_FLAG_MoveAnim_OneDirectional ? 5 + (v[340] + v[2500] / (7 + 360 / v[868])) % 3 : 6 + sin((v[340] + v[2500]) % 360 * (1 + v[868] / 15), 1, 9999) / 5000
 													
 											}
 											

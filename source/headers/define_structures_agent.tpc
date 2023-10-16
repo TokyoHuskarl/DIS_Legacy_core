@@ -255,6 +255,9 @@ struct("agent",{
 	agent_SpriteOrder = 883
 	agent_ShieldFlash = 884
 	agent_2hweapon_stain = 885
+	agent_FootstepSoundTimer = 886
+	agent_FootstepSoundType = 887
+
 	agent_FlashType = 895
 	agent_OneTimeOffsetX = 896
 	agent_OneTimeOffsetY = 897
@@ -459,8 +462,11 @@ struct("agent",{
 	//ExMotions
 
 	ExMotionFlags_FLAG_have_AA_CD_Spr = 1
+	ExMotionFlags_FLAG_slimy = 8
 	ExMotionFlags_FLAG_have_fundamental_movemotion = 16
+	ExMotionFlags_FLAG_MoveAnim_OneDirectional = 256
 	ExMotionFlags_FLAG_MoveAnim = 512
+	ExMotionFlags_FLAG_no_footstepsound = 1024
 	ExMotionFlags_FLAG_no_fatigue = 2048
 	ExMotionFlags_FLAG_ArmorNotYetDamaged = 16384
 	ExMotionFlags_FLAG_HeadNotYetDamaged = 65536

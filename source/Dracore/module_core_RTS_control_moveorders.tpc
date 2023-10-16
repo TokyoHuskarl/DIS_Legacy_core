@@ -1520,7 +1520,7 @@ __fn func_control_moveorder_proc_move {
 				v[Temp1 + 34] &= ~4096
 				// "処理開始"
 				@if v[Ptr20] != 4 {
-					v[Ptr20] = s[16] == 1 ? 2 : 3
+					v[Ptr20] = s[16] == 1 ? MovementOrder_TYPE_move_ordered : MovementOrder_TYPE_prioritize_moving
 
 				}
 			@if `v[Temp1 + 1] != 11 {
@@ -1530,6 +1530,7 @@ __fn func_control_moveorder_proc_move {
 
 					//is attack move?
 					@if s[16] .isOn() {
+						v[Temp1 + 34] &= ~AI_routine_bits_FLAG_AIskip
 						v[Temp1 + 3] &= ~AgentBits_FLAG_ForcemoveFlag // on attack move, kill forcemove flag
 						
 							@if `v[Temp1 + 80] <= -10000 {
@@ -1538,9 +1539,11 @@ __fn func_control_moveorder_proc_move {
 							}
 
 					} .else bl {
+						v[Temp1 + 34] |= AI_routine_bits_FLAG_AIskip
 						v[Temp1 + 3] |= AgentBits_FLAG_ForcemoveFlag
 
 					}
+
 
 					v[Temp1 + 34] &= AI_routine_bits_MASK_for_initilizing_pathfinding
 					

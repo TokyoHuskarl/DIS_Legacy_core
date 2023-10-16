@@ -148,7 +148,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 											// RayCast to check if the agent can reach the target straightly AND it's melee troop
 											agent_AI_routine_bits |= agent_AAType == 0 ? AI_routine_bits_FLAG_RayCast : 0 
 
-									@if `agent_AI_routine_bits & AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue { // AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
+									@if `(agent_AI_routine_bits & AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue) == AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue { // AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
 											agent_MovementOrder = MovementOrder_TYPE_move_ordered // Change movement order to loose one
 											@if `!(agent_AgentBits & AgentBits_FLAG_walldetected) { // If there's no wall
 												agent_AI_routine_bits |= AI_routine_bits_FLAG_AIskip // AI check skip
@@ -922,14 +922,17 @@ __fn MAIN_agent_reached_ChasePoint {
 
 			// If continue Pathfinding flag is on
 			@if `agent_AI_routine_bits & AI_routine_bits_FLAG_PFcontinue {
-				// then pathfinding
+				// then pathfinding again (ask next 6 WP to the js path system)
 				agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
-			}.else `agent_AI_routine_bits & AI_routine_bits_FLAG_Pathblocked { // can't reach goal node
-				// then give up moving
-				LEGS_MAIN_Agent_tries_to_stop.on
-				agent_MovementOrder = MovementOrder_TYPE_do_not_move
-				agent_RelativeX.copy agent_HoldPointX, 2
-				agent_AI_routine_bits &= AI_routine_bits_MASK_for_initilizing_pathfinding
+			}.else bl { // no pathfinding continue flag
+				agent_AgentBits &= ~AgentBits_FLAG_ForcemoveFlag // kill forcemove flag
+				@if `agent_AI_routine_bits & AI_routine_bits_FLAG_Pathblocked { // can't reach goal node
+					// then give up moving
+					LEGS_MAIN_Agent_tries_to_stop.on
+						agent_MovementOrder = MovementOrder_TYPE_do_not_move
+						agent_RelativeX.copy agent_HoldPointX, 2
+						agent_AI_routine_bits &= AI_routine_bits_MASK_for_initilizing_pathfinding
+				}
 			}
 
 			Reaching_Target_Way_Point.on

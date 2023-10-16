@@ -603,7 +603,7 @@ __fn agent_autoattack_melee {
 							// block popup
 							@if victim_ShieldMotionTimer < 1 { // not in shield motion
 								@if s[307] .isOff() {
-										@if `v[183] < v[4572] / 2 {
+										@if `v[183] < (v[4572] >> 1) {
 											// "#描画範囲内か？"
 											v[220] %= 30
 											v[220] += 1201

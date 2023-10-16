@@ -2,14 +2,14 @@ const csv = require('csvtojson');
 const fs = require('fs');
 
 // Input CSV file path
-const csvFilePath = 'data_races.csv';
+const csvFilePath = 'techtemp.csv';
 
 // Read and convert the CSV to JSON
 csv()
 	.fromFile(csvFilePath)
 	.then((jsonArrayObj) => {
 		// Output JSON file path
-		const jsonFilePath = 'output.json';
+		const jsonFilePath = 'techoutput.json';
 
 		// Write the JSON data to a file
 		fs.writeFileSync(jsonFilePath, JSON.stringify(jsonArrayObj, null, 2));

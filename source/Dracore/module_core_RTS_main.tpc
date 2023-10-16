@@ -300,7 +300,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    }
 			
 	    @if v[887] < v[888] {
-				v[886] +=  g_perFPS //98000 / 48
+				agent_FootstepSoundTimer +=  g_perFPS //98000 / 48
 				v[883] .add v[885], 2
 				val_add(v[887],N1) // v[887] += 1
 		
@@ -506,10 +506,11 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[401] + 501] == 1 {
 						@if `agent_ActionFlag & ActionFlag_FLAG_Walking { // DIS_EXPERIMENTAL s[v[401] + v[4558]] == 1 {
 							// "#Sub timer"
-							val_sub(v[886],N2)
-							@if v[886] <= 0 {
+							// agent_FootstepSoundTimer -= agent_ExMotionFlags & ExMotionFlags_FLAG_no_footstepsound ? 0 : 2
+							val_sub(agent_FootstepSoundTimer,N2)
+							@if agent_FootstepSoundTimer <= 0 {
 									TT1 = v[1179] + v[640] + 20 * v[887]
-									v[685] = 13
+									agent_DodgeTimer = agent_ExMotionFlags & ExMotionFlags_FLAG_no_footstepsound ? agent_DodgeTimer : 13
 									@if `agent_MoveTypeBIts & MoveTypeBits_Flying {
 										@if v[182] < 1 {
 											@if v[522] < 32 {
@@ -529,8 +530,8 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 											}
 
 										}
-										v[886] = v[868] / 4 
-										v[886]+= rnd(7, 11)
+										agent_FootstepSoundTimer = v[868] >> 2 
+										agent_FootstepSoundTimer+= rnd(7, 11)
 										
 									} .else bl {
 										@if v[182] < 1 {
@@ -551,8 +552,8 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 												}
 												
 										}
-										v[886] = v[868] / 4 
-										v[886] += rnd(7, 11)
+										agent_FootstepSoundTimer = v[868] >> 2 
+										agent_FootstepSoundTimer += rnd(7, 11)
 										// "Is_in_water"
 										@if `agent_AgentBits & 4 {
 												// "Bubble Particle"

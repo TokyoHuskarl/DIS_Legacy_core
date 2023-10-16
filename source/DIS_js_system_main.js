@@ -288,6 +288,19 @@ class DATA_skin extends DATA_entity {
 };
 
 
+// template class for troops
+class DATA_tech extends DATA_entity {
+	constructor(id,src){
+		super(id);
+		// inherit DATA_tech object
+		DATA.makeDataInherit(this,"TECH",src);
+		// copy given troop template
+		DATA.giveSrcParamToData(this,src);
+
+		// convert arrays into simple number
+	};
+
+};
 // ------------------------------------------------
 // DIS objects
 // ------------------------------------------------
@@ -721,6 +734,8 @@ DIS = { // DIS fundamental components
 						text += `StaticID loaded - ${amount} statics are preset`
 					} else if (type == 803) {
 						text += `FactionID loaded - ${amount} factions are preset`
+					} else if (type == 810) {
+						text += `TechID loaded - ${amount} techs are preset`
 					} else {
 						text += "unknown RM str is loaded."
 					}
@@ -766,6 +781,7 @@ DIS = { // DIS fundamental components
 			// load tech ID
 			// --------------------
 			techid = new IDdict("TECH"); // init facid
+			store_ID_table(techid,810) // get from ~/scripts/const_factions.
 
 
 
