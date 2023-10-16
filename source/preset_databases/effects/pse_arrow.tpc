@@ -420,7 +420,7 @@ __fn func_effect_arrow_hit $WeaponType {
 			    // "NOT siege ram"
 			    @if `!(victim_AI_routine_bits & AI_routine_bits_FLAG_siegeweapon_flag) {
 						TT2 = Ptr10 + 4984
-						v[TT2] = v[TT2] > 0 ? 4 : 0 // shield flash!
+						v[TT2] = victim_MainShieldID > 0 ? 4 : 0 // shield flash!
 						// "#Shield Motion"
 						@if victim_ActionState != 1 {
 								TT2 = Ptr10 + 4943
