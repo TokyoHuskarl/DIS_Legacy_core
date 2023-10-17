@@ -745,7 +745,7 @@ def {
 __fn cmd_team_give_tech_flag $teamID $tech_group $tech_flag {
 	t2v(SSargs0,var1) // teamID
 	t2v(SSargs1,var2) // tech slot
-	SSargs2.toNum var3 .hex
+	t2v(SSargs1,var3) // tech flag - hex is parsed on js and given as int number to TPC/
 
 	// this might seem retarded kek
 	var1 = max(var1, 0)
@@ -754,6 +754,7 @@ __fn cmd_team_give_tech_flag $teamID $tech_group $tech_flag {
 	var2 = min(var2, 3)
 	var2 -= 1
 
+	// kari
 	v[Const_Team_Address_Tech_Array_Head + var1 + Team_Tech_Array_Size * var2] |= var3
 
 }

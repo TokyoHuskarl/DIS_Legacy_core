@@ -248,8 +248,8 @@ __fn function_draw_agent_inv_stats {
 			v[v[601]].copy v[601], 300
 
 			fuction_drawing_set_grid()
-	    v[4106] = v[726] & 16777216 ? 7 : 5
-	    v[4124] = v[726] & 134217728 ? 2 : 1
+	    v[4106] = v[726] & ExMotionFlags_FLAG_horseback ? 7 : 5
+	    v[4124] = v[726] & ExMotionFlags_FLAG_Weapon_Cannot_be_flipped ? 2 : 1
 
 			// camel
 			v[4056] += agent_AABits & AABits_FLAG_Camel ? Const_camel_offsetY_draw : 0 // Camel
@@ -258,7 +258,7 @@ __fn function_draw_agent_inv_stats {
 
 	    v[468] = 9
 	    @comment "Colour"
-	    v[449..452] = 100
+	    v[449].repeat 100,4 // v[449..452] = 100
 	    @comment "Get Picture Layer Array"
 	    TT18 = agent_PictArray // v[159]
 	    var1 = (v[340] - 1) * 10

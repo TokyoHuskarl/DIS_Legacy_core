@@ -300,6 +300,13 @@ class DATA_tech extends DATA_entity {
 		// convert arrays into simple number
 	};
 
+	getFlagAddress(){
+		// [address,flag]
+		let retme = [this.techflagslot[0],parseInt(this.techflagslot[1],16)];
+		deblog(retme)
+		return retme;
+	};
+
 };
 // ------------------------------------------------
 // DIS objects
@@ -777,13 +784,17 @@ DIS = { // DIS fundamental components
 			facid = new IDdict("FAC"); // init facid
 			store_ID_table(facid,803) // get from ~/scripts/const_factions.
 			
+			// ~DATA converted from DIS json START~
+
 			// --------------------
 			// load tech ID
 			// --------------------
+			
 			techid = new IDdict("TECH"); // init facid
-			store_ID_table(techid,810) // get from ~/scripts/const_factions.
+			for (let i = 1; i < DATA.TECH.ptrs[0]; i++){
+				techid.register(techid.prefix + (DATA.TECH.ptrs[i].id),i);
 
-
+			};
 
 					
 			DIS.log.push("ID table init done.")
@@ -948,7 +959,8 @@ DIS.data = { // DIS.data
 	},
 
 	init: function(){
-		this.FACTION.init();
+		// this.FACTION.init(); <- rewrite this!
+		this.TECH.init();
 	},
 
 	// called by Cmd.sys.importData on RM command interpreter
@@ -1218,7 +1230,38 @@ DIS.data = { // DIS.data
 
 	}, 
 	STATIC: {}, 
-	TECH: {},
+	TECH: {
+		init: function(){
+			// load faction template json file in current module directly
+			// before running this js file, TPC loads it
+			
+			let LOADED_DATA = JSON.parse(gett(634))["TECH"]; // <- t[634] is str_moduleData_Tech_json
+			let i = 1;
+			for (let key in LOADED_DATA){
+				let tech = this.createNew(key,LOADED_DATA[key]);
+				this.register(tech,i); // even if it's dummy faction, register to as far as it's written in const_factions.txt
+				i++;
+			};
+
+		},
+
+		ptrs: [0],
+
+		createNew: function(strid,srcdata){
+			return this[strid] = new DATA_tech(strid,srcdata); // do not resgister to ptrs yet
+		},
+
+		// can't we omit this with some js function or etwas?
+		register(elm,index){
+			index = index || this.ptr[0] + 1; // if index is not set,then just push
+			elm.i = index;
+			this.ptrs[index] = elm;
+			this.ptrs[0] = this.ptrs.length;
+		},
+
+
+
+	},
 	TREETEMP: {
 		/**
 		 * .
@@ -2257,7 +2300,8 @@ var Cmd = {
 		},
 
 		giveTech: function(playerid,tech){ // not done
-			Cmd.Qset(this.CmdType,"giveTech",`${playerid},${tech[0]},${tech[1]}`);
+			let convt = DATA.TECH.ptrs[[techid.convert(tech)]].getFlagAddress();
+			Cmd.Qset(this.CmdType,"giveTech",`${playerid},${convt[0]},${convt[1]}`);
 		},
 
 	},
@@ -2395,12 +2439,267 @@ DUI = {
 // init load
 if (!VIRTUAL_ENV){
 	DIS.init.loadBootconf();
+	DIS.data.init(); // reset DIS data
 	DIS.init.initID();
-	// DIS.data.init(); // reset DIS data
+	// 
 	Cmd.init();
 }
 
 
+const techtest = `
+{
+	"TECH": {
+		"dra_siege": {
+			"id": "dra_siege",
+			"techflagslot": [1,"0x1"]
+		},
+		"dra_naskarl": {
+			"id": "dra_naskarl",
+			"techflagslot": [1,"0x2"]
+		},
+		"dra_inf1": {
+			"id": "dra_inf1",
+			"techflagslot": [1,"0x4"]
+		},
+		"dra_inf2": {
+			"id": "dra_inf2",
+			"techflagslot": [1,"0x8"]
+		},
+		"dra_inf3": {
+			"id": "dra_inf3",
+			"techflagslot": [1,"0x10"]
+		},
+		"dra_tool_upgrade": {
+			"id": "dra_tool_upgrade",
+			"techflagslot": [1,"0x20"]
+		},
+		"dra_crossbow_improvement": {
+			"id": "dra_crossbow_improvement",
+			"techflagslot": [1,"0x80"]
+		},
+		"dra_dragonforge": {
+			"id": "dra_dragonforge",
+			"techflagslot": [1,"0x100"]
+		},
+		"dra_squires": {
+			"id": "dra_squires",
+			"techflagslot": [1,"0x200"]
+		},
+		"dra_better_armor": {
+			"id": "dra_better_armor",
+			"techflagslot": [1,"0x400"]
+		},
+		"dra_empyrean_guard": {
+			"id": "dra_empyrean_guard",
+			"techflagslot": [1,"0x800"]
+		},
+		"dra_shooting_training": {
+			"id": "dra_shooting_training",
+			"techflagslot": [1,"0x1000"]
+		},
+		"dra_combat_training": {
+			"id": "dra_combat_training",
+			"techflagslot": [1,"0x2000"]
+		},
+		"dra_naskarl_gyao": {
+			"id": "dra_naskarl_gyao",
+			"techflagslot": [1,"0x4000"]
+		},
+		"food1": {
+			"id": "food1",
+			"techflagslot": [2,"0x1"]
+		},
+		"food2": {
+			"id": "food2",
+			"techflagslot": [2,"0x2"]
+		},
+		"wood1": {
+			"id": "wood1",
+			"techflagslot": [2,"0x4"]
+		},
+		"wood2": {
+			"id": "wood2",
+			"techflagslot": [2,"0x8"]
+		},
+		"cart1": {
+			"id": "cart1",
+			"techflagslot": [2,"0x10"]
+		},
+		"cart2": {
+			"id": "cart2",
+			"techflagslot": [2,"0x20"]
+		},
+		"crane": {
+			"id": "crane",
+			"techflagslot": [2,"0x40"]
+		},
+		"melee1": {
+			"id": "melee1",
+			"techflagslot": [2,"0x80"]
+		},
+		"melee2": {
+			"id": "melee2",
+			"techflagslot": [2,"0x100"]
+		},
+		"arrow1": {
+			"id": "arrow1",
+			"techflagslot": [2,"0x200"]
+		},
+		"arrow2": {
+			"id": "arrow2",
+			"techflagslot": [2,"0x400"]
+		},
+		"armor1": {
+			"id": "armor1",
+			"techflagslot": [2,"0x800"]
+		},
+		"armor2": {
+			"id": "armor2",
+			"techflagslot": [2,"0x1000"]
+		},
+		"AP": {
+			"id": "AP",
+			"techflagslot": [2,"0x2000"]
+		},
+		"HPSP": {
+			"id": "HPSP",
+			"techflagslot": [2,"0x4000"]
+		},
+		"ballistics": {
+			"id": "ballistics",
+			"techflagslot": [2,"0x8000"]
+		},
+		"siege_engineer": {
+			"id": "siege_engineer",
+			"techflagslot": [2,"0x10000"]
+		},
+		"dralchemy": {
+			"id": "dralchemy",
+			"techflagslot": [2,"0x20000"]
+		},
+		"artitecture": {
+			"id": "artitecture",
+			"techflagslot": [2,"0x40000"]
+		},
+		"husbandry": {
+			"id": "husbandry",
+			"techflagslot": [2,"0x80000"]
+		},
+		"townwatch": {
+			"id": "townwatch",
+			"techflagslot": [2,"0x1000000"]
+		},
+		"arcane_transmission": {
+			"id": "arcane_transmission",
+			"techflagslot": [2,"0x2000000"]
+		},
+		"field_medic": {
+			"id": "field_medic",
+			"techflagslot": [2,"0x4000000"]
+		},
+		"conscription": {
+			"id": "conscription",
+			"techflagslot": [2,"0x8000000"]
+		},
+		"castle_age": {
+			"id": "castle_age",
+			"techflagslot": [2,"0x10000000"]
+		},
+		"imperial_age": {
+			"id": "imperial_age",
+			"techflagslot": [2,"0x20000000"]
+		},
+		"dra_add_magic_missile": {
+			"id": "dra_add_magic_missile",
+			"techflagslot": [3,"0x1"]
+		},
+		"dra_dravalry": {
+			"id": "dra_dravalry",
+			"techflagslot": [3,"0x2"]
+		},
+		"dra_drachemistry": {
+			"id": "dra_drachemistry",
+			"techflagslot": [3,"0x4"]
+		},
+		"dra_basement": {
+			"id": "dra_basement",
+			"techflagslot": [3,"0x8"]
+		},
+		"imp_comitatenses": {
+			"id": "imp_comitatenses",
+			"techflagslot": [3,"0x1"]
+		},
+		"imp_cataphract": {
+			"id": "imp_cataphract",
+			"techflagslot": [3,"0x2"]
+		},
+		"imp_siegeweapons": {
+			"id": "imp_siegeweapons",
+			"techflagslot": [3,"0x4"]
+		},
+		"imp_composite_armor": {
+			"id": "imp_composite_armor",
+			"techflagslot": [3,"0x8"]
+		},
+		"imp_vibroweapon": {
+			"id": "imp_vibroweapon",
+			"techflagslot": [3,"0x10"]
+		},
+		"imp_loricananos": {
+			"id": "imp_loricananos",
+			"techflagslot": [3,"0x20"]
+		},
+		"imp_AntiRealityWarping": {
+			"id": "imp_AntiRealityWarping",
+			"techflagslot": [3,"0x40"]
+		},
+		"imp_decadencepart1": {
+			"id": "imp_decadencepart1",
+			"techflagslot": [3,"0x80"]
+		},
+		"imp_decadencepart2": {
+			"id": "imp_decadencepart2",
+			"techflagslot": [3,"0x100"]
+		},
+		"imp_elastic_defence": {
+			"id": "imp_elastic_defence",
+			"techflagslot": [3,"0x200"]
+		},
+		"poteton_anarchy": {
+			"id": "poteton_anarchy",
+			"techflagslot": [3,"0x1"]
+		},
+		"poteton_perfusion": {
+			"id": "poteton_perfusion",
+			"techflagslot": [3,"0x2"]
+		},
+		"rurik_covenmeeting": {
+			"id": "rurik_covenmeeting",
+			"techflagslot": [3,"0x1"]
+		},
+		"rurik_druzina": {
+			"id": "rurik_druzina",
+			"techflagslot": [3,"0x2"]
+		},
+		"rurik_age3": {
+			"id": "rurik_age3",
+			"techflagslot": [3,"0x4"]
+		},
+		"sushi_tengger_cavalry": {
+			"id": "sushi_tengger_cavalry",
+			"techflagslot": [3,"0x1"]
+		},
+		"sushi_kamikaze": {
+			"id": "sushi_kamikaze",
+			"techflagslot": [3,"0x2"]
+		},
+		"sushi_chemistry": {
+			"id": "sushi_chemistry",
+			"techflagslot": [3,"0x4"]
+		}
+	}
+}
+`
 
 // without RPG_RT.exe
 if (VIRTUAL_ENV){
@@ -2535,6 +2834,15 @@ const inheritancetest = `
 	deblog(Cmd.CmdQueue)
 	Cmd.group.move(cohort1,[1,1],0);
 	Cmd.run();
+
+
+
+
+
+
+
+
+
 	/*
 	let fucker = Cmd.game.pic.load("camera_ball",10);
 	fucker.refreshPicInfo();

@@ -138,6 +138,8 @@ __fn func_generate_agent {
 													// "#Hair"
 													v[670] = 0
 
+													
+
 											}
 
 										@call .cev 309
@@ -2344,3 +2346,21 @@ __fn param_adjustment_dragons {
 
 		}
 }
+
+
+
+__fn agent_set_skin $raceid $skinkey $headtype $haircolor $hairstyle {
+	
+	v[887] = v[669] + v[663] * 1000000
+	v[887] += v[663] != -1 ? agent_Race * 10000000 : 0
+}
+
+
+
+
+
+
+
+
+
+

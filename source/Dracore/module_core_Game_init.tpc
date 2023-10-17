@@ -1561,6 +1561,15 @@ __fn init_DIS_database $already_loaded {
 	inputstr .split "*/", t[509], TT1
 	inputstr .split LF, t[v[1217]], TT1
 
+	// LOAD SKIN FILE
+	
+	/*
+	getModulePathTo(inputstr)
+	inputstr.cat "Data\data_skins.json"
+	load_json_to(inputstr,str_moduleData_FacTemplate_json)
+	remove_comment_out_from_refstr(__id(str_moduleData_FacTemplate_json))
+	*/
+	
 
 	// LOAD FACTION TEMPLATE
 	
@@ -1569,6 +1578,16 @@ __fn init_DIS_database $already_loaded {
 	inputstr.cat "Data\data_factions_template.json"
 	load_json_to(inputstr,str_moduleData_FacTemplate_json)
 	remove_comment_out_from_refstr(__id(str_moduleData_FacTemplate_json))
+
+
+	// LOAD TECH file
+
+	// new loading
+	getModulePathTo(inputstr)
+	inputstr.cat "Data\data_techs.json"
+	load_json_to(inputstr,str_moduleData_Tech_json)
+	remove_comment_out_from_refstr(__id(str_moduleData_Tech_json))
+
 
 	
 	
