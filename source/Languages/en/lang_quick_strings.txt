@@ -13,9 +13,9 @@ Wavering^AP/AR/MR/HIT/EVA/WILL-10%
 Breaking^AP/AR/MR/HIT/EVA/WILL-20%
 Fleeing。^AP/AR/MR/HIT/EVA/WILL-30%^ROUTING!
 Confident^AP/AR/MR/HIT/EVA+10%
-\c[10]Tactic　-　Pikewall：\c[0]^Brace pike to repel enemy charge.^\c[1]HIT+20%^Gains longer AA range^\c[2]Immune to knockback^\c[17]MS-50%^\c[0]Alert stance to stop＊＊
-\c[10]Tactic　-　Shieldwall：\c[0]^Raising the Shield to bond strong frontline.^\c[1]All defensive parameter+40%^\c[17]AS-50%^\c[5]MS-20%^\c[17]Cannot cast Attack Skills^\c[0]Aggressive stance to stop＊＊
-\c[10]Tactic　-　Shieldwall：\c[0]^"Raise the Shield wall, hold the front line!"^\c[2]All defensive parameter+50%^AA deals knockback effect^\c[17]AS-50%^\c[5]MS-20%^\c[17]Cannot cast Attack Skills^\c[0]Aggressive stance to stop＊＊
+\c[10]Tactic　-　Pikewall：\c[0]^Brace pike to repel enemy charge.^\c[1]HIT+20%^Gains longer AA range^\c[2]Immune to knockback^\c[0]Automatically deals melee penalty to nearby enemy cavalries^\c[17]MS-50%^\c[0]Alert stance to stop＊＊
+\c[10]Tactic　-　Shieldwall：\c[0]^Raising the Shield to bond strong frontline.^\c[1]AR/MR+25%^\c[1]EVA+33%^\c[2]Shield Ranged-EVA bonus doubled^\c[17]AS-50%^\c[5]MS-20%^\c[17]Cannot cast Attack Skills^\c[0]Aggressive stance to stop＊＊
+\c[10]Tactic　-　Shieldwall：\c[0]^"Raise the Shield wall, hold the front line!"^\c[2]AR/MR+33%^\c[2]EVA+40%^\c[2]Shield Ranged-EVA bonus doubled^\c[0]AA deals knockback effect^\c[17]AS-50%^\c[5]MS-20%^\c[17]Cannot cast Attack Skills^\c[0]Aggressive stance to stop＊＊
 \c[10]Tactic　-　Skirmish：\c[0]^Try to kite nearest enemy.^\c[2]Auto Kiting^\c[1]AS+40%^\c[5]HIT-10%^Range-10%^\c[0]Deffensive stance to stop
 部位が装備中の鎧によってロックされています！
 Cavalry cannot equip this equipment!
@@ -484,9 +484,9 @@ Do you really restart this stage?
 
 Current Recovery Amount
 Current Parameter
-\c[\v[341]]\t[\v[340]]\c[0]^^^^^R-Hand:^L-Hand:^Armor:^Helm:^Acc.:^R-Sub:^L-Sub:^Lv.\v[704] ^^^\c[1]HP:\c[0]\v[706]/\v[705]\c[0] \c[10]SP:\c[0]\v[708]/\v[707]\c[0]^$A\c[17]Attack Damage:\c[0]\v[709]\c[5] Attack Speed:\c[0]\v[719]^	 \c[5]Attack Range:\c[0]\v[345]\c[0] \c[5]Hit:\c[0]\v[713] ^	 \c[5]AR.Pen.:\c[0]\v[737]% \c[5]AR.Eff.:\c[0]\v[346]%^	 \c[14]Critical Chance:\c[0]\v[715]%^$B\c[3]Armor\c[0]:\v[711]/\v[738] \c[3]Evasion:\c[0]\v[714]^	 Critical Chance Reduction:-\v[839]%^	 Critical Damage Reduction:-\v[840]%^$C\c[16]Ability Power:\c[0]\v[710] \c[6]Magic Resist:\c[0]\v[712] ^$DMove Speed:\v[716] \c[0]Will:\c[0]\v[739]^^^Q:\t[501]^W:\t[502]^E:\t[503]^R:\t[504]
+\c[\v[341]]\t[\v[340]]\c[0]^^^^^R-Hand:^L-Hand:^Armor:^Helm:^Acc.:^R-Sub:^L-Sub:^Lv.\v[704] ^^^\c[1]HP:\c[0]\v[706]/\v[705]\c[0] \c[10]SP:\c[0]\v[708]/\v[707]\c[0]^$A\c[17]Attack Damage:\c[0]\v[709]\c[5] Attack Speed:\c[0]\v[719]^	 \c[5]Attack Range:\c[0]\v[345]\c[0] \c[5]Hit:\c[0]\v[713] ^	 \c[5]AR.Pen.:\c[0]\v[737]% \c[5]AR.Eff.:\c[0]\v[346]%^	 \c[14]Critical Chance:\c[0]\v[715]%^$B\c[3]Armor\c[0]:\v[711]/\v[738] \c[3]Base Evasion:\c[0]\v[714]^	 Critical Chance Reduction:-\v[839]%^	 Critical Damage Reduction:-\v[840]%^$C\c[16]Ability Power:\c[0]\v[710] \c[6]Magic Resist:\c[0]\v[712] ^$DMove Speed:\v[716] \c[0]Will:\c[0]\v[739]^^^Q:\t[501]^W:\t[502]^E:\t[503]^R:\t[504]
 \c[2]\t[503]\c[0] \t[504]^\c[17]Damage:\c[0]\v[1902] \c[5]AR.Pen.:\c[0]\v[1904]% \c[5]AR.Dam.:\c[0]\v[1943]%^\c[5]Hit:\c[2]+\v[1905]\c[0] \c[14]Crit:\c[2]+\v[1906]%\c[0] \c[5]Range:\c[0]\v[1944]^\c[5]AS:\c[0]\v[1910] \c[10]SpCost:\c[17]\v[1912]\c[0] \c[10]Max.Sp:\c[17]-\v[1919]\c[0]^\c[1]Weapon Skill:\c[0][\t[506]]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]
-\c[2]\t[503]\c[0] \t[504]^\c[3]EVA:\c[2]+\v[1902]\c[0] Durability.:\v[1904]^\c[10]Max.Sp:\c[17]-\v[1919]\c[0]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]^
+\c[2]\t[503]\c[0] \t[504]^\c[3]Melee Evasion Bonus:\c[2]+\v[1902]\c[0]^ \c[3]Ranged Evasion Bonus:\c[2]+\v[1905]^ \c[0]Durability.:\v[1904]^\c[10]Max.Sp:\c[17]-\v[1919]\c[0]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]^
 \c[2]\t[503]\c[0] \t[504]^\c[0]AR:\c[0]:\c[2]\v[1902]\c[0] \c[6]MR:\c[2]+\v[1903]\c[0]^\c[3]Bonus EVA:\c[2]+\v[1905]\c[0]^\c[10]Max.Sp:\c[17]-\v[1919]\c[0]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]
 \c[2]\t[503]\c[0] \t[504]^CritDamageReduction:\c[2]-\v[1907]%\c[0]^CritChanceReduction:\c[2]-\v[1908]%\c[0]^\c[6]MR:\c[2]+\v[1903]\c[0]^\c[5]Ranged Hit Penalty:\c[17]-\v[1918]\c[0]^\c[10]Max.Sp:\c[17]-\v[1919]\c[0] \c[10]SpReg.Penalty:\c[17]-\v[1920]\c[0]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]
 \c[2]\t[503]\c[0] \t[504]^\c[0]AR:\c[0]:\c[2]\v[1902]\c[0] \c[6]MR:\c[2]+\v[1903]\c[0]^\c[3]Bonus EVA:\c[2]+\v[1905]\c[0]^\c[10]Max.Sp:\c[17]-\v[1919]\c[0]^\v[1931]\c[8]\t[20035]\c[0]^…\t[505]
@@ -499,3 +499,4 @@ Current Parameter
 Invested Pt. \v[356]
 Perk Pt. \v[356]
 Empyrean New Order
+Expected Ranged Evasion

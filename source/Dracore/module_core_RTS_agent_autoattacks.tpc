@@ -875,7 +875,7 @@ __fn agent_autoattack_ranged {
 
 					// "#diffusionf: y=x (x)/(-240)+30"
 					//TT10 = max(pow(v[v[210] + 265], 2) / -240 + 30, 0)
-					TT10 = max(pow(agent_ProcessHIT, 2) / -225 + 32, 0)
+					TT10 = max(pow(agent_ProcessHIT, 2) / -225 + 34, 0)
 
 					v[624] += rnd(-TT10, TT10)
 					v[625] += rnd(-TT10, TT10)

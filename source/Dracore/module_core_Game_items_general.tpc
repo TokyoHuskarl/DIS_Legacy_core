@@ -146,9 +146,11 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 		
 	    }
 	    @comment "Cracking Resistance"
-	    v[834] = v[1904]
+	    agent_ShieldBreakResistance = v[1904]
 	    @comment "#Check Shield Master"
-	    v[834] = (v[665] & 1) == 1 ? muldiv(v[834], 15, 10) : v[834]
+	    agent_ShieldBreakResistance = (v[665] & 1) ? muldiv(agent_ShieldBreakResistance, 15, 10) : agent_ShieldBreakResistance
+			// ranged shield value
+	    agent_ShieldRangedProtection = v[665] & 1 ? muldiv(v[1905], 15, 10) : v[1905]
 	    @comment "Can ShieldWall?"
 	    v[740] |= v[1903] == 1 ? 4 : 0
 	    @comment "Show Shield Sprite"
@@ -179,7 +181,8 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 	    v[833] = 0
 	    @comment "#Duelist Check?"
 	    @comment "Cracking Resistance"
-	    v[834] = 0
+	    agent_ShieldBreakResistance = 0
+			agent_ShieldRangedProtection = 0
 	    @comment "Can ShieldWall?"
 	    v[740] &= v[1903] == 1 ? ~4 : ~0
 	    @comment "If equip assigning unit is customtroop"

@@ -264,6 +264,7 @@ __fn function_draw_agent_inv_stats {
 	    var1 = (v[340] - 1) * 10
 	    var1 = Const_str_agent_pictures_strings_start + var1
 	    @while TT18 >= 1 {
+				TT1 = TT18 % 10
 				Temp5 = v[157] + 24
 				Temp6 = v[158] + 54
 				@comment "Add Initial Offsets to SpriteXY"
@@ -271,7 +272,6 @@ __fn function_draw_agent_inv_stats {
 				// v[0] = v[305..306] += v[881..882]
 				Temp6 += v[4050 + TT1]
 				@comment "Add Initial Offsets to SpriteXY#End"
-				TT1 = TT18 % 10
 				v[463] = v[4100 + TT1]
 				v[464] = v[4120 + TT1]
 				Ptr6 = TT1 + var1

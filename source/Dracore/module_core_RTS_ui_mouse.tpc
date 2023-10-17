@@ -260,6 +260,8 @@ __fn UI_CEV_MOUSE_OBSERVER {
 							s[201].on
 							
 					}
+
+					// HP
 					TT1 = 1
 					@if `between(LEGV_MousePointer_X - 74 * TT1, v[1952] - 188, v[1952] - 114) {
 							LEGV_sentence_id_on_popup1 = 10006 + TT1
@@ -292,6 +294,8 @@ __fn UI_CEV_MOUSE_OBSERVER {
 							s[201].on
 							
 					}
+
+					// SP
 					TT1 = 2
 					@if `between(LEGV_MousePointer_X - 74 * TT1, v[1952] - 188, v[1952] - 114) {
 							LEGV_sentence_id_on_popup1 = 10006 + TT1
@@ -327,6 +331,7 @@ __fn UI_CEV_MOUSE_OBSERVER {
 					
 						}
 						@if `between(LEGV_MousePointer_Y, v[1953] + v[1955] / 4 + 8, v[1953] + v[1955] / 4 + 18) {
+					// AD
 					TT1 = 0
 					@if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
 							LEGV_sentence_id_on_popup1 = 10001 + TT1
@@ -359,6 +364,8 @@ __fn UI_CEV_MOUSE_OBSERVER {
 							s[201].on
 							
 					}
+
+					// AP
 					TT1 = 1
 					@if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
 							LEGV_sentence_id_on_popup1 = 10001 + TT1
@@ -391,6 +398,7 @@ __fn UI_CEV_MOUSE_OBSERVER {
 							s[201].on
 							
 					}
+					// MR
 					TT1 = 2
 					@if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
 							LEGV_sentence_id_on_popup1 = 10001 + TT1
@@ -423,6 +431,7 @@ __fn UI_CEV_MOUSE_OBSERVER {
 							s[201].on
 							
 					}
+					// HIT
 					TT1 = 3
 					@if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
 							LEGV_sentence_id_on_popup1 = 10001 + TT1
@@ -455,6 +464,9 @@ __fn UI_CEV_MOUSE_OBSERVER {
 							s[201].on
 							
 					}
+
+
+					// EVA
 					TT1 = 4
 					@if `between(LEGV_MousePointer_X - 36 * TT1, v[1952] - 192, v[1952] - 148) {
 							LEGV_sentence_id_on_popup1 = 10001 + TT1
@@ -467,6 +479,14 @@ __fn UI_CEV_MOUSE_OBSERVER {
 						@call .cev 1890
 						macro_extract_selecting_unit_param
 						macro_strcat_adjustment(t[20476],v[866],3)
+
+						// addtionally, show ranged EVA as well
+						t[3000].cat LF
+						get_base_rangedEVA(agent_ProcessEVA,agent_PerkFlagBits1,agent_ProcessMS)
+						reg1 += (agent_ShieldRangedProtection << (agent_TacticsOrderFlag & 6 ? 1 : 0))
+
+						macro_strcat_adjustment(t[20492],reg1,3)
+
 						@pic[PicID_Popup_1].strpic {
 								t[3000]
 								.pos TT1, TT2 .bottom

@@ -94,29 +94,24 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	// @comment "HITを取得"
 	val_asg(Temp1,agent_ProcessHIT) // Temp1 = agent_ProcessHIT
 	// @comment "AVD/4を取得"
-	val_asg(reg1,victim_ProcessEVA) // reg1 = victim_ProcessEVA
-	//@comment "#DodgeMS*12%"
-	reg1 += victim_PerkFlagBits1 & 32 ? victim_ProcessMS >> 3 : 0 // muldiv(victim_ProcessMS, 12, 100)
-	reg1 = max(reg1,0)
-	reg1 >>= 2 // /= 4
-	// @comment "##########Perk##########"
-	// @comment "Anticipation"
-	reg1 += victim_PerkFlagBits1 & 64 ? 18 + reg1 : 0
+
+	get_base_rangedEVA(victim_ProcessEVA,victim_PerkFlagBits1,victim_ProcessMS) // <-header_battlesystem.tpc
+
 	// @comment "＃＃＃＃＃＃＃＃＃＃Elevation Bonus＃＃＃＃＃＃＃＃＃＃"
 	Temp20 = min(agent_getTerrainElevation - victim_getTerrainElevation, 3)//3 at highest
 	Temp1 += 7 * Temp20
 	// @comment "＃＃＃＃＃＃＃＃＃＃Check Shield?＃＃＃＃＃＃＃＃＃＃"
 	// @comment "Shieldを取得 302...ADV/4+302*2"
-	val_asg(Temp2,victim_Shield_Value) // Temp2 = victim_Shield_Value
+	val_asg(Temp2,victim_ShieldRangedProtection) // Temp2 = victim_Shield_Value
 
 
-	@if Temp2> 0 { //if victim has shield
+	@if Temp2 > 0 { //if victim has shield
 		@if `victim_ProcessObjBit & 67108864 { //check if broken
 			v[ptr_null].copy Temp2,1 // Temp2 = 0
 
  
 		}.else bl { // not broken
-			Temp2 =  victim_TacticsOrderFlag & 6 ? muldiv(victim_Shield_Value, 23, 10) : victim_Shield_Value << 1 // * 2
+			Temp2 <<=  victim_TacticsOrderFlag & 6 ? 1 : 0 // if it's forming shield wall * 2
 			//if you're covered with shield wall brother ... then?
 			
 		}
@@ -126,10 +121,18 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	}
 
 	//If you covered by ally's shield, you will gain+8 shield value, even if you don't have any shield
-	Temp2 += victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check ? 6 : 0
-	//@comment "BackAttack one-thirds evasion chance"
-	reg1 = (reg1 + Temp2) / ($dir == victim_Direction ? 3 : 1)
-	reg1 += victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check ? 7 : 0
+	@if `victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
+		val_add(Temp2,N8) // Temp2 += 8
+		//@comment "BackAttack halves evasion chance when the agent is covered by ally shieldwall"
+		reg1 = (reg1 + Temp2) >> ($dir == victim_Direction)
+		val_add(reg1,N4) // reg1 += 4
+
+
+	}.else bl{
+		//@comment "BackAttack one-thirds evasion chance"
+		reg1 = (reg1 + Temp2) / ($dir == victim_Direction ? 3 : 1)
+
+	}
 
 	Temp3 = rnd(0, 99)
 	reg2 = Temp3 >= 100 - Temp2 ? 1 : 0
