@@ -23,11 +23,11 @@ cev .id(1246), .name("GlidingCharge"), {
 
 	} .else bl {
 		@if s[119] .isOn() {
-			v[v[603]] |= 16
+				v[603] |= 16
 				// "#Temp1=agentwhogetsbuff"
 				v[868] = muldiv(v[868], 150 + (120 - v[v[235] + 15]) * 2, 100)
 				// "#ForceSpr"
-				v[v[850]] = 3
+				v[850] = 3
 				v[869] /= 2
 				v[865] += 12
 				// "##fearsome"
