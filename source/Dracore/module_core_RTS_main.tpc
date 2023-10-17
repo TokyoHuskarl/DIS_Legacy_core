@@ -279,7 +279,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    @if v[865] < v[866] {
 				v[864] += g_perFPS //98000 / 48
 				v[861] .add v[863], 2
-				val_add(v[867],v[868]) // v[867] += v[868]
+				val_add(v[867],agent_ProcessMS) // v[867] += agent_ProcessMS
 				
 				val_add(v[865],N1) // v[865] += 1
 		
@@ -416,12 +416,9 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	// "Normal Units"
 	v[536] = v[4532]
 	@while v[v[536]] != 0 {
-	    v[401] = v[v[536]] - 1
-	    Temp1 = v[401] * v[1117] 
-	    val_add(Temp1,N5000)// Temp1 += 5000
-
-
-	    func_main_extract_agent_vars()
+	    Ptr1 = v[v[536]] * v[1117] 
+	    val_add(Ptr1,N4701)// Ptr1 += 4701
+			v[Ptr1].copy agent_ObjectType, 300
 
 	    // "Minions"
 	    // "#########################
@@ -433,14 +430,17 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "Flash Effect"
 	    @if v[895] >= 4 {
 				v[358].repeat 20,3 // v[358..360] = 20
+				v[891] .sub TT18, 3
 				
 	    } .else bl {
 				// "Can be improved"
 				v[ptr_null].copy v[358],3 // v[358..360] = 0
-				v[357 + v[895]] = 20
-		
+				@if v[895] > 0 {
+				TT1 = 357 + v[895]
+				ptr_const(TT1,20)
+				v[891] .sub TT18, 3
+				}
 	    }
-	    v[891] .sub TT18, 3
 	    // "Temp... only check R"
 	    v[895] = v[891] <= 0 ? 0 : v[895]
 	    // "++"
@@ -450,6 +450,7 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	}
 
 	@wait 0
+/*
 	@if Is_Paused .isOff() {
 	    v[536] = v[4532]
 	    @while v[v[536]] != 0 {
@@ -460,227 +461,6 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 						func_main_extract_agent_vars()
 
-				/* "###############Timers Check###############"*/
-				// "#Check if AI timer is <=2"
-				@if v[684] <= 2 {
-						// "#Unit Behavior Start"
-						// "#Out of Breath"
-						// "#Hit Timer ==0&&current SP is below 35%&&the unit has fatigue"
-						@if `v[682] <= 0 && divmul(v[707], 100, 35) > v[708] && !(v[726] & 2048) {
-						v[682] = 48
-					// "Sweat Particle"
-					@loop v[1017] .dst Temp20 {
-							v[244] %= v[1199]
-							v[331] = v[244] * 50 
-							v[331] += v[1198]
-							@if v[v[331]] <= 1 {
-						// "まず清掃"
-						v[1301].copy v[v[331]], 50
-						// "ポインタセット開始"
-						// "設定"
-						v[v[331]] = 1
-						// "500F"
-						v[v[331] + 49] = v[682]
-						// "Set itself"
-						v[v[331] + 3] = 124
-						// "Set Parent Obj"
-						v[v[331] + 9] = v[401] + 1
-						// "普通にアニメ"
-						TT1 = v[331] + 6
-						v[607].copy v[TT1], 2
-						// "仕上げに登録消す"
-						v[244] += 1
-						@break
-						
-							}
-							v[244] += 1
-							
-					}
-					
-					
-						}
-						// "#Unit Behavior End"
-						
-				}
-				// "#Footstep Sound"
-				@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[401] + 501] == 1 {
-						@if `agent_ActionFlag & ActionFlag_FLAG_Walking { // DIS_EXPERIMENTAL s[v[401] + v[4558]] == 1 {
-							// "#Sub timer"
-							// agent_FootstepSoundTimer -= agent_ExMotionFlags & ExMotionFlags_FLAG_no_footstepsound ? 0 : 2
-							val_sub(agent_FootstepSoundTimer,N2)
-							@if agent_FootstepSoundTimer <= 0 {
-									TT1 = v[1179] + v[640] + 20 * v[887]
-									agent_DodgeTimer = agent_ExMotionFlags & ExMotionFlags_FLAG_no_footstepsound ? agent_DodgeTimer : 13
-									@if `agent_MoveTypeBIts & MoveTypeBits_Flying {
-										@if v[182] < 1 {
-											@if v[522] < 32 {
-												v[182] += 1
-													// "#########################"
-													v[472] = divmul(18, 100, v[2216])
-													v[473] = rnd(95, 105)
-													v[474] = divmul(v[607] + v[1001], v[1281], 50)
-													v[329] = rnd(0, 2)
-													inputstr .asg "footsteps\fly"
-													inputstr .cat v[329]
-													TT2 = 510
-													// "Strings = t[TT2]"
-													@cmd 11550, t[TT2], .args v[472], 3
-													// "#########################"
-
-											}
-
-										}
-										agent_FootstepSoundTimer = v[868] >> 2 
-										agent_FootstepSoundTimer+= rnd(7, 11)
-										
-									} .else bl {
-										@if v[182] < 1 {
-												@if v[522] < 80 {
-											v[182] += 1
-											// "#########################"
-											v[472] = divmul(20, 100, v[2216])
-											v[473] = rnd(95, 105)
-											v[474] = divmul(v[607] + v[1001], v[1281], 50)
-											v[329] = rnd(0, 6)
-											inputstr .asg t[TT1]
-											inputstr .cat v[329]
-											TT2 = 510
-											// "Strings = t[TT2]"
-											@cmd 11550, t[TT2], .args v[472], 3
-											// "#########################"
-											
-												}
-												
-										}
-										agent_FootstepSoundTimer = v[868] >> 2 
-										agent_FootstepSoundTimer += rnd(7, 11)
-										// "Is_in_water"
-										@if `agent_AgentBits & 4 {
-												// "Bubble Particle"
-												@loop v[1017] .dst Temp20 {
-											v[244] %= v[1199]
-											TT11 = v[244] * 50 
-											TT11 += v[1198]
-											@if v[TT11] <= 1 {
-													// "init"
-													v[1301].copy v[TT11], 50
-													v[TT11] = 1
-													// "timer"
-													v[TT11 + 49] = 3
-													// "Set itself"
-													v[TT11 + 3] = 133
-													// "set pos"
-													TT1 = TT11 + 6
-													v[607].copy v[TT1], 2
-													v[244] += 1
-													@break
-													
-											}
-											v[244] += 1
-											
-												}
-												
-												
-										} .else bl {
-												@if `agent_ProcessObjBit & 512 {
-											@loop v[1017] .dst Temp20 {
-													v[244] %= v[1199]
-													TT11 = v[244] * 50 
-													TT11 += v[1198]
-													@if v[TT11] <= 1 {
-												// "init"
-												v[1301].copy v[TT11], 50
-												v[TT11] = 1
-												// "timer"
-												v[TT11 + 49] = 1
-												// "Set itself"
-												v[TT11 + 3] = 155
-												// "Set Dire"
-												v[TT11 + 27] = v[Temp1 + 244]
-												// "set pos"
-												TT1 = TT11 + 6
-												v[607].copy v[TT1], 2
-												v[244] += 1
-												@break
-												
-													}
-													v[244] += 1
-													
-											}
-											
-											
-												} .else bl {
-											// "Is_horse"
-											@if TT1 >= 551 {
-													@if `agent_AgentBits & 8 {
-												// "Leaf Particle"
-												@loop v[1017] .dst Temp20 {
-														v[244] %= v[1199]
-														TT11 = v[244] * 50 
-														TT11 += v[1198]
-														@if v[TT11] <= 1 {
-													// "init"
-													v[1301].copy v[TT11], 50
-													v[TT11] = 1
-													// "timer"
-													v[TT11 + 49] = 3
-													// "Set itself"
-													v[TT11 + 3] = 134
-													// "set pos"
-													TT1 = TT11 + 6
-													v[607].copy v[TT1], 2
-													v[244] += 1
-													@break
-													
-														}
-														v[244] += 1
-														
-												}
-												
-												
-													} .else bl {
-												@loop v[1017] .dst Temp20 {
-														v[244] %= v[1199]
-														TT11 = v[244] * 50 
-														TT11 += v[1198]
-														@if v[TT11] <= 1 {
-													// "init"
-													v[1301].copy v[TT11], 50
-													v[TT11] = 1
-													// "timer"
-													v[TT11 + 49] = 3
-													// "Set itself"
-													v[TT11 + 3] = 130
-													// "set pos"
-													TT1 = TT11 + 6
-													v[607].copy v[TT1], 2
-													v[244] += 1
-													@break
-													
-														}
-														v[244] += 1
-														
-												}
-												
-												
-													}
-													
-											} .else bl {
-													
-											}
-											
-												}
-												
-										}
-										
-									}
-									
-							}
-							
-						}
-						
-				}
-
 				// "++"
 				func_main_save_agent_vars()
 				v[536] += 1
@@ -689,7 +469,10 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    
 	    
 	}
+*/
+
 }
+
 
 cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
@@ -769,6 +552,10 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			agent_ref_stats()
 			func_blink_progress()
 	    //@call .cev 2020
+
+			agent_behavior_effect_and_motion_check()
+			main_agent_footsound()
+
 	    agent_AgentType.copy v[Ptr19], 300    
 	    // "++"
 	    val_add(v[536],N2) // v[536] += 2
@@ -789,6 +576,9 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		agent_ref_stats()
 		func_blink_progress()
 	    //@call .cev 2020
+
+			agent_behavior_effect_and_motion_check()
+			main_agent_footsound()
 	    agent_AgentType.copy v[Ptr19], 300    
 	    // "++"
 	    val_add(v[536],N2) // v[536] += 2
@@ -822,7 +612,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						val_asg(var2,N1)// var2 = 1
 						// "#Derp Breathing :DDDDDDD"
 						// var3 = divmul(v[707], 100, 35) > v[708] && v[665] & 1024 ? 15 : 10
-						var3 = ((v[665] & 1024 && divmul(v[707], 100, 35) > v[708]) << 2) + 10 // ? 14 : 10
+						var3 = ((v[665] & 1024 && agent_AddMotionBits & AddMotionFlags_FLAG_OutOfBreath) << 2) + 10 // ? 14 : 10
 						@if var3 == 14 {
 					// "Breath Particle"
 							@loop v[1017] .dst Temp20 {
@@ -2396,4 +2186,252 @@ __fn func_blink_progress {
 			agent_AddMotionBits = agent_AddMotionBits & 256 ? agent_AddMotionBits & -449 : (agent_AddMotionBits & 128 ? agent_AddMotionBits | 256 : (agent_AddMotionBits & 64 ? agent_AddMotionBits | 128 : agent_AddMotionBits)) //256+128->384 +64 ->448 then ~448 -> -449
 		}
 	}
+}
+
+
+__fn main_agent_footsound {
+	@if s[2].isOff(){
+	// "#Footstep Sound"
+	@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[401] + 501] == 1 {
+		@if `agent_ActionFlag & ActionFlag_FLAG_Walking { // DIS_EXPERIMENTAL s[v[401] + v[4558]] == 1 {
+			// "#Sub timer"
+			// agent_FootstepSoundTimer -= agent_ExMotionFlags & ExMotionFlags_FLAG_no_footstepsound ? 0 : 2
+			val_sub(agent_FootstepSoundTimer,N4)
+				@if agent_FootstepSoundTimer <= 0 {
+					TT1 = v[1179] + v[640] + 20 * v[887]
+						agent_DodgeTimer = agent_ExMotionFlags & ExMotionFlags_FLAG_no_footstepsound ? agent_DodgeTimer : 13
+						// flying
+						@if `agent_MoveTypeBIts & MoveTypeBits_Flying {
+							@if v[182] < 1 {
+								@if v[522] < 32 {
+									v[182] += 1
+										// "#########################"
+										v[472] = divmul(18, 100, v[2216])
+										v[473] = rnd(95, 105)
+										v[474] = divmul(v[607] + v[1001], v[1281], 50)
+										v[329] = rnd(0, 2)
+										inputstr .asg "footsteps\fly"
+										inputstr .cat v[329]
+										TT2 = 510
+										// "Strings = t[TT2]"
+										@cmd 11550, t[TT2], .args v[472], 3
+										// "#########################"
+
+								}
+
+							}
+							agent_FootstepSoundTimer = agent_ProcessMS >> 2 
+								agent_FootstepSoundTimer+= rnd(7, 13)
+
+						} .else bl {
+							// not flying
+							@if v[182] < 1 {
+								@if v[522] < 80 {
+									v[182] += 1
+										// "#########################"
+										v[472] = divmul(20, 100, v[2216])
+										v[473] = rnd(95, 105)
+										v[474] = divmul(v[607] + v[1001], v[1281], 50)
+										v[329] = rnd(0, 6)
+										inputstr .asg t[TT1]
+										inputstr .cat v[329]
+										TT2 = 510
+										// "Strings = t[TT2]"
+										@cmd 11550, t[TT2], .args v[472], 3
+										// "#########################"
+
+								}
+
+							}
+
+							agent_FootstepSoundTimer = rnd(7, 13)
+								// "Is_in_water"
+								@if `agent_AgentBits & 4 {
+									// "Bubble Particle"
+									@loop v[1017] .dst Temp20 {
+										v[244] %= v[1199]
+											TT11 = v[244] * 50 
+											TT11 += v[1198]
+											@if v[TT11] <= 1 {
+												// "init"
+												v[1301].copy v[TT11], 50
+													v[TT11] = 1
+													// "timer"
+													v[TT11 + 49] = 3
+													// "Set itself"
+													v[TT11 + 3] = 133
+													// "set pos"
+													TT1 = TT11 + 6
+													v[607].copy v[TT1], 2
+													v[244] += 1
+													@break
+
+											}
+										v[244] += 1
+
+									}
+
+
+								} .else bl {
+									// fleeing
+									@if `agent_ProcessObjBit & BaseObjBit_FLAG_Fleeing {
+										val_add(agent_FootstepSoundTimer,N16)
+
+											@loop v[1017] .dst Temp20 {
+												v[244] %= v[1199]
+													TT11 = v[244] * 50 
+													TT11 += v[1198]
+													@if v[TT11] <= 1 {
+														// "init"
+														v[1301].copy v[TT11], 50
+															v[TT11] = 1
+															// "timer"
+															v[TT11 + 49] = 1
+															// "Set itself"
+															v[TT11 + 3] = 155
+															// "Set Dire"
+															v[TT11 + 27] = v[Temp1 + 244]
+															// "set pos"
+															TT1 = TT11 + 6
+															v[607].copy v[TT1], 2
+															v[244] += 1
+															@break
+
+													}
+												v[244] += 1
+
+											}
+
+
+									} .else bl {
+										// "Is_horse"
+										@if TT1 >= 551 {
+											// more faster, more frequent
+											agent_FootstepSoundTimer += 3200 / agent_ProcessMS 
+
+												@if `agent_AgentBits & 8 {
+													// "Leaf Particle"
+													@loop v[1017] .dst Temp20 {
+														v[244] %= v[1199]
+															TT11 = v[244] * 50 
+															TT11 += v[1198]
+															@if v[TT11] <= 1 {
+																// "init"
+																v[1301].copy v[TT11], 50
+																	v[TT11] = 1
+																	// "timer"
+																	v[TT11 + 49] = 3
+																	// "Set itself"
+																	v[TT11 + 3] = 134
+																	// "set pos"
+																	TT1 = TT11 + 6
+																	agent_SpriteX.copy v[TT1], 2
+																	v[244] += 1
+																	@break
+
+															}
+														v[244] += 1
+
+													}
+
+
+												} .else bl {
+													@loop v[1017] .dst Temp20 {
+														v[244] %= v[1199]
+															TT11 = v[244] * 50 
+															TT11 += v[1198]
+															@if v[TT11] <= 1 {
+																// "init"
+																v[1301].copy v[TT11], 50
+																	v[TT11] = 1
+																	// "timer"
+																	v[TT11 + 49] = 3
+																	// "Set itself"
+																	v[TT11 + 3] = 130
+																	// "set pos"
+																	TT1 = TT11 + 6
+																	agent_SpriteX.copy var1,2
+																	val_add(var2,N16)
+																	var1.copy v[TT1], 2
+
+																	v[244] += 1
+																	@break
+
+															}
+														v[244] += 1
+
+													}
+
+
+												}
+
+										} .else bl {
+											agent_FootstepSoundTimer += agent_ProcessMS >> 2 
+										}
+
+									}
+
+								}
+
+						}
+
+				}
+
+		}
+
+		}
+
+	}
+}
+
+__fn agent_behavior_effect_and_motion_check {
+	/* "###############Timers Check###############"*/
+	// "#Check if AI timer is <=4"
+	@if v[684] <= 4 {
+		// "#Unit Behavior Start"
+		// "#Out of Breath"
+		@if `divmul(v[707], 100, 35) > v[708] && !(v[726] & 2048) {
+			agent_AddMotionBits |= AddMotionFlags_FLAG_OutOfBreath
+			// "#Hit Timer ==0&&current SP is below 35%&&the unit has fatigue"
+			@if v[682] <= 0 {
+				v[682] = 48
+					// "Sweat Particle"
+					@loop v[1017] .dst Temp20 {
+						v[244] %= v[1199]
+							v[331] = v[244] * 50 
+							v[331] += v[1198]
+							@if v[v[331]] <= 1 {
+								// "まず清掃"
+								v[1301].copy v[v[331]], 50
+									// "ポインタセット開始"
+									// "設定"
+									v[v[331]] = 1
+									// "500F"
+									v[v[331] + 49] = v[682]
+									// "Set itself"
+									v[v[331] + 3] = 124
+									// "Set Parent Obj"
+									v[v[331] + 9] = v[401] + 1
+									// "普通にアニメ"
+									TT1 = v[331] + 6
+									v[607].copy v[TT1], 2
+									// "仕上げに登録消す"
+									v[244] += 1
+									@break
+
+							}
+						v[244] += 1
+
+					}
+
+
+			}
+		}.else bl{
+			agent_AddMotionBits &= ~AddMotionFlags_FLAG_OutOfBreath
+
+		}
+		// "#Unit Behavior End"
+
+	}
+
 }

@@ -148,7 +148,8 @@ __fn func_damage_calculation {
 					reg_actual_dmg_after_armor = reg_actual_dmg - muldiv((victim_BaseAR >> 1) + (victim_BaseAR >> 3), 100 - agent_AA_AR_penetration, 100)
 
 					// "#Nimble"
-					reg_actual_dmg_after_armor = muldiv(reg_actual_dmg_after_armor, victim_TakenDamageMultiplier, 100)
+					reg_actual_dmg_after_armor = max(muldiv(reg_actual_dmg_after_armor, victim_TakenDamageMultiplier, 100),0)
+					
 
 					// "#AR adjustment"
 					// "##Battle Forge...10%" -> 12%

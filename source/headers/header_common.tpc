@@ -464,8 +464,8 @@ defv{
 
 def EXTRACT_FLAG_Data_extracted = 0x1
 __fn func_extract_agent_vars $agent {
-	    Ptr1 = $agent*300
-	    Ptr1 += 4701
+	    Ptr1 = $agent * 300
+	    val_add(Ptr1,N4701) // Ptr1 += 4701
 	    v[Ptr1].copy v[601], agent_Basic_Array_size
 	    __if AGENT_DATA_EXTRACTED == 0 {
 	    	def AGENT_DATA_EXTRACTED = 1

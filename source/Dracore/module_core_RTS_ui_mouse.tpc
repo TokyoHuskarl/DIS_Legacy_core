@@ -483,7 +483,7 @@ __fn UI_CEV_MOUSE_OBSERVER {
 						// addtionally, show ranged EVA as well
 						t[3000].cat LF
 						get_base_rangedEVA(agent_ProcessEVA,agent_PerkFlagBits1,agent_ProcessMS)
-						reg1 += (agent_ShieldRangedProtection << (agent_TacticsOrderFlag & 6 ? 1 : 0))
+						reg1 += (agent_TacticsOrderFlag & 6 ? agent_ShieldRangedProtection >> 1 : 0) + agent_ShieldRangedProtection
 
 						macro_strcat_adjustment(t[20492],reg1,3)
 

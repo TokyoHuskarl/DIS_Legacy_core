@@ -2095,7 +2095,7 @@ __fn GenAgent_Horse_Setting {
 
 					}
 				@if v[601] == 3 {
-					agent_InitialOffsetY -=  11 // Sprite Offset Y
+					agent_InitialOffsetY -=  10 // Sprite Offset Y
 						@if `agent_AABits & AABits_FLAG_Camel { // CAMEL
 							agent_InitialOffsetY -= Const_camel_offsetY // Sprite Offset Y..
 								agent_Width += 1 // add size since camel is simply tall!
