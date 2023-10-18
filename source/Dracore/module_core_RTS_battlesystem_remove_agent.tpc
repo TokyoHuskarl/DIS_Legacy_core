@@ -599,12 +599,15 @@ __fn Kill_Agent {
 											v[242] += 1
 											
 									}
-									
-									// "Element == Cut,-decapitation"
-									@if v[190] == 0 {
+									// -------------------
+									// GORE VFX 
+									// -------------------
+									@if BOOL_Gore_switch.isOn() {
+										// "Element == Cut,-decapitation"
+										@if v[190] == 0 {
 											v[373] = 1
-											
-									} .else bl {
+
+										} .else bl {
 											// "Element == Blunt,-Smash Head"
 											@if v[190] == 2 {
 												// "Smashable flag"
@@ -613,34 +616,34 @@ __fn Kill_Agent {
 														@while TT10 >= 1 {
 															// "detect head"
 															TT1 = victim_PictArray % 10
-															@if TT1 == 2 {
+																@if TT1 == 2 {
 																	// "set crushed head sprite"
-																
+
 
 																	// WRITE SOMETHING HERE!!!!!!!!!!!!!!!!!!!
 
 																	// v[(Ptr20 - 1) * 6 + 1 + v[1185]] = v[Kill_pointer + 4764] * -1 - 1 //ACHTUNG, outdated func
 																	@break
-																	
-															}
+
+																}
 															TT10 /= 10
-													
+
 														}
-														
-														
+
+
 												}
 												@if var10 >= 400 {
-														v[373] = 1
-														
+													v[373] = 1
+
 												}
-												
+
 											} .else bl {
 												@if v[190] == 4 {
-														@if `victim_ExMotionFlags & 128 {
-															TT10 = victim_PictArray
+													@if `victim_ExMotionFlags & 128 {
+														TT10 = victim_PictArray
 															@while TT10 >= 1 {
-																	// "detect head"
-																	TT1 = TT10 % 10
+																// "detect head"
+																TT1 = TT10 % 10
 																	@if TT1 == 2 {
 																		// "set skull sprite"
 
@@ -648,29 +651,31 @@ __fn Kill_Agent {
 
 																		// v[(Ptr20 - 1) * 6 + 1 + v[1185]] = 50000000//ACHTUNG outdatedfunc
 																		@break
-																
-																	}
-																	TT10 /= 10
-																	
-															}
-														}
-												}
-												
-											}
-											
-									}
 
-									@if v[373] == 1 {
+																	}
+																TT10 /= 10
+
+															}
+													}
+												}
+
+											}
+
+										}
+
+										@if v[373] == 1 {
 											// "Reset Head XY"
 											TT1 = Kill_pointer 
-											TT1 += 4983
-											v[0] = v[TT1..TT1 + 1] = [rnd(-47000, 47000), victim_Height * -12000 + rnd(-15000, 0)]
-											v[Kill_pointer + 4985] = rnd(-4, 4) * 2250
-											v[Kill_pointer + 4986] = rnd(1, 4) * -300
-											v[Kill_pointer + 4988] = rnd(13, 16)
-											v[Kill_pointer + 4989] = rnd(-1800000, 1800000)
-											
+												TT1 += 4983
+												v[0] = v[TT1..TT1 + 1] = [rnd(-47000, 47000), victim_Height * -12000 + rnd(-15000, 0)]
+												v[Kill_pointer + 4985] = rnd(-4, 4) * 2250
+												v[Kill_pointer + 4986] = rnd(1, 4) * -300
+												v[Kill_pointer + 4988] = rnd(13, 16)
+												v[Kill_pointer + 4989] = rnd(-1800000, 1800000)
+
+										}
 									}
+
 									
 								}
 								

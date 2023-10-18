@@ -705,6 +705,9 @@ DIS = { // DIS fundamental components
 					DIS.log.push(`RTS particle picture Limit: ${ptcl}`);
 				
 				// gore effect setting?
+				// s[318] <- BOOL_Gore_switch
+					sets(318,boot_config.gore)
+					DIS.log.push(`Gore VFX switch: ${boot_config.gore}`);
 
 			};
 		},
