@@ -285,8 +285,12 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 							agent_MovementOrder = agent_LeftWPtoChase > 0 && agent_MovementOrder < MovementOrder_TYPE_prioritize_moving ? MovementOrder_TYPE_moving : agent_MovementOrder
 							
 					}
-				}.else bl { // If the agent has target agent BUT prioritizes Movement as well
+				}.else bl { // If the agent has no target
 							agent_LastTarget = 0 // then reset Last Target
+							@if agent_MovementOrder == MovementOrder_TYPE_fleeing { // if it's in fleeing movement..
+								agent_MovementOrder = agent_ProcessObjBit & BaseObjBit_FLAG_Fleeing ? agent_MovementOrder : MovementOrder_TYPE_moving
+
+							}
 				}
 	    }
 
@@ -394,7 +398,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 							// @comment "before: 6700"
 							// v[340] = v[v[294]] > 0 ? (v[610] / 2 + 2) * 1000 : 6700
 							// this part was bugged since v[294] wasn't defined inititally - 9.5.23
-							v[340] = agent_LeftWPtoChase > 0 ? (agent_Width / 2 + 3) * 1000 : 6700 //more fuzzy
+							v[340] = agent_LeftWPtoChase > 0 ? ((agent_Width >> 1) + 3) * 1000 : 6700 //more fuzzy
 							@if agent_MilPixMoveOrderedPointDist <= v[340] {
 									//@comment "候補なし"
 									//@comment "敵がおらん"
@@ -425,7 +429,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 												//@comment "地点に戻った"
 												agent_ActionFlag &= -2 //~1
 												agent_LeftWPtoChase = -2
-												agent_MovementOrder = MovementOrder_TYPE_returned
+												val_const(agent_MovementOrder,MovementOrder_TYPE_returned) // agent_MovementOrder = MovementOrder_TYPE_returned
 											
 											} .else bl {
 											//@comment "待機"

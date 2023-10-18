@@ -573,12 +573,13 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    Ptr19 = Temp1 + 1
 	    v[Ptr19].copy agent_AgentType, 300
 
-		agent_ref_stats()
-		func_blink_progress()
+			agent_ref_stats()
+			func_blink_progress()
 	    //@call .cev 2020
 
 			agent_behavior_effect_and_motion_check()
 			main_agent_footsound()
+
 	    agent_AgentType.copy v[Ptr19], 300    
 	    // "++"
 	    val_add(v[536],N2) // v[536] += 2

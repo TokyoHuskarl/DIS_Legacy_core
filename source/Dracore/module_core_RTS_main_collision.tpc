@@ -306,17 +306,35 @@ __fn ColCheck {
 				//@comment ""#mask with 001100""
 				//@comment ""#mask with 000011"""
 				
-				TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
-				agent_Morton = TT2 >> TT5
-				//@comment "#mask end"
-				TT6 = TT5 >> 1 // TT6 = TT5 / 2
-				v[340] = 4546 - TT6
-				v[340].deref v[340],1
-				v[327] = v[v[4552 - TT6] + agent_Morton]
-				//@comment "##############"
+				// Ptr14 is reffering to agent_ObjectCollideSkipFrame 
 				Ptr14 = Temp1 + 25
-				// v[Ptr14] = 2 + v[327] / v[4522] + v[610] / 19 - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0) // (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
-				v[Ptr14] = 2 + v[327] / v[4522] + (v[610] >> 4) - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0) // (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
+				@if `TT3 & 768 { // root dimension
+				// agent_Morton is always 0 here so you don't need any calculation... 
+					v[339].repeat v[4541],2 // set ptr 
+					v[4547].deref v[327],1 // val_asg(v[327],v[v[4547]])
+
+				}.else bl{
+					TT5 = TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
+					agent_Morton = TT2 >> TT5
+					//@comment "#mask end"
+					TT6 = TT5 >> 1 // TT6 = TT5 / 2
+					v[340] = 4546 - TT6
+					v[340].deref v[340],1
+
+					TT6 = 4552 - TT6
+					// TT6.deref TT6,1
+					// v[327] = TT6 + agent_Morton
+					TT6.deref v[327],1
+					val_add(v[327],agent_Morton)
+					v[327].deref v[327],1
+
+					//v[339] as a ptr
+					v[339] = agent_Morton * v[1004] 
+					v[339].add v[340],1 // v[339] += v[340]
+				
+				}
+				// v[Ptr14] = 2 + v[327] / v[4522] + (v[610] >> 4) - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0) // (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
+				v[Ptr14] = 2 + (v[610] >> 4) - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0) // (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
 					//@comment "DisciplineCheck"
 				//opt
 
@@ -333,11 +351,6 @@ __fn ColCheck {
 					v[v[337]].copy v[337], 2
 				}
 
-				//v[339] as a ptr
-				v[339] = agent_Morton * v[1004] 
-				v[339].add v[340],1 // v[339] += v[340]
-				
-
 				//experimental
 				Col_Ptr2AgentBits.deref TT4,1
 				Ptr5 = Const_save_var_TileFlags + v[632]
@@ -347,6 +360,8 @@ __fn ColCheck {
 					v[v[339]].shuffle TT1
 					def KILLDISCP = ~AgentBits_Discipline_Col
 					TT4 &= KILLDISCP
+				}.else bl{
+					v[Ptr14] += v[327] / v[4522] // if the standing tile is not crowded, less frequently check col
 				}
 				
 				//v[203] = Ptr
