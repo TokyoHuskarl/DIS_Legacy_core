@@ -2187,16 +2187,27 @@ __fn getMissionPath {
 
 // setup JS management mission system
 __fn loadMissionDef $missionpath {
+		// Str_MissionInfoJSON <- make up load proc!
+
 	inputstr .asg Str_MissionPath
-	inputstr .cat "\\missiondef.js"
-	inputstr .asg .file inputstr, .utf8
-	@if inputstr.neq "" { // there's missiondef.js
-		@js .run "RTS.setupMission(gett(752),getv(501))" // t[752],v[501]
+	inputstr .cat "\\info.json"
+	Str_MissionInfoJSON .asg .file inputstr, .utf8
+
+	@if Str_MissionInfoJSON.neq "" { // there's missiondef.js
+		@js .run "RTS.setupMission(gett(741));" // t[752],v[501]
+
+		inputstr .asg Str_MissionPath
+		@js .run "sett(501,RTS.mission.missionscript[0]);"
+		inputstr .cat "/"
+		inputstr .cat str1
+		inputstr .asg .file inputstr, .utf8
+
 		eval_js(inputstr) // execute missiondef.js.txt
 		str_missiondef_storage.asg inputstr
 		loadedJsConfig.on
 		@js .run "RTS.setupMapLoading(RTS.mission.essential.mapDataDirectory)" // terrainData check
 	}
+
 	
 }
 
@@ -2205,7 +2216,7 @@ __fn loadMissionDef $missionpath {
 __fn loadMapDef $missionpath {
 	str1 .asg DIS_MAPHOMEPATH
 	str1 .cat RTSmap_MapdefDir
-	str1 .cat "\\mapdef.js"
+	str1 .cat "\\mapdef.js" // need rewriting
 	inputstr .asg .file str1, .utf8
 	@if inputstr .neq "" { // there's mapdef.js
 		@js .run "RTS.openMissionMapData()" // set new RTSmap into RTS module

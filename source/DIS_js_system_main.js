@@ -1348,13 +1348,40 @@ class DISvariable extends DISentity { // nonvolatile Variable for RTS mission
 // RTSmission Object
 
 class RTSmission {
-	constructor(missionid,mapid){
-		if (missionid == ""){missionid = "mapgentest";};
-		this.missionid = missionid; // usually string
-		this.mapid = mapid; // if 0, open custom map
+	constructor(infojson){
+		infojson = infojson || "undefined";
+		if (infojson == "undefined"){
+			this.missionid = "mapgentest";
+			this.mapid = 0;
+			this.conf = {};
+			this.conf.isLEGACYmission = false;
+			this.conf.isSightSystemOn = true;
+			this.conf.isMoraleSystemOn = true;
+			this.conf.isLevelSystemOn = false; // not yet
+
+		} else {
+			let src = JSON.parse(infojson);
+			this.name = src.MISSIONINFO.name;
+			this.missionscript = src.MISSIONINFO.missionscript || ["mymission.js"];
+			this.dataextension = src.MISSIONINFO.dataextension || [];
+			this.startcamerapos = src.MISSIONINFO.startcamerapos || [0,0];
+
+			this.playcondition = src.MISSIONINFO.playcondition || [];
+			this.dependency = src.MISSIONINFO.dependency || [];
+			this.icon = src.MISSIONINFO.icon || "";
+			
+			this.conf.allows_pick_faction = src.MISSIONINFO.allows_pick_faction || false;
+			this.conf.isSightSystemOn = src.MISSIONINFO.sys_sight || false;
+			this.conf.isMoraleSystemOn = src.MISSIONINFO.sys_morale || true;
+			this.conf.isLevelSystemOn = src.MISSIONINFO.sys_level || false;
+			this.conf.isLEGACYmission = src.MISSIONINFO.legacymission || false;
+
+		};
+
 		this.allocVarAmount = 0;
-		this.essential.mapDataDirectory = missionid; // initially set the same as mission
+		this.essential.mapDataDirectory = this.missionid; // initially set the same as mission
 		this.passedFrame = 0; //  if DIS game is reloaded, then reload from RM var. 
+
 	};
 
 	createMissionVar = function(){
@@ -1367,7 +1394,7 @@ class RTSmission {
 		} else {
 			Cmd.game.log_error(("Too many mission variables are declared! Current limit is: " + VarmemoryLimit))
 			return NULL;
-		}
+		};
 	};
 
 	Cmd = { // mission commands - basically load files from the mission directory
@@ -1380,10 +1407,7 @@ class RTSmission {
 	
 
 	conf = { // these matter only at the setting up mission part
-		isLEGACYmission: false,
-		isSightSystemOn: true,
-		isMoraleSystemOn: true,
-		isLevelSystemOn: false, // not yet
+		
 		
 	};
 	
@@ -1392,7 +1416,7 @@ class RTSmission {
 		players: [],
 		difficulty: getv(2401), // <- RTS_Difficulty
 		weatherType: 0,
-		mapDataDirectory: this.mapDataDirectory, // set in constructor
+		// mapDataDirectory: this.mapDataDirectory, // set in constructor
 	};
 
 	save = function(){
@@ -1468,7 +1492,7 @@ class RTSmission {
 			if (this.timer >= frame){this.timer = 0; return true;}else{return false;};
 		};
 		return Trig; // return RTStrigger
-	}
+	};
 
 	createSimpleTrigger_Timer = function(h,m,s) { // if the set time passed, then call effect()
 		let Trig = new RTStrigger();
@@ -1477,7 +1501,7 @@ class RTSmission {
 			return (RTS.mission.passedFrame >= goalFrame);
 		};
 		return Trig;
-	}
+	};
 
 	createSimpleTrigger_FrameTimer = function(f) { // if the set frame has passed since the trigger set, then call effect()
 		let Trig = new RTStrigger();
@@ -1787,17 +1811,17 @@ let RTS = {
 		deblog("RTS obj init.")
 	},
 
-	openMission: function(missionid,mapid){ // "openmap" command in the old DISshell.
-		this.mission = new RTSmission(missionid,mapid);
+	openMission: function(jsonstr){ // "openmap" command in the old DISshell.
+		this.mission = new RTSmission(jsonstr);
 		this.isRTSmode = true;
 		this.path.init();
 		
 	},
 
 	// if you do this on Cmd interpreter, then this function is not even needed I suppose
-	setupMission: function(missionid,mapid){ //
+	setupMission: function(jsonstr){ //
 		if (!(this.isRTSmode)){ // if the isRTSmode flag is not yet set (legacy maps) reopen DISmission
-			this.mission = new RTSmission(missionid,mapid);
+			this.mission = new RTSmission(jsonstr);
 			this.isRTSmode = true;
 		}
 
@@ -2435,7 +2459,6 @@ DUI = {
 	cursor_picture: "map_pointer",
 
 };
-
 
 
 
