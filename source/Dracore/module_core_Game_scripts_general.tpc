@@ -69,9 +69,12 @@ cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_
 				// open sound
 				dialog_opensnd.split("|",t[3101],reg1)
 				t2v(t[3102],var2)
-				t2v(t[3103],var3)
-				t2v(t[3104],var4)
-				play_system_se(t[3101],var2,var3,var4)
+				@if var2 > 0{ 
+					t2v(t[3103],var3)
+					t2v(t[3104],var4)
+					var1 = divmul(var2, 100, NsLib_SYSTEM_SE_VOLUME)
+					@se.play t[3101] .opt var1, var3, var3
+				}
 		
 
 				// set dialog window size
@@ -98,7 +101,7 @@ cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_
 						.affectedByShake
 				}
 
-				TT1 = Temp11 / 2 - 2  
+				TT1 = v[1115] - Temp11 / 2 + 2  
 				TT2 += 2
 				@pic[PicID_Radio_Dialog_Text].strpic {
 					dialog_string

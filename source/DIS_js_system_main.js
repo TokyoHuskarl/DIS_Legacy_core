@@ -587,7 +587,12 @@ function parse_DISData_IdArray(ary,dict){
 function make_Array_DIStable(array) {
 	let string = "";
 	for (let elm of array) {
-				string += elm + "|";
+				if (typeof elm == "object"){
+					string += make_Array_DIStable(elm) + "|";
+
+				} else {
+					string += elm + "|";
+				};
 	};
 	// remove the last "|" upon return
 	return string.slice(0,-1);
@@ -892,27 +897,26 @@ DIS.string = {
 	},
 
 	// convert js string to show into DIS format string
-	convertString: function(given) {
+	convertString: function(given){
 
-		let rs = given; 
-		if (rs.lastIndexOf('$mstr_' == 0)){
+		let rs = given;
+		if (rs.lastIndexOf('$mstr_') == 0){
 			rs = rs.split("$mstr_")[1];
 			try { // get actual string from mission string container
 				rs = RTS.mission.strings[rs];
 			} catch (error) {
 				errorlog(`Map string "${rs}" is not registered.`);
 			}
-		} else if (rs.lastIndexOf('$qstr_' == 0)){
+		} else if (rs.lastIndexOf('$qstr_') == 0){
 			rs = rs.split("$qstr_")[1];
 			// underconstruction
 		};
 
 		// let the in game string can reffer js variables
 		// unco
-
-		rs.replace(",", "$;") // DIS format comma.
-
-		return rs
+		deblog(rs)
+		rs = rs.replace(",", "$;");
+		return rs // DIS format comma.
 
 	},
 
@@ -1717,7 +1721,7 @@ class RTStrigger {
 class DIS_dialog extends DISentity{
 	constructor(string,time,icon){
 		super();
-		this.string = DIS.string.convertString(string);
+		this.string = string;
 		this.showframe = time | 235; // if showframe is -1, it won't automatically disappear until forceSkipDialog() or clearDialogQueue() is called
 		this.opensound = ["cursor09",75,90,50] // file vol tempo balance
 		this.icon = icon || ["",[4,4],1]; // [filename, sprite_number, and?]
@@ -2451,10 +2455,11 @@ var Cmd = {
 			pushDialogQueue: function(dlog){ // push arg to dialog queue and toggle dialog manager switch
 				// set up string
 				
-				let sendstring = (dlog.string + "," + dlog.showframe + "," + make_Array_DIStable(dlog.icon) + "," + make_Array_DIStable(dlog.size) + "," + make_Array_DIStable(dlog.opensound) + ";");
+				let sendstring = (DIS.string.convertString(dlog.string) + "," + dlog.showframe + "," + make_Array_DIStable(dlog.icon) + "," + make_Array_DIStable(dlog.size) + "," + make_Array_DIStable(dlog.opensound) + ";");
 
 				Cmd.Qset(this.CmdType,"pushDialogQueue",sendstring);
 				RTS.DlogManager.afterEffects.push(dlog.afterEffect);
+				deblog(sendstring)
 			},
 
 			forceSkipDialog: function(skipi){ // toggle break flag switch
