@@ -551,6 +551,11 @@ function parse_simpleid(line,myArray) {
 	myArray[key] = parseInt(value,10);
 };
 
+function parse_languageString(line,myArray) {
+	const [key, value] = line.split('|');
+	myArray.register(key,value);
+};
+
 
 
 
@@ -879,10 +884,36 @@ DIS.string = {
 		return string;
 	},
 
+	// LEGACY map string
 	getMapstr: function(id) { // ?
 		const Adrt_mapstr_head = 40000
 		var string = gett(Adrt_mapstr_head + id);
 		return string;
+	},
+
+	// convert js string to show into DIS format string
+	convertString: function(given) {
+
+		let rs = given; 
+		if (rs.lastIndexOf('$mstr_' == 0)){
+			rs = rs.split("$mstr_")[1];
+			try { // get actual string from mission string container
+				rs = RTS.mission.strings[rs];
+			} catch (error) {
+				errorlog(`Map string "${rs}" is not registered.`);
+			}
+		} else if (rs.lastIndexOf('$qstr_' == 0)){
+			rs = rs.split("$qstr_")[1];
+			// underconstruction
+		};
+
+		// let the in game string can reffer js variables
+		// unco
+
+		rs.replace(",", "$;") // DIS format comma.
+
+		return rs
+
 	},
 
 }
@@ -1374,7 +1405,9 @@ class RTSmission {
 			this.conf.isSightSystemOn = src.MISSIONINFO.sys_sight || false;
 			this.conf.isMoraleSystemOn = src.MISSIONINFO.sys_morale || true;
 			this.conf.isLevelSystemOn = src.MISSIONINFO.sys_level || false;
+
 			this.conf.isLEGACYmission = src.MISSIONINFO.legacymission || false;
+			sets(457,this.conf.isLEGACYmission); // s[457] <- Is_LEGACYSTAGE
 
 		};
 
@@ -1409,6 +1442,11 @@ class RTSmission {
 	conf = { // these matter only at the setting up mission part
 		
 		
+	};
+
+	strings = {};
+	importLangString(str){
+		parse_languageString(str,this.strings)
 	};
 	
 
@@ -1679,13 +1717,13 @@ class RTStrigger {
 class DIS_dialog extends DISentity{
 	constructor(string,time,icon){
 		super();
-		this.string = string;
-		this.showframe = time | 235; // check default value later if showframe is -1, it wont end
-		this.opensound = ["",0,100,50] // file vol tempo vol
-		this.icon = icon || ["",[4,4],1]; // filename, sprite_number
-		this.fontdata = DIS.lang.currentFontdata.common; // filename, fontsize
-		this.stopworld = false;
-		this.size = [240,64]; // check default value later
+		this.string = DIS.string.convertString(string);
+		this.showframe = time | 235; // if showframe is -1, it won't automatically disappear until forceSkipDialog() or clearDialogQueue() is called
+		this.opensound = ["cursor09",75,90,50] // file vol tempo balance
+		this.icon = icon || ["",[4,4],1]; // [filename, sprite_number, and?]
+		this.fontdata = DIS.lang.currentFontdata.common; // [filename, fontsize]
+		this.stopworld = false; // 
+		this.size = [240,64]; // [width,height]
 	};
 	
 
@@ -2121,6 +2159,13 @@ var Cmd = {
 
 
 		// log series
+
+		// unlike Cmd.game.log, argument will be processed by DIS.string.convertString() 
+		msg: function(txt){
+			txt = DIS.string.convertString(txt)
+			Cmd.Qset(this.CmdType,"msg",`${txt}`);
+		},
+
 		log: function(txt){
 			Cmd.Qset(this.CmdType,"msg",`${txt}`);
 		},
@@ -2406,7 +2451,7 @@ var Cmd = {
 			pushDialogQueue: function(dlog){ // push arg to dialog queue and toggle dialog manager switch
 				// set up string
 				
-				let sendstring = (dlog.string + "," + dlog.showframe + "," + make_Array_DIStable(dlog.icon) + "," + make_Array_DIStable(dlog.size) + ";");
+				let sendstring = (dlog.string + "," + dlog.showframe + "," + make_Array_DIStable(dlog.icon) + "," + make_Array_DIStable(dlog.size) + "," + make_Array_DIStable(dlog.opensound) + ";");
 
 				Cmd.Qset(this.CmdType,"pushDialogQueue",sendstring);
 				RTS.DlogManager.afterEffects.push(dlog.afterEffect);
@@ -2414,7 +2459,7 @@ var Cmd = {
 
 			forceSkipDialog: function(skipi){ // toggle break flag switch
 				Cmd.Qset(this.CmdType,"forceSkipDialog",skipi);
-				 // still triggers afterEffect()
+				// still triggers afterEffect()
 			},
 
 			clearDialogQueue: function(){ // init dialog queue and force break - clear event switch on

@@ -78,6 +78,11 @@ __fn open_js_scene $scenename {
 }
 */
 
+// replace "$;" with ","
+// @param {strv} 
+__fn validate_string_to_show $str {
+	t[__id($str)].asg .rep($str,"$;",",")
+}
 
 
 // Package Tree - only for calling Cmd.obj.method on RPG_RT.exe, you need init process for each of Cmd Packages before you use this function. 

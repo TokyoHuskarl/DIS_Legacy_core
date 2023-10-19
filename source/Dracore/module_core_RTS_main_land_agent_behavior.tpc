@@ -877,7 +877,8 @@ __fn MAIN_macro_agent_WP_Array_pop {
 	Ptr18 =__id(agent_WayPoint1X) // 643
 	@loop 6 { // only 6 slots
 		v[Ptr18].copy v[Ptr19], 2
-		v[__id(Ptr18)..__id(Ptr19)] += 2
+		v[Ptr18].add N2,2
+		// v[__id(Ptr18)..__id(Ptr19)] += 2
 	}
 	
 	//@comment "後ろに0代入"
@@ -932,7 +933,7 @@ __fn MAIN_agent_reached_ChasePoint {
 				agent_AgentBits &= ~AgentBits_FLAG_ForcemoveFlag // kill forcemove flag
 				@if `agent_AI_routine_bits & AI_routine_bits_FLAG_Pathblocked { // can't reach goal node
 					// then give up moving
-					LEGS_MAIN_Agent_tries_to_stop.on
+						LEGS_MAIN_Agent_tries_to_stop.on
 						agent_MovementOrder = MovementOrder_TYPE_do_not_move
 						agent_RelativeX.copy agent_HoldPointX, 2
 						agent_AI_routine_bits &= AI_routine_bits_MASK_for_initilizing_pathfinding
@@ -940,8 +941,8 @@ __fn MAIN_agent_reached_ChasePoint {
 			}
 
 			Reaching_Target_Way_Point.on
-			agent_ActionFlag = 0
-			agent_LeftWPtoChase -= 1
+			val_init(agent_ActionFlag) // agent_ActionFlag = 0
+			val_sub(agent_LeftWPtoChase,N1) // agent_LeftWPtoChase -= 1
 
 		}
 

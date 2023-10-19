@@ -1264,22 +1264,54 @@ __fn CEV_MISSION_MAP_INIT {
 	@comment "*init map str*"
 	t[40000..45000] .asg ""
 	@comment "*get map str*"
-	inputstr .asg "..\Maps\"
-	inputstr .cat DISmap_MapDirectory
-	inputstr .cat "\\"
-	inputstr .cat "strings"
+	str5 .asg "..\Maps\"
+	str5 .cat DISmap_MapDirectory
+	str5 .cat "\\"
+	str5 .cat "strings"
+	inputstr .asg str5
 	inputstr .cat Str_LanguageToken
 	log_push("loading DIS mapstring file.")
 	log_push(inputstr)
-	inputstr .asg  .file inputstr, .utf8, .extract
-	@if inputstr.neq "" {
-		log_push("DIS mapstring file loaded.")
+	@if Str_LanguageToken.eq "_jp" {
+		inputstr .asg  .file inputstr, .utf8, .extract
 	}.else bl{
-		log_push("DIS mapstring file loading failed.")
+		inputstr .asg  .file inputstr, .sjis, .extract
 	}
-	inputstr .split "*/", str9, TT1
-	inputstr .split LF, t[40000], TT1
 
+	__fn load_and_store_mapstring {
+		log_push("DIS mapstring file loaded.")
+		@if `loadedJsConfig.isOff || Is_LEGACYSTAGE.isOn() {
+			// legacy map string system
+			inputstr .split "*/", str9, TT1
+			inputstr .split LF, t[40000], TT1
+
+		}.else bl { // new mapstring system works on js
+			eval_js("MISSION.importLangString(gett(510))")
+			inputstr .asg  .file inputstr, .utf8, .extract
+
+		}
+	
+	}
+
+	@if inputstr.neq "" {
+		load_and_store_mapstring()
+
+	}.else bl{
+		log_push("DIS mapstring file in current language is missing.")
+		log_push("Now going to initial string file instead.")
+		inputstr .asg str5
+		log_push("loading DIS mapstring file.")
+		log_push(inputstr)
+		inputstr .asg  .file inputstr, .utf8, .extract
+
+		@if inputstr.neq "" {
+			load_and_store_mapstring()
+
+		}.else bl{
+			log_push("DIS mapstring loading failed.")
+
+		}
+	}
 	@comment "*Weather Init*"
 	@if s[312] .isOff() {
 	    @call .cev 1798

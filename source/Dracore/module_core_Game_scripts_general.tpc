@@ -37,16 +37,15 @@ cev[2041], .name("Script:DIS command interpriter"), .parallel , .cond(__id(BOOL_
 // dialog manager
 cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_Dialog)), {
 	deft {
-		dialog_treeid = 2998
+			dialog_treeid = 2998
 			dialog_orderid = 2999
 			dialog_string = 3000
 			dialog_timer
 			dialog_iconinfo
+			dialog_size
 			dialog_opensnd
-			dialog_open
 			dialog_fontdata
 			dialog_stopworld
-			dialog_size
 			dialog_end
 	}
 
@@ -61,15 +60,32 @@ cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_
 				val_add(Temp1,N1)
 				dialogQueue.asg .remove(dialogQueue, 0, Temp1)
 
+
 				dialog_string.split(",",dialog_treeid,Temp2) // now you have extracted elements in the dialog order to dialog_ array.
+				validate_string_to_show(dialog_string) // replace $; with , and so on
+
 				dialog_timer.toNum RadioDialogTimer
 
+				// open sound
+				dialog_opensnd.split("|",t[3101],reg1)
+				t2v(t[3102],var2)
+				t2v(t[3103],var3)
+				t2v(t[3104],var4)
+				play_system_se(t[3101],var2,var3,var4)
+		
+
+				// set dialog window size
+				dialog_size.split("|",t[3101],reg1)
+				t2v(t[3101],Temp11)
+				t2v(t[3102],Temp12)
+
+				// show picture proc
 				TT1 = v[1115] // ?
 				TT2 = 3
 				@pic[PicID_Radio_Dialog_Back].strpic {
 					""
 						.pos TT1, TT2 .top
-						.size 240, 64    .chromakey 1
+						.size Temp11, Temp12    .chromakey 1
 						.scale 100
 						.trans 50
 						.rgbs 100, 100, 100, 100
@@ -82,7 +98,7 @@ cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_
 						.affectedByShake
 				}
 
-			TT1 -= 118
+				TT1 = Temp11 / 2 - 2  
 				TT2 += 2
 				@pic[PicID_Radio_Dialog_Text].strpic {
 					dialog_string
