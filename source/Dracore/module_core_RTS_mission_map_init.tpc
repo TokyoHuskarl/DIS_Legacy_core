@@ -1273,14 +1273,14 @@ __fn CEV_MISSION_MAP_INIT {
 	log_push("loading DIS mapstring file.")
 	log_push(inputstr)
 	@if Str_LanguageToken.eq "_jp" {
-		inputstr .asg  .file inputstr, .utf8, .extract
-	}.else bl{
 		inputstr .asg  .file inputstr, .sjis, .extract
+	}.else bl{
+		inputstr .asg  .file inputstr, .utf8, .extract
 	}
 
 	__fn load_and_store_mapstring {
 		log_push("DIS mapstring file loaded.")
-		@if `loadedJsConfig.isOff || Is_LEGACYSTAGE.isOn() {
+		@if `loadedJsConfig == 0 || Is_LEGACYSTAGE == 1 {
 			// legacy map string system
 			inputstr .split "*/", str9, TT1
 			inputstr .split LF, t[40000], TT1
@@ -1312,6 +1312,7 @@ __fn CEV_MISSION_MAP_INIT {
 
 		}
 	}
+
 	@comment "*Weather Init*"
 	@if s[312] .isOff() {
 	    @call .cev 1798
