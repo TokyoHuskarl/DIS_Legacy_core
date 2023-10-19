@@ -82,7 +82,7 @@ function getRM(typ,add) {
 
 
 // global pointers for important objects
-let MISSION; // {RTSmission} current mission
+let MISSION; // {RTSmission} current mission - always refers to current RTS.mission
 let MAP; // {RTSmap} current map
 var scene = scene || {};
 
@@ -1395,7 +1395,13 @@ class RTSmission {
 			this.conf.isLevelSystemOn = false; // not yet
 
 		} else {
-			let src = JSON.parse(infojson);
+			let src;
+			try {
+				src = JSON.parse(infojson);
+			} catch (error) {
+				errorlog("info.json.txt for the current mission seems broken. Check if it's written in correct JSON format or not.")
+				src = {name: "Couldn't read info.json.txt file for this mission"};
+			};
 			this.name = src.MISSIONINFO.name;
 			this.missionscript = src.MISSIONINFO.missionscript || ["mymission.js"];
 			this.dataextension = src.MISSIONINFO.dataextension || [];
@@ -1411,6 +1417,14 @@ class RTSmission {
 			this.conf.isLevelSystemOn = src.MISSIONINFO.sys_level || false;
 
 			this.conf.isLEGACYmission = src.MISSIONINFO.legacymission || false;
+
+			// set player factions
+			let i = 0;
+			for (fac of src.MISSIONINFO.default_factions){
+				this.essential.players[i] = new DIS_RTSplayer(i,fac);
+				i++;
+			};
+
 			sets(457,this.conf.isLEGACYmission); // s[457] <- Is_LEGACYSTAGE
 
 		};
@@ -1463,21 +1477,38 @@ class RTSmission {
 
 	save = function(){
 		// save triggers in queue as a string..
-		let savestring = ""
+		let savestring = "";
 		for (let elmid in this.triggers.queue){
 			let i = this.triggers.queue[elmid].index; // get trigger index in RTS.createdTrgs
-			savestring += i + ","
-		}
+			savestring += i + ",";
+		};
 		sett(Adrt_JSSAVE_triggersQueue,savestring.slice(0,-1));
+
+		sett(745,JSON.stringify(this.local)); // Str_Mission_local_save_JSON
+
 
 	};
 
 	restore = function(){
 		// restore mission settings
 		this.passedFrame = getv(Adr_world_frame); //  if DIS game is reloaded, then reload from RM var. 
-		
-		
+		let saved = JSON.parse(gett(745));
+		for (let elmid in saved){
+			let elm = saved[elmid];
+			if (typeof elm == "object"){
+				if (Array.isArray(elm)){ // if it's array
+					this.local[elmid] = [];
+					for (let elm_b of elm) {
+						this.local[elmid].push(elm_b);
+					};
+				}; // otherwise just ignore, since triggers cannot be saved
+			} else {
+				this.local[elmid] = elm; // just copy
 
+			};
+		};
+		
+		deblog(JSON.stringify(this.local));
 		deblog("RTSmission restored.");
 	};
 
@@ -1873,7 +1904,8 @@ let RTS = {
 			// so be it.
 			this.mission.conf.isLEGACYmission = true;
 		}
-		MISSION = this.mission // set link to current mission
+		MISSION = this.mission; // set link to current mission
+		LOCAL = MISSION.local;
 	},
 
 	setupMapLoading: function(mapdir){ // will be called after this.setupMission().
@@ -1902,7 +1934,7 @@ let RTS = {
 
 	restore: function(){ // call this function whenever player loads RMsavedata. reload all data from RM memories.
 		// restore mission 
-		this.setupMission(gett(752),getv(501)); // init mission flags
+		this.setupMission(gett(741)); // read mission info json file stored in the savedata
 		const str_missiondef_storage = 761; // <- header_mission.tpc
 
 		// load mission def and setup map system
@@ -1933,8 +1965,8 @@ let RTS = {
 		for (let i of trgQArray){ // check it
 			if (typeof this.createdTrgs[i] == "object") { // failsafe
 				this.mission.triggers.queue.push(this.createdTrgs[i]); // re-push trigger to the trigger queue.
-			}
-		}
+			};
+		};
 		deblog("simple triggers restored..");
 
 		deblog(`${this.createdTrgs.length} triggers exist in mission.`);
@@ -2147,7 +2179,6 @@ var Cmd = {
 		exportText: function(stringid,filepath) {
 			Cmd.Qset(this.CmdType,"exportText",`${stringid},${filepath}`);
 		},
-
 
 		tintScreen: function(RGBS,f) {
 			f = f || 0;
@@ -2911,7 +2942,8 @@ const inheritancetest = `
 	Cmd.group.move(cohort1,[1,1],0);
 	Cmd.run();
 
-
+	RTS.mission.local.trites = RTS.mission.createSimpleTrigger_Loop(90);
+	deblog(JSON.stringify(RTS.mission))
 
 
 

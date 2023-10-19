@@ -1,0 +1,50 @@
+// mission script for poteton training
+
+
+// start up process
+RTS.mission.startup = function(){
+	//Ally
+	//犠牲者十人未満はいける
+
+	//1st Inf cohort
+	let cohortptr;
+	cohortptr = Cmd.map.spawnAgentgroup("TRP_poteton_inf",[28,27],TEAM_PLAYER,[0,0],7,1);
+	cohortptr.compoundAgtGroup(Cmd.map.spawnAgentgroup("TRP_poteton_inf",[30,27],TEAM_PLAYER,[0,0],7));
+	Cmd.group.registerCohort(cohortptr,TEAM_PLAYER,1);
+
+	//Spearmen
+	cohortptr = Cmd.map.spawnAgentgroup("TRP_poteton_levy_pike",[17,34],TEAM_PLAYER,[0,1],8);
+	cohortptr.compoundAgtGroup(Cmd.map.spawnAgentgroup("TRP_poteton_levy_pike",[19,36],TEAM_PLAYER,[0,1],8));
+	Cmd.group.registerCohort(cohortptr,TEAM_PLAYER,2);
+
+	//Crossbowmen
+	cohortptr = Cmd.map.spawnAgentgroup("TRP_merc_crossbow",[20,28],TEAM_PLAYER,[0,1],5);
+	cohortptr.compoundAgtGroup(Cmd.map.spawnAgentgroup("TRP_merc_crossbow",[18,28],TEAM_PLAYER,[0,1],5));
+	Cmd.group.registerCohort(cohortptr,TEAM_PLAYER,3);
+
+	//Cav
+	cohortptr = Cmd.map.spawnAgentgroup("TRP_poteton_vet_cav",[24,23],TEAM_PLAYER,[1,1],3);
+	cohortptr.compoundAgtGroup(Cmd.map.spawnAgentgroup("TRP_merc_cav",[22,24],TEAM_PLAYER,[1,1],3));
+	Cmd.group.registerCohort(cohortptr,TEAM_PLAYER,4);
+
+	//Cmd.map.spawnAgentgroup("TRP_poteton_banner",[23,27],TEAM_PLAYER,[0,0],1);
+
+	//Enemies
+
+	Cmd.map.spawnAgentgroup("TRP_imperial_slime",[78,33],TEAM_ENEMY,[1,0],9,0);
+	Cmd.map.spawnAgentgroup("TRP_imperial_levy_orc",[80,32],TEAM_ENEMY,[1,0],10);
+
+	Cmd.map.spawnAgentgroup("TRP_imperial_aux_skirmisher",[75,37],TEAM_ENEMY,[1,1],5);
+	Cmd.map.spawnAgentgroup("TRP_goblin_archer",[78,35],TEAM_ENEMY,[1,1],8);
+
+	Cmd.map.spawnAgentgroup("TRP_imperial_aux_spearman",[78,15],TEAM_ENEMY,[1,0],5);
+	Cmd.map.spawnAgentgroup("TRP_imperial_aux_spearman",[76,16],TEAM_ENEMY,[1,0],5);
+
+	Cmd.map.spawnAgentgroup("TRP_imperial_aux_wolfrider",[90,11],TEAM_ENEMY,[1,0],8);
+
+	Cmd.map.spawnAgentgroup("TRP_imperial_minotaur",[73,28],TEAM_ENEMY,[1,0],1);
+	Cmd.map.spawnAgentgroup("TRP_imperial_goeteia",[88,30],TEAM_ENEMY,[1,0],1);
+};
+
+
+
