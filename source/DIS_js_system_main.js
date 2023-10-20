@@ -1843,9 +1843,7 @@ class DIS_cohort extends DISentity {
 		this.id = id;
 		this.agents = agtarray;
 		
-		if (team == 0){ // single player
-			// unco
-		};
+		MISSION.essential.players[team].cohorts[id] = this;
 
 	};
 
@@ -1892,7 +1890,7 @@ class DIS_dialog extends DISentity{
 		this.icon = icon || ["",[4,4],1]; // [filename, sprite_number, and?]
 		this.fontdata = DIS.lang.currentFontdata.common; // [filename, fontsize]
 		this.stopworld = false; // 
-		this.size = [240,64]; // [width,height]
+		this.size =  [360,78] // [240,64]; // [360,108] [width,height]
 	};
 	
 
@@ -3107,7 +3105,6 @@ const inheritancetest = `
 	RTS.mission.local.trites = RTS.mission.createSimpleTrigger_Loop(90);
 	deblog(JSON.stringify(RTS.mission))
 	let ply= new DIS_RTSplayer(0,1)
-	ply.getCombatPower()
 
 const maptest = `
 {
@@ -3139,8 +3136,6 @@ const maptest = `
 	
 	DIS.data.init(); // reset DIS data
 	*/
-
-	Cmd.group.move(g_ENEMY.select.all(),g_PLAYER.getSchwerpunkt());
 
 };
 
