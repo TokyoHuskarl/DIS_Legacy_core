@@ -411,11 +411,14 @@ class DISagent extends DISentity { // agents for RTS mode
 		this.team = team;
 		this.activated = true;
 		this.isCertified = isCertified; 
+
+		// register to the world array
+		RTS.agents[agentid] = this;
 		
 	};
 
 	ckIntegrity(){ // check data integrity
-		Cmd.agent.ckIntegrity(this)
+		Cmd.agent.ckIntegrity(this);
 	};
 
 	getid(){return this.agentid;};
@@ -924,7 +927,8 @@ DIS.string = {
 const Adr_ptr_spawnAgent = 201; //v[201]
 
 DIS.agent = { 
-	limit: getv(1004), // get from game variable
+	// get from game variable
+	limit: getv(1004), 
 	genPtrPos: 0,
 
 	// Search Empry Space function - this function searches a blank space for an agent in the agent data space.
@@ -1386,9 +1390,10 @@ class DISvariable extends DISentity { // nonvolatile Variable for RTS mission
 class RTSmission {
 	constructor(infojson){
 		infojson = infojson || "undefined";
+			this.RMmapid = 0; // RPGMAKER mapid.
 		if (infojson == "undefined"){
+			this.RMmapid = -1; // RPGMAKER mapid.
 			this.missionid = "NO_missioninfo";
-			this.mapid = 0;
 			this.conf = {};
 			this.conf.isLEGACYmission = false;
 			this.conf.isSightSystemOn = true;
@@ -1702,6 +1707,7 @@ class RTSmap {
 
 		setv(Adr_TileID,this.tileset);
 		this.generate();
+		deblog("build called")
 		setv(Adr_HeightGenType,this.heightgenType)
 	};
 	
@@ -1717,6 +1723,7 @@ class RTSmap {
 	
 	generate(){ // if you don't override this function, this object tries to load this.terrainSource unless the map is LEGACYmission - I mean using RMmap.
 	
+			deblog("how about it?: "+ RTS.mission.conf.isLEGACYmission);
 		if (!RTS.mission.conf.isLEGACYmission){
 			const Adr_mapTerrainSourceType = 2055;
 			let filename = this.terrainSource.split("."); // ignore extension
@@ -1773,7 +1780,23 @@ class DIS_RTSplayer extends DISentity {
 
 
 	getTeamListHead(){return 1145 + Math.min(this.id,1)};
-				
+			
+
+
+	teamAgentsList = [];
+
+	refreshCurrentTeamList(){
+		let res = [];
+		let agid;
+		for (let ptr = getv(this.getTeamListHead()) ; (agid = getv(ptr)) >= 1 ; ptr++ ){
+			res.push(RTS.agents[agid]);
+		};
+		deblog("resfteamend")
+		return (this.teamAgentsList = new RTSagentGroup(res,this.id));
+
+	};
+
+	getSchwerpunkt(){ return this.refreshCurrentTeamList().getSchwerpunkt() };
 
 	getCombatPower(){
 
@@ -1790,13 +1813,22 @@ class DIS_RTSplayer extends DISentity {
 
 	};
 
-	teamAgentIDlist = [];
-
 
 	receiveTeamList(array){
 		this.teamAgentIDlist = array;
-	}
+	};
 
+
+	// select agents and return as a idlist
+	select_all(){
+		let r = [];
+		let agid;
+		for (let ptr = getv(this.getTeamListHead()) ; (agid = getv(ptr)) >= 1 ; ptr++ ){
+			r.push(agid);
+		};
+		deblog(r);
+		return r;
+	};
 
 	restore(){ 
 		// restore tech info
@@ -1886,7 +1918,7 @@ let RTS = {
 	map: new RTSmap(),
 	createdTrgs: [],
 	savedVars: [],
-	global: {}, // store mission vars or whatever
+	agents: new Array(DIS.agent.limit), // store mission vars or whatever
 
 	/*
 	Mtrig: {}, // mission triggers
@@ -2000,7 +2032,7 @@ let RTS = {
 			this.isRTSmode = true;
 		}
 
-		if (this.mission.mapid == 0 || this.mission.mapid == 60 || this.mission.mapid == 61) { // NOT RPG maker legacy map
+		if (this.mission.RMmapid == 0 || this.mission.RMmapid == 60 || this.mission.RMmapid == 61) { // NOT RPG maker legacy map
 			// then we're gonna open custom map.
 		} else { // RPG maker legacy map. 
 			// so be it.
@@ -2021,9 +2053,13 @@ let RTS = {
 	},
 
 	openMissionMapData: function(jsonsrc){ // you can call this only after successfully load missiondef.js.txt..
-		deblog("missionmapdata ugoiteru"+jsonsrc)
+		deblog("missionmapdata is called")
 		this.map = new RTSmap(jsonsrc);
 		MAP = this.map;
+		// send back mapsize reg1 reg2
+		setv(21,MAP.size[0])
+		setv(22,MAP.size[1])
+		deblog("sent back size array to reg1 and reg2")
 		
 	},
 
@@ -2544,11 +2580,17 @@ var Cmd = {
 		cgrp: [], // agentid array
 		Adr_cgrp_list_head: getv(1212),
 
-		// {RTSagentGroup}
+		// @param {RTSagentGroup} grp You can hand agentid array as well.
 		setCgrp: function(grp){
 			let agentlist = "";
-			for (let elm of grp.getids()) {
-				agentlist += elm + "|";
+			if (Array.isArray(grp)){
+				for (let elm of grp) {
+					agentlist += elm + "|";
+				};
+			} else { 
+				for (let elm of grp.getids()) {
+					agentlist += elm + "|";
+				};
 			};
 			deblog(agentlist)
 			Cmd.Qset(this.CmdType,"setCgrp",agentlist);
@@ -2564,11 +2606,12 @@ var Cmd = {
 			// temporary only for player
 			if (player == 0){
 				Cmd.Qset(this.CmdType,"registerCohort",`${player},${cohortid},${this.Adr_cgrp_list_head},${grp.idlist.length}`);
-			}
+			};
 			return new DIS_cohort(player,cohortid,grp.idlist);
 		},
 
 		move: function(grp,path,flag){
+			flag = flag || 0;
 			this.checkCurrentGroup(grp);
 			let goal = path; // kari
 			Cmd.Qset(this.CmdType,"move",`${goal[0]},${goal[1]},${flag}`);
@@ -2577,13 +2620,12 @@ var Cmd = {
 		attack: function(grp,targetid){
 			this.checkCurrentGroup(grp);
 			Cmd.Qset(this.CmdType,"attack",`${targetid}`);
-
 		},
+
 		setStance: function(grp,stanceid,flag){
 			flag = flag || 0;
 			this.checkCurrentGroup(grp);
 			Cmd.Qset(this.CmdType,"setStance",`${stanceid}`);
-
 		},
 
 	},
@@ -3098,6 +3140,7 @@ const maptest = `
 	DIS.data.init(); // reset DIS data
 	*/
 
+	Cmd.group.move(g_ENEMY.select.all(),g_PLAYER.getSchwerpunkt());
 
 };
 

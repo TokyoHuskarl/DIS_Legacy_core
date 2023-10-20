@@ -735,6 +735,8 @@ __fn CEV_MISSION_INIT {
 	
 	getMissionPath()
 	loadMissionDef()
+	loadMapInfo()
+
 
 	@if loadedJsConfig.isOff() {
 		inputstr .asg "..\Maps\"
@@ -749,12 +751,16 @@ __fn CEV_MISSION_INIT {
 			t[3000..3300] .asg ""
 			
 		}
+
+	}.else bl{
+		@map.setEv[4] .pos(reg1,reg2)
+		
 	}
 	
 
+		Map_LimitCoordX_max = ev[4].x
+		Map_LimitCoordY_max = ev[4].y
 
-	Map_LimitCoordX_max = ev[4].x
-	Map_LimitCoordY_max = ev[4].y
 	v[411] = (Map_LimitCoordX_max + Map_LimitCoordX_min) / 2
 	v[412] = (Map_LimitCoordY_max + Map_LimitCoordY_min) / 2
 	v[413] = (Map_LimitCoordX_max - Map_LimitCoordX_min) / v[1277] + 1
@@ -1089,7 +1095,6 @@ __fn CEV_MISSION_INIT {
 		str2 .toNum TT1
 		@comment "need to load tilegen.txt"
 		@if TT1 == 0 {
-			Mapgentype = Mapgentype == 0 ? 1 : Mapgentype
 			
 		}
 		
@@ -1112,9 +1117,7 @@ __fn CEV_MISSION_MAP_INIT {
 	
 
 	// mapdef.js.txt file won't be loaded when the game didn't load missiondef.js.txt.
-	MapHeightMapType = 0
 	@if loadedJsConfig.isOn() {
-		loadMapInfo()
 		run_RTSmapGeneration()
 		@map.tileset v[2060]
 		log_push("JS config loaded")
@@ -2248,6 +2251,8 @@ __fn loadMissionDef $missionpath {
 
 // JS map terrain setup management system
 __fn loadMapInfo $missionpath {
+	Mapgentype = 0
+	MapHeightMapType = 0
 	str1 .asg DIS_MAPHOMEPATH
 	str1 .cat RTSmap_MapdefDir
 	str1 .cat "\\mapinfo.json"
@@ -2256,13 +2261,15 @@ __fn loadMapInfo $missionpath {
 	@if inputstr .neq "" { // there's mapdef.js
 		str_mapdef_storage.asg inputstr
 		@js .run "RTS.openMissionMapData(gett(510));" // parse mapinfo.json in t[510] <-inputstr
+		// return to reg1 reg2 
 
 	}.else bl {
-		str1 .asg, .cat("Couldn't open mapinfo json file!", " filepath is: ~/text", str1)//
+		str1 .asg, .cat("Couldn't open mapinfo json file!", " filepath is: ~/text", str1) //
 		func_errlog(str1)
+		reg1 = ev[4].x
+		reg2 = ev[4].y
 
 	}
-
 }
 
 __fn run_RTSmapGeneration {@js .run "RTS.map.build()"}

@@ -856,8 +856,13 @@ __fn cmd_grp_registerCohort {
 	t2v(SSargs1,Temp17) // cohortid
 	t2v(SSargs2,Temp18) // list
 	t2v(SSargs3,Temp19) // count
-	
-	register_cohort_for_player(Temp16,Temp17,Temp18,Temp19)
+	@if Temp16 == 0 {
+		register_cohort_for_player(Temp16,Temp17,Temp18,Temp19)
+
+	}.else bl{ // otherwise?
+		assign_cohortnumber_to_listagents(Temp18,Temp19,Temp17)
+
+	}
 }
 
 __fn cmd_grp_move $x $y $fl {

@@ -256,27 +256,10 @@ __fn register_cohort_for_player $plid $cohortid $liststart $listcount {
 			increment_var(v[335])
 		}
 
-	@comment "assign cohortID"
-		TT1 = $liststart
-		@loop $listcount {
-				@if v[TT1] >= 1 {
-					TT2 = v[TT1] * 300
-						TT2 += 4701
-						@if v[TT2] >= 1 {
-							TT2 += 34
-								v[TT2] = LEGV_Selected_Cohort_Number
+		@comment "assign cohortID"
+		assign_cohortnumber_to_listagents($liststart,$listcount,LEGV_Selected_Cohort_Number)
 
-						}
-
-				} .else bl {
-					@break
-
-				}
-			TT1 += 1
-
-		}
-
-	@comment "set initial cohort parameter"
+		@comment "set initial cohort parameter"
 		v[v[4530] + (LEGV_Selected_Cohort_Number - 1) * 20 + 11] = 2
 		v[v[4530] + (LEGV_Selected_Cohort_Number - 1) * 20 + 15] = 11
 		@comment "#################	generate cohort banner"
@@ -345,4 +328,24 @@ __fn register_cohort_for_player $plid $cohortid $liststart $listcount {
 
 }
 
+__fn assign_cohortnumber_to_listagents $liststart $listcount $cohortnumber {
+	TT1 = $liststart
+		@loop $listcount {
+			@if v[TT1] >= 1 {
+				TT2 = v[TT1] * 300
+					TT2 += 4701
+					@if v[TT2] >= 1 {
+						TT2 += 34
+							v[TT2] = $cohortnumber 
 
+					}
+
+			} .else bl {
+				@break
+
+			}
+			TT1 += 1
+
+		}
+
+}

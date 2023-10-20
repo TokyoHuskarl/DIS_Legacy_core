@@ -877,8 +877,8 @@ __fn MAIN_macro_agent_WP_Array_pop {
 	Ptr18 =__id(agent_WayPoint1X) // 643
 	@loop 6 { // only 6 slots
 		v[Ptr18].copy v[Ptr19], 2
-		v[Ptr18].add N2,2
-		// v[__id(Ptr18)..__id(Ptr19)] += 2
+		// v[Ptr18].add N2,2
+		v[__id(Ptr18)..__id(Ptr19)] += 2
 	}
 	
 	//@comment "後ろに0代入"
@@ -890,7 +890,7 @@ __fn MAIN_macro_agent_WP_Array_pop {
 }
 
 __fn MAIN_macro_agent_WP_Array_init {
-	agent_LeftWPtoChase = -1 // Agent does not chase left WPs anymore
+	val_const(agent_LeftWPtoChase,-1) // agent_LeftWPtoChase = -1 // Agent does not chase left WPs anymore
 
 }
 
