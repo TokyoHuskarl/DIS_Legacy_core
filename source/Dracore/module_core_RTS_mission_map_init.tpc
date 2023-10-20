@@ -1114,7 +1114,7 @@ __fn CEV_MISSION_MAP_INIT {
 	// mapdef.js.txt file won't be loaded when the game didn't load missiondef.js.txt.
 	MapHeightMapType = 0
 	@if loadedJsConfig.isOn() {
-		loadMapDef()
+		loadMapInfo()
 		run_RTSmapGeneration()
 		@map.tileset v[2060]
 		log_push("JS config loaded")
@@ -2223,10 +2223,11 @@ __fn loadMissionDef $missionpath {
 		// Str_MissionInfoJSON <- make up load proc!
 
 	inputstr .asg Str_MissionPath
-	inputstr .cat "\\info.json"
+	inputstr .cat "\\missioninfo.json"
 	Str_MissionInfoJSON .asg .file inputstr, .utf8
 
 	@if Str_MissionInfoJSON.neq "" { // there's missiondef.js
+		// try_eval_js("RTS.setupMission(gett(741));","parsing missioninfo.json FAILED!")
 		@js .run "RTS.setupMission(gett(741));" // t[752],v[501]
 
 		inputstr .asg Str_MissionPath
@@ -2238,7 +2239,7 @@ __fn loadMissionDef $missionpath {
 		eval_js(inputstr) // execute missiondef.js.txt
 		str_missiondef_storage.asg inputstr
 		loadedJsConfig.on
-		@js .run "RTS.setupMapLoading(RTS.mission.essential.mapDataDirectory)" // terrainData check
+		@js .run "RTS.setupMapLoading(RTS.mission.mapSourceDir);" // terrainData check
 	}
 
 	
@@ -2246,18 +2247,20 @@ __fn loadMissionDef $missionpath {
 
 
 // JS map terrain setup management system
-__fn loadMapDef $missionpath {
+__fn loadMapInfo $missionpath {
 	str1 .asg DIS_MAPHOMEPATH
 	str1 .cat RTSmap_MapdefDir
-	str1 .cat "\\mapdef.js" // need rewriting
+	str1 .cat "\\mapinfo.json"
+	// str1 .cat "\\mapdef.js" // need rewriting
 	inputstr .asg .file str1, .utf8
 	@if inputstr .neq "" { // there's mapdef.js
-		@js .run "RTS.openMissionMapData()" // set new RTSmap into RTS module
-		eval_js(inputstr) // execute mapdef.js.txt
 		str_mapdef_storage.asg inputstr
+		@js .run "RTS.openMissionMapData(gett(510));" // parse mapinfo.json in t[510] <-inputstr
+
 	}.else bl {
-		str1 .asg, .cat("Couldn't open Map terrain file!", " filepath is: ~/text", str1)//
+		str1 .asg, .cat("Couldn't open mapinfo json file!", " filepath is: ~/text", str1)//
 		func_errlog(str1)
+
 	}
 
 }
@@ -2306,7 +2309,11 @@ __fn generateTileMapFromPicfile $filepath {
 // Call start up Mission
 
 def JSCMD_STARTUP = "
+try {
 RTS.mission.startup();
+} catch (error) {
+errorlog(`MISSION.startup() function failed!`);
+};
 Cmd.run();
 "
 

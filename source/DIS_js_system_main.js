@@ -93,6 +93,7 @@ var scene = scene || {};
  * @global {DIS_RTSplayer} ptr to RTS player object
  */
 let g_PLAYER;  
+let g_ENEMY;  
 /**
  * @LOCAL {RTS.mission.local} ptr to RTS mission local properties.
  */
@@ -303,7 +304,6 @@ class DATA_tech extends DATA_entity {
 	getFlagAddress(){
 		// [address,flag]
 		let retme = [this.techflagslot[0],parseInt(this.techflagslot[1],16)];
-		deblog(retme)
 		return retme;
 	};
 
@@ -438,7 +438,7 @@ class DISagent extends DISentity { // agents for RTS mode
 		} else {
 			return (this.activated = false);
 
-		}
+		};
 	};
 
 }
@@ -452,7 +452,6 @@ class DISagent_static extends DISagent {
 
 class RTSagentGroup { // list object for DISagent.
 	constructor(agtArray,team){
-		deblog(agtArray);
 		this.idlist = [];
 
 		// this design can make terrible error in future? idk 
@@ -553,7 +552,7 @@ function parse_simpleid(line,myArray) {
 
 function parse_languageString(line,myArray) {
 	const [key, value] = line.split('|');
-	myArray.register(key,value);
+	myArray[key] = value;
 };
 
 
@@ -900,21 +899,21 @@ DIS.string = {
 	convertString: function(given){
 
 		let rs = given;
+		let rsget = rs;
 		if (rs.lastIndexOf('$mstr_') == 0){
 			rs = rs.split("$mstr_")[1];
-			try { // get actual string from mission string container
-				rs = RTS.mission.strings[rs];
-			} catch (error) {
-				errorlog(`Map string "${rs}" is not registered.`);
-			}
+			rsget = RTS.mission.strings[rs];
 		} else if (rs.lastIndexOf('$qstr_') == 0){
-			rs = rs.split("$qstr_")[1];
+			rsget = rs.split("$qstr_")[1];
 			// underconstruction
+		};
+		if (typeof rsget == "undefined") { errorlog(`Map string "${rs}" is not registered.`); rs = "undefined";
+		} else {
+			rs = rsget;
 		};
 
 		// let the in game string can reffer js variables
 		// unco
-		deblog(rs)
 		rs = rs.replace(",", "$;");
 		return rs // DIS format comma.
 
@@ -956,7 +955,10 @@ DIS.agent = {
 
 	getPtrToMainParam: (id) => {return 4700 + id * 300;},
 
+	getMainParam: function(id,slot){return getv(this.getPtrToMainParam(id) +slot);},
 
+
+	// BROKEN
 	ck_if_alive(agentid){
 		ptr = this.getPtrToMainParam(agentid);
 		ptr += 1; // refering to agenttype slot. If *ptr > 0, the agent is seen alive.
@@ -967,6 +969,8 @@ DIS.agent = {
 	setName: function(agentid,name) {
 		
 	},
+
+	
 
 }
 
@@ -1343,14 +1347,11 @@ const DATA = DIS.data;
 
 
 //
-if (SINGLEPLAY){
-	const TEAM_GAIA = -1,
-		TEAM_PLAYER = 0,
-		TEAM_ENEMY = 1,
-		TEAM_NEUTRAL = 2,
-		TEAM_ALLY = 3;
-};
-
+const TEAM_GAIA = -1,
+	TEAM_PLAYER = 0,
+	TEAM_ENEMY = 1,
+	TEAM_NEUTRAL = 2,
+	TEAM_ALLY = 3;
 
 const Adr_world_frame = 2510;
 
@@ -1386,48 +1387,55 @@ class RTSmission {
 	constructor(infojson){
 		infojson = infojson || "undefined";
 		if (infojson == "undefined"){
-			this.missionid = "mapgentest";
+			this.missionid = "NO_missioninfo";
 			this.mapid = 0;
 			this.conf = {};
 			this.conf.isLEGACYmission = false;
 			this.conf.isSightSystemOn = true;
 			this.conf.isMoraleSystemOn = true;
 			this.conf.isLevelSystemOn = false; // not yet
+			this.mapSourceDir = this.missionid;
 
 		} else {
 			let src;
 			try {
 				src = JSON.parse(infojson);
 			} catch (error) {
-				errorlog("info.json.txt for the current mission seems broken. Check if it's written in correct JSON format or not.")
-				src = {name: "Couldn't read info.json.txt file for this mission"};
+				errorlog("missioninfo.json.txt for the current mission seems broken. Check if it's written in correct JSON format or not.")
+				src = {name: "Couldn't read missioninfo.json.txt file for this mission"};
 			};
-			this.name = src.MISSIONINFO.name;
-			this.missionscript = src.MISSIONINFO.missionscript || ["mymission.js"];
-			this.dataextension = src.MISSIONINFO.dataextension || [];
-			this.startcamerapos = src.MISSIONINFO.startcamerapos || [0,0];
+			this.missionid = src.missionid;
+			this.name = src.name;
+			this.missionscript = src.missionscript || ["mymission.js"];
+			this.dataextension = src.dataextension || [];
+			this.startcamerapos = src.startcamerapos || [0,0];
 
-			this.playcondition = src.MISSIONINFO.playcondition || [];
-			this.dependency = src.MISSIONINFO.dependency || [];
-			this.icon = src.MISSIONINFO.icon || "";
+			this.playcondition = src.playcondition || [];
+			this.dependency = src.dependency || [];
+			this.icon = src.icon || "";
 			
-			this.conf.allows_pick_faction = src.MISSIONINFO.allows_pick_faction || false;
-			this.conf.isSightSystemOn = src.MISSIONINFO.sys_sight || false;
-			this.conf.isMoraleSystemOn = src.MISSIONINFO.sys_morale || true;
-			this.conf.isLevelSystemOn = src.MISSIONINFO.sys_level || false;
+			this.conf.allows_pick_faction = src.allows_pick_faction || false;
+			this.conf.isSightSystemOn = src.sys_sight || false;
+			this.conf.isMoraleSystemOn = src.sys_morale || true;
+			this.conf.isLevelSystemOn = src.sys_level || false;
 
-			this.conf.isLEGACYmission = src.MISSIONINFO.legacymission || false;
+			this.conf.isLEGACYmission = src.legacymission || false;
 
 			// set player factions
 			let i = 0;
-			for (fac of src.MISSIONINFO.default_factions){
+			for (let fac of src.default_factions){
 				this.essential.players[i] = new DIS_RTSplayer(i,fac);
 				i++;
 			};
+			this.mapSourceDir = (src.hasOwnProperty("IMPORT_MAP") && src.IMPORT_MAP != "") ? src.IMPORT_MAP : this.missionid;
 
 			sets(457,this.conf.isLEGACYmission); // s[457] <- Is_LEGACYSTAGE
 
+
+
 		};
+			console.log("mapdir is "+this.mapSourceDir)
+
 
 		this.allocVarAmount = 0;
 		this.essential.mapDataDirectory = this.missionid; // initially set the same as mission
@@ -1464,7 +1472,11 @@ class RTSmission {
 
 	strings = {};
 	importLangString(str){
-		parse_languageString(str,this.strings)
+		let lines = str.trim().split("\n");
+		lines.forEach(line => {
+			parse_languageString(line,this.strings)
+		});
+		deblog("string imported:\n" + str);
 	};
 	
 
@@ -1587,7 +1599,7 @@ class RTSmission {
 
 
 	setMapData = function(mapdir){ // {string}
-		this.essential.mapDataDirectory = mapdir;
+		this.mapSourceDir = mapdir;
 	};
 
 	setTrigger = function(trig){ // {RTStrigger}
@@ -1627,10 +1639,50 @@ const MAPGEN_nomapgen = 0,
 // height gen 
 const HGEN_NOTHING = 0,
 	HGEN_PRESET = 1,
-	HGEN_GENERATE = 2;
+	HGEN_GENERATE = 2,
+	HGEN_PRESET_TXT = 3;
 
 class RTSmap {
-	constructor(mapdeffile){
+	constructor(infojson){
+		this.size = [50,50]; // temp
+		infojson = infojson || "undefined";
+		if (infojson == "undefined"){
+			this.mapid = "LEGACYMAP";
+			this.isGenerated = false;
+			this.heightgenType = HGEN_NOTHING; // 
+			this.tileset = 1; // RM tile set - if it's not defined, at least try to load 1.
+			this.terrainSource = "terrain.png"; // png?
+
+		} else {
+
+			let src;
+			try {
+				src = JSON.parse(infojson);
+			} catch (error) {
+				errorlog("mapinfo.json.txt for the current mission seems broken. Check if it's written in correct JSON format or not.")
+				src = {name: "Couldn't read mapinfo.json.txt file for this mission"};
+			};
+			this.name = src.name;
+			this.mapscript = src.mapscript || ["mymap.js"];
+			this.dataextension = src.dataextension || [];
+
+			this.dependency = src.dependency || [];
+			
+			// set player factions
+			let i = 0;
+			for (let elm of src.size){
+				this.size[i] = elm;
+				i++;
+			};
+			this.heightgenType = src.heightgen || 0; // kari
+			this.terrainSource = src.terrainfile || "terrain.png"; // png?
+			this.tileset = src.tileset || 1; // RM tile set - if it's not defined, at least try to load 1.
+		};
+		
+
+
+
+		/*
 		mapdeffile = mapdeffile || "editmode";
 		this.source = mapdeffile;
 		this.size = [50,50]; // temp
@@ -1638,7 +1690,10 @@ class RTSmap {
 		this.heightgenType = HGEN_NOTHING; // 
 		this.tileset = 1; // RM tile set - if it's not defined, at least try to load 1.
 		this.terrainSource = "mapdata.png"; // png?
-	}
+		*/
+		
+
+	};
 	
 	
 	build(){ // this function called through mission init process, after RTS.openMissionMapDataloading() done after mapdef.js.txt is read.
@@ -1664,10 +1719,19 @@ class RTSmap {
 	
 		if (!RTS.mission.conf.isLEGACYmission){
 			const Adr_mapTerrainSourceType = 2055;
-			setv(Adr_mapTerrainSourceType,2)
-			let filename = this.terrainSource.split(".")[0]; // ignore extension
+			let filename = this.terrainSource.split("."); // ignore extension
+			if (filename[1] == "png"){
+					setv(Adr_mapTerrainSourceType,2);
+
+			} else if (filename[1] == "txt") {
+					setv(Adr_mapTerrainSourceType,1);
+
+			};
+			deblog(filename[0]+filename[1]);
+
+			filename = filename[0]; // this.terrainSource.split(".")[0]; // ignore extension
 			sett(adr_DISstr1,filename) // return to t[501]
-		}
+		};
 	
 	};
 
@@ -1690,13 +1754,49 @@ class DIS_RTSplayer extends DISentity {
 
 
 		// check if it's game player
-		if (id == 0 && SINGLEPLAY) { // DIS LEGACY - single player only.
-			this.isHuman = true;
-			g_PLAYER = this;
+		if (SINGLEPLAY){
+			if (id == 0) { // DIS LEGACY - single player only.
+				this.isHuman = true;
+				g_PLAYER = this;
+
+			} else if (id == 1) {
+				g_ENEMY = this;
+
+			};
 		};
+
 	};
 
 	cohorts = [];
+
+	combatpower = 0;
+
+
+	getTeamListHead(){return 1145 + Math.min(this.id,1)};
+				
+
+	getCombatPower(){
+
+		let res = 0;
+		let agid;
+
+		for (let ptr = getv(this.getTeamListHead()) ; (agid = getv(ptr)) >= 1 ; ptr++ ){
+				let lv = (DIS.agent.getMainParam(agid,104) / 3) + 1;
+				lv *= lv <= 1 || DIS.agent.getMainParam(agid,260) >= 3 ? 0 : 1 // check morale
+				res += lv;
+		};
+
+		return this.combatpower = (res | 0);
+
+	};
+
+	teamAgentIDlist = [];
+
+
+	receiveTeamList(array){
+		this.teamAgentIDlist = array;
+	}
+
 
 	restore(){ 
 		// restore tech info
@@ -1736,7 +1836,7 @@ class RTStrigger {
 			this.effect();
 			return result | (!(this.isLoop) << 1); // if this trigger set to keep looping, then return 0b11. 
 		};
-		
+
 		return result;
 
 	};
@@ -1745,6 +1845,8 @@ class RTStrigger {
 	effect = ()=>{ /* override me later in missiondef file! */ }; 
 	timer = 0; // ++ in mission trigger run function.
 	isLoop = false; // whether this trigger will be called even after fulfilling condition once.
+
+	finishLoop(){this.isLoop = false};
 
 };
 
@@ -1918,8 +2020,9 @@ let RTS = {
 		
 	},
 
-	openMissionMapData: function(){ // you can call this only after successfully load missiondef.js.txt..
-		this.map = new RTSmap(this.mission.essential.mapDataDirectory);
+	openMissionMapData: function(jsonsrc){ // you can call this only after successfully load missiondef.js.txt..
+		deblog("missionmapdata ugoiteru"+jsonsrc)
+		this.map = new RTSmap(jsonsrc);
 		MAP = this.map;
 		
 	},
@@ -2347,13 +2450,30 @@ var Cmd = {
 	mission: {
 		CmdType: CTYP_MISSION,
 		
-		victory:  function(){
-			Cmd.Qset(this.CmdType,"endGame",`2`);
-		},
-		Refeat:  function(){
+		/**
+		 * 
+		 *
+		 * @param {playerid} pid Currently meaningless.
+		 */
+		victory:  function(pid){
 			Cmd.Qset(this.CmdType,"endGame",`1`);
 		},
-		endMission: function(consequence) { // 1 = def, 2 = vic
+
+		/**
+		 * 
+		 *
+		 * @param {playerid} pid Currently meaningless.
+		 */	
+		defeat:  function(pid){
+			Cmd.Qset(this.CmdType,"endGame",`2`);
+		},
+
+		/**
+		 * Turn on mission end flag.
+		 *
+		 * @param {number} consequence Mission result for player. 1 = victory, 2 = defeat
+		 */
+		endMission: function(consequence) { 
 			Cmd.Qset(this.CmdType,"endGame",`${consequence}`);
 		},
 
@@ -2944,11 +3064,23 @@ const inheritancetest = `
 
 	RTS.mission.local.trites = RTS.mission.createSimpleTrigger_Loop(90);
 	deblog(JSON.stringify(RTS.mission))
+	let ply= new DIS_RTSplayer(0,1)
+	ply.getCombatPower()
 
+const maptest = `
+{
+	"name": "poteton_trainingmap",
+	"mapscript": [],
+	"dataextension": [],
+	"dependency": [],
 
+	"terrainfile": "tilegen.txt",
+	"tileset": 13,
+	"size": [102,55],
+	"heightgen": "HGEN_PRESET"
 
-
-
+}
+`
 
 
 	/*
@@ -2965,5 +3097,12 @@ const inheritancetest = `
 	
 	DIS.data.init(); // reset DIS data
 	*/
-}
+
+
+};
+
+
+// mission script for poteton training
+//
+//
 

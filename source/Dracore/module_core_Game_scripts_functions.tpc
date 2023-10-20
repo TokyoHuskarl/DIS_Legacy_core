@@ -48,6 +48,19 @@ __fn boot_DIS_js_system {
 	execute_js("DIS_js_system_main.js")
 }
 
+def JS_TRYPACK_1 = "try {"
+
+__fn try_eval_js $script $errormsg {
+	js_StringBuffer.asg $script
+	str2.asg "try {"
+	str2.cat js_StringBuffer
+	str2.cat "} catch (error) { errorlog(`"
+	str2.cat $errormsg
+	str2.cat "`)}"
+	eval_js(str2)
+
+}
+
 __fn reboot_DIS_js_system { // called after RMsavedata load
 	execute_js(PATH_js_bootconfig) // load boot config
 	boot_DIS_js_system()
@@ -80,8 +93,9 @@ __fn open_js_scene $scenename {
 
 // replace "$;" with ","
 // @param {strv} 
-__fn validate_string_to_show $str {
+__fn scr_validate_string_to_show $str {
 	t[__id($str)].asg .rep($str,"$;",",")
+	t[__id($str)].asg .rep($str,"^",LF)
 }
 
 

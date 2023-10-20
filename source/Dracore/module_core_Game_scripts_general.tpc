@@ -62,7 +62,7 @@ cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_
 
 
 				dialog_string.split(",",dialog_treeid,Temp2) // now you have extracted elements in the dialog order to dialog_ array.
-				validate_string_to_show(dialog_string) // replace $; with , and so on
+				scr_validate_string_to_show(dialog_string) // replace $; with , and so on
 
 				dialog_timer.toNum RadioDialogTimer
 
