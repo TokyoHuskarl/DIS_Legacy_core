@@ -2177,10 +2177,12 @@ __fn CEV_MISSION_MAP_INIT {
 	@if loadedJsConfig.isOn() {
 		log_push("Booting JS mission manager.")
 		RUN_js_MissionManager.on // -> RTS_mission_general.tpc
+
 	}
 	log_push("DIS mission setup process is finished.")
 	@if .testPlay() {
 		log_export("..\user\log\mission_initlog")
+
 	}
 
 	MissionLogName.asg t[750]
@@ -2243,6 +2245,10 @@ __fn loadMissionDef $missionpath {
 		str_missiondef_storage.asg inputstr
 		loadedJsConfig.on
 		@js .run "RTS.setupMapLoading(RTS.mission.mapSourceDir);" // terrainData check
+		@if Is_LEGACYSTAGE.isOn() {
+			loadedJsConfig.off
+
+		}
 	}
 
 	
@@ -2264,7 +2270,10 @@ __fn loadMapInfo $missionpath {
 		// return to reg1 reg2 
 
 	}.else bl {
-		str1 .asg, .cat("Couldn't open mapinfo json file!", " filepath is: ~/text", str1) //
+		@if Is_LEGACYSTAGE.isOff(){
+			str1 .asg, .cat("Couldn't open mapinfo json file!", " filepath is: ~/text", str1) //
+		}
+
 		func_errlog(str1)
 		reg1 = ev[4].x
 		reg2 = ev[4].y

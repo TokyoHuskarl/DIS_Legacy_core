@@ -1,130 +1,130 @@
 cev .id(1203), .name("cev1203"), {
-@comment "Access19 = AttackerObjectID
-Access20 = TargetObjectID
-Access18 = TargetObjTypeチェックPtr"
-@if s[118] .isOn() {
-    v[1301].copy v[581], 20
-    @comment "#Q_ID and Q_Func"
-    v[581] = 3
-    v[582] = v[581] + 1200
-    @comment "#Q_Type"
-    v[583] = 1
-    @comment "#Q_Motion"
-    v[585] = 3
-    v[584] = -1
-    @comment "#Q_Cost"
-    v[587] = 18
-    @comment "#Q_Range"
-    v[592] = 32400
-    @comment "#Q_CD"
-    v[588] = 330
-    @comment "#Spellpowerbase"
-    v[598] = 100
-    
-} .else bl {
-    v[1] = v[51]
-    v[2] = v[52]
-    v[3] = v[51]
-    v[4] = v[52]
-    @comment "#"
-    v[301] = 0
-    v[202] = 100
-    s[201].off
-    @loop v[1004] .dst v[301] {
-        v[302] = v[301] * 300
-        v[302] += 5001
-        @comment "ObjID>0"
-        @if v[v[302]] > 0 {
-            v[v[302]].copy v[601], 11
-            @comment "左上"
-            v[303] = v[607] - v[610]
-            v[303] -= v[1122]
-            v[304] = v[608] - v[611]
-            v[304] -= v[1123]
-            @comment "右下"
-            v[305] = v[607] + v[610]
-            v[305] += v[1122]
-            v[306] = v[608] + v[611]
-            v[306] += v[1123]
-            v[310] = v[302] + 23
-            v[311] = v[302] + 100
-            v[320] = v[302] + 99
-            @if v[303] <= v[3] {
-                @if v[1] <= v[305] {
-                    @if v[304] <= v[4] {
-                        @if v[2] <= v[306] {
-                            @comment "味方か？"
-                            @if v[v[320]] == 0 {
-                                @comment "STATIC"
-                                @if v[v[302]] == 11 {
-                                    @comment "影分身"
-                                    @comment "違う種類混じってるか見る"
-                                    @if v[v[311]] == 6 {
-                                        s[201].on
-                                        @break
-                                        
-                                    }
-                                    
-                                }
-                                
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        
-    }
-    
-    @if s[201] .isOn() {
-        v[301] = 0
-        @comment "位置入れ替え"
-        v[297] = v[299] * 300
-        v[297] += 4705
-        v[310] = v[302] + 4
-        v[v[297]].swap v[v[310]], 4
-        @comment "WP初期化"
-        v[310] += 36
-        v[297] += 36
-        v[v[297]].swap v[v[310]], 14
-        @comment "Effect"
-        v[297] -= 34
-        v[v[297]].copy v[607], 2
-        @if v[607] >= v[1008] {
-            @if v[607] <= v[1009] {
-                @if v[608] >= v[1010] {
-                    @if v[608] <= v[1011] {
-                        @se.play "Darkness3" .opt 80, 100, 50
-                        s[141].on
-                        @call .cev 96
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        @comment "#Payback 15MP"
-        v[11] = v[299]
-        v[12] = 1
-        v[13] = 15
-        @call .cev 2006
-        
-    } .else bl {
-        @comment "召還"
-        v[590].copy v[252], 2
-        v[297] = v[299] * 300
-        v[297] += 4800
-        v[251] = v[v[297]]
-        @call .cev 806
-        
-    }
-    
-}
+	@comment "Access19 = AttackerObjectID
+		Access20 = TargetObjectID
+		Access18 = TargetObjTypeチェックPtr"
+		@if s[118] .isOn() {
+			v[1301].copy v[581], 20
+				@comment "#Q_ID and Q_Func"
+				v[581] = 3
+				v[582] = v[581] + 1200
+				@comment "#Q_Type"
+				v[583] = 1
+				@comment "#Q_Motion"
+				v[585] = 3
+				v[584] = -1
+				@comment "#Q_Cost"
+				v[587] = 18
+				@comment "#Q_Range"
+				v[592] = 32400
+				@comment "#Q_CD"
+				v[588] = 330
+				@comment "#Spellpowerbase"
+				v[598] = 100
+
+		} .else bl {
+			v[1] = v[51]
+				v[2] = v[52]
+				v[3] = v[51]
+				v[4] = v[52]
+				@comment "#"
+				v[301] = 0
+				v[202] = 100
+				s[201].off
+				@loop v[1004] .dst v[301] {
+					v[302] = v[301] * 300
+						v[302] += 5001
+						@comment "ObjID>0"
+						@if v[v[302]] > 0 {
+							v[v[302]].copy v[601], 11
+								@comment "左上"
+								v[303] = v[607] - v[610]
+								v[303] -= v[1122]
+								v[304] = v[608] - v[611]
+								v[304] -= v[1123]
+								@comment "右下"
+								v[305] = v[607] + v[610]
+								v[305] += v[1122]
+								v[306] = v[608] + v[611]
+								v[306] += v[1123]
+								v[310] = v[302] + 23
+								v[311] = v[302] + 100
+								v[320] = v[302] + 99
+								@if v[303] <= v[3] {
+									@if v[1] <= v[305] {
+										@if v[304] <= v[4] {
+											@if v[2] <= v[306] {
+												@comment "味方か？"
+													@if v[v[320]] == 0 {
+														@comment "STATIC"
+															@if v[v[302]] == 11 {
+																@comment "影分身"
+																	@comment "違う種類混じってるか見る"
+																	@if v[v[311]] == 6 {
+																		s[201].on
+																			@break
+
+																	}
+
+															}
+
+													}
+
+											}
+
+										}
+
+									}
+
+								}
+
+						}
+
+				}
+
+			@if s[201] .isOn() {
+				v[301] = 0
+					@comment "位置入れ替え"
+					v[297] = v[299] * 300
+					v[297] += 4705
+					v[310] = v[302] + 4
+					v[v[297]].swap v[v[310]], 4
+					@comment "WP初期化"
+					v[310] += 36
+					v[297] += 36
+					v[v[297]].swap v[v[310]], 14
+					@comment "Effect"
+					v[297] -= 34
+					v[v[297]].copy v[607], 2
+					@if v[607] >= v[1008] {
+						@if v[607] <= v[1009] {
+							@if v[608] >= v[1010] {
+								@if v[608] <= v[1011] {
+									@se.play "Darkness3" .opt 80, 100, 50
+										s[141].on
+										@call .cev 96
+
+								}
+
+							}
+
+						}
+
+					}
+				@comment "#Payback 15MP"
+					v[11] = v[299]
+					v[12] = 1
+					v[13] = 15
+					@call .cev 2006
+
+			} .else bl {
+				@comment "召還"
+					v[590].copy v[252], 2
+					v[297] = v[299] * 300
+					v[297] += 4800
+					v[251] = v[v[297]]
+					@call .cev 806
+
+			}
+
+		}
 }

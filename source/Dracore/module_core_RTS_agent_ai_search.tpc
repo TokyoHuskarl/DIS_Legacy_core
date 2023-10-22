@@ -68,7 +68,7 @@ v[4100].repeat 100000000, 13
 										
 								} .else bl {
 									Ptr20 = v[212] + 18
-									v[299] = v[212] + 241
+									Ptr19 = v[212] + 241
 									//get team ID
 									// Temp1 = v[212] + 100
 
@@ -626,7 +626,7 @@ v[4100].repeat 100000000, 13
 
 						@if `agent_StaticBits & 1048576 {
 							Ptr20 = v[212] + 18
-							v[299] = v[212] + 241 // ?
+							Ptr19 = v[212] + 241 // ?
 							Temp1 = v[212] + 100
 
 							__if DIS_EXPERIMENTAL == -1 {
