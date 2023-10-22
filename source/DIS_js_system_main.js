@@ -1156,18 +1156,11 @@ DIS.data = { // DIS.data
 		init: function(){
 			// load faction template json file in current module directly
 			// before running this js file, TPC loads it
-			let LOADED_TEMPLATE = JSON.parse(gett(633)); // <- t[633] is str_moduleData_FacTemplate_json
+			let LOADED_TEMPLATE = JSON.parse(gett(633))["FACTION"]; // <- t[633] is str_moduleData_FacTemplate_json
 			let i = 1;
-			for (let key in facid){
-				let raw = key.slice(4); // remove "FAC_" prefix
-				let fac = this.createNew(raw);
-				let temp = LOADED_TEMPLATE[raw];
-				deblog(temp)
-				if (typeof temp == "object"){ // if it's defined in json
-					
-				};
-				
-				this.register(fac,i); // even if it's dummy faction, register to as far as it's written in const_factions.txt
+			for (let key in LOADED_TEMPLATE){
+				let fac = this.createNew(LOADED_TEMPLATE[key]);
+				this.register(fac,i); // even if it's dummy faction, register to as far as it's written in {module}/Data/faction_template.json
 				i++;
 			};
 		},
@@ -1178,6 +1171,7 @@ DIS.data = { // DIS.data
 		 * @method createNew
 		 * @param {string} strid
 		 */
+		// rewrite DATA_faction constructor!!
 		createNew: function(strid){
 			return this[strid] = new DATA_faction(strid); // do not resgister to ptrs yet
 		},
@@ -1285,7 +1279,7 @@ DIS.data = { // DIS.data
 			let i = 1;
 			for (let key in LOADED_DATA){
 				let tech = this.createNew(key,LOADED_DATA[key]);
-				this.register(tech,i); // even if it's dummy faction, register to as far as it's written in const_factions.txt
+				this.register(tech,i);
 				i++;
 			};
 
@@ -1754,6 +1748,7 @@ class DIS_RTSplayer extends DISentity {
 		this.factionid = factionid;
 		this.isHuman = false;
 
+
 		// get troop tree data from
 		
 		// underconst
@@ -1772,7 +1767,21 @@ class DIS_RTSplayer extends DISentity {
 			};
 		};
 
+		/* set them after faction data load function built in TPC
+		this.playergamedata.troopTree = DATA.FACTION.ptrs[factionid].getTroopTree();
+		this.playergamedata.techTree = DATA.FACTION.ptrs[factionid].getTechTree();
+		*/
+
+
 	};
+
+	// make json to save
+	playergamedata = {
+		troopTree: [],
+		techTree: [],
+		techFlags: new Array(3),
+	};
+
 
 	cohorts = [];
 
@@ -1791,7 +1800,6 @@ class DIS_RTSplayer extends DISentity {
 		for (let ptr = getv(this.getTeamListHead()) ; (agid = getv(ptr)) >= 1 ; ptr++ ){
 			res.push(RTS.agents[agid]);
 		};
-		deblog("resfteamend")
 		return (this.teamAgentsList = new RTSagentGroup(res,this.id));
 
 	};

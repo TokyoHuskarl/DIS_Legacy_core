@@ -781,6 +781,9 @@ __fn func_control_moveorder_mil {
 									TT1 .sub Temp13, 2
 									v[388..389] = atan2(TT2, TT1, 1000)
 									v[388..389] = Temp15 > 0 ? atan2(TT2, TT1, 1000) : 0
+
+
+									// control rank loop
 									@loop .inf() {
 										@label.set 10
 											v[489].copy v[391], 2
@@ -868,6 +871,37 @@ __fn func_control_moveorder_mil {
 												.wheelDown
 												.wheelUp
 										}
+
+										// check if right drag is over
+										@if Common_Control_Ck != 1006 {
+											@if s[205] .isOff() {
+												@pic[999].erase
+													s[201].off
+													s[43].off
+													v[202] = 101
+													@if v[82] >= 1 {
+														@if v[82] <= 10 {
+															v[v[4530] + (v[82] - 1) * 20 + 11] = v[427]
+																v[v[4530] + (v[82] - 1) * 20 + 12] = v[489] - v[403]
+																v[v[4530] + (v[82] - 1) * 20 + 13] = v[490] - v[404]
+																v[v[4530] + (v[82] - 1) * 20 + 14] = v[389]
+																v[v[4530] + (v[82] - 1) * 20 + 15] = v[491]
+																@if s[16] .isOff() {
+																	v[v[4530] + (v[82] - 1) * 20 + 4] &= ~4
+
+																}
+
+														}
+
+													}
+												// then break
+												@break
+
+											}
+
+										}
+
+
 										@if `MousePtr_x == v[405] && MousePtr_y == v[406] {
 
 										} .else bl {
@@ -1041,32 +1075,7 @@ __fn func_control_moveorder_mil {
 												@ev.abort
 
 										}
-										@if Common_Control_Ck != 1006 {
-											@if s[205] .isOff() {
-												@pic[999].erase
-													s[201].off
-													s[43].off
-													v[202] = 101
-													@if v[82] >= 1 {
-														@if v[82] <= 10 {
-															v[v[4530] + (v[82] - 1) * 20 + 11] = v[427]
-																v[v[4530] + (v[82] - 1) * 20 + 12] = v[489] - v[403]
-																v[v[4530] + (v[82] - 1) * 20 + 13] = v[490] - v[404]
-																v[v[4530] + (v[82] - 1) * 20 + 14] = v[389]
-																v[v[4530] + (v[82] - 1) * 20 + 15] = v[491]
-																@if s[16] .isOff() {
-																	v[v[4530] + (v[82] - 1) * 20 + 4] &= ~4
-
-																}
-
-														}
-
-													}
-												@break
-
-											}
-
-										}
+										
 										s[205].off
 											@wait 0
 
@@ -1114,9 +1123,10 @@ __fn func_control_moveorder_mil {
 									}
 								v[391].copy v[393], 2
 									// "###########################Get Lv Median"
-									@loop v[99] .dst TT3 {
-										Temp1 = 101 + TT3
-											Temp2 = v[Temp1] * 300
+
+
+									// Temp2 = {agentid} * 300 before calling this function
+									__fn cont_rank_set_agent_priority {
 											Temp2 += 4804
 											Temp3 = v[Temp2] * 100
 											Temp2 -= 2
@@ -1128,6 +1138,13 @@ __fn func_control_moveorder_mil {
 											Temp3 *= v[Temp2 + 146] & 6 ? 10 : 1
 											// "Pikewall"
 											Temp3 *= v[Temp2 + 146] & 1 ? 5 : 1
+									}
+
+									@loop v[99] .dst TT3 {
+										Temp1 = 101 + TT3
+											Temp2 = v[Temp1] * 300
+											cont_rank_set_agent_priority()
+
 											v[601 + TT3] = Temp3
 
 									}
@@ -1152,17 +1169,7 @@ __fn func_control_moveorder_mil {
 													Temp5 = v[Temp1]
 
 											} .else bl {
-												Temp2 += 4804
-													Temp3 = v[Temp2] * 100
-													Temp2 -= 2
-													// "Infs tends to go frontal side *100"
-													Temp3 *= v[Temp2] == 0 ? 5 : 1
-													// "Cavs"
-													Temp3 *= v[Temp2] == 2 ? 3 : 1
-													// "Shieldwall"
-													Temp3 *= v[Temp2 + 146] & 6 ? 10 : 1
-													// "Pikewall"
-													Temp3 *= v[Temp2 + 146] & 1 ? 5 : 1
+													cont_rank_set_agent_priority()
 													Temp3 += v[Temp1]
 													Temp3 *= 1000
 													v[Temp1] += Temp3

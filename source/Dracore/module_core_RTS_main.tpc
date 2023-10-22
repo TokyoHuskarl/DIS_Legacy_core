@@ -726,753 +726,753 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {   
 	@comment "module_core_RTS_main.tpc"
-	// "STATIC"
-	// This process needs complete refactoring.
-	v[536] = v[4533]
-	@while v[v[536]] != 0 {
-	    v[401] = v[v[536]] - 1
-	    Temp1 = v[401] * v[1117] 
-	    val_add(Temp1,N5000) // Temp1 += 5000
-	    func_main_extract_agent_vars()
+		// "STATIC"
+		// This process needs complete refactoring.
+		v[536] = v[4533]
+		@while v[v[536]] != 0 {
+			v[401] = v[v[536]] - 1
+				Temp1 = v[401] * v[1117] 
+				val_add(Temp1,N5000) // Temp1 += 5000
+				func_main_extract_agent_vars()
 
-	    //If Move Type STATIC
-	    //@if `(agent_static_Attribution_flag & 2) {
-			// Save MapXY/5 for static minimap.
-			TT1 = Temp1 + 26
-			v[TT1] .copy v[AGENT_STATIC_SLOT_MINIMAP_X], 2
-			v[AGENT_STATIC_SLOT_MINIMAP_X..AGENT_STATIC_SLOT_MINIMAP_Y] /= 5
-			TT1 = Temp1 + AGENT_STATIC_SLOT_MINIMAP_X
-			v[AGENT_STATIC_SLOT_MINIMAP_X].copy v[TT1], 2
-	    //}
+				//If Move Type STATIC
+				//@if `(agent_static_Attribution_flag & 2) {
+				// Save MapXY/5 for static minimap.
+				TT1 = Temp1 + 26
+				v[TT1] .copy v[AGENT_STATIC_SLOT_MINIMAP_X], 2
+				v[AGENT_STATIC_SLOT_MINIMAP_X..AGENT_STATIC_SLOT_MINIMAP_Y] /= 5
+				TT1 = Temp1 + AGENT_STATIC_SLOT_MINIMAP_X
+				v[AGENT_STATIC_SLOT_MINIMAP_X].copy v[TT1], 2
+				//}
 
 
-	    // "########################Process Parameters Setting BEGIN########################"
-	    // "#Base Parameters Get"
-	    //v[861] = Temp1 + 109
-	    agent_BaseAD.copy agent_ProcessAD, 11
-	    //v[872] = Temp1 + 131
-	    agent_BaseRegHP.copy agent_ProcessHPreg, 2
-	    // "#Never get Morale Effect"
-	    agent_ProcessObjBit = agent_static_Obj_flag | BaseObjBit_FLAG_No_mind //... is this necessary?
-	    agent_ProcessCamoValue = agent_BaseCamoValue
-	    // "#Set Process Parameters"
-	    TT1 = Temp1 + 261
-	    v[861].copy v[TT1], 16 //set.
-	    // "########################Process Parameters Setting END########################"
-	    //v[841] = Temp1 + 241 needless
-	    v[843] = Temp1 + 243
-	    // "ＳＴＡＴＩＣタイマー"
-	    //agent_AgentBits = Temp1 + 3
-	    //v[702] = Temp1 + 102
-	    v[370] = (Is_Paused == 0 ? 1 : -1) + (agent_AgentBits & AgentBits_STATIC_FLAG_No_function ? -1 : 1)
-	    // "have function? "
-	    //v[370] += v[agent_AgentBits] & 1024 ? -1 : 1
-	    @if v[370] >= 2 {
-		// "AAタイマー"
-		@if v[702] == 106 {
-		    v[628] = Temp1 + 28
-		    @if v[v[628]] > 0 {
-					// "まだAAできない"
-					@if v[v[843]] != 1 {
-							v[719] = Temp1 + 119
-							v[v[628]] -= v[v[719]]
-							
+				// "########################Process Parameters Setting BEGIN########################"
+				// "#Base Parameters Get"
+				//v[861] = Temp1 + 109
+				agent_BaseAD.copy agent_ProcessAD, 11
+				//v[872] = Temp1 + 131
+				agent_BaseRegHP.copy agent_ProcessHPreg, 2
+				// "#Never get Morale Effect"
+				agent_ProcessObjBit = agent_static_Obj_flag | BaseObjBit_FLAG_No_mind //... is this necessary?
+				agent_ProcessCamoValue = agent_BaseCamoValue
+				// "#Set Process Parameters"
+				TT1 = Temp1 + 261
+				v[861].copy v[TT1], 16 //set.
+				// "########################Process Parameters Setting END########################"
+				//v[841] = Temp1 + 241 needless
+				v[843] = Temp1 + 243
+				// "ＳＴＡＴＩＣタイマー"
+				//agent_AgentBits = Temp1 + 3
+				//v[702] = Temp1 + 102
+				v[370] = (Is_Paused == 0 ? 1 : -1) + (agent_AgentBits & AgentBits_STATIC_FLAG_No_function ? -1 : 1)
+				// "have function? "
+				//v[370] += v[agent_AgentBits] & 1024 ? -1 : 1
+				@if v[370] >= 2 {
+					// "AAタイマー"
+					@if v[702] == 106 {
+						v[628] = Temp1 + 28
+							@if v[v[628]] > 0 {
+								// "まだAAできない"
+								@if v[v[843]] != 1 {
+									v[719] = Temp1 + 119
+										v[v[628]] -= v[v[719]]
+
+								}
+
+							} .else bl {
+								// "AA可能"
+								// "AAクールタイムモーションつきなら解消しておく"
+								//v[726] = Temp1 + 126
+								v[v[843]] = v[Temp1 + 126] == 1 ? 0 : v[v[843]]
+
+							}
+
 					}
-					
-		    } .else bl {
-			// "AA可能"
-			// "AAクールタイムモーションつきなら解消しておく"
-			//v[726] = Temp1 + 126
-			v[v[843]] = v[Temp1 + 126] == 1 ? 0 : v[v[843]]
-			
-		    }
-		    
-		}
-		// "#予約がある"
-		//v[770] = Temp1 + 170
-		@if v[770] >= 1 {
-		    // "MP(生産力)をためようね"
-		    TT1 = Temp1 + 108
-		    //v[707] = Temp1 + 107
-		    //v[740] = Temp1 + 140
-		    //v[700] = v[Temp1 + 100]
-		    @if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
-			//TT2 = v[2409 + v[251] % 3]
-			
-			__if DIS_EXPERIMENTAL == -1 { 
-				macro_get_agent_MetaTeam_into_var(v[v[536]],TT2) // AEBA
-			}.else bl {
-				TT2 = v[Const_AgentMetaTeam_begin+v[401]]
-			}
+					// "#予約がある"
+					//v[770] = Temp1 + 170
+					@if v[770] >= 1 {
+						// "MP(生産力)をためようね"
+						TT1 = Temp1 + 108
+							//v[707] = Temp1 + 107
+							//v[740] = Temp1 + 140
+							//v[700] = v[Temp1 + 100]
+							@if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
+								//TT2 = v[2409 + v[251] % 3]
 
-			v[TT1] += v[740] * 6
-			// "徴用スイッチ"
-			v[TT1] += TT2 & 134217728 && !(v[Temp1 + 3] & 1) ? muldiv(v[740], 198, 100) : 0
-			// "MP(生産力)がたまった"
-			@if v[TT1] >= v[707] {
-			    v[TT1] = 0
-			   // "生産完了"
-			    // "#Tech Flag"
+								__if DIS_EXPERIMENTAL == -1 { 
+									macro_get_agent_MetaTeam_into_var(v[v[536]],TT2) // AEBA
+								}.else bl {
+									TT2 = v[Const_AgentMetaTeam_begin+v[401]]
+								}
 
-			    //ACHTUNG - save all dealed parameters here once, since it will conflict in spawning functions 
-			    
-			    v[251] = v[700]
-			    v[255] = v[401] + 1
-			    v[252] = v[607] + rnd(-6, 6)
-			    v[253] = v[608] + v[611] + rnd(-3, 3)
-			    @call .cev 46 //spawn ev
-			    Temp1 = v[401] * 300 
-			    Temp1 += 5000
-	    		    func_main_extract_agent_vars()//extract STATIC datas again
-			    defv Spawned_Agent_Id_Shift = __id(Temp2) 
-			    Spawned_Agent_Id_Shift = reg1 * 300 //use Temp2 as 
-			    @if v[822] != 3 {
-				v[Spawned_Agent_Id_Shift + 4922] = v[Spawned_Agent_Id_Shift + 4922] == 0 ? v[Temp1 + 222] : v[Spawned_Agent_Id_Shift + 4922]
-				
-			    }
-			    v[Temp1 + 3] &= -2//~1
-			    @if reg1 >= 1 {
-				// "指定地点まで歩かせる"
-				TT1 = Spawned_Agent_Id_Shift + 4741
-				// "set reserved target "
-				v[371]=0//Flag for trained troop
-				@if v[618] >= 1 {
-				    // "Worker"
-				    @if `v[Spawned_Agent_Id_Shift + 4802] == 9 {
-					v[371] |= 1//IT'S WORKER! - flag switch on
-				        v[Spawned_Agent_Id_Shift + 4718] = v[618]
-					v[Spawned_Agent_Id_Shift + 4942] = 1
-					v[Spawned_Agent_Id_Shift + 4941] = v[Spawned_Agent_Id_Shift + 4941] != 4 ? 2 : 4
-					}.else bl{
-					//Combat troops - check if the reserved target is enemy
-				    v[Spawned_Agent_Id_Shift + 4718] =(v[Spawned_Agent_Id_Shift + 4800]%3)==(v[v[618] * 300 +4800]%3) ?0:v[618]
-				    }
-				    
-				}
-				//v[607] = Temp1 + 7
-				//v[v[607]].copy v[607], 2
-				//v[641] = Temp1 + 41
-				//v[v[641]].copy v[641], 2
-				@if `v[607] == v[641] && v[608] == v[642] {
-				    // "指定されてない"
-				    v[252] = v[607] + rnd(-3, 3)
-				    v[253] = v[608] + v[611] + rnd(-3, 3)
-				    v[252] .add v[53], 2
-				    v[252].copy v[TT1], 2
-				    v[Spawned_Agent_Id_Shift + 4942] = 2
-				    
-				} .else bl {
-				    v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
-				    // "指定されてる"
-				    v[641].copy v[TT1], 2
+								v[TT1] += v[740] * 6
+									// "徴用スイッチ"
+									v[TT1] += TT2 & 134217728 && !(v[Temp1 + 3] & 1) ? muldiv(v[740], 198, 100) : 0
+									// "MP(生産力)がたまった"
+									@if v[TT1] >= v[707] {
+										v[TT1] = 0
+											// "生産完了"
+											// "#Tech Flag"
 
-				    def Order_Spawned_agent_Pathfinding = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PF2Agent 
-				    v[Spawned_Agent_Id_Shift + 4734] |= Order_Spawned_agent_Pathfinding
-				    //v[reg1 * 300 + 4734] |= 524288
-				    
-				}
-				
-			    }
-			    
-			}
-			
-		    }
-		    // "research particle"
-		    @if `agent_AgentBits & 1 {
-			@loop v[1017] .dst Temp20 {
-			    v[244] %= v[1199]
-			    //v[331] = v[244] * 50
-			    v[331] = v[244] * 50 
-			    v[331] += v[1198]
-			    @if v[v[331]] <= 1 {
-				// "まず清掃"
-				v[1301].copy v[v[331]], 50
-				// "ポインタセット開始"
-				// "設定"
-				v[v[331]] = 1
-				// "500F"
-				v[v[331] + 49] = 6
-				// "Set itself"
-				v[v[331] + 3] = 126
-				// "Set Parent Obj"
-				v[v[331] + 9] = v[401] + 1
-				// "普通にアニメ"
-				//v[607] = Temp1 + 7
-				v[607].copy var1, 2
-				TT1 = v[331] + 6
-				var1.copy v[TT1], 2
-				// "Colour"
-				v[0] = v[v[331] + 31..v[331] + 38] = [180, 129, 0, 90, 180, 129, 0, 60]
-				// "仕上げに登録消す"
-				v[244] += 1
-				@break
-				
-			    }
-			    v[244] += 1
-			    
-			}
-			
-			
-		    }
-		    
-		}
-		// "#Reg Timer"
-		@if v[699] <= 0 {
-		    // "HP"
-		    var1 = v[401] + 1
-		    //var2 = 0
-		    var3 = Temp1 + 131
-		    var3 = v[var3]
-		    //@call .cev 2006
-		    macro_HPSPreg(var1 0 var3)
-		    @if v[TT2] <= 0 {
-			// "Check if it can be rebuilded"
-			Ptr10 = 300001 + v[700] * 4 //300001 magic number refers to factional resource
-			@if `v[Ptr10] >= v[851] && v[Ptr10 + 1] >= v[852] && v[Ptr10 + 2] >= v[853] && v[Ptr10 + 3] >= v[854] && v[855] > 0 {
-			    TT1 = Temp1 + 251//reconstructed!
-			    v[Ptr10] .sub v[TT1], 4
-			    @call .cev 84
-			    v[TT2] = v[TT2 - 1]
-			    
-			} .else bl {
-			    // "Decay"
-			    v[299..300] = v[401] + 1
-			    Ptr18 = Ptr20 * 300 + 4701
-			    @if v[Ptr18] >= 1 {
-				v[305..312] = Ptr20 * 300 //killed.
-				@call .cev 41
-				
-			    } .else bl {
-				// "Dead Static is not removed from List!?"
-				/*@if s[1] .isOn() { DEBUG feature, needless now
-				    var1 = Ptr20
-				    @call .cev 2150
-				    var1 = 734947
-				    var2 = 1000
-				    @call .cev 2149
-				    
-				}*/
-				
-			    }
-			    
-			}
-			
-		    }
-		    // "SP reg"
-		    var1 = v[401] + 1
-		    //var2 = 1
-		    var3 = v[Temp1 + 132]
-		    //@call .cev 2006
-		    macro_HPSPreg(var1 1 var3)
-		    v[699] = Temp1 + 99
-		    v[v[699]] = v[Temp1 + 255] >= 1 ? 88 : 48
-		    // "init farm owner"
-		    v[Temp1 + 255] = 0
-		    // "#Flammable"
-		    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//s[v[401] + 501] {
-			@if `!(agent_AgentBits & 2048) {
-			    // "#Hp 66%"
-			    @if `divmul(v[Temp1 + 105], 100, 66) > v[Temp1 + 106] {
-				@if v[182] <= 0 {
-				    @if v[522] <= 24 {
-					v[182] += 1
-					// "#########################"
-					v[471] = 11550
-					v[472] = divmul(45, 100, v[2216])
-					v[473] = rnd(90, 115)
-					v[607] = Temp1 + 7
-					v[v[607]].copy v[361], 2
-					v[474] = divmul(v[361] + v[1001], v[1281], 50)
-					// "#########################"
-					inputstr .asg "misc\blazing"
-					@cmd v[471], inputstr, .args v[472], 3
-					
-				    }
-				    
-				}
-				
-			    }
-			    
-			}
-			
-		    }
-		    
-		}
-		v[699] = Temp1 + 99
-		TT1 = v[v[699]]
-		// "########################"
-		
-	    }
-	    // "目標位置"
-	    v[619] = Temp1 + 19
-	    v[620] = Temp1 + 20
-	    // "################"
-	    /* "Obj指定分岐
-	Get18 = 目標ObjID"*/
-	    @if `v[Temp1 + 18] >= 1 {
-		/* "Obj指定があり、そちらに行きたいとき
-	Get18 = 目標ObjID"*/
-		Temp4 = v[Temp1 + 18] * 300 + 4701
-		@if v[Temp4] >= 1 {
-		    // "#指定Objが存在する"
-		    Temp4 += 6
-		    v[Temp4].copy v[v[619]], 2
-		    // "#攻撃"
-		    @if v[370] >= 2 {
-			// "目標地点にカメラのずれを加算"
-			v[v[619]] .add v[53], 2
-			/* "Temp4 = 次に動く場所x
-	Temp6 = 次に動く場所y"*/
-			Temp4 = v[v[619]]
-			Ptr20 = Temp1 + 7
-			Temp4 -= v[Ptr20]
-			Temp9 = Temp4
-			Temp4 = pow(Temp4, 2)
-			// "#######"
-			Temp6 = v[v[620]]
-			Ptr20 = Temp1 + 8
-			Temp6 -= v[Ptr20]
-			Temp10 = Temp6
-			Temp6 = pow(Temp6, 2)
-			Temp4 += Temp6
-			// "Set Object[23]"
-			Ptr20 = Temp1 + 23
-			v[Ptr20] = sqrt(Temp4, 1000)
-			Temp18 = v[Ptr20]
-			// "AAレンジ内か否かを見る"
-			Ptr15 = Temp1 + 117
-			v[Ptr15].copy TT1, 2
-			// "自分がMeleeなら([相手の幅]*1000)を引いて考える"
-			v[340] = Temp18
-			v[340] -= v[v[703]] == 0 ? v[335] : 0
-			@if v[340] <= TT1 {
-			    @if v[340] >= TT2 {
-				v[842] = Temp1 + 242
-				v[v[842]] = -1
-				v[628] = Temp1 + 28
-				// "AAタイマー見る"
-				v[v[843]] = v[v[628]] <= 0 ? 1 : v[v[843]]
-				/* "#＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
-	ここの調節でゲームスピードが決定する
-#＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"*/
-				v[v[628]] = v[v[628]] <= 0 ? 4800 / 6 : v[v[628]]
-				
-			    }
-			    
-			}
-			
-		    }
-		    
-		} .else bl {
-		    // "#指定Objが存在しない"
-		    v[618] = Temp1 + 18
-		    // "#Obj目標を消す"
-		    v[v[618]] = 0
-		    v[607].copy v[v[619]], 2
-		    
-		}
-		
-	    }
-	    // "########################Particles"
-	    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//`s[v[401] + 501] {
-		// "#Flammable"
-		@if `!(agent_AgentBits & 2048) {
-		    // "#Hp 66%"
-		    @if `divmul(v[Temp1 + 105], 100, 66) > v[Temp1 + 106] {
-			// "Fire Particle"
-			@loop v[1017] .dst Temp20 {
-			    v[244] %= v[1199]
-			    v[331] = v[244] * 50 + v[1198]
-			    @if v[v[331]] <= 1 {
-				// "まず清掃"
-				v[1301].copy v[v[331]], 50
-				// "ポインタセット開始"
-				// "設定"
-				v[v[331]] = 1
-				// "500F"
-				v[v[331] + 49] = 6
-				// "Set itself"
-				v[v[331] + 3] = 138
-				// "Set Parent Obj"
-				v[v[331] + 9] = v[401] + 1
-				// "普通にアニメ"
-				v[607] = Temp1 + 7
-				v[v[607]].copy v[607], 2
-				TT1 = v[331] + 6
-				v[607].copy v[TT1], 2
-				// "仕上げに登録消す"
-				v[244] += 1
-				@break
-				
-			    }
-			    v[244] += 1
-			    
-			}
-			
-			
-		    }
-		    
-		}
-		v[701] = Temp1 + 101
-		// "#Blacksmith"
-		@if v[v[701]] == 15 {
-		    @loop v[1017] .dst Temp20 {
-			v[244] %= v[1199]
-			v[331] = v[244] * 50 
-			v[331] += v[1198]
-			@if v[v[331]] <= 1 {
-			    // "まず清掃"
-			    v[1301].copy v[v[331]], 50
-			    // "ポインタセット開始"
-			    // "設定"
-			    v[v[331]] = 1
-			    // "500F"
-			    v[v[331] + 49] = 6
-			    // "Set itself"
-			    v[v[331] + 3] = 161
-			    // "Set Parent Obj"
-			    v[v[331] + 9] = v[401] + 1
-			    // "普通にアニメ"
-			    v[607] = Temp1 + 7
-			    v[v[607]].copy v[607], 2
-			    v[608] -= 20
-			    TT1 = v[331] + 6
-			    v[607].copy v[TT1], 2
-			    // "仕上げに登録消す"
-			    v[244] += 1
-			    @break
-			    
-			}
-			v[244] += 1
-			
-		    }
-		    
-		    
-		}
-		// "#MageAltar"
-		@if v[v[701]] == 27 {
-		    v[628] = Temp1 + 28
-		    @if v[v[628]] >= 48 {
-			@if v[v[628]] <= 680 {
-			    @loop v[1017] .dst Temp20 {
-				v[244] %= v[1199]
-				v[331] = v[244] * 50 
-				v[331] += v[1198]
-				@if v[v[331]] <= 1 {
-				    // "まず清掃"
-				    v[1301].copy v[v[331]], 50
-				    // "ポインタセット開始"
-				    // "設定"
-				    v[v[331]] = 1
-				    // "500F"
-				    v[v[331] + 49] = 6
-				    // "Set itself"
-				    v[v[331] + 3] = 139
-				    // "Set Parent Obj"
-				    v[v[331] + 9] = v[401] + 1
-				    // "普通にアニメ"
-				    v[607] = Temp1 + 7
-				    v[v[607]].copy v[607], 2
-				    v[608] -= 12
-				    TT1 = v[331] + 6
-				    v[607].copy v[TT1], 2
-				    // "仕上げに登録消す"
-				    v[244] += 1
-				    @break
-				    
-				}
-				v[244] += 1
-				
-			    }
-			    
-			    
-			}
-			
-		    }
-		    
-		}
-		// "#mana light"
-		@if v[v[701]] == 37 {
-		    @loop v[1017] .dst Temp20 {
-			v[244] %= v[1199]
-			v[331] = v[244] * 50 
-			v[331] += v[1198]
-			@if v[v[331]] <= 1 {
-			    // "まず清掃"
-			    v[1301].copy v[v[331]], 50
-			    // "ポインタセット開始"
-			    // "設定"
-			    v[v[331]] = 1
-			    // "500F"
-			    v[v[331] + 49] = 6
-			    // "Set itself"
-			    v[v[331] + 3] = 164
-			    // "Set Parent Obj"
-			    v[v[331] + 9] = v[401] + 1
-			    // "普通にアニメ"
-			    v[607] = Temp1 + 7
-			    v[v[607]].copy v[607], 2
-			    v[608] -= 20
-			    TT1 = v[331] + 6
-			    v[607].copy v[TT1], 2
-			    // "仕上げに登録消す"
-			    v[244] += 1
-			    @break
-			    
-			}
-			v[244] += 1
-			
-		    }
-		    
-		    
-		}
-		
-	    }
-	    @if v[370] >= 2 {
-				/* "########################	PAssive#########################"*/
-				@if `v[Temp1 + 223] & 1 {
-						@if `v[Temp1 + 94] <= 0 {
-					v[824] = v[Temp1 + 224] > v[1186] ? v[Temp1 + 224] : 1899
-					@call .cev v[824]
-					
+											//ACHTUNG - save all dealed parameters here once, since it will conflict in spawning functions 
+
+											v[251] = v[700]
+											v[255] = v[401] + 1
+											v[252] = v[607] + rnd(-6, 6)
+											v[253] = v[608] + v[611] + rnd(-3, 3)
+											@call .cev 46 //spawn ev
+											Temp1 = v[401] * 300 
+											Temp1 += 5000
+											func_main_extract_agent_vars()//extract STATIC datas again
+											defv Spawned_Agent_Id_Shift = __id(Temp2) 
+											Spawned_Agent_Id_Shift = reg1 * 300 //use Temp2 as 
+											@if v[822] != 3 {
+												v[Spawned_Agent_Id_Shift + 4922] = v[Spawned_Agent_Id_Shift + 4922] == 0 ? v[Temp1 + 222] : v[Spawned_Agent_Id_Shift + 4922]
+
+											}
+										v[Temp1 + 3] &= -2//~1
+											@if reg1 >= 1 {
+												// "指定地点まで歩かせる"
+												TT1 = Spawned_Agent_Id_Shift + 4741
+													// "set reserved target "
+													v[371]=0//Flag for trained troop
+													@if v[618] >= 1 {
+														// "Worker"
+														@if `v[Spawned_Agent_Id_Shift + 4802] == 9 {
+															v[371] |= 1//IT'S WORKER! - flag switch on
+																v[Spawned_Agent_Id_Shift + 4718] = v[618]
+																v[Spawned_Agent_Id_Shift + 4942] = 1
+																v[Spawned_Agent_Id_Shift + 4941] = v[Spawned_Agent_Id_Shift + 4941] != 4 ? 2 : 4
+														}.else bl{
+															//Combat troops - check if the reserved target is enemy
+															v[Spawned_Agent_Id_Shift + 4718] =(v[Spawned_Agent_Id_Shift + 4800]%3)==(v[v[618] * 300 +4800]%3) ?0:v[618]
+														}
+
+													}
+												//v[607] = Temp1 + 7
+												//v[v[607]].copy v[607], 2
+												//v[641] = Temp1 + 41
+												//v[v[641]].copy v[641], 2
+												@if `v[607] == v[641] && v[608] == v[642] {
+													// "指定されてない"
+													v[252] = v[607] + rnd(-3, 3)
+														v[253] = v[608] + v[611] + rnd(-3, 3)
+														v[252] .add v[53], 2
+														v[252].copy v[TT1], 2
+														v[Spawned_Agent_Id_Shift + 4942] = 2
+
+												} .else bl {
+													v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
+														// "指定されてる"
+														v[641].copy v[TT1], 2
+
+														def Order_Spawned_agent_Pathfinding = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PF2Agent 
+														v[Spawned_Agent_Id_Shift + 4734] |= Order_Spawned_agent_Pathfinding
+														//v[reg1 * 300 + 4734] |= 524288
+
+												}
+
+											}
+
+									}
+
+							}
+						// "research particle"
+						@if `agent_AgentBits & 1 {
+							@loop v[1017] .dst Temp20 {
+								v[244] %= v[1199]
+									//v[331] = v[244] * 50
+									v[331] = v[244] * 50 
+									v[331] += v[1198]
+									@if v[v[331]] <= 1 {
+										// "まず清掃"
+										v[1301].copy v[v[331]], 50
+											// "ポインタセット開始"
+											// "設定"
+											v[v[331]] = 1
+											// "500F"
+											v[v[331] + 49] = 6
+											// "Set itself"
+											v[v[331] + 3] = 126
+											// "Set Parent Obj"
+											v[v[331] + 9] = v[401] + 1
+											// "普通にアニメ"
+											//v[607] = Temp1 + 7
+											v[607].copy var1, 2
+											TT1 = v[331] + 6
+											var1.copy v[TT1], 2
+											// "Colour"
+											v[0] = v[v[331] + 31..v[331] + 38] = [180, 129, 0, 90, 180, 129, 0, 60]
+											// "仕上げに登録消す"
+											v[244] += 1
+											@break
+
+									}
+								v[244] += 1
+
+							}
+
+
 						}
-						
-				}
-				// "gate flag"
-				@if `agent_AgentBits & 256 {
-						// "##############"
-						Ptr20 = Temp1 + 5
-						Ptr19 = Temp1 + 15
-						Ptr18 = Temp1 + 7
-						Ptr17 = 53
-						Ptr16 = Temp1 + 36
-						Ptr15 = Temp1 + 296
-						// "Get mapXY"
-						Ptr13 = Temp1 + 26
-						v[Ptr13].copy Temp11, 2
-						// "#Obj衝突チェック試作begin"
-						Temp19 = v[401]
-						// "##"
-						v[333] = Temp1 + 7
-						v[334] = Temp1 + 8
-						v[335] = Temp1 + 10
-						v[336] = Temp1 + 11
-						/* "Maybe this is faster
-			...Yes, this is far faster, it's confirmed."*/
-						// "Morton"
-						// "##############"
-						v[607] = Temp1 + 7
-						v[610] = Temp1 + 10
-						v[v[607]].copy var1, 2
-						v[11..12] -= 20
-						var1 .sub v[v[610]], 2
-						/* "#########################
+
+					}
+					// "#Reg Timer"
+					@if v[699] <= 0 {
+						// "HP"
+						var1 = v[401] + 1
+							//var2 = 0
+							var3 = Temp1 + 131
+							var3 = v[var3]
+							//@call .cev 2006
+							macro_HPSPreg(var1 0 var3)
+							@if v[TT2] <= 0 {
+								// "Check if it can be rebuilded"
+								Ptr10 = 300001 + v[700] * 4 //300001 magic number refers to factional resource
+									@if `v[Ptr10] >= v[851] && v[Ptr10 + 1] >= v[852] && v[Ptr10 + 2] >= v[853] && v[Ptr10 + 3] >= v[854] && v[855] > 0 {
+										TT1 = Temp1 + 251//reconstructed!
+											v[Ptr10] .sub v[TT1], 4
+											@call .cev 84
+											v[TT2] = v[TT2 - 1]
+
+									} .else bl {
+										// "Decay"
+										v[299..300] = v[401] + 1
+											Ptr18 = Ptr20 * 300 + 4701
+											@if v[Ptr18] >= 1 {
+												v[305..312] = Ptr20 * 300 //killed.
+													@call .cev 41
+
+											} .else bl {
+												// "Dead Static is not removed from List!?"
+												/*@if s[1] .isOn() { DEBUG feature, needless now
+													var1 = Ptr20
+													@call .cev 2150
+													var1 = 734947
+													var2 = 1000
+													@call .cev 2149
+
+													}*/
+
+											}
+
+									}
+
+							}
+						// "SP reg"
+						var1 = v[401] + 1
+							//var2 = 1
+							var3 = v[Temp1 + 132]
+							//@call .cev 2006
+							macro_HPSPreg(var1 1 var3)
+							v[699] = Temp1 + 99
+							v[v[699]] = v[Temp1 + 255] >= 1 ? 88 : 48
+							// "init farm owner"
+							v[Temp1 + 255] = 0
+							// "#Flammable"
+							@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//s[v[401] + 501] {
+								@if `!(agent_AgentBits & 2048) {
+									// "#Hp 66%"
+									@if `divmul(v[Temp1 + 105], 100, 66) > v[Temp1 + 106] {
+										@if v[182] <= 0 {
+											@if v[522] <= 24 {
+												v[182] += 1
+													// "#########################"
+													v[471] = 11550
+													v[472] = divmul(45, 100, v[2216])
+													v[473] = rnd(90, 115)
+													v[607] = Temp1 + 7
+													v[v[607]].copy v[361], 2
+													v[474] = divmul(v[361] + v[1001], v[1281], 50)
+													// "#########################"
+													inputstr .asg "misc\blazing"
+													@cmd v[471], inputstr, .args v[472], 3
+
+											}
+
+										}
+
+									}
+
+								}
+
+							}
+
+							}
+						v[699] = Temp1 + 99
+							TT1 = v[v[699]]
+							// "########################"
+
+					}
+					// "目標位置"
+					v[619] = Temp1 + 19
+						v[620] = Temp1 + 20
+						// "################"
+						/* "Obj指定分岐
+							 Get18 = 目標ObjID"*/
+						@if `v[Temp1 + 18] >= 1 {
+							/* "Obj指定があり、そちらに行きたいとき
+								 Get18 = 目標ObjID"*/
+							Temp4 = v[Temp1 + 18] * 300 + 4701
+								@if v[Temp4] >= 1 {
+									// "#指定Objが存在する"
+									Temp4 += 6
+										v[Temp4].copy v[v[619]], 2
+										// "#攻撃"
+										@if v[370] >= 2 {
+											// "目標地点にカメラのずれを加算"
+											v[v[619]] .add v[53], 2
+												/* "Temp4 = 次に動く場所x
+													 Temp6 = 次に動く場所y"*/
+												Temp4 = v[v[619]]
+												Ptr20 = Temp1 + 7
+												Temp4 -= v[Ptr20]
+												Temp9 = Temp4
+												Temp4 = pow(Temp4, 2)
+												// "#######"
+												Temp6 = v[v[620]]
+												Ptr20 = Temp1 + 8
+												Temp6 -= v[Ptr20]
+												Temp10 = Temp6
+												Temp6 = pow(Temp6, 2)
+												Temp4 += Temp6
+												// "Set Object[23]"
+												Ptr20 = Temp1 + 23
+												v[Ptr20] = sqrt(Temp4, 1000)
+												Temp18 = v[Ptr20]
+												// "AAレンジ内か否かを見る"
+												Ptr15 = Temp1 + 117
+												v[Ptr15].copy TT1, 2
+												// "自分がMeleeなら([相手の幅]*1000)を引いて考える"
+												v[340] = Temp18
+												v[340] -= v[v[703]] == 0 ? v[335] : 0
+												@if v[340] <= TT1 {
+													@if v[340] >= TT2 {
+														v[842] = Temp1 + 242
+															v[v[842]] = -1
+															v[628] = Temp1 + 28
+															// "AAタイマー見る"
+															v[v[843]] = v[v[628]] <= 0 ? 1 : v[v[843]]
+															/* "#＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+																 ここの調節でゲームスピードが決定する
+#＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"*/
+															v[v[628]] = v[v[628]] <= 0 ? 4800 / 6 : v[v[628]]
+
+													}
+
+												}
+
+										}
+
+								} .else bl {
+									// "#指定Objが存在しない"
+									v[618] = Temp1 + 18
+										// "#Obj目標を消す"
+										v[v[618]] = 0
+										v[607].copy v[v[619]], 2
+
+								}
+
+						}
+					// "########################Particles"
+					@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//`s[v[401] + 501] {
+						// "#Flammable"
+						@if `!(agent_AgentBits & 2048) {
+							// "#Hp 66%"
+							@if `divmul(v[Temp1 + 105], 100, 66) > v[Temp1 + 106] {
+								// "Fire Particle"
+								@loop v[1017] .dst Temp20 {
+									v[244] %= v[1199]
+										v[331] = v[244] * 50 + v[1198]
+										@if v[v[331]] <= 1 {
+											// "まず清掃"
+											v[1301].copy v[v[331]], 50
+												// "ポインタセット開始"
+												// "設定"
+												v[v[331]] = 1
+												// "500F"
+												v[v[331] + 49] = 6
+												// "Set itself"
+												v[v[331] + 3] = 138
+												// "Set Parent Obj"
+												v[v[331] + 9] = v[401] + 1
+												// "普通にアニメ"
+												v[607] = Temp1 + 7
+												v[v[607]].copy v[607], 2
+												TT1 = v[331] + 6
+												v[607].copy v[TT1], 2
+												// "仕上げに登録消す"
+												v[244] += 1
+												@break
+
+										}
+									v[244] += 1
+
+								}
+
+
+							}
+
+						}
+						v[701] = Temp1 + 101
+							// "#Blacksmith"
+							@if v[v[701]] == 15 {
+								@loop v[1017] .dst Temp20 {
+									v[244] %= v[1199]
+										v[331] = v[244] * 50 
+										v[331] += v[1198]
+										@if v[v[331]] <= 1 {
+											// "まず清掃"
+											v[1301].copy v[v[331]], 50
+												// "ポインタセット開始"
+												// "設定"
+												v[v[331]] = 1
+												// "500F"
+												v[v[331] + 49] = 6
+												// "Set itself"
+												v[v[331] + 3] = 161
+												// "Set Parent Obj"
+												v[v[331] + 9] = v[401] + 1
+												// "普通にアニメ"
+												v[607] = Temp1 + 7
+												v[v[607]].copy v[607], 2
+												v[608] -= 20
+												TT1 = v[331] + 6
+												v[607].copy v[TT1], 2
+												// "仕上げに登録消す"
+												v[244] += 1
+												@break
+
+										}
+									v[244] += 1
+
+								}
+
+
+							}
+						// "#MageAltar"
+						@if v[v[701]] == 27 {
+							v[628] = Temp1 + 28
+								@if v[v[628]] >= 48 {
+									@if v[v[628]] <= 680 {
+										@loop v[1017] .dst Temp20 {
+											v[244] %= v[1199]
+												v[331] = v[244] * 50 
+												v[331] += v[1198]
+												@if v[v[331]] <= 1 {
+													// "まず清掃"
+													v[1301].copy v[v[331]], 50
+														// "ポインタセット開始"
+														// "設定"
+														v[v[331]] = 1
+														// "500F"
+														v[v[331] + 49] = 6
+														// "Set itself"
+														v[v[331] + 3] = 139
+														// "Set Parent Obj"
+														v[v[331] + 9] = v[401] + 1
+														// "普通にアニメ"
+														v[607] = Temp1 + 7
+														v[v[607]].copy v[607], 2
+														v[608] -= 12
+														TT1 = v[331] + 6
+														v[607].copy v[TT1], 2
+														// "仕上げに登録消す"
+														v[244] += 1
+														@break
+
+												}
+											v[244] += 1
+
+										}
+
+
+									}
+
+								}
+
+						}
+						// "#mana light"
+						@if v[v[701]] == 37 {
+							@loop v[1017] .dst Temp20 {
+								v[244] %= v[1199]
+									v[331] = v[244] * 50 
+									v[331] += v[1198]
+									@if v[v[331]] <= 1 {
+										// "まず清掃"
+										v[1301].copy v[v[331]], 50
+											// "ポインタセット開始"
+											// "設定"
+											v[v[331]] = 1
+											// "500F"
+											v[v[331] + 49] = 6
+											// "Set itself"
+											v[v[331] + 3] = 164
+											// "Set Parent Obj"
+											v[v[331] + 9] = v[401] + 1
+											// "普通にアニメ"
+											v[607] = Temp1 + 7
+											v[v[607]].copy v[607], 2
+											v[608] -= 20
+											TT1 = v[331] + 6
+											v[607].copy v[TT1], 2
+											// "仕上げに登録消す"
+											v[244] += 1
+											@break
+
+									}
+								v[244] += 1
+
+							}
+
+
+						}
+
+					}
+					@if v[370] >= 2 {
+						/* "########################	PAssive#########################"*/
+						@if `v[Temp1 + 223] & 1 {
+							@if `v[Temp1 + 94] <= 0 {
+								v[824] = v[Temp1 + 224] > v[1186] ? v[Temp1 + 224] : 1899
+									@call .cev v[824]
+
+							}
+
+						}
+						// "gate flag"
+						@if `agent_AgentBits & 256 {
+							// "##############"
+							Ptr20 = Temp1 + 5
+								Ptr19 = Temp1 + 15
+								Ptr18 = Temp1 + 7
+								Ptr17 = 53
+								Ptr16 = Temp1 + 36
+								Ptr15 = Temp1 + 296
+								// "Get mapXY"
+								Ptr13 = Temp1 + 26
+								v[Ptr13].copy Temp11, 2
+								// "#Obj衝突チェック試作begin"
+								Temp19 = v[401]
+								// "##"
+								v[333] = Temp1 + 7
+								v[334] = Temp1 + 8
+								v[335] = Temp1 + 10
+								v[336] = Temp1 + 11
+								/* "Maybe this is faster
+									 ...Yes, this is far faster, it's confirmed."*/
+								// "Morton"
+								// "##############"
+								v[607] = Temp1 + 7
+								v[610] = Temp1 + 10
+								v[v[607]].copy var1, 2
+								v[11..12] -= 20
+								var1 .sub v[v[610]], 2
+								/* "#########################
 #2002 Crd->Mort V1V2 reg1
 ##########################"*/
-						var1.copy TT1, 2
-						TT1 .sub v[76], 2
-						TT1 .div v[74], 2
-						/* "TT1=MortX
-			TT2=MortY
-			ビット演算して処理するよ"*/
-						TT1 = (TT1 | TT1 << 8) & 0xFF00FF
-						TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
-						TT1 = (TT1 | TT1 << 2) & 0x33333333
-						TT1 = (TT1 | TT1 << 1) & 0x55555555
-						TT2 = (TT2 | TT2 << 8) & 0xFF00FF
-						TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
-						TT2 = (TT2 | TT2 << 2) & 0x33333333
-						TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
-						// "yは1bitシフトで終わり"
-						//TT2 <<= 1
-						// "最後にTT1 OR TT2"
-						reg1 = TT1 | TT2
-						/* "#########################
+								var1.copy TT1, 2
+								TT1 .sub v[76], 2
+								TT1 .div v[74], 2
+								/* "TT1=MortX
+									 TT2=MortY
+									 ビット演算して処理するよ"*/
+								TT1 = (TT1 | TT1 << 8) & 0xFF00FF
+								TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
+								TT1 = (TT1 | TT1 << 2) & 0x33333333
+								TT1 = (TT1 | TT1 << 1) & 0x55555555
+								TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+								TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+								TT2 = (TT2 | TT2 << 2) & 0x33333333
+								TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
+								// "yは1bitシフトで終わり"
+								//TT2 <<= 1
+								// "最後にTT1 OR TT2"
+								reg1 = TT1 | TT2
+								/* "#########################
 #2002 Crd->Mort V1V2 reg1 end
 ##########################"*/
-						TT11 = reg1
-						v[v[607]].copy var1, 2
-						v[11..12] += 20
-						var1 .add v[v[610]], 2
-						/* "#########################
+								TT11 = reg1
+								v[v[607]].copy var1, 2
+								v[11..12] += 20
+								var1 .add v[v[610]], 2
+								/* "#########################
 #2002 Crd->Mort V1V2 reg1
 ##########################"*/
-						var1.copy TT1, 2
-						TT1 .sub v[76], 2
-						TT1 .div v[74], 2
-						/* "TT1=MortX
-			TT2=MortY
-			ビット演算して処理するよ"*/
-						TT1 = (TT1 | TT1 << 8) & 0xFF00FF
-						TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
-						TT1 = (TT1 | TT1 << 2) & 0x33333333
-						TT1 = (TT1 | TT1 << 1) & 0x55555555
-						TT2 = (TT2 | TT2 << 8) & 0xFF00FF
-						TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
-						TT2 = (TT2 | TT2 << 2) & 0x33333333
-						TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
-						// "yは1bitシフトで終わり"
-						//TT2 <<= 1
-						// "最後にTT1 OR TT2"
-						reg1 = TT1 | TT2
-						/* "##########################2002 Crd->Mort V1V2 reg1 end##########################"*/
-						TT1 = TT11
-						TT2 = reg1
-						/* "TT1 = upper left morton
-			TT2 = bottom right morton
-			TT5 = shift num"*/
-						TT3 = TT1 ^ TT2
-						// "#mask with 11000000"
-						// "#mask with 110000"
-						// "#mask with 001100"
-						// "#mask with 000011"
-						TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
-						v[609] = TT2 >> TT5
-						// "#mask end"
-						v[340] = v[4546 - TT5 / 2]
-						v[327] = v[v[4552 - TT5 / 2] + v[609]]
-						// "##############"
-						// "DisciplineCheck"
-						v[337] = v[401] * 300 
-						v[337] += 5010
-						v[v[337]].copy v[337], 2
-						v[337..338] += 12
-						v[339] = v[609] * v[1004] 
-						v[339] += v[340]
-						v[700] = v[Const_AgentMetaTeam_begin+v[401]]  //v[Temp1 + 100] % 3
-						v[371] = 0
-						@loop v[327] .dst TT2 {
-					v[203] = v[v[339] + TT2] - 1
-					agent_AgentType = v[203] * 300 
-					agent_AgentType += 5001
-					@if v[agent_AgentType] <= 9 {
-							v[324] = v[Const_AgentMetaTeam_begin+v[203]] //v[v[203] * 300 + 5100] % 3
-							// "対象のColを見る"
-							// "#UnitID==NoColならとめる"
-							// "対象のObjIDが自分ならとめる"
-							@if v[324] == v[700] {
-						// "衝突チェック開始"
-						v[320..322] = v[203] * 300
-						// "T30=modifier for collision, Statics have bigger col"
-						Temp20 .add v[1607], 2
-						v[322] += v[1610]
-						v[v[322]].copy v[322], 2
-						//v[0] = v[320..321] = [v[Temp20] - v[v[333]], v[v[321]] - v[v[334]]]
-						Temp20 = v[Temp20] - v[v[333]]
-						// "TT1でチェック"
-						@if `v[322] + v[337] >= abs(Temp20) {
-								v[321] = v[v[321]] - v[v[334]]
-								@if `v[323] + v[338] >= abs(v[321]) {
-							v[371] = 1
-							@break
-							
+								var1.copy TT1, 2
+								TT1 .sub v[76], 2
+								TT1 .div v[74], 2
+								/* "TT1=MortX
+									 TT2=MortY
+									 ビット演算して処理するよ"*/
+								TT1 = (TT1 | TT1 << 8) & 0xFF00FF
+								TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
+								TT1 = (TT1 | TT1 << 2) & 0x33333333
+								TT1 = (TT1 | TT1 << 1) & 0x55555555
+								TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+								TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+								TT2 = (TT2 | TT2 << 2) & 0x33333333
+								TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
+								// "yは1bitシフトで終わり"
+								//TT2 <<= 1
+								// "最後にTT1 OR TT2"
+								reg1 = TT1 | TT2
+								/* "##########################2002 Crd->Mort V1V2 reg1 end##########################"*/
+								TT1 = TT11
+								TT2 = reg1
+								/* "TT1 = upper left morton
+									 TT2 = bottom right morton
+									 TT5 = shift num"*/
+								TT3 = TT1 ^ TT2
+								// "#mask with 11000000"
+								// "#mask with 110000"
+								// "#mask with 001100"
+								// "#mask with 000011"
+								TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
+								v[609] = TT2 >> TT5
+								// "#mask end"
+								v[340] = v[4546 - TT5 / 2]
+								v[327] = v[v[4552 - TT5 / 2] + v[609]]
+								// "##############"
+								// "DisciplineCheck"
+								v[337] = v[401] * 300 
+								v[337] += 5010
+								v[v[337]].copy v[337], 2
+								v[337..338] += 12
+								v[339] = v[609] * v[1004] 
+								v[339] += v[340]
+								v[700] = v[Const_AgentMetaTeam_begin+v[401]]  //v[Temp1 + 100] % 3
+								v[371] = 0
+								@loop v[327] .dst TT2 {
+									v[203] = v[v[339] + TT2] - 1
+										agent_AgentType = v[203] * 300 
+										agent_AgentType += 5001
+										@if v[agent_AgentType] <= 9 {
+											v[324] = v[Const_AgentMetaTeam_begin+v[203]] //v[v[203] * 300 + 5100] % 3
+												// "対象のColを見る"
+												// "#UnitID==NoColならとめる"
+												// "対象のObjIDが自分ならとめる"
+												@if v[324] == v[700] {
+													// "衝突チェック開始"
+													v[320..322] = v[203] * 300
+														// "T30=modifier for collision, Statics have bigger col"
+														Temp20 .add v[1607], 2
+														v[322] += v[1610]
+														v[v[322]].copy v[322], 2
+														//v[0] = v[320..321] = [v[Temp20] - v[v[333]], v[v[321]] - v[v[334]]]
+														Temp20 = v[Temp20] - v[v[333]]
+														// "TT1でチェック"
+														@if `v[322] + v[337] >= abs(Temp20) {
+															v[321] = v[v[321]] - v[v[334]]
+																@if `v[323] + v[338] >= abs(v[321]) {
+																	v[371] = 1
+																		@break
+
+																}
+
+														}
+
+												}
+
+										}
+
 								}
-								
-						}
-						
-							}
-							
-					}
-					
-						}
-						
-						// "Locked?"
-						@if v[371] == 1 {
-							@if `!(agent_AgentBits & 4) {
+
+							// "Locked?"
+							@if v[371] == 1 {
+								@if `!(agent_AgentBits & 4) {
 									@if `!(agent_AgentBits & 8) {
-								v[Temp1 + 243] = 1
-								v[Temp1 + 3] |= 4
-								v[803] = Temp1 + 203
-								v[v[803]].copy v[803], 4
-								@loop v[806] .dst v[2064] {
-										Ptr6 = v[803] - Map_LimitCoordX_min + var_Map_Width * (v[804] - Map_LimitCoordY_min) + var_Map_Width * v[2064] + v[4529]
-										Ptr7 = v[803] - Map_LimitCoordX_min + var_Map_Width * (v[804] - Map_LimitCoordY_min) + var_Map_Width * v[2064] + v[1182]
-										@loop v[805] .dst v[2065] {
-											Temp11 = v[2065] + v[803]
-											Temp12 = v[2064] + v[804]
-											v[Ptr7] /= 100
-											v[Ptr7] *= 100
-											v[Ptr7] += 1
-											// "#TileFuncPushFlag"
-											v[Ptr6] &= -2//~1
-											v[286..287] += 1
-											
+										v[Temp1 + 243] = 1
+											v[Temp1 + 3] |= 4
+											v[803] = Temp1 + 203
+											v[v[803]].copy v[803], 4
+											@loop v[806] .dst v[2064] {
+												Ptr6 = v[803] - Map_LimitCoordX_min + var_Map_Width * (v[804] - Map_LimitCoordY_min) + var_Map_Width * v[2064] + v[4529]
+													Ptr7 = v[803] - Map_LimitCoordX_min + var_Map_Width * (v[804] - Map_LimitCoordY_min) + var_Map_Width * v[2064] + v[1182]
+													@loop v[805] .dst v[2065] {
+														Temp11 = v[2065] + v[803]
+															Temp12 = v[2064] + v[804]
+															v[Ptr7] /= 100
+															v[Ptr7] *= 100
+															v[Ptr7] += 1
+															// "#TileFuncPushFlag"
+															v[Ptr6] &= -2//~1
+															v[286..287] += 1
+
+													}
+
+
+											}
+
+										@if v[182] < 2 {
+											@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen{ //`s[v[401] + 501] == 1 {
+												v[607] = Temp1 + 7
+													v[v[607]].copy v[607], 2
+													v[182] += 1
+													// "#########################"
+													v[472] = divmul(70, 100, v[2216])
+													v[473] = 100
+													v[474] = divmul(v[607] + v[1001], v[1281], 50)
+													@cmd 11550, "misc\gate_open", .args v[472], 3
+													// "#########################"
+
+											}
+
+											}
+
 										}
-										
-										
-								}
-								
-								@if v[182] < 2 {
-										@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen{ //`s[v[401] + 501] == 1 {
-									v[607] = Temp1 + 7
-									v[v[607]].copy v[607], 2
-									v[182] += 1
-									// "#########################"
-									v[472] = divmul(70, 100, v[2216])
-									v[473] = 100
-									v[474] = divmul(v[607] + v[1001], v[1281], 50)
-									@cmd 11550, "misc\gate_open", .args v[472], 3
-									// "#########################"
-									
-										}
-										
-								}
-								
+
 									}
-									
+
+								} .else bl {
+									@if `agent_AgentBits & 4 {
+										v[Temp1 + 243] = 0
+											v[Temp1 + 3] &= -5//~4
+											v[803] = Temp1 + 203
+											v[v[803]].copy v[803], 4
+											@loop v[806] .dst v[2064] {
+												Ptr6 = v[803] - Map_LimitCoordX_min + var_Map_Width * (v[804] - Map_LimitCoordY_min) + var_Map_Width * v[2064] + v[4529]
+													Ptr7 = v[803] - Map_LimitCoordX_min + var_Map_Width * (v[804] - Map_LimitCoordY_min) + var_Map_Width * v[2064] + v[1182]
+													@loop v[805] .dst v[2065] {
+														Temp11 = v[2065] + v[803]
+															Temp12 = v[2064] + v[804]
+															v[Ptr7] /= 100
+															v[Ptr7] *= 100
+															v[Ptr7] += 21
+															// "#TileFuncPushFlag"
+															v[Ptr6] |= 1
+															v[286..287] += 1
+
+													}
+
+
+											}
+
+										@if v[182] < 2 {
+											@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//s[v[401] + 501] == 1 {
+												v[607] = Temp1 + 7
+													v[v[607]].copy v[607], 2
+													v[182] += 1
+													// "#########################"
+													v[472] = divmul(70, 100, v[2216])
+													v[473] = 100
+													v[474] = divmul(v[607] + v[1001], v[1281], 50)
+													@cmd 11550, "misc\gate_close", .args v[472], 3
+													// "#########################"
+
+											}
+
+											}
+
+										}
+
+									}
+
+								}
+
 							}
-							
-						} .else bl {
-					@if `agent_AgentBits & 4 {
-							v[Temp1 + 243] = 0
-							v[Temp1 + 3] &= -5//~4
-							v[803] = Temp1 + 203
-							v[v[803]].copy v[803], 4
-							@loop v[806] .dst v[2064] {
-						Ptr6 = v[803] - Map_LimitCoordX_min + var_Map_Width * (v[804] - Map_LimitCoordY_min) + var_Map_Width * v[2064] + v[4529]
-						Ptr7 = v[803] - Map_LimitCoordX_min + var_Map_Width * (v[804] - Map_LimitCoordY_min) + var_Map_Width * v[2064] + v[1182]
-						@loop v[805] .dst v[2065] {
-								Temp11 = v[2065] + v[803]
-								Temp12 = v[2064] + v[804]
-								v[Ptr7] /= 100
-								v[Ptr7] *= 100
-								v[Ptr7] += 21
-								// "#TileFuncPushFlag"
-								v[Ptr6] |= 1
-								v[286..287] += 1
-								
+							// "++"
+							increment_var(v[536])// v[536] += 1
+
 						}
-						
-						
-							}
-							
-							@if v[182] < 2 {
-						@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//s[v[401] + 501] == 1 {
-								v[607] = Temp1 + 7
-								v[v[607]].copy v[607], 2
-								v[182] += 1
-								// "#########################"
-								v[472] = divmul(70, 100, v[2216])
-								v[473] = 100
-								v[474] = divmul(v[607] + v[1001], v[1281], 50)
-								@cmd 11550, "misc\gate_close", .args v[472], 3
-								// "#########################"
-								
-						}
-						
-							}
-							
-					}
-					
-						}
-						
-				}
-				
-	    }
-	    // "++"
-	    increment_var(v[536])// v[536] += 1
-	    
-	}
 
 	@wait 0
 	// "############"

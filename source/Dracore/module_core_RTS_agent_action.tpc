@@ -14,8 +14,8 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 						//@comment "Auto Attack"
 						@if agent_ActionState == 1 {
 							//@comment "Set Timer"
-							TT1 = v[210] + 84
-							v[TT1] = 3
+								TT1 = v[210] + 84
+								ptr_const(TT1,3) // v[TT1] = 3
 								//@comment "Auto Attack"
 								Ptr20 = v[210] + 18
 								v[340] = 34 + agent_AAType
@@ -31,7 +31,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 								//Access18 = SkillDataPtr"
 								//cast skill!
 								@if agent_ActionState <= 10 {
-									Ptr19 = v[v[536]]
+										v[536].deref Ptr19,1 // Ptr19 = v[v[536]]
 										v[297..298] = 300 * Ptr19
 										//Ptr18 += 4821
 										//agent_CastSkillOrder = v[210] + 246
@@ -197,12 +197,12 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 				val_asg(Ptr1,v[210]) // Ptr1 = v[210]
 				v[Ptr1].copy agent_ObjectType, 300
 				@if agent_ActionTimer == 1 {
-						v[210] -= 1
+						val_sub(v[210],N1) // v[210] -= 1
 						//agent_ActionState = v[210] + 243
 						//@comment "Auto Attack"
 						@if agent_ActionState == 1 {
 								//@comment "Set Timer"
-								agent_ActionTimer = 3
+								val_const(agent_ActionTimer,3) // agent_ActionTimer = 3
 								//@comment "Auto Attack"
 								//v[703] = v[210] + 103
 								agent_ObjectType.copy v[Ptr1], 300
