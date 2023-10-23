@@ -421,6 +421,7 @@ struct("agent",{
 	AI_routine_bits_FLAG_WP_set_by_RayCast = 67108864
 	AI_routine_bits_FLAG_1secDelay_PF = 134217728
 	AI_routine_bits_FLAG_StuckCheckReady = 268435456
+
 		AI_routine_bits_KILL_StuckCheckReady = ~AI_routine_bits_FLAG_StuckCheckReady
 
 		AI_routine_bits_MASK_init_raycasting = (AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_RayCast+AI_routine_bits_FLAG_Prioritize_Raycasting)
@@ -516,7 +517,8 @@ struct("agent",{
 	ActionFlag_FLAG_Walking = 2 //s[v[4558] + :agent_id ]
 	ActionFlag_FLAG_Heading_other_agent = 4 //s[103]
 	ActionFlag_FLAG_Trying_to_stop = 8 //s[104]
-
+	ActionFlag_FLAG_Turn_to_ordered_Direction = 16 //s[104]
+	ActionFlag_FLAG_Already_set_ord_dir = 32
 	
 	//ObjectType
 	AgentType_Simple_Agent = 1

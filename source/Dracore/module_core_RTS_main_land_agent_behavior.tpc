@@ -95,7 +95,6 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 			//@comment "モートン座標関係はこれで終わり"
 
-
 	    // Auto Attack Process 
 	    @if Is_Paused .isOff() { //optimizing 26.4.23
 
@@ -103,7 +102,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 		    agent_AgentBits &= ~AgentBits_FLAG_1fprocessed
 		    // @comment "#AA Timer"
 		    @if agent_AATimer > 0 { // AA on CD
-					agent_AATimer -= agent_ActionState != 1 ? agent_ProcessAS: 0 // if not the agent is attacking, then AS proc
+					agent_AATimer -= agent_ActionState != 1 ? agent_ProcessAS : 0 // if not the agent is attacking, then AS proc
 							
 		    } .else bl { // AA Cool down is up
 					agent_ActionState = agent_ActionState <= 2 ? 0 : agent_ActionState // set action state
@@ -134,12 +133,13 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 				// Setting up target agent pointer - this might be dangerous since even if Target is 0 Ptr8 can be used.
 				// You need to check all procs around Ptr8 in this meta function
-				victim_AgentType = agent_TargetAgentID * 300
-				val_add(victim_AgentType,N4701) // victim_AgentType += 4701
-				v[victim_AgentType].copy victim_AgentType,102
 
 				@if agent_TargetAgentID >= 1 { // Has target
-					@if agent_MovementOrder != MovementOrder_TYPE_prioritize_moving { // does not prioritize movement: the agent wants to attack the target
+					victim_AgentType = agent_TargetAgentID * 300
+					val_add(victim_AgentType,N4701) // victim_AgentType += 4701
+					v[victim_AgentType].copy victim_AgentType,102
+
+	@if agent_MovementOrder != MovementOrder_TYPE_prioritize_moving { // does not prioritize movement: the agent wants to attack the target
 							//@comment "Obj指定があり、そちらに行きたいとき
 							@if victim_AgentType >= 1 { // the target is valid agent
 								@if agent_TargetAgentID != agent_LastTarget { // check if Target is switched
@@ -263,7 +263,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 								
 							}
 							agent_LastTarget = agent_TargetAgentID
-							@if LEGS_MAIN_Agent_heading_to_target .isOn(){
+							@if LEGS_MAIN_Agent_heading_to_target .isOn(){ 
 								@if `!(victim_AgentBits & AgentBits_FLAG_1fprocessed) {
 									//@comment "目標地点にカメラのずれを加算"
 									agent_MovePointX .add v[53], 2
@@ -321,7 +321,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				@if Is_Paused .isOff() {
 						@if LEGS_MAIN_Agent_heading_to_target .isOn() { // heading to target agent
 
-							agent_ActionFlag &= -2 //~1
+							// kill ordered dir flag
+							agent_ActionFlag &= ~ActionFlag_FLAG_Turn_to_ordered_Direction
+
 
 							// @comment "Objに向かっているときは"
 							// @comment "Set Dir"
@@ -349,15 +351,18 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 									agent_MovementOrder = MovementOrder_TYPE_do_not_move
 
 									// @comment "Not casting skill"
-									@if `(agent_ActionState >= 4 || agent_AATimer > 0) != 1 {
-											// @comment "AAタイマー見る"
-											val_asg(agent_ActionState,N1) // agent_ActionState = 1
-											/* This part does affect game speed. */
-											agent_AATimer = agent_AACost > agent_SP && !(agent_ExMotionFlags & ExMotionFlags_FLAG_no_fatigue) ? AA_WAIT_FPSx2 : AA_WAIT_FPSx1
-											
+									@if `!(agent_ActionState >= 4 || agent_AATimer > 0){
+											@if agent_TargetAgentID == agent_LastTarget { // if switched, do not launch attack
+												agent_ActionFlag |= 1
+												// @comment "AAタイマー見る"
+												val_asg(agent_ActionState,N1) // agent_ActionState = 1
+												/* This part does affect game speed. */
+												agent_AATimer = agent_AACost > agent_SP && !(agent_ExMotionFlags & ExMotionFlags_FLAG_no_fatigue) ? AA_WAIT_FPSx2 : AA_WAIT_FPSx1
+											}
 									}
 									
 								} .else bl {
+									agent_ActionFlag &= -2 // kill dir hold flag
 									//@comment "If closer than minimum range"
 									@if agent_StanceOrder == ORD_STD {
 											//@comment "#待機モード時はその場で待ち構える"
@@ -377,6 +382,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 								}
 								
 							} .else bl { // out of range
+									agent_ActionFlag &= -2 // kill dir hold flag
 									LEGS_MAIN_Agent_tries_to_stop.off
 									@if agent_StanceOrder == MovementOrder_TYPE_moving {
 										//@comment "#待機モード時はその場で待ち構える"
@@ -415,12 +421,17 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 										MAIN_agent_reached_ChasePoint()
 									}
 
-									// Already reached or something
+									// Already reached at somewhere or something
 									@if Reaching_Target_Way_Point .isOff() {
 										agent_AI_routine_bits &= -49153 // ~49152
 										agent_AgentBits &= -37748737 // ~37748736 // (4194304 + 33554432)
 										
-										agent_Direction = agent_AI_routine_bits & AI_routine_bits_FLAG_IdleAfterEnemySearch ? (cos(agent_MarchingDirection, 1000, -100) + 200) / 200 : agent_Direction
+										
+										// agent_Direction = agent_AI_routine_bits & AI_routine_bits_FLAG_IdleAfterEnemySearch ? (cos(agent_MarchingDirection, 1000, -100) + 200) / 200 : agent_Direction
+										// -> move to main6f
+										agent_ActionFlag |= ActionFlag_FLAG_Turn_to_ordered_Direction
+
+
 										LEGS_MAIN_Agent_tries_to_stop.on
 
 										@if `!(agent_AgentBits & AgentBits_Collided_Other_Agent) {
@@ -473,7 +484,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				//@comment "とまる"
 				@if agent_MovementOrder <= -1 {
 						LEGS_MAIN_Agent_tries_to_stop.on
-						agent_ActionFlag |= ActionFLag_FLAG_Hold_direction
+						// agent_ActionFlag |= ActionFLag_FLAG_Hold_direction
 						//@comment "hovering"
 						@if `agent_AgentBits & AgentBits_Hovering {
 							agent_ForceSprite = ForceSprite_MOVE // hovering animation
@@ -483,6 +494,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						}
 						
 				}.else bl {
+
+					agent_ActionFlag &= ActionFlag_FLAG_Already_set_ord_dir
 
 					//@comment "移動"
 					agent_ActionFlag &= agent_MovementOrder >= 2 ? ~ActionFLag_FLAG_Hold_direction : agent_ActionFlag
@@ -510,7 +523,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				@if agent_ActionState == 1 {
 						//@comment "#Set ForceSprite Attack"
 						agent_ForceSprite = ForceSprite_ATTACK
-						agent_ActionFlag = agent_AttackFrame > 0 ? agent_ActionFlag | ActionFLag_FLAG_Hold_direction : agent_ActionFlag & ~ActionFLag_FLAG_Hold_direction
+						agent_ActionFlag |= ActionFLag_FLAG_Hold_direction
+						// agent_ActionFlag = agent_AttackFrame > 0 ? agent_ActionFlag | ActionFLag_FLAG_Hold_direction : agent_ActionFlag & ~ActionFLag_FLAG_Hold_direction
 						LEGS_MAIN_Agent_tries_to_stop.on
 						
 				} .else bl {
@@ -527,6 +541,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						//@comment "動かない"
 						//@comment "待機"
 						v[1301].copy agent_MilPixVx, 2
+						v[1301].copy agent_MoveUvectorX, 2
+
 						
 				} .else bl {
 						TT1 = agent_MovementOrder == MovementOrder_TYPE_fleeing ? -1 : 1
@@ -546,10 +562,11 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				}
 				
 	    } .else bl { // the agent is getting KnockBacked!
+						agent_ActionFlag |= ActionFLag_FLAG_Hold_direction
 				@if Is_Paused .isOff() {
 						//@comment "nowall"
 						agent_AgentBits &= ~AgentBits_FLAG_walldetected // kill wall flag
-						agent_KnockBackTimer -= 1 // --KBtimer
+						val_sub(agent_KnockBackTimer,N1) // agent_KnockBackTimer -= 1 // --KBtimer
 						
 						@if agent_KnockBackTimer < 1 { // If Knock-Back ends in this frame
 							@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI { // normal military unit 

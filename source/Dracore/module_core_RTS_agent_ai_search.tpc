@@ -518,7 +518,7 @@ v[4100].repeat 100000000, 13
 												@if agent_StanceOrder == 3 { //`v[v[212] + 241] == 3 {
 														@if agent_MovementOrder != -2 { //`v[v[212] + 242] != -2 {
 																@if agent_MilPixMoveOrderedPointDist > 11000 { //`v[v[212] + 23] > 11000 {
-																		v[v[212] + 245] = 0
+																		v[v[212] + 245] &= ~ActionFLag_FLAG_Hold_direction
 																		
 																}
 																

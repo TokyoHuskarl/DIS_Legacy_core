@@ -29,10 +29,10 @@ __fn func_call_mini_blood_f_effect $x $y $bool_blood_immunity $variation {
 		    v[361].copy v[11], 2
 		    @call .cev 2010
 		    // "WATER"
-		    v[634] = 100
+		    v[4034] = 100
 		    @if `(v[v[4505] + v[23]] & 1) > 0 {
-			v[631] = 160
-			v[632..633] = 30
+			v[4031] = 160
+			v[4032..4033] = 30
 			@pic[v[310]].show {
 			    "effects\sprite_fresheffects"
 			    .pos v[361], v[362] .center
@@ -40,7 +40,7 @@ __fn func_call_mini_blood_f_effect $x $y $bool_blood_immunity $variation {
 			    .chromakey 1
 			    .scale 100
 			    .trans 8
-			    .rgbs v[631], v[632], v[633], v[634]
+			    .rgbs v[4031], v[4032], v[4033], v[4034]
 			    .multi
 			    .grid 20, 20 .cell v[305]
 			    .mapLayer 2
@@ -66,13 +66,13 @@ __fn func_call_mini_blood_f_effect $x $y $bool_blood_immunity $variation {
 			    .affectedByFlash
 			    .affectedByShake
 			}
-			v[631..633] = 100
+			v[4031..4033] = 100
 			
 		    }
 		    v[295] = v[301] + 30
-		    v[631].copy v[v[295]], 4
-		    v[607] = v[301] + 6
-		    v[361].copy v[v[607]], 2
+		    v[4031].copy v[v[295]], 4
+		    v[4007] = v[301] + 6
+		    v[361].copy v[v[4007]], 2
 		    // "仕上げに登録消す"
 		    v[418] += 1
 		    //s[141].off

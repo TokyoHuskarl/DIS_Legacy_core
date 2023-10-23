@@ -484,21 +484,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    Temp1 = v[401] * v[1117] 
 	    val_add(Temp1,N5000) // Temp1 += 5000
 	    func_main_extract_agent_vars()
-	    // "Set Dir"
-	    @if Is_Paused .isOff() {
-				@if `agent_AgentBits & AgentBits_FLAG_DirChange_skip {
-						@if `v[726] & 8388608 {
-							agent_AgentBits &= -134217729 //~134217728 ~AgentBits_FLAG_DirChange_skip
-							
-						}
-						
-				} .else bl {
-						// v[844] = (v[845] & 1) ? v[844] : (v[621] >= 0 ? 0 : 1) //[v[621] >= 0 ? 0 : 1, v[844]][(v[845] & 1)]
-						v[844] = v[845] & 1 ? v[844] : (v[621] < 0)
-				}
-				
-	    }
-
+			
 	    // "Get terrain's bit where the unit stands on"
 	    v[340] = v[4505] + v[640]
 	    v[340].deref v[340],1 // v[340] = v[v[340]]
@@ -1481,7 +1467,39 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    Temp1 = v[v[536]] * v[1117] 
 	    val_add(Temp1,N4700) // Temp1 += 4700
 	    func_main_extract_agent_vars()
-	    // "colck"
+	    // "Set Dir"
+	    @if Is_Paused .isOff() {
+				@if `agent_AgentBits & AgentBits_FLAG_DirChange_skip {
+						@if `v[726] & 8388608 {
+							agent_AgentBits &= -134217729 //~134217728 ~AgentBits_FLAG_DirChange_skip
+							
+						}
+						
+				} .else bl {
+						// v[844] = (v[845] & 1) ? v[844] : (v[621] >= 0 ? 0 : 1) //[v[621] >= 0 ? 0 : 1, v[844]][(v[845] & 1)]
+						agent_Direction = v[845] & 1 ? agent_Direction : (agent_ActionFlag & ActionFlag_FLAG_Turn_to_ordered_Direction && agent_AI_routine_bits & AI_routine_bits_FLAG_IdleAfterEnemySearch ? (cos(agent_MarchingDirection, 1000, -100) + 200) / 200 : (v[621] < 0)) // attacking
+						@if `!(agent_ActionFlag & 1){
+							 @if `agent_ActionFlag & ActionFlag_FLAG_Turn_to_ordered_Direction {
+								 @if `!(agent_ActionFlag & ActionFlag_FLAG_Already_set_ord_dir){
+									 agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200 
+									 agent_ActionFlag |= ActionFlag_FLAG_Already_set_ord_dir
+								 }
+
+							 }.else bl{
+								@if v[621] != 0 {
+									agent_Direction = v[621] < 0 ? 1 : 0
+								}
+
+							 }
+							
+						}
+						
+				}
+				
+	    }
+
+
+	    // "clock"
 	    @if `agent_AgentBits & AgentBits_Movement_Giveup {
 				@if `agent_AgentBits & AgentBits_Endpoint_Collision_Trouble {
 						//v[842] = Temp1 + 239

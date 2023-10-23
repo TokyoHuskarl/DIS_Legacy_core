@@ -561,17 +561,15 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																v[4041..4050] += 2 - 4 * v[325]
 																
 														} .else bl {
-																@if `agent_ActionState == 1 {
+																@if agent_ActionState == 1 {
 																		//@comment "pike"
 																		@if agent_AASfx == 4 {
 																			animation_pike_attack()
 																		} .else bl {
 																				//@comment "spear"
 																				@if agent_AASfx == 3 {
-																						@if `agent_AttackFrame != 0 {
-																								v[4044] -= 1 - 2 * v[325]
-																								
-																						}
+																						animation_spear_attack()
+
 																						
 																				} .else bl {
 																						@if agent_AASfx == 2 {
@@ -680,6 +678,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 											}
 											
 									}
+
 									@if `agent_ExMotionFlags & ExMotionFlags_FLAG_Weapon_Cannot_be_flipped {
 											v[4034] = 0
 											v[4124] = 2

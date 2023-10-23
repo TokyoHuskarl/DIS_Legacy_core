@@ -181,7 +181,6 @@ __fn function_draw_moving_agent {
 		//@comment "Layer Setting"
 		TT16.copy v[449], 4
 		
-		v[455] = 4030 + TT1
 		Temp5 = 4040 + TT1
 		Temp6 = 4050 + TT1
 		v[447] = 4060 + TT1
@@ -191,6 +190,7 @@ __fn function_draw_moving_agent {
 		v[321] = 4110 + TT1
 		v[453] = 4130 + TT1
 		v[454] = 4140 + TT1
+		v[455] = 4030 + TT1
 		v[456] = 4150 + TT1
 		//surprise, but this seems faster than above... opt 25.4.23
 		Temp5.deref Temp5,2

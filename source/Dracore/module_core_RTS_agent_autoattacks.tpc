@@ -41,7 +41,14 @@ __fn agent_autoattack_melee {
 	s[202..203].off
 	// "Motion"
 	v[v[629]] += 1
-	v[v[896]] += [1, -1][v[v[844]]]
+	v[v[896]] += v[v[844]] == 0 ? 1 : -1
+
+	// hold direction
+	TT1 = v[210] + 245
+	v[TT1] |= 1//~1
+
+
+
 	// "ObjTypeチェック"
 	Ptr18 = 300 * Ptr20 
 	Ptr18 += 4701
@@ -807,8 +814,6 @@ __fn agent_autoattack_melee {
 			s[202..203].off
 			
 	} .else bl {
-		TT1 = v[210] + 274
-		v[TT1] &= -2//~1
 
 		// "アクションに2F分余韻を…"
 		@if `v[v[629]] > v[v[720]] + 1 {
@@ -821,10 +826,11 @@ __fn agent_autoattack_melee {
 			v[v[629]] = 0
 			v[v[896]] = 0
 			TT1 = v[210] + 245 
-			v[TT1] = 0
+			v[TT1] &= -2
 			// "Initialize AI Timer"
 			TT1 = v[210] + 80 
 			v[TT1] = v[1240] * v[4571]
+
 	
 		}
 		
@@ -1054,6 +1060,7 @@ cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
 				var9 = v[var9]
 				//@call .cev 40
 				func_damage_calculation()
+
 				// "############"
 				// "Effect"
 				// "#あたったので演出チェック"
