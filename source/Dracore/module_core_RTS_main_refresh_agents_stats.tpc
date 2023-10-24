@@ -272,7 +272,7 @@ __fn agent_ref_stats(){
 										}
 									}
 								}.elif `agent_TacticsOrderFlag & 4 { //stronger shield wall
-									@if agent_SP > 5 {
+									@if agent_SP > 10 {
 										@if `!(agent_ProcessObjBit & 67108864) {
 											agent_ProcessAR += v[711] / 3 //muldiv(v[711], 40, 100) 40%->33%
 												agent_ProcessMR += v[712] / 3 //muldiv(v[712], 40, 100) 40%->33%

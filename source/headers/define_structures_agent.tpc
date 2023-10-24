@@ -228,8 +228,10 @@ struct("agent",{
 	agent_ReserveWeaponID = 856
 	agent_ReserveShieldID = 857
 
-	agent_static_MapXdiv5 = 858
-	agent_static_MapYdiv5 = 859
+
+	agent_Formbits = 859
+		agent_static_MapXdiv5 = 858
+		agent_static_MapYdiv5 = 859
 
 	agent_Morale = 860
 	agent_ProcessAD = 861
@@ -546,6 +548,13 @@ struct("agent",{
 	AABits_FLAG_CrackingShieldBONUS = 131072
 	AABits_FLAG_BladeDance = 262144 
 	AABits_FLAG_Camel = 524288
+
+
+	Formbits_FLAG_Line1 = 1
+	Formbits_FLAG_Line2 = 2
+	Formbits_FLAG_Line3 = 4
+	Formbits_FLAG_Line4 = 8
+	Formbits_MASK_Lines = 1+2+4+8
 
 	//Stances
 	DIR_RIGHT = 1

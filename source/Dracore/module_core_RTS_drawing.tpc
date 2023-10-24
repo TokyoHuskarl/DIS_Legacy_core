@@ -472,27 +472,6 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 											} .else bl {
 													//@comment "Inf"
 													@if expected_action_sprite == 4 {
-															//@comment "shieldwall"
-															@if `v[848] & 6 {
-																	v[4051..4060] += 1
-
-																	// v[4045] -= 1 - 2 * v[455] / 4096
-																	v[4045] += v[455] >> 11
-																	v[4045] -= 1 // 1 - (v[455] >> 11)
-
-																	v[4055] -= 1
-																	
-															}
-
-															@if `v[848] & 1 {
-																	//@comment "pikewall"
-																	v[4051..4060] += 1
-																	// v[4044] -= 1 - 2 * v[455] / 4096
-																	v[4044] += v[455] >> 11
-																	v[4044] -= 1 // 1 - (v[455] >> 11)
-																	v[4054] -= 1
-																	
-															}
 
 															@if `between(agent_MovementOrder, 1, 3) {
 																	v[311..312] = sin(3 * agent_RegTimer, 1, 2)
@@ -512,6 +491,58 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																	}
 																	
 															}
+															//@comment "shieldwall"
+															@if `v[848] & 6 {
+																	v[4051..4060] += 1
+
+																	// v[4045] -= 1 - 2 * v[455] / 4096
+																	v[4045] += v[455] >> 11
+																	v[4045] -= 1 // 1 - (v[455] >> 11)
+
+																	v[4055] -= 1
+																	
+																	TT3 = agent_AASfx % 10000																
+																	// spear
+																	@if TT3 == 3 {
+
+																		// pike angle set
+																			v[4134] = 3
+																			// get line number
+																			TT1 = 1 - 2 * v[325]
+																			TT2 = ((agent_Formbits & Formbits_MASK_Lines) >> 1)
+																			v[4144] = (TT2 * 150000)* TT1  // 0,15,30,60...
+																			v[4154] = 10000
+																			v[4044] += TT2 * TT1
+
+																	}
+
+
+															}
+
+
+															@if `v[848] & 1 {
+																	//@comment "pikewall"
+																	v[4051..4060] += 1
+																	// v[4044] -= 1 - 2 * v[455] / 4096
+																	v[4044] += v[455] >> 11
+																	v[4044] -= 1 // 1 - (v[455] >> 11)
+																	v[4054] -= 1
+
+																	// pike angle set
+																	v[4134] = 3
+																	// get line number
+																	TT1 = 1 - 2 * v[325]
+																	TT2 = ((agent_Formbits & Formbits_MASK_Lines) >> 1)
+																	v[4144] = (TT2 * 120000 - 80000)* TT1  // 0,15,30,60...
+																	v[4154] = 10000
+																	// v[4044] -= TT2 * TT1 
+																	v[4054] -= TT2
+																	v[4044] += TT2 * TT1
+
+															}
+
+
+
 															@if `agent_AASfx % 10000 == 101 {
 																	v[4054] += agent_AATimer / 1600
 																	

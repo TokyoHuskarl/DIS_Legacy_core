@@ -1543,6 +1543,9 @@ __fn func_control_moveorder_proc_let_units_attack {
 
 __fn func_control_moveorder_proc_move {
 	v[390] = 0
+		defv linecounter = __id(Temp20) 
+		val_init(linecounter)
+
 		@loop v[1004] .dst v[340] {
 			@if v[v[202]] == 0 {
 				// "とぎれた"
@@ -1556,9 +1559,13 @@ __fn func_control_moveorder_proc_move {
 			}
 			// "skip foundation "
 			// "配列ゲット"
-			Temp1 = v[v[202]] * 300
+				Temp1 = v[v[202]] * 300
 				val_add(Temp1,N4700) // Temp1 += 4700
-				@if `v[Temp1 + 102] != 104 {
+				val_asg(Ptr1,Temp1)
+				val_add(Ptr1,N1)
+				v[Ptr1].copy agent_ObjectType,agent_Basic_Array_size
+				
+				@if agent_UnitType != 104 {
 					Ptr20 = Temp1 + 242
 						Ptr19 = Temp1 + 41
 						Ptr18 = Temp1 + 42
@@ -1566,6 +1573,7 @@ __fn func_control_moveorder_proc_move {
 						Ptr15 = Temp1 + 241
 						Ptr14 = Temp1 + 55
 						Ptr13 = Temp1 + 35
+						Ptr12 = Temp1 + 259 // formbits
 						v[629] = Temp1 + 29
 						v[Temp1 + 34] &= ~4096
 						// "処理開始"
@@ -1574,6 +1582,7 @@ __fn func_control_moveorder_proc_move {
 
 						}
 					@if `v[Temp1 + 1] != 11 {
+						v[Ptr12] &= ~Formbits_MASK_Lines // init line assignment
 						v[Temp1 + 3] &= ~384
 							v[Temp1 + 3] &= AgentBits_MASK_for_initilizing_pathfinding
 							// "#ForceMoveFlag"
@@ -1680,18 +1689,22 @@ __fn func_control_moveorder_proc_move {
 										.affectedByShake
 								}
 
+
 						}
-
+					
 					}
+					v[Ptr12] |= pow(2,linecounter) // set current line flag
 
-					// "#Set 目標なし"
-					v[Ptr17] = 0
+
+						// "#Set 目標なし"
+						v[Ptr17] = 0
 						Ptr13 = Temp1 + 245
 						v[Ptr13] = 0
 						// "Make 2nd line"
 						v[390] += 1
 						v[390] %= v[399]
 						@if v[390] == 0 {
+							val_add(linecounter,N1)
 							@if LEGV_WPamount_to_set >= 1 {
 								v[393].copy v[273], 2
 									v[273] .add v[397], 2

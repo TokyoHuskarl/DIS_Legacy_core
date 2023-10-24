@@ -373,7 +373,7 @@ __fn func_damage_calculation {
 							// regain SP*20% per kill#THIS MIGHT BE TOO STRONG be careful to adjust"
 							agent_SP = min(agent_MaxSP, agent_SP + muldiv(agent_MaxSP, 20, 100))
 							// regain HP*8% per kill#THIS MIGHT BE TOO STRONG be careful to adjust"
-							agent_HP = min(agent_MaxHP, agent_HP + muldiv(agent_MaxHP, 8, 100))
+							agent_HP = min(agent_MaxHP, agent_HP + (agent_HP >> 5)) // 8% -> 3.25% fix.
 
 						}
 
