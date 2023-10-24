@@ -1,0 +1,118 @@
+
+// 
+cev[168], .name("Experimental UI Tracer Particle"), {
+	extract_particle_emitter_data()
+	emitter_RelativeX .add v[53], 2
+	emitter_RelativeX .copy TT11, 2
+
+	// for more precise drawing, use milpix
+	var1.repeat 1000,2
+
+	@if `emitter_particlebits & particlebits_FLAG_ref_targ_relpos {
+		v[emitter_targRelX].copy TT3,2
+		
+	}.else bl{
+		emitter_targRelX.copy TT3,2
+
+	}
+	TT3.sub emitter_RelativeX,2
+	TT3.mul var1,2 // *= 1000
+	TT11.mul var1,2 // *= 1000
+
+	TT6 = atan2(TT4, TT3, 1000)
+	TT6 += 90000
+	v[343..344] /= emitter_ParticleAmount
+
+
+
+
+	@if `TT3 != 0 || TT4 != 0 {
+		@loop emitter_ParticleAmount {
+				val_mod(ptr_particle_picID,v[2215])
+				TT5 = ptr_particle_picID + v[1200]
+				TT11 .add TT3, 2
+				TT11.copy TT13,2
+				TT13.div var1,2 // /= 1000
+				@pic[TT5].show {
+					"effects\particles"
+						.pos TT13, TT14 .center
+						.scrollWithMap
+						.chromakey 1
+						.scale 100
+						.trans 0
+						.rgbs emitter_R, emitter_G, emitter_B, emitter_Saturation
+						// .rgbs 140, 25, 25, 100
+						.angle TT6, 1000
+						.grid 12, 12 .cell 3
+						.mapLayer 8
+						.affectedByShake
+				}
+
+			@pic[TT5].move {
+				.pos TT13, TT14 .center
+					.scale 100
+					.trans 100
+					.time -2
+					.rgbs emitter_R, emitter_G, emitter_B, emitter_Saturation
+					.angle TT6, 1000
+			}
+				val_add(ptr_particle_picID,N1)
+
+		}
+	}
+	val_add(ptr_particle_picID,N1)
+	val_init(emitter_Timer)
+	save_particle_emitter_data()
+
+/*
+	@comment "Access14 = x"
+		Ptr14 = Temp1 + 6
+		@comment "ずれセット"
+		v[Ptr14] .add v[53], 2
+		Ptr15 = Temp1 + 6
+		@comment "ずれセット"
+		ptr_particle_picID %= v[2215]
+		v[Ptr15].copyTo TT1, 2
+		v[Ptr15].copyTo TT11, 2
+		TT3 = MousePtr_x - TT1
+		TT4 = MousePtr_y - TT2
+		TT6 = atan2(TT4, TT3, 1000)
+		TT6 += 90000
+		v[343..344] /= 10
+		@if `TT3 != 0 || TT4 != 0 {
+			@loop 10 {
+				ptr_particle_picID += 1
+					TT5 = ptr_particle_picID + v[1200]
+					TT11 .add TT3, 2
+					@pic[TT5].show {
+						"effects\particles"
+							.pos TT11, TT12 .center
+							.scrollWithMap
+							.chromakey 1
+							.scale 100
+							.trans 0
+							.rgbs 140, 25, 25, 100
+							.angle TT6, 1000
+							.grid 12, 12 .cell 3
+							.mapLayer 10
+							.affectedByShake
+					}
+				@pic[TT5].move {
+					.pos TT11, TT12 .center
+						.scale 100
+						.trans 100
+						.time -2
+						.rgbs 140, 25, 25, 100
+						.angle TT6, 1000
+				}
+
+			}
+
+
+		}
+	ptr_particle_picID += 1
+		@comment "Delete Emitter"
+		Ptr15 = Temp1 + 49
+		v[Ptr15] = 0
+*/
+}

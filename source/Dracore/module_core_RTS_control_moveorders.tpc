@@ -573,7 +573,6 @@ __fn func_control_moveorder_mil {
 
 	eval_js(JSCMD_INITPATH)
 
-
 		s[163].off
 		@if v[943] >= 1 {
 			s[112].on
@@ -844,6 +843,42 @@ __fn func_control_moveorder_mil {
 														.affectedByFlash
 														.affectedByShake
 												}
+
+												// draw a particle line from formation center to pointer
+												regiter_particle({
+													val_asg(emitter_ParticleType,N1)
+													val_const(emitter_ParticleAmount,10)
+													val_const(emitter_CallPartFunc,168) // cev 168
+													val_const(emitter_R,140)
+													val_const(emitter_G,25)
+													val_const(emitter_B,25)
+													val_const(emitter_Saturation,100)
+
+													// let emitter get target pos from ptr
+													emitter_particlebits |= particlebits_FLAG_ref_targ_relpos
+													val_const(emitter_targRelX,__id(MousePtr_x))
+
+													v[391].copy emitter_RelativeX,2 // where to x
+													val_asg(emitter_Timer,N4)
+												})
+
+												// draw a particle line from formation median center to pointer
+												get_agentslist_median_pos_rel_to_reg1_reg2(Adr_PlayerSelectList_Head,v[99])
+												regiter_particle({
+													val_asg(emitter_ParticleType,N1)
+													reg1.copy emitter_RelativeX,2 // start from median pos of current selecting units
+													v[391].copy emitter_targRelX,2 // where to x
+													val_const(emitter_ParticleAmount,5)
+													val_const(emitter_CallPartFunc,168) // cev 168
+
+													val_const(emitter_R,25)
+													val_const(emitter_G,25)
+													val_const(emitter_B,140)
+													val_const(emitter_Saturation,100)
+													// let emitter get target pos from ptr
+
+													val_asg(emitter_Timer,N4)
+												})
 
 											} .else bl {
 												@pic[999].show {

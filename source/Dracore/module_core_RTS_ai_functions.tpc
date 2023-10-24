@@ -20,3 +20,33 @@ __fn aiList_push $arg {
 	}
 
 }
+
+
+// return to reg1reg2
+__fn get_agentslist_median_pos_rel_to_reg1_reg2 $listhead $listcount {
+	v[ptr_null].copy reg1,2
+	var1 = $listhead
+	val_init(var3) // counter
+	@loop $listcount {
+		var2 = v[var1] * 300
+		val_add(var2,N4701)
+		v[var2].copy agent_AgentType,300
+		@if agent_AgentType > 0 {
+			@if agent_Morale < 3 {
+				reg1.add agent_RelativeX,2
+				increment_var(var3)
+			}
+		}
+		
+		increment_var(var1)
+	}
+
+	@if var3 != 0 {
+		var3.copy var4,1
+		reg1.div var3,2
+	}
+	
+}
+
+
+

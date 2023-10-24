@@ -2,7 +2,7 @@
 //9.3.23
 //cev 42
 
-def ranged_base_hit = 25//38 
+def ranged_base_hit = 25 //38 
 
 __fn macro_extract_units_parameters {
 	//TEMPORARY
@@ -35,6 +35,7 @@ __fn func_bs_melee_hit_check_wo_prep {
 	    s[164].off
 	    
 	}
+
 	//@comment "HITを取得"
 	val_asg(Temp1,agent_ProcessHIT)
 	//get evasion
@@ -45,7 +46,7 @@ __fn func_bs_melee_hit_check_wo_prep {
 	//@comment "＃＃＃＃＃＃＃＃＃＃Elevation Bonus＃＃＃＃＃＃＃＃＃＃"
 	Temp20 = agent_getTerrainElevation - victim_getTerrainElevation
 	//@comment "＃＃＃＃＃＃＃＃＃＃BackAttack Bonus＃＃＃＃＃＃＃＃＃＃"
-	Temp1 += s[164] == 1 ? 15 : 0 //
+	Temp1 += agent_Direction == victim_Direction ? 15 : 0 //
 	// Temp1 += s[164] << 4 //  16
 	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per...10% min5% max95%＃＃＃＃＃＃＃＃＃＃"
 	Temp1 += 10 - reg1 + 5 * Temp20

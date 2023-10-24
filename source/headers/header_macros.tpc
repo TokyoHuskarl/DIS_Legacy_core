@@ -101,6 +101,10 @@ __fn val_mod $v1 $v2 {
 	v[__id($v1)].mod v[__id($v2)],1
 }
 
+__fn val_or $v1 $v2 {
+	v[__id($v1)].or v[__id($v2)],1
+}
+
 __fn val_shl $v1 $v2 {
 	v[__id($v1)].shl v[__id($v2)],1
 }

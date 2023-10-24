@@ -51,7 +51,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 					// defv CohortArrayPtr = __id(Temp10) -> header
 					CohortArrayPtr = v[4530] 
 					CohortArrayPtr += TT20 * 20
-					Ptr2=CohortArrayPtr+1
+					Ptr2 = CohortArrayPtr + 1
 					v[Ptr2].copy cohort_LeaderID,20//extract cohort data into v[581]~
 
 					Temp13 = CohortArrayPtr + 7
@@ -68,7 +68,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 						}
 							Temp1 = v[v[202]] * 300 
 							Temp1 += v[1005] - 300
-							Ptr1 = Temp1+1
+							Ptr1 = Temp1 + 1
 							v[Ptr1].copy agent_ObjectType, 300 //extract data
 							//@comment "Have max hp?"
 							@if agent_TeamID == 0 {
