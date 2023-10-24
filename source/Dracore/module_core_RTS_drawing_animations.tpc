@@ -127,3 +127,71 @@ __fn animation_spear_attack {
 
 }
 
+
+__fn spriteset_bladedance {
+	v[4134] = 3
+	v[4144] = -900000 * (1 - 2 * v[325])
+	v[4154] = 10000
+	v[4054] += 5
+	v[4044] -= v[325]
+
+}
+
+__fn animation_sword_attack {
+	@if `agent_AddMotionBits & 8 {
+			v[4134] = 3
+			v[4144] = max(900000 / agent_AAMotion * (agent_AAMotion - agent_AttackFrame), 0) * (1 - 2 * v[325])
+			v[4154] = 10000
+			v[4044] -= v[325]
+
+	}.else bl {
+		@if agent_AttackFrame == 0 {
+				TT1 = 1 - 2 * v[325]
+				v[4044].add TT1,1
+				var1.repeat  TT1,9
+				//Horse back
+				@if `(agent_ExMotionFlags & 16777216) {
+					v[4041].add var1,4 // v[4041..4044] += TT1
+				}.else bl {
+					v[4111].repeat 4,10 // v[4111..4120] = 4
+					v[4041].add var1,9 // v[4041..4049] += TT1
+
+					@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_bladedance {
+						spriteset_bladedance()
+						v[4044].add TT1,1
+
+					}
+
+				}
+
+		}
+	}
+}
+
+__fn animation_throwing_attack {
+		TT1 = 1 - 2 * v[325]
+		@if agent_AttackFrame <= 0 {
+			v[4134] = 3
+			v[4144] = 250000 * TT1
+			v[4154] = 10000
+			v[4044].add TT1,1
+			v[4111..4120] = 4
+			@if `agent_ExMotionFlags & 16777216 {
+			}.else bl {
+				v[4044].add TT1,1
+				val_mul(TT1,N2)
+				v[4041..4049] += TT1
+				
+			}
+		}.elif agent_AttackFrame >= agent_AAMotion {
+			@if `agent_ExMotionFlags & 16777216 {
+				v[4041..4044] -= TT1
+			}.else bl {
+				val_mul(TT1,N2)
+				v[4041..4049] -= TT1
+				
+			}
+			
+		}
+}
+

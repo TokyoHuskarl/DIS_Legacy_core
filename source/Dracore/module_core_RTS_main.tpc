@@ -714,9 +714,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	@comment "module_core_RTS_main.tpc"
 		// "STATIC"
 		// This process needs complete refactoring.
-		v[536] = v[4533]
+		val_asg(v[536],v[4533]) // v[536] = v[4533]
 		@while v[v[536]] != 0 {
-			v[401] = v[v[536]] - 1
+				v[401] = v[v[536]] - 1
 				Temp1 = v[401] * v[1117] 
 				val_add(Temp1,N5000) // Temp1 += 5000
 				func_main_extract_agent_vars()
@@ -760,7 +760,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							@if v[v[628]] > 0 {
 								// "まだAAできない"
 								@if v[v[843]] != 1 {
-									v[719] = Temp1 + 119
+										v[719] = Temp1 + 119
 										v[v[628]] -= v[v[719]]
 
 								}
@@ -778,10 +778,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					//v[770] = Temp1 + 170
 					@if v[770] >= 1 {
 						// "MP(生産力)をためようね"
-						TT1 = Temp1 + 108
-							//v[707] = Temp1 + 107
-							//v[740] = Temp1 + 140
-							//v[700] = v[Temp1 + 100]
+							TT1 = Temp1 + 108
 							@if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
 								//TT2 = v[2409 + v[251] % 3]
 
@@ -809,7 +806,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 											@call .cev 46 //spawn ev
 											Temp1 = v[401] * 300 
 											Temp1 += 5000
-											func_main_extract_agent_vars()//extract STATIC datas again
+											func_main_extract_agent_vars() //extract STATIC datas again
 											defv Spawned_Agent_Id_Shift = __id(Temp2) 
 											Spawned_Agent_Id_Shift = reg1 * 300 //use Temp2 as 
 											@if v[822] != 3 {
@@ -825,13 +822,14 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 													@if v[618] >= 1 {
 														// "Worker"
 														@if `v[Spawned_Agent_Id_Shift + 4802] == 9 {
-															v[371] |= 1//IT'S WORKER! - flag switch on
-																v[Spawned_Agent_Id_Shift + 4718] = v[618]
+																v[371] |= 1//IT'S WORKER! - flag switch on
+																v[Spawned_Agent_Id_Shift + 4718] = agent_static_WorkTarget
 																v[Spawned_Agent_Id_Shift + 4942] = 1
 																v[Spawned_Agent_Id_Shift + 4941] = v[Spawned_Agent_Id_Shift + 4941] != 4 ? 2 : 4
 														}.else bl{
 															//Combat troops - check if the reserved target is enemy
 															v[Spawned_Agent_Id_Shift + 4718] =(v[Spawned_Agent_Id_Shift + 4800]%3)==(v[v[618] * 300 +4800]%3) ?0:v[618]
+
 														}
 
 													}
@@ -848,7 +846,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 														v[Spawned_Agent_Id_Shift + 4942] = 2
 
 												} .else bl {
-													v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
+														v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
 														// "指定されてる"
 														v[641].copy v[TT1], 2
 
@@ -955,7 +953,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							// "init farm owner"
 							v[Temp1 + 255] = 0
 							// "#Flammable"
-							@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//s[v[401] + 501] {
+							@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 								@if `!(agent_AgentBits & 2048) {
 									// "#Hp 66%"
 									@if `divmul(v[Temp1 + 105], 100, 66) > v[Temp1 + 106] {
@@ -1000,9 +998,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 								 Get18 = 目標ObjID"*/
 							Temp4 = v[Temp1 + 18] * 300 + 4701
 								@if v[Temp4] >= 1 {
-									// "#指定Objが存在する"
-									Temp4 += 6
+										// "#指定Objが存在する"
+										Temp4 += 6
 										v[Temp4].copy v[v[619]], 2
+										
 										// "#攻撃"
 										@if v[370] >= 2 {
 											// "目標地点にカメラのずれを加算"

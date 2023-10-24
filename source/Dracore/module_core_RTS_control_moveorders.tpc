@@ -313,6 +313,16 @@ __fn func_control_moveorder_civ {
 						@comment "配列ゲット"
 							Temp1 = v[v[202]] * 300
 							Temp1 += 4700
+
+							v[Temp1].copy Address_agent_array_head,300
+							// town center or something
+							@if agent_AgentType == 11 {
+								agent_static_WorkTarget = v[100]
+								
+								Temp2 = Temp1 + 1
+								v[Temp2].copyFrom agent_AgentType,300
+							}
+
 							Ptr20 = Temp1 + 242
 							Ptr19 = Temp1 + 19
 							Ptr18 = Temp1 + 20
@@ -325,6 +335,7 @@ __fn func_control_moveorder_civ {
 							@comment "#######"
 							@comment "処理開始"
 							v[Ptr16] = v[Ptr16] != 4 ? 2 : 4
+
 							@if v[275] >= 1 {
 								Ptr13 = 273
 									Ptr13 -= v[275] * 2
@@ -355,8 +366,10 @@ __fn func_control_moveorder_civ {
 									v[Temp1 + 34] |= AI_routine_bits_FLAG_RayCast // set raycast anyway
 
 							}
-						@comment "#Set Target"
+
+							@comment "#Set Target"
 							v[Ptr17] = v[100]
+
 							@comment "#assign job free"
 							Ptr13 = Temp1 + 247
 							@comment "#If basement selected"

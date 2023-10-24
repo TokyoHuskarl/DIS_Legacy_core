@@ -12,8 +12,8 @@ cev .id(801), .name("cev801"), {
 		var2 = 50
 		var3 = 800
 		v[31..34] = 0
-		v[32] = 150
-		v[33] = 200
+		v[32] = 250
+		v[33] = 150
 		v[91] = 0
 		@if s[151] .isOff() {
 			@if v[204] < v[1004] {
@@ -106,6 +106,31 @@ cev .id(801), .name("cev801"), {
 									v[719] = 150
 									@comment "#AttackMotion"
 									v[720] = 1
+
+									@if s[1] .isOff() {
+										v[702] = 106
+											@comment "#AAType"
+											v[703] = 2
+											@comment "#Range Melee"
+											v[717] = 225000
+											@comment "#Range Ranged"
+											v[718] = 0
+											@comment "#AttackSpeed"
+											v[736] = -45
+											v[737] = 40
+											@comment "#Attacktime"
+											v[728] = 14
+											v[719] = 95
+											@comment "#HIT"
+											v[713] = 64
+											@comment "#Mpen"
+											v[714] = 2
+											@comment "#AD"
+											v[709] = 85
+
+									}
+
+
 									@comment "#Watch"
 									v[756] = 10248
 									v[757] = 0

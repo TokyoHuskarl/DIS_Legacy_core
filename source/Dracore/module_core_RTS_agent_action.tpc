@@ -198,17 +198,22 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 				v[Ptr1].copy agent_ObjectType, 300
 				@if agent_ActionTimer == 1 {
 						val_sub(v[210],N1) // v[210] -= 1
-						//agent_ActionState = v[210] + 243
-						//@comment "Auto Attack"
+						// @comment "Auto Attack"
 						@if agent_ActionState == 1 {
-								//@comment "Set Timer"
+								// @comment "Set Timer"
 								val_const(agent_ActionTimer,3) // agent_ActionTimer = 3
-								//@comment "Auto Attack"
-								//v[703] = v[210] + 103
+								// @comment "Auto Attack"
 								agent_ObjectType.copy v[Ptr1], 300
+
 								Ptr20 = v[210] + 18
-								v[340] = 34 + v[703]
-								@call .cev v[340]
+								victim_AgentType = v[Ptr20] * 300
+								val_add(victim_AgentType,N4701)
+								v[victim_AgentType].copy victim_AgentType, 100
+								@if agent_TeamID != victim_TeamID {
+									v[340] = 34 + v[703]
+									@call .cev v[340]
+
+								}
 
 						}
 

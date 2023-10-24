@@ -518,12 +518,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															}
 															@if `!(agent_ExMotionFlags & ExMotionFlags_FLAG_have_fundamental_movemotion) {
 																	@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_bladedance {
-																			v[4134] = 3
-																			v[4144] = -900000 * (1 - 2 * v[325])
-																			v[4154] = 10000
-																			v[4054] += 5
-																			v[4044] -= v[325]
-																			
+																			spriteset_bladedance()
+																		
 																	} .else bl {
 																			@if agent_MeleeFightTimer >= 1 {
 																					agent_AASfx = agent_AASfx % 10000
@@ -551,10 +547,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 										agent_AASfx = agent_AASfx % 10000
 										@if agent_ForceSprite < 100 {
 												@if agent_AASfx == 90 {
-														@if agent_AttackFrame <= 0 {
-																v[4041..4050] += 1 - 2 * v[325]
-																
-														}
+														animation_throwing_attack()
 														
 												} .else bl {
 														@if agent_AASfx == 91 {
@@ -638,20 +631,10 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																										
 																								} .else bl {
 																										@if agent_AASfx == 1 {//
-																												@if `agent_AddMotionBits & 8 {
-																														v[4134] = 3
-																														v[4144] = max(900000 / agent_AAMotion * (agent_AAMotion - agent_AttackFrame), 0) * (1 - 2 * v[325])
-																														v[4154] = 10000
-																														v[4044] -= v[325]
-																														
-																												}
+																											animation_sword_attack()
+
 																												
-																										} .elif agent_AASfx == 8 {//throwing items
-							@if agent_AttackFrame == 0 {
-								v[4044] += 1 - 2 * v[325]
-										v[4111..4120] = 4
-								}
-								}
+																										}
 																										
 																								}
 																								
