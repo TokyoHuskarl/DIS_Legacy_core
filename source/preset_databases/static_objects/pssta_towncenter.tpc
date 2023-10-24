@@ -66,6 +66,11 @@ cev .id(801), .name("cev801"), {
 									@if v[822] == 8 {
 										v[707] = muldiv(v[707], 95, 100)
 
+											@comment "##TimerPassive"
+											v[823] = 1
+											@comment "###Rallying Effect"
+											v[739] = 250
+											v[824] = 1296
 									}
 								@if s[316] .isOn() {
 									v[707..707] = 1
