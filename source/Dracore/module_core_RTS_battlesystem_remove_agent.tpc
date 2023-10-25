@@ -251,7 +251,7 @@ __fn Kill_Agent {
 
 								v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
 								@if victim_UnitType == UNIT_CLASS_SIEGE {
-									v[472] = divmul(80, 100, v[2216])
+									v[472] = divmul(90, 100, v[2216])
 									v[473] = rnd(85, 95)
 									@cmd 11550, "troops/killed_siegeunit", .args v[472], 3
 
