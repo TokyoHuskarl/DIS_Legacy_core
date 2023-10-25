@@ -365,10 +365,13 @@ __fn func_effect_arrow_hit $WeaponType {
 			@if reg2 == 1 {
 			    // "Shield Blocked!"
 			    // "#########################"
-			    v[472] = divmul(60, 100, v[2216])
-			    v[473] = rnd(115, 120)
+			    v[472] = divmul(65, 100, v[2216])
+			    v[473] = rnd(100, 115)
 			    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-			    @cmd 11550, "weapons/heavy_hit_2", .args v[472], 3
+					str1.asg "weapons/shield_hit_arrow_"
+					TT1 = rnd(1,2)
+					str1.cat TT1
+			    @cmd 11550, str1, .args v[472], 3
 			    // "#########################"
 
 			    @if s[307] .isOff() {

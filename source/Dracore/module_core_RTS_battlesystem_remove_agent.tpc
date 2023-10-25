@@ -2,6 +2,10 @@
 
 #include "./../headers/header_drawing.tpc"
 
+defv death_terraintype = 376
+def {
+	DT_on_water = 1
+}
 
 def macro_extract_victim_data_Ptr11 = {
 	Ptr11 = Kill_pointer + 4701
@@ -157,12 +161,16 @@ __fn Kill_Agent {
 					v[4001].copy v[v[4005]], 4
 					// "Transparency"
 					v[Kill_pointer + 4998] = 0
+
+					// check terrain type on death
+					val_init(death_terraintype)
 					Temp5.copy var1, 2
 					var2 += 14
 					@call .cev 2010
 					// "#WATER"
 					@if `v[v[4505] + reg3] & 1 {
 						v[Kill_pointer + 4998] = 35
+						val_asg(death_terraintype,N1)
 				
 					}
 					// "#Forest"
@@ -207,9 +215,7 @@ __fn Kill_Agent {
 						// "################"
 						@if s[220] .isOn() {
 								// "#########################"
-								v[472] = divmul(80, 100, v[2216])
-								v[473] = rnd(85, 95)
-								v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
+
 								// "#########################"
 								// "If victim has big flag"
 								@if `victim_ProcessObjBit & 524288 {
@@ -243,24 +249,69 @@ __fn Kill_Agent {
 									}
 								}
 
-								@cmd 11550, "Falldown", .args v[472], 3
+								v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
+								@if victim_UnitType == UNIT_CLASS_SIEGE {
+									v[472] = divmul(80, 100, v[2216])
+									v[473] = rnd(85, 95)
+									@cmd 11550, "troops/killed_siegeunit", .args v[472], 3
+
+								}.else bl{ // regular troops
+
+									@if v[190] != 4 { // if killed by fire, do not play fall down sound
+										@if death_terraintype == 0 {
+											v[472] = divmul(80, 100, v[2216])
+											v[473] = rnd(85, 95)
+											inputstr.asg "troops/killed_common_"
+											TT1 = rnd(1,1)
+											inputstr.cat TT1
+											@cmd 11550, inputstr, .args v[472], 3
+
+										}.elif death_terraintype == DT_on_water {
+											inputstr.asg "troops/killed_water_"
+											TT1 = rnd(1,3)
+											inputstr.cat TT1
+											v[472] = divmul(85, 100, v[2216])
+											v[473] = rnd(85, 95)
+											@cmd 11550, inputstr, .args v[472], 3
+											// set bubble particle
+											regiter_particle({
+													val_asg(emitter_ParticleType,N1)
+													val_const(emitter_CallPartFunc,133) // cev 168
+													victim_RelativeX.copy emitter_RelativeX,2 // where to x
+													val_asg(emitter_Timer,N4)
+
+												})
+
+
+										}
+									}
+
+								}
 								@if v[372] == 0 {
 									// "Get Race"
 									@loop 1 {
 											// "#Human"
 											v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
 											@if victim_Race == 0 {
-												@if `victim_MoveTypeBIts & 2 { // horseman - but hey what about camel troops in future
+												@if `victim_MoveTypeBIts & 2 { // horseman
+													@if `agent_AABits & AABits_FLAG_Camel {
+														v[329] = rnd(1, 3)
+														// "#########################"
+														v[472] = divmul(75, 100, v[2216])
+														v[473] = rnd(90, 115)
+														inputstr .asg "animals\camel_death"
+														inputstr .cat v[329]
+
+													}.else bl {
 														v[329] = rnd(1, 1)
 														// "#########################"
 														v[472] = divmul(75, 100, v[2216])
 														v[473] = rnd(75, 115)
-														inputstr .asg "vo\horse_death"
+														inputstr .asg "animals\horse_death"
 														inputstr .cat v[329]
-														TT1 = 510
-														// "Strings = t[TT1]"
-														@cmd 11550, t[TT1], .args v[472], 3
-														// "#########################"
+													}
+													// call sound cmd
+													@cmd 11550, inputstr, .args v[472], 3
 														
 												} .else bl {
 														TT1 -= 1

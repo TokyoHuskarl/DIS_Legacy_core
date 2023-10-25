@@ -267,7 +267,7 @@ __fn agent_autoattack_melee {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(50, 110)
-										@cmd 11550, "重いパンチ2", .args v[472], 3
+										@cmd 11550, "weapons/heavy_hit_2", .args v[472], 3
 										// "#########################"
 										@break
 										
@@ -277,8 +277,7 @@ __fn agent_autoattack_melee {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(80, 120)
-										// "need moar metalic features within the sound"
-										@cmd 11550, "weapons\sword_slash_body_nenetei", .args v[472], 3
+										@cmd 11550, "weapons\sword_slash_body_metal", .args v[472], 3
 										// "#########################"
 										@break
 										
@@ -287,8 +286,8 @@ __fn agent_autoattack_melee {
 								@if TT1 == 2 {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
-										v[473] = rnd(50, 75)
-										@cmd 11550, "重いパンチ2", .args v[472], 3
+										v[473] = rnd(90, 100)
+										@cmd 11550, "weapons/heavy_slash_body_metal", .args v[472], 3
 										// "#########################"
 										@break
 										
@@ -298,7 +297,7 @@ __fn agent_autoattack_melee {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(83, 110)
-										@cmd 11550, "weapons\Spear_stab_body_nenetei", .args v[472], 3
+										@cmd 11550, "weapons\spear_stab_body_metal", .args v[472], 3
 										// "#########################"
 										@break
 										
@@ -307,8 +306,8 @@ __fn agent_autoattack_melee {
 								@if TT1 == 4 {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
-										v[473] = rnd(72, 82)
-										@cmd 11550, "weapons\pike_stab_1", .args v[472], 3
+										v[473] = rnd(85, 100)
+										@cmd 11550, "weapons\pike_stab_body_metal", .args v[472], 3
 										// "#########################"
 										@break
 										
@@ -353,7 +352,7 @@ __fn agent_autoattack_melee {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(115, 170)
-										@cmd 11550, "重いパンチ2", .args v[472], 3
+										@cmd 11550, "weapons/heavy_hit_2", .args v[472], 3
 										// "#########################"
 										@break
 										
@@ -554,10 +553,10 @@ __fn agent_autoattack_melee {
 							@if reg3 == 0 {
 									@if v[182] <= 2 {
 								// "#########################"
-								v[472] = divmul(60, 100, v[2216])
-								v[473] = rnd(115, 120)
+								v[472] = divmul(53, 100, v[2216])
+								v[473] = rnd(85, 120)
 								v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
-								@cmd 11550, "weapons/shield_hit", .args v[472], 3
+								@cmd 11550, "weapons/shield_hit", .args v[472], 3 // kari
 								// "#########################"
 								
 									}
