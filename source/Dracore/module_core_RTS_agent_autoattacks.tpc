@@ -63,10 +63,10 @@ __fn agent_autoattack_melee {
 			v[Ptr11].copy victim_AgentType, agent_Basic_Array_size // copy victim data to victim buffer
 
 
-			s[167].off
+			BOOL_Is_target_static.off
 
 			@if victim_AgentType == 11 { // the enemy is STATIC Type
-				s[167].on
+				BOOL_Is_target_static.on
 		
 			}
 			
@@ -151,7 +151,7 @@ __fn agent_autoattack_melee {
 			}
 			
 			// hit check
-			@if s[167] .isOff() {
+			@if BOOL_Is_target_static .isOff() {
 				func_bs_melee_hit_check_wo_prep() // use already extracted datas to calculation
 			} .else bl {
 				reg1 = 1 //if target is STATIC, won't miss
@@ -160,7 +160,7 @@ __fn agent_autoattack_melee {
 			// At least in Melee AA, agent parameters remain via hitcheck
 			@if reg1 == 1 {
 				// "Hit!"
-				@if s[167] .isOff() { // to Movable Agents
+				@if BOOL_Is_target_static .isOff() { // to Movable Agents
 
 						// "#SP damage#A hit causes 4 SP loss"
 						victim_SP = max(victim_SP - 4, 0)
@@ -171,7 +171,7 @@ __fn agent_autoattack_melee {
 						// "#Crit率ゲット+least_crit_melee-CritReduction"
 						TT2 = least_crit_melee
 						TT2 += agent_ProcessCrit - victim_CritChanceReduction
-						TT1 = rnd(0, 99)
+						TT1 = rnd(1, 100)
 						// "#CritDamageReduction#(450-[Reduction])%"
 						TT3 = 450 - victim_CritDamageReduction
 						// "#[Crit]%でフラグ"
@@ -517,7 +517,7 @@ __fn agent_autoattack_melee {
 				AtkerSave 
 
 				// "#SP damage#Evading costs 2 SP"
-				victim_SP -= 2
+				val_sub(victim_SP,N2) // victim_SP -= 2
 				victim_SP = max(victim_SP, 0)
 
 				// set relX to effect var
@@ -527,17 +527,7 @@ __fn agent_autoattack_melee {
 						// "Shield Cracking"
 						reg3 = 0
 						@if `agent_AABits & AABits_FLAG_CrackingShield {
-							// "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"
-							@if `victim_PerkFlagBits1 & 1 {
-									TT1 = muldiv(victim_ShieldBreakResistance, 130, 100)
-									
-							}
-							// "＃＃＃＃＃＃＃＃＃＃Chance Roll＃＃＃＃＃＃＃＃＃＃"
-							reg1 = agent_ProcessAD / 3
-							reg1 *= agent_AABits & AABits_FLAG_CrackingShieldBONUS ? 2 : 1
-							
-							// "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"
-							TT3 = rnd(0, reg1)
+							bs_shield_crack_check()
 							@if TT3 >= TT1 {
 									reg3 = 1
 									// "#バフ番号指定"
@@ -996,9 +986,9 @@ cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
 			v[Temp12].copy Temp12, 2
 			// "#当たり判定チェック"
 			@if `between(v[607], Temp10 - Temp12, Temp10 + Temp12) && between(v[608], Temp11 - Temp13, Temp11 + Temp13) {
-		s[167].off
+		BOOL_Is_target_static.off
 		@if `v[Ptr10 + 4701] == UNIT_CLASS_STATIC {
-				s[167].on
+				BOOL_Is_target_static.on
 				
 		}
 		v[Ptr10 + 4780] = v[1240] * v[4571]
@@ -1006,7 +996,7 @@ cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
 		Temp20 = v[Ptr9 + 4757] - v[Ptr18 + 56]
 		var1 = Ptr19
 		// "Get Dir"
-		@if s[167] .isOff() {
+		@if BOOL_Is_target_static .isOff() {
 				//9.3.23
 				var3 = v[Temp1 + 36]
 				//@call .cev 43
@@ -1021,7 +1011,7 @@ cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
 				// "Hit!"
 				// "#CheckCrit"
 				// "Var1 = Obj 1~V[421] = ダメージ倍率"
-				@if s[167] .isOff() {
+				@if BOOL_Is_target_static .isOff() {
 			var1 = Ptr19
 			var5 = Ptr10 + 4700
 			// "#Crit率ゲット"

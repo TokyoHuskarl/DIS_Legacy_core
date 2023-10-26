@@ -195,3 +195,12 @@ __fn animation_throwing_attack {
 		}
 }
 
+__fn animation_nonlayered_common_attack_melee {
+	@if agent_AttackFrame == 0 {
+		TT1 = 1 - 2 * v[325]
+		TT1 *= agent_Width >= 16 ? 3 : 2 // big
+		v[4047].add TT1,1
+
+	}
+}
+

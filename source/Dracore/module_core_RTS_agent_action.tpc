@@ -209,6 +209,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 								victim_AgentType = v[Ptr20] * 300
 								val_add(victim_AgentType,N4701)
 								v[victim_AgentType].copy victim_AgentType, 100
+								// only when it's enemy - temporary, maybe this should be changed later
 								@if agent_TeamID != victim_TeamID {
 									v[340] = 34 + v[703]
 									@call .cev v[340]

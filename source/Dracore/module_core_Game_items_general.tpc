@@ -244,9 +244,9 @@ cev .id(1923), .name("!Set Equipment into Unit Stat") , {
 
 	    @comment "#Is_cover_head"
 	    @if `(v[1921] & 1) > 0 {
-		@comment "#NOT Dragons"
-		v[887] = v[664] != 3 ? 999999 + v[663] * 1000000 + v[664] * 10000000 : v[887]
-		s[155].on
+				@comment "#NOT Dragons"
+					v[887] = v[664] != 3 ? 999999 + v[663] * 1000000 + v[664] * 10000000 : v[887]
+					s[155].on
 		
 	    }
 	    

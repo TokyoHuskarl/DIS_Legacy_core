@@ -265,7 +265,10 @@ __fn agent_ref_stats(){
 											//single shield wall give you 33% bonus so you have 133% base 
 											//And team shield wall will additinally give unit ([Current EVA]*8%) 
 											//so bacially mass weaker shield wall gives you 141% boost at least  - Eva effect is bit stronger than before1.162.
-											v[871] /= 2
+
+												agent_ProcessAS >>= 2 // /= 4
+												agent_ProcessAS *= agent_AABits & AABits_FLAG_AntiCav ? 3 : 2 // if agent's weapon is spear -25%. otherwise -50%
+
 												agent_ProcessMS = muldiv(agent_ProcessMS, 8, 10)
 												//@comment "#Force Spr"
 												v[850] = 2
@@ -288,7 +291,9 @@ __fn agent_ref_stats(){
 											//then team shield wall gives you ([Current EVA]*12%)
 											//so basically mass shield wall gives you 148% base - it seems bit weaker than before 1.162 - but still you have +3 assured eva bonus + anti ranged bonus.
 
-											  v[871] /= 2
+												agent_ProcessAS >>= 2 // /= 4
+												agent_ProcessAS *= agent_AABits & AABits_FLAG_AntiCav ? 3 : 2 // if agent's weapon is spear -25%. otherwise -50%
+
 												agent_ProcessMS = muldiv(agent_ProcessMS, 8, 10)
 												agent_ProcessObjBit |= 8192
 												//@comment "#Force Spr"

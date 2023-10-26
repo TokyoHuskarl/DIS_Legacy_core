@@ -342,9 +342,9 @@ __fn ColCheck {
 				v[536].deref TT2,1 // TT2 = v[v[536]]
 
 				//GET Colbox XY
-				__if DIS_EXPERIMENTAL == -1 {
+				__if DIS_EXPERIMENTAL == 1 {
 					//get from AEAB
-					get_AEAB_array(TT2,__id(v[337]),AgentExBuffer_SLOT_ColBoxWidth,2)
+					get_AEB_array(TT2,__id(v[337]),AgentExBuffer_SLOT_ColBoxWidth,2)
 				}.else bl {
 					val_asg(v[337],v[4523]) // v[337] = v[4523] 
 					v[337] += v[401] * 2
@@ -440,12 +440,10 @@ __fn macro_ColCheck_distance {
 	victim_RelativeX.sub agent_RelativeX,2
 
 	//get colbox
-	__if DIS_EXPERIMENTAL == -1 { // pixel edit bug
-		//get from AEAB
+	__if DIS_EXPERIMENTAL == 1 { 
+		//get from AEB
 		v[322] = v[v[203]]
-		get_AEAB_array(v[322],__id(v[322]),AgentExBuffer_SLOT_ColBoxWidth,2)
-	}.elif DIS_EXPERIMENTAL == -2 { // use raw hitbox as a collision?
-		victim_Width.copy v[322],2
+		get_AEB_array(v[322],__id(v[322]),AgentExBuffer_SLOT_ColBoxWidth,2)
 	}.else bl {
 		v[322] = Address_Agent_HitCollisionArrayStartMinus2 
 		v[322] += v[v[203]] * 2

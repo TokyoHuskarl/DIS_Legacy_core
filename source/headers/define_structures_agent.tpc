@@ -274,14 +274,14 @@ struct("agent",{
 
 	}
 
-	//Additional Agent Picture Buffer setting - AEBA - pic buffer
+	//Additional Agent Picture Buffer setting - AEB - pic buffer
 	def {
 	//Buffer PicID -> const_picture_ids.tpc
 
-	// AEBA holds agent parameters that are not very frequently changed.
+	// AEB holds agent parameters that are not very frequently changed.
 
 	AgentExtraBuffer_ArraySize = 256 // experimental
-	AgentExtraBuffer_ArrayAmount = Agents_Limit + 1 //AEBA[0] will be used as configuration for the array work
+	AgentExtraBuffer_ArrayAmount = Agents_Limit + 1 //AEB[0] will be used as configuration for the array work
 
 	AgentExBuffer_SLOT_Ptr_To_BasicArray = 0 
 	AgentExBuffer_SLOT_MetaTeam = 1
@@ -625,6 +625,7 @@ struct("agent",{
 	agent_static_Attribution_flag = 811
 	agent_static_Obj_flag = 820
 	agent_static_WorkTarget = 821
+	agent_static_Spritepattern = 850
 
 	}
 

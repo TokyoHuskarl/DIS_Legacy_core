@@ -52,7 +52,7 @@ __fn func_bs_melee_hit_check_wo_prep {
 	Temp1 += 10 - reg1 + 5 * Temp20
 	Temp1 = max(5, min(95, Temp1))
 	//@comment "＃＃＃＃＃＃＃＃＃＃Roll!	＃＃＃＃＃＃＃＃＃＃"
-	Temp3 = rnd(0, 99)
+	Temp3 = rnd(1, 100)
 	reg1 = Temp3 <= Temp1 ? 1 : 0
 	@if reg1 == 0 {
 	    //@comment "＃＃＃＃＃＃＃＃＃＃Check Shield?	＃＃＃＃＃＃＃＃＃＃"
@@ -65,7 +65,7 @@ __fn func_bs_melee_hit_check_wo_prep {
 		    //v[874] = Ptr10 + 4974
 		    @if `victim_ProcessObjBit & 16777216 {
 			@if victim_AAType == 0 { //not ranged type?
-			    reg2 = rnd(0, 99) <= victim_ProcessHIT / (victim_ProcessObjBit & 131072 ? 2 : 3) + 16 ? 2 : 0
+			    reg2 = rnd(1, 100) <= victim_ProcessHIT / (victim_ProcessObjBit & 131072 ? 2 : 3) + 16 ? 2 : 0
 			    
 			}
 			
@@ -136,7 +136,7 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 
 	}
 
-	Temp3 = rnd(0, 99)
+	Temp3 = rnd(1, 100)
 	reg2 = Temp3 >= 100 - Temp2 ? 1 : 0
 	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per... once 38% but now far lower than that"
 	__if $flags & bs_hitcheck_FLAG_ArrowMode {
@@ -180,6 +180,19 @@ __fn func_bs_mind_hit_check $attacker $victim{
 	    
 	}
 	//@comment "＃＃＃＃＃＃＃＃＃＃	Roll!	＃＃＃＃＃＃＃＃＃＃"
-	reg1 = rnd(0, 99) <= Temp1 ? 1 : 0
+	reg1 = rnd(1, 100) <= Temp1 ? 1 : 0
 }
 
+
+
+__fn bs_shield_crack_check {
+	// "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"
+	val_asg(TT1,victim_ShieldBreakResistance) 
+	TT1 += victim_PerkFlagBits1 & 1 ? victim_ShieldBreakResistance >> 2 : 0
+	// "＃＃＃＃＃＃＃＃＃＃Chance Roll＃＃＃＃＃＃＃＃＃＃"
+	reg1 = agent_ProcessAD / 3
+	reg1 *= agent_AABits & AABits_FLAG_CrackingShieldBONUS ? 2 : 1
+
+	// "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"
+	TT3 = rnd(0, reg1)
+}

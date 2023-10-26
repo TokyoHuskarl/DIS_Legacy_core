@@ -1103,8 +1103,8 @@ __fn CEV_MISSION_INIT {
 	str1.cat t[750]
 	log_push(str1)
 
-	// generate Agent Extra Array Buffer as a picture
-	// construct_picture_buffer(PicID_AgentExBuffer,AgentExtraBuffer_ArraySize,AgentExtraBuffer_ArrayAmount) obsolete
+	// generate Agent Extra Buffer as a picture
+	construct_picture_buffer(PicID_AgentExBuffer,AgentExtraBuffer_ArraySize,AgentExtraBuffer_ArrayAmount)
 	
 }
 

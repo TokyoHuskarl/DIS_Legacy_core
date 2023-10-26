@@ -492,7 +492,6 @@ __fn dmg_popup {
 		@if v[183] < v[4572] {
 			// "Set Hit Timer"
 			val_const(victim_HitMoveTimer,6) // victim_HitMoveTimer = 6
-			v[220] = (v[220] + 1)
 			v[220] %= 30
 			v[223] = v[220] + 1202
 			v[221] += rnd(-6, 6)
@@ -781,5 +780,5 @@ __fn dmg_popup {
 		}
 		
 	}
-				
+	v[220] += 1
 }

@@ -8,11 +8,16 @@ defv{
 	
 
 }
+
+defs {
+	BOOL_Is_target_static = 167
+}
+
 def {
-	WeaponType_Melee=0
-	WeaponType_Arrow=1
-	WeaponType_Bolt=2
-	WeaponType_Javelin=3
+	WeaponType_Melee = 0
+	WeaponType_Arrow = 1
+	WeaponType_Bolt = 2
+	WeaponType_Javelin = 3
 }
 
 
@@ -21,17 +26,3 @@ __fn copyback_victim_data $vptr {
 	victim_AgentType.copy v[$vptr], agent_Basic_Array_size
 }
 
-// @param {var} $baseprocEVA
-// @param {var} $baseperkfl1
-// @param {var} $baseMS
-// @return {var} reg1
-__fn get_base_rangedEVA $baseprocEVA $baseperkfl1 $baseMS {
-	val_asg(reg1,$baseprocEVA) // reg1 = victim_ProcessEVA
-	//@comment "#DodgeMS*12%"
-	reg1 +=  $baseperkfl1 & 32 ? $baseMS >> 3 : 0 // muldiv(victim_ProcessMS, 12, 100)
-	reg1 = max(reg1,0)
-	reg1 >>= 2 // /= 4
-	// @comment "##########Perk##########"
-	// @comment "Anticipation"
-	reg1 += $baseperkfl1 & 64 ? 18 + reg1 : 0
-}

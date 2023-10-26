@@ -1,10 +1,10 @@
 
 
 //#####################
-// Agent Extra Array Buffer(AEAB) funcs
+// Agent Extra Buffer(AEB) funcs
 //#####################
 
-// AEAB simply just holds agent's additional parameters that are not very frequently called
+// AEB simply just holds agent's additional parameters that are not very frequently called
 // maybe making it have complicated function is not good for any term I suppose
 
 // generation function -> @Mission Init in module_core_RTS_mission_general.tpc
@@ -14,7 +14,7 @@
 
 
 // 8.8.2023
-// The fact that kern commands of the AEAB system have fatal bug in the processes where a MP user cannot touch nor deal with, so all AEAB system is gonna be abandoned.
+// The fact that kern commands of the AEB system have fatal bug in the processes where a MP user cannot touch nor deal with, so all AEAB system is gonna be abandoned.
 
 def AEAB_abandon = {
 	__if DIS_EXPERIMENTAL != -1 {
@@ -22,41 +22,31 @@ def AEAB_abandon = {
 	}
 
 }
-
-/*
-__fn set_AEAB_element $agentid $setadd $slot {
-	AEAB_abandon
+__fn set_AEB_element $agentid $setadd $slot {
 	set_picture_pixel($setadd,PicID_AgentExBuffer,$slot,$agentid)
 }
 
-// set_AEAB_array(int agentid, *var setadd, int startslot, int range)
-__fn set_AEAB_array $agentid $setadd $startslot $range {
-	AEAB_abandon
+// set_AEB_array(int agentid, *var setadd, int startslot, int range)
+__fn set_AEB_array $agentid $setadd $startslot $range {
 	set_picture_horizontal_line($setadd,PicID_AgentExBuffer,$startslot,$agentid,$range)
 }
 
-__fn get_AEAB_element $agentid $getadd $slot {
-	AEAB_abandon
+__fn get_AEB_element $agentid $getadd $slot {
 	get_picture_pixel($getadd,PicID_AgentExBuffer,$slot,$agentid)
 }
 
-__fn get_AEAB_element_wo_ptr $agentid $getadd $slot {
-	AEAB_abandon
+__fn get_AEB_element_wo_ptr $agentid $getadd $slot {
 	@pic.getInfo[PicID_AgentExBuffer] .pixel($slot, $agentid, 1, 1) .dst(v[$getadd])
 }
 
-__fn get_AEAB_array $agentid $getadd $startslot $range {
-	AEAB_abandon
+__fn get_AEB_array $agentid $getadd $startslot $range {
 	get_picture_horizontal_line($getadd,PicID_AgentExBuffer,$startslot,$agentid,$range)
 }
 
-__fn init_AEAB_array $agentid {
-	AEAB_abandon
+__fn init_AEB_array $agentid {
 	// fill selected array with 0
 	set_picture_horizontal_line(__id(ptr_null), PicID_AgentExBuffer,0,$agentid,AgentExtraBuffer_ArraySize)
 }
-*/
-
 
 
 

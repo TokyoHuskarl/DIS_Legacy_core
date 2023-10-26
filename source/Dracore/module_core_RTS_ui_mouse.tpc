@@ -814,8 +814,8 @@ __fn UI_CEV_MOUSE_OBSERVER {
 						} .else bl {
 					@if v[101] >= 1 {
 							@if v[99] > 1 {
-						LEGV_sentence_id_on_popup1 = s[24] == 1 ? LEGV_sentence_id_on_popup1 : -2
-						
+								LEGV_sentence_id_on_popup1 = s[24] == 1 ? LEGV_sentence_id_on_popup1 : -2
+								
 							}
 							@call .cev 1100
 							
