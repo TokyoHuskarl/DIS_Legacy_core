@@ -73,9 +73,9 @@ v[4100].repeat 100000000, 13
 									// Temp1 = v[212] + 100
 
 									//team ID % 3
-									__if DIS_EXPERIMENTAL == -1 {
+									__if DIS_EXPERIMENTAL == 1 {
 										//macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14)
-														get_AEAB_element_wo_ptr(AgentIDholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
+														get_AEB_element_wo_ptr(AgentIDholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
 									}.else bl {
 										Temp14 = Const_AgentMetaTeam_begin + v[211]
 										Temp14.deref Temp14,1 // Temp14 = v[Temp14]
@@ -86,7 +86,7 @@ v[4100].repeat 100000000, 13
 									Temp8.deref Temp8,1
 
 									__if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
-											get_AEAB_array(AgentIDholder,4001,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
+											get_AEB_array(AgentIDholder,4001,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
 
 									}.else bl {
 
@@ -124,7 +124,7 @@ v[4100].repeat 100000000, 13
 										defv UnitAI_agent_eyesight = 315
 										__if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
 
-											get_AEAB_element_wo_ptr(AgentIDholder,__id(UnitAI_agent_eyesight),AgentExBuffer_SLOT_BaseSight_Root)
+											get_AEB_element_wo_ptr(AgentIDholder,__id(UnitAI_agent_eyesight),AgentExBuffer_SLOT_BaseSight_Root)
 
 										}.else bl {
 
@@ -314,16 +314,17 @@ v[4100].repeat 100000000, 13
 												// AISearch_morton_ptr = v[340] + Temp10
 												// val_add(AISearch_morton_ptr,v[340])
 
-												__if DIS_EXPERIMENTAL == -1 {
-													macro_get_agent_MetaTeam_into_var(v[AISearch_morton_ptr],TT1) // AEBA
+												__if DIS_EXPERIMENTAL == 1 {
+													macro_get_agent_MetaTeam_into_var(v[AISearch_morton_ptr],TT1) // AEB
 
 												}.else bl {
 													TT1 = Const_AgentMetaTeam_beginMINUSONE + v[AISearch_morton_ptr]
 
 												}
 
-												// @if  agent_TeamID == TT1 { // EXPERIMENTAL - IF YOU USE AEBA  
-												@if  Temp33 == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA
+												@if  Temp33 == TT1 { // EXPERIMENTAL - IF YOU USE AEBA  
+												// @if  Temp33 == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA
+
 
 													Temp1 = v[AISearch_morton_ptr] * v[1117] 
 													val_add(Temp1,N4700) // Temp1 += 4700
@@ -629,8 +630,8 @@ v[4100].repeat 100000000, 13
 							Ptr19 = v[212] + 241 // ?
 							Temp1 = v[212] + 100
 
-							__if DIS_EXPERIMENTAL == -1 {
-								macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEBA
+							__if DIS_EXPERIMENTAL == 1 {
+								macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEB
 							}.else bl {
 								Temp14 = Const_AgentMetaTeam_begin + v[211]
 								Temp14.deref Temp14,1

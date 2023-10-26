@@ -757,9 +757,11 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 											}
 											
 									}.elif expected_action_sprite == 3 { // attack
-										@if agent_AAType == 0 { // melee
-											animation_nonlayered_common_attack_melee()
+										@if agent_ActionState == 1 {
+											@if agent_AAType == 0 { // melee
+												animation_nonlayered_common_attack_melee()
 
+											}
 										}
 										
 									}

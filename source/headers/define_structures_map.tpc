@@ -11,6 +11,7 @@ def {
 struct("Terrain",{
 	def {
 		STRING_undefined_terrain = __str("selected terrain is not defined!")
+		TerrainID_OutOfMap = 30
 
 	}
 	
@@ -24,8 +25,17 @@ struct("Terrain",{
 			regs1.asg t[var1]
 
 		}.else bl{
-			func_errlog(STRING_undefined_terrain)
-			regs1.asg "NULL"
+			var1 = $id
+			@if var1 == 0 { // outside of RM map
+				var2 = Adrt_terraindata_head + TerrainID_OutOfMap
+				splitStrData(t[var2])
+				var1 = __id(strAr0) + $elm
+				regs1.asg t[var1]
+
+			}.else bl{ // 
+				func_errlog(STRING_undefined_terrain)
+				regs1.asg "undefined"
+			}
 		}
 	}
 

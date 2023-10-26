@@ -96,7 +96,7 @@ __fn func_damage_calculation {
 			// AA flags which won't affect result here are set off in Melee AA cev(34) to improve performance"
 			@if AttackerAABits > 0 {
 				@if victim_UnitType >= 100 { // static
-					damage_multiplier += AttackerAABits & AABits_FLAG_AntiBuilding ? 200 : 0
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiBuilding ? 70 : 0
 					damage_multiplier += AttackerAABits & AABits_FLAG_AntiBuilding_SUPER ? 2300 : 0
 
 				}.elif victim_UnitType == UNIT_CLASS_INF {
@@ -345,7 +345,7 @@ __fn func_damage_calculation {
 					@if reg2 >= 85 {
 						TT1 = reg2 >> 4 // / 15
 
-						// "Critical Quadruple the possibility#Headhunter gives additional bonus"
+						// "Critical Quadruple the possibility # Headhunter gives additional bonus"
 						TT1 *= (agent_PerkFlagBits2 & 8 ? 1 : 0) + (damage_multiplier >= 200 ? 4 : 1)
 
 						// "ROLL!"

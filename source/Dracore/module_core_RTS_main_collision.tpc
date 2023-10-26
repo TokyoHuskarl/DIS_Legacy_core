@@ -376,17 +376,17 @@ __fn ColCheck {
 						Temp10 = agent_TeamID % 3
 						@loop v[327] {
 
-							__if DIS_EXPERIMENTAL == -1 {
+							__if DIS_EXPERIMENTAL == 1 {
 								// DIS_EXPERIMENTAL - get MetaTeam from AEAB inTT3
 								TT3 = v[v[203]]
-								get_AEAB_element(TT3,__id(TT3),AgentExBuffer_SLOT_MetaTeam)
+								get_AEB_element(TT3,__id(TT3),AgentExBuffer_SLOT_MetaTeam)
 							}
 
 							//@if v[700] != TT3 { // EXPERIMENTAL cond
 
 							// cond in case of NOT DIS_EXPERIMENTAL.. you must adjust manually
-							@if `Temp10 != v[v[v[203]] + Const_AgentMetaTeam_beginMINUSONE] {
-						
+							// @if `Temp10 != v[v[v[203]] + Const_AgentMetaTeam_beginMINUSONE] {
+						@if v[700] != TT3 {
 								macro_ColCheck_distance()
 
 								macro_ColCheck_push()

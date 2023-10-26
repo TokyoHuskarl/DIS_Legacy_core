@@ -57,7 +57,7 @@ __fn func_bs_melee_hit_check_wo_prep {
 	@if reg1 == 0 {
 	    //@comment "＃＃＃＃＃＃＃＃＃＃Check Shield?	＃＃＃＃＃＃＃＃＃＃"
 	    //@comment "Shieldを取得 302	...ADVに先行で算入されている"
-	    Temp2 = 100 - victim_Shield_Value//shield value..
+	    Temp2 = 101 - victim_Shield_Value//shield value..
 	    reg2 = Temp3 >= Temp2 ? 1 : 0
 	    @if reg2 == 0 {
 		@if s[164] .isOff() {
@@ -137,7 +137,7 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	}
 
 	Temp3 = rnd(1, 100)
-	reg2 = Temp3 >= 100 - Temp2 ? 1 : 0
+	reg2 = Temp3 >= 101 - Temp2 ? 1 : 0
 	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per... once 38% but now far lower than that"
 	__if $flags & bs_hitcheck_FLAG_ArrowMode {
 		Temp1 += var_funcbs_rhc_arrow_hitbonus - reg1
