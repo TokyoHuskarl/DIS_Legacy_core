@@ -1516,7 +1516,7 @@ __fn func_control_moveorder_proc_let_units_attack {
 							v[Ptr18] = v[392]
 							// "#Set 現在目指してるWPと総WP数"
 							v[Temp1 + 242] = 2
-							v[Temp1 + 34] |= AI_routine_bits_FLAG_RayCast // set raycast anyway
+							v[Temp1 + 34] |= v[Temp1 + 103] == 0 ? AI_routine_bits_FLAG_RayCast : 0 // set raycast anyway
 
 					}
 				@if s[13] .isOff() {

@@ -1433,7 +1433,8 @@ class RTSmission {
 
 
 		};
-			console.log("mapdir is "+this.mapSourceDir)
+			// console.log("mapdir is "+this.mapSourceDir)
+		
 
 
 		this.allocVarAmount = 0;

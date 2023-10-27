@@ -1365,7 +1365,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							@if v[371] == 1 {
 								@if `!(agent_AgentBits & 4) {
 									@if `!(agent_AgentBits & 8) {
-										v[Temp1 + 243] = 1
+											v[Temp1 + 250] = 3
 											v[Temp1 + 3] |= 4
 											v[803] = Temp1 + 203
 											v[v[803]].copy v[803], 4
@@ -1409,7 +1409,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 								} .else bl {
 									@if `agent_AgentBits & 4 {
-										v[Temp1 + 243] = 0
+											v[Temp1 + 250] = 2
 											v[Temp1 + 3] &= -5//~4
 											v[803] = Temp1 + 203
 											v[v[803]].copy v[803], 4
