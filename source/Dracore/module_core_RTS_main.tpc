@@ -277,7 +277,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 			// weapon fall
 	    @if v[865] < v[866] {
-				v[864] += g_perFPS //98000 / 48
+				val_add(v[864],g_perFPS) // v[864] += g_perFPS //98000 / 48
 				v[861] .add v[863], 2
 				val_add(v[867],agent_ProcessMS) // v[867] += agent_ProcessMS
 				
@@ -286,13 +286,14 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    }
 	    @if v[881] != 0 {
 				v[881] = muldiv(v[881], 4, 5)
-				v[882] /= 2
+				val_add(v[864],g_perFPS)
+				val_add(v[882],N2) // /= 2
 				v[879] = divmul(v[879] ,17500,10000) 
 	    }
 
 			// shield fall
 	    @if v[873] < agent_ProcessObjBit {
-				v[872] += g_perFPS //98000 / 48
+				val_add(v[872],g_perFPS)
 				v[869] .add v[871], 2
 				val_add(v[875],agent_ProcessCamoValue) // v[875] += agent_ProcessCamoValue
 				val_add(v[873],N1) // v[873] += 1
@@ -300,7 +301,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    }
 			
 	    @if v[887] < v[888] {
-				agent_FootstepSoundTimer +=  g_perFPS //98000 / 48
+				val_add(agent_FootstepSoundTimer,g_perFPS) // just the slot is the same as FootstepsSound for living agent, but actual function is diffrent. beware
 				v[883] .add v[885], 2
 				val_add(v[887],N1) // v[887] += 1
 		
@@ -329,8 +330,6 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "ずれ計算"
 	    macro_cord_diff(Temp3 Temp4)
 
-	    // "X座標"
-	    @map.getTerrain .pos Temp3, Temp12 .dst Temp13
 	    // "##20以上で壁がある
 	    //##壁がなければ速度を足す"
 	    
@@ -341,27 +340,38 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //Ptr15 = Temp1 + 266
 	    //Ptr14 = Temp1 + 265
 
-	    // "#減衰"
-	    v[612] = muldiv(v[612], 4, 5)
-	    v[612] = 500 >= abs(v[612]) ? 0 : v[612]
-	    v[605] += Temp13 < 20 ? v[612] : 0
+	    // "X座標"
+			@if v[601] < -10 { // not a wreck of static agent
+				@map.getTerrain .pos Temp3, Temp12 .dst Temp13
+					// "#減衰"
+					@if v[612] != 0 {
+						v[612] = muldiv(v[612], 4, 5)
+						v[612] = 500 >= abs(v[612]) ? 0 : v[612]
+						v[605] += Temp13 < 20 ? v[612] : 0
+						// "#カメラずらして"
+					}
+
+				// "Y座標"
+				@map.getTerrain .pos Temp11, Temp4 .dst Temp14
+					// "#減衰"
+					@if v[613] != 0 {
+						v[613] = muldiv(v[613], 4, 5)
+						v[613] = 500 >= abs(v[613]) ? 0 : v[613]
+						v[606] += Temp14 < 20 ? v[613] : 0
+					}
+			}
 	    // "#カメラずらして"
+			v[605].add FrameCamDiff_MilX,2
+
+			/*
 	    v[605] += FrameCamDiff_MilX
+	    v[606] += FrameCamDiff_MilY
+			*/
+
 	    // "#座標を反映"
 	    v[607] = v[605] / 10000
-	    // "Y座標"
-	    @map.getTerrain .pos Temp11, Temp4 .dst Temp13
-	    //v[297..300] += 1
-	    // "##20以上で壁がある
-	    //##壁がなければ速度を足す"
-	    // "#減衰"
-	    v[613] = muldiv(v[613], 4, 5)
-	    v[613] = 500 >= abs(v[613]) ? 0 : v[613]
-	    v[606] += Temp13 < 20 ? v[613] : 0
-	    // "#カメラずらして"
-	    v[606] += FrameCamDiff_MilY
-	    // "#座標を反映"
 	    v[608] = v[606] / 10000
+
 	    // "慣性終わり"
 	    // "#############
 	    //#Set Y Position EV
@@ -813,26 +823,31 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 												v[Spawned_Agent_Id_Shift + 4922] = v[Spawned_Agent_Id_Shift + 4922] == 0 ? v[Temp1 + 222] : v[Spawned_Agent_Id_Shift + 4922]
 
 											}
-										v[Temp1 + 3] &= -2//~1
+											v[Temp1 + 3] &= -2//~1
 											@if reg1 >= 1 {
 												// "指定地点まで歩かせる"
 												TT1 = Spawned_Agent_Id_Shift + 4741
 													// "set reserved target "
-													v[371]=0//Flag for trained troop
-													@if v[618] >= 1 {
-														// "Worker"
-														@if `v[Spawned_Agent_Id_Shift + 4802] == 9 {
-																v[371] |= 1//IT'S WORKER! - flag switch on
+													v[371] = 0 // init Flag for trained troop
+
+													// if the spawned troop is a worker
+													@if `v[Spawned_Agent_Id_Shift + 4802] == 9 {
+														@if agent_static_WorkTarget >= 1 { // and the parent static agent has work target
+															// "Worker"
+															v[371] |= 1 // IT'S WORKER! - flag switch on
 																v[Spawned_Agent_Id_Shift + 4718] = agent_static_WorkTarget
 																v[Spawned_Agent_Id_Shift + 4942] = 1
 																v[Spawned_Agent_Id_Shift + 4941] = v[Spawned_Agent_Id_Shift + 4941] != 4 ? 2 : 4
-														}.else bl{
+
+														}
+													}.else bl { // not a worker
+														@if v[618] >= 1 { // and the parent static agent has target
 															//Combat troops - check if the reserved target is enemy
 															v[Spawned_Agent_Id_Shift + 4718] =(v[Spawned_Agent_Id_Shift + 4800]%3)==(v[v[618] * 300 +4800]%3) ?0:v[618]
 
 														}
-
 													}
+											}
 												//v[607] = Temp1 + 7
 												//v[v[607]].copy v[607], 2
 												//v[641] = Temp1 + 41
