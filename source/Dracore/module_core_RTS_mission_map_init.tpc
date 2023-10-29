@@ -1274,11 +1274,7 @@ __fn CEV_MISSION_MAP_INIT {
 	inputstr .cat Str_LanguageToken
 	log_push("loading DIS mapstring file.")
 	log_push(inputstr)
-	@if Str_LanguageToken.eq "_jp" {
-		inputstr .asg  .file inputstr, .sjis, .extract
-	}.else bl{
-		inputstr .asg  .file inputstr, .utf8, .extract
-	}
+	inputstr .asg  .file inputstr, .utf8, .extract
 
 	__fn load_and_store_mapstring {
 		log_push("DIS mapstring file loaded.")
@@ -1300,7 +1296,7 @@ __fn CEV_MISSION_MAP_INIT {
 
 	}.else bl{
 		log_push("DIS mapstring file in current language is missing.")
-		log_push("Now going to initial string file instead.")
+		log_push("Now going to load initial string file instead.")
 		inputstr .asg str5
 		log_push("loading DIS mapstring file.")
 		log_push(inputstr)
@@ -2248,8 +2244,9 @@ __fn loadMissionDef $missionpath {
 			loadedJsConfig.off
 
 		}
+	}.else bl{ // consider the map from LEGACY
+			Is_LEGACYSTAGE.on
 	}
-
 	
 }
 
@@ -2271,9 +2268,9 @@ __fn loadMapInfo $missionpath {
 	}.else bl {
 		@if Is_LEGACYSTAGE.isOff(){
 			str1 .asg, .cat("Couldn't open mapinfo json file!", " filepath is: ~/text", str1) //
+			func_errlog(str1)
 		}
 
-		func_errlog(str1)
 		reg1 = ev[4].x
 		reg2 = ev[4].y
 

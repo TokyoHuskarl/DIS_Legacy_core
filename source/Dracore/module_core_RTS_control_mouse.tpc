@@ -1277,9 +1277,9 @@ s[70].off
 						} .else bl {
 								// "Building Mode.."
 								MousePtr_x.copy var1, 2
-								@if s[180] .isOff() {
+								@if s[180] .isOff() { // it's not wall
 										var1.copy v[252], 2
-										@call .cev 795
+										@call .cev 795 // this one can be fatal I suppose?
 										MousePtr_x.copy var1, 2
 										v[403].copy var3, 2
 										v[13..14] %= 16
@@ -1331,10 +1331,11 @@ s[70].off
 										}
 										v[1].copy var1, 2
 										var1.copy v[252], 2
-										@call .cev 795
+										@call .cev 795 // build check
 										v[1].copy var1, 2
 										
 								}
+
 								@pic[1000].show {
 										t[522]
 										.pos v[41], v[48] .center
@@ -1359,8 +1360,6 @@ s[70].off
 								v[459] = 1
 								v[460] = 88
 								v[461..462] = 0
-								v[465] = 0
-								v[467] = 0
 								v[470] = 0
 								// "#"
 								v[455] = 0
@@ -1374,9 +1373,12 @@ s[70].off
 										v[449] = 200
 										
 								}
+
 								v[463] = 5
 								v[464] = 1
+								v[465] = 0
 								v[466] = 2
+								v[467] = 0
 								v[468] = 5
 								@if v[38] != 0 {
 										v[444] = 14

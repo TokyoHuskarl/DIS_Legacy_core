@@ -1389,7 +1389,7 @@ class RTSmission {
 			this.RMmapid = -1; // RPGMAKER mapid.
 			this.missionid = "NO_missioninfo";
 			this.conf = {};
-			this.conf.isLEGACYmission = false;
+			this.conf.isLEGACYmission = true;
 			this.conf.isSightSystemOn = true;
 			this.conf.isMoraleSystemOn = true;
 			this.conf.isLevelSystemOn = false; // not yet
@@ -1428,11 +1428,9 @@ class RTSmission {
 			};
 			this.mapSourceDir = (src.hasOwnProperty("IMPORT_MAP") && src.IMPORT_MAP != "") ? src.IMPORT_MAP : this.missionid;
 
-			sets(457,this.conf.isLEGACYmission); // s[457] <- Is_LEGACYSTAGE
-
-
 
 		};
+		sets(457,this.conf.isLEGACYmission); // s[457] <- Is_LEGACYSTAGE
 			// console.log("mapdir is "+this.mapSourceDir)
 		
 

@@ -49,6 +49,10 @@ __fn drawing_set_grid_raw $Exmotion $Addmotion {
 	v[4103] = $Exmotion & ExMotionFlags_FLAG_Helm_With_Anim ? 7 : 5 // animation helms
 	v[4105] = $Exmotion & ExMotionFlags_FLAG_Shield_With_Anim ? 7 : 5 // animation shields
 	v[4121] = $Addmotion & AddMotionFlags_FLAG_Armor_has_second_sprite_line ? 2 : 1
+
+	v[4127] = $Exmotion & ExMotionFlags_MASK_HeadPartDamageChecker ? 2 : 1 // minion picture with damage sprite has two lines
+	
+
 }
 
 __fn function_agent_init_set_picture_strs {

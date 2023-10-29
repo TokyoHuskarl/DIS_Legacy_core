@@ -664,13 +664,8 @@ __fn deploy_DIStable $table {
 }
 
 __fn readLangFile $loadfile $savestr {
-	@if Str_LanguageToken.eq "_jp" {
-		t[__id($savestr)] .asg  .file $loadfile, .sjis , .extract
+	t[__id($savestr)] .asg  .file $loadfile, .utf8 , .extract
 		
-	}.else bl {
-		t[__id($savestr)] .asg  .file $loadfile, .utf8 , .extract
-		
-	}
 }
 
 // Address setting

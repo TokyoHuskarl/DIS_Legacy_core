@@ -258,16 +258,16 @@ cev .id(2051),.name("[System]Escape Menu"),{
 		.wheelUp
 	    }
 	    @comment "Check if it's okay"
-	    @pic[2136].getInfo .cewh .baseRect TT1, TT2, TT3, TT4
+	    @pic[2135].getInfo .cewh .baseRect TT1, TT2, TT3, TT4
 	    @comment "If pic2135 is gone, consider something bad is habbening"
-	    @if TT1 != v[1115] {
-		@if TT2 != v[1116] {
-		    @comment "So break loop"
-		    @break
-		    
-		}
-		
+			@if TT1 != v[1115] {
+				@if TT2 != v[1116] {
+					@comment "So break loop"
+						@break
+
+				}
 	    }
+
 	    @comment "Close"
 	    @pic[2136].getInfo .ltrb .baseRect TT1, TT2, TT3, TT4
 	    TT2 += 2
