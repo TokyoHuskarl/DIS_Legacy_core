@@ -1999,14 +1999,19 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 											}
 											
 									}
+
 									@comment "###############"
 									@comment "Init"
 									t[3000..3300] .asg ""
 									@comment "Load"
 									v[1961] = v[4520] + current_descriptionID
 									v[1961] -= 10201
-									t[3000] .asg t[v[1961]] .extract
-									t[3000] .split "|", t[3001], v[1961]
+									t[2999] .asg t[v[1961]] .extract
+
+									// {id}|{name}|{first_main}|{first_lore}|{after}|{after_lore}
+									t[2999] .split "|", t[3001], v[1961]
+
+									// first_main
 									t[3002] .split "^", t[3201], v[1961]
 									t[3002] .asg ""
 									@comment "###############"
@@ -2014,41 +2019,53 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 											v[1963] = v[1211] + v[1962]
 											v[1963] += 200
 											t[3002] .cat t[v[1963]] .extract
-											t[3002] .cat t[525]
+											t[3002] .cat LF
 											
 									}
-									
+
+
+									// setup main lore
+									t[505].asg "" // init
+										@if t[3003].neq "" {
+											t[3003] .split "^", t[3201], v[1961]
+												t[3003] .asg ""
+												@loop v[1961] .dst v[1962] {
+													v[1963] = v[1211] + v[1962]
+														v[1963] += 200
+														t[3003] .cat t[v[1963]] .extract
+														t[3003] .cat LF
+
+												}
+											t[505] .asg t[3003]
+										}
+							
+
 									@comment "###############"
-									t[3003] .split "^", t[3201], v[1961]
-									@if t[3003] .eq "" {
-											t[3003] .asg t[3002]
+									t[3004] .split "^", t[3201], v[1961]
+									@if t[3004] .eq "" {
+											t[3004] .asg t[3002] // same as
 											
 									} .else bl {
-											t[3003] .asg ""
+											// there's additional lore text after researched
+											t[3004] .asg ""
 											@comment "###############"
 											@loop v[1961] .dst v[1962] {
 													v[1963] = v[1211] + v[1962]
 													v[1963] += 200
-													t[3003] .cat t[v[1963]] .extract
-													t[3003] .cat t[525]
+													t[3004] .cat t[v[1963]] .extract
+													t[3004] .cat LF
 													
 											}
-											
+
+											// check if there's new lore 
+											@if t[3005] .neq "" {
+												t[3005].asg .rep(t[3005], "^", LF)
+												t[506] .asg t[3005] // prepare for it
+
+											}
 											
 									}
 
-									// setup lore - underconstruction
-									t[3005] .split "^", t[3201], v[1961]
-									t[3005] .asg ""
-									@loop v[1961] .dst v[1962] {
-											v[1963] = v[1211] + v[1962]
-											v[1963] += 200
-											t[3005] .cat t[v[1963]] .extract
-											t[3005] .cat t[525]
-											
-									}
-									t[505] .asg t[3005]
-							
 
 									@comment "###############"
 									@comment "Tech:"
@@ -2090,15 +2107,14 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 											@comment "#LF"
 											t[503] .asg t[3002]
 											v[35] = 0
-											t[501] .cat t[525]
+											t[501] .cat LF
 											t[501] .cat t[502]
-											t[501] .cat t[525]
+											t[501] .cat LF
 											// set normal description
 											t[501] .cat "..."
-											t[501] .cat t[503]
+											t[501] .cat t[503] .extract
 
 											// If Alt is held down, show Lore as well.
-											t[505].asg "" // underconstruction
 											@if t[505].neq "" {
 												t[501] .cat "\c[3]*"
 												@if GETKEY_Alt == 1 {
@@ -2130,26 +2146,26 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 													
 											} .else bl {
 													t[502] .asg t[20430] .extract
-													t[3003] .asg t[3002]
+													t[3004] .asg t[3002]
 													
 											}
 											@comment "#LF"
-											t[503] .asg t[3003]
-											t[501] .cat t[525]
+											t[503] .asg t[3004]
+											t[501] .cat LF
 											t[501] .cat "\c[5]"
 											t[501] .cat t[502]
 											t[501] .cat "\c[0]"
-											t[501] .cat t[525]
+											t[501] .cat LF
 											t[501] .cat "..."
-											t[501] .cat t[503]
+											t[501] .cat t[503] .extract
+
 											// If Alt is held down, show Lore as well.
-											t[505].asg "" // underconstruction
-											@if t[505].neq "" {
+											@if t[506].neq "" {
 												t[501] .cat "\c[3]*"
 												@if GETKEY_Alt == 1 {
 													t[501] .cat "-------"
 													t[501] .cat LF
-													t[501] .cat t[505]
+													t[501] .cat t[506]
 												}
 											}
 
@@ -2216,7 +2232,7 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 									v[1963] = v[1211] + v[1962]
 									v[1963] += 200
 									UI_TRPDESC_Descslot .cat t[v[1963]] .extract
-									UI_TRPDESC_Descslot .cat t[525]
+									UI_TRPDESC_Descslot .cat LF
 									
 							}
 							t[504] .asg UI_TRPDESC_Descslot
@@ -2229,7 +2245,7 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 										v[1963] = v[1211] + v[1962]
 										v[1963] += 200
 										UI_TRPDESC_Loreslot .cat t[v[1963]] .extract
-										UI_TRPDESC_Loreslot .cat t[525]
+										UI_TRPDESC_Loreslot .cat LF
 										
 								}
 							}
@@ -2272,9 +2288,9 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 							t[502] .cat "\c[0]"
 							@comment "#LF"
 							v[35] = 0
-							t[501] .cat t[525]
+							t[501] .cat LF
 							t[501] .cat t[502]
-							t[501] .cat t[525]
+							t[501] .cat LF
 							t[501] .cat "..."
 							t[501] .cat t[504]
 							// If Alt is held down, show Lore as well.

@@ -821,17 +821,18 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 											Temp1 += 5000
 											func_main_extract_agent_vars() //extract STATIC datas again
 											defv Spawned_Agent_Id_Shift = __id(Temp2) 
-											Spawned_Agent_Id_Shift = reg1 * 300 //use Temp2 as 
-											@if v[822] != 3 {
-												v[Spawned_Agent_Id_Shift + 4922] = v[Spawned_Agent_Id_Shift + 4922] == 0 ? v[Temp1 + 222] : v[Spawned_Agent_Id_Shift + 4922]
 
-											}
 
 											v[Temp1 + 3] &= -2 //~1
 
 											@if reg1 >= 1 {
-													// "指定地点まで歩かせる"
-													TT1 = Spawned_Agent_Id_Shift + 4741
+												Spawned_Agent_Id_Shift = reg1 * 300 //use Temp2 as 
+													@if v[822] != 3 {
+														v[Spawned_Agent_Id_Shift + 4922] = v[Spawned_Agent_Id_Shift + 4922] == 0 ? v[Temp1 + 222] : v[Spawned_Agent_Id_Shift + 4922]
+
+													}
+												// "指定地点まで歩かせる"
+												TT1 = Spawned_Agent_Id_Shift + 4741
 													// "set reserved target "
 													v[371] = 0 // init Flag for trained troop
 
@@ -839,7 +840,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 													@if `v[Spawned_Agent_Id_Shift + 4802] == 9 {
 														@if agent_static_WorkTarget >= 1 { // and the parent static agent has work target
 															// "Worker"
-																v[371] |= 1 // IT'S WORKER! - flag switch on
+															v[371] |= 1 // IT'S WORKER! - flag switch on
 																v[Spawned_Agent_Id_Shift + 4718] = agent_static_WorkTarget
 																v[Spawned_Agent_Id_Shift + 4942] = 1
 																v[Spawned_Agent_Id_Shift + 4941] = v[Spawned_Agent_Id_Shift + 4941] != 4 ? 2 : 4
@@ -848,11 +849,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 													}.else bl { // not a worker
 														@if v[618] >= 1 { // and the parent static agent has target
 															//Combat troops - check if the reserved target is enemy
-															v[Spawned_Agent_Id_Shift + 4718] =(v[Spawned_Agent_Id_Shift + 4800] % 3) == (v[v[618] * 300 + 4800] % 3) ? 0 : v[618]
+															v[Spawned_Agent_Id_Shift + 4718] = (v[Spawned_Agent_Id_Shift + 4800] % 3) == (v[v[618] * 300 + 4800] % 3) ? 0 : v[618]
 
 														}
 													}
-											}
 												//v[607] = Temp1 + 7
 												//v[v[607]].copy v[607], 2
 												//v[641] = Temp1 + 41
@@ -866,7 +866,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 														v[Spawned_Agent_Id_Shift + 4942] = 2
 
 												} .else bl {
-														v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
+													v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
 														// "指定されてる"
 														v[641].copy v[TT1], 2
 
@@ -875,12 +875,15 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 														//v[reg1 * 300 + 4734] |= 524288
 
 												}
+											}
+
 
 											}
 
 									}
 
-							}
+							// }
+
 						// "research particle"
 						@if `agent_AgentBits & 1 {
 							@loop v[1017] .dst Temp20 {
@@ -1001,7 +1004,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 							}
 
-							// } maybe this was mistakenly inserted
+							} 
 						v[699] = Temp1 + 99
 							TT1 = v[v[699]]
 							// "########################"

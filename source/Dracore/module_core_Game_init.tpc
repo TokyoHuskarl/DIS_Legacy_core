@@ -1473,8 +1473,24 @@ __fn init_DIS_database $already_loaded {
 	// inputstr .asg  .file inputstr, .utf8, .extract
 	readLangFile(inputstr,inputstr)
 	inputstr .split "*/", t[509], TT1
-	inputstr .split LF, t[v[4520]], TT1
+	inputstr .split LF, t[v[4520]], TT3
+			@loop TT3 .dst var1 {
+					var2 = v[4520] + var1
+					var10 = var2
+					t[var2] .split "|", t[3000], TT2
 
+					TT2 -= 1
+					t[3000] .asg ""
+					@loop TT2 .dst var2 {
+							var2 = 3001 + var2
+							t[3000] .cat t[var2]
+							t[3000] .cat "|"
+							
+					}
+					
+					t[var10] .asg t[3000]
+					
+			}
 
 	// LOAD TERRAIN FILE
 	v[1239] = Adrt_terraindata_head
