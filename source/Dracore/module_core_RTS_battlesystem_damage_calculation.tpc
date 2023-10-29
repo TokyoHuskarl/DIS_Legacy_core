@@ -454,10 +454,12 @@ __fn func_damage_calculation {
 
 					// "#upper 50%"
 					@if `victim_HP > victim_MaxHP / 2 {
+
 						@if `(victim_ExMotionFlags & 98304) == 32768 { // body (head part) damaged..
 								victim_ExMotionFlags |= ExMotionFlags_FLAG_HeadNotYetDamaged
 								
 						}
+
 						@if `(victim_ExMotionFlags & 24576) == 8192 { // armor damaged...
 								victim_ExMotionFlags |= ExMotionFlags_FLAG_ArmorNotYetDamaged
 								

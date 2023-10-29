@@ -49,10 +49,11 @@ __fn register_cohort_for_player $plid $cohortid $liststart $listcount {
 						Temp10 = v[TT2]
 						v[726] = v[v[TT1] * 300 + 4826]
 						v[463] = 5
-						v[464] = 1
 						v[4101..4110] = v[463]
 						v[4107] = v[726] & 512 ? 7 : 5
+						v[4127] = v[726] & ExMotionFlags_MASK_HeadPartDamageChecker ? 2 : 1
 						v[463] = v[4107]
+						v[464] = v[4127]
 						@pic[Temp2].show {
 							"minions\spr_minions_1" .repl 1 Temp10
 								.pos Temp5, Temp6 .center
@@ -203,6 +204,8 @@ __fn register_cohort_for_player $plid $cohortid $liststart $listcount {
 					v[4101..4110] = v[463]
 					v[463] = v[4107]
 					v[463] = v[726] & 512 ? 7 : 5
+					v[4127] = v[726] & ExMotionFlags_MASK_HeadPartDamageChecker ? 2 : 1
+					v[464] = v[4127]
 					@pic[Temp2].show {
 						"minions\spr_minions_1" .repl 1 Temp10
 							.pos Temp5, Temp6 .center

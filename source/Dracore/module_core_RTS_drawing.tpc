@@ -1024,7 +1024,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													v[455] = v[380] * 4096
 													//agent_ExMotionFlags = 126 + Temp1
 													v[463] = agent_ExMotionFlags & 512 ? 7 : 5
-													v[464] = 1
+													v[464] = agent_ExMotionFlags & ExMotionFlags_MASK_HeadPartDamageChecker ? 2 : 1 // minion picture with damage sprite has two lines
 													v[468] = 3
 				//v[4145] = Temp1 + 275
 													v[4145] = v[875]

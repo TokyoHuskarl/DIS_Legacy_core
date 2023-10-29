@@ -473,7 +473,10 @@ struct("agent",{
 	ExMotionFlags_FLAG_MoveAnim = 512
 	ExMotionFlags_FLAG_no_footstepsound = 1024
 	ExMotionFlags_FLAG_no_fatigue = 2048
+	ExMotionFlags_FLAG_ArmorHasDamagedSprite = 8192
 	ExMotionFlags_FLAG_ArmorNotYetDamaged = 16384
+		ExMotionFlags_MASK_ArmorDamageChecker = ExMotionFlags_FLAG_ArmorHasDamagedSprite + ExMotionFlags_FLAG_ArmorNotYetDamaged
+
 	ExMotionFlags_FLAG_HeadHasDamagedSprite = 32768
 	ExMotionFlags_FLAG_HeadNotYetDamaged = 65536
 		ExMotionFlags_MASK_HeadPartDamageChecker = ExMotionFlags_FLAG_HeadHasDamagedSprite + ExMotionFlags_FLAG_HeadNotYetDamaged
