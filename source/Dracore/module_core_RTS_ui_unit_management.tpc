@@ -1122,8 +1122,10 @@ __fn show_Passive_description {
 			@if LEGS_selecting_enemy .isOff() {
 				@if Team_Player_Faction == FAC_dra {
 					@if Team_Player_Faction_Hero_Type == HERO_Dra_Orthunass {
-						// replace DRAGONS! with Empyrean New Order
-						t[2999].asg t[20491] // ENO
+						@if v[Temp2] == FAC_dra {
+							// replace DRAGONS! with Empyrean New Order
+							t[2999].asg t[20491] // ENO
+						}
 					}
 				}
 			}

@@ -1400,7 +1400,7 @@ class RTSmission {
 			try {
 				src = JSON.parse(infojson);
 			} catch (error) {
-				errorlog("missioninfo.json.txt for the current mission seems broken. Check if it's written in correct JSON format or not.")
+				errorlog("missioninfo.json.txt for the current mission seems broken. Check if it's written in correct JSON format.")
 				src = {name: "Couldn't read missioninfo.json.txt file for this mission"};
 			};
 			this.missionid = src.missionid;
@@ -1429,6 +1429,7 @@ class RTSmission {
 			this.mapSourceDir = (src.hasOwnProperty("IMPORT_MAP") && src.IMPORT_MAP != "") ? src.IMPORT_MAP : this.missionid;
 
 
+
 		};
 		sets(457,this.conf.isLEGACYmission); // s[457] <- Is_LEGACYSTAGE
 			// console.log("mapdir is "+this.mapSourceDir)
@@ -1455,9 +1456,10 @@ class RTSmission {
 	};
 
 	Cmd = { // mission commands - basically load files from the mission directory
-		importData: path=>{
-			//unco
-		}
+		importData(finame){
+			let path = RTS.mission.missionPath + finame; // Str_MissionPath
+			Cmd.sys.importData(path);
+		},
 	};
 
 	local = {}; // mission local instances - restored when you reload the game.
@@ -1467,6 +1469,8 @@ class RTSmission {
 		
 		
 	};
+
+	missionPath = ""; // get from RM system in RTS.setupMission
 
 	strings = {};
 	importLangString(str){
@@ -1478,7 +1482,7 @@ class RTSmission {
 	};
 	
 
-	essential = { // these elements must be restored when you reload the game via save/load.
+	essential = { // these elements must be restored when you reload the game via save/load. <- will be relocated?
 		players: [],
 		difficulty: getv(2401), // <- RTS_Difficulty
 		weatherType: 0,
@@ -2034,6 +2038,7 @@ let RTS = {
 	setupMission: function(jsonstr){ //
 		if (!(this.isRTSmode)){ // if the isRTSmode flag is not yet set (legacy maps) reopen DISmission
 			this.mission = new RTSmission(jsonstr);
+			deblog(`RTS.setupMission() - json loaded`);
 			this.isRTSmode = true;
 		}
 
@@ -2043,8 +2048,18 @@ let RTS = {
 			// so be it.
 			this.mission.conf.isLEGACYmission = true;
 		}
+
+		this.mission.missionPath = gett(749); // Str_MissionPath
+
 		MISSION = this.mission; // set link to current mission
 		LOCAL = MISSION.local;
+
+		// import mission data extension
+		for (let elm of MISSION.dataextension){
+			MISSION.Cmd.importData(elm)
+			deblog(`RTS.setupMission() - extension file ${elm} loaded`);
+		};
+		Cmd.run();
 	},
 
 	setupMapLoading: function(mapdir){ // will be called after this.setupMission().
@@ -2715,7 +2730,6 @@ if (!VIRTUAL_ENV){
 	DIS.init.loadBootconf();
 	DIS.data.init(); // reset DIS data
 	DIS.init.initID();
-	// 
 	Cmd.init();
 }
 
@@ -3099,7 +3113,8 @@ const inheritancetest = `
 	DATA.TROOP.convertIntoCsvLine(DATA.TROOP.dra_hero_orthunass);
 	deblog("\n\n\n")
 	DATA.autoregister(DATA.parseDISjson(inheritancetest))
-	
+
+	/*
 	Cmd.sys.importData("test.json")
 	RTS.mission.setPlayer(9,1)
 	let cohort1 = Cmd.map.spawnAgentgroup("TRP_imperial_comitatenses_menavlion",[27,32],0,[0,-2],8);
@@ -3112,7 +3127,7 @@ const inheritancetest = `
 	RTS.mission.local.trites = RTS.mission.createSimpleTrigger_Loop(90);
 	deblog(JSON.stringify(RTS.mission))
 	let ply= new DIS_RTSplayer(0,1)
-
+	*/
 const maptest = `
 {
 	"name": "poteton_trainingmap",

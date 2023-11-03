@@ -1119,7 +1119,9 @@ __fn CEV_MISSION_MAP_INIT {
 	// mapdef.js.txt file won't be loaded when the game didn't load missiondef.js.txt.
 	@if loadedJsConfig.isOn() {
 		run_RTSmapGeneration()
-		@map.tileset v[2060]
+		@if Is_LEGACYSTAGE.isOff() {
+			@map.tileset v[2060]
+		}
 		log_push("JS config loaded")
 	}
 
@@ -1637,7 +1639,7 @@ __fn CEV_MISSION_MAP_INIT {
 	    
 	}
 	@wait 0
-	@if loadedJsConfig.isOff() { // LEGACY script. will be erased
+	@if `loadedJsConfig == 0 || Is_LEGACYSTAGE == 1 {
 		log_push("Loading Legacy Mapscript")
 		@comment "*Map script load*"
 		inputstr .asg "..\Maps\"
@@ -2240,6 +2242,8 @@ __fn loadMissionDef $missionpath {
 		str_missiondef_storage.asg inputstr
 		loadedJsConfig.on
 		@js .run "RTS.setupMapLoading(RTS.mission.mapSourceDir);" // terrainData check
+		
+		WAIT_FOR_JSCMD_EXECUTION
 		@if Is_LEGACYSTAGE.isOn() {
 			loadedJsConfig.off
 

@@ -334,10 +334,16 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 							v[869].copy TT1, 2
 							// @comment "自分がMelee or townsman repairingなら([相手の幅]*1000)を引いて考える"
 							v[340] = agent_MilPixMoveOrderedPointDist
-							v[340] -= agent_AAType == 0 || agent_worker_JobType == 6 ? v[335] : 0
 
-							// @comment "If the target is construction site"
-							v[340] -= victim_UnitType == 104 ? victim_Width << 10 : 0 // Width * 1024 : 0
+							v[340] -= agent_AAType == 0 ? v[335] : 0
+
+							@if agent_AgentType == UNIT_CLASS_WORKER {
+								// worker attack!
+								v[340] -= victim_TeamID != agent_TeamID ? v[335] : 0
+								// @comment "If the target is construction site"
+								v[340] -= victim_UnitType == 104 ? victim_Width << 10 : 0 // Width * 1024 : 0
+							}
+							
 							@if v[340] <= TT1 {
 								@if v[340] >= TT2 {
 									// @comment "#WPを使ってOBJにたどり着こうとしていた"

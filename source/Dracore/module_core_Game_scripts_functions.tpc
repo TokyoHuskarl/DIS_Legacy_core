@@ -633,8 +633,8 @@ __fn cmd_ui_dialog_set_legacy {
 //
 
 __fn cmd_sys_importDISjson $path {
-	inputstr.asg PATH_gamedir
-	inputstr.cat $path
+	// inputstr.asg PATH_gamedir
+	inputstr.asg $path
 	load_json(inputstr)
 	inputstr.asg DIS_js_buffer
 	eval_js("DATA.autoregister(DATA.parseDISjson(gett(510)));") // inputstr
