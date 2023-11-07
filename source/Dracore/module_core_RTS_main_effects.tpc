@@ -24,10 +24,10 @@ __fn MAIN_CEV_RTS_NORMAL_EFFECT_MANAGER {
 					}.else bl {
 						s[141].off
 						//@comment "Access15 = タイマー"
-						v[295] = Temp1 + 99
+						Ptr15 = Temp1 + 99
 						v[243] += 1
 						//@comment "タイマー減らす"
-						v[v[295]] -= 1
+						v[Ptr15] -= 1
 								__if DEBUG_BUILD==1{
 							@if v[611] >= 300 {
 									@if v[611] <= 500 {
@@ -85,22 +85,22 @@ __fn MAIN_CEV_RTS_NORMAL_EFFECT_MANAGER {
 				
 	    } .else bl {
 				//@comment "Access15 = x"
-				v[295] = Temp1 + 4
+				Ptr15 = Temp1 + 4
 				// add milpix
 				v[53].copy TT1, 2
 				v[341..342] *= 1000
-				v[v[295]].add TT1,2
-				v[295] += 2
+				v[Ptr15].add TT1,2
+				Ptr15 += 2
 				//@comment "ずれセット"
-				v[v[295]] .add v[53], 2
-				v[295] += 11
-				v[v[295]] .add v[53], 2
-				v[295] += 3
-				v[v[295]] .add v[53], 2
-				v[295] += 3
-				v[v[295]] .add v[53], 2
-				v[295] += 3
-				v[v[295]] .add v[53], 2
+				v[Ptr15] .add v[53], 2
+				Ptr15 += 11
+				v[Ptr15] .add v[53], 2
+				Ptr15 += 3
+				v[Ptr15] .add v[53], 2
+				Ptr15 += 3
+				v[Ptr15] .add v[53], 2
+				Ptr15 += 3
+				v[Ptr15] .add v[53], 2
 
 	    }
 	    
@@ -111,16 +111,23 @@ __fn MAIN_CEV_RTS_NORMAL_EFFECT_MANAGER {
 // cev .id(23), .name("Main:Particle Effect") , .parallel , .cond(Const_Is_RTS_Mode), {   
 //@comment "Check whether each emitter is in screen or not per 4f->6f "
 __fn MAIN_CEV_RTS_PARTICLE_MANAGER {
-
-	@if `v[2219] % 6 == 0 {
+	// defv ptr_emitter_head = __id(Temp1) -> structures_particle.tpc
+	
+	val_asg(TT1,v[2219])
+	val_const(TT2,6)
+	val_mod(TT1,TT2)
+	@if TT1 == 0 {
 	    @loop v[1199] .dst v[241] {
-				Temp1 = v[241] * 50 
-				val_add(Temp1,v[1198]) // Temp1 += v[1198]
+				ptr_emitter_head = v[241] * 50 
+				val_add(ptr_emitter_head,v[1198]) // ptr_emitter_head += v[1198]
 				//@comment "Access15 = タイマー"
 				//@comment "Is there Emitter?"
-				@if v[Temp1] >= 1 {
-						// v[Temp1 + 48] = between(v[Temp1 + 6], v[1008], v[1009]) && between(v[Temp1 + 7], v[1010], v[1011]) ? 0 : 1
-						v[Temp1 + 48] = !(between(v[Temp1 + 6], v[1008], v[1009]) && between(v[Temp1 + 7], v[1010], v[1011]))
+				@if v[ptr_emitter_head] >= 1 {
+						v[ptr_emitter_head].copy emitter_ParticleType,ParticleArraySize
+						// v[ptr_emitter_head + 48] = !(between(v[ptr_emitter_head + 6], v[1008], v[1009]) && between(v[ptr_emitter_head + 7], v[1010], v[1011]))
+						val_const(TT1,48) 
+						val_add(ptr_emitter_head,TT1)
+						v[ptr_emitter_head] |= !(between(emitter_RelativeX, v[1008], v[1009]) && between(emitter_RelativeY, v[1010], v[1011]))
 						
 				}
 				
@@ -129,52 +136,60 @@ __fn MAIN_CEV_RTS_PARTICLE_MANAGER {
 	}
 
 	@if s[19] .isOff() {
-	    v[246..247] = 0
+	    v[ptr_null].copy v[246],2 // v[246..247] = 0
 	    @loop v[1199] .dst v[241] {
 				val_mod(v[244],v[1199]) // v[244] %= v[1199]
-				Temp1 = v[241] * 50 
-				val_add(Temp1,v[1198]) // Temp1 += v[1198]
+				ptr_emitter_head = v[241] * 50 
+				val_add(ptr_emitter_head,v[1198]) // ptr_emitter_head += v[1198]
 				//@comment "Access15 = タイマー"
 				//@comment "Is there Emitter?"
-				@if v[Temp1] >= 1 {
-					@if v[Temp1] == 1002 {
-						ptr_asg(Temp1,N2) // v[Temp1] = 2
+
+				@if v[ptr_emitter_head] >= 1 {
+					v[ptr_emitter_head].copy emitter_ParticleType,ParticleArraySize // extract
+					
+					@if emitter_ParticleType == 1002 {
+						ptr_asg(ptr_emitter_head,N2) // v[ptr_emitter_head] = 2
+					}.elif emitter_ParticleType == PARTICLE_TYP_SCRIPTABLE {
+						
+						
+
 					}.else bl {
-						@if `v[Temp1 + 49] >= 1 {
+
+						@if emitter_Timer >= 1 {
 							s[141].off
 							//@comment "タイマーが切れていない"
-							v[295] = Temp1 + 49
-							v[246] += 1
+							Ptr15 = ptr_emitter_head + 49
+							val_add(v[246],N1) // v[246] += 1
 							//@comment "タイマー減らす"
-							v[v[295]] -= 1
-							v[Temp1].copy v[601], 11
+							ptr_sub(Ptr15,N1) // v[Ptr15] -= 1
 							//@comment "#あとは個別イベントに丸投げ#V[604]>=1"
-							@if v[604] >= 1 {
-									@call .cev v[604]
+							// legacy cev calling
+							@if emitter_CallPartFunc >= 1 {
+									v[ptr_emitter_head].copy v[601], 11
+									@call .cev emitter_CallPartFunc
 									
 							}
+
 							//@comment "時間切れ消滅処理"
-							@if v[v[295]] <= 0 {
+							@if v[Ptr15] <= 0 {
 									//@comment "消滅処理"
-									Temp1 = v[241] * 50 
-									Temp1 += v[1198]
-									v[1301].copy v[Temp1], 50
+									ptr_emitter_head = v[241] * 50 
+									ptr_emitter_head += v[1198]
+									v[ptr_null].copy v[ptr_emitter_head], 50
 									
 							}
 							
 						} .else bl {
 							//@comment "消滅処理"
-							Temp1 = v[241] * 50 
-							Temp1 += v[1198]
-							v[1301].copy v[Temp1], 50
+							ptr_emitter_head = v[241] * 50 
+							ptr_emitter_head += v[1198]
+							v[ptr_null].copy v[ptr_emitter_head], 50
 							
 						}
 				 }
 				}
 				
 	    }
-	    
-	    
 	}
 
 }
@@ -190,12 +205,12 @@ __fn MAIN_CEV_RTS_GIB_MANAGER {
 			//@comment "エフェクトが存在する"
 			//@comment "タイマーが切れていない"
 			@if v[Temp1] >= 1 {
-				@if `v[Temp1 + 99] >= 1 {
+				v[Temp1].copy v[601], 100
+				@if v[700] >= 1 {
 					s[141].off
 					//@comment "Access15 = タイマー"
-					v[295] = Temp1 + 99
-					v[419] += 1
-					v[Temp1].copy v[601], 11
+					Ptr15 = Temp1 + 99
+					val_add(v[419],N1) // v[419] += 1
 					//@comment "#あとは個別イベントに丸投げ#V[604]>=1"
 					@if v[604] >= 1 {
 						@call .cev v[604]

@@ -856,12 +856,12 @@ cev .id(32), .name("AgentAct:Worker"), {
 														v[204] -= 1
 
 												}
-											v[305] = Ptr20 * 300
-												v[305] += 4707
+											Temp5 = Ptr20 * 300
+												Temp5 += 4707
 												v[Temp5].copy v[252], 2
-												v[305] += 93
+												Temp5 += 93
 												v[251] = v[Temp5]
-												v[305] += 180
+												Temp5 += 180
 												v[378] = 0
 												@if v[Temp5] >= 1 {
 													TT17 = v[Temp5]
@@ -1091,6 +1091,261 @@ cev .id(32), .name("AgentAct:Worker"), {
 						}
 
 				}
+
+			}
+
+		}
+}
+
+cev[39], .name("WorkerAct:setting build foundation"), {
+
+	v[11..12] *= 10000
+		@call .cev 1999
+		reg2 -= 1
+		@map.getTerrain .pos reg1, reg2 .dst TT10
+		v[40] = TT10 < 18 && TT10 != 5 ? 1 : 0
+		@comment "#Data get"
+		var4 = v[88] + 800
+		@if var4 >= 9 {
+			s[151].on
+				@call .cev var4
+				s[151].off
+				v[31].copy v[497], 4
+				TT1 = v[300001] >= v[31] ? 1 : 0
+				TT1 += v[300002] >= v[32] ? 1 : 0
+				TT1 += v[300003] >= v[33] ? 1 : 0
+				TT1 += v[300004] >= v[34] ? 1 : 0
+				v[40] -= TT1 != 4 ? 1 : 0
+				@comment "＃＃＃＃＃＃＃＃＃＃
+				地形チェック
+				＃＃＃＃＃＃＃＃＃＃"
+				@if v[91] == 1 {
+					v[40] += TT10 == 18 && v[91] & 1 ? 2 : 0
+
+				} .else bl {
+					TT10 -= 1
+						TT10 = 1 << TT10
+						v[39] = v[91] != 0 ? v[91] : TT10
+						TT10 &= v[39]
+						v[40] += TT10 > 0 ? 1 : 0
+
+				}
+			@comment "＃＃＃＃＃＃＃＃＃＃
+				地形チェック終
+				＃＃＃＃＃＃＃＃＃＃"
+				@comment "#V357以下にコピー"
+				var1.copy TT17, 4
+				@comment "#弾の判定使いまわし"
+				v[252].copy v[381], 2
+				var1.copy v[383], 2
+				@comment "#範囲攻撃処理分岐
+#0なら当たり判定を持たない"
+				MousePtr_x.copy var1, 2
+				var1 .sub TT17, 2
+				@call .cev 2002
+				TT11 = reg1
+				MousePtr_x.copy var1, 2
+				var1 .add TT17, 2
+				@call .cev 2002
+				TT1 = TT11
+				TT2 = reg1
+				@comment "TT1 = upper left morton
+				TT2 = bottom right morton
+				TT5 = shift num"
+				TT3 = TT1 ^ TT2
+				@comment "00ではない一番上位の空間にしょぞく"
+				@comment "#mask with 11000000"
+				@comment "#mask with 110000"
+				@comment "#mask with 001100"
+				@comment "#mask with 000011"
+				TT5 = TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
+				@comment "#mask end"
+				TT6 = TT2 >> TT5
+				@comment "#mask end"
+				v[340] = v[4545 - TT5 / 2]
+				v[340] += TT6 * v[1004]
+				v[327] = v[v[4551 - TT5 / 2] + TT6]
+				@comment "STATIC"
+				v[536] = v[4533]
+				@if v[35] == 1 {
+					@comment "Walltype"
+						@while v[v[536]] != 0 {
+							Temp12 = v[536]
+								Temp11 = v[Temp12] * v[1117] + 4701
+								Temp11 += 2
+								@comment "Walltype"
+								@if `!(v[Temp11] & 16 | v[Temp11 + 97] != v[251]) {
+									@comment "当たり判定"
+										Temp11 += 4
+										v[Temp11].copy v[327], 5
+										@comment "とりあえず矩形判定"
+										TT1 = v[381] - v[327]
+										TT1 = abs(TT1)
+										TT2 = v[383] + v[330]
+										TT2 -= 4
+										@if TT1 < TT2 {
+											TT1 = v[382] - v[328]
+												TT1 = abs(TT1)
+												TT2 = v[384] + v[331]
+												TT2 -= 4
+												@if TT1 < TT2 {
+													@comment "ＨＩＴ！"
+														v[40] = 0
+														@break
+
+												}
+
+										}
+
+								}
+							@comment "++"
+								v[536] += 1
+
+						}
+
+
+				} .else bl {
+					@while v[v[536]] != 0 {
+						Temp12 = v[536]
+							Temp11 = v[Temp12] * v[1117] + 4701
+							@comment "当たり判定"
+							Temp11 += 6
+							v[Temp11].copy v[327], 5
+							@comment "とりあえず矩形判定"
+							TT1 = v[381] - v[327]
+							TT1 = abs(TT1)
+							TT2 = v[383] + v[330]
+							TT2 -= 4
+							@if TT1 < TT2 {
+								TT1 = v[382] - v[328]
+									TT1 = abs(TT1)
+									TT2 = v[384] + v[331]
+									TT2 -= 4
+									@if TT1 < TT2 {
+										@comment "ＨＩＴ！"
+											v[40] = 0
+											@break
+
+									}
+
+							}
+						@comment "++"
+							v[536] += 1
+
+					}
+
+
+				}
+			@if v[2538] <= 40 {
+				@if v[40] >= 2 {
+					v[300001] .sub v[497], 4
+						@call .cev 84
+						TT17.copy var1, 4
+						@comment "#"
+						@call .cev 804
+						v[472] = divmul(90, 100, v[2216])
+						@se.play "Earth7" .opt v[472], 150, 50
+
+
+						
+						@comment "#"
+						v[202] = Adr_PlayerSelectList_Head
+						@loop .inf() {
+							@if v[v[202]] == 0 {
+								@comment "とぎれた"
+									@break
+
+							}
+							@if v[202] >= v[1007] {
+								@comment "とりあえず40体までしか選択できない"
+									@break
+
+							}
+							@comment "配列ゲット"
+								Temp1 = v[v[202]] * 300
+								Temp1 += 4700
+								v[601] = Temp1 + 1
+								Ptr20 = Temp1 + 242
+								Ptr19 = Temp1 + 19
+								Ptr18 = Temp1 + 20
+								Ptr17 = Temp1 + 18
+								Ptr16 = Temp1 + 241
+								Ptr15 = Temp1 + 242
+								v[Temp1 + 34] &= AI_routine_bits_MASK_for_initilizing_pathfinding
+								v[Temp1 + 34] |= AI_routine_bits_FLAG_RayCast // set raycast anyway
+								@comment "処理開始"
+								v[Ptr16] = v[Ptr16] != 4 ? 2 : 4
+								@comment "#Set 移動するX"
+								v[Ptr19] = MousePtr_x
+								@comment "#Set 移動するY"
+								v[Ptr18] = MousePtr_y
+								@comment "Reserve Set"
+								v[Ptr15] = 2
+								@if `v[Temp1 + 18] > 0 && v[v[Temp1 + 18] * 300 + 4802] == 104 {
+									TT2 = Temp1 + 41
+										v[Ptr19].copy v[TT2], 2
+										@loop 6 .dst TT3 {
+											TT1 = Temp1 + 51 - TT3 * 2
+												TT2 = Temp1 + 53 - TT3 * 2
+												v[TT1].copy v[TT2], 2
+
+										}
+
+									TT2 = Temp1 + 43
+										v[TT2].copy TT2, 2
+										v[Temp1 + 55] -= 1
+
+								} .else bl {
+									@comment "#Set Target"
+										v[Ptr17] = v[Temp1 + 102] == 9 ? reg1 : v[Ptr17]
+
+								}
+							@if s[1] .isOn() {
+								Ptr13 = Temp1 + 247
+									v[Ptr13] = 5
+
+							}
+							@comment "処理終わり"
+								v[202] += 1
+
+						}
+
+					v[40] = 0
+
+				} .else bl {
+					v[472] = divmul(80, 100, v[2216])
+						@se.play "Buzzer3" .opt v[472], 100, 50
+						v[40] = -1
+
+				}
+
+			} .else bl {
+				@call .cev 1918
+					v[472] = divmul(80, 100, v[2216])
+					@se.play "Buzzer1" .opt v[472], 100, 50
+					@call .cev 1924
+					TT1 = 2
+					v[601] = 1
+					@comment "#call quickstrings"
+					var1 = 199
+					@call .cev 1890
+					@pic[v[1155]].strpic {
+						"\c[8]\t[3001]"
+							.pos TT1, v[1126] .bottomLeft
+							.size 0, 0            .chromakey 1
+							.scale 100
+							.trans 30
+							.rgbs 100, 100, 100, 100
+							.font Font_UI, Font_UI_size
+							.spacing 0, 4
+							.skin "" .nobg .noframe .noPadding
+							.mapLayer 8
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+				@call .cev 1925
+					@comment "#ACHIEVEMENT"
 
 			}
 

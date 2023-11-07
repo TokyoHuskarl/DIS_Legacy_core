@@ -5,6 +5,7 @@
 #include "./../headers/header_ui.tpc"
 #include "./../headers/header_control.tpc"
 #include "./../headers/header_scripts.tpc" 
+#include "./../headers/header_ai.tpc" 
 // #include "./../headers/header_agent.tpc" -> imported in header_scripts.tpc
 
 
@@ -30,6 +31,10 @@ cev .id(50),.name("cont:Selecting Group"), {
 	CEV_CONTROL_SELECT_AGENTS_GROUP()
 }
 
+cev .id(33) ,.name("Control:CivMoveOrder"), {
+	func_control_moveorder_civ()
+
+}
 cev .id(51) ,.name("Control:MilMoveOrder"), {
 	func_control_moveorder_mil()
 

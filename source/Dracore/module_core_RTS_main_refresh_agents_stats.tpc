@@ -17,8 +17,8 @@ __fn agent_ref_stats(){
     // get Base Parameters to Process slots
     agent_BaseAD.copy agent_ProcessAD, 11
     agent_BaseRegHP.copy agent_ProcessHPreg, 2
-    agent_ProcessObjBit = agent_BaseObjBit
-    agent_ProcessWill = agent_BaseWill
+    val_asg(agent_ProcessObjBit,agent_BaseObjBit) // agent_ProcessObjBit = agent_BaseObjBit
+    val_asg(agent_ProcessWill,agent_BaseWill)  // agent_ProcessWill = agent_BaseWill
 
     // SP fatigue penalty -  exhausted units move much slower.
     agent_ProcessMS -= !(agent_ExMotionFlags & ExMotionFlags_FLAG_no_fatigue) ? muldiv(agent_ProcessMS, agent_MaxSP - agent_SP, agent_MaxSP) / 2 / (!(agent_PerkFlagBits1 & PerkFlagBits1_FLAG_Strider) ? 1 : 2) : 0
@@ -31,6 +31,7 @@ __fn agent_ref_stats(){
         
     }
 		*/
+		
 		agent_ProcessMS += agent_AgentBits & 2 ? agent_ProcessMS >> 2 : 0
 
     //@comment "#Water Terrain"
@@ -248,47 +249,58 @@ __fn agent_ref_stats(){
         @if agent_TacticsOrderFlag >= 1 {
 															
 								@if `agent_TacticsOrderFlag & 2 {
-									@if `!(agent_ProcessObjBit & 67108864) {
-										//1.62BETA2... nerfed, because we introduce the team shieldwall aura effect
-										agent_ProcessAR += v[711] >> 2 // muldiv(v[711], 30, 100) 30%->25%
-										agent_ProcessMR += v[712] >> 2 // muldiv(v[712], 30, 100) 30%->25
-										agent_ProcessEVA += v[714] / 3  // muldiv(v[714], 40, 100) 40%->33%
-										@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
-											agent_ProcessEVA += agent_ProcessEVA >> 3
-											agent_ProcessAR += v[711] >> 4 // +6%
-											agent_ProcessMR += v[712] >> 4 // +6%
-											agent_ProcessEVA += 3
-										}
+									@if agent_SP > 10 {
+										@if `!(agent_ProcessObjBit & 67108864) {
+											//1.62BETA2... nerfed, because we introduce the team shieldwall aura effect
+											agent_ProcessAR += v[711] >> 2 // muldiv(v[711], 30, 100) 30%->25%
+												agent_ProcessMR += v[712] >> 2 // muldiv(v[712], 30, 100) 30%->25
+												agent_ProcessEVA += v[714] / 3  // muldiv(v[714], 40, 100) 40%->33%
+												@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
+													agent_ProcessEVA += agent_ProcessEVA >> 3
+														agent_ProcessAR += v[711] >> 4 // +6%
+														agent_ProcessMR += v[712] >> 4 // +6%
+														agent_ProcessEVA += 3
+												}
 
-										//single shield wall give you 33% bonus so you have 133% base 
-										//And team shield wall will additinally give unit ([Current EVA]*8%) 
-										//so bacially mass weaker shield wall gives you 141% boost at least  - Eva effect is bit stronger than before1.162.
-										v[871] /= 2
-										agent_ProcessMS = muldiv(agent_ProcessMS, 8, 10)
-										//@comment "#Force Spr"
-										v[850] = 2
+											//single shield wall give you 33% bonus so you have 133% base 
+											//And team shield wall will additinally give unit ([Current EVA]*8%) 
+											//so bacially mass weaker shield wall gives you 141% boost at least  - Eva effect is bit stronger than before1.162.
+
+												agent_ProcessAS >>= 2 // /= 4
+												agent_ProcessAS *= agent_AABits & AABits_FLAG_AntiCav ? 3 : 2 // if agent's weapon is spear -25%. otherwise -50%
+												val_sub(agent_ProcessSPReg,N1)
+
+												agent_ProcessMS = muldiv(agent_ProcessMS, 8, 10)
+												//@comment "#Force Spr"
+												v[850] = 2
+										}
 									}
 								}.elif `agent_TacticsOrderFlag & 4 { //stronger shield wall
-									@if `!(agent_ProcessObjBit & 67108864) {
-										agent_ProcessAR += v[711] / 3 //muldiv(v[711], 40, 100) 40%->33%
-										agent_ProcessMR += v[712] / 3 //muldiv(v[712], 40, 100) 40%->33%
-										agent_ProcessEVA += muldiv(v[714], 40, 100)//50%->40%
-										@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
-											agent_ProcessEVA += agent_ProcessEVA >> 3//
-											agent_ProcessAR += v[711] >> 4 //+6%
-											agent_ProcessMR += v[712] >> 4 //+6%
-											agent_ProcessEVA += 3
-										}
+									@if agent_SP > 10 {
+										@if `!(agent_ProcessObjBit & 67108864) {
+											agent_ProcessAR += v[711] / 3 //muldiv(v[711], 40, 100) 40%->33%
+												agent_ProcessMR += v[712] / 3 //muldiv(v[712], 40, 100) 40%->33%
+												agent_ProcessEVA += muldiv(v[714], 40, 100)//50%->40%
+												@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
+													agent_ProcessEVA += agent_ProcessEVA >> 3//
+														agent_ProcessAR += v[711] >> 4 //+6%
+														agent_ProcessMR += v[712] >> 4 //+6%
+														agent_ProcessEVA += 3
+												}
 
-										//single strong shield wall gives you 40% bonus so you have 140% base
-										//then team shield wall gives you ([Current EVA]*12%)
-										//so basically mass shield wall gives you 148% base - it seems bit weaker than before 1.162 - but still you have +3 assured eva bonus + anti ranged bonus.
-										
-										v[871] /= 2
-										agent_ProcessMS = muldiv(agent_ProcessMS, 8, 10)
-										agent_ProcessObjBit |= 8192
-										//@comment "#Force Spr"
-										v[850] = 2
+											//single strong shield wall gives you 40% bonus so you have 140% base
+											//then team shield wall gives you ([Current EVA]*12%)
+											//so basically mass shield wall gives you 148% base - it seems bit weaker than before 1.162 - but still you have +3 assured eva bonus + anti ranged bonus.
+
+												agent_ProcessAS >>= 2 // /= 4
+												agent_ProcessAS *= agent_AABits & AABits_FLAG_AntiCav ? 3 : 2 // if agent's weapon is spear -25%. otherwise -50%
+												val_sub(agent_ProcessSPReg,N1)
+
+												agent_ProcessMS = muldiv(agent_ProcessMS, 8, 10)
+												agent_ProcessObjBit |= 8192
+												//@comment "#Force Spr"
+												v[850] = 2
+										}
 									}
 																		
                 }.elif `agent_TacticsOrderFlag & 1 {//@comment "##pikewall"

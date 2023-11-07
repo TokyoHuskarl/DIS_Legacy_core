@@ -1,3 +1,20 @@
+
+// @param {var} $baseprocEVA
+// @param {var} $baseperkfl1
+// @param {var} $baseMS
+// @return {var} reg1
+__fn get_base_rangedEVA $baseprocEVA $baseperkfl1 $baseMS {
+	val_asg(reg1,$baseprocEVA) // reg1 = victim_ProcessEVA
+	//@comment "#DodgeMS*12%"
+	reg1 +=  $baseperkfl1 & 32 ? $baseMS >> 3 : 0 // muldiv(victim_ProcessMS, 12, 100)
+	reg1 = max(reg1,0)
+	reg1 >>= 2 // /= 4
+	// @comment "##########Perk##########"
+	// @comment "Anticipation"
+	reg1 += $baseperkfl1 & 64 ? 10 + reg1 : 0
+}
+
+
 __fn func_bs_change_agent_team $agentID $team{
 	// "v1= AgentID 	v2 = team 	r1 = succeed?"
 	reg1 = 0
@@ -100,10 +117,10 @@ __fn func_bs_change_agent_team $agentID $team{
 		    reg2 = (v[__id($team)] % 3)
 		    v[Const_AgentMetaTeam_begin + (v[__id($agentID)]-1)] = reg2 
 
-		   __if DIS_EXPERIMENTAL == -1 {
-			    // set MetaTeam in AEAB
+		   __if DIS_EXPERIMENTAL == 1 {
+			    // set MetaTeam in AEB
 		   	    reg3 = $agentID
-			    set_AEAB_element(reg3,__id(reg2),AgentExBuffer_SLOT_MetaTeam)
+			    set_AEB_element(reg3,__id(reg2),AgentExBuffer_SLOT_MetaTeam)
 		   }
 		   
 		    
@@ -173,7 +190,7 @@ __fn func_bs_register_buff_to_victim $buff_id $time {
 	TT1 = __id(victim_Buff1)
 	@loop 16 .dst TT10 {
 			TT3 = TT10 >= 8 ? 0 : $buff_id
-			TT10 %= 8
+			val_mod(TT10,N8) // TT10 %= 8
 			TT2 = TT1 + TT10
 			@if v[TT2] == TT3 {
 				reg1 = TT2

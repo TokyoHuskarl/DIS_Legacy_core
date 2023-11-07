@@ -34,25 +34,31 @@ __fn func_damage_calculation {
 	}
 
 	@comment "module_core_RTS_battlesystem_damage_calculation.tpc"
-	v[36] = Ptr20
+	val_asg(v[36],Ptr20)// v[36] = Ptr20
 	s[219..220].off
 	s[168].off
 	@if argv_raw_dmg_amount != 0 {
+
 		// Ptr19 = AttackerID
 		// Ptr20 = VictimID
 		Ptr19.copy TT1,2
 		v[__id(TT1)..__id(TT2)] += 500
 		@if s[TT1].isOn() {
 			LEGS_DmgCalAtker_can_be_seen.on
+
 		}.else bl {
 			LEGS_DmgCalAtker_can_be_seen.off
+
 		}
 
 		@if s[TT2].isOn() {
 			LEGS_DmgCalVictim_can_be_seen.on
+
 		}.else bl {
 			LEGS_DmgCalVictim_can_be_seen.off
+
 		}
+
 		// ? is this really faster???
 
 		v[190] = argv_damage_attribution
@@ -70,7 +76,7 @@ __fn func_damage_calculation {
 
 		// Temp2 is calculation type
 		@if Temp2 == 2 { // TRUE DAMAGE!
-			v[21..22] = argv_raw_dmg_amount
+			reg1.repeat argv_raw_dmg_amount,2 // v[21..22] = argv_raw_dmg_amount
 			// "#HP check"
 			val_sub(victim_HP,reg2) // victim_HP -= reg2
 			victim_HP = min(victim_HP, victim_MaxHP)
@@ -79,7 +85,7 @@ __fn func_damage_calculation {
 			// "102にARかMRを取得"
 			//var1 = Ptr20
 			var2 = SLOT_CURRENT_AR + Temp2
-			macro_get_agent_slot_to_r1(Ptr20 var2) // can be removed
+			macro_get_agent_slot_to_r1(Ptr20,var2) // can be removed
 			
 			// "#Indomitable Perk gives victim AR/MR bonus 
 			reg1 += victim_PerkFlagBits1 & PerkFlagBits1_FLAG_Indomitable ? victim_ProcessWill : 0
@@ -90,7 +96,7 @@ __fn func_damage_calculation {
 			// AA flags which won't affect result here are set off in Melee AA cev(34) to improve performance"
 			@if AttackerAABits > 0 {
 				@if victim_UnitType >= 100 { // static
-					damage_multiplier += AttackerAABits & AABits_FLAG_AntiBuilding ? 200 : 0
+					damage_multiplier += AttackerAABits & AABits_FLAG_AntiBuilding ? 70 : 0
 					damage_multiplier += AttackerAABits & AABits_FLAG_AntiBuilding_SUPER ? 2300 : 0
 
 				}.elif victim_UnitType == UNIT_CLASS_INF {
@@ -116,47 +122,53 @@ __fn func_damage_calculation {
 					damage_multiplier += AttackerAABits & AABits_FLAG_AntiAir && victim_MoveTypeBIts & MoveTypeBits_Flying ? 50 : 0
 					
 			}
+
 			// "Check Obj Bit"
 			// "#RangedDamageResist"
-			damage_multiplier /= argv_damage_attribution == 1 && victim_ProcessObjBit & BaseObjBit_FLAG_RangedDamageResist ? 2 : 1
+			damage_multiplier >>= (argv_damage_attribution == 1 && victim_ProcessObjBit & BaseObjBit_FLAG_RangedDamageResist) // damage_multiplier /= argv_damage_attribution == 1 && victim_ProcessObjBit & BaseObjBit_FLAG_RangedDamageResist ? 2 : 1
+
 			// "#Halve All  Damage"
-			damage_multiplier /= victim_ProcessObjBit & BaseObjBit_FLAG_HalveAllDamage ? 2 : 1
+			damage_multiplier >>= (victim_ProcessObjBit & BaseObjBit_FLAG_HalveAllDamage) // damage_multiplier /= victim_ProcessObjBit & BaseObjBit_FLAG_HalveAllDamage ? 2 : 1
 			// "##############	CheckBitsEND##############"
 
 
-			
 			@if LEGV_PopColour > -1 { // 224 = popcolour
-					
+
 					// "#Get AReff/pen #if the damage is magical, set both 0"
-					agent_AA_AR_effectiveness = LEGV_PopColour == 0 ? __id(agent_AA_AR_effectiveness) : 1301
-					v[agent_AA_AR_effectiveness].copy agent_AA_AR_effectiveness, 2
+					TT1 = LEGV_PopColour == 0 ? __id(agent_AA_AR_effectiveness) : 1301
+					v[TT1].copy agent_AA_AR_effectiveness, 2
 
 					// "#If Crit, AR pen gets amplified"
-					agent_AA_AR_penetration = min(agent_AA_AR_penetration * (damage_multiplier > 200 ? 2 : 1), 100)
+					agent_AA_AR_penetration = min(agent_AA_AR_penetration * (1 << (damage_multiplier >= 200)), 100)
 					@if damage_multiplier >= 200 {
 						s[168].on
-				
+
 					}
 
 					/*// "(実際に受けるダメージ)=	(計算前のダメージ)×(100 / (100 +(AR.MR)))×(ダメージ倍率)	(temp1)X(temp4*(100 + temp2)*100)/100	ARならARから引いていく	Pen分はHPに通る"*/
 					reg_actual_dmg = muldiv(argv_raw_dmg_amount, damage_multiplier, 100 + muldiv(Temp2, 100 - agent_AA_AR_penetration, 100))
 
 					// "#AR check"
-					// "#[70%] of AR covers HP"
-					reg_actual_dmg_after_armor = reg_actual_dmg - muldiv(muldiv(victim_BaseAR, 70, 100), 100 - agent_AA_AR_penetration, 100)
+					// "#[70%] of AR covers HP" -> 62%
+					// reg_actual_dmg_after_armor = reg_actual_dmg - muldiv(muldiv(victim_BaseAR, 70, 100), 100 - agent_AA_AR_penetration, 100)
+					reg_actual_dmg_after_armor = reg_actual_dmg - muldiv((victim_BaseAR >> 1) + (victim_BaseAR >> 3), 100 - agent_AA_AR_penetration, 100)
 
 					// "#Nimble"
-					reg_actual_dmg_after_armor = muldiv(reg_actual_dmg_after_armor, victim_TakenDamageMultiplier, 100)
+					reg_actual_dmg_after_armor = max(muldiv(reg_actual_dmg_after_armor, victim_TakenDamageMultiplier, 100),0)
+					
 
 					// "#AR adjustment"
-					// "##Battle Forge...10%"
-					victim_BaseAR = max(0, victim_BaseAR - max(1, muldiv(reg_actual_dmg / 2, 100 + agent_AA_AR_effectiveness - (victim_PerkFlagBits1 & PerkFlagBits1_FLAG_BattleForged ? muldiv(victim_BaseAR, 10, 100) : 0), 100)))
+					// "##Battle Forge...10%" -> 12%
+					victim_BaseAR = max(0, victim_BaseAR - max(1, muldiv(reg_actual_dmg >> 1, 100 + agent_AA_AR_effectiveness - (victim_PerkFlagBits1 & PerkFlagBits1_FLAG_BattleForged ? victim_BaseAR >> 3 : 0), 100))) 
+
+
 					// "#HP check"
-					victim_HP = victim_HP - reg_actual_dmg_after_armor
+					val_sub(victim_HP,reg_actual_dmg_after_armor) // victim_HP -= reg_actual_dmg_after_armor
 					victim_HP = min(victim_HP, victim_MaxHP)
 
-					// "not in sight Alert "
-					// "########	ALERT#######"
+
+					// not in sight Alert "
+					// ########ALERT#######
 					@if LEGS_DmgCalVictim_can_be_seen .isOff() {
 						@if victim_TeamID == 0 {
 							@if v[2510] <= 0 {
@@ -193,11 +205,11 @@ __fn func_damage_calculation {
 					}
 
 					@if victim_AgentType < 9 {
-				// "#If the victim has no target obj AND is in the alert stance AND not civs nor static, then try to target the attacker"
+					// "#If the victim has no target obj AND is in the alert stance AND not civs nor static, then try to target the attacker"
 						@if victim_TargetAgentID == 0 {
 								@if `!(victim_AI_routine_bits & 1) {
 									victim_TargetAgentID = victim_TeamID != agent_TeamID && victim_StanceOrder == 0 && victim_MovementOrder != 3 ? Ptr19 : 0
-							
+
 								}
 								
 						}
@@ -305,6 +317,7 @@ __fn func_damage_calculation {
 								@break
 								
 						}
+
 						v[244] += 1
 						
 					}
@@ -319,6 +332,7 @@ __fn func_damage_calculation {
 					
 			} .else bl {
 					// "Increment Attacker TroopID KillCount"
+
 					//if not static
 					@if agent_ObjectType < 11 {
 						v[v[1259] + (agent_UnitID - 1) * 4 + 1 + agent_SaveActualTeamID * v[1260] * 4] += 1
@@ -329,15 +343,17 @@ __fn func_damage_calculation {
 					var1 = 0
 					var10 = reg2
 					@if reg2 >= 85 {
-						TT1 = reg2 / 15
-						// "#Critical Quadruple the possibility#Headhunter gives additional bonus"
-						TT1 *= (agent_PerkFlagBits2 & 8 ? 1 : 0) + (damage_multiplier >= 200 ? 4 : 1)
-						// "ROLL!"
-						var1 = TT1 >= rnd(1, 100)// ? 1 : 0 //opt
-						
-					}
-					// "Fatality Check END#####################"
+						TT1 = reg2 >> 4 // / 15
 
+						// "Critical Quadruple the possibility # Headhunter gives additional bonus"
+						TT1 *= (agent_PerkFlagBits2 & 8 ? 1 : 0) + (damage_multiplier >= 200 ? 4 : 1)
+
+						// "ROLL!"
+						var1 = TT1 >= rnd(1, 100) // ? 1 : 0 // opt
+
+					}
+
+					// "Fatality Check END
 
 					
 					copyback_victim_data(Ptr11) // copy back victim data - this might not be needed in near future
@@ -347,21 +363,24 @@ __fn func_damage_calculation {
 
 						// "Battle Flow"
 						@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_BattleFlow {
-								// "#gain 18% WeaponSkill CD per kill"
-								agent_Skill1CDtimer -= divmul(agent_skill1_CD, 100, 18)
-								
+							// #gain 18% WeaponSkill CD per kill"
+							agent_Skill1CDtimer -= divmul(agent_skill1_CD, 100, 18)
+
 						}
+
 						// "Berserk"
 						@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_Berserk {
-								// "#regain SP*20% per kill#THIS MIGHT BE TOO STRONG be careful to adjust"
-								agent_SP = min(agent_MaxSP, agent_SP + muldiv(agent_MaxSP, 20, 100))
-								// "#regain HP*8% per kill#THIS MIGHT BE TOO STRONG be careful to adjust"
-								agent_HP = min(agent_MaxHP, agent_HP + muldiv(agent_MaxHP, 8, 100))
-								
+							// regain SP*20% per kill#THIS MIGHT BE TOO STRONG be careful to adjust"
+							agent_SP = min(agent_MaxSP, agent_SP + muldiv(agent_MaxSP, 20, 100))
+							// regain HP*8% per kill#THIS MIGHT BE TOO STRONG be careful to adjust"
+							agent_HP = min(agent_MaxHP, agent_HP + (agent_HP >> 5)) // 8% -> 3.25% fix.
+
 						}
+
 
 						// refresh atker data
 						save_agent_vars(Ptr1)
+
 						// perk checks after re-inserting atker data 
 						// "Killing Frenzy"
 						@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_KillingFrenzy {
@@ -410,7 +429,6 @@ __fn func_damage_calculation {
 					v[471] = 12330
 					@cmd v[471], "", .args v[472], 3 // call kill event via @cmd! 
 					v[Ptr1].copy agent_AgentType, agent_Basic_Array_size
-					
 
 					
 			}
@@ -433,12 +451,15 @@ __fn func_damage_calculation {
 					}
 					
 			} .else bl { // recover to normal sprite variation
+
 					// "#upper 50%"
 					@if `victim_HP > victim_MaxHP / 2 {
+
 						@if `(victim_ExMotionFlags & 98304) == 32768 { // body (head part) damaged..
 								victim_ExMotionFlags |= ExMotionFlags_FLAG_HeadNotYetDamaged
 								
 						}
+
 						@if `(victim_ExMotionFlags & 24576) == 8192 { // armor damaged...
 								victim_ExMotionFlags |= ExMotionFlags_FLAG_ArmorNotYetDamaged
 								
@@ -447,18 +468,20 @@ __fn func_damage_calculation {
 					}
 					
 			}
-			// copy back victim data since it's not ovah
-			copyback_victim_data(Ptr11)
 
 
 
 			var2 = min((((reg2 / 8) + damage_base_morale_check) * agent_ProcessObjBit & BaseObjBit_FLAG_Cause_Demoralizing ? 2 : 1), 100)
-			func_bs_morale_check(Ptr20,var2)
+			func_bs_morale_check_victim(var2)
+
+			// copy back victim data since it's not ovah
+			copyback_victim_data(Ptr11)
 			// "Morale Check End################"
+
 		}
 
 		damage_multiplier = 100
-		v[422] = 0
+		val_init(v[422]) // v[422] = 0
 		v[ptr_null].copy v[19],2 // v[19..20] = 0
 		s[162].off
 		// "r1=raw damage	r2=damage to HP"
@@ -470,8 +493,7 @@ __fn dmg_popup {
 		reg1 = min(9999, reg1)
 		@if v[183] < v[4572] {
 			// "Set Hit Timer"
-			victim_HitMoveTimer = 6
-			v[220] = (v[220] + 1)
+			val_const(victim_HitMoveTimer,6) // victim_HitMoveTimer = 6
 			v[220] %= 30
 			v[223] = v[220] + 1202
 			v[221] += rnd(-6, 6)
@@ -483,10 +505,12 @@ __fn dmg_popup {
 			// "#サイズは最高150%"
 			v[225] = min(160, v[225])
 			reg1 = abs(reg1)
+
 			@if LEGV_PopColour == -1 {
 					@if s[307] .isOff() {
 						// "Heal"
 						TT1 = v[1204] - 10
+
 						reg1 = min(9999, reg1)
 						TT11 = reg1 + 1
 						@pic[v[223]].show {
@@ -504,6 +528,7 @@ __fn dmg_popup {
 								.affectedByShake
 						}
 						reg1 *= -1
+
 						v[221] += rnd(-14, 14)
 						v[222] = victim_RelativeY + rnd(18, 24) - [0, 10][s[162]]
 						TT1 = v[225] - 40
@@ -536,13 +561,13 @@ __fn dmg_popup {
 					@if victim_HP > 0 { // this setting can be causing what is not intended (killed units won't flash)
 						@if victim_AgentType > 0 { // the victim is alive
 							@if reg2 >= 1 { // "#Red Flash"
-								victim_FlashType = 1
-								TT1 = 100
+								val_const(victim_FlashType,1) // victim_FlashType = 1
+								val_const(TT1,100) // TT1 = 100
 								v[ptr_null].copy TT2,2
 								TT1.copy victim_R,3 // [100,0,0]
 								
 							} .else bl { // "#White Flash"
-								victim_FlashType = 4
+								val_asg(victim_FlashType,N4) // victim_FlashType = 4
 								v[__id(victim_R)..__id(victim_B)] = 80 // RGB
 								
 							}
@@ -757,5 +782,5 @@ __fn dmg_popup {
 		}
 		
 	}
-				
+	v[220] += 1
 }

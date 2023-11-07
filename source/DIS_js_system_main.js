@@ -2,7 +2,7 @@
 * @module DIS_js_main_module
 */
 
-// if setv() is undefined, it's virtual enviroment on node.js or sth.
+// if setv() is undefined, it's virtual enviroment on node.js, qjs or sth.
 let VIRTUAL_ENV = (typeof setv == "undefined") ? true : false;
 
 
@@ -41,7 +41,9 @@ function devmsg(text) {
 // debug log function for debug mode 
 function deblog(text) {
 	console.log(text);
-	Cmd.game.log_debug(text);
+	if (!VIRTUAL_ENV){
+		Cmd.game.log_debug(text);
+	};
 };
 
 function debObj(obj) {
@@ -80,36 +82,85 @@ function getRM(typ,add) {
 
 
 // global pointers for important objects
-let MISSION; // {RTSmission} current mission
+let MISSION; // {RTSmission} current mission - always refers to current RTS.mission
 let MAP; // {RTSmap} current map
 var scene = scene || {};
 
 
 // global variables
-let g_PLAYER; // {DIS_RTSplayer}
+
+/**
+ * @global {DIS_RTSplayer} ptr to RTS player object
+ */
+let g_PLAYER;  
+let g_ENEMY;  
+/**
+ * @LOCAL {RTS.mission.local} ptr to RTS mission local properties.
+ */
+let LOCAL;
+
 
 
 
 // ------------------------------------------------
 // DIS Data Objects
 // ------------------------------------------------
-
 class DATA_entity {
-	constructor(){};
-	inherit(){}; // override me
+	constructor(id){this.id=id;};
+	i = -1; // set in DATA.{datatype}.register()
+
+	/**
+	 * getElmAsString
+	 * @param {string} key
+	 * @return {string}
+	 */
+	getElmAsString(key){
+		let elm;
+		let ary = key.split(":"); // check if element expects array
+
+		const stringify_to_DIScsvParam = (input) => {
+			if (typeof input == "object") {
+				return make_Array_DIStable(input);
+			} else {
+				return String(input);
+			};
+		};
+
+		if(this.hasOwnProperty(ary[0])){
+			if(ary.length == 1){ // not array element
+				elm = stringify_to_DIScsvParam(this[key]);
+
+			} else {
+				key = ary[0];
+				let i = ary[1];
+				elm = stringify_to_DIScsvParam(this[key][i]);
+
+			};
+		} else { // if key is undefined, return "0"
+			elm = "0";
+
+		};
+		return elm
+	};
 
 };
+
 
 const TREETYPE_TEMPLATE = 0,
 	TREETYPE_TRP = 1,
 	TREETYPE_TECH = 2;
 
 class DATA_tree extends DATA_entity {
-	constructor(typ,tree){ // {string}
-		super();
+	constructor(id,typ,tree){ // {string}
+		super(id);
 		this.TREETYPE = typ;
-		this.INHERITS = "";
-		// inherit DATA_tree object
+
+		// inherit DATA_troop object
+		DATA.makeDataInherit(this,"TREETEMP",tree);
+		// copy given troop template
+		DATA.giveSrcParamToData(this,tree);
+
+		/*
 		if (tree.hasOwnProperty("INHERITS")){ // if inheritance setting exists
 			this.INHERITS = tree.INHERITS;
 			deblog(`inherit ${this.INHERITS}`)
@@ -124,8 +175,10 @@ class DATA_tree extends DATA_entity {
 				};
 			};
 		};
+		*/
 
 		// copy given tree template
+		/*
 		for (let key in tree){
 			if (typeof key == "object"){ // copy only array
 				let clone = [];
@@ -137,6 +190,7 @@ class DATA_tree extends DATA_entity {
 				this[key] = tree[key]; // copy numbers and strings
 			};
 		};
+		*/
 
 		let idcontainer;
 		// finally replace idtokens with number id
@@ -149,7 +203,6 @@ class DATA_tree extends DATA_entity {
 		} else {
 			idcontainer = 0
 		};
-
 
 		if (idcontainer != 0){ // debug
 			for (let Ary in this){
@@ -167,13 +220,13 @@ class DATA_tree extends DATA_entity {
 
 // template class for factions
 class DATA_faction extends DATA_entity {
-	constructor(){
-		super();
+	constructor(id){
+		super(id);
 		this.minors = [0]; // you can set minorfactions to each faction. (like Dracos, Dranas) but minors[0] must be always blank - I mean number 0.
 	};
 
-	trpTree = {}; // you need to import from json template 
-	techTree = {}; // you need to import from json template 
+	trpTree = {}; // you need to import tree from json template 
+	techTree = {}; // you need to import tree from json template 
 
 	getTroopTree(){
 		return JSON.parse(JSON.stringify(this.trpTree));
@@ -189,18 +242,77 @@ class DATA_faction extends DATA_entity {
 
 // template class for troops
 class DATA_troop extends DATA_entity {
-	constructor(){
-		super();
+	constructor(id,src){
+		super(id);
+		// inherit DATA_troop object
+		DATA.makeDataInherit(this,"TROOP",src);
+		// copy given troop template
+		DATA.giveSrcParamToData(this,src);
+
+		const pewpew = (key,idcon) => {this[key] = typeof this[key] != "number" ? idcon[this[key]] : this[key]};
+		// convert strings to DIS number id
+		pewpew("faction",facid);
+		pewpew("race",raceid);
+
+
+		// convert arrays into simple number
+	};
+
+};
+
+class DATA_troop_csv extends DATA_entity { // shadow of csv troops. doesn't have any value unless it's referred
+	constructor(id,index){
+		super(id);
+		this.i = index;
+	};
+
+	/**
+	 * called by INHERITS proc.
+	 * @method deploy
+	 */
+	deploy(){
+		
+	};
+	
+};
+
+
+// skin data for troop
+class DATA_skin extends DATA_entity {
+	constructor(id,src){
+		super(id);
+		this.i = index;
+		// copy given troop template
+		DATA.giveSrcParamToData(this,src);
 	};
 
 };
 
 
+// template class for troops
+class DATA_tech extends DATA_entity {
+	constructor(id,src){
+		super(id);
+		// inherit DATA_tech object
+		DATA.makeDataInherit(this,"TECH",src);
+		// copy given troop template
+		DATA.giveSrcParamToData(this,src);
+
+		// convert arrays into simple number
+	};
+
+	getFlagAddress(){
+		// [address,flag]
+		let retme = [this.techflagslot[0],parseInt(this.techflagslot[1],16)];
+		return retme;
+	};
+
+};
 // ------------------------------------------------
 // DIS objects
 // ------------------------------------------------
 
-// actually DISentity on js system is not a real entity that manages DIS agents in the game. 
+// DISentities on js system are not real parameters of DIS agents in the game. 
 // It's rather something like a bundle of links to actual entities on RPGMaker.
 // so unless you refresh its information through functions, data in DISentity can be diffrent from the actual value stored in RPGMaker. 
 
@@ -299,11 +411,14 @@ class DISagent extends DISentity { // agents for RTS mode
 		this.team = team;
 		this.activated = true;
 		this.isCertified = isCertified; 
+
+		// register to the world array
+		RTS.agents[agentid] = this;
 		
 	};
 
 	ckIntegrity(){ // check data integrity
-		Cmd.agent.ckIntegrity(this)
+		Cmd.agent.ckIntegrity(this);
 	};
 
 	getid(){return this.agentid;};
@@ -319,8 +434,14 @@ class DISagent extends DISentity { // agents for RTS mode
 		return res; 
 	};
 
-	isAlive(){ // check if it's alive
-		
+	isAlive(){ // check if the agent is alive
+		if(getv((1 + DIS.agent.getPtrToMainParam(this.agentid))) > 0){
+			return true;
+
+		} else {
+			return (this.activated = false);
+
+		};
 	};
 
 }
@@ -334,7 +455,6 @@ class DISagent_static extends DISagent {
 
 class RTSagentGroup { // list object for DISagent.
 	constructor(agtArray,team){
-		deblog(agtArray);
 		this.idlist = [];
 
 		// this design can make terrible error in future? idk 
@@ -350,11 +470,52 @@ class RTSagentGroup { // list object for DISagent.
 		}
 		
 		this.team = team || "undefined";
+	};
+
+	info = {
+		Schewerpunkt: [0,0],
+	};
+
+	pushAgent(agt){
+		this.agentlist.push(agt);
 	}
 
+	compoundAgtGroup(grp){
+		this.agentlist = this.agentlist.concat(grp.agentlist);
+		this.idlist = this.idlist.concat(grp.idlist);
+	};
+
+	compoundAgtArray(arr){ // underconst
+		this.idlist = this.idlist.concat(arr);
+	};
+
 	getids(){ return this.idlist; };
+
+	// return tile[X,Y]
+	getSchwerpunkt(){
+		let SP = [0,0];
+		let counter = 0;
+
+		for (let ag of this.agentlist){
+			if (ag.isAlive()){ // if it's valid agent
+				let pnt = [ag.getAgentSlot(26),ag.getAgentSlot(27)];
+				const lv = ag.getAgentSlot(104);
+				for (let elmi = 0; elmi < 2; elmi++){
+					SP[elmi] += (pnt[elmi] * lv);
+				};
+				counter += lv;
+			};
+		};
+
+		for (let i = 0; i < 2; i++){
+			SP[i] = (SP[i] /= counter) | 0;
+		};
+
+		return (this.Schewerpunkt = SP);
+	};
+
 	
-}
+};
 
 
 
@@ -383,7 +544,18 @@ const adr_DISstr1 = 501;
 // parse ids and save into container on js
 function parse_DISid(line,myArray) {
 	const [key, value] = line.split('=');
+	myArray.register(key,parseInt(value,10));
+};
+
+// without id dictionary
+function parse_simpleid(line,myArray) {
+	const [key, value] = line.split('=');
 	myArray[key] = parseInt(value,10);
+};
+
+function parse_languageString(line,myArray) {
+	const [key, value] = line.split('|');
+	myArray[key] = value;
 };
 
 
@@ -417,11 +589,17 @@ function parse_DISData_IdArray(ary,dict){
 function make_Array_DIStable(array) {
 	let string = "";
 	for (let elm of array) {
-				string += elm + "|";
+				if (typeof elm == "object"){
+					string += make_Array_DIStable(elm) + "|";
+
+				} else {
+					string += elm + "|";
+				};
 	};
 	// remove the last "|" upon return
 	return string.slice(0,-1);
 };
+
 
 // DIS object is basically container for fundamental data of DIS on quickjs.
 // Whenever you want to access DIS game data, the DIS object serves you as a way to get/set the data..
@@ -432,10 +610,61 @@ var DIS = DIS || {};
 const Adrt_ShLog = 782; // same as Shell Log address 
 
 // should I make them const?
-var trpid = trpid || {}; // troop ID table
-var staid = staid || {}; // building ID table
-var facid = facid || {}; // faction ID table
-var techid =  techid || {}; // ["techid",[group,flagbit]]
+class IDdict {
+	constructor(prefix){this.prefix = prefix + "_";}
+	reserved = new Set(["prefix","reserved","convert","register"]); // never change
+
+	/**
+	 * convert given key to int.
+	 *
+	 * @method convert
+	 * @param {string OR int} given
+	 * @return {int} 
+	 */
+	convert(given) {
+		let id = given;
+		if (typeof given == "string"){
+			if (given.lastIndexOf(this.prefix) != -1){
+				id = this[given];
+			} else {
+				errorlog(`"${given}" has no expected "${this.prefix}" prefix!`);
+				id = -1;
+			};
+		};
+		return id;
+	};
+
+	register(key,val){
+		if (this.reserved.has(key)){
+			return errorlog(`The name of the new key "${key}" is reserved word for DIS ID dictionary!`);
+		};
+		return this[key] = val;
+	};
+
+};
+
+var trpid = new IDdict("TRP"); // troop ID table
+var staid = new IDdict("STA"); // building ID table
+var facid = new IDdict("FAC"); // faction ID table
+var raceid = new IDdict("RACE"); // race ID table
+
+var techid =  new IDdict("TECH"); // ["techid",[group,flagbit]]
+
+// consts
+DIS.consts = {
+	
+	Adrv:{},
+	Adrs:{},
+
+	Adrt: { // address for RM string variables
+		TroopCsvDataHead: getv(1215),
+	},
+	
+}
+
+const ADRV = DIS.consts.Adrv
+const ADRS = DIS.consts.Adrs
+const ADRT = DIS.consts.Adrt
 
 DIS = { // DIS fundamental components
 	init: {
@@ -488,6 +717,9 @@ DIS = { // DIS fundamental components
 					DIS.log.push(`RTS particle picture Limit: ${ptcl}`);
 				
 				// gore effect setting?
+				// s[318] <- BOOL_Gore_switch
+					sets(318,boot_config.gore)
+					DIS.log.push(`Gore VFX switch: ${boot_config.gore}`);
 
 			};
 		},
@@ -511,10 +743,11 @@ DIS = { // DIS fundamental components
 				let i = 0;
 				// parse string to array
 				lines.forEach(line => { parse_DISid(line,table); i++;});
-				return initIDlog(i,Adrt);
+				initIDlog(i,Adrt);
+				return i;
 			}
 
-			let initIDlog = function(amount,type){
+			const initIDlog = function(amount,type){
 				let text = "DIS.initID():";
 				if (amount > 1){
 					if (type == 801){
@@ -523,6 +756,8 @@ DIS = { // DIS fundamental components
 						text += `StaticID loaded - ${amount} statics are preset`
 					} else if (type == 803) {
 						text += `FactionID loaded - ${amount} factions are preset`
+					} else if (type == 810) {
+						text += `TechID loaded - ${amount} techs are preset`
 					} else {
 						text += "unknown RM str is loaded."
 					}
@@ -532,30 +767,50 @@ DIS = { // DIS fundamental components
 				}
 				return DIS.log.push(text)
 			}
+			// --------------------
+			// load race ID
+			// --------------------
+
+			// temp
+			raceid.RACE_humankind = 0;
+			raceid.RACE_goblin = 1;
+			raceid.RACE_ork = 2;
+			raceid.RACE_dragon = 3;
+			raceid.RACE_undead = 4;
+			raceid.RACE_skeleton = 5;
+			raceid.RACE_minotaur = 6;
 
 			// --------------------
 			// load troop ID
 			// --------------------
 			// you can use troopID by writing like this: trpid["TRP_sushi_kensei"] 
-			trpid = {}; // init trpid
-			store_ID_table(trpid,801); // get from ~/scripts/const_troops.
+			trpid = new IDdict("TRP"); // init trpid
+			DIS.data.TROOP.count = store_ID_table(trpid,801); // get from ~/scripts/const_troops.
 
 			// --------------------
 			// load static ID
 			// --------------------
-			staid = {}; // init staid
+			staid = new IDdict("STA"); // init staid
 			store_ID_table(staid,802) // get from ~/scripts/const_statics.
 
 			// --------------------
 			// load faction ID
 			// --------------------
-			facid = {}; // init facid
+			facid = new IDdict("FAC"); // init facid
 			store_ID_table(facid,803) // get from ~/scripts/const_factions.
 			
+			// ~DATA converted from DIS json START~
+
 			// --------------------
 			// load tech ID
 			// --------------------
-			techid = {}; // init facid
+			
+			techid = new IDdict("TECH"); // init facid
+			for (let i = 1; i < DATA.TECH.ptrs[0]; i++){
+				techid.register(techid.prefix + (DATA.TECH.ptrs[i].id),i);
+
+			};
+
 					
 			DIS.log.push("ID table init done.")
 		},
@@ -636,10 +891,35 @@ DIS.string = {
 		return string;
 	},
 
+	// LEGACY map string
 	getMapstr: function(id) { // ?
 		const Adrt_mapstr_head = 40000
 		var string = gett(Adrt_mapstr_head + id);
 		return string;
+	},
+
+	// convert js string to show into DIS format string
+	convertString: function(given){
+
+		let rs = given;
+		let rsget = rs;
+		if (rs.lastIndexOf('$mstr_') == 0){
+			rs = rs.split("$mstr_")[1];
+			rsget = RTS.mission.strings[rs];
+		} else if (rs.lastIndexOf('$qstr_') == 0){
+			rsget = rs.split("$qstr_")[1];
+			// underconstruction
+		};
+		if (typeof rsget == "undefined") { errorlog(`Map string "${rs}" is not registered.`); rs = "undefined";
+		} else {
+			rs = rsget;
+		};
+
+		// let the in game string can reffer js variables
+		// unco
+		rs = rs.replace(",", "$;");
+		return rs // DIS format comma.
+
 	},
 
 }
@@ -647,14 +927,15 @@ DIS.string = {
 const Adr_ptr_spawnAgent = 201; //v[201]
 
 DIS.agent = { 
-	limit: getv(1004), // get from game variable
+	// get from game variable
+	limit: getv(1004), 
 	genPtrPos: 0,
 
 	// Search Empry Space function - this function searches a blank space for an agent in the agent data space.
 	// BUT, it has several problems:
 	// 1. It must be very slow.
 	// 2. How can it sync the result after inserting some Cmd.game.wait(n)?
-	// so this will need improvement anyway...
+	// so this needs improvement anyway I suppose...
 
 	searchEmptySpace: function(){ // this must be fugging slow. just experimental 
 
@@ -678,7 +959,10 @@ DIS.agent = {
 
 	getPtrToMainParam: (id) => {return 4700 + id * 300;},
 
+	getMainParam: function(id,slot){return getv(this.getPtrToMainParam(id) +slot);},
 
+
+	// BROKEN
 	ck_if_alive(agentid){
 		ptr = this.getPtrToMainParam(agentid);
 		ptr += 1; // refering to agenttype slot. If *ptr > 0, the agent is seen alive.
@@ -689,6 +973,8 @@ DIS.agent = {
 	setName: function(agentid,name) {
 		
 	},
+
+	
 
 }
 
@@ -705,49 +991,91 @@ DIS.control = {
 
 // set DATA global pointer
 
+function createKeyArrayFromCsvLine(tmp){
+	let elms = tmp.trim().split(",")
+	let elmary = [];
+	elms.forEach(elm=>{elmary.push(elm);});
+	return elmary;
+}
+
 DIS.data = { // DIS.data
-	init: function(){
-		this.FACTION.init();
+	csvtemp: {
+		TROOP: createKeyArrayFromCsvLine(`id,name,agentDefaultGrp,agentType,agentSprite,race,skin,size:0,size:1,faction,passiveId,unitclass,Lv,HP,SP,AD,AP,AR,MR,HIT,EVA,Crit,MS,WILL,MainWeapon,WEPvariations,Shield,SHDvariations,Armor,AMRvariations,Helmet,HELvariations,Accessory,ACCvariations,SubWeapon,SubWEPvariations,ReserveSetL,?,ActiveSkill:0,ActiveSkill:1,ActiveSkill:2,ActiveSkill:3,PassiveSkill,Perks1,Perks2,Perks3,Perks4,motionFlags,objFlags,AABits,ExtraSettingEv,ExtraParts,Hpreg,Spreg,AS,MoveTypeBits,AArangeMax,AArangeMin,AAmotiontime,AAcost,AAfunction,reserve,AtkTime,AAarmorEff,AAarmorPen,AAeffect,,AIFlag,spriteOffset_x,spriteOffset_y,,,,,,,,train_speed,food,wood,stone,gold,iconsprite,spawnsound,ex_spawn_cev,Description,Lore`),
+
 	},
 
-	parseDISjson(src){ // returns object
+	init: function(){
+		// this.FACTION.init(); <- rewrite this!
+		this.TECH.init();
+	},
+
+	// called by Cmd.sys.importData on RM command interpreter
+	autoregister: function(obj){
+		// kek fucking retarded if nesting
+		if(obj.hasOwnProperty("TROOP")){
+			for (let trp of obj.TROOP){
+				this.TROOP.register(trp);
+			};
+		};
+
+	},
+
+	/**
+	* @method parseDISjson
+	* @param {string} Raw json string. 
+	* @return {object} An object that contains datatype array And the datatype arrays contain source objects for DIS data - still need to be thrown into DATA entity constructors.
+	*/
+	parseDISjson(src){ 
 		let result = {};
 		let dataobj = JSON.parse(src);
-		deblog(`DIS.data.parseDISjson:`)
+		deblog(`DIS.data.parseDISjson:`);
+
+		// call this at the beginning of each nest 
+		const neststart = (typ)=>{
+			deblog(`${typ} data found`);
+			result[typ] = result[typ] || [];
+			return result[typ];
+		};
+
 		for (let typ in dataobj){
-			if (typ == "FACTION"){ // faction data
-				deblog(`FACTION template data found.`)
-				result.FACTION = result.FACTION || [];
-				let ptr2Res = result.FACTION;
-				for (let temp in dataobj.FACTION){
+			let ptr2Res;
+
+			// FACTION data
+			if (typ == "FACTION"){
+				ptr2Res = neststart(typ,ptr2Res);
+				for (let temp in dataobj[typ]){
 					let fac = this.FACTION.createNew(temp);
 					let TEMPFAC = dataobj.FACTION[temp]
-					// try {
 					if (TEMPFAC.name != ""){
-						fac.name  = TEMPFAC.name; // value copy 
-						fac.color = TEMPFAC.color; // value copy
+						fac.name  = TEMPFAC.name; 
+						fac.color = TEMPFAC.color;
 						
 						var givenTree = TEMPFAC.trpTree || {};
-						fac.trpTree  = new DATA_tree(TREETYPE_TRP,givenTree);
+						fac.trpTree  = new DATA_tree("trpTree",TREETYPE_TRP,givenTree);
 						givenTree = TEMPFAC.techTree || {};
-						fac.techTree  = new DATA_tree(TREETYPE_TECH,givenTree);
+						fac.techTree  = new DATA_tree("techTree",TREETYPE_TECH,givenTree);
 
 					}
 					ptr2Res.push(fac);
 
 				};
 
-			} else if (typ == "TREETEMP"){ // tree template data
-				deblog(`TREETEMP data found.`)
-				result.TREETEMP = result.TREETEMP || [];
-				let ptr2Res = result.TREETEMP;
-				for (let name in dataobj.TREETEMP){
+			// TREE TEMPLATE data
+			} else if (typ == "TREETEMP"){
+				ptr2Res = neststart(typ,ptr2Res);
+				for (let strid in dataobj[typ]){
 					let type = dataobj.TREETEMP.TREETYPE || 0; //
-					let tree = this.TREETEMP.createNew(type,name,dataobj.TREETEMP[name]);
+					let tree = this.TREETEMP.createNew(type,strid,dataobj[typ][strid]);
 					ptr2Res.push(tree)
 				};
 
-			};
+			} else if (typ == "TROOP");{ // troop data 
+				ptr2Res = neststart(typ,ptr2Res);
+				for (let strid in dataobj[typ]){
+					let nutrp = this.TROOP.createNew(strid,dataobj[typ][strid]);
+					ptr2Res.push(nutrp);
+				};
+			}
 
 		};
 		deblog("DISjson parsing finished.\n result:")
@@ -755,35 +1083,105 @@ DIS.data = { // DIS.data
 		return result;
 	},
 
+	/**
+	* @method giveSrcParamToData
+	* @param {DATA_entity} data DIS DATA entity that receives parameters copied from src.
+	* @param {object} src Source object that generated by parsing json.
+	*/
+	giveSrcParamToData: function(data,src){
+		for (let key in src){
+			if (typeof key == "object"){ // copy only array
+				let clone = [];
+				for (let elm of src[key]){ // make clone
+					clone.push(elm);
+				};
+				data[key] = clone; // save new clone of array of parent tree
+			} else {
+				data[key] = src[key]; // copy numbers and strings
+			};
+		};
+	},
+	
+	/**
+	 * If given src object imported from json has INHERITS property, copy parent properties to the child data object.
+	 * This method is usually called in constructor of DATA entity.
+	 *
+	 * @method makeDataInherit
+	 * @param {DATA_entity} child DIS Data entity that inherits properties.
+	 * @param {string} datatype Datatype property under DIS.data, where parent object exists. e.g. "TROOP", "TREETEMP".
+	 * @param {object} src Source Object that generated by parsing json.
+	 */
+	makeDataInherit: function(child,datatype,src){
+		if (src.hasOwnProperty("INHERITS")){ // if inheritance setting exists
+			const DtypPtr = DATA[datatype];
+			let savid = child.id;
+			let heritage_array = [src.INHERITS];
+			
+			// make parent object array until the root object whose INHERITS is blank
+			for (let i = 0; DtypPtr.hasOwnProperty(heritage_array[i]) && DtypPtr[heritage_array[i]].INHERITS != ""; i++ ){
+				heritage_array.push(DtypPtr[heritage_array[i]].INHERITS);
+			};
+
+			// then let current child object inherit
+			while (heritage_array.length != 0){
+				let what2inherit = heritage_array.pop();
+				deblog(`let ${child} inherit ${what2inherit}`)
+
+				let ptr2Parent = DtypPtr[what2inherit];
+				for (let aryname in ptr2Parent){
+					if (typeof ptr2Parent[aryname] == "object"){
+						let clone = [];
+						for (let elm of ptr2Parent[aryname]){ // make clone
+							clone.push(elm);
+						};
+						child[aryname] = clone; // save clone of array of parent tree
+					} else {
+						if (datatype != "TREETEMP") {
+							child[aryname] = ptr2Parent[aryname];
+						};
+					};
+				};
+
+			};
+
+			child.id = savid;
+		} else {
+			child.INHERITS = "";
+		};
+	},
+
+
 	
 	FACTION: {
 		init: function(){
 			// load faction template json file in current module directly
 			// before running this js file, TPC loads it
-			let LOADED_TEMPLATE = JSON.parse(gett(633)); // <- t[633] is str_moduleData_FacTemplate_json
+			let LOADED_TEMPLATE = JSON.parse(gett(633))["FACTION"]; // <- t[633] is str_moduleData_FacTemplate_json
 			let i = 1;
-			for (let key in facid){
-				let raw = key.slice(4); // remove "FAC_" prefix
-				let fac = this.createNew(raw);
-				let temp = LOADED_TEMPLATE[raw];
-				deblog(temp)
-				if (typeof temp == "object"){ // if it's defined in json
-					
-				};
-				
-
-
-				this.register(fac,i); // even if it's dummy faction, register to as far as it's written in const_factions.txt
+			for (let key in LOADED_TEMPLATE){
+				let fac = this.createNew(LOADED_TEMPLATE[key]);
+				this.register(fac,i); // even if it's dummy faction, register to as far as it's written in {module}/Data/faction_template.json
 				i++;
 			};
 		},
 
 		ptrs: [0],
 
+		/**
+		 * @method createNew
+		 * @param {string} strid
+		 */
+		// rewrite DATA_faction constructor!!
 		createNew: function(strid){
-			return this[strid] = new DATA_faction(); // do not resgister to ptrs yet
+			return this[strid] = new DATA_faction(strid); // do not resgister to ptrs yet
 		},
 
+  /**
+   * register.
+   * @method register
+   * @param {DATA_faction} Dfac
+   * @param {int} index
+   */
 		register(Dfac,index){
 			index = index || this.ptr[0] + 1; // if index is not set,then just push
 			this.ptrs[index] = Dfac;
@@ -791,16 +1189,143 @@ DIS.data = { // DIS.data
 		},
 
 	},
-	TROOP: {}, 
+
+	TROOP: {
+
+		count: 0,
+		/**
+		 * .
+		 * @method createNew
+		 * @param {} strid
+		 * @param {} srcdata
+		 */
+		createNew: function(strid,srcdata){
+			return this[strid] = new DATA_troop(strid,srcdata); // do not resgister to ptrs yet
+		},
+
+		/**
+		 * register troop data to id array.
+		 * Newly registered data will be pushed into id array.
+		 * If you want to add mod troop data to the game, use this method.
+		 *
+		 * @method register
+		 * @param {DATA_troop} trpdata
+		 */
+		register: function(trpdata){
+			let ls4nuTrp = [];
+			if (Array.isArray(trpdata)){
+				for (let elm of trpdata){
+					ls4nuTrp.push(elm);
+				}
+			} else {
+				ls4nuTrp.push(trpdata);
+			};
+
+			for (let nutrp of ls4nuTrp) {
+				this.count++; // increment troop data counter
+				let ck = "TRP_" + nutrp.id;
+				if (trpid.hasOwnProperty(ck)) { // override
+					this.writeIntoRM(nutrp,trpid[ck])
+
+				} else {
+					this.writeIntoRM(nutrp,this.count);
+				}
+			};
+			deblog(this.count);
+		},
+
+		/**
+		 * convert troop data into actual DIS troop data CSV string on RM system and write it into RPG maker string system.
+		 * using this method allows you to override already existing troop data on RM.
+		 * If you just want to add mod troop data to the game, you should use DATA.TROOP.register() than this method.
+		 *
+		 * @param {} index
+		 * @param {DATA_troop} trpdata
+		 */
+		writeIntoRM: function(trpdata,index){
+			const where2write = ADRT.TroopCsvDataHead + index;
+			deblog("writign nao")
+			let idfied = "TRP_" + trpdata.id;
+			trpdata.i = index; // set index number into trpid container  
+			trpid.register(idfied, index);
+			sett(where2write,this.convertIntoCsvLine(trpdata)); // go for it
+		},
+
+		convertIntoCsvLine: function(trpdata){ 
+			let str="";
+
+			const pushKeyStr = (key) => {
+				return trpdata.getElmAsString(key) + ",";
+			}; 
+	
+			deblog(DATA.csvtemp.TROOP)
+			for (let elm of DATA.csvtemp.TROOP){
+				str+=pushKeyStr(elm)
+			};
+
+			deblog(str)
+			return str;
+
+		},
+
+	}, 
 	STATIC: {}, 
-	TECH: {},
+	TECH: {
+		init: function(){
+			// load faction template json file in current module directly
+			// before running this js file, TPC loads it
+			
+			let LOADED_DATA = JSON.parse(gett(634))["TECH"]; // <- t[634] is str_moduleData_Tech_json
+			let i = 1;
+			for (let key in LOADED_DATA){
+				let tech = this.createNew(key,LOADED_DATA[key]);
+				this.register(tech,i);
+				i++;
+			};
+
+		},
+
+		ptrs: [0],
+
+		createNew: function(strid,srcdata){
+			return this[strid] = new DATA_tech(strid,srcdata); // do not resgister to ptrs yet
+		},
+
+		// can't we omit this with some js function or etwas?
+		register(elm,index){
+			index = index || this.ptr[0] + 1; // if index is not set,then just push
+			elm.i = index;
+			this.ptrs[index] = elm;
+			this.ptrs[0] = this.ptrs.length;
+		},
+
+
+
+	},
 	TREETEMP: {
+		/**
+		 * .
+		 * @method createNew
+		 * @param {int} typ
+		 * @param {string} strid
+		 * @param {object} treedata
+		 */
 		createNew: function(typ,strid,treedata){
-			return this[strid] = new DATA_tree(typ,treedata); // do not resgister to ptrs yet
+			return this[strid] = new DATA_tree(strid,typ,treedata); // do not resgister to ptrs yet
 		},
 
 	},
+	RACE: {},
+	SKIN: {},
 	SKILL: {},
+	ITEM: {
+		WEAPON: {},
+		SHIELD: {},
+		ARMOR: {},
+		HELMET: {},
+		ACCESSORY: {},
+
+	},
 
 };
 
@@ -820,14 +1345,11 @@ const DATA = DIS.data;
 
 
 //
-if (SINGLEPLAY){
-	const TEAM_GAIA = -1,
-		TEAM_PLAYER = 0,
-		TEAM_ENEMY = 1,
-		TEAM_NEUTRAL = 2,
-		TEAM_ALLY = 3;
-};
-
+const TEAM_GAIA = -1,
+	TEAM_PLAYER = 0,
+	TEAM_ENEMY = 1,
+	TEAM_NEUTRAL = 2,
+	TEAM_ALLY = 3;
 
 const Adr_world_frame = 2510;
 
@@ -860,13 +1382,64 @@ class DISvariable extends DISentity { // nonvolatile Variable for RTS mission
 // RTSmission Object
 
 class RTSmission {
-	constructor(missionid,mapid){
-		if (missionid == ""){missionid = "mapgentest";};
-		this.missionid = missionid; // usually string
-		this.mapid = mapid; // if 0, open custom map
+	constructor(infojson){
+		infojson = infojson || "undefined";
+			this.RMmapid = 0; // RPGMAKER mapid.
+		if (infojson == "undefined"){
+			this.RMmapid = -1; // RPGMAKER mapid.
+			this.missionid = "NO_missioninfo";
+			this.conf = {};
+			this.conf.isLEGACYmission = true;
+			this.conf.isSightSystemOn = true;
+			this.conf.isMoraleSystemOn = true;
+			this.conf.isLevelSystemOn = false; // not yet
+			this.mapSourceDir = this.missionid;
+
+		} else {
+			let src;
+			try {
+				src = JSON.parse(infojson);
+			} catch (error) {
+				errorlog("missioninfo.json.txt for the current mission seems broken. Check if it's written in correct JSON format.")
+				src = {name: "Couldn't read missioninfo.json.txt file for this mission"};
+			};
+			this.missionid = src.missionid;
+			this.name = src.name;
+			this.missionscript = src.missionscript || ["mymission.js"];
+			this.dataextension = src.dataextension || [];
+			this.startcamerapos = src.startcamerapos || [0,0];
+
+			this.playcondition = src.playcondition || [];
+			this.dependency = src.dependency || [];
+			this.icon = src.icon || "";
+			
+			this.conf.allows_pick_faction = src.allows_pick_faction || false;
+			this.conf.isSightSystemOn = src.sys_sight || false;
+			this.conf.isMoraleSystemOn = src.sys_morale || true;
+			this.conf.isLevelSystemOn = src.sys_level || false;
+
+			this.conf.isLEGACYmission = src.legacymission || false;
+
+			// set player factions
+			let i = 0;
+			for (let fac of src.default_factions){
+				this.essential.players[i] = new DIS_RTSplayer(i,fac);
+				i++;
+			};
+			this.mapSourceDir = (src.hasOwnProperty("IMPORT_MAP") && src.IMPORT_MAP != "") ? src.IMPORT_MAP : this.missionid;
+
+
+
+		};
+		sets(457,this.conf.isLEGACYmission); // s[457] <- Is_LEGACYSTAGE
+			// console.log("mapdir is "+this.mapSourceDir)
+		
+
+
 		this.allocVarAmount = 0;
-		this.essential.mapDataDirectory = missionid; // initially set the same as mission
+		this.essential.mapDataDirectory = this.missionid; // initially set the same as mission
 		this.passedFrame = 0; //  if DIS game is reloaded, then reload from RM var. 
+
 	};
 
 	createMissionVar = function(){
@@ -879,50 +1452,77 @@ class RTSmission {
 		} else {
 			Cmd.game.log_error(("Too many mission variables are declared! Current limit is: " + VarmemoryLimit))
 			return NULL;
-		}
+		};
 	};
 
-	local = { // mission local instances
-		Cmd: {
-				
+	Cmd = { // mission commands - basically load files from the mission directory
+		importData(finame){
+			let path = RTS.mission.missionPath + finame; // Str_MissionPath
+			Cmd.sys.importData(path);
 		},
-		
 	};
+
+	local = {}; // mission local instances - restored when you reload the game.
 	
 
 	conf = { // these matter only at the setting up mission part
-		isLEGACYmission: false,
-		isSightSystemOn: true,
-		isMoraleSystemOn: true,
-		isLevelSystemOn: false, // not yet
 		
+		
+	};
+
+	missionPath = ""; // get from RM system in RTS.setupMission
+
+	strings = {};
+	importLangString(str){
+		let lines = str.trim().split("\n");
+		lines.forEach(line => {
+			parse_languageString(line,this.strings)
+		});
+		deblog("string imported:\n" + str);
 	};
 	
 
-	essential = { // these elements must be restored when you reload the game via save/load.
+	essential = { // these elements must be restored when you reload the game via save/load. <- will be relocated?
 		players: [],
-		difficulty: 0,
+		difficulty: getv(2401), // <- RTS_Difficulty
 		weatherType: 0,
-		mapDataDirectory: this.mapDataDirectory, // set in constructor
+		// mapDataDirectory: this.mapDataDirectory, // set in constructor
 	};
 
 	save = function(){
 		// save triggers in queue as a string..
-		let savestring = ""
+		let savestring = "";
 		for (let elmid in this.triggers.queue){
 			let i = this.triggers.queue[elmid].index; // get trigger index in RTS.createdTrgs
-			savestring += i + ","
-		}
+			savestring += i + ",";
+		};
 		sett(Adrt_JSSAVE_triggersQueue,savestring.slice(0,-1));
+
+		sett(745,JSON.stringify(this.local)); // Str_Mission_local_save_JSON
+
 
 	};
 
 	restore = function(){
 		// restore mission settings
 		this.passedFrame = getv(Adr_world_frame); //  if DIS game is reloaded, then reload from RM var. 
-		
-		
+		let saved = JSON.parse(gett(745));
+		for (let elmid in saved){
+			let elm = saved[elmid];
+			if (typeof elm == "object"){
+				if (Array.isArray(elm)){ // if it's array
+					this.local[elmid] = [];
+					for (let elm_b of elm) {
+						this.local[elmid].push(elm_b);
+					};
+				}; // otherwise just ignore, since triggers cannot be saved
+			} else {
+				this.local[elmid] = elm; // just copy
 
+			};
+		};
+		
+		deblog(JSON.stringify(this.local));
 		deblog("RTSmission restored.");
 	};
 
@@ -950,7 +1550,6 @@ class RTSmission {
 			// but how?
 			let newQue = this.queue;
 			let isTriggered = 0b0;
-
 			for (let TRIGGER of this.queue) {
 				let result = TRIGGER.run(); // run the trigger!
 				if (result & 0b10){ // if end flag is TRUE
@@ -980,7 +1579,7 @@ class RTSmission {
 			if (this.timer >= frame){this.timer = 0; return true;}else{return false;};
 		};
 		return Trig; // return RTStrigger
-	}
+	};
 
 	createSimpleTrigger_Timer = function(h,m,s) { // if the set time passed, then call effect()
 		let Trig = new RTStrigger();
@@ -989,7 +1588,7 @@ class RTSmission {
 			return (RTS.mission.passedFrame >= goalFrame);
 		};
 		return Trig;
-	}
+	};
 
 	createSimpleTrigger_FrameTimer = function(f) { // if the set frame has passed since the trigger set, then call effect()
 		let Trig = new RTStrigger();
@@ -1002,7 +1601,7 @@ class RTSmission {
 
 
 	setMapData = function(mapdir){ // {string}
-		this.essential.mapDataDirectory = mapdir;
+		this.mapSourceDir = mapdir;
 	};
 
 	setTrigger = function(trig){ // {RTStrigger}
@@ -1042,10 +1641,50 @@ const MAPGEN_nomapgen = 0,
 // height gen 
 const HGEN_NOTHING = 0,
 	HGEN_PRESET = 1,
-	HGEN_GENERATE = 2;
+	HGEN_GENERATE = 2,
+	HGEN_PRESET_TXT = 3;
 
 class RTSmap {
-	constructor(mapdeffile){
+	constructor(infojson){
+		this.size = [50,50]; // temp
+		infojson = infojson || "undefined";
+		if (infojson == "undefined"){
+			this.mapid = "LEGACYMAP";
+			this.isGenerated = false;
+			this.heightgenType = HGEN_NOTHING; // 
+			this.tileset = 1; // RM tile set - if it's not defined, at least try to load 1.
+			this.terrainSource = "terrain.png"; // png?
+
+		} else {
+
+			let src;
+			try {
+				src = JSON.parse(infojson);
+			} catch (error) {
+				errorlog("mapinfo.json.txt for the current mission seems broken. Check if it's written in correct JSON format or not.")
+				src = {name: "Couldn't read mapinfo.json.txt file for this mission"};
+			};
+			this.name = src.name;
+			this.mapscript = src.mapscript || ["mymap.js"];
+			this.dataextension = src.dataextension || [];
+
+			this.dependency = src.dependency || [];
+			
+			// set player factions
+			let i = 0;
+			for (let elm of src.size){
+				this.size[i] = elm;
+				i++;
+			};
+			this.heightgenType = src.heightgen || 0; // kari
+			this.terrainSource = src.terrainfile || "terrain.png"; // png?
+			this.tileset = src.tileset || 1; // RM tile set - if it's not defined, at least try to load 1.
+		};
+		
+
+
+
+		/*
 		mapdeffile = mapdeffile || "editmode";
 		this.source = mapdeffile;
 		this.size = [50,50]; // temp
@@ -1053,7 +1692,10 @@ class RTSmap {
 		this.heightgenType = HGEN_NOTHING; // 
 		this.tileset = 1; // RM tile set - if it's not defined, at least try to load 1.
 		this.terrainSource = "mapdata.png"; // png?
-	}
+		*/
+		
+
+	};
 	
 	
 	build(){ // this function called through mission init process, after RTS.openMissionMapDataloading() done after mapdef.js.txt is read.
@@ -1062,6 +1704,7 @@ class RTSmap {
 
 		setv(Adr_TileID,this.tileset);
 		this.generate();
+		deblog("build called")
 		setv(Adr_HeightGenType,this.heightgenType)
 	};
 	
@@ -1077,12 +1720,22 @@ class RTSmap {
 	
 	generate(){ // if you don't override this function, this object tries to load this.terrainSource unless the map is LEGACYmission - I mean using RMmap.
 	
+			deblog("how about it?: "+ RTS.mission.conf.isLEGACYmission);
 		if (!RTS.mission.conf.isLEGACYmission){
 			const Adr_mapTerrainSourceType = 2055;
-			setv(Adr_mapTerrainSourceType,2)
-			let filename = this.terrainSource.split(".")[0]; // ignore extention
+			let filename = this.terrainSource.split("."); // ignore extension
+			if (filename[1] == "png"){
+					setv(Adr_mapTerrainSourceType,2);
+
+			} else if (filename[1] == "txt") {
+					setv(Adr_mapTerrainSourceType,1);
+
+			};
+			deblog(filename[0]+filename[1]);
+
+			filename = filename[0]; // this.terrainSource.split(".")[0]; // ignore extension
 			sett(adr_DISstr1,filename) // return to t[501]
-		}
+		};
 	
 	};
 
@@ -1091,8 +1744,6 @@ class RTSmap {
 	};
 };
 	
-
-
 class DIS_RTSplayer extends DISentity {
 	constructor(id,factionid){
 		super();
@@ -1100,15 +1751,94 @@ class DIS_RTSplayer extends DISentity {
 		this.factionid = factionid;
 		this.isHuman = false;
 
+
 		// get troop tree data from
-		this.trpTree = DATA.FACTION.ptrs[factionid]();
+		
+		// underconst
+		// this.trpTree = DATA.FACTION.ptrs[factionid]();
 
 
 		// check if it's game player
-		if (id == 0 && SINGLEPLAY) { // DIS LEGACY - single player only.
-			this.isHuman = true;
-			g_PLAYER = this;
+		if (SINGLEPLAY){
+			if (id == 0) { // DIS LEGACY - single player only.
+				this.isHuman = true;
+				g_PLAYER = this;
+
+			} else if (id == 1) {
+				g_ENEMY = this;
+
+			};
 		};
+
+		/* set them after faction data load function built in TPC
+		this.playergamedata.troopTree = DATA.FACTION.ptrs[factionid].getTroopTree();
+		this.playergamedata.techTree = DATA.FACTION.ptrs[factionid].getTechTree();
+		*/
+
+
+	};
+
+	// make json to save
+	playergamedata = {
+		troopTree: [],
+		techTree: [],
+		techFlags: new Array(3),
+	};
+
+
+	cohorts = [];
+
+	combatpower = 0;
+
+
+	getTeamListHead(){return 1145 + Math.min(this.id,1)};
+			
+
+
+	teamAgentsList = [];
+
+	refreshCurrentTeamList(){
+		let res = [];
+		let agid;
+		for (let ptr = getv(this.getTeamListHead()) ; (agid = getv(ptr)) >= 1 ; ptr++ ){
+			res.push(RTS.agents[agid]);
+		};
+		return (this.teamAgentsList = new RTSagentGroup(res,this.id));
+
+	};
+
+	getSchwerpunkt(){ return this.refreshCurrentTeamList().getSchwerpunkt() };
+
+	getCombatPower(){
+
+		let res = 0;
+		let agid;
+
+		for (let ptr = getv(this.getTeamListHead()) ; (agid = getv(ptr)) >= 1 ; ptr++ ){
+				let lv = (DIS.agent.getMainParam(agid,104) / 3) + 1;
+				lv *= lv <= 1 || DIS.agent.getMainParam(agid,260) >= 3 ? 0 : 1 // check morale
+				res += lv;
+		};
+
+		return this.combatpower = (res | 0);
+
+	};
+
+
+	receiveTeamList(array){
+		this.teamAgentIDlist = array;
+	};
+
+
+	// select agents and return as a idlist
+	select_all(){
+		let r = [];
+		let agid;
+		for (let ptr = getv(this.getTeamListHead()) ; (agid = getv(ptr)) >= 1 ; ptr++ ){
+			r.push(agid);
+		};
+		deblog(r);
+		return r;
 	};
 
 	restore(){ 
@@ -1116,6 +1846,20 @@ class DIS_RTSplayer extends DISentity {
 	};
 
 };
+
+class DIS_cohort extends DISentity {
+	constructor(team,id,agtarray){
+		super();
+		this.team = team;
+		this.id = id;
+		this.agents = agtarray;
+		
+		MISSION.essential.players[team].cohorts[id] = this;
+
+	};
+
+};
+
 
 
 // RTStrigger - old simple trigger.
@@ -1133,7 +1877,7 @@ class RTStrigger {
 			this.effect();
 			return result | (!(this.isLoop) << 1); // if this trigger set to keep looping, then return 0b11. 
 		};
-		
+
 		return result;
 
 	};
@@ -1143,6 +1887,8 @@ class RTStrigger {
 	timer = 0; // ++ in mission trigger run function.
 	isLoop = false; // whether this trigger will be called even after fulfilling condition once.
 
+	finishLoop(){this.isLoop = false};
+
 };
 
 
@@ -1150,12 +1896,12 @@ class DIS_dialog extends DISentity{
 	constructor(string,time,icon){
 		super();
 		this.string = string;
-		this.showframe = time | 235; // check default value later if showframe is -1, it wont end
-		this.opensound = ["",0,100,50] // file vol tempo vol
-		this.icon = icon || ["",[4,4],1]; // filename, sprite_number
-		this.fontdata = DIS.lang.currentFontdata.common; // filename, fontsize
-		this.stopworld = false;
-		this.size = [240,64]; // check default value later
+		this.showframe = time | 235; // if showframe is -1, it won't automatically disappear until forceSkipDialog() or clearDialogQueue() is called
+		this.opensound = ["cursor09",75,90,50] // file vol tempo balance
+		this.icon = icon || ["",[4,4],1]; // [filename, sprite_number, and?]
+		this.fontdata = DIS.lang.currentFontdata.common; // [filename, fontsize]
+		this.stopworld = false; // 
+		this.size =  [360,78] // [240,64]; // [360,108] [width,height]
 	};
 	
 
@@ -1181,7 +1927,7 @@ let RTS = {
 	map: new RTSmap(),
 	createdTrgs: [],
 	savedVars: [],
-	global: {}, // store mission vars or whatever
+	agents: new Array(DIS.agent.limit), // store mission vars or whatever
 
 	/*
 	Mtrig: {}, // mission triggers
@@ -1229,6 +1975,8 @@ let RTS = {
 				path[i + 1] = buf.shift();
 			};
 
+			if (isNaN(path)){return -1}; // if generation of path array failed, return -1
+
 			setv(22,path); // deploy path array to reg2 ~ reg9. 
 			let t = "RTS.path: give " + path + " to id:" + agentid; // tesT
 			deblog(t);
@@ -1244,6 +1992,12 @@ let RTS = {
 				// deblog(elm)
 			};
 		},
+
+
+		convertArrayIntoPath: function(array){
+			
+
+		}
 
 
 
@@ -1273,27 +2027,39 @@ let RTS = {
 		deblog("RTS obj init.")
 	},
 
-	openMission: function(missionid,mapid){ // "openmap" command in the old DISshell.
-		this.mission = new RTSmission(missionid,mapid);
+	openMission: function(jsonstr){ // "openmap" command in the old DISshell.
+		this.mission = new RTSmission(jsonstr);
 		this.isRTSmode = true;
 		this.path.init();
 		
 	},
 
 	// if you do this on Cmd interpreter, then this function is not even needed I suppose
-	setupMission: function(missionid,mapid){ //
+	setupMission: function(jsonstr){ //
 		if (!(this.isRTSmode)){ // if the isRTSmode flag is not yet set (legacy maps) reopen DISmission
-			this.mission = new RTSmission(missionid,mapid);
+			this.mission = new RTSmission(jsonstr);
+			deblog(`RTS.setupMission() - json loaded`);
 			this.isRTSmode = true;
 		}
 
-		if (this.mission.mapid == 0 || this.mission.mapid == 60 || this.mission.mapid == 61) { // NOT RPG maker legacy map
+		if (this.mission.RMmapid == 0 || this.mission.RMmapid == 60 || this.mission.RMmapid == 61) { // NOT RPG maker legacy map
 			// then we're gonna open custom map.
 		} else { // RPG maker legacy map. 
 			// so be it.
 			this.mission.conf.isLEGACYmission = true;
 		}
-		MISSION = this.mission // set link to current mission
+
+		this.mission.missionPath = gett(749); // Str_MissionPath
+
+		MISSION = this.mission; // set link to current mission
+		LOCAL = MISSION.local;
+
+		// import mission data extension
+		for (let elm of MISSION.dataextension){
+			MISSION.Cmd.importData(elm)
+			deblog(`RTS.setupMission() - extension file ${elm} loaded`);
+		};
+		Cmd.run();
 	},
 
 	setupMapLoading: function(mapdir){ // will be called after this.setupMission().
@@ -1306,9 +2072,14 @@ let RTS = {
 		
 	},
 
-	openMissionMapData: function(){ // you can call this only after successfully load missiondef.js.txt..
-		this.map = new RTSmap(this.mission.essential.mapDataDirectory);
+	openMissionMapData: function(jsonsrc){ // you can call this only after successfully load missiondef.js.txt..
+		deblog("missionmapdata is called")
+		this.map = new RTSmap(jsonsrc);
 		MAP = this.map;
+		// send back mapsize reg1 reg2
+		setv(21,MAP.size[0])
+		setv(22,MAP.size[1])
+		deblog("sent back size array to reg1 and reg2")
 		
 	},
 
@@ -1322,7 +2093,7 @@ let RTS = {
 
 	restore: function(){ // call this function whenever player loads RMsavedata. reload all data from RM memories.
 		// restore mission 
-		this.setupMission(gett(752),getv(501)); // init mission flags
+		this.setupMission(gett(741)); // read mission info json file stored in the savedata
 		const str_missiondef_storage = 761; // <- header_mission.tpc
 
 		// load mission def and setup map system
@@ -1353,8 +2124,8 @@ let RTS = {
 		for (let i of trgQArray){ // check it
 			if (typeof this.createdTrgs[i] == "object") { // failsafe
 				this.mission.triggers.queue.push(this.createdTrgs[i]); // re-push trigger to the trigger queue.
-			}
-		}
+			};
+		};
 		deblog("simple triggers restored..");
 
 		deblog(`${this.createdTrgs.length} triggers exist in mission.`);
@@ -1382,7 +2153,7 @@ let RTS = {
 
 // DIS Command types -> module_Game_scripts_functions.tpc
 const CTYP_MAP = 1,
-	CTYP_SND = 2,
+	CTYP_SYS = 2,
 	CTYP_MISSION = 3,
 	CTYP_GAME = 4,
 	CTYP_AGENT = 5,
@@ -1394,7 +2165,7 @@ const CTYP_MAP = 1,
 
 // DIS Command string container <- module_Game_scripts_functions.tpc
 const LINKSTR_map = 771,
-	LINKSTR_snd = 772,
+	LINKSTR_sys = 772,
 	LINKSTR_mission = 773,
 	LINKSTR_game = 774,
 	LINKSTR_agent = 775,
@@ -1468,7 +2239,14 @@ var Cmd = {
 	CmCon: {}, // command name associative array
 
 
-	Qset: function(typ,name,ord){ // quick queue set
+	/**
+	 * command order Queue set.
+	 *
+	 * @param {CTYP} typ
+	 * @param {string} name
+	 * @param {string} ord
+	 */
+	Qset: function(typ,name,ord){
 		let cmdid = Cmd.CmCon[name];
 		Cmd.CmdQueue += (typ + "," + cmdid + "," + ord + ";");
 	},
@@ -1477,6 +2255,7 @@ var Cmd = {
 		SpawnDetect: false, // init this flag
 		RMwaitDetect: false, //
 		CalledDialogQueue: false, //
+		spawnagent_lastdir: 0,
 
 		initAll: function() {
 			this.SpawnDetect = false;
@@ -1497,7 +2276,7 @@ var Cmd = {
 			container = container.replace(/<.*?>/g, "");
 			let lines = container.trim().split(";");
 			lines.forEach(line => {
-					parse_DISid(line,this.CmCon);
+					parse_simpleid(line,this.CmCon);
 			});
 		}
 
@@ -1511,6 +2290,7 @@ var Cmd = {
 		sett(adr_RMStr_CmdOrder,this.CmdQueue);
 		// turn on RM switch to run interpreter as cev
 		sets(adr_RMbool_RUN_CMD,1);
+		// deblog(Cmd.CmdQueue)
 		Cmd.CmdQueue = ""; // initialize Command Order
 		 
 		// return queue is cleared after TPC finishes actual Cmd processes
@@ -1523,19 +2303,19 @@ var Cmd = {
 	game: {
 		CmdType: CTYP_GAME,
 
-		exec: function(jsfile) { // execute js file
-			Cmd.Qset(this.CmdType,"exec",`${jsfile}`);
+
+		playGlobalSE: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
+			Cmd.Qset(this.CmdType,"pGSE",`${file},${vol},${tempo},${ballance}`);
 		},
 
-		importDISdata: function(jsonfile){},
+		playBGM: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
+			Cmd.Qset(this.CmdType,"pBGM",`${file},${vol},${tempo},${ballance}`);
+		},
+	
 
 		wait: function(RMwaittime) { // RMwaittime: 10 = 1sec, 0 = 1f, -n = {n}f. 
 			Cmd.Qset(this.CmdType,"wait",`${RMwaittime}`);
 			Cmd.runFlags.RMwaitDetect = true;
-		},
-
-		eval: function(jsSentence) { // eval(jsSentence) on the DISCmd interpreter. might be dangerous 
-			Cmd.Qset(this.CmdType,"eval",`${jsSentence}`);
 		},
 
 		pic: { // Cmd.pic
@@ -1559,7 +2339,12 @@ var Cmd = {
 			Cmd.Qset(this.CmdType,"exportText",`${stringid},${filepath}`);
 		},
 
-
+		tintScreen: function(RGBS,f) {
+			f = f || 0;
+			let st = RGBS.join(",") + "," + f;
+			Cmd.Qset(this.CmdType,"tintScreen",st);
+			deblog(st)
+		},
 
 		gotoRMmap: function(RMmapid,tilepos) { //
 			tilepos = tilepos || [0,0]
@@ -1568,6 +2353,13 @@ var Cmd = {
 
 
 		// log series
+
+		// unlike Cmd.game.log, argument will be processed by DIS.string.convertString() 
+		msg: function(txt){
+			txt = DIS.string.convertString(txt)
+			Cmd.Qset(this.CmdType,"msg",`${txt}`);
+		},
+
 		log: function(txt){
 			Cmd.Qset(this.CmdType,"msg",`${txt}`);
 		},
@@ -1608,32 +2400,34 @@ var Cmd = {
 		} need to consider well */ 
 
 		// {int}, array[x,y]
-		spawnAgent: function(troopid,tilepos,team,cohort,dir,stance,flag){ // returns DISagent
-			cohort = cohort || 0;
-			dir = dir || 0;
+		spawnAgent: function(troopid,tilepos,team,dir,stance,flag){ // returns DISagent
+			troopid = trpid.convert(troopid);
+			dir = dir || Cmd.runFlags.spawnagent_lastdir;
 			stance = stance || 0;
 			flag = flag || 0;
 			
-			Cmd.Qset(this.CmdType,"spnAg",`${troopid},${tilepos[0]},${tilepos[1]},${team},${cohort},${dir},${stance}`);
+			Cmd.Qset(this.CmdType,"spnAg",`${troopid},${tilepos[0]},${tilepos[1]},${team},${dir},${stance}`);
 			let protoagent = new DISagent(DIS.agent.searchEmptySpace(),troopid,team,false);
+
+			Cmd.runFlags.spawnagent_lastdir = dir
 			return protoagent;
 		},
 
-		spawnAgentgroup: function(troopid,tilepos,team,delta,amount,cohort,dir,stance,flag){
+		spawnAgentgroup: function(troopid,tilepos,team,delta,amount,dir,stance,flag){
 			// temp
+			troopid = trpid.convert(troopid);
 			let pos = tilepos
 			let agentslist = [];
 			for (let i = 0; i < amount; i++){ // this one is too slow 
-				agentslist[i] = this.spawnAgent(troopid,pos,team,cohort,dir,stance,flag);
+				agentslist[i] = this.spawnAgent(troopid,pos,team,dir,stance,flag);
 				for (let p = 0; p < 2; p++){pos[p] += delta[p];}; // add delta
 			};
 			let expected_agentgroup = new RTSagentGroup(agentslist,team);
 			return expected_agentgroup;
 		},
 
-		spawnStatic: function(staticID,tilepos,team,cohort){
-			cohort = cohort || 0; // ok?
-			Cmd.Qset(this.CmdType,"spnSt",`${staticID},${tilepos[0]},${tilepos[1]},${team},${cohort}`);
+		spawnStatic: function(staticID,tilepos,team){
+			Cmd.Qset(this.CmdType,"spnSt",`${staticID},${tilepos[0]},${tilepos[1]},${team}`);
 			let protostatic = new DISagent(DIS.agent.searchEmptySpace(),staticID,team,false);
 			return protostatic;
 			
@@ -1658,17 +2452,52 @@ var Cmd = {
 
 	},
 
-	//Cmd.snd
-	snd: {
-		CmdType: CTYP_SND, 
-		playGlobalSE: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
-			Cmd.Qset(this.CmdType,"pGSE",`${file},${vol},${tempo},${ballance}`);
+	//Cmd.sys
+	sys: {
+		CmdType: CTYP_SYS, 
+	
+		exec: function(jsfile) { // execute js file
+			Cmd.Qset(this.CmdType,"exec",`${jsfile}`);
 		},
 
-		playBGM: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
-			Cmd.Qset(this.CmdType,"pBGM",`${file},${vol},${tempo},${ballance}`);
+		eval: function(jsSentence) { // eval(jsSentence) on the DISCmd interpreter. might be dangerous 
+			Cmd.Qset(this.CmdType,"eval",`${jsSentence}`);
 		},
-		
+
+		/**
+		 * automatically import game data written in json format.
+		 * if you want to import mission local data, then try using 
+		 * -> MISSION.local.importData() 
+		 * @method importData
+		 * @param {string} path Root directory is the game directory. Also you need not to write .json.txt
+		 */
+		importData: function(path){
+			const lastDotIndex = path.lastIndexOf('.');
+			if (lastDotIndex !== -1) {
+				let extension = path.slice(lastDotIndex + 1);
+				if (extension != "json"){
+					errorlog(`Cmd.sys.importData(${path}) loads only json/json.txt file. Also you need not to put extension`)
+
+				}
+			} else {
+				path += ".json"
+
+			}
+
+			Cmd.Qset(this.CmdType,"importDISDjson",`${path}`);
+		},
+
+
+		/**
+		 * danger. never use this cmd unless you're aware of DIS RM string memory allocation
+		 *
+		 * @param {string} path Starts from game directory.
+		 * @param {RM_ADRT} Adrt 
+		 */
+		loadtext: function(path,Adrt){
+			Cmd.Qset(this.CmdType,"loadtxt",`${path},${Adrt}`);
+		},
+	
 	},
 
 	// -------------
@@ -1677,13 +2506,30 @@ var Cmd = {
 	mission: {
 		CmdType: CTYP_MISSION,
 		
-		victory:  function(){
-			Cmd.Qset(this.CmdType,"endGame",`2`);
-		},
-		Refeat:  function(){
+		/**
+		 * 
+		 *
+		 * @param {playerid} pid Currently meaningless.
+		 */
+		victory:  function(pid){
 			Cmd.Qset(this.CmdType,"endGame",`1`);
 		},
-		endMission: function(consequence) { // 1 = def, 2 = vic
+
+		/**
+		 * 
+		 *
+		 * @param {playerid} pid Currently meaningless.
+		 */	
+		defeat:  function(pid){
+			Cmd.Qset(this.CmdType,"endGame",`2`);
+		},
+
+		/**
+		 * Turn on mission end flag.
+		 *
+		 * @param {number} consequence Mission result for player. 1 = victory, 2 = defeat
+		 */
+		endMission: function(consequence) { 
 			Cmd.Qset(this.CmdType,"endGame",`${consequence}`);
 		},
 
@@ -1737,7 +2583,8 @@ var Cmd = {
 		},
 
 		giveTech: function(playerid,tech){ // not done
-			Cmd.Qset(this.CmdType,"giveTech",`${playerid},${tech[0]},${tech[1]}`);
+			let convt = DATA.TECH.ptrs[[techid.convert(tech)]].getFlagAddress();
+			Cmd.Qset(this.CmdType,"giveTech",`${playerid},${convt[0]},${convt[1]}`);
 		},
 
 	},
@@ -1751,13 +2598,21 @@ var Cmd = {
 	group: { 
 		CmdType: CTYP_GROUP,
 		cgrp: [], // agentid array
+		Adr_cgrp_list_head: getv(1212),
 
-		// {RTSagentGroup}
+		// @param {RTSagentGroup} grp You can hand agentid array as well.
 		setCgrp: function(grp){
 			let agentlist = "";
-			for (let elm of grp.getids()) {
-				agentlist += elm + "|";
+			if (Array.isArray(grp)){
+				for (let elm of grp) {
+					agentlist += elm + "|";
+				};
+			} else { 
+				for (let elm of grp.getids()) {
+					agentlist += elm + "|";
+				};
 			};
+			deblog(agentlist)
 			Cmd.Qset(this.CmdType,"setCgrp",agentlist);
 			this.cgrp = grp;
 		},
@@ -1766,20 +2621,31 @@ var Cmd = {
 			if(grp != this.cgrp){this.setCgrp(grp);};
 		},
 
-		registerCohort: function(grp,player,cohortid) { // jissoumati
-			checkCurrentGroup(grp)
-			Cmd.Qset(this.CmdType,"registerCohort",`${player},${cohortid}`);
+		registerCohort: function(grp,player,cohortid) {
+			this.checkCurrentGroup(grp);
+			// temporary only for player
+			if (player == 0){
+				Cmd.Qset(this.CmdType,"registerCohort",`${player},${cohortid},${this.Adr_cgrp_list_head},${grp.idlist.length}`);
+			};
+			return new DIS_cohort(player,cohortid,grp.idlist);
 		},
 
 		move: function(grp,path,flag){
-			checkCurrentGroup(grp)
-			Cmd.Qset(this.CmdType,"move",`${player},${cohortid}`);
+			flag = flag || 0;
+			this.checkCurrentGroup(grp);
+			let goal = path; // kari
+			Cmd.Qset(this.CmdType,"move",`${goal[0]},${goal[1]},${flag}`);
 		},
 
 		attack: function(grp,targetid){
-			checkCurrentGroup(grp)
+			this.checkCurrentGroup(grp);
 			Cmd.Qset(this.CmdType,"attack",`${targetid}`);
+		},
 
+		setStance: function(grp,stanceid,flag){
+			flag = flag || 0;
+			this.checkCurrentGroup(grp);
+			Cmd.Qset(this.CmdType,"setStance",`${stanceid}`);
 		},
 
 	},
@@ -1802,15 +2668,16 @@ var Cmd = {
 			pushDialogQueue: function(dlog){ // push arg to dialog queue and toggle dialog manager switch
 				// set up string
 				
-				let sendstring = (dlog.string + "," + dlog.showframe + "," + make_Array_DIStable(dlog.icon) + "," + make_Array_DIStable(dlog.size) + ";");
+				let sendstring = (DIS.string.convertString(dlog.string) + "," + dlog.showframe + "," + make_Array_DIStable(dlog.icon) + "," + make_Array_DIStable(dlog.size) + "," + make_Array_DIStable(dlog.opensound) + ";");
 
 				Cmd.Qset(this.CmdType,"pushDialogQueue",sendstring);
 				RTS.DlogManager.afterEffects.push(dlog.afterEffect);
+				deblog(sendstring)
 			},
 
 			forceSkipDialog: function(skipi){ // toggle break flag switch
 				Cmd.Qset(this.CmdType,"forceSkipDialog",skipi);
-				 // still triggers afterEffect()
+				// still triggers afterEffect()
 			},
 
 			clearDialogQueue: function(){ // init dialog queue and force break - clear event switch on
@@ -1858,487 +2725,425 @@ DUI = {
 
 
 
-
 // init load
 if (!VIRTUAL_ENV){
 	DIS.init.loadBootconf();
+	DIS.data.init(); // reset DIS data
 	DIS.init.initID();
-	// DIS.data.init(); // reset DIS data
 	Cmd.init();
-
 }
 
 
-/*
-// test
-
-const kishida = {
-	INHERITS: "abeshinzo",
-	1:[11,44,55],
-	2:[11,44,55],
-	spapapra: ["TRP_imperial_mage","TRP_imperial_mage","yajusenpai"],
-	quote: ["putainshine!"],
-	state: "alive"
-};
-
-DATA.TREETEMP.abeshinzo = {
-	1:[22],
-	4:[22,22,22],
-	5:[222,4441,41],
-	quote: ["juicy."],
-	state: "dead",
-	dukannstnichtersein: ["yajusenpai"]
-}
-
-trpid.yajusenpai = 114514;
-trpid.TRP_imperial_mage = "baka";
-let aaa = new DATA_tree(TREETYPE_TRP,kishida)
-debObj(aaa)
-
-trpid.TRP_townsman = "Aiyooo";
-
-
-const disjson = `
+const techtest = `
 {
-	"TREETEMP": {
-		"humantech": {
-			"TREETYPE": 2,
-			"ageadv": ["TECH_castle_age"],
-			"watch": ["TECH_townwatch","TECH_field_medic"],
-			"cart": ["TECH_cart1","TECH_cart2"],
-
-			"food": ["TECH_food1","TECH_food2"],
-			"wood": ["TECH_wood1","TECH_wood2"],
-			"build": ["TECH_crane"],
-
-			"forgeMelee": ["TECH_melee1","TECH_melee2"],
-			"forgeArrow": ["TECH_arrow1","TECH_arrow2"],
-			"forgeArmor": ["TECH_armor1","TECH_armor2"],
-
-			"magealtar1": ["TECH_MageAP"],
-			"magealtar2": ["TECH_MageHP"],
-			"magealtar3": ["TECH_dralchemy"],
-
-			"siege2": ["TECH_siege_engineer"],
-
-			"artitecture": ["TECH_artitecture"],
-			"husbandry": ["TECH_husbandry"],
-			"ballistics": ["TECH_ballistics"],
-
-			"unique1": [0],
-			"unique2": [0],
-			"conscription": ["TECH_conscription"]
-
+	"TECH": {
+		"dra_siege": {
+			"id": "dra_siege",
+			"techflagslot": [1,"0x1"]
 		},
-			"dragontech": {
-			"TREETYPE": 2,
-			"ageadv": ["TECH_castle_age"],
-			"watch": ["TECH_townwatch","TECH_field_medic"],
-			"cart": ["TECH_dra_basement"],
-
-			"dinfup": ["TECH_dra_inf1","TECH_dra_inf2","TECH_dra_inf3"],
-			"dcrossbow": ["TECH_dra_crossbow_improvement","TECH_dra_shooting_training"],
-			"dinfms": ["TECH_dra_squires","TECH_dra_combat_training"],
-
-			"food": ["TECH_food1","TECH_food2"],
-			"wood": ["TECH_wood1","TECH_wood2"],
-			"build": ["TECH_crane"],
-
-			"forge_melee": ["TECH_dra_tool_upgrade"],
-			"forge_arrow": ["TECH_dra_dragonforge"],
-			"forge_armor": ["TECH_dra_better_armor"],
-
-			"magealtar1": ["TECH_conscription"],
-			"magealtar2": ["TECH_MageHP"],
-			"magealtar3": ["TECH_dra_add_magic_missile"],
-
-			"siege1": ["TECH_dra_siege"],
-
-			"unique1": [0],
-			"unique2": [0],
-			"conscription": [0]
-
-		}
-	}
-
-}
-`
-const disjson_fac = `
-
-	"FACTION": {
-		"commoners": {
-			"name": "Commoners",
-			"color": 0,
-
-			"trpTree": {
-				"townsman": ["TRP_townsman"],
-				"scout": ["TRP_harpy_scout"],
-			
-				"shield": ["TRP_merc_mob","TRP_merc_spear_militia","TRP_brigand_robber"],
-				"archer": ["TRP_brigand_poacher","TRP_merc_crossbow"],
-
-				"cav": ["TRP_merc_cav"],
-				
-				"ram": ["TRP_ram"],
-				"mangonel": ["TRP_mangonel"],
-				"scorpion": ["TRP_scorpion"],
-
-				"guard": ["TRP_nord_viking"],
-				"decisive": ["TRP_nord_berserker"],
-				"castlehero": ["TRP_nord_hersir"]
-			}
-
+		"dra_naskarl": {
+			"id": "dra_naskarl",
+			"techflagslot": [1,"0x2"]
 		},
-
-		"imperial": {
-			"name": "Imperium Rtpium",
-			"color": 17,
-
-			"trpTree": {
-				"townsman": ["TRP_imperial_townsman","TRP_imperial_skeleton_worker"],
-				"scout": ["TRP_imperial_probebot"],
-				"healer": ["TRP_dra_maid"],
-
-				"shield": ["TRP_imperial_slime","TRP_imperial_limitanei","TRP_imperial_foederati","TRP_imperial_aux_heavy"],
-				"twohand": ["TRP_imperial_levy_orc","TRP_imperial_aux_spearman","TRP_imperial_minotaur","TRP_imperial_aux_shocktroop"],
-				"archer": ["TRP_goblin_archer","TRP_imperial_archer","TRP_imperial_elite_archer","TRP_imperial_greenskin"],
-				"exfootman": ["TRP_imperial_aux_skirmisher","TRP_imperial_vet_goblin_skirmisher"],
-
-				"cav": ["TRP_imperial_aux_wolfrider","TRP_imperial_cav","TRP_imperial_elite_cav"],
-				"knight": [0,"TRP_imperial_shockcav"],
-				"horsearcher": [0,"TRP_imperial_horse_archer","TRP_imperial_mameluke"],
-				"excav": ["TRP_imperial_camel"],
-
-				"mage": ["TRP_imperial_student","TRP_imperial_goeteia","TRP_imperial_mage","TRP_imperial_elite_mage"],
-
-				"ram": ["TRP_ram","TRP_siege_ram"],
-				"mangonel": ["TRP_mangonel","TRP_imperial_catapult"],
-				"scorpion": ["TRP_scorpion","TRP_imperial_scorpion"],
-
-				"guard": ["TRP_imperial_guard"],
-				"decisive": ["TRP_imperial_cataphract"],
-
-				"bannerman": ["TRP_imperial_comitatenses_banner"],
-
-				"meme": ["TRP_imperial_finalweapon"]
-			},
-
-			"techTree": {
-				"INHERITS": "humantech",
-
-				"ageadv": [0],
-				"watch": ["TECH_field_medic"],
-				"cart": ["TECH_cart2"],
-
-				"food": ["TECH_food2"],
-				"wood": ["TECH_wood2"],
-				"build": [0],
-
-				"magealtar3": ["TECH_arcane_transmission"],
-
-				"siege1": ["TECH_imp_siegeweapons"],
-
-				"unique1": ["TECH_imp_comitatenses","TECH_imp_cataphract","TECH_imp_composite_armor"],
-				"unique2": ["TECH_imp_elastic_defence"],
-				"conscription": ["TECH_conscription","TECH_imp_conventional_warfare"],
-
-				"hidden1": ["TECH_imp_vibroweapon"],
-				"hidden2": ["TECH_imp_loricananos"],
-				"hidden3": ["TECH_imp_anti_reality_warping"]
-			}
-
+		"dra_inf1": {
+			"id": "dra_inf1",
+			"techflagslot": [1,"0x4"]
 		},
-
-		"nord": {
-			"name": "Hyperborea",
-			"color": 10,
-			
-			"trpTree": {
-				"townsman": ["TRP_townsman"],
-				"scout": ["TRP_harpy_scout"],
-				"healer": ["TRP_dra_maid"],
-
-				"shield": ["TRP_merc_spearman","TRP_nord_inf","TRP_nord_vet_inf","TRP_nord_huskarl"],
-				"twohand": [0],
-				"archer": ["TRP_thrall_skirmisher","TRP_merc_crossbow","TRP_nord_marksman","TRP_elven_longbow"],
-				"exfootman": ["TRP_nord_spearman","TRP_nord_vet_spearman"],
-
-				"cav": ["TRP_merc_c","TRP_nord_raider"],
-				"knight": [0],
-				"horsearcher": [0],
-				"excav": [0],
-
-				"mage": ["TRP_nord_raven","TRP_nord_nevermore","TRP_einherjar_napoleonic","TRP_nord_totenkopf"],
-
-				"ram": ["TRP_ram","TRP_siege_ram"],
-				"mangonel": ["TRP_mangonel"],
-				"scorpion": ["TRP_scorpion"],
-
-				"guard": ["TRP_nord_viking"],
-				"decisive": ["TRP_nord_berserker"],
-				"castlehero": ["TRP_nord_hersir"]
-			},
-
-			"techTree": {
-				"INHERITS": "humantech"
-			}
-
+		"dra_inf2": {
+			"id": "dra_inf2",
+			"techflagslot": [1,"0x8"]
 		},
-
-
-		"dra": {
-			"name": "DRAGONS",
-			"color": 6,
-
-			"trpTree": {
-				"townsman": ["TRP_dra_farmer","TRP_dra_artisan"],
-				"scout": ["TRP_harpy_scout"],
-				"healer": ["TRP_dra_maid"],
-
-				"twohand": ["TRP_dra_militia","TRP_dra_inf","TRP_dra_heavy_sword","TRP_dra_champion"],
-				"fodder": ["TRP_merc_spearman","TRP_poteton_pike","TRP_poteton_huscarl"],
-				"archer": ["TRP_dra_crossbow"],
-				"exfootman": ["TRP_dra_depressgon"],
-
-				"cav": ["TRP_dra_knight"],
-				"knight": ["TRP_dra_lancer"],
-				"horsearcher": ["TRP_imperial_mameluke"],
-
-				"mage": ["TRP_dra_wiz","TRP_dra_mage","TRP_dra_flamethrower","TRP_dra_elite"],
-
-				"ram": ["TRP_stone_golem"],
-				"mangonel": [0,"TRP_mangonel"],
-				"scorpion": [0,"TRP_scorpion"],
-				"exsiege": ["TRP_dra_bombargon"],
-
-				"guard": ["TRP_dra_naskarl"],
-				"decisive_unit": ["TRP_dra_elite_naskarl"]
-				
-
-			},
-
-			"techTree": {
-				"INHERITS": "dragontech"
-			}
-
+		"dra_inf3": {
+			"id": "dra_inf3",
+			"techflagslot": [1,"0x10"]
 		},
-
-		"baklava": {
-			"name": "Baklava Emirate",
-			"color": 1,
-
-			"trpTree": {
-				"townsman": ["TRP_baklava_townsman"],
-				"scout": ["TRP_harpy_scout"],
-				"healer": ["TRP_dra_maid"],
-
-				"shield": ["TRP_baklava_inf_shield_t1","TRP_baklava_inf_shield_t2","TRP_baklava_inf_shield_t3"],
-				"twohand": ["TRP_baklava_inf_twohand_t1","TRP_baklava_inf_twohand_t2","TRP_baklava_inf_twohand_t3","TRP_baklava_inf_twohand_t4"],
-				"archer": ["TRP_baklava_archer_t1","TRP_baklava_archer_t2","TRP_baklava_archer_t3","TRP_baklava_archer_t4"],
-				"exfootman": ["TRP_baklava_exbarrack_t1","TRP_baklava_exbarrack_t2"],
-
-				"cav": ["TRP_baklava_cav_t1","TRP_baklava_cav_t2","TRP_baklava_cav_t3"],
-				"knight": [0,"TRP_baklava_camel_t1","TRP_baklava_camel_t2","TRP_baklava_camel_t3"],
-				"horsearcher": [0,"TRP_imperial_horse_archer","TRP_imperial_mameluke"],
-				"excav": [0],
-
-				"mage": ["TRP_baklava_jinn","TRP_baklava_alchemist"],
-
-
-				"ram": ["TRP_ram","TRP_siege_ram"],
-				"mangonel": ["TRP_mangonel"],
-				"scorpion": ["TRP_scorpion"],
-				"exsiege": ["TRP_bombard_cannon"],
-
-				"guard": ["TRP_baklava_hassassin"],
-				"decisive_unit": ["TRP_baklava_elephant"],
-				"castlehero": ["TRP_baklava_assassin_hero"],
-
-				"bannerman": ["TRP_baklava_bannerman"]
-
-			},
-
-			"techTree": {
-				"INHERITS": "humantech"
-			}
-
-
-
+		"dra_tool_upgrade": {
+			"id": "dra_tool_upgrade",
+			"techflagslot": [1,"0x20"]
 		},
-
-		"legion": {
-			"name": "Imperial Legion",
-			"color": 17
+		"dra_crossbow_improvement": {
+			"id": "dra_crossbow_improvement",
+			"techflagslot": [1,"0x80"]
 		},
-
-		"orden": {
-			"name": "Potetonic Order",
-			"color": 0
+		"dra_dragonforge": {
+			"id": "dra_dragonforge",
+			"techflagslot": [1,"0x100"]
 		},
-
-
-		"atlantium": {
-			"name": "Atlantium Province",
-			"color": 0
+		"dra_squires": {
+			"id": "dra_squires",
+			"techflagslot": [1,"0x200"]
 		},
-
-		"poteton": {
-			"name": "Poteton Rebels",
-			"color": 8,
-
-			"trpTree": {
-				"townsman": ["TRP_townsman"],
-				"scout": ["TRP_harpy_scout"],
-
-				"shield": ["TRP_merc_militia","TRP_poteton_inf","TRP_poteton_guard"],
-				"twohand": [0,"TRP_poteton_levy_pike","TRP_poteton_pike","TRP_poteton_elite_pike"],
-				"archer": ["TRP_brigand_poacher","TRP_merc_crossbow","TRP_poteton_elite_crossbow"],
-				"exfootman": ["TRP_poteton_huscarl"],
-
-				"cav": ["TRP_merc_cav","TRP_poteton_vet_cav","TRP_poteton_raubritter"],
-				"knight": ["TRP_poteton_shockcav"],
-				"horsearcher": [0],
-				"excav": [0],
-
-				"mage": ["TRP_poteton_mage","TRP_poteton_priest","TRP_poteton_high_wizard"],
-
-				"ram": ["TRP_ram","TRP_siege_ram"],
-				"mangonel": ["TRP_mangonel"],
-				"scorpion": ["TRP_scorpion"],
-
-				"guard": ["TRP_poteton_hedgeknight"],
-				"decisive": ["TRP_elven_longbow"],
-
-				"bannerman": ["TRP_poteton_banner"]
-
-			},
-
-			"techTree": {
-				"INHERITS": "humantech",
-
-				"unique1": ["TECH_poteton_anarchy"],
-				"unique2": ["TECH_poteton_perfusion"]
-
-			}
-
-
+		"dra_better_armor": {
+			"id": "dra_better_armor",
+			"techflagslot": [1,"0x400"]
 		},
-
-
-		"rurik": {
-			"name": "Rurikian-Borsch Alliance",
-			"color": 11,
-
-			"trpTree": {
-				"townsman": ["TRP_townsman"],
-				"scout": ["TRP_harpy_scout"],
-				"healer": ["TRP_rurik_maid"],
-
-				"shield": ["TRP_brigand_thug","TRP_rurik_inf","TRP_rurik_vet_inf","TRP_rurik_champion"],
-				"twohand": ["TRP_rurik_woodsman","TRP_rurik_longaxeman","TRP_rurik_berzerker","TRP_rurik_chosen"],
-				"archer": ["TRP_brigand_poacher","TRP_rurik_archer","TRP_rurik_vet_archer"],
-				"exfootman": ["TRP_rurik_spearman","TRP_rurik_heavy_spearman"],
-
-				"cav": ["TRP_merc_cav","TRP_rurik_raider","TRP_rurik_vet_raider"],
-				"knight": [0],
-				"horsearcher": [0,"TRP_sushi_horse_archer"],
-				"excav": [0],
-
-				"mage": ["TRP_rurik_raven","TRP_rurik_mage","TRP_rurik_frotri"],
-
-				"ram": ["TRP_ram","TRP_siege_ram"],
-				"mangonel": ["TRP_mangonel"],
-				"scorpion": ["TRP_scorpion"],
-
-
-				"guard": ["TRP_rurik_variag"],
-				"decisive_unit": ["TRP_rurik_druzhina"],
-				"castlehero": ["TRP_rurik_bogatyr"],
-
-				"bannerman": ["TRP_rurik_banner"]
-			},
-
-			"techTree": {
-				"INHERITS": "humantech",
-				"ageadv": ["TECH_castle_age","TECH_rurik_age3"],
-
-				"unique1": [0,"TECH_rurik_druzina"],
-				"unique2": ["TECH_rurik_covenmeeting"]
-			}
-
-
+		"dra_empyrean_guard": {
+			"id": "dra_empyrean_guard",
+			"techflagslot": [1,"0x800"]
 		},
-
-		"dummy1": {},
-		"dummy2": {},
-
-		"sushi": {
-			"name": "Sushi Horde",
-			"color": 12,
-
-			"trpTree": {
-				"townsman": ["TRP_sushi_townsman"],
-				"scout": ["TRP_harpy_scout"],
-				"healer": [0],
-
-				"shield": ["TRP_sushi_ronin","TRP_sushi_boomer"],
-				"twohand": ["TRP_sushi_zako","TRP_sushi_ashigaru","TRP_sushi_vet_ashigaru"],
-				"archer": ["TRP_sushi_fodder","TRP_sushi_bowman","TRP_sushi_crossbow","TRP_sushi_samurai"],
-				"exfootman": ["TRP_sushi_handgonne"],
-
-				"cav": ["TRP_sushi_wolfrider"],
-				"knight": ["TRP_sushi_lancer","TRP_sushi_heavy_lancer","TRP_sushi_khan_guard"],
-				"horsearcher": ["TRP_sushi_horse_archer","TRP_sushi_heavy_horse_archer"],
-				"excav": ["TRP_sushi_destroyer"],
-
-				"mage": ["TRP_sushi_onimiko","TRP_sushi_flame",0,"TRP_sushi_hero_fox"],
-
-				"ram": ["TRP_ram","TRP_siege_ram"],
-				"mangonel": ["TRP_mangonel"],
-				"scorpion": ["TRP_scorpion"],
-				"exsiege": ["TRP_bombard_cannon"],
-
-				"guard": ["TRP_sushi_kamikaze"],
-				"decisive_unit": ["TRP_sushi_kensei"],
-				"castlehero": ["TRP_sushi_shogun"]
-
-			},
-
-			"techTree": {
-				"INHERITS": "humantech",
-
-				"magealtar3": ["TECH_dralchemy","TECH_sushi_chemistry"],
-
-				"unique1": ["TECH_sushi_kamikaze"],
-				"unique2": ["TECH_sushi_tengger_cavalry"]
-			}
-
-
-
+		"dra_shooting_training": {
+			"id": "dra_shooting_training",
+			"techflagslot": [1,"0x1000"]
 		},
-
-		"elvium": {
-			"name": "Elvium Dominion"
+		"dra_combat_training": {
+			"id": "dra_combat_training",
+			"techflagslot": [1,"0x2000"]
+		},
+		"dra_naskarl_gyao": {
+			"id": "dra_naskarl_gyao",
+			"techflagslot": [1,"0x4000"]
+		},
+		"food1": {
+			"id": "food1",
+			"techflagslot": [2,"0x1"]
+		},
+		"food2": {
+			"id": "food2",
+			"techflagslot": [2,"0x2"]
+		},
+		"wood1": {
+			"id": "wood1",
+			"techflagslot": [2,"0x4"]
+		},
+		"wood2": {
+			"id": "wood2",
+			"techflagslot": [2,"0x8"]
+		},
+		"cart1": {
+			"id": "cart1",
+			"techflagslot": [2,"0x10"]
+		},
+		"cart2": {
+			"id": "cart2",
+			"techflagslot": [2,"0x20"]
+		},
+		"crane": {
+			"id": "crane",
+			"techflagslot": [2,"0x40"]
+		},
+		"melee1": {
+			"id": "melee1",
+			"techflagslot": [2,"0x80"]
+		},
+		"melee2": {
+			"id": "melee2",
+			"techflagslot": [2,"0x100"]
+		},
+		"arrow1": {
+			"id": "arrow1",
+			"techflagslot": [2,"0x200"]
+		},
+		"arrow2": {
+			"id": "arrow2",
+			"techflagslot": [2,"0x400"]
+		},
+		"armor1": {
+			"id": "armor1",
+			"techflagslot": [2,"0x800"]
+		},
+		"armor2": {
+			"id": "armor2",
+			"techflagslot": [2,"0x1000"]
+		},
+		"AP": {
+			"id": "AP",
+			"techflagslot": [2,"0x2000"]
+		},
+		"HPSP": {
+			"id": "HPSP",
+			"techflagslot": [2,"0x4000"]
+		},
+		"ballistics": {
+			"id": "ballistics",
+			"techflagslot": [2,"0x8000"]
+		},
+		"siege_engineer": {
+			"id": "siege_engineer",
+			"techflagslot": [2,"0x10000"]
+		},
+		"dralchemy": {
+			"id": "dralchemy",
+			"techflagslot": [2,"0x20000"]
+		},
+		"artitecture": {
+			"id": "artitecture",
+			"techflagslot": [2,"0x40000"]
+		},
+		"husbandry": {
+			"id": "husbandry",
+			"techflagslot": [2,"0x80000"]
+		},
+		"townwatch": {
+			"id": "townwatch",
+			"techflagslot": [2,"0x1000000"]
+		},
+		"arcane_transmission": {
+			"id": "arcane_transmission",
+			"techflagslot": [2,"0x2000000"]
+		},
+		"field_medic": {
+			"id": "field_medic",
+			"techflagslot": [2,"0x4000000"]
+		},
+		"conscription": {
+			"id": "conscription",
+			"techflagslot": [2,"0x8000000"]
+		},
+		"castle_age": {
+			"id": "castle_age",
+			"techflagslot": [2,"0x10000000"]
+		},
+		"imperial_age": {
+			"id": "imperial_age",
+			"techflagslot": [2,"0x20000000"]
+		},
+		"dra_add_magic_missile": {
+			"id": "dra_add_magic_missile",
+			"techflagslot": [3,"0x1"]
+		},
+		"dra_dravalry": {
+			"id": "dra_dravalry",
+			"techflagslot": [3,"0x2"]
+		},
+		"dra_drachemistry": {
+			"id": "dra_drachemistry",
+			"techflagslot": [3,"0x4"]
+		},
+		"dra_basement": {
+			"id": "dra_basement",
+			"techflagslot": [3,"0x8"]
+		},
+		"imp_comitatenses": {
+			"id": "imp_comitatenses",
+			"techflagslot": [3,"0x1"]
+		},
+		"imp_cataphract": {
+			"id": "imp_cataphract",
+			"techflagslot": [3,"0x2"]
+		},
+		"imp_siegeweapons": {
+			"id": "imp_siegeweapons",
+			"techflagslot": [3,"0x4"]
+		},
+		"imp_composite_armor": {
+			"id": "imp_composite_armor",
+			"techflagslot": [3,"0x8"]
+		},
+		"imp_vibroweapon": {
+			"id": "imp_vibroweapon",
+			"techflagslot": [3,"0x10"]
+		},
+		"imp_loricananos": {
+			"id": "imp_loricananos",
+			"techflagslot": [3,"0x20"]
+		},
+		"imp_AntiRealityWarping": {
+			"id": "imp_AntiRealityWarping",
+			"techflagslot": [3,"0x40"]
+		},
+		"imp_decadencepart1": {
+			"id": "imp_decadencepart1",
+			"techflagslot": [3,"0x80"]
+		},
+		"imp_decadencepart2": {
+			"id": "imp_decadencepart2",
+			"techflagslot": [3,"0x100"]
+		},
+		"imp_elastic_defence": {
+			"id": "imp_elastic_defence",
+			"techflagslot": [3,"0x200"]
+		},
+		"poteton_anarchy": {
+			"id": "poteton_anarchy",
+			"techflagslot": [3,"0x1"]
+		},
+		"poteton_perfusion": {
+			"id": "poteton_perfusion",
+			"techflagslot": [3,"0x2"]
+		},
+		"rurik_covenmeeting": {
+			"id": "rurik_covenmeeting",
+			"techflagslot": [3,"0x1"]
+		},
+		"rurik_druzina": {
+			"id": "rurik_druzina",
+			"techflagslot": [3,"0x2"]
+		},
+		"rurik_age3": {
+			"id": "rurik_age3",
+			"techflagslot": [3,"0x4"]
+		},
+		"sushi_tengger_cavalry": {
+			"id": "sushi_tengger_cavalry",
+			"techflagslot": [3,"0x1"]
+		},
+		"sushi_kamikaze": {
+			"id": "sushi_kamikaze",
+			"techflagslot": [3,"0x2"]
+		},
+		"sushi_chemistry": {
+			"id": "sushi_chemistry",
+			"techflagslot": [3,"0x4"]
 		}
 	}
 }
 `
-
-
-
-DIS.data.parseDISjson(disjson);
-let test = DIS.data.parseDISjson(disjson_fac);
-
-for (let fac in test.FACTION){
-	deblog(test.FACTION[fac])
-};
-	deblog(DATA.TREETEMP)
-
-*/
-
 
 // without RPG_RT.exe
 if (VIRTUAL_ENV){
+const roottroop = `
+{
+	"TROOP": {
+		"dra_ancestor_ragonass": {
+			"name": "Ragonass",
+			"size": [20,22],
+			"race": "RACE_dragon",
+			"faction": "FAC_dra",
+
+			"SP": 10000,
+
+			"personality": "brutal",
+			"color": "blue"
+
+		}
+
+	}
+}
+`
+
+const sampletrp = `
+{
+	"TROOP": {
+
+		"imperial_legion_banner": {
+			"name": "Imperial Legion Signifer",
+			"agentType": 1,
+			"size": [10,12],
+			"agentSprite": 68,
+			"race": "RACE_human",
+			"faction": "FAC_legion",
+
+			"Lv": 21,
+			"unitclass": 3,
+			"HP": 1400,
+			"HPreg": 5,
+			"SP": 2500,
+			"SPreg": 5,
+			"AD": 50,
+			"AP": 50,
+			"AR": 180,
+			"MR": 195,
+			"HIT": 20,
+			"WILL": 92,
+			"EVA": 10,
+			"Crit": 0,
+			"MoveSpeed": -5,
+
+			"AAtype": 4,
+			"AAframe": 1,
+			"AArangeMax": 80000,
+			"AArangeMin": 60000,
+			"AAfunction": 1267,
+			"AS": 45,
+
+			"ActiveSkill": [1232,1248,0,0],
+			"PassiveSkill": 1231
+		},
+
+		"dra_hero_orthunass": {
+			"name": "Orthunass the Empyrean Lord",
+			"agentType": 1,
+			"size": [10,12],
+			"agentSprite": 71,
+			"race": "RACE_dragon",
+			"faction": "FAC_dra",
+
+			"Lv": 30,
+			"unitclass": 3,
+			"HP": 1800,
+			"SP": 4500,
+			"AD": 5,
+			"AP": 185,
+			"MR": 100,
+			"HIT": 0,
+			"EVA": 0,
+			"WILL": 100,
+			"Crit": 0,
+			"MS": 90,
+
+			"AAType": 4,
+			"AAfunction": 1267,
+			"AS": 45,
+			"AArangeMax": 140000,
+			"AAframe": 1,
+
+			"motionFlags": [2,10],
+
+			"ActiveSkill": [1229,1293,1232,1210],
+			"PassiveSkill": 1231,
+
+			"objFlags": [15,23],
+			"Perks": [
+				[0,12]
+
+			]
+
+		}
+
+	}
+}
+`
+
+const inheritancetest = `
+{
+"TROOP": {
+	"visuna": {
+		"INHERITS": "dra_hero_orthunass"
+
+	}
+
+}
+}
+`
+	facid.FAC_dra = 114514;
+	raceid.RACE_dragon = 4545;
+	DATA.parseDISjson(roottroop)
+	DATA.parseDISjson(sampletrp)
+	deblog("\n\n\n")
+	DATA.TROOP.convertIntoCsvLine(DATA.TROOP.dra_hero_orthunass);
+	deblog("\n\n\n")
+	DATA.autoregister(DATA.parseDISjson(inheritancetest))
+
+	/*
+	Cmd.sys.importData("test.json")
+	RTS.mission.setPlayer(9,1)
+	let cohort1 = Cmd.map.spawnAgentgroup("TRP_imperial_comitatenses_menavlion",[27,32],0,[0,-2],8);
+	Cmd.group.registerCohort(cohort1,0,1);
+	Cmd.map.spawnAgent("TRP_imperial_comitatenses_menavlion",[27,32],0,[0,-2],8);
+	deblog(Cmd.CmdQueue)
+	Cmd.group.move(cohort1,[1,1],0);
+	Cmd.run();
+
+	RTS.mission.local.trites = RTS.mission.createSimpleTrigger_Loop(90);
+	deblog(JSON.stringify(RTS.mission))
+	let ply= new DIS_RTSplayer(0,1)
+	*/
+const maptest = `
+{
+	"name": "poteton_trainingmap",
+	"mapscript": [],
+	"dataextension": [],
+	"dependency": [],
+
+	"terrainfile": "tilegen.txt",
+	"tileset": 13,
+	"size": [102,55],
+	"heightgen": "HGEN_PRESET"
+
+}
+`
+
+
 	/*
 	let fucker = Cmd.game.pic.load("camera_ball",10);
 	fucker.refreshPicInfo();
@@ -2352,7 +3157,12 @@ if (VIRTUAL_ENV){
 	DIS.log.crash("test")
 	
 	DIS.data.init(); // reset DIS data
-*/
+	*/
 
-}
+};
+
+
+// mission script for poteton training
+//
+//
 

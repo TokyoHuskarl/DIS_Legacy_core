@@ -196,9 +196,17 @@ __fn MAIN_CEV_RTS_COLLISION_MANAGER { // ->
 
 __fn ColCheck {
 	// extract agent data....
-	v[Temp1].copy v[600], 243
-	@if `(v[401] + LEGV_Frame_count_half) % v[625] == 0 {
+	v[Temp1].copy v[600], 301
 
+
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// NEVER SAVE BACK agent_generated_ID in this proc!
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+	// @if `(v[401] + LEGV_Frame_count_half) % v[625] == 0 {
+	val_add(agent_generated_ID,LEGV_Frame_count_half)
+	val_mod(agent_generated_ID,v[625])
+	@if agent_generated_ID == 0 {
 			//save ptr to slot3
 			//ptr to agent_AgentBits.
 			defv Col_Ptr2AgentBits = __id(Temp32) 
@@ -235,7 +243,7 @@ __fn ColCheck {
 				//Obj Collision
 
 
-				Temp19 = v[401]
+				val_asg(Temp19,v[401]) // Temp19 = v[401]
 				
 				//######################
 				//Check Morton Start
@@ -298,16 +306,35 @@ __fn ColCheck {
 				//@comment ""#mask with 001100""
 				//@comment ""#mask with 000011"""
 				
-				TT5 = TT3 & 768 ? 10 : TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
-				agent_Morton = TT2 >> TT5
-				//@comment "#mask end"
-				TT6 = TT5 >> 1 // TT6 = TT5 / 2
-				v[340] = 4546 - TT6
-				v[340].deref v[340],1
-				v[327] = v[v[4552 - TT6] + agent_Morton]
-				//@comment "##############"
+				// Ptr14 is reffering to agent_ObjectCollideSkipFrame 
 				Ptr14 = Temp1 + 25
-				v[Ptr14] = 2 + v[327] / v[4522] + v[610] / 19 - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0) // (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
+				@if `TT3 & 768 { // root dimension
+				// agent_Morton is always 0 here so you don't need any calculation... 
+					v[339].repeat v[4541],2 // set ptr 
+					v[4547].deref v[327],1 // val_asg(v[327],v[v[4547]])
+
+				}.else bl{
+					TT5 = TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
+					agent_Morton = TT2 >> TT5
+					//@comment "#mask end"
+					TT6 = TT5 >> 1 // TT6 = TT5 / 2
+					v[340] = 4546 - TT6
+					v[340].deref v[340],1
+
+					TT6 = 4552 - TT6
+					// TT6.deref TT6,1
+					// v[327] = TT6 + agent_Morton
+					TT6.deref v[327],1
+					val_add(v[327],agent_Morton)
+					v[327].deref v[327],1
+
+					//v[339] as a ptr
+					v[339] = agent_Morton * v[1004] 
+					v[339].add v[340],1 // v[339] += v[340]
+				
+				}
+				// v[Ptr14] = 2 + v[327] / v[4522] + (v[610] >> 4) - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0) // (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
+				v[Ptr14] = 2 + (v[610] >> 4) - s[2001 + v[401]] + (v[842] >= 3 && v[680] <= 0) // (v[842] >= 3 && v[680] <= 0 ? 1 : 0)
 					//@comment "DisciplineCheck"
 				//opt
 
@@ -315,19 +342,14 @@ __fn ColCheck {
 				v[536].deref TT2,1 // TT2 = v[v[536]]
 
 				//GET Colbox XY
-				__if DIS_EXPERIMENTAL == -1 {
+				__if DIS_EXPERIMENTAL == 1 {
 					//get from AEAB
-					get_AEAB_array(TT2,__id(v[337]),AgentExBuffer_SLOT_ColBoxWidth,2)
+					get_AEB_array(TT2,__id(v[337]),AgentExBuffer_SLOT_ColBoxWidth,2)
 				}.else bl {
 					val_asg(v[337],v[4523]) // v[337] = v[4523] 
 					v[337] += v[401] * 2
 					v[v[337]].copy v[337], 2
 				}
-
-				//v[339] as a ptr
-				v[339] = agent_Morton * v[1004] 
-				v[339].add v[340],1 // v[339] += v[340]
-				
 
 				//experimental
 				Col_Ptr2AgentBits.deref TT4,1
@@ -338,6 +360,8 @@ __fn ColCheck {
 					v[v[339]].shuffle TT1
 					def KILLDISCP = ~AgentBits_Discipline_Col
 					TT4 &= KILLDISCP
+				}.else bl{
+					v[Ptr14] += v[327] / v[4522] // if the standing tile is not crowded, less frequently check col
 				}
 				
 				//v[203] = Ptr
@@ -352,17 +376,17 @@ __fn ColCheck {
 						Temp10 = agent_TeamID % 3
 						@loop v[327] {
 
-							__if DIS_EXPERIMENTAL == -1 {
+							__if DIS_EXPERIMENTAL == 1 {
 								// DIS_EXPERIMENTAL - get MetaTeam from AEAB inTT3
 								TT3 = v[v[203]]
-								get_AEAB_element(TT3,__id(TT3),AgentExBuffer_SLOT_MetaTeam)
+								get_AEB_element(TT3,__id(TT3),AgentExBuffer_SLOT_MetaTeam)
 							}
 
 							//@if v[700] != TT3 { // EXPERIMENTAL cond
 
 							// cond in case of NOT DIS_EXPERIMENTAL.. you must adjust manually
-							@if `Temp10 != v[v[v[203]] + Const_AgentMetaTeam_beginMINUSONE] {
-						
+							// @if `Temp10 != v[v[v[203]] + Const_AgentMetaTeam_beginMINUSONE] {
+						@if Temp10 != TT3 {
 								macro_ColCheck_distance()
 
 								macro_ColCheck_push()
@@ -416,12 +440,10 @@ __fn macro_ColCheck_distance {
 	victim_RelativeX.sub agent_RelativeX,2
 
 	//get colbox
-	__if DIS_EXPERIMENTAL == -1 { // pixel edit bug
-		//get from AEAB
+	__if DIS_EXPERIMENTAL == 1 { 
+		//get from AEB
 		v[322] = v[v[203]]
-		get_AEAB_array(v[322],__id(v[322]),AgentExBuffer_SLOT_ColBoxWidth,2)
-	}.elif DIS_EXPERIMENTAL == -2 { // use raw hitbox as a collision?
-		victim_Width.copy v[322],2
+		get_AEB_array(v[322],__id(v[322]),AgentExBuffer_SLOT_ColBoxWidth,2)
 	}.else bl {
 		v[322] = Address_Agent_HitCollisionArrayStartMinus2 
 		v[322] += v[v[203]] * 2
@@ -456,8 +478,9 @@ __fn macro_ColCheck_push {
 					@if v[v[203]] != agent_TargetAgentID { // NOT target
 						@if victim_TeamID == agent_TeamID { // and it's ally
 							Col_Ptr2AI_routine_bits = Temp1 + 34
-							def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_1secDelay_PF
-							v[Col_Ptr2AI_routine_bits] |= agent_LeftWPtoChase > 0 ? Col_AIFLAG_PFandSkip : AI_routine_bits_FLAG_PATHFINDING
+							def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_1secDelay_PF + AI_routine_bits_FLAG_RayCast
+							def Col_AIFLAG_PFandRC = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_RayCast
+							v[Col_Ptr2AI_routine_bits] |= agent_LeftWPtoChase > 0 ? Col_AIFLAG_PFandSkip : Col_AIFLAG_PFandRC
 
 						}
 					}

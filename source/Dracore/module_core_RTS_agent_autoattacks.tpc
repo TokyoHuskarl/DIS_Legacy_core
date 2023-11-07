@@ -41,7 +41,14 @@ __fn agent_autoattack_melee {
 	s[202..203].off
 	// "Motion"
 	v[v[629]] += 1
-	v[v[896]] += [1, -1][v[v[844]]]
+	v[v[896]] += v[v[844]] == 0 ? 1 : -1
+
+	// hold direction
+	TT1 = v[210] + 245
+	v[TT1] |= 1//~1
+
+
+
 	// "ObjTypeチェック"
 	Ptr18 = 300 * Ptr20 
 	Ptr18 += 4701
@@ -56,10 +63,10 @@ __fn agent_autoattack_melee {
 			v[Ptr11].copy victim_AgentType, agent_Basic_Array_size // copy victim data to victim buffer
 
 
-			s[167].off
+			BOOL_Is_target_static.off
 
 			@if victim_AgentType == 11 { // the enemy is STATIC Type
-				s[167].on
+				BOOL_Is_target_static.on
 		
 			}
 			
@@ -144,7 +151,7 @@ __fn agent_autoattack_melee {
 			}
 			
 			// hit check
-			@if s[167] .isOff() {
+			@if BOOL_Is_target_static .isOff() {
 				func_bs_melee_hit_check_wo_prep() // use already extracted datas to calculation
 			} .else bl {
 				reg1 = 1 //if target is STATIC, won't miss
@@ -153,7 +160,7 @@ __fn agent_autoattack_melee {
 			// At least in Melee AA, agent parameters remain via hitcheck
 			@if reg1 == 1 {
 				// "Hit!"
-				@if s[167] .isOff() { // to Movable Agents
+				@if BOOL_Is_target_static .isOff() { // to Movable Agents
 
 						// "#SP damage#A hit causes 4 SP loss"
 						victim_SP = max(victim_SP - 4, 0)
@@ -164,7 +171,7 @@ __fn agent_autoattack_melee {
 						// "#Crit率ゲット+least_crit_melee-CritReduction"
 						TT2 = least_crit_melee
 						TT2 += agent_ProcessCrit - victim_CritChanceReduction
-						TT1 = rnd(0, 99)
+						TT1 = rnd(1, 100)
 						// "#CritDamageReduction#(450-[Reduction])%"
 						TT3 = 450 - victim_CritDamageReduction
 						// "#[Crit]%でフラグ"
@@ -260,7 +267,7 @@ __fn agent_autoattack_melee {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(50, 110)
-										@cmd 11550, "重いパンチ2", .args v[472], 3
+										@cmd 11550, "weapons/heavy_hit_2", .args v[472], 3
 										// "#########################"
 										@break
 										
@@ -270,8 +277,7 @@ __fn agent_autoattack_melee {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(80, 120)
-										// "need moar metalic features within the sound"
-										@cmd 11550, "weapons\sword_slash_body_nenetei", .args v[472], 3
+										@cmd 11550, "weapons\sword_slash_body_metal", .args v[472], 3
 										// "#########################"
 										@break
 										
@@ -280,8 +286,8 @@ __fn agent_autoattack_melee {
 								@if TT1 == 2 {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
-										v[473] = rnd(50, 75)
-										@cmd 11550, "重いパンチ2", .args v[472], 3
+										v[473] = rnd(90, 100)
+										@cmd 11550, "weapons/heavy_slash_body_metal", .args v[472], 3
 										// "#########################"
 										@break
 										
@@ -291,7 +297,7 @@ __fn agent_autoattack_melee {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(83, 110)
-										@cmd 11550, "weapons\Spear_stab_body_nenetei", .args v[472], 3
+										@cmd 11550, "weapons\spear_stab_body_metal", .args v[472], 3
 										// "#########################"
 										@break
 										
@@ -300,8 +306,8 @@ __fn agent_autoattack_melee {
 								@if TT1 == 4 {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
-										v[473] = rnd(72, 82)
-										@cmd 11550, "weapons\pike_stab_1", .args v[472], 3
+										v[473] = rnd(85, 100)
+										@cmd 11550, "weapons\pike_stab_body_metal", .args v[472], 3
 										// "#########################"
 										@break
 										
@@ -346,9 +352,8 @@ __fn agent_autoattack_melee {
 										// "#########################"
 										v[472] = divmul(70, 100, v[2216])
 										v[473] = rnd(115, 170)
-										@cmd 11550, "重いパンチ2", .args v[472], 3
+										@cmd 11550, "weapons/heavy_hit_2", .args v[472], 3
 										// "#########################"
-										@break
 										
 								
 								// "Swords"
@@ -358,7 +363,6 @@ __fn agent_autoattack_melee {
 										v[473] = rnd(90, 110)
 										@cmd 11550, "weapons\Sword_Slash_01", .args v[472], 3
 										// "#########################"
-										@break
 										
 								
 								// "Axe/Cleavers"
@@ -369,7 +373,6 @@ __fn agent_autoattack_melee {
 										v[473] = rnd(90, 110)
 										@cmd 11550, "weapons\Sword_heavy_slash_01", .args v[472], 3
 										// "#########################"
-										@break
 										
 								
 								// "Spear/Piercing"
@@ -379,7 +382,6 @@ __fn agent_autoattack_melee {
 										v[473] = rnd(90, 110)
 										@cmd 11550, "weapons\Spear_stab_armor", .args v[472], 3
 										// "#########################"
-										@break
 										
 								
 								// "Pike"
@@ -389,7 +391,6 @@ __fn agent_autoattack_melee {
 										v[473] = rnd(90, 100)
 										@cmd 11550, "weapons\pike_stab_armor", .args v[472], 3
 										// "#########################"
-										@break
 										
 								
 								// "Siege Ram"
@@ -399,7 +400,6 @@ __fn agent_autoattack_melee {
 										v[473] = rnd(83, 100)
 										@cmd 11550, "RTP\earth5", .args v[472], 3
 										// "#########################"
-										@break
 										
 								}
 								
@@ -511,7 +511,7 @@ __fn agent_autoattack_melee {
 				AtkerSave 
 
 				// "#SP damage#Evading costs 2 SP"
-				victim_SP -= 2
+				val_sub(victim_SP,N2) // victim_SP -= 2
 				victim_SP = max(victim_SP, 0)
 
 				// set relX to effect var
@@ -521,17 +521,7 @@ __fn agent_autoattack_melee {
 						// "Shield Cracking"
 						reg3 = 0
 						@if `agent_AABits & AABits_FLAG_CrackingShield {
-							// "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"
-							@if `victim_PerkFlagBits1 & 1 {
-									TT1 = muldiv(victim_ShieldBreakResistance, 130, 100)
-									
-							}
-							// "＃＃＃＃＃＃＃＃＃＃Chance Roll＃＃＃＃＃＃＃＃＃＃"
-							reg1 = agent_ProcessAD / 3
-							reg1 *= agent_AABits & AABits_FLAG_CrackingShieldBONUS ? 2 : 1
-							
-							// "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"
-							TT3 = rnd(0, reg1)
+							bs_shield_crack_check()
 							@if TT3 >= TT1 {
 									reg3 = 1
 									// "#バフ番号指定"
@@ -547,10 +537,10 @@ __fn agent_autoattack_melee {
 							@if reg3 == 0 {
 									@if v[182] <= 2 {
 								// "#########################"
-								v[472] = divmul(60, 100, v[2216])
-								v[473] = rnd(115, 120)
+								v[472] = divmul(53, 100, v[2216])
+								v[473] = rnd(85, 120)
 								v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
-								@cmd 11550, "weapons/shield_hit", .args v[472], 3
+								@cmd 11550, "weapons/shield_hit", .args v[472], 3 // kari
 								// "#########################"
 								
 									}
@@ -603,7 +593,7 @@ __fn agent_autoattack_melee {
 							// block popup
 							@if victim_ShieldMotionTimer < 1 { // not in shield motion
 								@if s[307] .isOff() {
-										@if `v[183] < v[4572] / 2 {
+										@if `v[183] < (v[4572] >> 1) {
 											// "#描画範囲内か？"
 											v[220] %= 30
 											v[220] += 1201
@@ -807,8 +797,6 @@ __fn agent_autoattack_melee {
 			s[202..203].off
 			
 	} .else bl {
-		TT1 = v[210] + 274
-		v[TT1] &= -2//~1
 
 		// "アクションに2F分余韻を…"
 		@if `v[v[629]] > v[v[720]] + 1 {
@@ -821,10 +809,11 @@ __fn agent_autoattack_melee {
 			v[v[629]] = 0
 			v[v[896]] = 0
 			TT1 = v[210] + 245 
-			v[TT1] = 0
+			v[TT1] &= -2
 			// "Initialize AI Timer"
 			TT1 = v[210] + 80 
 			v[TT1] = v[1240] * v[4571]
+
 	
 		}
 		
@@ -875,7 +864,7 @@ __fn agent_autoattack_ranged {
 
 					// "#diffusionf: y=x (x)/(-240)+30"
 					//TT10 = max(pow(v[v[210] + 265], 2) / -240 + 30, 0)
-					TT10 = max(pow(agent_ProcessHIT, 2) / -225 + 32, 0)
+					TT10 = max(pow(agent_ProcessHIT, 2) / -230 + 32, 0)
 
 					v[624] += rnd(-TT10, TT10)
 					v[625] += rnd(-TT10, TT10)
@@ -991,9 +980,9 @@ cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
 			v[Temp12].copy Temp12, 2
 			// "#当たり判定チェック"
 			@if `between(v[607], Temp10 - Temp12, Temp10 + Temp12) && between(v[608], Temp11 - Temp13, Temp11 + Temp13) {
-		s[167].off
+		BOOL_Is_target_static.off
 		@if `v[Ptr10 + 4701] == UNIT_CLASS_STATIC {
-				s[167].on
+				BOOL_Is_target_static.on
 				
 		}
 		v[Ptr10 + 4780] = v[1240] * v[4571]
@@ -1001,7 +990,7 @@ cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
 		Temp20 = v[Ptr9 + 4757] - v[Ptr18 + 56]
 		var1 = Ptr19
 		// "Get Dir"
-		@if s[167] .isOff() {
+		@if BOOL_Is_target_static .isOff() {
 				//9.3.23
 				var3 = v[Temp1 + 36]
 				//@call .cev 43
@@ -1016,7 +1005,7 @@ cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
 				// "Hit!"
 				// "#CheckCrit"
 				// "Var1 = Obj 1~V[421] = ダメージ倍率"
-				@if s[167] .isOff() {
+				@if BOOL_Is_target_static .isOff() {
 			var1 = Ptr19
 			var5 = Ptr10 + 4700
 			// "#Crit率ゲット"
@@ -1054,6 +1043,7 @@ cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
 				var9 = v[var9]
 				//@call .cev 40
 				func_damage_calculation()
+
 				// "############"
 				// "Effect"
 				// "#あたったので演出チェック"
@@ -1085,7 +1075,7 @@ cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
 								v[372] = v[Ptr10 + 4840] & 4096 ? 1 : 0
 								//@call .cev 111
 								var4 = reg2 >= mini_blood_damage_threshold ? 0 : 1
-								func_call_mini_blood_f_effect(v[361] v[362] v[372] var4)
+								func_call_mini_blood_f_effect(effectArgX,effectArgY,v[372],var4)
 								
 						}
 						
@@ -1249,5 +1239,86 @@ cev .id(31), .name("Legacy_AgentAct:RangedAA_Check"), {
 
 
 
+__fn agent_cevfunction_autoattack {
+
+	@comment "Access19 = AttackerObjectID Access20 = TargetObjectID"
+		v[299] = v[207] + 1
+		v[300] = v[v[300]]
+		@comment "対象Objがある"
+		@if v[300] >= 1 {
+			@comment "ObjTypeチェック"
+				v[298] = 300 * v[300]
+				v[298] += 4701
+				@comment "攻撃モーション処理"
+				v[720] = v[210] + 120
+				v[629] = v[210] + 29
+				s[202..203].off
+				@if v[v[298]] > 0 {
+					@if v[v[629]] >= v[v[720]] {
+						@comment "射撃成功！"
+							@comment "Auto Attack SP Cost"
+							v[v[210] + 108] = max(v[v[210] + 108] - v[v[210] + 121], 0)
+							@comment "#親Objと対象Objをセット"
+							v[609] = v[299]
+							v[623] = v[300]
+							v[730] = v[210] + 130
+							@if v[v[730]] >= 1 {
+								s[121].on
+									v[341] = v[298] + 6
+									v[v[341]].copyTo v[590], 2
+									@call .cev v[v[730]]
+									s[121].off
+
+							}
+						v[842] = v[210] + 242
+							@if v[v[842]] != 4 {
+								v[v[842]] = 0
+
+							}
+						v[843] = v[210] + 243
+							@comment "AAクールタイムモーション"
+							v[726] = v[210] + 126
+							@comment "ビット見る"
+							v[341] = v[v[726]] & 1
+							v[v[843]] = v[341] == 1 ? 2 : 0
+							@comment "AAモーション初期化"
+							v[629] = v[210] + 29
+							v[v[629]] = 0
+							@comment "Initialize AI Timer"
+							v[v[210] + 84] = v[v[210] + 300] % v[1195]
+							v[v[210] + 80] = v[v[210] + 3] & 2097152 ? 0 : v[1240] * v[4571] / 2
+
+					} .else bl {
+						v[v[629]] += 1
+
+					}
+
+				} .else bl {
+					s[202].on
+						s[203].off
+
+				}
+
+		} .else bl {
+			s[202].on
+				s[203].on
+
+		}
+	@if s[202] .isOn() {
+		@comment "不発"
+			@if s[203] .isOn() {
+				v[842] = v[210] + 242
+					v[v[842]] = 0
+
+			}
+		v[843] = v[210] + 243
+			v[v[843]] = 0
+			@comment "#AAタイマー初期化"
+			v[628] = v[210] + 28
+			v[v[628]] = 0
+
+	}
+
+}
 
 

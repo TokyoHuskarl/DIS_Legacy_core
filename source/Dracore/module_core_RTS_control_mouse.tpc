@@ -1,16 +1,14 @@
 
-def click_waittime = 18 //12
+def click_waittime = 22 // 18 //12
 
 def click_animation = {v[47] = 3} 
-								
+
 @key.inputEx .keybdWithBind .dst GETKEY_A
 
 // save PointerXY to TT1,2
 MousePtr_x.copy TT1, 2
 
 Mouse_x.copy MousePtr_x, 2
-v[51..52] -= 3
-MousePtr_y += 1
 
 // check if pointer is moved - s[70] is pointer move switch
 s[70].off
@@ -171,7 +169,7 @@ s[70].off
 												.scale 100
 												.trans 30
 												.rgbs 100, 100, 100, 100
-												.font Font_Common, Font_Common_size
+												.font Font_UI, Font_UI_size
 												.spacing 0, 4
 												.skin "" .nobg .noframe .noPadding
 												.mapLayer 8
@@ -317,7 +315,8 @@ s[70].off
 						MousePtr_x.copy var1, 2
 						var1 += 8
 						var2 -= 8
-						@call .cev 2000
+						// @call .cev 2000
+						macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
 						// "######################Get Terrain and Elevation info"
 						var3 = v[v[1182] + reg1 - Map_LimitCoordX_min + (reg2 - Map_LimitCoordY_min) * var_Map_Width] % 100
 						@if `var3 == 18 || var3 == 22 {
@@ -351,8 +350,7 @@ s[70].off
 
 										@if s[9] .isOff() {
 												v[42] -= 1
-												v[1] += v[53]
-												v[2] += v[54]
+												v[1].add v[53],2
 												v[1].copy TT1, 2
 												TT1 = max(v[1008], min(TT1, v[1009]))
 												TT2 = max(v[1010], min(TT2, v[1011]))
@@ -363,14 +361,20 @@ s[70].off
 												@if v[42] <= 0 {
 														v[5] = abs(v[7])
 														v[6] = abs(v[8])
+
+														v[5] = v[5] <= 7 ? 8 : v[5]
+														/*
 														@if v[5] <= 7 {
 																v[5] = 8
-																
 														}
+														*/
+														v[6] = v[6] <= 7 ? 8 : v[6]
+														/*
 														@if v[6] <= 7 {
 																v[6] = 8
-																
 														}
+														*/
+
 														@sys.skin "Odinscall_drag" .stretch .gothic
 														@if v[7] > 0 {
 																@if v[8] > 0 {
@@ -705,8 +709,9 @@ s[70].off
 														}
 														
 												} .else bl {
+														
+													@if s[13] .isOff() {
 														@if s[15] .isOn() {
-																@if s[13] .isOff() {
 																		@if GETKEY_Alt >= 1 {
 																				s[16].on
 																				
@@ -719,7 +724,6 @@ s[70].off
 																				
 																		}
 																		
-																}
 																
 														} .else bl {
 																@if GETKEY_Alt >= 1 {
@@ -735,6 +739,7 @@ s[70].off
 																}
 																
 														}
+													}
 														
 												}
 												
@@ -783,12 +788,14 @@ s[70].off
 												var1 = MousePtr_x
 												var2 = MousePtr_y
 												var2 += 8
-												v[11..12] *= 10000
-												@call .cev 1999
+												macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
+												// v[11..12] *= 10000
+												// @call .cev 1999
 												reg1.copy TT1, 2
 												TT2 -= 1
-												@call .cev 2001
-												reg2.copy v[1], 2
+												macro_convert_maptileXY_into_relativeXY(TT1,TT2,v[1],v[2])
+												// @call .cev 2001
+												// reg2.copy v[1], 2
 												v[7] = 0
 												v[8] = 0
 												@pic[973].strpic {
@@ -813,8 +820,9 @@ s[70].off
 												var1 -= 16 * (Map_LimitCoordX_min % 2)
 												var2 -= 16 * (Map_LimitCoordY_min % 2)
 												var2 -= 8
-												v[11..12] *= 10000
-												@call .cev 1999
+												macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
+												// v[11..12] *= 10000
+												// @call .cev 1999
 												reg1.copy TT1, 2
 												TT1 += 1
 												TT2 -= 1
@@ -822,8 +830,7 @@ s[70].off
 												TT2 += Map_LimitCoordY_min % 2
 												v[341..342] /= 2
 												v[341..342] *= 2
-												@call .cev 2001
-												reg2.copy v[1], 2
+												macro_convert_maptileXY_into_relativeXY(TT1,TT2,v[1],v[2])
 												v[1..2] -= 16
 												v[1] -= 8
 												v[2] += 24
@@ -1270,9 +1277,9 @@ s[70].off
 						} .else bl {
 								// "Building Mode.."
 								MousePtr_x.copy var1, 2
-								@if s[180] .isOff() {
+								@if s[180] .isOff() { // it's not wall
 										var1.copy v[252], 2
-										@call .cev 795
+										@call .cev 795 // this one can be fatal I suppose?
 										MousePtr_x.copy var1, 2
 										v[403].copy var3, 2
 										v[13..14] %= 16
@@ -1324,10 +1331,11 @@ s[70].off
 										}
 										v[1].copy var1, 2
 										var1.copy v[252], 2
-										@call .cev 795
+										@call .cev 795 // build check
 										v[1].copy var1, 2
 										
 								}
+
 								@pic[1000].show {
 										t[522]
 										.pos v[41], v[48] .center
@@ -1352,8 +1360,6 @@ s[70].off
 								v[459] = 1
 								v[460] = 88
 								v[461..462] = 0
-								v[465] = 0
-								v[467] = 0
 								v[470] = 0
 								// "#"
 								v[455] = 0
@@ -1367,9 +1373,12 @@ s[70].off
 										v[449] = 200
 										
 								}
+
 								v[463] = 5
 								v[464] = 1
+								v[465] = 0
 								v[466] = 2
+								v[467] = 0
 								v[468] = 5
 								@if v[38] != 0 {
 										v[444] = 14

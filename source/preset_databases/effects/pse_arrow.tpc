@@ -1,7 +1,7 @@
 def Const_cos10 = 984  //0.9848077
 def Const_Arrow_Check_Height = 17000 //start hit check if Z <17000
 def Zero_Angle = 8000000
-def arrow_base_hit = 24
+def arrow_base_hit = 20
 
 __fn macro_parabolic_projectile_cal_angle $v $l {
 	/*TT1 = $l //pix
@@ -192,7 +192,7 @@ __fn func_effect_arrow_hit $WeaponType {
 	//TT2 = Temp1 + 22
 	/* "Access19 = AttackerObjectID	Access20 = TargetObjectID Access18 = TargetObjTypeチェックPtr"*/
 	Ptr20 = effect_TargetObject
-	Ptr10 = Ptr20*300
+	Ptr10 = Ptr20 * 300
 	Ptr18 = Ptr10 + 4701
 	// "TargetObjが存在している"
 	@if v[Ptr18] >= 1 {
@@ -213,10 +213,11 @@ __fn func_effect_arrow_hit $WeaponType {
 	    // "#当たり判定チェック"
 	    //`between(v[607], TT1, TT3) && between(v[608], TT2, TT4)
 	    @if v[607]>=TT1{ @if v[607]<=TT3{ @if v[608]>=TT2{ @if v[608]<=TT4{ //just box check. This looks awful but faster in RM proc 
+		v[Ptr18].copy victim_AgentType,agent_Basic_Array_size
 		Ptr19 = effect_ParentObject
 		Ptr9 = Ptr19 * 300
 		s[167].off
-		@if `v[Ptr10 + 4701] == UNIT_CLASS_STATIC {
+		@if victim_AgentType == UNIT_CLASS_STATIC {
 		    s[167].on
 		    
 		}
@@ -227,7 +228,7 @@ __fn func_effect_arrow_hit $WeaponType {
 
 		v[Ptr10 + 4780] = v[1240] * v[4571]
 		// "Get difference of elevationTemp20"
-		Temp20 = v[Ptr9 + 4757] - v[Ptr18 + 56]
+		Temp20 = v[Ptr9 + 4757] - victim_getTerrainElevation
 		var1 = Ptr19
 		// "Get Dir"
 		@if s[167] .isOff() {
@@ -257,10 +258,10 @@ __fn func_effect_arrow_hit $WeaponType {
 			var5 = Ptr10 + 4700
 			// "#Crit率ゲット"
 			// "#3-CritReduction"
-			TT2 = v[var1 * 300 + 4815] + 2 - v[var5 + 239]
+			TT2 = v[var1 * 300 + 4815] + 2 - victim_CritChanceReduction
 			TT1 = rnd(0, 99)
 			// "#CritDamageReduction#(450-[Reduction])%"
-			TT3 = 450 - v[var5 + 240]
+			TT3 = 450 - victim_CritDamageReduction
 			// "#[Crit]%でフラグ"
 			v[421] = TT2 >= TT1 ? TT3 : 100
 			
@@ -268,6 +269,7 @@ __fn func_effect_arrow_hit $WeaponType {
 			v[421] = 100
 			
 		    }
+
 		    // "#Elevation Bonus"
 		    v[421] += 10 * Temp20
 		    /* "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
@@ -280,8 +282,7 @@ __fn func_effect_arrow_hit $WeaponType {
 		    macro_get_agent_slot_to_r1(Ptr19 SLOT_CURRENT_AD)
 		    Temp1 = reg1
 		    // "ARかMRか取得"
-		    v[722] = Ptr9
-		    v[722] += 4822
+		    v[722] = Ptr9 += 4822
 		    Temp2 = v[v[722]]
 		    // "射撃属性"
 		    Temp3 = 1
@@ -293,7 +294,7 @@ __fn func_effect_arrow_hit $WeaponType {
 		    // "############"
 		    // "Effect"
 		    // "#あたったので演出チェック"
-		    @if `s[Ptr20 + 500] == 1 {
+		    @if `victim_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 			@if reg1 == reg2 {
 			    // "Red Flash"
 			    v[376] += v[182] < 5 ? 1 : 0
@@ -360,20 +361,23 @@ __fn func_effect_arrow_hit $WeaponType {
 		} .else bl {
 		    // "Miss!"
 		    v[607].copy v[221], 2
-		    @if `s[Ptr20 + 500] == 1 {
+		    @if `victim_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 			@if reg2 == 1 {
 			    // "Shield Blocked!"
 			    // "#########################"
-			    v[472] = divmul(60, 100, v[2216])
-			    v[473] = rnd(115, 120)
+			    v[472] = divmul(65, 100, v[2216])
+			    v[473] = rnd(100, 115)
 			    v[474] = divmul(v[607] + v[1001], v[1281], 50)
-			    @cmd 11550, "重いパンチ2", .args v[472], 3
+					str1.asg "weapons/shield_hit_arrow_"
+					TT1 = rnd(1,2)
+					str1.cat TT1
+			    @cmd 11550, str1, .args v[472], 3
 			    // "#########################"
 
 			    @if s[307] .isOff() {
 						TT2 = Ptr10 + 4984
 						@if v[TT2] < 1 { 
-							@if `v[183] < v[4572] / 2 {
+							@if `v[183] < (v[4572] >> 1) {
 									// "#描画範囲内か？"
 									v[220] = ((v[220] + 1) % 30) + 1201
 									//9.3.23
@@ -416,14 +420,13 @@ __fn func_effect_arrow_hit $WeaponType {
 			    }
 
 			    // "Call Shield"
-			    TT2 = Ptr10 + 4952
 			    // "NOT siege ram"
-			    @if `v[TT2 - 123] != 100 {
-						v[TT2 + 32] = v[TT2] > 0 ? 4 : 0 // shield flash!
+			    @if `!(victim_AI_routine_bits & AI_routine_bits_FLAG_siegeweapon_flag) {
+						TT2 = Ptr10 + 4984
+						v[TT2] = victim_MainShieldID > 0 ? 4 : 0 // shield flash!
 						// "#Shield Motion"
-						TT2 = Ptr10 
-						TT2 += 4943
-						@if v[TT2] != 1 {
+						@if victim_ActionState != 1 {
+								TT2 = Ptr10 + 4943
 								v[TT2] = 2
 								TT2 -= 215
 								v[TT2] += v[TT2] < 300 ? 900 : 0
@@ -431,13 +434,14 @@ __fn func_effect_arrow_hit $WeaponType {
 						}
 				
 			    }
+
 			    // "Remove Arrow Picture"
 		    	var1 = v[241] + 1
 			    func_erase_effect(var1)
 			    
 			} .else bl {
 			    @if s[307] .isOff() {
-				@if `v[183] < v[4572] / 2 {
+				@if `v[183] < (v[4572] >> 1) {
 				    // "#描画範囲内か？"
 				    v[220] %= 30
 				    v[220] += 1201

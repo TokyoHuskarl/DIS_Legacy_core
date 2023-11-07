@@ -1,3 +1,232 @@
+__fn CEV_CONTROL_SELECT_AGENTS_DOUBLECLICK {
+
+	@comment "ダブルクリックで同じ種類の兵士を一括選択"
+		@comment "#STATICを選んでたら無理"
+		@if s[27] .isOff() {
+			s[36].off
+				v[102..140] = 0
+				v[301] = 0
+				v[202] = 101
+				v[99] = 1
+				v[98] = 0
+				v[325] = v[101] * 300
+				v[98] = v[325] + 4805
+				v[98] = v[v[98]]
+				v[82] = -1
+				@comment "一体選択されてる"
+				v[601] = v[325] + 4701
+				@comment "民間人フラグ"
+				v[375] = 1
+				@comment "とりあえず雑魚だけ"
+				@if v[325] > 0 {
+					v[472] = divmul(90, 100, v[2216])
+						@se.play "Switch1" .opt v[472], 120, 50
+						@if `v[v[601]] > 0 && v[v[601]] < 10 {
+							v[325] += 4700 + 101
+								@loop v[1004] .dst v[301] {
+									s[22].off
+										v[302] = v[301] * 300 + 5001
+										@comment "とりあえず40体までしか選択できない"
+										@if v[202] <= v[1007] {
+											@if v[v[302]] > 0 {
+												@comment "NOT STATIC"
+													@if v[v[302]] != 11 {
+														@comment "選択しているユニットの割り振り番号"
+															v[324] = v[301] + 1
+															v[v[302]].copyTo v[601], 11
+															v[310] = v[302] + 23
+															v[311] = v[302] + 100
+															v[320] = v[302] + 99
+															@if `v[601] > 0 && v[601] < 10 {
+																@if v[101] != v[324] {
+																	@if `v[v[320]] == v[v[325] - 1] {
+																		@if `v[944] == 1 && between(v[607], v[1008], v[1009]) && between(v[608], v[1010], v[1011]) && v[v[311]] == v[v[325]] || (v[944] == 0 && (v[v[325] - 66] == 0 && v[v[311]] == v[v[325]] || v[v[325] - 66] >= 11 && v[v[325] - 66] == v[v[302] + 34]) && between(v[607], v[1008], v[1009]) && between(v[608], v[1010], v[1011]) || v[944] == 0 && between(v[v[325] - 66], 1, 10) && v[v[325] - 66] == v[v[302] + 34] != 0 && v[v[320]] == 0) {
+																			v[82] = v[944] <= 0 && v[v[302] + 34] != 0 ? v[v[302] + 34] : -1
+																				v[202] += 1
+																				@if v[202] <= v[1007] {
+																					@comment "民間？"
+																						v[701] = 1 + v[311]
+																						v[375] = v[v[701] - 99] & 2097152 ? v[375] : 0
+																						s[22].on
+																						v[v[310]] = 0
+																						@comment "選択範囲内"
+																						v[v[202]] = v[324]
+																						v[99] += 1
+																						@comment "選択した集団の最大ＨＰを取得"
+																						v[327] = v[302] + 104
+																						v[98] += v[v[327]]
+
+																				}
+
+																		}
+																		@if `(v[944] == 1 && between(v[607], v[1008], v[1009]) && between(v[608], v[1010], v[1011]) || (v[v[325] - 66] == 0 || v[v[325] - 66] >= 11)) && v[v[311]] == v[v[325]] && between(v[607], v[1008], v[1009]) && between(v[608], v[1010], v[1011]) || v[944] == 0 && between(v[v[325] - 66], 1, 10) && v[v[325] - 66] == v[v[302] + 34] != 0 && v[v[320]] == 0 {
+
+																		}
+
+																	}
+																	@if s[22] .isOff() {
+																		@if v[v[320]] == 0 {
+																			v[v[310]] = 1
+
+																		} .else bl {
+																			@if v[v[320]] == 1 {
+																				v[v[310]] = 2
+
+																			} .else bl {
+																				@if v[v[320]] == 2 {
+																					v[v[310]] = 3
+
+																				} .else bl {
+																					@if v[v[320]] == 3 {
+																						v[v[310]] = 4
+
+																					} .else bl {
+
+																					}
+
+																				}
+
+																			}
+
+																		}
+
+																	}
+
+																} .else bl {
+																	@comment "#元から選択されているやつのわっかを白くしてあげる"
+																		v[v[310]] = 0
+
+																}
+
+															}
+
+													}
+
+											}
+
+										}
+
+								}
+
+
+						}
+
+				}
+			s[24].on
+				s[201].off
+				@call .cev 48
+
+		} .else bl {
+			s[36].off
+				v[102..140] = 0
+				v[301] = 0
+				v[202] = 101
+				v[99] = 1
+				v[98] = 0
+				v[325] = v[101] * 300
+				v[98] = v[325] + 4805
+				v[98] = v[v[98]]
+				v[82] = -1
+				@comment "一体選択されてる"
+				v[601] = v[325] + 4701
+				@comment "とりあえず雑魚だけ"
+				@if v[325] > 0 {
+					v[472] = divmul(90, 100, v[2216])
+						@se.play "Switch1" .opt v[472], 120, 50
+						@if `v[v[601]] > 10 {
+							v[325] += 4700 + 101
+								@loop v[1004] .dst v[301] {
+									s[22].off
+										v[302] = v[301] * 300 + 5001
+										@comment "とりあえず40体までしか選択できない"
+										@if v[202] <= v[1007] {
+											@if v[v[302]] > 0 {
+												@comment "NOT STATIC"
+													@if v[v[302]] == 11 {
+														@comment "選択しているユニットの割り振り番号"
+															v[324] = v[301] + 1
+															v[v[302]].copyTo v[601], 11
+															v[310] = v[302] + 23
+															v[311] = v[302] + 100
+															v[320] = v[302] + 99
+															@if v[601] > 0 {
+																@if v[101] != v[324] {
+																	@if `v[v[320]] == v[v[325] - 1] {
+																		@if `v[944] == 1 && between(v[607], v[1008], v[1009]) && between(v[608], v[1010], v[1011]) && v[v[311]] == v[v[325]] || (v[944] == 0 && (v[v[325] - 66] == 0 && v[v[311]] == v[v[325]] || v[v[325] - 66] >= 11 && v[v[325] - 66] == v[v[302] + 34]) && between(v[607], v[1008], v[1009]) && between(v[608], v[1010], v[1011]) || v[944] == 0 && between(v[v[325] - 66], 1, 10) && v[v[325] - 66] == v[v[302] + 34] != 0 && v[v[320]] == 0) {
+																			v[82] = v[944] <= 0 && v[v[302] + 34] != 0 ? v[v[302] + 34] : -1
+																				v[202] += 1
+																				@if v[202] <= v[1007] {
+																					@comment "民間？"
+																						v[701] = 1 + v[311]
+																						v[375] = v[v[701] - 99] & 2097152 ? v[375] : 0
+																						s[22].on
+																						v[v[310]] = 0
+																						@comment "選択範囲内"
+																						v[v[202]] = v[324]
+																						v[99] += 1
+																						@comment "選択した集団の最大ＨＰを取得"
+																						v[327] = v[302] + 104
+																						v[98] += v[v[327]]
+
+																				}
+
+																		}
+
+																	}
+																	@if s[22] .isOff() {
+																		@if v[v[320]] == 0 {
+																			v[v[310]] = 1
+
+																		} .else bl {
+																			@if v[v[320]] == 1 {
+																				v[v[310]] = 2
+
+																			} .else bl {
+																				@if v[v[320]] == 2 {
+																					v[v[310]] = 3
+
+																				} .else bl {
+																					@if v[v[320]] == 3 {
+																						v[v[310]] = 4
+
+																					} .else bl {
+
+																					}
+
+																				}
+
+																			}
+
+																		}
+
+																	}
+
+																} .else bl {
+																	@comment "#元から選択されているやつのわっかを白くしてあげる"
+																		v[v[310]] = 0
+
+																}
+
+															}
+
+													}
+
+											}
+
+										}
+
+								}
+
+
+						}
+
+				}
+			s[24].on
+				s[201].off
+				@call .cev 48
+
+		}
+}
 
 // hidoi
 __fn CEV_CONTROL_SELECT_AGENTS_GROUP {
@@ -38,8 +267,8 @@ __fn CEV_CONTROL_SELECT_AGENTS_GROUP {
 			// kek this proc is fucking retarded, need to be remade tbh
 			@if Control_ClickableAgentHolder > 0 {
 					Temp1 = Control_ClickableAgentHolder - 1
-					Control_ClickableAgentHolder = -1
 					pick_agents_with_Temp1_ptr()
+					v[99] += 1
 			}
 		
 			@if s[25] .isOn() {
@@ -258,8 +487,26 @@ __fn CEV_CONTROL_SELECT_AGENTS_GROUP {
 			}
 			
 	}
+	ui_selectsnd()
 	@call .cev 48
 
+}
+
+__fn ui_selectsnd {
+	@if s[25].isOn() {
+		v[472] = divmul(50, 100, v[2216])
+			@se.play "ui\UI_Quirky_45" .opt v[472], 100, 50
+
+	}.else bl {
+		v[472] = divmul(50, 100, v[2216])
+			@if v[99] > 0 {
+				@se.play "ui\UI_Quirky_44" .opt v[472], 105, 50
+			}.elif s[27].isOn(){
+				@se.play "ui\UI_Quirky_44" .opt v[472], 80, 50
+
+
+			}
+	}
 }
 
 __fn pick_agents_with_Temp1_ptr {
@@ -270,17 +517,29 @@ __fn pick_agents_with_Temp1_ptr {
 	@if v[Temp2] > 0 {
 			v[Temp2].copy v[601], 11
 			// "左上"
+	
 			
-			Temp3 = v[607] - v[610] - (v[610] <= 18 ? v[1122] : 0)
-			Temp4 = v[608] - v[611] - (v[611] <= 18 ? v[1123] : 0)
-			Temp5 = v[607] + v[610] + (v[610] <= 18 ? v[1122] : 0)
-			Temp6 = v[608] + v[611] + (v[611] <= 18 ? v[1123] : 0)
+			TT1 = Control_ClickableAgentHolder -1
+			@if TT1 != Temp1 { 
+				Temp3 = v[607] - v[610] - (v[610] <= 18 ? v[1122] : 0)
+				Temp4 = v[608] - v[611] - (v[611] <= 18 ? v[1123] : 0)
+				Temp5 = v[607] + v[610] + (v[610] <= 18 ? v[1122] : 0)
+				Temp6 = v[608] + v[611] + (v[611] <= 18 ? v[1123] : 0)
+				// further condition check
+				TT2 = (Temp3 <= v[3] && v[1] <= Temp5 && Temp4 <= v[4] && v[2] <= Temp6 && s[62] == 0)
+
+			}.else bl{
+				TT2 = 1 // it's clickable
+				Control_ClickableAgentHolder = -1
+
+			}
+
 
 			Temp10 = Temp2 + 23
 			Temp11 = Temp2 + 100
 			Temp20 = Temp2 + 99
 			@if Control_ClickableAgentHolder <= 0 { // for click system reforgement
-				@if `Temp3 <= v[3] && v[1] <= Temp5 && Temp4 <= v[4] && v[2] <= Temp6 && s[62] == 0 {
+				@if TT2 == 1 {
 					change_selected_agents_state_old()
 				}
 			}
@@ -364,3 +623,7 @@ __fn change_selected_agents_state_old {
 	
 
 }
+
+
+
+

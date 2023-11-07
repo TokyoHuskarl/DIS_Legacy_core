@@ -4,7 +4,7 @@
 
 def {
 	CTYP_MAP = 1
-	CTYP_SYS = 2 // ex-SND, will be reformed
+	CTYP_SYS = 2 // ex-sys, will be reformed
 	CTYP_MISSION = 3
 	CTYP_GAME = 4
 	CTYP_AGENT = 5
@@ -26,7 +26,7 @@ def {
 
 deft {
 	str_link_Cmd_map = 771
-	str_link_Cmd_snd
+	str_link_Cmd_sys
 	str_link_Cmd_mission
 	str_link_Cmd_game
 	str_link_Cmd_agent
@@ -48,16 +48,32 @@ __fn boot_DIS_js_system {
 	execute_js("DIS_js_system_main.js")
 }
 
+def JS_TRYPACK_1 = "try {"
+
+__fn try_eval_js $script $errormsg {
+	js_StringBuffer.asg $script
+	str2.asg "try {"
+	str2.cat js_StringBuffer
+	str2.cat "} catch (error) { errorlog(`"
+	str2.cat $errormsg
+	str2.cat "`)}"
+	eval_js(str2)
+
+}
+
 __fn reboot_DIS_js_system { // called after RMsavedata load
+
 	execute_js(PATH_js_bootconfig) // load boot config
 	boot_DIS_js_system()
+	
 	// and?
 }
 
 def CEV_JS_MANAGER_RESTORE = "RTS.restore();"
 __fn reboot_DIS_js_RTS_system {
 	reboot_DIS_js_system()
-	eval_js(CEV_JS_MANAGER_RESTORE) 
+	eval_js(CEV_JS_MANAGER_RESTORE)
+
 	
 }
 
@@ -78,6 +94,12 @@ __fn open_js_scene $scenename {
 }
 */
 
+// replace "$;" with ","
+// @param {strv} 
+__fn scr_validate_string_to_show $str {
+	t[__id($str)].asg .rep($str,"$;",",")
+	t[__id($str)].asg .rep($str,"^",LF)
+}
 
 
 // Package Tree - only for calling Cmd.obj.method on RPG_RT.exe, you need init process for each of Cmd Packages before you use this function. 
@@ -109,8 +131,8 @@ __fn DIS_Cmd_PackTree $chosenobj $md $counter $given_v_or_str $flags {
 	@if $chosenobj == CTYP_MAP { // Cmd.map
 		DIS_Cmd_map(str_link_Cmd_map,$md,$counter,$given_v_or_str,$flags)
 
-	}.elif $chosenobj == CTYP_SYS { // Cmd.snd
-		DIS_Cmd_snd(str_link_Cmd_snd,$md,$counter,$given_v_or_str,$flags)
+	}.elif $chosenobj == CTYP_SYS { // Cmd.sys
+		DIS_Cmd_sys(str_link_Cmd_sys,$md,$counter,$given_v_or_str,$flags)
 
 	}.elif $chosenobj == CTYP_MISSION { // Cmd.mission
 		DIS_Cmd_mission(str_link_Cmd_mission,$md,$counter,$given_v_or_str,$flags)
@@ -146,9 +168,9 @@ __fn DIS_Cmd_map $LINKstr $md $counter $given_v_or_str $flags {
 	})
 }
 
-__fn DIS_Cmd_snd $LINKstr $md $counter $given_v_or_str $flags {
+__fn DIS_Cmd_sys $LINKstr $md $counter $given_v_or_str $flags {
 	SScmdPackage_Build("sn",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
-		DIS_snd_methods($LINKstr $md $counter $given_v_or_str $flags)
+		DIS_sys_methods($LINKstr $md $counter $given_v_or_str $flags)
 	})
 }
 
@@ -198,8 +220,8 @@ __fn DIS_map_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("map", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		// let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "spnAg",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4,SSargs5,SSargs6)})}, // map.spawnAgent
-		{NsCmd($LINKstr, $md, $i, "spnSt",{cmd_spawnStatic(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // map.spawnStatic
+		{NsCmd($LINKstr, $md, $i, "spnAg",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,"0",SSargs5,SSargs6)})}, // map.spawnAgent
+		{NsCmd($LINKstr, $md, $i, "spnSt",{cmd_spawnStatic(SSargs0,SSargs1,SSargs2,SSargs3,"0")})}, // map.spawnStatic
 		{NsCmd($LINKstr, $md, $i, "spawnPalisade",{cmd_spawnPalisade(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnPalisade
 		{NsCmd($LINKstr, $md, $i, "spawnWall",{cmd_spawnWall(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnWall
 		{NsCmd($LINKstr, $md, $i, "genHeightmap",{cmd_genHeightmap()})}, // genHeightmap
@@ -208,14 +230,21 @@ __fn DIS_map_methods $LINKstr $md $i $given_v_or_str $flags {
 	])
 }
 
-// Cmd.snd
-__fn DIS_snd_methods $LINKstr $md $i $given_v_or_str $flags {
-	SScmdLib_Build("snd", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+// Cmd.sys
+__fn DIS_sys_methods $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("sys", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		// let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "pGSE",{cmd_play_global_sound(SSargs0,SSargs1,SSargs2,SSargs3)})}, // snd.playGlobalSE
-		{NsCmd($LINKstr, $md, $i, "pBGM",{cmd_play_global_music(SSargs0,SSargs1,SSargs2,SSargs3)})}, // snd.playBGM
-		
+		{NsCmd($LINKstr, $md, $i, "exec",{execute_js(SSargs0)})}, // <- NsLib_js
+		{NsCmd($LINKstr, $md, $i, "eval",{@js .run SSargs0})},
+		{NsCmd($LINKstr, $md, $i, "importDISDjson",{cmd_sys_importDISjson(SSargs0)})},
+
+		{NsCmd($LINKstr, $md, $i, "loadtxt",{cmd_sys_loadtxt(SSargs0,SSargs1)})},
+			// export text
+		{NsCmd($LINKstr, $md, $i, "exportText",{
+			t2v(SSargs0,var1)
+			t[var1].toFile SSargs1, .utf8
+		})},	
 
 	])
 }
@@ -234,9 +263,10 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("game", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "exec",{execute_js(SSargs0)})}, // <- NsLib_js
-		{NsCmd($LINKstr, $md, $i, "wait",{@wait (SSargs0)})},
-		{NsCmd($LINKstr, $md, $i, "eval",{@js .run SSargs0})},
+		{NsCmd($LINKstr, $md, $i, "wait",{
+			t2v(SSargs0,var1)
+			@wait (SSargs0)})},
+
 		{NsCmd($LINKstr, $md, $i, "gotoRMmap",{
 			t2v(SSargs0,var1)
 			t2v(SSargs1,var2)
@@ -244,6 +274,16 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 			@map[var1].setPlayerPos .pos var2, var3
 		})},
 		{NsCmd($LINKstr, $md, $i, "msg",{func_show_msg(SSargs0)})},
+		{NsCmd($LINKstr, $md, $i, "tintScreen",{
+			t2v(SSargs0,var1)
+			t2v(SSargs1,var2)
+			t2v(SSargs2,var3)
+			t2v(SSargs3,var4)
+			t2v(SSargs4,var5)
+			cmd_game_tintScreen(var1,var2,var3,var4,var5)
+			// @cmd 11030, "", .args var1, 6 //@scr.tint .rgbs(var1, var2, var3, var4), .time(var5)
+			})},
+
 
 		// pic series
 		{NsCmd($LINKstr, $md, $i, "loadPic",{cmd_pic_simpleload(SSargs0,SSargs1)})},
@@ -251,12 +291,10 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 			t2v(SSargs0,var1)
 			@pic.erase [var1]
 		})},
+		{NsCmd($LINKstr, $md, $i, "pGSE",{cmd_play_global_sound(SSargs0,SSargs1,SSargs2,SSargs3)})}, // game.playGlobalSE
+		{NsCmd($LINKstr, $md, $i, "pBGM",{cmd_play_global_music(SSargs0,SSargs1,SSargs2,SSargs3)})}, // game.playBGM
 
-		// export text
-		{NsCmd($LINKstr, $md, $i, "exportText",{
-			t2v(SSargs0,var1)
-			t[var1].toFile SSargs1, .utf8
-		})},
+
 		
     
 
@@ -295,7 +333,9 @@ __fn DIS_group_methods $LINKstr $md $i $given_v_or_str $flags {
 
 		//let javascript interpreter execute what is written in file
 		{NsCmd($LINKstr, $md, $i, "setCgrp",{cmd_grp_setCgrp()})},
-		{NsCmd($LINKstr, $md, $i, "registerCohort",{})},
+		{NsCmd($LINKstr, $md, $i, "registerCohort",{cmd_grp_registerCohort()})},
+		{NsCmd($LINKstr, $md, $i, "convertPath",{})},
+		{NsCmd($LINKstr, $md, $i, "move",{cmd_grp_move(SSargs0,SSargs1,SSargs2)})},
 		
 	])
 }
@@ -348,6 +388,19 @@ __fn cmd_play_global_music $filename $volume $tempo $balance {
 }
 
 
+//##########################
+// game commands
+//##########################
+
+__fn cmd_game_tintScreen $R $G $B $S $frame {
+	var1 = $R
+	var2 = $G
+	var3 = $B
+	var4 = $S
+	var5 = $frame
+	var6 = 0
+	@cmd 11030, "", .args var1, 6 //@scr.tint .rgbs(var1, var2, var3, var4), .time(var5)
+}
 
 //##########################
 //spawn commands
@@ -363,12 +416,10 @@ __fn cmd_spawn_agent $troop_id $TileX $TileY $TeamID $CohortID $Dir $Stance {
 	t[__id($TileX)] .toNum TT1
 	t[__id($TileY)] .toNum TT2
 	t[__id($TeamID)] .toNum spawnSet_Team
-	t[__id($CohortID)] .toNum spawnSet_Cohort
+	spawnSet_Cohort = 0 // t[__id($CohortID)] .toNum spawnSet_Cohort
 	//lmao retarded
 	bool_Gen_CohortSet.off
-	@if spawnSet_Cohort >= 1 {
-		bool_Gen_CohortSet.on
-	}
+
 	t[__id($Dir)] .toNum spawnSet_Direction
 	t[__id($Stance)] .toNum spawnSet_Stance
 	//@call .cev 2001
@@ -379,14 +430,6 @@ __fn cmd_spawn_agent $troop_id $TileX $TileY $TeamID $CohortID $Dir $Stance {
 	//call fn
 	@call .cev 300
 
-	@if spawnSet_Team == 0 {
-		//Was?
-		@if bool_Gen_CohortSet .isOn() {
-		    @call .cev 1906 // -> cohort_general.tpc
-		    
-		}
-
-	}
 
 }
 
@@ -453,7 +496,7 @@ __fn cmd_spawnStatic $staticID $x $y $team $cohort {
 		}
 		reg2.copy spawnSet_x, 2
 		t[__id($team)] .toNum spawnSet_Team
-		t[__id($cohort)] .toNum spawnSet_Cohort
+		spawnSet_Cohort = 0// t[__id($cohort)] .toNum spawnSet_Cohort
 		s[177..180].off
 	
 	} .else bl {
@@ -463,7 +506,7 @@ __fn cmd_spawnStatic $staticID $x $y $team $cohort {
 		reg3 += 8
 		reg2.copy spawnSet_x, 2
 		t[__id($team)] .toNum spawnSet_Team
-		t[__id($cohort)] .toNum spawnSet_Cohort
+		spawnSet_Cohort = 0 // t[__id($cohort)] .toNum spawnSet_Cohort
 		
 		}
 	t[__id($staticID)] .toNum spawnSet_TroopID
@@ -588,6 +631,26 @@ __fn cmd_ui_dialog_set_legacy {
 }
 
 
+//
+// sys com
+//
+
+__fn cmd_sys_importDISjson $path {
+	// inputstr.asg PATH_gamedir
+	inputstr.asg $path
+	load_json(inputstr)
+	inputstr.asg DIS_js_buffer
+	eval_js("DATA.autoregister(DATA.parseDISjson(gett(510)));") // inputstr
+}
+
+__fn cmd_sys_loadtxt $path $adrt {
+	// maybe load slot should be limited
+	inputstr.asg PATH_gamedir
+	inputstr.cat $path
+	t2v($adrt,var1)
+	t[var1].asg .file(inputstr), .utf8 
+}
+
 
 //#########################
 // picture commands
@@ -704,7 +767,7 @@ def {
 __fn cmd_team_give_tech_flag $teamID $tech_group $tech_flag {
 	t2v(SSargs0,var1) // teamID
 	t2v(SSargs1,var2) // tech slot
-	SSargs2.toNum var3 .hex
+	t2v(SSargs1,var3) // tech flag - hex is parsed on js and given as int number to TPC/
 
 	// this might seem retarded kek
 	var1 = max(var1, 0)
@@ -713,6 +776,7 @@ __fn cmd_team_give_tech_flag $teamID $tech_group $tech_flag {
 	var2 = min(var2, 3)
 	var2 -= 1
 
+	// kari
 	v[Const_Team_Address_Tech_Array_Head + var1 + Team_Tech_Array_Size * var2] |= var3
 
 }
@@ -790,6 +854,97 @@ __fn cmd_grp_setCgrp {
 	
 }
 
+__fn cmd_grp_registerCohort {
+	t2v(SSargs0,Temp16) // playerid
+	t2v(SSargs1,Temp17) // cohortid
+	t2v(SSargs2,Temp18) // list
+	t2v(SSargs3,Temp19) // count
+	@if Temp16 == 0 {
+		register_cohort_for_player(Temp16,Temp17,Temp18,Temp19)
+
+	}.else bl{ // otherwise?
+		assign_cohortnumber_to_listagents(Temp18,Temp19,Temp17)
+
+	}
+}
+
+__fn cmd_grp_move $x $y $fl {
+	t2v($x,var1) // x
+	t2v($y,var2) // y
+	t2v($fl,var3) // flag
+	macro_convert_maptileXY_into_relativeXY(var1,var2,v[2853],v[2854])
+	@call .cev 1750
+
+}
+
+/*
+		@if inputstr .contains "_get_mapcord(" {
+		    inputstr .split "(", t[3000], TT1
+		    t[3001] .split ")", t[3000], TT1
+		    t[3000] .split ",", t[3000], TT1
+		    t[3000] .toNum var1
+		    t[3001] .toNum var2
+		    @map[v[501]].setVehiclePos .boat .pos var1, var2 .retain
+		    v[2853] = boat.scrx
+		    v[2854] = boat.scry
+		    v[2854] -= 8
+		    @break
+		    
+		}
+		// "AI_cmd_add_waypoint_simple()"
+		@if inputstr .contains "_add_waypoint_simple(" {
+		    v[2853].copy v[2851], 2
+		    @call .cev 1749
+		    @break
+		    
+		}
+		// "AI_cmd_add_waypoint_mev(mevid)"
+		@if inputstr .contains "_add_waypoint_mev(" {
+		    inputstr .split "(", t[3000], TT1
+		    t[3001] .split ")", t[3000], TT1
+		    t[3000] .split ",", t[3000], TT1
+		    t[3000] .toNum var1
+		    var2 = 1
+		    @call .mev var1, var2
+		    @call .cev 1749
+		    @break
+		    
+		}
+		// "AI_cmd_move_simple([Attackmove],[pathfinding])"
+		@if inputstr .contains "_move_simple(" {
+		    inputstr .split "(", t[3000], TT1
+		    t[3001] .split ")", t[3000], TT1
+		    t[3000] .toNum var1
+		    t[3001] .toNum var2
+		    v[0] = s[241] = var1
+		    v[0] = s[242] = var2
+		    @call .cev 1750
+		    s[241].off
+		    s[242].off
+		    @break
+		    
+		}
+		// "AI_cmd_move_line(var [Attackmove],[pathfinding])"
+		@if inputstr .contains "_move_line(" {
+		    inputstr .split "(", t[3000], TT1
+		    t[3001] .split ")", t[3000], TT1
+		    @call .cev 1761
+		    v[2853].copy v[2851], 2
+		    v[2851].copy var7, 2
+		    var7 .sub reg1, 2
+		    v[17..18] *= 2
+		    v[2851].copy var5, 2
+		    t[3000] .toNum var1
+		    t[3001] .toNum var2
+		    v[0] = s[241] = var1
+		    v[0] = s[242] = var2
+		    @call .cev 1751
+		    s[241].off
+		    s[242].off
+		    @break
+		    
+		}
+*/
 
 //##########################
 // misc commands

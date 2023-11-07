@@ -1,0 +1,263 @@
+cev .id(1246), .name("GlidingCharge"), {
+	@if s[118] .isOn() {
+		v[1301].copy v[581], 20
+			// "#Q_ID and Q_Func"
+			v[581] = 46
+			v[582] = v[581] + 1200
+			// "#Q_Type"
+			v[583] = 1
+			v[584] = 2
+			// "#Q_Motion"
+			v[585] = 1
+			// "#Q_Cost"
+			v[587] = 0
+			// "#Q_Range"
+			v[592] = 24000
+			// "#Q_CD"
+			v[588] = 1450
+			// "#Spellpowerbase"
+			v[598] = 250
+			// "Only when the unit is moving"
+			v[600] |= 2
+			v[600] |= 4
+
+	} .else bl {
+		@if s[119] .isOn() {
+				v[603] |= 16
+				// "#Temp1=agentwhogetsbuff"
+				v[868] = muldiv(v[868], 150 + (120 - v[v[235] + 15]) * 2, 100)
+				// "#ForceSpr"
+				v[850] = 3
+				v[869] /= 2
+				v[865] += 12
+				// "##fearsome"
+				v[874] |= 2048
+				v[874] |= 262144
+				v[874] |= 134217728
+				v[874] &= ~4 // can't form shield wall
+				// "#Icon Number"
+				reg1 = 18
+
+		} .else bl {
+			@if s[122] .isOn() {
+				// "Access19 = AttackerObjectID 0	Access20 = TargetObjectID 1~	Access18 = ObjTypeチェックPtr"
+					@if `reg10 == 1 || reg10 == 2 {
+						v[Ptr19 * 300 + 4728] = 3000
+							@if `s[500 + Ptr19] == 1 && v[182] < 4 {
+								v[182] += 1
+									// "#########################"
+									v[471] = 11550
+									v[472] = divmul(70, 100, v[2216])
+									v[473] = 110
+									v[474] = divmul(v[607] + v[1001], v[1281], 50)
+									// "#########################"
+									@cmd v[471], "Earth1", .args v[472], 3
+
+							}
+						// "#発動処理"
+							var1 = 1246
+							var2 = Ptr19
+							@call .cev 1935
+							var1 = 1246
+							v[reg2] = 8
+							// "#バフ番号指定"
+							var1 = 1197
+							var2 = Ptr20
+							@call .cev 1911
+							@if reg2 >= 0 {
+								// "#Duration"
+									v[reg2] = 40
+
+							}
+						// "Give V vector"
+							@if v[reg2] == 40 {
+								v[Ptr20 * 300 + 4942] = 4
+									v[Ptr20 * 300 + 4949] = v[reg2]
+									// "############### 速度べくとるを作る#############"
+									TT1 = Ptr19 * 300
+									TT1 += 4707
+									v[TT1].copy var1, 2
+									v[607].copy var3, 2
+									// "#単位ベクトルできた"
+									@call .cev 2003
+									// "#fail safe"
+									@if `v[Ptr19 * 300 + 4701] > 0 {
+										// "#PMsをかけよう"
+											TT1 = Ptr19 * 300
+											TT1 += 4968
+											v[21..22] *= min(v[TT1], 500)
+											v[21..22] *= 5
+
+									} .else bl {
+										v[21..22] *= 500
+
+									}
+								// "#速度へ代入"
+									TT1 = Ptr20 * 300
+									TT1 += 4712
+									reg1.copy v[TT1], 2
+
+							}
+						@call .cev 97
+
+					}
+
+			} .else bl {
+				// "#発動処理"
+					Ptr17 = Ptr19 * 300
+					Ptr17 += 4700
+					// "#バフ番号指定"
+					var1 = 1246
+					var2 = Ptr19
+					@call .cev 1911
+					@if reg2 >= 0 {
+						// "#Duration"
+							v[reg2] = 150
+
+					}
+				// "当たり判定を召喚"
+					@if v[217] < v[4559] {
+						v[217] += 1
+							@loop v[4559] .dst Temp20 {
+								v[216] %= v[4559]
+									Temp1 = v[216] * 100
+									Temp1 += v[1076]
+									Ptr15 = Temp1 + 1
+									@if v[Ptr15] == 0 {
+										// "Access17 = AttackerObjチェックPtr"
+											Ptr17 = Ptr19 * 300
+											Ptr17 += 4700
+											// "まず清掃"
+											v[1301].copy v[601], 100
+											v[1301].copy v[Ptr15], 100
+											// "ParentObjセット☆修正済み,Ptr19"
+											v[609] = Ptr19
+											// "出る場所セット"
+											TT1 = Ptr17 + 5
+											v[TT1].copy v[605], 2
+											TT1 += 2
+											v[TT1].copy v[607], 2
+											// "Projectile team"
+											TT1 = Ptr17 + 100
+											v[618] = v[TT1]
+											// "パラメータ等入力begin"
+											// "#Pic"
+											v[602] = 1
+											// "#ProjectileType"
+											v[601] = 1
+											// "#Hit Limit"
+											v[629] = 1
+											v[603] = 1222
+											// "#あたり判定"
+											TT1 = v[Ptr19 * 300 + 4817] / 900
+											v[610..611] = TT1
+											// "#威力"
+											var1 = Ptr19
+											var2 = 1
+											@call .cev 2004
+											// "[AD]*250%"
+											reg1 *= 250
+											reg1 /= 100
+											v[621] = reg1
+											// "#ARMRと属性"
+											v[622] = 0
+											TT1 = Ptr17 + 123
+											v[623] = v[TT1]
+											v[627] = 2
+											// "#Timer"
+											v[700] = 150
+											// "#Effect"
+											v[604] = 1246
+											// "パラメータ等入力end"
+											v[601].copy v[Ptr15], 100
+											// "#Nopic"
+											v[628] |= 1
+											v[628] |= 8
+											// "描画"
+											Temp2 = v[216] + v[4560]
+											@pic[Temp2].erase
+											// "演出"
+											@break
+
+									}
+								v[216] += 1
+
+							}
+
+
+					}
+				TT1 = Ptr17 + 7
+					v[TT1].copy v[605], 2
+					v[605..606] *= 10000
+					v[TT1].copy v[607], 2
+					@if `s[500 + Ptr19] == 1 {
+						@if v[182] <= 6 {
+							v[182] += 1
+								// "#########################"
+								v[471] = 11550
+								v[472] = divmul(65, 100, v[2216])
+								v[473] = 120
+								v[474] = divmul(v[607] + v[1001], v[1281], 50)
+								// "#########################"
+								@cmd v[471], "Wind1", .args v[472], 3
+
+						}
+						@loop v[1017] .dst Temp20 {
+							v[242] %= v[1017]
+								Temp1 = v[242] * 100
+								Temp1 = Temp1 + v[1018]
+								@if v[Temp1] <= 1 {
+									v[242] %= v[1017]
+										Ptr1 = v[242] * 100
+										Ptr1 = Ptr1 + v[1018]
+										// "まず清掃"
+										v[1301].copy v[Temp1], 100
+										// "ポインタセット開始"
+										Temp10 = v[242] + v[1220]
+										Ptr15 = Temp1 + 99
+										// "設定"
+										v[Temp1] = 1
+										v[Ptr15] = 0
+										// "普通にアニメ"
+										v[607].copy v[361], 2
+										@pic[Temp10].show {
+											"popstrings\charge"
+												.pos v[361], v[362] .center
+												.scrollWithMap
+												.chromakey 1
+												.scale 100
+												.trans v[1066]
+												.rgbs 100, 100, 100, 100
+												.mapLayer 7
+												.eraseWhenTransfer
+												.affectedByFlash
+												.affectedByShake
+										}
+									v[362] -= 48
+										@pic[Temp10].move {
+											.pos v[361], v[362] .center
+												.scale 100
+												.trans 100
+												.time 20
+												.rgbs 100, 100, 100, 100
+										}
+									// "仕上げに登録消す"
+										v[242..242] += 1
+										s[141].off
+										@break
+
+								}
+							v[242] += 1
+
+						}
+
+						// "###"
+
+					}
+
+			}
+
+		}
+
+	}
+}

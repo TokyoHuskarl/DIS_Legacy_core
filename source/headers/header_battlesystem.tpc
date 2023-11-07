@@ -8,11 +8,16 @@ defv{
 	
 
 }
+
+defs {
+	BOOL_Is_target_static = 167
+}
+
 def {
-	WeaponType_Melee=0
-	WeaponType_Arrow=1
-	WeaponType_Bolt=2
-	WeaponType_Javelin=3
+	WeaponType_Melee = 0
+	WeaponType_Arrow = 1
+	WeaponType_Bolt = 2
+	WeaponType_Javelin = 3
 }
 
 
@@ -20,3 +25,4 @@ def {
 __fn copyback_victim_data $vptr {
 	victim_AgentType.copy v[$vptr], agent_Basic_Array_size
 }
+

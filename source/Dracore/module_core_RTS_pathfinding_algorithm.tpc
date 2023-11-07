@@ -17,60 +17,35 @@ __fn func_pathfinding_Astar() {
 	//v[TT2].copy Temp3, 2
 
 	pfagent_MoveUvectorX.copy Temp3, 2
-	@if Temp4 < -30 {
-	    // "Up"
-	    @if Temp3 > 30 {
-		// "Right"
-		v[4586] = 3
-		
-	    } .else bl {
-		@if Temp3 < -30 {
-		    // "Left"
-		    v[4586] = 1
-		    
+		@if Temp4 < -30 {
+			// "Up"
+			@if Temp3 > 30 {
+				// "Right"
+				v[4586] = 3
+
+			} .else bl {
+				v[4586] = Temp3 < -30 ? 1 : 2 
+
+			}
+
 		} .else bl {
-		    v[4586] = 2
-		    
+			@if Temp4 > 30 {
+				// "Down"
+				@if Temp3 > 30 {
+					// "Right"
+					v[4586] = 5
+
+				} .else bl {
+					v[4586] = Temp3 < -30 ? 7 : 6 
+
+				}
+
+			} .else bl {
+				v[4586] = Temp3 > 30 ? 4 : 8 
+
+			}
+
 		}
-		
-	    }
-	    
-	} .else bl {
-	    @if Temp4 > 30 {
-		// "Down"
-		@if Temp3 > 30 {
-		    // "Right"
-		    v[4586] = 5
-		    
-		} .else bl {
-		    @if Temp3 < -30 {
-			// "Left"
-			v[4586] = 7
-			
-		    } .else bl {
-			v[4586] = 6
-			
-		    }
-		    
-		}
-		
-	    } .else bl {
-		@if Temp3 > 30 {
-		    // "Right"
-		    v[4586] = 4
-		    
-		} .else bl {
-		    @if Temp3 < -30 {
-			// "Left"
-			v[4586] = 8
-			
-		    }
-		    
-		}
-		
-	    }
-	    
-	}
 
 	// "Goal Node setting start"
 	 pfagent_TargetAgentID = pfagent_AgentBits & AgentBits_FLAG_ForcemoveFlag ? 0 : pfagent_TargetAgentID
@@ -94,62 +69,152 @@ __fn func_pathfinding_Astar() {
 
 	    TT2 =__id(pfagent_HoldPointX) // Pathfinding_AgentData_head_ptr + 41
 	    Temp17 = max(pfagent_LeftWPtoChase, 0)
-	    TT2 += Temp17 * 2
+	    // TT2 += Temp17 * 2
+	    val_mul(Temp17,N2)
+			val_add(Temp17,TT2)
 	    v[TT2].copy var1, 2
 
 	    // convert into tile coordinate - maybe you can deal with this without this func if the PF agent has the target agent
-	    @call .cev 2000
-	    reg1.copy Temp11, 2
+	    // @call .cev 2000
+	    // reg1.copy Temp11, 2
+			macro_convert_relativeXY_into_maptileXY(var1,var2,Temp11,Temp12)
 
 	    
 	}
 
+
 	// The goal node is set, now to run actual node check process
 	// "safety in order not to set out of map as a goal node"
-	@if `between(reg2, v[70], v[72]) {
-	    @if `between(reg1, v[69], v[71]) {
+	@if `between(Temp12, v[70], v[72]) {
+	    @if `between(Temp11, v[69], v[71]) {
 
-		//Temp11 = (Temp11 - v[69]) // / 2
-		//v[312] = (v[312] - v[70]) // / 2
+		// "Goal Node"
 		Temp11.sub v[69],2
-		v[311..312] /= 2
-
-		//opt 27.4.23
-		//var2 = Temp11 + v[312] * v[433] + 1
+		Temp11.shr N1,2 // v[311..312] /= 2
+	
+		// var2 = goal node
 		var2 = Temp11 + 1
-		var2 += v[312] * v[433]
+		// var2 += v[312] * v[433]
+		val_mul(Temp12,v[433])
+		val_add(var2,Temp12)
+		
 
 		// "Start Node"
-		//TT2 = Pathfinding_AgentData_head_ptr + 26
-		//v[TT2].copy Temp11, 2
-		pfagent_MapX.copy Temp11, 2
-		Temp11.sub v[69],2
-		v[311..312] /= 2
+		pfagent_MapX.copy Temp13, 2
+		Temp13.sub v[69],2
+		Temp13.shr N1,2 // v[313..314] /= 2
 
 		// var1 = start node id
-		var1 = Temp11 + 1 
-		var1 += v[312] * v[433]
+		var1 = Temp13 + 1 
+	 	// var1 += v[314] * v[433]
+		val_mul(Temp14,v[433])
+		val_add(var1,Temp14)
+
+
+		
+		pffunc_node_getData(var2)
+		// if obstacle exists at the first goal node 
+		@if mapnode_MovementCost >= Node_Obstacle_Threshold {
+			// start very dumb and simple node searching
+
+			defv {
+				GlNdSr_x_lp = __id(TT1)
+				GlNdSr_y_lp = __id(TT2) 
+				GlNdSr_nodeArraySize = __id(TT3) 
+				GlNdSr_nodeIdArrIndex = __id(TT4)
+				GlNdSr_nodeElmArrIndex = __id(TT5)
+				GlNdSr_nodeIdArrHead = __id(TT6)
+				GlNdSr_nodeElmArrHead = __id(TT7)
+
+			}
+			// -----------------------
+			// variables init process
+			// -----------------------
+
+			// loop number set
+			// v[__id(GlNdSr_x_lp)..__id(GlNdSr_y_lp)] = 3
+			// lmao
+			GlNdSr_x_lp = 1 - max((Temp11 + 2 - v[433]),-2)
+			GlNdSr_y_lp = 1 - max((Temp12 + 2 - v[434]),-2) 
+
+			// init array size
+			val_init(GlNdSr_nodeArraySize)
+
+			// use open nodes list which will be inited soon after this proc
+			GlNdSr_nodeIdArrHead = Const_save_var_OpenNodesListHead
+			val_asg(GlNdSr_nodeIdArrIndex,GlNdSr_nodeIdArrHead)
+
+			// elm head starts from id head + 16
+			val_asg(GlNdSr_nodeElmArrHead,GlNdSr_nodeIdArrHead) 
+			val_add(GlNdSr_nodeElmArrHead,N16)
+			val_asg(GlNdSr_nodeIdArrIndex,GlNdSr_nodeElmArrHead)
+			
+
+			val_asg(reg1,var2) // use reg1 as a temp var
+			val_sub(reg1,v[433])
+			reg1 = max(1,reg1)
+			
+
+			def checkObsThreshold = {
+				// if the node's obstacle score is under threshold
+				@if mapnode_MovementCost < Node_Obstacle_Threshold {
+					reg2.copy v[GlNdSr_nodeIdArrIndex],1 // save id to id array
+					mapnode_RefMapX.sub Temp13,2 // mapnode[x,y] - startnode[x,y]
+					mapnode_RefMapX = abs(mapnode_RefMapX)
+					mapnode_RefMapX += abs(mapnode_RefMapY) // |Xdelta| + |Ydelta|
+					mapnode_RefMapX.copy v[GlNdSr_nodeElmArrIndex],1 // save heu cost to elm arrya
+
+					GlNdSr_nodeArraySize.add N1,3 // i++
+
+				}
+			}
+
+			// check nodes 3*3 at largest
+			@loop GlNdSr_y_lp { // y loop
+				reg1.copy reg2,1
+				@loop GlNdSr_x_lp { // x loop
+					pffunc_node_getData(reg2)
+					checkObsThreshold
+					increment_var(reg2) // reg2++
+				}
+				val_add(reg1,v[433])
+			}
+
+			// 
+			@if GlNdSr_nodeArraySize > 0 {
+				v[GlNdSr_nodeElmArrHead].sort(GlNdSr_nodeArraySize), .sync(v[GlNdSr_nodeIdArrHead])
+				// return reg1 to var2 
+				GlNdSr_nodeIdArrHead.deref var2,1
+			}
+			
+			// if not even one node is found, keep initial var2 as a goal node
+		}
+
 		/* "#v1=start	v2=goal"*/
 		// "#""INIT"
 		v[4593] = Bool_PF_Wall_Detection == 1 ? 2 : 6
 		v[4592] = v[4593] + 1
-		v[4595] = 0
+		val_init(v[4595]) // v[4595] = 0
 
 		v[ptr_null].copy v[4582],4
 		var1.copy PF_start_Node, 2
 		
-		v[ptr_null].copy v[v[4568]], PF_init_Range 
+		v[ptr_null].copy v[Const_save_var_OpenNodesListHead], PF_init_Range 
 
 
 		// check from start node
-		PF_current_checking_Node = PF_start_Node
-		var10 = PF_start_Node
+		val_asg(PF_current_checking_Node,PF_start_Node) // PF_current_checking_Node = PF_start_Node
 
 		// "######add start Node to openlist"
-		v[v[4568] + v[4582]] = var10
-		v[4582] += 1
+		// var10 = PF_start_Node
+		// v[Const_save_var_OpenNodesListHead + v[4582]] = var10
+		var10 = Const_save_var_OpenNodesListHead + v[4582]
+		PF_start_Node.copy v[var10],1
 
-		v[v[4568]].sortDescending v[4582]
+
+		val_add(v[4582],N1) // v[4582] += 1
+
+		v[Const_save_var_OpenNodesListHead].sortDescending v[4582]
 		v[4588] = (PF_goal_Node - 1) * Const_save_var_NodeDataSize + Const_save_var_NodeArrayHead
 		v[v[4588]].copy v[4588], 2
 		v[341] = v[204] >= 380 ? 512 : 1024
@@ -160,11 +225,11 @@ __fn func_pathfinding_Astar() {
 			v[2075] = v[2064] + 1
 			v[4581] = (PF_current_checking_Node - 1) * Const_save_var_NodeDataSize + Const_save_var_NodeArrayHead + 11
 			//ACHTUNG - need to change into .copy proc
-			v[3601..3608] = 999999999
+			v[3601].repeat 999999999,8 // v[3601..3608] = 999999999
 
 			//ACHTUNG - need to change into .copy proc   
-			v[ptr_null].copy v[3609],8 //v[3609..3617] = 0
-			v[4591] = 0
+			v[ptr_null].copy v[3609],8 // v[3609..3617] = 0
+			v[ptr_null].copy v[4591],1 // v[4591] = 0
 
 			// "Euclid"
 
@@ -180,15 +245,16 @@ __fn func_pathfinding_Astar() {
 							@if TT11  == PF_goal_Node { // reached goal Node!
 								v[Const_save_var_PFNodesLinkMINUS1 + TT11] = PF_current_checking_Node
 								PF_current_checking_Node = TT11 
-								v[378] = 0
+								val_init(v[378]) // v[378] = 0
 								@break .level 2
 								
 							}
+
 							PFckPtr = TT11  * Const_save_var_NodeDataSize 
 							PFckPtr += Const_save_var_NodeArrayHead - Const_save_var_NodeDataSize
 
 							v[4004] = PFckPtr + 2
-							v[4004] = v[v[4004]]
+							v[4004].deref v[4004],1 // v[4004] = v[v[4004]]
 							@if v[4004] <= 105 {
 									v[PFckPtr].copy v[4001], 2
 									v[4001] .sub v[4588], 2
@@ -202,17 +268,20 @@ __fn func_pathfinding_Astar() {
 									TT13 = 3601 + v[2065] 
 
 									v[TT13] = (v[4001] + v[4004] * 150) * 10 + TT12
-									@if TT12 == v[4586] {
-								v[TT13] += 2500
-								
-									}
 
-									v[4591] += 1
+									v[TT13] += TT12 == v[4586] ? 2500 : 0
+									/*
+									@if TT12 == v[4586] {
+										v[TT13] += 2500
+									}
+									*/
+
+									val_add(v[4591],N1) // v[4591] += 1
 									//optimise
 									//v[3609 + v[2065]] = v[v[4581]] / 10
-									TT13 += 8 // since TT13 is 3601 + v[2065]
+									val_add(TT13,N8) // TT13 += 8 // since TT13 is 3601 + v[2065]
 									//Now TT13 = 3609 + v[2065]...  
-									v[TT13] = TT11
+									ptr_asg(TT13,TT11) // v[TT13] = TT11
 									
 							}
 							
@@ -220,7 +289,7 @@ __fn func_pathfinding_Astar() {
 					@break
 					
 						}
-						v[4581] += 1
+						increment_var(v[4581]) // v[4581] += 1
 						
 				}
 				
@@ -267,7 +336,7 @@ __fn func_pathfinding_Astar() {
 			
 				}
 
-				v[4581] += 1
+				increment_var(v[4581]) // v[4581] += 1
 				
 		}
 		
@@ -278,11 +347,11 @@ __fn func_pathfinding_Astar() {
 			v[4003] = v[PF_current_checking_Node - 1 + v[4555]]
 			@loop 8 .dst v[2065] {
 				var9 = 3609 + v[2065]
-				var9 = v[var9]
+				var9.deref var9,1 // var9 = v[var9]
 				@if var9 > 0 {
 						var10 = 3601 + v[2065]
-						var10 = v[var10]
-						var10 += v[4003]
+						var10.deref var10,1 // var10 = v[var10]
+						val_add(var10,v[4003]) // var10 += v[4003]
 						//@call .cev 1772
 						func_pathfinding_open_Node()
 				}
@@ -290,28 +359,38 @@ __fn func_pathfinding_Astar() {
 			}
 
 			// "######	add var10 to closelist"
-			v[19] = PF_current_checking_Node
+			val_asg(var9,PF_current_checking_Node) // v[19] = PF_current_checking_Node
 			v[Const_save_var_ClosedNodesListHead + v[4583]] = v[19]
-			v[4583] += 1
+
+			val_add(v[4583],N1) // v[4583] += 1
 			v[Const_save_var_ClosedNodesListHead].sortDescending v[4583]
-			var1 = v[4568] + 1
-			v[var1].copy v[v[4568]], v[4582]
-			v[v[4568] + v[4582]] = 0
+
+			var1 = Const_save_var_OpenNodesListHead + 1
+			v[var1].copy v[Const_save_var_OpenNodesListHead], v[4582]
+			// v[Const_save_var_OpenNodesListHead + v[4582]] = 0
+			var2 = Const_save_var_OpenNodesListHead + v[4582]
+			v[ptr_null].copy v[var2],1
+
 			var1 = v[4555] + 1
 			v[var1].copy v[v[4555]], v[4582]
-			v[v[4555] + v[4582]] = 0
-			v[4582] -= 1
+			// v[v[4555] + v[4582]] = 0
+			var2 = v[4555] + v[4582]
+			v[ptr_null].copy v[var2],1
+
+			val_sub(v[4582],N1) // v[4582] -= 1
 
 			@if v[4582] <= 0 {
 				v[378] = -1
 				@break
 		
 			}
-			v[v[4555]].sort v[4582] .sync v[v[4568]]
-			PF_current_checking_Node = v[v[4568]]
+			v[v[4555]].sort v[4582] .sync v[Const_save_var_OpenNodesListHead]
+			PF_current_checking_Node = v[Const_save_var_OpenNodesListHead]
 			// "######"
-			@if `v[2064] % 24 == 23 {
-				PF_done_per_1f = 0 // refresh PF counter
+			reg9 = v[2064] % 32
+			@if reg9 == 31 {
+				// refresh PF counter
+				v[ptr_null].copy PF_done_per_1f,1 // PF_done_per_1f = 0 
 				@wait 0
 		
 			}
@@ -321,7 +400,7 @@ __fn func_pathfinding_Astar() {
 		// refresh deployed agent data after the node searching loop ends 
 		refresh_deployed_agent_data()
 
-		v[2070] = v[2075]
+		val_asg(v[2070],v[2075]) // v[2070] = v[2075]
 
 		__if DEBUG_BUILD == 1 {
 		    v[4592] = 0
@@ -384,64 +463,18 @@ __fn func_pathfinding_Astar() {
 			v[2871].copy v[2869], 2
 			v[2873].copy v[2871], 2
 			v[2851].copy v[2873], 2
-			v[2071] += 2
+			val_add(v[2071],N2) // v[2071] += 2
 			
 		}
 		
 		// set to the agent waypoint array
-		/*
-		@if v[2875] > 20 { // sofucking many WP 
-		    v[379] = 0
-		    v[2875] = 6
-		    @loop v[2875] .dst v[2064] {
-					@if v[2071] >= 4360 {
-							v[2071] = 4321
-							
-					}
-					v[2072] = 2873 - v[2064] * 2
-					v[v[2071]].copy v[2851], 2
-					v[2863].copy v[2861], 2
-					v[2865].copy v[2863], 2
-					v[2867].copy v[2865], 2
-					v[2869].copy v[2867], 2
-					v[2871].copy v[2869], 2
-					v[2873].copy v[2871], 2
-					v[2851].copy v[2873], 2
-					v[2071] += 2
-					
-		    }
-		    
-		    
-		} .else bl {
-		    @if v[2875] > 6 {
-					v[379] = 0
-					v[2875] = 6
-					
-		    }
-
-		    @loop v[2875] .dst v[2064] {
-					v[v[2071]].copy v[2851], 2
-					v[2863].copy v[2861], 2
-					v[2865].copy v[2863], 2
-					v[2867].copy v[2865], 2
-					v[2869].copy v[2867], 2
-					v[2871].copy v[2869], 2
-					v[2873].copy v[2871], 2
-					v[2851].copy v[2873], 2
-					v[2071] += 2
-					
-		    }
-		    
-		    
-		}
-		*/
 
 		/*
 		@if s[1] .isOn() {
 		    t[801] .asg "\v[4582]ko" .extract
 		    t[801] .cat t[525]
 		    @loop v[4582] .dst var1 {
-			var2 = v[4568] + var1
+			var2 = Const_save_var_OpenNodesListHead + var1
 			var10 = v[var2]
 			t[801] .cat "\var10" .extract
 			t[801] .cat t[525]
@@ -473,300 +506,4 @@ __fn func_pathfinding_Astar() {
 }
 
 
-// Terrible "path" finding process before going to itch
-
-__fn func_pathfinding_retarded() {
-
-	// "#移動先壁チェック"
-	s[279].on
-	v[342] = Pathfinding_AgentData_head_ptr + 21
-	v[v[342]].copy v[303], 2
-	@if v[304] < -30 {
-	    // "Up"
-	    @if v[303] > 30 {
-		// "Right"
-		v[4586] = 3
-		
-	    } .else bl {
-		@if v[303] < -30 {
-		    // "Left"
-		    v[4586] = 1
-		    
-		} .else bl {
-		    v[4586] = 2
-		    
-		}
-		
-	    }
-	    
-	} .else bl {
-	    @if v[304] > 30 {
-		// "Down"
-		@if v[303] > 30 {
-		    // "Right"
-		    v[4586] = 5
-		    
-		} .else bl {
-		    @if v[303] < -30 {
-			// "Left"
-			v[4586] = 7
-			
-		    } .else bl {
-			v[4586] = 6
-			
-		    }
-		    
-		}
-		
-	    } .else bl {
-		@if v[303] > 30 {
-		    // "Right"
-		    v[4586] = 4
-		    
-		} .else bl {
-		    @if v[303] < -30 {
-			// "Left"
-			v[4586] = 8
-			
-		    }
-		    
-		}
-		
-	    }
-	    
-	}
-	// "Goal Node"
-	v[342] = Pathfinding_AgentData_head_ptr + 41
-	v[317] = v[342] + 14
-	v[317] = max(v[v[317]], 0)
-	v[342] += v[317] * 2
-	v[v[342]].copy var1, 2
-	@call .cev 2000
-	v[21].copy Temp11, 2
-	Temp11 = (Temp11 - v[69]) / 2
-	v[312] = (v[312] - v[70]) / 2
-	v[12] = Temp11 + v[312] * v[433] + 1
-
-	// "Start Node"
-	v[342] = Pathfinding_AgentData_head_ptr + 26
-	v[v[342]].copy Temp11, 2
-	Temp11 = (Temp11 - v[69]) / 2
-	v[312] = (v[312] - v[70]) / 2
-	var1 = Temp11 + v[312] * v[433] + 1
-
-	/* "#
-	v1=start
-	v2=goal"*/
-	// "#""INIT"
-	v[4593] = Bool_PF_Wall_Detection == 1 ? 2 : 6
-	v[4592] = v[4593] + 1
-	v[4595] = 0
-	v[4584..4585] = 0
-	v[4582..4583] = 0
-	var1.copy PF_start_Node, 2
-	v[1301].copy v[v[4568]], 200
-	v[1301].copy v[Const_save_var_ClosedNodesListHead], 200
-	PF_current_checking_Node = PF_start_Node
-	var10 = PF_start_Node
-
-	// "######add var10 to openlist"
-	v[v[4568] + v[4582]] = var10
-	v[4582] += 1
-	v[v[4568]].sortDescending v[4582]
-	// "######"
-	v[4588] = (PF_goal_Node - 1) * Const_save_var_NodeDataSize + Const_save_var_NodeArrayHead
-	v[v[4588]].copy v[4588], 2
-
-	// Main node searching Loop
-	@loop 64 .dst v[2064] {
-	    v[4581] = (PF_current_checking_Node - 1) * Const_save_var_NodeDataSize + Const_save_var_NodeArrayHead + 11
-	    v[3601..3608] = 999999999
-	    v[4591] = 0
-	    v[3601].sort v[4591] .sync v[3609]
-	    v[4591] /= 2
-	    @loop v[4591] .dst v[2065] {
-
-		// what the fugg this part doing? Why didn't you leave comments to eggsplain what is going on? what a tard
-		// v[4001] = v[3609 + v[2065]]
-		// v[4002] = v[3601 + v[2065]]
-		v[4001] = 3609 + v[2065]
-		v[4002] = 3601 + v[2065]
-		v[4001].deref v[4001],2
-
-		v[4020] = v[(PF_current_checking_Node - 1) * Const_save_var_NodeDataSize + Const_save_var_NodeArrayHead + 10 + v[4001]] / 10
-		@if v[4020] == PF_goal_Node {
-		    @break .level 2
-		    
-		} .else bl {
-		    v[371] = 0
-		    Temp10 = v[4583]
-		    Temp9 = Const_save_var_ClosedNodesListHead
-		    Temp10 += Temp9
-		    @while Temp9 <= Temp10 {
-			Temp11 = (Temp9 + Temp10) 
-			Temp11 /= 2
-			@if v[Temp11] == v[4020] {
-			    v[371] = 1
-			    @break
-			    
-			} .else bl {
-			    @if v[Temp11] < v[4020] {
-				Temp10 = Temp11 - 1
-				
-			    } .else bl {
-				Temp9 = Temp11 + 1
-				
-			    }
-			    
-			}
-			
-		    }
-		    
-		    @if v[371] != 1 {
-			v[4001] = v[4002] % 10
-			v[4592] += 1
-			@if v[4586] != v[4001] {
-			    @if v[4592] >= v[4593] {
-				v[4592] = 0
-				Temp11 = (v[4020] - 1) * Const_save_var_NodeDataSize + Const_save_var_NodeArrayHead
-				v[Temp11].copy var1, 2
-				@map[v[501]].setVehiclePos .boat .pos var1, v[12] .retain
-				v[22] = boat.scrx
-				v[23] = boat.scry
-				v[23] -= 8
-				v[22..23] += 8
-				v[22].copy v[2851], 2
-				// "WP"
-				v[2863].copy v[2861], 2
-				v[2865].copy v[2863], 2
-				v[2867].copy v[2865], 2
-				v[2869].copy v[2867], 2
-				v[2871].copy v[2869], 2
-				v[2873].copy v[2871], 2
-				v[2851].copy v[2873], 2
-				v[4595] += 1
-				v[4586] = v[4002] % 10
-				
-			    }
-			    
-			}
-			@break
-			
-		    }
-		    @if v[4595] >= 6 {
-			@break
-			
-		    }
-		    
-		}
-		
-	    }
-	    
-	    @if `v[4591] == v[2065] + 1 {
-		@break
-		
-	    }
-
-	    // "check if NodeV[3609] is in close list"
-	    @if v[371] != 1 {
-		var10 = PF_current_checking_Node
-		// "######	add var10 to closelist"
-		v[Const_save_var_ClosedNodesListHead + v[4583]] = var10
-		v[4583] += 1
-		v[Const_save_var_ClosedNodesListHead].sortDescending v[4583]
-		
-	    }
-
-	    // "######"
-	    PF_current_checking_Node = v[4020]
-	    @if v[4595] >= 6 {
-		@break
-		
-	    }
-	    
-	}
-
-	v[2875] = v[4595]
-	v[2861] .sub v[1021], 14
-	v[380] = 0
-	@if `v[Pathfinding_AgentData_head_ptr + 3] & AgentBits_FLAG_PF_walldetection_switch {
-	    v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
-	    v[LEGV_ConstAIselectedListHead] = v[4596] + 1
-	    v[2880] = LEGV_ConstAIselectedListHead + 1
-	    v[2841] = 1
-	    
-	} .else bl {
-	    v[320] = v[Pathfinding_AgentData_head_ptr + 35] < 11 || v[Pathfinding_AgentData_head_ptr + 100] != 0 ? v[Pathfinding_AgentData_head_ptr + 35] : 0
-	    @if `v[320] > 0 {
-				// "v1=Cohort	v2=Team, 0/1"
-				v[12] = v[Pathfinding_AgentData_head_ptr + 100]
-				v[2861].copy v[2961], 15
-				@loop v[1012] .dst Temp1 {
-						// "Check Enemy Team List"
-						v[300] = Temp1 + v[1145 + v[12]]
-						@if v[v[300]] >= 1 {
-							Ptr19 = v[v[300]] * 300
-							Ptr19 += 4735
-							// "The unit belongs to the selected Cohort"
-							@if v[Ptr19] == v[320] {
-										v[298] = v[v[300]] * 300 + 4734
-									@if `v[v[298]] & 16384 {
-										v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
-										v[2880] = LEGV_ConstAIselectedListHead
-										v[2841] = 0
-										var1 = v[v[300]]
-										@call .cev 1747
-										v[v[298]] |= 4096
-										v[v[298]] &= ~16384
-										v[v[298]] &= ~8388608
-										v[v[298]] &= ~32768
-										v[316] = v[LEGV_ConstAIselectedListHead] * 300 + 4741
-										v[317] = v[316] + 14
-										v[317] = max(v[v[317]], 0)
-										v[316] += v[317] * 2
-										v[v[316]].copy v[2851], 2
-										v[2961].copy v[2861], 15
-										// @call .cev 1771
-										func_pathfinding_move()
-										
-									}
-									
-							}
-					
-						}
-						
-				}
-				
-				v[380] = 1
-				
-	    } .else bl {
-		v[LEGV_ConstAIselectedListHead..LEGV_ConstAIselectedListHead + 199] = 0
-		v[LEGV_ConstAIselectedListHead] = v[4596] + 1
-		v[2880] = LEGV_ConstAIselectedListHead + 1
-		v[2841] = 1
-		
-	    }
-	    
-	}
-
-	// "####"
-	@if v[380] == 0 {
-	    v[316] = v[LEGV_ConstAIselectedListHead] * 300 + 4741
-	    v[317] = v[316] + 14
-	    v[317] = max(v[v[317]], 0)
-	    v[316] += v[317] * 2
-	    v[v[316]].copy v[2851], 2
-	    // @call .cev 1771
-			func_pathfinding_move()
-			TT1 = Pathfinding_AgentData_head_ptr + 34
-	    v[TT1] |= 4096
-	    v[TT1] &= ~8388608
-	    v[TT1] &= ~32768
-	    
-	}
-	v[Pathfinding_AgentData_head_ptr + 3] &= ~AgentBits_FLAG_PF_walldetection_switch
-	s[279].off
-	@wait 0
-
-}
 

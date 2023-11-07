@@ -26,14 +26,14 @@ syntax keyword tpcRepeat loop countUp countDown doWhile while foreach __loop
 
 
 " +@\S*+"
-syn region tpcComment start=+\/\*+ end=+\*\/+ fold
+syn region tpcComment start=+\/\*+ end=+\*\/+ fold contains=tpcFold
 "contains=tpcHighlight
 syn match tpcComment /\/\/.*/
 syn match tpcComment /@comment\s".*"/ contained
 
 syn keyword tpcFunctions cev mev __fn break mep ev
  
-syntax keyword tpcOperator copy sub add mul div muldiv divmul max min asg split cat rem ins exrep rep subs file join extract ToFile inStr deref
+syntax keyword tpcOperator copy sub add mul div muldiv divmul max min asg split cat rem ins exrep rep subs file join extract ToFile inStr deref shl shr mod
 
 
 " syntax region tpcComment start=/@comment\s"/ end=/"/ 

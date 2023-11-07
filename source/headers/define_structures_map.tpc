@@ -1,11 +1,17 @@
 // I actually wanted to define those defvs like "agent.brabrabra = n" but in TPC syntax it's invalid, sadly.
 
+defv {
+	ConstMapTileX0 = 69
+	ConstMapTileY0 = 70
+}
+
 def {
 	DIS_MAPHOMEPATH = "../Maps/"
 }
 struct("Terrain",{
 	def {
 		STRING_undefined_terrain = __str("selected terrain is not defined!")
+		TerrainID_OutOfMap = 30
 
 	}
 	
@@ -19,8 +25,17 @@ struct("Terrain",{
 			regs1.asg t[var1]
 
 		}.else bl{
-			func_errlog(STRING_undefined_terrain)
-			regs1.asg "NULL"
+			var1 = $id
+			@if var1 == 0 { // outside of RM map
+				var2 = Adrt_terraindata_head + TerrainID_OutOfMap
+				splitStrData(t[var2])
+				var1 = __id(strAr0) + $elm
+				regs1.asg t[var1]
+
+			}.else bl{ // 
+				func_errlog(STRING_undefined_terrain)
+				regs1.asg "undefined"
+			}
 		}
 	}
 
@@ -32,7 +47,6 @@ struct("Terrain",{
 // Mission
 deft {
 	MissionLogName = 748
-	Str_MissionPath = 749
 	RTSmap_MissionDirectory = 750 // The great separation of mission and map is beginning. Almost all legacy strs with the prefix "Map" will be changed like this
 	RTSmission_MissionName = 752
 }

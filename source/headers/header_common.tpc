@@ -186,6 +186,8 @@ def {
 	UNIT_CLASS_HEAL = 4
 	UNIT_CLASS_SIEGE = 5
 
+	UNIT_CLASS_WORKER = 9
+
 	UNIT_CLASS_STATIC = 11
 	
 	UNIT_CLASS_STATIC_TURRET = 106
@@ -293,6 +295,10 @@ def Const_Is_Minimap_Set = 78
 
 defs Bool_Refresh_Static_Minimap = 75
 
+
+vname[__id(FrameCamDiff_MilX)], "FrameCamDifMilX"
+vname[__id(FrameCamDiff_MilY)], "FrameCamDifMilY"
+
 //vars
 defv{
 
@@ -302,6 +308,10 @@ defv{
 	Mouse_y = 50
 	MousePtr_X = 51
 	MousePtr_Y = 52
+	FrameCamDiff_X = 53
+	FrameCamDiff_Y = 54
+	FrameCamDiff_MilX = 4861
+	FrameCamDiff_MilY = 4862
 
 	AllFrameCount = 2501
 	ConstPtr_ObjPicSort_begin = 1112
@@ -421,6 +431,9 @@ defv{
 	TT19 = 359
 	TT20 = 360
 
+	effectArgX=361
+	effectArgY=362
+
 	InvVar1 = 1951 
 	InvVar2
 	InvVar3
@@ -441,6 +454,7 @@ defv{
 	Const_var_save_all_morton_memories = 4825
 	ptr_null =  4824
 	Const_2_combi = 4826
+
 }
 
 
@@ -452,8 +466,8 @@ defv{
 
 def EXTRACT_FLAG_Data_extracted = 0x1
 __fn func_extract_agent_vars $agent {
-	    Ptr1 = $agent*300
-	    Ptr1 += 4701
+	    Ptr1 = $agent * 300
+	    val_add(Ptr1,N4701) // Ptr1 += 4701
 	    v[Ptr1].copy v[601], agent_Basic_Array_size
 	    __if AGENT_DATA_EXTRACTED == 0 {
 	    	def AGENT_DATA_EXTRACTED = 1
@@ -531,7 +545,7 @@ __fn macro_cord_diff $x $y {
 	    //this one is far faster
 	    v[__id($x)..__id($y)] /= 10000
 	    v[__id($x)] .sub v[403], 2
-	    v[__id($x)] .add v[53], 2
+	    v[__id($x)] .add FrameCamDiff_X, 2
 	    v[__id($x)..__id($y)] /= 16
 }
 
@@ -586,23 +600,25 @@ __fn getQstr $quickstring_id {
 // file path setting
 def {
 
+	PATH_gamedir = "../"
+	
 	PATH_language = "../Languages/"
 
-	PATH_module = "/Module/Legacy/" // currently fixed
+	PATH_module = "../Modules/Legacy/" // currently fixed
 		
-		PATH_moduleLang = __str("../",PATH_module,"Languages/")
+		PATH_moduleLang = __str(PATH_module,"Languages/")
 
-	PATH_gui_setting = __str("../",PATH_module,"gui/") // new gui setting put in module directory
+	PATH_gui_setting = __str(PATH_module,"gui/") // new gui setting put in module directory
 
 	PATH_core_data = "..\data\"
 	
 
-	PATH_pictureHome = ""
+	PATH_pictureHome = "../Picture/"
 
 		// UI asset path
-		PATH_ui_dir = __str(PATH_pictureHome,"\ui\")
+		PATH_ui_dir = __str(PATH_pictureHome,"ui\")
 
-		PATH_Legacy_UI_passive_icon = __str(PATH_pictureHome,"\passive_icon\")
+		PATH_Legacy_UI_passive_icon = __str(PATH_pictureHome,"passive_icon\")
 
 
 		
@@ -650,13 +666,8 @@ __fn deploy_DIStable $table {
 }
 
 __fn readLangFile $loadfile $savestr {
-	@if Str_LanguageToken.eq "_jp" {
-		t[__id($savestr)] .asg  .file $loadfile, .sjis , .extract
+	t[__id($savestr)] .asg  .file $loadfile, .utf8 , .extract
 		
-	}.else bl {
-		t[__id($savestr)] .asg  .file $loadfile, .utf8 , .extract
-		
-	}
 }
 
 // Address setting
@@ -675,14 +686,22 @@ vname[4836] "N5000"
 vname[4837] "N5001"
 vname[4838] "N4700"
 vname[4839] "N4701"
+vname[4850] "N4"
+vname[4851] "N8"
+vname[4852] "N16"
 defv {
+	N0 = 1301
 	N1 = 1089
 	N2 = 4826 // array [2,2]
+	N4 = 4850
+	N8 = 4851
+	N16 = 4852
 
 	N5000 = 4836
 	N5001 = 4837
 	N4700 = 4838
 	N4701 = 4839
+
 	NagtLen = 1117 // agent array length
 }
 

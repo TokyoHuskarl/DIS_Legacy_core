@@ -13,15 +13,15 @@ def {
 // INIT MISSION - this one is called whenever you open new mission
 __fn CEV_MISSION_INIT {
 	v[ptr_null] = 0 // allocate memory
+	// @comment "init map id"
+	t[751] .asg ""
+	t[752] .asg ""
 	log_start("Initializing Mission")
 	eval_js("RTS.init()") // js RTS object init
 	v[1080] = v[1012]
 	s[18].off
 	s[43].on
 	@sys.gameOpt .runWhenInactive
-	// @comment "init map id"
-	t[751] .asg ""
-	t[752] .asg ""
 	// @comment "init BGM string"
 	Current_BGMFile .asg ""
 	v[216574..1548949] = 0 // ????????????????????
@@ -140,13 +140,11 @@ __fn CEV_MISSION_INIT {
 					str1
 					.pos -10000, -10000 .center
 					.chromakey 1
-					.scale 100
+					.scale 0
 					.trans 100
 					.rgbs 100, 100, 100, 100
 					.mapLayer 10
 					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
 				}
 				v[4801] += 1
 				
@@ -169,15 +167,12 @@ __fn CEV_MISSION_INIT {
 				str1 .cat inputstr
 				@pic[v[4801]].show {
 					str1
-					.pos -10000, -10000 .center
+					.pos 1000000, 1000000 .center
 					.chromakey 1
-					.scale 100
+					.scale 0
 					.trans 100
 					.rgbs 100, 100, 100, 100
-					.mapLayer 10
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
+					.mapLayer 1
 				}
 				v[4801] += 1
 				
@@ -203,13 +198,10 @@ __fn CEV_MISSION_INIT {
 					str1
 					.pos -10000, -10000 .center
 					.chromakey 1
-					.scale 100
+					.scale 0
 					.trans 100
 					.rgbs 100, 100, 100, 100
-					.mapLayer 10
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
+					.mapLayer 1
 				}
 				v[4801] += 1
 				
@@ -235,13 +227,10 @@ __fn CEV_MISSION_INIT {
 					str1
 					.pos -10000, -10000 .center
 					.chromakey 1
-					.scale 100
+					.scale 0
 					.trans 100
 					.rgbs 100, 100, 100, 100
-					.mapLayer 10
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
+					.mapLayer 1
 				}
 				v[4801] += 1
 				
@@ -267,13 +256,10 @@ __fn CEV_MISSION_INIT {
 					str1
 					.pos -10000, -10000 .center
 					.chromakey 1
-					.scale 100
+					.scale 0
 					.trans 100
 					.rgbs 100, 100, 100, 100
-					.mapLayer 10
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
+					.mapLayer 1
 				}
 				v[4801] += 1
 				
@@ -299,13 +285,10 @@ __fn CEV_MISSION_INIT {
 					str1
 					.pos -10000, -10000 .center
 					.chromakey 1
-					.scale 100
+					.scale 0
 					.trans 100
 					.rgbs 100, 100, 100, 100
 					.mapLayer 10
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
 				}
 				v[4801] += 1
 				
@@ -329,15 +312,47 @@ __fn CEV_MISSION_INIT {
 				str1 .cat inputstr
 				@pic[v[4801]].show {
 					str1
-					.pos -10000, -10000 .center
+					.pos -100000, -100000 .center
 					.chromakey 1
-					.scale 100
+					.scale 0
 					.trans 100
 					.rgbs 100, 100, 100, 100
 					.mapLayer 10
-					.eraseWhenTransfer
-					.affectedByFlash
-					.affectedByShake
+				}
+				v[4801] += 1
+				
+			}
+			
+		}
+		
+	}
+
+	// @comment "BodySet"
+	
+	Str_PATH_spr_head.split ("spr_head_0",str1,TT1)
+	str9 .asg str1
+	str1 .asg .cat(PATH_pictureHome,"",str1)
+	str1 .cat "preload_setting"
+	inputstr.asg .file str1, .utf8
+	inputstr .split LF, t[1], v[505]
+	@loop v[505] .dst v[506] {
+		var1 = 1 + v[506]
+		inputstr .asg t[var1]
+		inputstr .inStr "//", 321,  .beg 0
+		@comment "#""//""Comment out"
+		@if v[321] == -1 {
+			@if inputstr .neq "" {
+				str1 .asg str9
+				str1 .cat inputstr
+				TT1 = -1000000 - v[4801]
+				@pic[v[4801]].show {
+					str1
+					.pos TT1, TT1 .center
+					.chromakey 1
+					.scale 0
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 1
 				}
 				v[4801] += 1
 				
@@ -720,6 +735,8 @@ __fn CEV_MISSION_INIT {
 	
 	getMissionPath()
 	loadMissionDef()
+	loadMapInfo()
+
 
 	@if loadedJsConfig.isOff() {
 		inputstr .asg "..\Maps\"
@@ -734,12 +751,16 @@ __fn CEV_MISSION_INIT {
 			t[3000..3300] .asg ""
 			
 		}
+
+	}.else bl{
+		@map.setEv[4] .pos(reg1,reg2)
+		
 	}
 	
 
+		Map_LimitCoordX_max = ev[4].x
+		Map_LimitCoordY_max = ev[4].y
 
-	Map_LimitCoordX_max = ev[4].x
-	Map_LimitCoordY_max = ev[4].y
 	v[411] = (Map_LimitCoordX_max + Map_LimitCoordX_min) / 2
 	v[412] = (Map_LimitCoordY_max + Map_LimitCoordY_min) / 2
 	v[413] = (Map_LimitCoordX_max - Map_LimitCoordX_min) / v[1277] + 1
@@ -1074,7 +1095,6 @@ __fn CEV_MISSION_INIT {
 		str2 .toNum TT1
 		@comment "need to load tilegen.txt"
 		@if TT1 == 0 {
-			Mapgentype = Mapgentype == 0 ? 1 : Mapgentype
 			
 		}
 		
@@ -1083,8 +1103,8 @@ __fn CEV_MISSION_INIT {
 	str1.cat t[750]
 	log_push(str1)
 
-	// generate Agent Extra Array Buffer as a picture
-	// construct_picture_buffer(PicID_AgentExBuffer,AgentExtraBuffer_ArraySize,AgentExtraBuffer_ArrayAmount) obsolete
+	// generate Agent Extra Buffer as a picture
+	construct_picture_buffer(PicID_AgentExBuffer,AgentExtraBuffer_ArraySize,AgentExtraBuffer_ArrayAmount)
 	
 }
 
@@ -1097,11 +1117,11 @@ __fn CEV_MISSION_MAP_INIT {
 	
 
 	// mapdef.js.txt file won't be loaded when the game didn't load missiondef.js.txt.
-	MapHeightMapType = 0
 	@if loadedJsConfig.isOn() {
-		loadMapDef()
 		run_RTSmapGeneration()
-		@map.tileset v[2060]
+		@if Is_LEGACYSTAGE.isOff() {
+			@map.tileset v[2060]
+		}
 		log_push("JS config loaded")
 	}
 
@@ -1198,7 +1218,6 @@ __fn CEV_MISSION_MAP_INIT {
 		    .skin "FogOfWar" .stretch
 		    .mapLayer 7
 		    .eraseWhenTransfer
-		    .affectedByFlash
 		    .affectedByShake
 		}
 		
@@ -1249,21 +1268,50 @@ __fn CEV_MISSION_MAP_INIT {
 	@comment "*init map str*"
 	t[40000..45000] .asg ""
 	@comment "*get map str*"
-	inputstr .asg "..\Maps\"
-	inputstr .cat DISmap_MapDirectory
-	inputstr .cat "\\"
-	inputstr .cat "strings"
+	str5 .asg "..\Maps\"
+	str5 .cat DISmap_MapDirectory
+	str5 .cat "\\"
+	str5 .cat "strings"
+	inputstr .asg str5
 	inputstr .cat Str_LanguageToken
 	log_push("loading DIS mapstring file.")
 	log_push(inputstr)
 	inputstr .asg  .file inputstr, .utf8, .extract
-	@if inputstr.neq "" {
+
+	__fn load_and_store_mapstring {
 		log_push("DIS mapstring file loaded.")
-	}.else bl{
-		log_push("DIS mapstring file loading failed.")
+		@if `loadedJsConfig == 0 || Is_LEGACYSTAGE == 1 {
+			// legacy map string system
+			inputstr .split "*/", str9, TT1
+			inputstr .split LF, t[40000], TT1
+
+		}.else bl { // new mapstring system works on js
+			eval_js("MISSION.importLangString(gett(510))")
+			inputstr .asg  .file inputstr, .utf8, .extract
+
+		}
+	
 	}
-	inputstr .split "*/", str9, TT1
-	inputstr .split LF, t[40000], TT1
+
+	@if inputstr.neq "" {
+		load_and_store_mapstring()
+
+	}.else bl{
+		log_push("DIS mapstring file in current language is missing.")
+		log_push("Now going to load initial string file instead.")
+		inputstr .asg str5
+		log_push("loading DIS mapstring file.")
+		log_push(inputstr)
+		inputstr .asg  .file inputstr, .utf8, .extract
+
+		@if inputstr.neq "" {
+			load_and_store_mapstring()
+
+		}.else bl{
+			log_push("DIS mapstring loading failed.")
+
+		}
+	}
 
 	@comment "*Weather Init*"
 	@if s[312] .isOff() {
@@ -1450,14 +1498,14 @@ __fn CEV_MISSION_MAP_INIT {
 			Temp15 = 0
 			@comment "DENSE FOREST"
 			@if Temp14 == 5 {
-			    Temp15 = 1
+			    Temp15 = MVCOST_LAND_DENSE_FOREST
 			    
 			}
 			@comment "Stone Road"
 			@if Temp14 == 11 {
 			    Temp16 += 2
-			    @if Temp16 >= 5 {
-				Temp15 = -3
+			    @if Temp16 >= 4 {
+							Temp15 = MVCOST_LAND_STONE_ROAD
 				
 			    }
 			    
@@ -1465,19 +1513,22 @@ __fn CEV_MISSION_MAP_INIT {
 			@comment "Dirt Road"
 			@if Temp14 == 12 {
 			    Temp16 += 1
-			    @if Temp16 >= 2 {
-				Temp15 = -2
+			    @if Temp16 >= 3 {
+						Temp15 = MVCOST_LAND_DIRT_ROAD
 				
 			    }
 			    
 			}
 			@comment "WATER"
 			@if Temp14 == 18 {
-			    Temp15 = 1
+					Temp16 -= 1
+			    @if Temp16 <= -2 {
+						Temp15 = MVCOST_LAND_DIRT_WATER
+			    }
 			    
 			}
 			@if Temp14 >= 21 {
-			    Temp15 = 4
+			    Temp15 = 6
 			    
 			}
 			v[Ptr6 + 2] += Temp15
@@ -1588,7 +1639,7 @@ __fn CEV_MISSION_MAP_INIT {
 	    
 	}
 	@wait 0
-	@if loadedJsConfig.isOff() { // LEGACY script. will be erased
+	@if `loadedJsConfig == 0 || Is_LEGACYSTAGE == 1 {
 		log_push("Loading Legacy Mapscript")
 		@comment "*Map script load*"
 		inputstr .asg "..\Maps\"
@@ -1736,7 +1787,6 @@ __fn CEV_MISSION_MAP_INIT {
 						.overlay
 						.mapLayer 7
 						.eraseWhenTransfer
-						.affectedByTint
 				}
 				
 	    } .else bl {
@@ -1751,7 +1801,6 @@ __fn CEV_MISSION_MAP_INIT {
 						.overlay
 						.mapLayer 7
 						.eraseWhenTransfer
-						.affectedByTint
 				}
 				
 	    }
@@ -1767,7 +1816,6 @@ __fn CEV_MISSION_MAP_INIT {
 						.overlay
 						.mapLayer 7
 						.eraseWhenTransfer
-						.affectedByTint
 				}
 				
 	    }
@@ -1883,8 +1931,6 @@ __fn CEV_MISSION_MAP_INIT {
 						.add
 						.mapLayer 4
 						.eraseWhenTransfer
-						.affectedByTint
-						.affectedByFlash
 						.affectedByShake
 				}
 				@pic[PicID_elevation_multi].show {
@@ -1898,8 +1944,6 @@ __fn CEV_MISSION_MAP_INIT {
 						.multi
 						.mapLayer 4
 						.eraseWhenTransfer
-						.affectedByTint
-						.affectedByFlash
 						.affectedByShake
 				}
 		
@@ -1948,7 +1992,6 @@ __fn CEV_MISSION_MAP_INIT {
 		    .multi
 		    .mapLayer 4
 		    .eraseWhenTransfer
-		    .affectedByTint
 		    .affectedByFlash
 		    .affectedByShake
 		}
@@ -1965,7 +2008,6 @@ __fn CEV_MISSION_MAP_INIT {
 		    .skin "" .nobg .noframe .noGradation .noPadding
 		    .mapLayer 5
 		    .eraseWhenTransfer
-		    .affectedByTint
 		    .affectedByFlash
 		    .affectedByShake
 		}
@@ -2132,10 +2174,12 @@ __fn CEV_MISSION_MAP_INIT {
 	@if loadedJsConfig.isOn() {
 		log_push("Booting JS mission manager.")
 		RUN_js_MissionManager.on // -> RTS_mission_general.tpc
+
 	}
 	log_push("DIS mission setup process is finished.")
 	@if .testPlay() {
 		log_export("..\user\log\mission_initlog")
+
 	}
 
 	MissionLogName.asg t[750]
@@ -2178,35 +2222,63 @@ __fn getMissionPath {
 
 // setup JS management mission system
 __fn loadMissionDef $missionpath {
+		// Str_MissionInfoJSON <- make up load proc!
+
 	inputstr .asg Str_MissionPath
-	inputstr .cat "\\missiondef.js"
-	inputstr .asg .file inputstr, .utf8
-	@if inputstr.neq "" { // there's missiondef.js
-		@js .run "RTS.setupMission(gett(752),getv(501))" // t[752],v[501]
+	inputstr .cat "\\missioninfo.json"
+	Str_MissionInfoJSON .asg .file inputstr, .utf8
+
+	@if Str_MissionInfoJSON.neq "" { // there's missiondef.js
+		// try_eval_js("RTS.setupMission(gett(741));","parsing missioninfo.json FAILED!")
+		@js .run "RTS.setupMission(gett(741));" // t[752],v[501]
+
+		inputstr .asg Str_MissionPath
+		@js .run "sett(501,RTS.mission.missionscript[0]);"
+		inputstr .cat "/"
+		inputstr .cat str1
+		inputstr .asg .file inputstr, .utf8
+
 		eval_js(inputstr) // execute missiondef.js.txt
 		str_missiondef_storage.asg inputstr
 		loadedJsConfig.on
-		@js .run "RTS.setupMapLoading(RTS.mission.essential.mapDataDirectory)" // terrainData check
+		@js .run "RTS.setupMapLoading(RTS.mission.mapSourceDir);" // terrainData check
+		
+		WAIT_FOR_JSCMD_EXECUTION
+		@if Is_LEGACYSTAGE.isOn() {
+			loadedJsConfig.off
+
+		}
+	}.else bl{ // consider the map from LEGACY
+			Is_LEGACYSTAGE.on
 	}
 	
 }
 
 
 // JS map terrain setup management system
-__fn loadMapDef $missionpath {
+__fn loadMapInfo $missionpath {
+	Mapgentype = 0
+	MapHeightMapType = 0
 	str1 .asg DIS_MAPHOMEPATH
 	str1 .cat RTSmap_MapdefDir
-	str1 .cat "\\mapdef.js"
+	str1 .cat "\\mapinfo.json"
+	// str1 .cat "\\mapdef.js" // need rewriting
 	inputstr .asg .file str1, .utf8
 	@if inputstr .neq "" { // there's mapdef.js
-		@js .run "RTS.openMissionMapData()" // set new RTSmap into RTS module
-		eval_js(inputstr) // execute mapdef.js.txt
 		str_mapdef_storage.asg inputstr
-	}.else bl {
-		str1 .asg, .cat("Couldn't open Map terrain file!", " filepath is: ~/text", str1)//
-		func_errlog(str1)
-	}
+		@js .run "RTS.openMissionMapData(gett(510));" // parse mapinfo.json in t[510] <-inputstr
+		// return to reg1 reg2 
 
+	}.else bl {
+		@if Is_LEGACYSTAGE.isOff(){
+			str1 .asg, .cat("Couldn't open mapinfo json file!", " filepath is: ~/text", str1) //
+			func_errlog(str1)
+		}
+
+		reg1 = ev[4].x
+		reg2 = ev[4].y
+
+	}
 }
 
 __fn run_RTSmapGeneration {@js .run "RTS.map.build()"}
@@ -2253,7 +2325,11 @@ __fn generateTileMapFromPicfile $filepath {
 // Call start up Mission
 
 def JSCMD_STARTUP = "
+try {
 RTS.mission.startup();
+} catch (error) {
+errorlog(`MISSION.startup() function failed!`);
+};
 Cmd.run();
 "
 

@@ -124,7 +124,7 @@ deft {
 
 	
 	DIS_js_buffer = 512 // -> module_NsLib_js_functions.tpc
-
+	Str_moduleinfo = 520
 	StrConst_LF = 525
 	Str_LanguageToken = 526
 
@@ -132,13 +132,24 @@ deft {
 
 	str_moduleName = 631
 	str_moduleData_FacTemplate_json = 633 
+	str_moduleData_Tech_json = 634 
+
+
+
+	Str_MissionInfoJSON = 741
+
+	Str_Mission_local_save_JSON = 745
+	str_MissionLogName = 748
+	Str_MissionPath = 749
 
 	Str_MapDirectory = 750
 	Str_MapID = 751
 	Str_MapName = 752
+	Str_MissionName = 752
 
 
 	Current_BGMFile = 760
+  str_mission_current_triggers_save_JSON = 763 // will be obsolete
 	str_ShLog = 782 // -> NsLib_GUI_init.js 
 
 	data_troopID = 801 
@@ -149,12 +160,34 @@ deft {
 	data_armorID = 806
 	data_helmIDD = 807
 	data_accessoryID = 808
+	data_techID = 810
 
+	Str_slot_armorfile = 851
+	Str_slot_helmfile = 853
+	Str_slot_weaponfile = 854
+	Str_slot_accfile = 856
+	Str_slot_minionfile = 857
+	Str_slot_mainsetR = 861
+	Str_slot_mainsetL = 862
+	Str_slot_subsetR = 863
+	Str_slot_subsetL = 864
+
+	Str_PATH_spr_armor=901
+	Str_PATH_spr_head=902
+	Str_PATH_spr_helm=903
+	Str_PATH_spr_weapon=904
+	Str_PATH_spr_misc=906
+	Str_PATH_spr_minion=907
+	Str_PATH_spr_static=908
+	Str_PATH_spr_hair=909
+	Str_PATH_spr_armor_damaged=911
+	Str_PATH_spr_head_damaged=912
+	Str_PATH_spr_minion_damaged=917
 	
 }
 
 __fn getModulePathTo $strid {
-	t[__id($strid)].asg "../Module/"
+	t[__id($strid)].asg "../Modules/"
 	t[__id($strid)].cat str_moduleName
 	t[__id($strid)].cat "/"
 }

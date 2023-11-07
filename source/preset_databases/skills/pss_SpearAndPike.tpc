@@ -1,0 +1,53 @@
+cev .id(1250), .name("PushOfPike"), {
+	@if s[118] .isOn() {
+		v[1301].copy v[581], 20
+			@comment "#Q_ID and Q_Func"
+			v[581] = 50
+			v[582] = v[581] + 1200
+			@comment "#Q_Type"
+			v[583] = 6
+			v[584] = 6
+			@comment "#Q_Motion"
+			v[585] = 0
+			@comment "#Q_Cost"
+			v[587] = 999999
+			@comment "#Q_Range"
+			v[592] = -1
+			@comment "#Q_CD"
+			v[588] = 0
+
+	} .else bl {
+		@comment "#発動処理"
+			@comment "#バフ番号指定"
+			func_bs_register_buff_with_time(1196,v[300],16)
+			/*
+			@if v[22] >= 0 {
+				@comment "#Duration"
+					v[v[22]] = 16
+
+			}
+			*/
+		@comment "Give V vector"
+			@if v[v[22]] == 16 {
+				@comment "#Set Dash/Knockback"
+					v[v[300] * 300 + 4942] = 4
+					v[v[300] * 300 + 4949] = v[v[22]]
+					/*
+					v[341] = v[299] * 300 + 4707
+					v[v[341]].copy v[11], 2
+					v[607].copy v[13], 2
+					*/
+					@comment "#単位ベクトルできた"
+					func_make_unit_vector_from_two_points_atan2(agent_RelativeX,agent_RelativeY,victim_RelativeX,victim_RelativeY,45000)
+					/*
+					@call .cev 2003
+					v[21..22] *= 400
+					@comment "#速度へ代入"
+					*/
+					v[341] = v[300] * 300 + 4712
+					v[21].copy v[v[341]], 2
+
+			}
+
+	}
+}

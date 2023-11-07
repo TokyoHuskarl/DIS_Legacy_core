@@ -159,11 +159,11 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																			// @if ProjectileTeamSave != TT10 { // this agent seems target for the projectile...
 																	}
 
-																	Temp11 = v[ProjectileHitChecker] * v[1117] // let's check it out...
+																		Temp11 = v[ProjectileHitChecker] * v[1117] // let's check it out...
 																		Temp11 += 4701
+																		v[Temp11].copy victim_AgentType, agent_Basic_Array_size
 																		//@comment "当たり判定"
-																		Temp11 += 6
-																		v[Temp11].copy v[327], 5
+																		victim_RelativeX.copy v[327], 5
 																		//@comment "とりあえず矩形判定"
 																		@if `abs(v[381] - v[327]) < v[383] + v[330] && abs(v[382] - v[328]) < v[384] + v[331] {
 																			//@comment "Hit flag switch v[377]"
@@ -188,13 +188,22 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																					temp1 = ダメージ量
 																					temp2 = 防御　#0=ARで計算,1=MR
 #temp3 = 属性 元のダメージ量を減らすべき？"*/
-																				Ptr18 = Temp11 - 6
+																					Ptr18 = Temp11
 																					Ptr19 = v[Projectile_Ptr + 8]
 																					Ptr20 = v[ProjectileHitChecker]
 																					//@comment "HITCHECK"
-																					v[471] = [44, 43, 42][v[Projectile_Ptr + 26]]
-																					var3 = -1
-																					@call .cev v[471]
+																					s[167].off
+																					@if victim_AgentType == 11 { // the enemy is STATIC Type
+																						s[167].on
+																						var3 = -1
+																						reg1 = 1
+																					}.else bl{
+																							v[471] = [44, 43, 42][v[Projectile_Ptr + 26]]
+																							var3 = -1
+																							@call .cev v[471]
+																					}
+
+
 																					v[Projectile_Ptr].copy v[601], 100 //restore projectile data
 																					//@comment "reg10= 0:miss 1:hit 2:blocked"
 																					@if reg1 == 1 {
@@ -206,7 +215,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																									func_bs_register_buff_with_time(var1 Ptr20 var3)
 
 																							}
-																						Temp1 = v[621]
+																							Temp1 = v[621]
 																							Temp2 = v[622]
 																							Temp3 = v[623]
 																							v[327].copy v[607], 2
@@ -243,7 +252,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																											/* @comment "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"*/
 																											TT1 = v[Ptr20 * 300 + 4934]
 																												@if `v[Ptr20 * 300 + 4765] & 1 {
-																													TT1 = muldiv(TT1, 130, 100)
+																													TT1 = muldiv(TT1, 125, 100)
 
 																												}
 																											/*@comment "＃＃＃＃＃＃＃＃＃＃Chance Roll＃＃＃＃＃＃＃＃＃＃"*/

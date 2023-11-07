@@ -10,13 +10,13 @@ for dir in "$PARENT_DIR"/*/; do
 	# 各ディレクトリ内の.jsファイルを一つ上の階層にコピー
 	for file in "$dir"*.js; do
 		base_name=$(basename "$file")
-		cp "$file" "$DIS_WORKSPACE"/js/"$base_name".txt
+		cp "$file" "$DIS_WORKSPACE"/Scripts/"$base_name".txt
 	done
 done
 
 for file in "$PARENT_DIR"/*.js; do
 	base_name=$(basename "$file")
-	cp "$file" "$DIS_WORKSPACE"/js/"$base_name".txt
+	cp "$file" "$DIS_WORKSPACE"/Scripts/"$base_name".txt
 done
  #
-echo "All .js files in source directory have been copied to DIS/js/."
+echo "All .js files in source directory have been copied to DIS/Scripts/."

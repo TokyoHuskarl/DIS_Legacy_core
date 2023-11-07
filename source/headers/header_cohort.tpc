@@ -1,0 +1,52 @@
+// this should rather be named "header_cohort.tpc" I guess?
+
+// ?
+defv {
+	Ptr_PreRegisterPlayerCohort = 142
+	//LEGV_PreRegisterGroup = 143
+}
+
+defv CohortArrayPtr = __id(Temp10)
+
+def {
+	PATH_ui_cohortflagbase = __str(PATH_ui_dir,"\cohortflagbase")
+
+		PATH_ui_mmcircle = __str(PATH_ui_dir,"\mmcircle")
+		PATH_ui_cohortflagbase_1 = __str(PATH_ui_cohortflagbase,"1")
+		PATH_ui_cohortflagbase_0 = __str(PATH_ui_cohortflagbase,"0")
+}
+
+
+defv{
+
+cohort_LeaderID = 581
+cohort_CohortType = 582// 0=normalunits,1=civ,2=static
+cohort_CohortFlag = 583
+cohort_StateFlag = 584// 1=annihilated, 2:2 = alive, 3:4 = fighting
+cohort_FullAmount = 585
+cohort_CurrentAmount = 586
+cohort_MapX = 587
+cohort_MapY = 588
+cohort_ExactX = 589//?
+cohort_ExactY = 590//?
+cohort_RankDensity = 591
+cohort_OrderX = 592
+cohort_OrderY = 593
+cohort_OrderDir = 594
+cohort_Rank_average_size = 595
+cohort_StanceOrder = 600
+
+}
+
+def {
+cohort_CohortType_TYPE_normal = 0
+cohort_CohortType_TYPE_civ = 1
+cohort_CohortType_TYPE_static = 2
+
+cohort_StateFlag_FLAG_annihilated = 1
+cohort_StateFlag_FLAG_alive = 2
+cohort_StateFlag_FLAG_fighting = 4
+}
+
+
+#include "./../Dracore/module_core_RTS_cohort_functions.tpc"

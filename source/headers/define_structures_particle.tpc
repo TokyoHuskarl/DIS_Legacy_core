@@ -1,5 +1,15 @@
+defv ptr_emitter_head = __id(Temp1)
+defv ptr_particle_picID = 245
 
 def ParticleArraySize = 50
+
+def {
+	PARTICLE_TYP_NORMAL = 1
+
+	PARTICLE_TYP_SCRIPTABLE = 10
+
+
+}
 
 defv {
 emitter_ParticleType = 4101
@@ -20,6 +30,8 @@ emitter_milMilPixAx = 4115
 emitter_milPixAy = 4116
 emitter_milPixAab = 4117
 
+emitter_targRelX = 4124
+emitter_targRelY = 4125
 emitter_ParentEffect = 4126
 emitter_Size = 4127
 emitter_Angle = 4128
@@ -33,8 +45,8 @@ emitter_R2 = 4135
 emitter_G2 = 4136
 emitter_B2 = 4137
 emitter_Saturation2 = 4138
-emitter_particlebits=4139//?
-emitter_is_out_screen_flag = 4149
+emitter_particlebits = 4139 //?
+emitter_is_out_screen_flag = 4149 // 1 = out_of_screen
 emitter_Timer = 4150
 
 
@@ -42,6 +54,8 @@ emitter_Timer = 4150
 
 //FLAGS
 def{
+	particlebits_FLAG_ref_emitter_relpos = 1
+	particlebits_FLAG_ref_targ_relpos = 2
 
 
 
@@ -50,4 +64,36 @@ def{
 
 //Victims var for attack check
 defv{
+}
+
+__fn extract_particle_emitter_data {
+	v[ptr_emitter_head].copy emitter_ParticleType,ParticleArraySize
+}
+
+__fn save_particle_emitter_data {
+	v[ptr_emitter_head].copyFrom emitter_ParticleType,ParticleArraySize
+
+}
+
+// do not use Temp21 in this fn
+__fn regiter_particle $block {
+	@loop v[1199] {
+		val_mod(v[244],v[1199]) // v[244] %= v[1199]
+		Temp21 = v[244] * 50 
+		val_add(Temp21,v[1198]) // Temp21 += v[1198]
+			@if v[Temp21] <= 1 {
+					v[1301].copy v[Temp21], ParticleArraySize // init particle memory
+					v[1301].copy emitter_ParticleType,ParticleArraySize // init buffer for register
+
+					$block
+				
+					v[Temp21].copyFrom emitter_ParticleType,ParticleArraySize // copy to memory
+					@break
+
+			}
+		increment_var(v[244]) // v[244] += 1
+
+	}
+	increment_var(v[244]) // v[244] += 1
+
 }

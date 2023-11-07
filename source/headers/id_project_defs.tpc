@@ -160,13 +160,13 @@ defs {
 	//LEGS_Get Spawn Data=151
 	//LEGS_SpawnSystemLegacy=152
 	//
-	//LEGS_GenOnehandedWeapon=154
-	//LEGS_GenHeadCovered=155
+	LEGS_GenOnehandedWeapon=154
+	LEGS_GenHeadCovered=155
 	//LEGS_Gen_CohortSet=156
 	//LEGS_Gen_NoListAssigningFlag=157
-	//LEGS_Gen_DelHead=158
-	//LEGS_Gen_ArmArmored=159
-	//LEGS_Gen_bigheadflag=160
+	LEGS_Gen_DelHead=158
+	LEGS_Gen_ArmArmored=159
+	LEGS_Gen_bigheadflag=160
 	//LEGS_ダメージ二倍=161
 	//LEGS_追加ダメージ=162
 	//LEGS_攻撃的なドラッグ=163
@@ -251,6 +251,9 @@ defs {
 	//LEGS_[設定]Adv.Maptile=315
 	//LEGS_CHEAT TEST MODE=316
 	//LEGS_[setting]No Autosave=317
+
+	BOOL_Gore_switch = 318
+
 	//LEGS_[引継ぎ]DISLegacy=319
 	//LEGS_[引継ぎ]ドラドラアイランドプレイ=320
 	//LEGS_ドーとやら=321
@@ -327,6 +330,7 @@ defs {
 	//LEGS_新tech:射撃訓練=449
 	//LEGS_戦闘訓練=450
 	//LEGS_ナスカールギャオオオオン=451
+	Is_LEGACYSTAGE=457
 	LEGS_SkipBriefing=461
 	//LEGS_RestartMission=462
 	//LEGS_ぴーすふる=463
@@ -363,3 +367,5 @@ defs {
 	//LEGS_貯蔵量拡張=502
 
 }
+
+sname[__id(Is_LEGACYSTAGE)], "Is_Legacy_Stage"

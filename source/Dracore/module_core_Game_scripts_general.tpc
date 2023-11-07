@@ -3,6 +3,8 @@
 
 #include "./../headers/header_scripts.tpc"
 #include "./../headers/header_ai.tpc"
+#include "./../headers/header_drawing.tpc"
+#include "./../headers/header_cohort.tpc"
 
 // This weird shit will be gone after Scale Script completed
 #include "./../headers/header_scripts_functions.tpc"
@@ -35,76 +37,103 @@ cev[2041], .name("Script:DIS command interpriter"), .parallel , .cond(__id(BOOL_
 // dialog manager
 cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_Dialog)), {
 	deft {
-		dialog_treeid = 2998
-		dialog_orderid = 2999
-		dialog_string = 3000
-		dialog_timer
-		dialog_iconinfo
-		dialog_opensnd
-		dialog_open
-		dialog_fontdata
-		dialog_stopworld
-		dialog_size
-		dialog_end
+			dialog_treeid = 2998
+			dialog_orderid = 2999
+			dialog_string = 3000
+			dialog_timer
+			dialog_iconinfo
+			dialog_size
+			dialog_opensnd
+			dialog_fontdata
+			dialog_stopworld
+			dialog_end
 	}
 
 	// check dialog queue
 	dialogQueue.inStr(";",Temp1)
+		@if Temp1 != -1 {
+			// cut current dialog information
+			t[__id(dialog_string)..__id(dialog_end)].asg ""
+				// cut one radio dialog
+				dialog_string.asg .subs(dialogQueue,0,Temp1)
+				// then remove the part
+				val_add(Temp1,N1)
+				dialogQueue.asg .remove(dialogQueue, 0, Temp1)
 
-	// cut current dialog information
-	t[__id(dialog_string)..__id(dialog_end)].asg ""
-	dialog_string.asg .subs(dialogQueue,0,Temp1)
-	dialog_string.split(",",dialog_treeid,Temp2) // now you have extracted elements in the dialog order to dialog_ array.
-	dialog_timer.toNum RadioDialogTimer
-	
-	TT1 = v[1115] // ?
-	TT2 = 3
-	@pic[PicID_Radio_Dialog_Back].strpic {
-			""
-			.pos TT1, TT2 .top
-			.size 240, 64    .chromakey 1
-			.scale 100
-			.trans 50
-			.rgbs 100, 100, 100, 100
-			.font "", 12
-			.spacing 0, 4
-			.skin "system5" .stretch
-			.mapLayer 9
-			.eraseWhenTransfer
-			.affectedByFlash
-			.affectedByShake
-	}
 
-	TT1 -= 118
-	TT2 += 2
-	@pic[PicID_Radio_Dialog_Text].strpic {
-			dialog_string
-			.pos TT1, TT2 .topLeft
-			.size 0, 0    .chromakey 1
-			.scale 100
-			.trans 0
-			.rgbs 100, 100, 100, 100
-			.font Font_Common, v[4510]
-			.spacing 0, 4
-			.skin "" .nobg .noframe .noPadding
-			.mapLayer 9
-			.eraseWhenTransfer
-			.affectedByFlash
-			.affectedByShake
-	}
-	
+				dialog_string.split(",",dialog_treeid,Temp2) // now you have extracted elements in the dialog order to dialog_ array.
+				scr_validate_string_to_show(dialog_string) // replace $; with , and so on
 
-	
-	@loop bl {
-		@wait 0
-		RadioDialogTimer -= Is_Paused == 1 ? 0 : 1
-		@if RadioDialogTimer <= 0 {
-				@pic[1767..1769].erase
-				RUN_Radio_Dialog.off
-				@break
+				dialog_timer.toNum RadioDialogTimer
+
+				// open sound
+				dialog_opensnd.split("|",t[3101],reg1)
+				t2v(t[3102],var2)
+				@if var2 > 0{ 
+					t2v(t[3103],var3)
+					t2v(t[3104],var4)
+					var1 = divmul(var2, 100, NsLib_SYSTEM_SE_VOLUME)
+					@se.play t[3101] .opt var1, var3, var3
+				}
+		
+
+				// set dialog window size
+				dialog_size.split("|",t[3101],reg1)
+				t2v(t[3101],Temp11)
+				t2v(t[3102],Temp12)
+
+				// show picture proc
+				TT1 = v[1115] // ?
+				TT2 = 3
+				@pic[PicID_Radio_Dialog_Back].strpic {
+					""
+						.pos TT1, TT2 .top
+						.size Temp11, Temp12    .chromakey 1
+						.scale 100
+						.trans 50
+						.rgbs 100, 100, 100, 100
+						.font "", 12
+						.spacing 0, 4
+						.skin "system5" .stretch
+						.mapLayer 8
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
+				}
+
+				TT1 = v[1115] - Temp11 / 2 + 2  
+				TT2 += 2
+				@pic[PicID_Radio_Dialog_Text].strpic {
+					dialog_string
+						.pos TT1, TT2 .topLeft
+						.size 0, 0    .chromakey 1
+						.scale 100
+						.trans 0
+						.rgbs 100, 100, 100, 100
+						.font Font_Common, v[4510]
+						.spacing 0, 4
+						.skin "" .nobg .noframe .noPadding
+						.mapLayer 8
+						.eraseWhenTransfer
+						.affectedByFlash
+						.affectedByShake
+				}
+
+
+
+			@loop bl {
+				@wait 0
+					RadioDialogTimer -= Is_Paused == 1 ? 0 : 1
+					@if RadioDialogTimer <= 0 {
+							@break
+					}
+			}
+		}.else bl{
+			// there's no other dialog text left
+			@pic[1767..1769].erase
+			RUN_Radio_Dialog.off
+
 		}
-	}
-
 }
 
 

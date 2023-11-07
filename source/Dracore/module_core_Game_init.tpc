@@ -24,6 +24,9 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	}
 
 	v[__id(Const_2_combi)..__id(Const_2_combi) + 1] = 2
+	N4 = 4
+	N8 = 8
+	N16 = 16
 	N4700 = 4700
 	N4701 = 4701
 	N5000 = 5000
@@ -36,9 +39,12 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 
 
 
-	t[510] .asg  .file "..\Data\version_info", .utf8
-	t[510] .split " /", t[3000], TT1
+
+	/*
+	inputstr .asg  .file inputstr, .utf8
+	inputstr .split " /", t[3000], TT1
 	t[520] .asg t[3000]
+	*/
 
 	@sys.gameOpt .picLimit 9200
 	v[2299] = 9200
@@ -69,7 +75,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	@msg.opt {
 	    .opaq
 	    .bottom
-	    .size 480, 100
+	    .size 520, 112
 	    .font "", 0
 	}
 	v[4575] = 300000
@@ -170,7 +176,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1186] = 90
 	v[1204] = 42
 	@comment "#Objs"
-	v[4522] = 50
+	v[4522] = 64 // can be obsolete
 	v[1117] = 300
 	v[1005] = 5000
 	@comment "####"
@@ -241,7 +247,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1200] = 1301
 	@comment "+Logs+"
 	v[1137] = 11
-	v[1136] = 40
+	v[1136] = 30
 	v[1155] = 2104
 	@comment "*Events Link*"
 	v[1135] = 44
@@ -377,7 +383,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1297] = v[1002] - 35
 	v[1065] = v[4515]
 	v[1066] = 10
-	v[1226] = 1734
+	v[1226] = PicID_ASD_key_head
 	v[1165] = 2559
 	v[1165] = 701
 	v[4521] = 2401
@@ -778,8 +784,8 @@ __fn init_DIS_database $already_loaded {
 	// t[__id(data_troopID)..__id(data_accessoryID)].asg ""
 
 	@comment "##################"
-	t[510] .asg  .file "..\\config\\language_config", .utf8
-	t[510] .split LF, t[2999], TT1
+	inputstr .asg  .file "..\Data\language_config", .utf8
+	inputstr .split LF, t[2999], TT1
 	v[1] = v[2201] + 3000
 	t[v[1]] .split ",", t[3100], TT1
 	t[529] .asg t[3102]
@@ -798,8 +804,9 @@ __fn init_DIS_database $already_loaded {
 	t[527] .asg """
 	 "
 	v[1211] = 3001
-	t[510] .asg  .file "..\\config\preload_pictures", .utf8
-	t[510] .split LF, t[v[1211]], TT1
+	/*
+	inputstr .asg  .file "..\\config\preload_pictures", .utf8
+	inputstr .split LF, t[v[1211]], TT1
 	@loop TT1 .dst TT2 {
 			TT2 += v[1211]
 			@pic[1].show {
@@ -817,23 +824,26 @@ __fn init_DIS_database $already_loaded {
 			t[TT2] .asg ""
 			
 	}
+	*/
 
 	v[4517] = 4000
-	v[1216] = 4001
 	v[1216] = 530345
 	// @comment "##############"
 	v[1213] = 20000
-	t[510] .asg PATH_language .extract
-	t[510] .cat Str_LanguagePath
-	t[510] .cat "lang_quick_strings"
-	t[510] .asg  .file t[510], .utf8, .extract
-	// readLangFile(t[510],t[510])
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[1213]], TT1
+	inputstr .asg PATH_language .extract
+	inputstr .cat Str_LanguagePath
+	inputstr .cat "lang_quick_strings"
+	inputstr .asg  .file inputstr, .utf8, .extract
+	// readLangFile(inputstr,inputstr)
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[1213]], TT1
 	v[1206] = 5000
-	t[510] .asg  .file "..\data\data_weapons", .utf8
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[1206]], TT1
+	getModulePathTo(inputstr)
+	inputstr .cat "\data\data_weapons", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
+	// inputstr .asg  .file "..\data\data_weapons", .utf8
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[1206]], TT1
 	t[801] .asg ""
 	t[3001] .asg ""
 	@if t[511] .eq "" {
@@ -878,7 +888,7 @@ __fn init_DIS_database $already_loaded {
 	// t[511] .asg  .file t[511], .sjis, .extract
 	readLangFile(t[511],t[511])
 	@if t[511] .neq "" {
-			t[511] .split "*/", t[510], TT3
+			t[511] .split "*/", inputstr, TT3
 			t[511] .split LF, t[1000], TT3
 			@loop TT3 .dst var1 {
 					var2 = v[1206] + var1
@@ -908,9 +918,12 @@ __fn init_DIS_database $already_loaded {
 			
 	}
 	v[1207] = 6000
-	t[510] .asg  .file "..\data\data_shields", .utf8
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[1207]], TT1
+	getModulePathTo(inputstr)
+	inputstr .cat "\data\data_shields", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
+	// inputstr .asg  .file "..\data\data_shields", .utf8
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[1207]], TT1
 	t[801] .asg ""
 	t[3001] .asg ""
 	t[511] .asg ""
@@ -956,7 +969,7 @@ __fn init_DIS_database $already_loaded {
 	// t[511] .asg  .file t[511], .sjis, .extract
 	readLangFile(t[511],t[511])
 	@if t[511] .neq "" {
-			t[511] .split "*/", t[510], TT3
+			t[511] .split "*/", inputstr, TT3
 			t[511] .split LF, t[1000], TT3
 			@loop TT3 .dst var1 {
 					var2 = v[1207] + var1
@@ -986,9 +999,12 @@ __fn init_DIS_database $already_loaded {
 			
 	}
 	v[1208] = 7000
-	t[510] .asg  .file "..\data\data_armors", .utf8
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[1208]], TT1
+	getModulePathTo(inputstr)
+	inputstr .cat "\data\data_armors", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
+	// inputstr .asg  .file "..\data\data_armors", .utf8
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[1208]], TT1
 	t[801] .asg ""
 	t[3001] .asg ""
 	t[511] .asg ""
@@ -1033,7 +1049,7 @@ __fn init_DIS_database $already_loaded {
 	t[511] .cat "lang_armors"
 	readLangFile(t[511],t[511])
 	@if t[511] .neq "" {
-			t[511] .split "*/", t[510], TT3
+			t[511] .split "*/", inputstr, TT3
 			t[511] .split LF, t[1000], TT3
 			@loop TT3 .dst var1 {
 					var2 = v[1208] + var1
@@ -1063,9 +1079,12 @@ __fn init_DIS_database $already_loaded {
 			
 	}
 	v[1209] = 8000
-	t[510] .asg  .file "..\data\data_helms", .utf8
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[1209]], TT1
+	getModulePathTo(inputstr)
+	inputstr .cat "\data\data_helms", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
+	// inputstr .asg  .file "..\data\data_helms", .utf8
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[1209]], TT1
 	t[801] .asg ""
 	t[3001] .asg ""
 	t[511] .asg ""
@@ -1111,7 +1130,7 @@ __fn init_DIS_database $already_loaded {
 	t[511] .cat "lang_helms"
 	readLangFile(t[511],t[511])
 	@if t[511] .neq "" {
-			t[511] .split "*/", t[510], TT3
+			t[511] .split "*/", inputstr, TT3
 			t[511] .split LF, t[1000], TT3
 			@loop TT3 .dst var1 {
 					var2 = v[1209] + var1
@@ -1141,9 +1160,12 @@ __fn init_DIS_database $already_loaded {
 			
 	}
 	v[1210] = 9000
-	t[510] .asg  .file "..\data\data_accessories", .utf8
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[1210]], TT1
+	getModulePathTo(inputstr)
+	inputstr .cat "\data\data_accessories", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
+	//inputstr .asg  .file "..\data\data_accessories", .utf8
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[1210]], TT1
 	t[801] .asg ""
 	t[3001] .asg ""
 	t[511] .asg ""
@@ -1189,7 +1211,7 @@ __fn init_DIS_database $already_loaded {
 	t[511] .cat "lang_accessories"
 	readLangFile(t[511],t[511])
 	@if t[511] .neq "" {
-			t[511] .split "*/", t[510], TT3
+			t[511] .split "*/", inputstr, TT3
 			t[511] .split LF, t[1000], TT3
 			@loop TT3 .dst var1 {
 					var2 = v[1210] + var1
@@ -1219,8 +1241,11 @@ __fn init_DIS_database $already_loaded {
 			
 	}
 	v[1215] = 10000
-	t[510] .asg  .file "..\data\data_minions", .utf8 //this was once sjis so this might cause some trouble
-	t[510] .split "*/", t[509], TT1
+	getModulePathTo(inputstr)
+	inputstr .cat "\data\data_minions", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
+	// inputstr .asg  .file "..\data\data_minions", .utf8 //this was once sjis so this might cause some trouble
+	inputstr .split "*/", t[509], TT1
 	t[803] .asg  .file "..\scripts\const_factions_id", .utf8
 	t[804] .asg  .file "..\scripts\const_weapons_id", .utf8
 	t[805] .asg  .file "..\scripts\const_shields_id", .utf8
@@ -1235,7 +1260,7 @@ __fn init_DIS_database $already_loaded {
 			t[var1] .split "=", t[3000], TT1
 			@if TT1 == 2 {
 					@if t[3000] .neq "" {
-							t[510] .asg  .rep t[510], t[3000], t[3001]
+							inputstr .asg  .rep inputstr, t[3000], t[3001]
 							
 					}
 					
@@ -1249,7 +1274,7 @@ __fn init_DIS_database $already_loaded {
 			t[var1] .split "=", t[3000], TT1
 			@if TT1 == 2 {
 					@if t[3000] .neq "" {
-							t[510] .asg  .rep t[510], t[3000], t[3001]
+							inputstr .asg  .rep inputstr, t[3000], t[3001]
 							
 					}
 					
@@ -1263,7 +1288,7 @@ __fn init_DIS_database $already_loaded {
 			t[var1] .split "=", t[3000], TT1
 			@if TT1 == 2 {
 					@if t[3000] .neq "" {
-							t[510] .asg  .rep t[510], t[3000], t[3001]
+							inputstr .asg  .rep inputstr, t[3000], t[3001]
 							
 					}
 					
@@ -1277,7 +1302,7 @@ __fn init_DIS_database $already_loaded {
 			t[var1] .split "=", t[3000], TT1
 			@if TT1 == 2 {
 					@if t[3000] .neq "" {
-							t[510] .asg  .rep t[510], t[3000], t[3001]
+							inputstr .asg  .rep inputstr, t[3000], t[3001]
 							
 					}
 					
@@ -1291,7 +1316,7 @@ __fn init_DIS_database $already_loaded {
 			t[var1] .split "=", t[3000], TT1
 			@if TT1 == 2 {
 					@if t[3000] .neq "" {
-							t[510] .asg  .rep t[510], t[3000], t[3001]
+							inputstr .asg  .rep inputstr, t[3000], t[3001]
 							
 					}
 					
@@ -1305,7 +1330,7 @@ __fn init_DIS_database $already_loaded {
 			t[var1] .split "=", t[3000], TT1
 			@if TT1 == 2 {
 					@if t[3000] .neq "" {
-							t[510] .asg  .rep t[510], t[3000], t[3001]
+							inputstr .asg  .rep inputstr, t[3000], t[3001]
 							
 					}
 					
@@ -1313,7 +1338,7 @@ __fn init_DIS_database $already_loaded {
 			
 	}
 
-	t[510] .split LF, t[v[1215]], TT1
+	inputstr .split LF, t[v[1215]], TT1
 
 
 	t[3000..3500] .asg ""
@@ -1412,51 +1437,67 @@ __fn init_DIS_database $already_loaded {
 	@comment "set id"
 	t[802] .asg  .file "..\scripts\const_statics_id", .utf8
 	v[4573] = 16000
-	t[510] .asg PATH_language .extract
-	t[510] .cat Str_LanguagePath
-	t[510] .cat "lang_buffs"
-	// t[510] .asg  .file t[510], .utf8, .extract
-	readLangFile(t[510],t[510])
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[4573]], TT1
+	inputstr .asg PATH_language .extract
+	inputstr .cat Str_LanguagePath
+	inputstr .cat "lang_buffs"
+	// inputstr .asg  .file inputstr, .utf8, .extract
+	readLangFile(inputstr,inputstr)
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[4573]], TT1
 
 	v[4519] = 17000
-	t[510] .asg PATH_language .extract
-	t[510] .cat Str_LanguagePath
-	t[510] .cat "lang_skills"
-	// t[510] .asg  .file t[510], .utf8, .extract
-	readLangFile(t[510],t[510])
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[4519]], TT1
+	inputstr .asg PATH_language .extract
+	inputstr .cat Str_LanguagePath
+	inputstr .cat "lang_skills"
+	// inputstr .asg  .file inputstr, .utf8, .extract
+	readLangFile(inputstr,inputstr)
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[4519]], TT1
 
 	v[4576] = 18200
-	t[510] .asg PATH_language .extract
-	t[510] .cat Str_LanguagePath
-	t[510] .cat "lang_statics"
-	// t[510] .asg  .file t[510], .utf8, .extract
-	readLangFile(t[510],t[510])
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[4576]], TT1
+	inputstr .asg PATH_language .extract
+	inputstr .cat Str_LanguagePath
+	inputstr .cat "lang_statics"
+	// inputstr .asg  .file inputstr, .utf8, .extract
+	readLangFile(inputstr,inputstr)
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[4576]], TT1
 
 
 	// LOAD TECH LANG FILE
 	v[4520] = 18300
-	t[510] .asg  .file "..\Languages\lang_techs", .utf8, .extract
-	t[510] .asg PATH_language .extract
-	t[510] .cat Str_LanguagePath
-	t[510] .cat "lang_techs"
-	// t[510] .asg  .file t[510], .utf8, .extract
-	readLangFile(t[510],t[510])
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[4520]], TT1
+	inputstr .asg  .file "..\Languages\lang_techs", .utf8, .extract
+	inputstr .asg PATH_language .extract
+	inputstr .cat Str_LanguagePath
+	inputstr .cat "lang_techs"
+	// inputstr .asg  .file inputstr, .utf8, .extract
+	readLangFile(inputstr,inputstr)
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[4520]], TT3
+			@loop TT3 .dst var1 {
+					var2 = v[4520] + var1
+					var10 = var2
+					t[var2] .split "|", t[3000], TT2
 
+					TT2 -= 1
+					t[3000] .asg ""
+					@loop TT2 .dst var2 {
+							var2 = 3001 + var2
+							t[3000] .cat t[var2]
+							t[3000] .cat "|"
+							
+					}
+					
+					t[var10] .asg t[3000]
+					
+			}
 
 	// LOAD TERRAIN FILE
 	v[1239] = Adrt_terraindata_head
 	Const_save_var_AdrTerrainBitsHead = Adr_terrainbits_head // this var might be needless after TPC
-	t[510] .asg  .file "..\data\data_terrains", .utf8, .extract
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[1239]], TT1
+	inputstr .asg  .file "..\data\data_terrains", .utf8, .extract
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[1239]], TT1
 	t[511] .asg PATH_language .extract
 	t[511] .cat Str_LanguagePath
 	t[511] .cat "lang_terrains"
@@ -1500,7 +1541,7 @@ __fn init_DIS_database $already_loaded {
 	// t[511] .asg  .file t[511], .sjis, .extract
 	readLangFile(t[511],t[511])
 	@if t[511] .neq "" {
-			t[511] .split "*/", t[510], TT3
+			t[511] .split "*/", inputstr, TT3
 			t[511] .split LF, t[1000], TT3
 			@loop TT3 .dst var1 {
 					var2 = v[1206] + var1
@@ -1532,18 +1573,37 @@ __fn init_DIS_database $already_loaded {
 
 	// LOAD RACE FILE
 	v[1217] = 18600
-	t[510] .asg  .file "..\data\data_races", .utf8, .extract
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[1217]], TT1
+	inputstr .asg  .file "..\data\data_races", .utf8, .extract
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[1217]], TT1
 
+	// LOAD SKIN FILE
+	
+	/*
+	getModulePathTo(inputstr)
+	inputstr.cat "Data\data_skins.json"
+	load_json_to(inputstr,str_moduleData_FacTemplate_json)
+	remove_comment_out_from_refstr(__id(str_moduleData_FacTemplate_json))
+	*/
+	
 
 	// LOAD FACTION TEMPLATE
 	
 	// new loading
 	getModulePathTo(inputstr)
-	inputstr.cat "Data/data_factions_template.json"
+	inputstr.cat "Data\data_factions_template.json"
 	load_json_to(inputstr,str_moduleData_FacTemplate_json)
 	remove_comment_out_from_refstr(__id(str_moduleData_FacTemplate_json))
+
+
+	// LOAD TECH file
+
+	// new loading
+	getModulePathTo(inputstr)
+	inputstr.cat "Data\data_techs.json"
+	load_json_to(inputstr,str_moduleData_Tech_json)
+	remove_comment_out_from_refstr(__id(str_moduleData_Tech_json))
+
 
 	
 	
@@ -1551,13 +1611,13 @@ __fn init_DIS_database $already_loaded {
 	// legacy loading with csv
 	t[803].asg ""
 	v[4574] = 18700
-	t[510] .asg  .file "..\data\data_factiontemplates", .utf8, .extract
+	inputstr .asg  .file "..\data\data_factiontemplates", .utf8, .extract
 	// replace troop ID in template setting
-	convert_troopID_in_string(t[510])
+	convert_troopID_in_string(inputstr)
 
-	t[510] .split "*/", t[509], TT1
-	@if t[510] .neq "" {
-		t[510] .split LF, t[v[4574]], TT3
+	inputstr .split "*/", t[509], TT1
+	@if inputstr .neq "" {
+		inputstr .split LF, t[v[4574]], TT3
 		@loop TT3 .dst var1 {
 				var2 = v[4574] + var1
 				t[var2] .split ",", t[3301], TT2
@@ -1622,19 +1682,19 @@ __fn init_DIS_database $already_loaded {
 	}
 
 	v[4557] = 18800
-	t[510] .asg  .file "..\Languages\lang_passives", .utf8
-	t[510] .asg PATH_language .extract
-	t[510] .cat Str_LanguagePath
-	t[510] .cat "lang_passives"
-	// t[510] .asg  .file t[510], .utf8, .extract
-	readLangFile(t[510],t[510])
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[4557]], TT1
+	inputstr .asg  .file "..\Languages\lang_passives", .utf8
+	inputstr .asg PATH_language .extract
+	inputstr .cat Str_LanguagePath
+	inputstr .cat "lang_passives"
+	// inputstr .asg  .file inputstr, .utf8, .extract
+	readLangFile(inputstr,inputstr)
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[4557]], TT1
 	v[1214] = 19000
 	
-	t[510] .asg  .file PATH_def_perks, .utf8 , .extract
-	t[510] .split "*/", t[509], TT1
-	t[510] .split LF, t[v[1214]], TT1
+	inputstr .asg  .file PATH_def_perks, .utf8 , .extract
+	inputstr .split "*/", t[509], TT1
+	inputstr .split LF, t[v[1214]], TT1
 	t[511] .asg PATH_language .extract
 	t[511] .cat Str_LanguagePath
 	t[511] .cat "lang_perks"
@@ -1690,49 +1750,49 @@ cev .id(2120), .name("Game:Boot"),{
 
 	//Check if boot_config.txt is generated
 		log_push("Boot config loading...")
-	t[510] .asg  .file PATH_js_bootconfig, .utf8
-	@if t[510] .eq ""{
+	inputstr .asg  .file PATH_js_bootconfig, .utf8
+	@if inputstr .eq ""{
 			log_push(__str("Boot config missing. Generating config file to ",PATH_js_bootconfig))
 			//There's no boot_config.txt, so going to generate it.
-			t[510].asg "// DIS boot config file"
-			t[510].cat LF
-			t[510].cat "// Game version: "
-			t[510].cat LDB_name
-			t[510].cat " "
-			t[510].cat Build_Version
-			t[510].cat LF
-			t[510].cat "// Generated by DraCore version - "
-			t[510].cat DraCore_version
-			t[510].cat LF
+			inputstr.asg "// DIS boot config file"
+			inputstr.cat LF
+			inputstr.cat "// Game version: "
+			inputstr.cat LDB_name
+			inputstr.cat " "
+			inputstr.cat Build_Version
+			inputstr.cat LF
+			inputstr.cat "// Generated by DraCore version - "
+			inputstr.cat DraCore_version
+			inputstr.cat LF
 			//from header_config_files.tpc
-			t[510].cat Gen_BootConfig
+			inputstr.cat Gen_BootConfig
 			file_output_cooldown()
-			t[510].toFile PATH_js_bootconfig, .utf8
+			inputstr.toFile PATH_js_bootconfig, .utf8
 	}
 
 	// add a command for saving module name
 	def JSCMD_set_module_name = __str(RAWSTR_LF,"sett(",__id(str_moduleName),",boot_config.module)")
-	t[510].cat JSCMD_set_module_name
+	inputstr.cat JSCMD_set_module_name
 
 	
 	defv BOOTMODE = 1265
 	vname[__id(BOOTMODE)], "SET:BOOTMODE"
 	// @comment "*Load Config*"
-	eval_js(t[510])
+	eval_js(inputstr)
 
 	// module_name.asg 
 
 
 	/*
-	t[510] .split LF, t[1], v[505]
+	inputstr .split LF, t[1], v[505]
 	@loop v[505] .dst v[506] {
 			var1 = 1 + v[506]
-			t[510] .asg t[var1]
-			t[510] .inStr "//", 321,  .beg 0
+			inputstr .asg t[var1]
+			inputstr .inStr "//", 321,  .beg 0
 			//@comment "#""//""Comment out"
 			@if v[321] == -1 {
-		@if t[510] .contains "autosave" {
-				t[510] .split "=", t[3000], TT1
+		@if inputstr .contains "autosave" {
+				inputstr .split "=", t[3000], TT1
 				t[3001] .toNum TT1
 				@if TT1 == 0 {
 			s[317].on
@@ -1740,8 +1800,8 @@ cev .id(2120), .name("Game:Boot"),{
 				}
 				
 		}
-		@if t[510] .contains "devmode" {
-				t[510] .split "=", t[3000], TT1
+		@if inputstr .contains "devmode" {
+				inputstr .split "=", t[3000], TT1
 				t[3001] .toNum TT1
 				@if TT1 >= 1 {
 					@sys.gameOpt .fatal 60, 2, 1
@@ -1755,8 +1815,8 @@ cev .id(2120), .name("Game:Boot"),{
 				}
 				
 		}
-		@if t[510] .contains "particle_amount" {
-				t[510] .split "=", t[3000], TT1
+		@if inputstr .contains "particle_amount" {
+				inputstr .split "=", t[3000], TT1
 				t[3001] .toNum TT1
 				v[2215] = max(0, min(400, TT1))
 				
@@ -1773,29 +1833,29 @@ cev .id(2120), .name("Game:Boot"),{
 	
 	/*
 	//Check if user_custom_config.txt is generated
-	t[510] .asg  .file "..\User\user_custom_config", .utf8
-	@if t[510] .eq ""{
+	inputstr .asg  .file "..\User\user_custom_config", .utf8
+	@if inputstr .eq ""{
 			//There's no boot_config.txt, so going to generate it.
-			t[510].asg "//Generated in DraCore version - "
-			t[510].cat  DraCore_version
-			t[510].cat StrConst_LF
+			inputstr.asg "//Generated in DraCore version - "
+			inputstr.cat  DraCore_version
+			inputstr.cat StrConst_LF
 			//from header_config_files.tpc
-			t[510].cat Gen_user_custom_config
+			inputstr.cat Gen_user_custom_config
 			file_output_cooldown()
-			t[510] .toFile "..\User\user_custom_config", .utf8
+			inputstr .toFile "..\User\user_custom_config", .utf8
 	}*/
 
 	@comment "*Load User Custom Config*"
-	t[510] .split LF, t[1], v[505]
+	inputstr .split LF, t[1], v[505]
 	t[522] .asg "map_pointer"
 	@loop v[505] .dst v[506] {
 			var1 = 1 + v[506]
-			t[510] .asg t[var1]
-			t[510] .inStr "//", 321,  .beg 0
+			inputstr .asg t[var1]
+			inputstr .inStr "//", 321,  .beg 0
 			@comment "#""//""Comment out"
 			@if v[321] == -1 {
-		@if t[510] .contains "custom_cursor" {
-				t[510] .split "=", t[3000], TT1
+		@if inputstr .contains "custom_cursor" {
+				inputstr .split "=", t[3000], TT1
 				t[3001] .split """", t[3000], TT1
 				@if t[3001] .eq "" {
 			t[522] .asg "map_pointer"
@@ -1890,8 +1950,8 @@ cev .id(2120), .name("Game:Boot"),{
 	}
 	@if v[2300] == 0 {
 			s[38].on
-			t[510] .asg  .file "..\\config\language_config", .utf8
-			t[510] .split LF, t[2999], var2
+			inputstr .asg  .file "..\\Data\language_config", .utf8
+			inputstr .split LF, t[2999], var2
 			v[21] = 2
 			v[22] = 2
 			@loop var2 .dst v[10] {
@@ -2036,6 +2096,12 @@ cev .id(2120), .name("Game:Boot"),{
 			@gsave.saveAndClose
 			
 	}
+	
+	// try to load current module information
+	getModulePathTo(inputstr)
+	inputstr .cat "moduleinfo.json", .utf8
+	load_json_to(inputstr,Str_moduleinfo)
+	execute_js("DISmoduleloader.js")
 
 
 	@map[4].setPlayerPos .pos 9, 1 .retain

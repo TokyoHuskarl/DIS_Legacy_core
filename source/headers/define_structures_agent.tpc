@@ -201,6 +201,7 @@ struct("agent",{
 	agent_Ammo = 832 //0x00(Max Ammo of Sub Weapon)0x00(CurrentAmmo of Sub Weapon)0x00(Max Ammo of Current Weapon)0x00(current Ammo of Sub Weapon) 
 	agent_ShieldType = 833
 	agent_ShieldBreakResistance = 834
+	agent_ShieldRangedProtection = 835
 	agent_RHitAndMHit = 836
 
 	agent_CritChanceReduction = 839
@@ -227,8 +228,10 @@ struct("agent",{
 	agent_ReserveWeaponID = 856
 	agent_ReserveShieldID = 857
 
-	agent_static_MapXdiv5 = 858
-	agent_static_MapYdiv5 = 859
+
+	agent_Formbits = 859
+		agent_static_MapXdiv5 = 858
+		agent_static_MapYdiv5 = 859
 
 	agent_Morale = 860
 	agent_ProcessAD = 861
@@ -255,6 +258,9 @@ struct("agent",{
 	agent_SpriteOrder = 883
 	agent_ShieldFlash = 884
 	agent_2hweapon_stain = 885
+	agent_FootstepSoundTimer = 886
+	agent_FootstepSoundType = 887
+
 	agent_FlashType = 895
 	agent_OneTimeOffsetX = 896
 	agent_OneTimeOffsetY = 897
@@ -268,14 +274,14 @@ struct("agent",{
 
 	}
 
-	//Additional Agent Picture Buffer setting - AEBA - pic buffer
+	//Additional Agent Picture Buffer setting - AEB - pic buffer
 	def {
 	//Buffer PicID -> const_picture_ids.tpc
 
-	// AEBA holds agent parameters that are not very frequently changed.
+	// AEB holds agent parameters that are not very frequently changed.
 
 	AgentExtraBuffer_ArraySize = 256 // experimental
-	AgentExtraBuffer_ArrayAmount = Agents_Limit + 1 //AEBA[0] will be used as configuration for the array work
+	AgentExtraBuffer_ArrayAmount = Agents_Limit + 1 //AEB[0] will be used as configuration for the array work
 
 	AgentExBuffer_SLOT_Ptr_To_BasicArray = 0 
 	AgentExBuffer_SLOT_MetaTeam = 1
@@ -349,12 +355,14 @@ struct("agent",{
 	AgentBits_FLAG_ForcemoveFlag = 4194304
 	AgentBits_FLAG_walldetected = 8388608
 	AgentBits_FLAG_NeedWpToReachObj = 16777216
-	AgentBits_FLAG_PF_walldetection_switch = 33554432 // triggered in search AI proc 
+	AgentBits_FLAG_PF_walldetection_switch = 33554432 // if this switch is on for seconds, start checking if the agent is stuck on wall or sth
 	AgentBits_FLAG_1fprocessed = 67108864
 
 	AgentBits_FLAG_DirChange_skip = 134217728
 	AgentBits_FLAG_Pushed_by_terrain = 536870912
 	AgentBits_FLAG_Drawn_in_screen = 1073741824 //31bit
+
+		AgentBits_MASK_for_initilizing_pathfinding = ~(AgentBits_FLAG_walldetected + AgentBits_FLAG_NeedWpToReachObj + AgentBits_FLAG_PF_walldetection_switch)
 
 
 	MoveTypeBits_Flying = 1
@@ -414,6 +422,13 @@ struct("agent",{
 	AI_routine_bits_FLAG_RayCast = 33554432
 	AI_routine_bits_FLAG_WP_set_by_RayCast = 67108864
 	AI_routine_bits_FLAG_1secDelay_PF = 134217728
+	AI_routine_bits_FLAG_StuckCheckReady = 268435456
+
+		AI_routine_bits_KILL_StuckCheckReady = ~AI_routine_bits_FLAG_StuckCheckReady
+
+		AI_routine_bits_MASK_init_raycasting = (AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_RayCast+AI_routine_bits_FLAG_Prioritize_Raycasting)
+		AI_routine_bits_MASK_for_initilizing_pathfinding = ~(AI_routine_bits_FLAG_tracing_flag + AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PFcontinue + AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_GroupPath + AI_routine_bits_FLAG_WP_set_by_RayCast + AI_routine_bits_FLAG_RayCast+AI_routine_bits_FLAG_StuckCheckReady + AI_routine_bits_FLAG_1secDelay_PF)
+
 
 	//ObjBits
 	BaseObjBit_FLAG_Ambushing = 1
@@ -447,15 +462,24 @@ struct("agent",{
 	AddMotionFlags_FLAG_Blink_start = 64 
 	AddMotionFlags_FLAG_Blink_close = 128 
 	AddMotionFlags_FLAG_Camel = 1024 
+	AddMotionFlags_FLAG_OutOfBreath = 2048 
 
 	//ExMotions
 
 	ExMotionFlags_FLAG_have_AA_CD_Spr = 1
+	ExMotionFlags_FLAG_slimy = 8
 	ExMotionFlags_FLAG_have_fundamental_movemotion = 16
+	ExMotionFlags_FLAG_MoveAnim_OneDirectional = 256
 	ExMotionFlags_FLAG_MoveAnim = 512
+	ExMotionFlags_FLAG_no_footstepsound = 1024
 	ExMotionFlags_FLAG_no_fatigue = 2048
+	ExMotionFlags_FLAG_ArmorHasDamagedSprite = 8192
 	ExMotionFlags_FLAG_ArmorNotYetDamaged = 16384
+		ExMotionFlags_MASK_ArmorDamageChecker = ExMotionFlags_FLAG_ArmorHasDamagedSprite + ExMotionFlags_FLAG_ArmorNotYetDamaged
+
+	ExMotionFlags_FLAG_HeadHasDamagedSprite = 32768
 	ExMotionFlags_FLAG_HeadNotYetDamaged = 65536
+		ExMotionFlags_MASK_HeadPartDamageChecker = ExMotionFlags_FLAG_HeadHasDamagedSprite + ExMotionFlags_FLAG_HeadNotYetDamaged
 	ExMotionFlags_FLAG_Backshotflag = 67108864
 	ExMotionFlags_FLAG_horseback = 16777216
 	agent_ExMotionFlags_FLAG_horseback = 16777216
@@ -500,7 +524,8 @@ struct("agent",{
 	ActionFlag_FLAG_Walking = 2 //s[v[4558] + :agent_id ]
 	ActionFlag_FLAG_Heading_other_agent = 4 //s[103]
 	ActionFlag_FLAG_Trying_to_stop = 8 //s[104]
-
+	ActionFlag_FLAG_Turn_to_ordered_Direction = 16 //s[104]
+	ActionFlag_FLAG_Already_set_ord_dir = 32
 	
 	//ObjectType
 	AgentType_Simple_Agent = 1
@@ -529,9 +554,16 @@ struct("agent",{
 	AABits_FLAG_BladeDance = 262144 
 	AABits_FLAG_Camel = 524288
 
+
+	Formbits_FLAG_Line1 = 1
+	Formbits_FLAG_Line2 = 2
+	Formbits_FLAG_Line3 = 4
+	Formbits_FLAG_Line4 = 8
+	Formbits_MASK_Lines = 1+2+4+8
+
 	//Stances
-	DIR_RIGHT=1
-	DIR_LEFT=0
+	DIR_RIGHT = 1
+	DIR_LEFT = 0
 	ORD_AGG=0
 	ORD_DEF=3
 	ORD_STD=1
@@ -597,6 +629,8 @@ struct("agent",{
 
 	agent_static_Attribution_flag = 811
 	agent_static_Obj_flag = 820
+	agent_static_WorkTarget = 821
+	agent_static_Spritepattern = 850
 
 	}
 
@@ -699,6 +733,7 @@ struct("agent",{
 		victim_Culture_Icon = 740222
 		victim_TakenDamageMultiplier = 740229
 		victim_ShieldBreakResistance = 740234
+		victim_ShieldRangedProtection = 740235
 
 		victim_static_SprWidth_OneUnit = 740238
 
@@ -789,21 +824,155 @@ struct("agent",{
 })
 
 
+	defv{ // temporary buffer for agent
+
+		tempbuffer4agt_AgentType = 740301
+		tempbuffer4agt_AgentBits = 740303
+		tempbuffer4agt_RelativeX = 740307
+		tempbuffer4agt_RelativeY = 740308
+		tempbuffer4agt_Morton = 740309
+		tempbuffer4agt_Width = 740310
+		tempbuffer4agt_Height = 740311
+		tempbuffer4agt_MilPixVx = 740312
+		tempbuffer4agt_MilPixVy = 740313
+		tempbuffer4agt_MilPixVab = 740314
+
+		tempbuffer4agt_TargetAgentID = 740318
+		tempbuffer4agt_MapX = 740326
+		tempbuffer4agt_MapY = 740327
+		tempbuffer4agt_AATimer = 740328
+		tempbuffer4agt_AI_routine_bits = 740334
+		tempbuffer4agt_Cohort_ID = 740335
+		tempbuffer4agt_MoveTypeBits = 740338
+		tempbuffer4agt_ColDimension = 740339
+		tempbuffer4agt_getTerrainElevation = 740357
+		tempbuffer4agt_SaveActualTeamID = 740358
+		tempbuffer4agt_Skin = 740363 // 0=Rtpian, 1=Nord, 2= Azghazi, 6= female ...This parameter is for UserCharactors
+		tempbuffer4agt_Race = 740364
+		tempbuffer4agt_PerkFlagBits1 = 740365
+		tempbuffer4agt_PerkFlagBits2 = 740366	
+
+		tempbuffer4agt_Buff1 = 740371
+
+		tempbuffer4agt_BuffAmount = 740379
+
+
+
+
+
+		tempbuffer4agt_InCombatTimer = 740380
+		tempbuffer4agt_MeleeFightTimer = 740381
+		tempbuffer4agt_HitMoveTimer = 740382
+		tempbuffer4agt_ShieldMotionTimer = 740383
+		tempbuffer4agt_DodgeTimer = 740385
+		tempbuffer4agt_BuffTimer1 = 740386
+
+
+		tempbuffer4agt_TeamID = 740400
+		tempbuffer4agt_UnitID = 740401
+		tempbuffer4agt_UnitType = 740402
+		tempbuffer4agt_AAType = 740403 //0 = melee, 1 = ranged, 2 = point, 3 = shoot, 4 = function
+		tempbuffer4agt_Level = 740404
+		tempbuffer4agt_MaxHP = 740405
+		tempbuffer4agt_HP = 740406
+		tempbuffer4agt_MaxSP = 740407
+		tempbuffer4agt_SP = 740408
+		tempbuffer4agt_BaseAD = 740409
+		tempbuffer4agt_BaseAP = 740410
+		tempbuffer4agt_MaxAR = 740438
+		tempbuffer4agt_BaseAR = 740411
+		tempbuffer4agt_BaseMR = 740412
+		tempbuffer4agt_BaseHIT = 740413
+		tempbuffer4agt_BaseEVA = 740414
+		tempbuffer4agt_BaseCrit = 740415
+		tempbuffer4agt_BaseMS = 740416
+		tempbuffer4agt_BaseRange_max = 740417
+		tempbuffer4agt_BaseRange_min = 740418
+		tempbuffer4agt_BaseAS = 740419 // (4800 - [AS])
+
+		tempbuffer4agt_AAMotion = 740420
+		tempbuffer4agt_AACost = 740421
+		tempbuffer4agt_AA_ARorMR = 740422
+		tempbuffer4agt_AAElement=740423
+		tempbuffer4agt_AABits=740424
+		tempbuffer4agt_AddMotionBits = 740425
+		tempbuffer4agt_ExMotionFlags = 740426
+
+		tempbuffer4agt_AAamount = 740427
+		tempbuffer4agt_AAvelocity = 740427
+		tempbuffer4agt_AAtime = 740428
+
+
+		tempbuffer4agt_AASfx = 740429
+		tempbuffer4agt_AAFunction = 740430
+		tempbuffer4agt_BaseRegHP = 740431
+		tempbuffer4agt_Shield_Value = 740435
+		tempbuffer4agt_AA_AR_effectiveness = 740436
+		tempbuffer4agt_AA_AR_penetration = 740437
+		//tempbuffer4agt_MaxAR = 740438
+		tempbuffer4agt_BaseWill = 740439
+		tempbuffer4agt_BaseObjBit = 740440
+		tempbuffer4agt_Culture_Icon = 740522
+		tempbuffer4agt_TakenDamageMultiplier = 740529
+		tempbuffer4agt_ShieldBreakResistance = 740534
+		tempbuffer4agt_ShieldRangedProtection = 740535
+
+		tempbuffer4agt_static_SprWidth_OneUnit = 740538
+
+
+		tempbuffer4agt_CritChanceReduction =  740539
+		tempbuffer4agt_CritDamageReduction = 740540
+		tempbuffer4agt_StanceOrder = 740541
+		tempbuffer4agt_MovementOrder = 740542
+		tempbuffer4agt_ActionState = 740543
+		tempbuffer4agt_Direction = 740544
+		tempbuffer4agt_TacticsOrderFlag = 740548
+		tempbuffer4agt_KnockBackTimer = 740549
+		
+		tempbuffer4agt_ForceSprite = 740550
+		tempbuffer4agt_MainShieldID = 740552
+
+		tempbuffer4agt_Morale = 740560
+		tempbuffer4agt_ProcessAD = 740561
+		tempbuffer4agt_ProcessAP = 740562
+		tempbuffer4agt_ProcessAR = 740563
+		tempbuffer4agt_ProcessMR = 740564
+		tempbuffer4agt_ProcessHIT = 740565
+		tempbuffer4agt_ProcessEVA = 740566
+		tempbuffer4agt_ProcessCrit = 740567
+		tempbuffer4agt_ProcessMS = 740568
+		tempbuffer4agt_ProcessRange_max = 740569
+
+		tempbuffer4agt_ProcessRange_min = 740570
+		tempbuffer4agt_ProcessAS = 740571
+		tempbuffer4agt_ProcessHPreg = 740572
+		tempbuffer4agt_ProcessSPReg = 740573
+		tempbuffer4agt_ProcessObjBit = 740574
+		tempbuffer4agt_ProcessWill = 740575
+		tempbuffer4agt_ProcessCamoValue = 740576
+		tempbuffer4agt_ProcessInstantState = 740577
+		tempbuffer4agt_ShieldFlash = 740584
+		tempbuffer4agt_2hweapon_stain = 740585
+		tempbuffer4agt_LastPictureIndex = 740590 
+		tempbuffer4agt_R = 740591
+		tempbuffer4agt_G = 740592
+		tempbuffer4agt_B = 740593
+		tempbuffer4agt_FlashType = 740595
+		tempbuffer4agt_PictArray = 740599
+
+
+		tempbuffer4agt_DEAD_beheadTimerEnd = 740588
+		tempbuffer4agt_DEAD_HeadAngleV = 740589
+	}
+
+
 //---------------------------------
 // agent file system 
 //---------------------------------
 
 // file name buffer for agent
 deft {
-	Str_slot_armorfile = 851
-	Str_slot_helmfile = 853
-	Str_slot_weaponfile = 854
-	Str_slot_accfile = 856
-	Str_slot_minionfile = 857
-	Str_slot_mainsetR = 861
-	Str_slot_mainsetL = 862
-	Str_slot_subsetR = 863
-	Str_slot_subsetL = 864
+
 }
 
 __fn checkItemPicFileName $source $slot $name {

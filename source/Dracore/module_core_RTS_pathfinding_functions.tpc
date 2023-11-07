@@ -17,6 +17,9 @@ __fn func_nodecheck_RayCast $X0 $Y0 $X1 $Y1 {
 		RC_err2 = __id(TT8) 
 	}
 
+
+
+
 	// RC_deltax = abs($X1 - $X0)
 	RC_deltax = ($X1 - $X0)
 	RC_deltax = abs(RC_deltax)
@@ -29,14 +32,15 @@ __fn func_nodecheck_RayCast $X0 $Y0 $X1 $Y1 {
 	RC_swapx = $X0 < $X1 ? 1 : -1
 	RC_swapy = $Y0 < $Y1 ? 1 : -1
 	RC_err = RC_deltax + RC_deltay
-
-	RC_x = $X0
-	RC_y = $Y0
+	
+	
+	val_asg(RC_x,$X0) // RC_x = $X0
+	val_asg(RC_y,$Y0) // RC_y = $Y0
 
 	// get Start Node Ptr
 	defv RC_PF_NodePtr = __id(TT9)
 	RC_PF_NodePtr = LEGV_MapNodeAmountX * RC_y
-	RC_PF_NodePtr += RC_x
+	val_add(RC_PF_NodePtr,RC_x) // RC_PF_NodePtr += RC_x
 	RC_PF_NodePtr *= Node_Data_Size
 	RC_PF_NodePtr += RMconst_Node_Array_Address_Start_MINUS_NODE_MEMSIZE
 
@@ -63,17 +67,19 @@ __fn func_nodecheck_RayCast $X0 $Y0 $X1 $Y1 {
 		RC_err2 = RC_err * 2
 		
 		@if RC_err2 > RC_deltay {
-			RC_err += RC_deltay // -(dy)
-			RC_x += RC_swapx
+			val_add(RC_err,RC_deltay) // RC_err += RC_deltay // -(dy)
+			val_add(RC_x,RC_swapx) // RC_x += RC_swapx
+
 			// Node X diff
 			RC_PF_NodePtr += RC_swapx * Node_Data_Size
 		}
 
 		@if RC_err2 < RC_deltax {
-			RC_err += RC_deltax
-			RC_y += RC_swapy
+			val_add(RC_err,RC_deltax) // RC_err += RC_deltax
+			val_add(RC_y,RC_swapy) // RC_y += RC_swapy
+
 			// Node Y diff
-			// use reg1 to temp var
+			// use reg1 as a temp var
 			reg1 = RC_swapy * LEGV_MapNodeAmountX
 			RC_PF_NodePtr += reg1 * Node_Data_Size
 		}
@@ -82,12 +88,19 @@ __fn func_nodecheck_RayCast $X0 $Y0 $X1 $Y1 {
 
 }
 
+__fn pffunc_node_getData $nodeid {
+	val_asg(var9,$nodeid)
+	var9 *= Node_Data_Size
+	var9 += RMconst_Node_Array_Address_Start_MINUS_NODE_MEMSIZE
+	v[var9].copy mapnode_RefMapX,mapnode_ArraySize
+
+}
+
 
 
 // maybe movement order itself should be combined in one
-// __fn func_pathfinding_move(){}
 
-__fn func_pathfinding_move(){
+__fn func_pathfinding_move {
 	// "移動指示	Center(x.y)=(wheretox,wheretoy)"
 
 	v[2878] = v[1212]
@@ -168,31 +181,45 @@ __fn func_pathfinding_move(){
 			}
 			
 		    }
-		    @if v[2875] >= 1 {
-			v[293] = 2873
-			v[293] -= v[2875] * 2
-			@loop v[2875] {
-			    v[v[293]].copy v[v[299]], 2
-			    v[293] += 2
-			    v[299] += 2
-			    
-			}
-			
-			v[v[293]].copy v[v[299]], 2
-			// "#Set 現在目指してるWPと総WP数"
-			v[v[294]] = v[2875]
-			v[2873] .add v[2855], 2
-			
-		    } .else bl {
-			// "#Set 移動するX"
-			v[v[299]] = v[2851]
-			// "#Set 移動するY"
-			v[v[298]] = v[2852]
-			// "#Set 現在目指してるWPと総WP数"
-			v[v[294]] = -1
-			v[2851] .add v[2855], 2
-			
-		    }
+
+				@if v[378] != -1 { // if only agents can go through
+					@if v[2875] >= 1 {
+						v[293] = 2873
+							v[293] -= v[2875] * 2
+							@loop v[2875] {
+								v[v[293]].copy v[v[299]], 2
+									v[293] += 2
+									v[299] += 2
+
+							}
+
+						v[v[293]].copy v[v[299]], 2
+							// "#Set 現在目指してるWPと総WP数"
+							v[v[294]] = v[2875]
+							v[2873] .add v[2855], 2
+
+					} .else bl {
+						// "#Set 移動するX"
+						v[v[299]] = v[2851]
+							// "#Set 移動するY"
+							v[v[298]] = v[2852]
+							// "#Set 現在目指してるWPと総WP数"
+							v[v[294]] = -1
+							v[2851] .add v[2855], 2
+
+					}
+				}.else bl {
+						// "#Set 移動するX"
+						v[v[299]] = v[2851]
+							// "#Set 移動するY"
+							v[v[298]] = v[2852]
+							// "#Set 現在目指してるWPと総WP数"
+							v[v[294]] = -1
+							v[2851] .add v[2855], 2
+
+
+
+				}
 		    v[293] = Temp1 + 245
 		    v[v[293]] = 0
 		    // "Make 2nd line"
@@ -219,24 +246,24 @@ __fn func_pathfinding_move(){
 		    
 		}
 	}
-	v[2861..2875] = 0
+	v[ptr_null].copy v[2861],15 // v[2861..2875] = 0
 	v[2875] = 0
 }
 
 __fn func_pathfinding_open_Node(){
 	// "check"
-	v[380] = 0
-	Temp10 = v[4582]
-	Temp9 = v[4568]
-	Temp10 += Temp9
+	v[ptr_null].copy v[380],1 // v[380] = 0
+	val_asg(Temp10,v[4582]) // Temp10 = v[4582]
+	val_asg(Temp9,v[4568]) // Temp9 = v[4568]
+	val_add(Temp10,Temp9) // Temp10 += Temp9
 	@loop v[4582] .dst Temp10 {
 	    Temp11 = v[4568] + Temp10
 	    @if v[Temp11] == var9 {
-		v[380] = 1
+		val_asg(v[380],N1) // v[380] = 1
 		Temp11 += 40000
 		// "compare cost"
 		@if v[Temp11] > var10 {
-		    v[Temp11] = var10
+		    ptr_asg(Temp11,var10) // v[Temp11] = var10
 		    // v[v[4600] + var9 - 1] = v[4590]
 		    v[Const_save_var_PFNodesLinkMINUS1 + var9] = v[4590]
 		    
@@ -249,17 +276,17 @@ __fn func_pathfinding_open_Node(){
 	}
 
 
-	Temp10 = v[4583]
-	Temp9 = Const_save_var_ClosedNodesListHead
-	Temp10 += Temp9
+	val_asg(Temp10,v[4583]) // Temp10 = v[4583]
+	val_asg(Temp9,Const_save_var_ClosedNodesListHead) // Temp9 = Const_save_var_ClosedNodesListHead
+	val_add(Temp10,Temp9) // Temp10 += Temp9
 	@while Temp9 <= Temp10 {
 	    //opt 28.4.23
 	    //Temp11 = (Temp9 + Temp10) / 2
 	    Temp11 = (Temp9 + Temp10) 
 	    Temp11 /= 2
 	    @if v[Temp11] == var9 {
-		v[380] = 1
-		@break
+				val_asg(v[380],N1) // v[380] = 1
+				@break
 		
 	    } .else bl {
 		@if v[Temp11] < var9 {
@@ -276,50 +303,22 @@ __fn func_pathfinding_open_Node(){
 
 	@if v[380] == 0 {
 			TT1 = v[4568] + v[4582]
-	    v[TT1] = var9
+	    // v[TT1] = var9
+			ptr_asg(TT1,var9)
+
 			TT1 = v[4555] + v[4582]
-	    v[TT1] = var10
+			// v[TT1] = var10
+			ptr_asg(TT1,var10)
 
 	    // v[v[4600] + var9 - 1] = v[4590]
 			TT1 = Const_save_var_PFNodesLinkMINUS1 + var9
-			v[TT1] = v[4590]
-	    v[4582] += 1
+			ptr_asg(TT1,v[4590]) // v[TT1] = v[4590]
+	    val_add(v[4582],N1) // v[4582] += 1
 	    
 	}
 }
 
 
-// this function seems unused I guess?
-// WHAT THE FUCK IS Temp11?
-__fn func_pathfinding_remove_OpenNode(){
-	Temp10 = v[4582]
-	Temp9 = v[4568]
-	Temp10 += Temp9
-	// searching TT11 I guess
-	@while Temp9 <= Temp10 {
-	    Temp11 = (Temp9 + Temp10) 
-	    Temp11 /= 2
-	    @if v[Temp11] == var9 {
-		//ugh this one looks brutal
-		// 
-		v[0] = v[Temp11..v[4568] + v[4582]] = v[Temp11 + 1..v[4568] + v[4582] + 1]
-		v[0] = v[Temp11 + 200..v[4555] + v[4582]] = v[Temp11 + 201..v[4555] + v[4582] + 1]
-		v[4582] -= 1
-		@break
-		
-	    } .else bl {
-		@if v[Temp11] < var9 {
-		    Temp10 = Temp11 - 1
-		    
-		} .else bl {
-		    Temp9 = Temp11 + 1
-		    
-		}
-		
-	    }
-	    
-	}
-}
 
 
 __fn set_Path_gotten_from_jscontainer { // temporary
@@ -328,7 +327,7 @@ __fn set_Path_gotten_from_jscontainer { // temporary
 	v[2071] = Adr_PFWayPointDeployArray_Head
 	@if v[2875] > 6 { // only 6 wp an agent can hold
 		v[379] = 0
-		v[2875] = 6
+		v[2875].repeat 6,1 // v[2875] = 6
 	}
 
 	// set waypoints to the agent
@@ -341,7 +340,7 @@ __fn set_Path_gotten_from_jscontainer { // temporary
 		v[2871].copy v[2869], 2
 		v[2873].copy v[2871], 2
 		v[2851].copy v[2873], 2
-		v[2071] += 2
+		val_add(v[2071],N2) // v[2071] += 2
 	}
 
 }
@@ -355,7 +354,7 @@ __fn restore_path_from_nodes $firstnode $nodelisttail {
 	restorepath_StartNode = $firstnode
 	restorepath_CurrentNode = $nodelisttail
 
-	v[379] = 0
+	val_init(v[379])
 	v[ptr_null].copy v[2066],2
 	v[ptr_null].copy v[4350],31
 
@@ -384,7 +383,7 @@ __fn restore_path_from_nodes $firstnode $nodelisttail {
 		// if you need to choose different direction to reach the current node
 		@if v[2066] != v[2067] {
 			// then this becomes possible WPs
-			Ptr5 -= 1
+			val_sub(Ptr5,N1) // Ptr5 -= 1
 			restorepath_CurrentNode.copy v[Ptr5],1
 			
 			// then get its pos and save
@@ -408,7 +407,7 @@ __fn restore_path_from_nodes $firstnode $nodelisttail {
 				reg2.copy v[v[2071]], 2
 			}
 			// count up possible WPs
-			v[2875] += 1
+			val_add(v[2875],N1) // v[2875] += 1
 		}
 
 		restorepath_CurrentNode = Const_save_var_PFNodesLink + CurNodeMINUS1
@@ -431,7 +430,7 @@ __fn restore_path_from_nodes $firstnode $nodelisttail {
 		// send rest path to js pf manager 
 		// sending array v[Ptr7..Ptr6]
 		PF_Manager_Loop_AgentPtr.deref var1,1 
-		Ptr6 -= 1
+		val_sub(Ptr6,N1) // Ptr6 -= 1
 		def JSCMD_GET_PATH_ARRAY = __str("RTS.path.storePath(\v[",__id(var1),"],getv([\v[",__id(Ptr7),"],\v[",__id(Ptr6),"]]))")
 		eval_js(JSCMD_GET_PATH_ARRAY)
 		// deblog_js(js_StringBuffer)
@@ -450,20 +449,21 @@ __fn convert_Path_to_WP $WPamt {
 
 	@loop var1 {
 		CurNodeMINUS1 = v[Ptr7] - 1
-		v[2070] += 1
-		v[4592] = 0
+		val_add(v[2070],N1) // v[2070] += 1
+		val_init(v[4592]) // v[4592] = 0
 		Temp11 = CurNodeMINUS1 * Const_save_var_NodeDataSize
-		Temp11 += Const_save_var_NodeArrayHead
+		val_add(Temp11,Const_save_var_NodeArrayHead) // Temp11 += Const_save_var_NodeArrayHead
 		v[Temp11].copy var1, 2
 		@map[v[501]].setVehiclePos .boat .pos var1, var2 .retain
 		reg2 = boat.scrx
 		reg3 = boat.scry
-		reg2 += 8
+		val_add(reg2,N8) // reg2 += 8
+		// add diff
+		reg2.add v[53],2
 
 		reg2.copy v[Ptr8], 2	
-		// msg("\v[287]のざぎょうを\v[288]に書きました")
-		Ptr7 += 1
-		Ptr8 += 2
+		val_add(Ptr7,N1) // Ptr7 += 1
+		val_add(Ptr8,N2) // Ptr8 += 2
 	}
 
 }
@@ -507,7 +507,7 @@ __fn pf_agent_move {
 			v[ptr_null].copy v[LEGV_ConstAIselectedListHead],200
 			v[LEGV_ConstAIselectedListHead] = v[4596] + 1
 			v[2880] = LEGV_ConstAIselectedListHead + 1
-			v[2841] = 1
+			val_asg(v[2841],N1) // v[2841] = 1
 			
 	} .else bl {
 
@@ -568,9 +568,10 @@ __fn pf_agent_move {
 
 											//CEV.. add agent to AI control list
 											// @call .cev 1747
-											v[v[2880]] = var1
-											v[2880] += 1
-											v[2841] += 1
+											ptr_asg(v[2880],var1) // v[v[2880]] = var1
+											val_add(v[2880],N1) // v[2880] += 1
+
+											val_add(v[2841],N1) // v[2841] += 1
 											
 											@if v[378] == -1 {
 												v[Ptr18] |= AI_routine_bits_FLAG_Pathblocked

@@ -1,0 +1,354 @@
+
+// never use Temp16-19 since js cmd is using those vars as argvs
+__fn register_cohort_for_player $plid $cohortid $liststart $listcount {
+
+		LEGV_Selected_Cohort_Number = $cohortid
+		v[45] = $cohortid - 1
+		TT1 = v[4530] + (v[45]) * 20 + 1
+		v[1301].copy v[TT1], 20
+		v[45] *= PlayerSelectList_Size
+		v[45] += v[1077]
+		v[1301].copy v[v[45]],PlayerSelectList_Size
+		v[$liststart].copy v[v[45]], $listcount
+
+		TT1 = $liststart
+		TT5 = LEGV_Selected_Cohort_Number - 1
+		Temp2 = v[1118] + TT5
+		Temp5 = v[1119] - 10
+		Temp6 = 24 * TT5 + v[1120] - 12
+		v[335] = $liststart
+
+		@loop $listcount {
+				TT1 = v[335]
+				@if s[1] .isOn() {
+					@if v[TT1] <= 0 {
+						TT2 = v[101] * 300 + 4702
+							CohortArrayPtr = v[TT2]
+							@pic[Temp2].show {
+								"minions\spr_minions_1" .repl 1 Temp10
+									.pos Temp5, Temp6 .center
+									.chromakey 1
+									.scale 100
+									.trans 0
+									.rgbs 100, 100, 100, 100
+									.grid 5, 1 .cell 2
+									.mapLayer 8
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+							}
+						@break
+
+					}
+
+				}
+			TT2 = v[TT1] * 300
+				TT2 += 4701
+				@if v[TT2] == 1 {
+					TT2 = v[v[335]] * 300 + 4702
+						Temp10 = v[TT2]
+						v[726] = v[v[TT1] * 300 + 4826]
+						v[463] = 5
+						v[4101..4110] = v[463]
+						v[4107] = v[726] & 512 ? 7 : 5
+						v[4127] = v[726] & ExMotionFlags_MASK_HeadPartDamageChecker ? 2 : 1
+						v[463] = v[4107]
+						v[464] = v[4127]
+						@pic[Temp2].show {
+							"minions\spr_minions_1" .repl 1 Temp10
+								.pos Temp5, Temp6 .center
+								.chromakey 1
+								.scale 100
+								.trans 0
+								.rgbs 100, 100, 100, 100
+								.grid v[463], v[464] .cell 2
+								.mapLayer 8
+								.eraseWhenTransfer
+								.affectedByFlash
+								.affectedByShake
+						}
+					@break
+
+				}
+			/*
+			@if v[TT2] == 2 { // legacy.
+				@comment "HERO Found"
+					TT2 += 100
+					Temp10 = v[TT2]
+					@pic[Temp2].show {
+						"heroes\spr_heroes_1" .repl 1 Temp10
+							.pos Temp5, Temp6 .center
+							.chromakey 1
+							.scale 100
+							.trans 0
+							.rgbs 100, 100, 100, 100
+							.grid 12, 7 .cell 4
+							.mapLayer 8
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+				@break
+
+			}
+			*/
+
+			@if v[TT2] == 3 {
+				@comment "User"
+					@if s[1] .isOff() {
+						@comment "Count Picture Layer Array"
+							v[899] = v[v[TT1] * 300 + 4999]
+							TT5 = v[899]
+							@comment "#get damaged variation"
+							//v[604] = v[v[TT1] * 300 + 4704]
+							//v[0] = v[343..352] = [v[604] % 10, v[604] / 10 % 10, v[604] / 100 % 10]
+							@pic[Temp2].strpic {
+								""
+									.pos -166, -166 .center
+									.size 64, 64                .chromakey 1
+									.scale 100
+									.trans 100
+									.rgbs 100, 100, 100, 100
+									.font "", 12 .noShadow
+									.spacing 0, 4
+									.skin "" .nobg .noframe .noGradation .noPadding
+									.mapLayer 8
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+							}
+							v[463] = 5
+							v[464] = 1
+							v[725] = v[TT1] * 300 + 4825
+							v[726] = v[725] + 1
+							v[725].deref v[725],2
+
+							v[4101..4110] = v[463]
+							v[4106] = v[726] & 16777216 ? 7 : 5
+							v[4121..4130] = 1
+							fuction_drawing_set_grid()
+							v[4124] = v[726] & 134217728 ? 2 : 1
+							v[4121] = [1, 2][(v[725] & 1)]
+
+							TT10 = (v[TT1]-1)*10
+							TT10 = Const_str_agent_pictures_strings_start+TT10
+							@while v[899] >= 1 {
+								TT1 = v[899] % 10
+									Ptr6 = TT1 + TT10
+									v[463] = v[4100 + TT1]
+									v[464] = v[4120 + TT1]
+									v[891] = Temp14 + 291
+									TT1 = (TT1 - 1) % 6
+									//Temp20 = v[(v[v[335]] - 1) * 6 + TT1 + v[1185]]
+									@comment "Strings = t[Ptr6]"
+									var1 = Temp2
+									v[12..13] = 32
+									@pic[2599].show {
+										t[Ptr6] 
+											.pos -111, -111 .center
+											.chromakey 1
+											.scale 100
+											.trans 0
+											.rgbs 100, 100, 100, 100
+											.grid v[463], v[464] .cell 2
+											.mapLayer 7
+											.eraseWhenTransfer
+											.affectedByFlash
+											.affectedByShake
+									}
+								@pic[2599].getInfo .cewh .currentRect TT20, TT20, TT15, TT16
+									@pic[2599].getInfo .pixel 0, 0, TT15, TT16 .dst Adr_PixelBufferHead
+									var8 = Adr_PixelBufferHead
+									@loop TT16 .dst var5 {
+										@loop TT15 .dst var6 {
+											var7 = v[var8]
+												@if `(var7 & 0xFF000000) == 0xFF000000 {
+													TT18 = var2 + var6
+														TT19 = var3 + var5
+														TT18 -= TT15 / 2
+														TT19 -= TT16 / 2
+														@pic[var1].setPixel .xywh TT18, TT19, 1, 1 .src var7
+
+												}
+											var8 += 1
+
+										}
+
+
+									}
+
+								v[899] /= 10
+
+							}
+
+
+					}
+				@if s[1] .isOn() {
+					@if .testPlay() {
+						@img.save .pic var1 .static .dst "user\debug"
+
+					}
+
+				}
+				@break
+
+			}
+
+			@if v[TT2] == 4 {
+				@comment "CUSTOM"
+					TT2 = v[v[335]] * 300 + 4702
+					Temp10 = v[TT2]
+					v[726] = v[v[v[335]] * 300 + 4826]
+					v[463] = 5
+					v[464] = 1
+					v[4101..4110] = v[463]
+					v[463] = v[4107]
+					v[463] = v[726] & 512 ? 7 : 5
+					v[4127] = v[726] & ExMotionFlags_MASK_HeadPartDamageChecker ? 2 : 1
+					v[464] = v[4127]
+					@pic[Temp2].show {
+						"minions\spr_minions_1" .repl 1 Temp10
+							.pos Temp5, Temp6 .center
+							.chromakey 1
+							.scale 100
+							.trans 0
+							.rgbs 100, 100, 100, 100
+							.grid v[463], v[464] .cell 2
+							.mapLayer 8
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+				@break
+
+			}
+
+			@if v[TT2] == 11 {
+				v[v[4530] + (LEGV_Selected_Cohort_Number - 1) * 20 + 2] = 2
+					@comment "STATIC"
+					@break
+
+			}
+
+			// civilians 
+			@if v[TT2] == 9 {
+				TT2 = v[v[335]] * 300 + 4702
+					Temp10 = v[TT2]
+					v[726] = v[v[v[335]] * 300 + 4826]
+					v[463] = 5
+					v[464] = 1
+					v[4101..4110] = v[463]
+					v[463] = v[4107]
+					v[463] = v[726] & 512 ? 7 : 5
+					@pic[Temp2].show {
+						PATH_spr_minion .repl 1 Temp10
+							.pos Temp5, Temp6 .center
+							.chromakey 1
+							.scale 100
+							.trans 0
+							.rgbs 100, 100, 100, 100
+							.grid v[463], v[464] .cell 2
+							.mapLayer 8
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+				@break
+
+			}
+			increment_var(v[335])
+		}
+
+		@comment "assign cohortID"
+		assign_cohortnumber_to_listagents($liststart,$listcount,LEGV_Selected_Cohort_Number)
+
+		@comment "set initial cohort parameter"
+		v[v[4530] + (LEGV_Selected_Cohort_Number - 1) * 20 + 11] = 2
+		v[v[4530] + (LEGV_Selected_Cohort_Number - 1) * 20 + 15] = 11
+		@comment "#################	generate cohort banner"
+		TT1 = v[4513] + (LEGV_Selected_Cohort_Number - 1)
+		TT2 = 30 * (LEGV_Selected_Cohort_Number - 1) + 120
+		TT3 = 120
+		@if v[2403] == 1 {
+			@pic[TT1].show {
+				PATH_ui_cohortflagbase_1
+					.pos TT2, TT3 .center
+					.scrollWithMap
+					.chromakey 1
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 8
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+			}
+
+		} .else bl {
+			@pic[TT1].show {
+				PATH_ui_cohortflagbase_0
+					.pos TT2, TT3 .center
+					.scrollWithMap
+					.chromakey 1
+					.scale 100
+					.trans 100
+					.rgbs 100, 100, 100, 100
+					.mapLayer 8
+					.eraseWhenTransfer
+					.affectedByFlash
+					.affectedByShake
+			}
+
+		}
+	@pic[Temp2].getInfo .cewh .currentRect TT20, TT20, TT15, TT16
+		@pic[Temp2].getInfo .pixel 0, 0, TT15, TT16 .dst Adr_PixelBufferHead
+		var8 = Adr_PixelBufferHead
+		var2 = 15
+		var3 = 29
+		@loop TT16 .dst var5 {
+			@if var5 >= 46 {
+				@break
+
+			}
+			@loop TT15 .dst var6 {
+				var7 = v[var8]
+					@if `(var7 & 0xFF000000) == 0xFF000000 {
+						TT18 = var2 + var6
+							TT19 = var3 + var5
+							TT18 -= TT15 / 2
+							TT19 -= TT16 / 2
+							@pic[TT1].setPixel .xywh TT18, TT19, 1, 1 .src var7
+
+					}
+				var8 += 1
+
+			}
+
+
+		}
+
+
+
+}
+
+__fn assign_cohortnumber_to_listagents $liststart $listcount $cohortnumber {
+	TT1 = $liststart
+		@loop $listcount {
+			@if v[TT1] >= 1 {
+				TT2 = v[TT1] * 300
+					TT2 += 4701
+					@if v[TT2] >= 1 {
+						TT2 += 34
+							v[TT2] = $cohortnumber 
+
+					}
+
+			} .else bl {
+				@break
+
+			}
+			TT1 += 1
+
+		}
+
+}
