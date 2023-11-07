@@ -62,15 +62,18 @@ __fn try_eval_js $script $errormsg {
 }
 
 __fn reboot_DIS_js_system { // called after RMsavedata load
+
 	execute_js(PATH_js_bootconfig) // load boot config
 	boot_DIS_js_system()
+	
 	// and?
 }
 
 def CEV_JS_MANAGER_RESTORE = "RTS.restore();"
 __fn reboot_DIS_js_RTS_system {
 	reboot_DIS_js_system()
-	eval_js(CEV_JS_MANAGER_RESTORE) 
+	eval_js(CEV_JS_MANAGER_RESTORE)
+
 	
 }
 
