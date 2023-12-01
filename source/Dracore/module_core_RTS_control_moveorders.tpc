@@ -255,8 +255,7 @@ __fn func_control_moveorder_civ {
 						}
 
 					}
-					@comment "#####################
-						direction"
+					@comment "#####################						direction"
 						@loop 40 .dst Temp1 {
 							Temp1 = v[v[202] + Temp1]
 								@if v[Temp1] >= 1 {
@@ -320,7 +319,7 @@ __fn func_control_moveorder_civ {
 								agent_static_WorkTarget = v[100]
 								
 								Temp2 = Temp1 + 1
-								v[Temp2].copyFrom agent_AgentType,300
+								v[Temp2].copyFrom agent_AgentType,299
 							}
 
 							Ptr20 = Temp1 + 242
@@ -439,10 +438,11 @@ __fn func_control_moveorder_civ {
 									@comment "#if Attack Stance, set stance alert"
 									v[Ptr15] = v[Ptr15] == 2 ? 0 : v[Ptr15]
 
-							}.else bl{
+							}.else bl {
+								v[Temp1].copy Address_agent_array_head,300
 								agent_static_WorkTarget = 0
 								Temp2 = Temp1 + 1
-								v[Temp2].copyFrom agent_AgentType,300
+								v[Temp2].copyFrom agent_AgentType,299
 							}
 						@if v[275] >= 1 {
 							Ptr13 = 273
