@@ -793,12 +793,12 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						// "MP(生産力)をためようね"
 							TT1 = Temp1 + 108
 							@if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
-								//TT2 = v[2409 + v[251] % 3]
+								// TT2 = v[2409 + v[251] % 3]
 
 								__if DIS_EXPERIMENTAL == -1 { 
 									macro_get_agent_MetaTeam_into_var(v[v[536]],TT2) // AEBA
 								}.else bl {
-									TT2 = v[Const_AgentMetaTeam_begin+v[401]]
+									TT2 = v[Const_AgentMetaTeam_begin + v[401]]
 								}
 
 								v[TT1] += v[740] * 6
@@ -848,30 +848,32 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 														}
 													}.else bl { // not a worker
 														@if v[618] >= 1 { // and the parent static agent has target
-															//Combat troops - check if the reserved target is enemy
+															// Combat troops - check if the reserved target is enemy
 															v[Spawned_Agent_Id_Shift + 4718] = (v[Spawned_Agent_Id_Shift + 4800] % 3) == (v[v[618] * 300 + 4800] % 3) ? 0 : v[618]
 
 														}
 													}
-												//v[607] = Temp1 + 7
-												//v[v[607]].copy v[607], 2
-												//v[641] = Temp1 + 41
-												//v[v[641]].copy v[641], 2
+
+												// v[607] = Temp1 + 7
+												// v[v[607]].copy v[607], 2
+												// v[641] = Temp1 + 41
+												// v[v[641]].copy v[641], 2
 												@if `v[607] == v[641] && v[608] == v[642] {
 													// "指定されてない"
-													v[252] = v[607] + rnd(-3, 3)
+														v[252] = v[607] + rnd(-3, 3)
 														v[253] = v[608] + v[611] + rnd(-3, 3)
 														v[252] .add v[53], 2
 														v[252].copy v[TT1], 2
 														v[Spawned_Agent_Id_Shift + 4942] = 2
 
 												} .else bl {
-													v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
+														v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
 														// "指定されてる"
 														v[641].copy v[TT1], 2
 
 														def Order_Spawned_agent_Pathfinding = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PF2Agent 
-														v[Spawned_Agent_Id_Shift + 4734] |= Order_Spawned_agent_Pathfinding
+														// v[Spawned_Agent_Id_Shift + 4734] |= Order_Spawned_agent_Pathfinding
+														v[Spawned_Agent_Id_Shift + 4734] |= AI_routine_bits_FLAG_PATHFINDING
 														//v[reg1 * 300 + 4734] |= 524288
 
 												}
@@ -1082,7 +1084,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 						}
 					// "########################Particles"
-					@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//`s[v[401] + 501] {
+					@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //`s[v[401] + 501] {
 						// "#Flammable"
 						@if `!(agent_AgentBits & 2048) {
 							// "#Hp 66%"

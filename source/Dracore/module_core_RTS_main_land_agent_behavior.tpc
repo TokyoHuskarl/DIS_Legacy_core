@@ -111,15 +111,15 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 		    agent_InCombatTimer .sub v[1089], v[1060] // @comment "Sub Timer"
 	    }
-	    
-	    //@comment "目標位置"
-	    //@comment "WPのずれを一括で修正"
+
+	    // @comment "目標位置"
+	    // @comment "WPのずれを一括で修正"
 	    agent_HoldPointX .add v[1021], 14
 	    agent_HoldPointX.copy agent_MovePointX, 2
 
-	    //@comment "Obj指定分岐
-	    //Get18 = 目標ObjID"
-	    //@comment "TEST"
+	    // @comment "Obj指定分岐
+	    // Get18 = 目標ObjID"
+	    // @comment "TEST"
 	    s[103..104].off // turn off Heading to other agent flag AND Trying to stop temporal flag
 	
 	    __if DIS_EXPERIMENTAL == 1 {
@@ -140,7 +140,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					v[victim_AgentType].copy victim_AgentType,102
 
 	@if agent_MovementOrder != MovementOrder_TYPE_prioritize_moving { // does not prioritize movement: the agent wants to attack the target
-							//@comment "Obj指定があり、そちらに行きたいとき
+
+							// @comment "Obj指定があり、そちらに行きたいとき
 							@if victim_AgentType >= 1 { // the target is valid agent
 								@if agent_TargetAgentID != agent_LastTarget { // check if Target is switched
 										@if `!(agent_AgentBits & AgentBits_FLAG_ForcemoveFlag) || agent_StanceOrder == ORD_ATK { // Forcemove order isn't given to the agent
@@ -154,13 +155,14 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 												agent_AI_routine_bits |= AI_routine_bits_FLAG_AIskip // AI check skip
 										
 											}
-											
+										
 									}
 									
 										} .else bl { // if the agent gets force move order, then switch the Last target..
 											agent_LastTarget = agent_TargetAgentID
 											// RayCast to check if the agent is worker who is heading to workplace
-											// agent_AI_routine_bits |= agent_UnitType == 9 ? AI_routine_bits_FLAG_RayCast : 0 
+											// agent_AI_routine_bits |= agent_UnitType == 9 ? AI_routine_bits_FLAG_RayCast : 0
+
 										}
 										
 								}
@@ -169,12 +171,17 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 								// The agent still has WPs to chase AND its Stance is Attack mode
 								// OR
 								// Somekind of movement order is given to the agent AND its Stance is Standby mode
-								@if `agent_LeftWPtoChase >= 1 && (agent_StanceOrder == ORD_ATK) || agent_MovementOrder > -1 && agent_StanceOrder == ORD_STD {
-										//old:  `agent_LeftWPtoChase >= 1 && (agent_MovementOrder == MovementOrder_TYPE_prioritize_moving || agent_StanceOrder == ORD_ATK) || agent_MovementOrder > -1 && agent_StanceOrder == ORD_STD {
+								@if `agent_LeftWPtoChase >= 1 && agent_StanceOrder == ORD_ATK {
 
 										//@comment "#移動優先"
 										// then prioritize to move to HoldPoint.
 										agent_HoldPointX.copy agent_MovePointX, 2
+
+								} .elif `agent_StanceOrder == ORD_STD && agent_MovementOrder > -1 && agent_MovementOrder != MovementOrder_TYPE_fleeing { 
+										
+										// then prioritize to move to HoldPoint.
+										agent_HoldPointX.copy agent_MovePointX, 2
+										
 										
 								} .else bl { // otherwise
 										//@comment "#目標OBJ優先"
@@ -337,11 +344,16 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 							v[340] -= agent_AAType == 0 ? v[335] : 0
 
-							@if agent_AgentType == UNIT_CLASS_WORKER {
-								// worker attack!
-								v[340] -= victim_TeamID != agent_TeamID ? v[335] : 0
-								// @comment "If the target is construction site"
-								v[340] -= victim_UnitType == 104 ? victim_Width << 10 : 0 // Width * 1024 : 0
+							@if agent_UnitType == UNIT_CLASS_WORKER {
+								@if victim_UnitType >= 100 {
+									// @comment "If the target is construction site"
+									v[340] -= victim_UnitType != 105 ? victim_Width << 10 : 0 // Width * 1024 : 0
+
+								}.else bl {
+									// worker attack!
+									v[340] -= victim_TeamID != agent_TeamID ? v[335] : 0
+
+								}
 							}
 							
 							@if v[340] <= TT1 {
@@ -370,12 +382,15 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 								} .else bl {
 									agent_ActionFlag &= -2 // kill dir hold flag
 									//@comment "If closer than minimum range"
+
+									/*
 									@if agent_StanceOrder == ORD_STD {
 											//@comment "#待機モード時はその場で待ち構える"
 											LEGS_MAIN_Agent_tries_to_stop.on
 											agent_MovementOrder = MovementOrder_TYPE_do_not_move
 											
 									} .else bl {
+										
 											LEGS_MAIN_Agent_tries_to_stop.off
 											agent_MovementOrder = MovementOrder_TYPE_fleeing
 											//@comment "#Flip flag"
@@ -384,7 +399,15 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 											agent_ExMotionFlags |= 33554432
 											
 									}
-									
+									*/
+
+										LEGS_MAIN_Agent_tries_to_stop.off
+										agent_MovementOrder = MovementOrder_TYPE_fleeing
+										//@comment "#Flip flag"
+										agent_ProcessObjBit |= 1024
+										//@comment "#Kite flag"
+										agent_ExMotionFlags |= 33554432
+
 								}
 								
 							} .else bl { // out of range

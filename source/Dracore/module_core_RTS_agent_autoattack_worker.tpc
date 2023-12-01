@@ -15,6 +15,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 						s[167].on
 
 					}
+					
 				// "#Combat Penalty Resist"
 				// "############↓?"
 				v[720] = v[210] + 120
@@ -33,11 +34,11 @@ cev .id(32), .name("AgentAct:Worker"), {
 							v[376] = 4
 							v[181] += 1
 							@if v[181] <= 6 {
-								v[844] = Ptr19 * 300 
+								v[844] = Ptr19 * 300
 									v[844] += 4944
 									@loop v[1017] .dst Temp20 {
 										v[244] %= v[1199]
-											TT11 = v[244] * 50 
+											TT11 = v[244] * 50
 											TT11 += v[1198]
 											@if v[TT11] <= 1 {
 												// "まず清掃"
@@ -73,8 +74,8 @@ cev .id(32), .name("AgentAct:Worker"), {
 
 									}
 
-
 							}
+
 						@if v[182] <= 0 {
 							@if v[522] < 30 {
 								v[182] += 1
@@ -107,8 +108,8 @@ cev .id(32), .name("AgentAct:Worker"), {
 				}
 
 				@if reg1 == 1 {
-					// "Hit!"
-					v[421] = 100
+						// "Hit!"
+						v[421] = 100
 						// "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃	ここそのうち用意した関数に置き換える	＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"
 						// "ADを取得"
 						Temp1 = 25
@@ -120,6 +121,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 						var9 = 0
 						v[422] = 0
 						@call .cev 40
+
 						// "############"
 						// "Effect"
 						@if s[166] .isOn() {
@@ -132,7 +134,8 @@ cev .id(32), .name("AgentAct:Worker"), {
 											v[TT2 + 26] = min(v[TT2 + 26] + 1, 12)
 
 										}
-									s[141].on
+
+										s[141].on
 										@if v[181] <= 4 {
 											v[711] = Ptr20 * 300
 												v[607] = v[711] + 4707
@@ -146,7 +149,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 													// "#########################"
 													v[472] = divmul(70, 100, v[2216])
 														v[473] = rnd(50, 110)
-														@cmd 11550, "重いパンチ2", .args v[472], 3
+														@cmd 11550, "weapons/heavy_hit", .args v[472], 3
 														// "#########################"
 														@break
 
@@ -178,7 +181,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 												v[472] = divmul(70, 100, v[2216])
 													v[473] = rnd(115, 170)
 													v[474] = divmul(v[607] + v[1001], v[1281], 50)
-													@cmd 11550, "重いパンチ2", .args v[472], 3
+													@cmd 11550, "weapons/heavy_hit_2", .args v[472], 3
 													// "#########################"
 													@break
 
@@ -794,7 +797,8 @@ cev .id(32), .name("AgentAct:Worker"), {
 												/* "Access19 = AttackerObjectID
 													 Access20 = TargetObjectID
 													 Access18 = ObjTypeチェックPtr
-													 誤作動防止"*/
+													 誤作動防止" */
+
 												@if Ptr20 > 0 {
 													// "#建築現場を消去"
 													Temp5 = Ptr20 * 300
@@ -856,23 +860,30 @@ cev .id(32), .name("AgentAct:Worker"), {
 														v[204] -= 1
 
 												}
-											Temp5 = Ptr20 * 300
+												Temp5 = Ptr20 * 300
 												Temp5 += 4707
 												v[Temp5].copy v[252], 2
 												Temp5 += 93
 												v[251] = v[Temp5]
 												Temp5 += 180
 												v[378] = 0
+
+												// check flag for resource building... 
+												Temp15 = 0
 												@if v[Temp5] >= 1 {
-													TT17 = v[Temp5]
+														TT17 = v[Temp5]
 														Ptr14 = Ptr20
 														// "Avoid Cohort setting"
 														@if v[251] == 0 {
-															v[258] = 0
+																v[258] = 0
 																v[2521] += 1
 
 														}
-													@call .cev v[Temp5]
+
+														// use the same ID as the foundation
+														v[201] = Ptr20 - 1
+														@call .cev v[Temp5]
+														Temp15 = reg3 == 105 ? 1 : 0
 														// ""
 														Temp5 = 0
 														Temp2 = v[1145]
@@ -911,6 +922,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 
 
 												}
+
 											// "continue buliding"
 											@if v[378] == 0 {
 												// "atleastthere's one"
@@ -925,71 +937,108 @@ cev .id(32), .name("AgentAct:Worker"), {
 																	Ptr19 += 4700
 																	@if `v[Ptr19 + 102] == 9 {
 																		@if `v[Ptr19 + 18] == Ptr10 {
-																			Temp1 = Ptr19
-																				Ptr19 = v[Ptr20]
-																				Ptr18 = Ptr19 - 1
-																				// "@Searching Nearest Enemy Process@"
-																				/* "Access19 = Obj's Behavior
-																					 Access20 = Obj's target ID"*/
-																				Ptr20 = Temp1 + 18
-																				Ptr19 = Temp1 + 241
-																				// "#Check Team ID"
-																				/* "Temp2 = [3000 or 3200]# [team0, team1] this var works as a pointer to his/her enemy team list
-																					 Temp3 = Eye sight of this obj
-																					 Temp4 = Obj X
-																					 Temp5 = Obj Y
-																					 Temp7 = Temp2 Backup
-																					 Temp8 <- WTF IS THIS!?
-																					 Temp9 = X ptr"*/
-																				Temp2 = v[4561]
-																				Temp7 = Temp2
-																				Temp9 = Temp1 + 7
-																				// "ソートする数はここで総数を見て決定"
-																				Temp8 = v[Temp1 + 230]
-																				Temp7 = 0
-																				v[3401..3600] = 999999999
-																				v[534] = v[4579] + (v[1012] + 2) * Ptr18
-																				v[v[534]] = 999999999
-																				@doWhile v[Temp2] != 0 {
-																					// "Temp1 = [Taken Obj's ID] * 300 + 4707	Temp6 = Calculation List Ptr"
-																					Temp6 = Temp7 + 3601
-																						// "If the taken object from list is 0, set [[Temp6]] = 999999999"
-																						Temp1 = v[Temp2] * 300 + 4701
-																						// "Get ObjectType of the target	TT10"
-																						Temp1 += 6
-																						v[Temp9].copy Temp4, 2
-																						Temp4 .sub v[Temp1], 2
-																						Temp4 .mul Temp4, 2
-																						v[Temp6] = Temp4 + Temp5
-																						// "#Check AI eye sight#The last 3 digits are used as ID"
-																						@if v[Temp6] < Temp8 {
-																							TT1 = v[534] + Temp7
-																								v[TT1] = v[Temp6] * 1000 + v[Temp2]
-																								Temp7 += 1
+																			@if Temp15 == 0 {
+																				Temp1 = Ptr19
+																					Ptr19 = v[Ptr20]
+																					Ptr18 = Ptr19 - 1
+																					// "@Searching Nearest Enemy Process@"
+																					/* "Access19 = Obj's Behavior
+																						 Access20 = Obj's target ID"*/
+																					Ptr20 = Temp1 + 18
+																					Ptr19 = Temp1 + 241
+																					// "#Check Team ID"
+																					/* "Temp2 = [3000 or 3200]# [team0, team1] this var works as a pointer to his/her enemy team list
+																						 Temp3 = Eye sight of this obj
+																						 Temp4 = Obj X
+																						 Temp5 = Obj Y
+																						 Temp7 = Temp2 Backup
+																						 Temp8 <- WTF IS THIS!?
+																						 Temp9 = X ptr"*/
+																					Temp2 = v[4561]
+																					Temp7 = Temp2
+																					Temp9 = Temp1 + 7
+																					// "ソートする数はここで総数を見て決定"
+																					Temp8 = v[Temp1 + 230]
+																					Temp7 = 0
+																					v[3401..3600] = 999999999
+																					v[534] = v[4579] + (v[1012] + 2) * Ptr18
+																					v[v[534]] = 999999999
+																					@doWhile v[Temp2] != 0 {
+																						// "Temp1 = [Taken Obj's ID] * 300 + 4707	Temp6 = Calculation List Ptr"
+																						Temp6 = Temp7 + 3601
+																							// "If the taken object from list is 0, set [[Temp6]] = 999999999"
+																							Temp1 = v[Temp2] * 300 + 4701
+																							// "Get ObjectType of the target	TT10"
+																							Temp1 += 6
+																							v[Temp9].copy Temp4, 2
+																							Temp4 .sub v[Temp1], 2
+																							Temp4 .mul Temp4, 2
+																							v[Temp6] = Temp4 + Temp5
+																							// "#Check AI eye sight#The last 3 digits are used as ID"
+																							@if v[Temp6] < Temp8 {
+																								TT1 = v[534] + Temp7
+																									v[TT1] = v[Temp6] * 1000 + v[Temp2]
+																									Temp7 += 1
 
-																						}
-																					Temp2 += 1
+																							}
+																						Temp2 += 1
 
-																				}
+																					}
 
-																			// "#Check Who's nearest"
-																			v[v[534]].sort Temp7
-																				@if v[v[534]] < 999999999 {
-																					v[v[534]..v[534] + Temp7 - 1] %= 1000
-																						v[Ptr20] = v[v[534]]
-																						v[Ptr20 + 229] = 5
+																				// "#Check Who's nearest"
+																				v[v[534]].sort Temp7
+																					@if v[v[534]] < 999999999 {
+																						v[v[534]..v[534] + Temp7 - 1] %= 1000
+																							v[Ptr20] = v[v[534]]
+																							v[Ptr20 + 229] = 5
 
-																				} .else bl {
-																					v[Ptr20 + 229] = 0
-																						Temp7 = 0
+																					} .else bl {
+																						v[Ptr20 + 229] = 0
+																							Temp7 = 0
 
-																				}
-																			// "init counter and set amount"
-																			Temp6 = 0
-																				TT1 = v[534] + v[1012]
-																				Temp6.copy v[TT1], 2
+																					}
+																				// "init counter and set amount"
+																				Temp6 = 0
+																					TT1 = v[534] + v[1012]
+																					Temp6.copy v[TT1], 2
+
+																			}.else bl{
+																				Temp15 = 0
+
+																			}
 
 																		}
+																	}
+
+															} .else bl {
+																@break
+
+															}
+
+													}
+
+
+												}.else bl { // no foundation anymore
+
+													@loop v[1012] .dst Temp1 {
+														// "Check Player Team List"
+														// "Check AllyTeam List"
+														Ptr20 = Temp1 + v[1145 + v[251] % 3]
+															@if v[Ptr20] >= 1 {
+																Ptr19 = v[Ptr20] * 300
+																	Ptr19 += 4700
+																	@if `v[Ptr19 + 102] == 9 {
+																		TT1 = Ptr19 + 18
+																			@if v[TT1] == Ptr10 {
+																				@if Temp15 == 0 {
+																					v[TT1] = 0
+																					TT1 = Ptr19 + 242
+																					v[TT1] = -2
+																				}.else bl{
+																					Temp15 = 0
+																				}
+
+																			}
 
 																	}
 
@@ -999,6 +1048,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 															}
 
 													}
+
 
 
 												}
@@ -1116,9 +1166,7 @@ cev[39], .name("WorkerAct:setting build foundation"), {
 				TT1 += v[300003] >= v[33] ? 1 : 0
 				TT1 += v[300004] >= v[34] ? 1 : 0
 				v[40] -= TT1 != 4 ? 1 : 0
-				@comment "＃＃＃＃＃＃＃＃＃＃
-				地形チェック
-				＃＃＃＃＃＃＃＃＃＃"
+				@comment "＃＃＃＃＃＃＃＃＃＃				地形チェック				＃＃＃＃＃＃＃＃＃＃"
 				@if v[91] == 1 {
 					v[40] += TT10 == 18 && v[91] & 1 ? 2 : 0
 
@@ -1130,16 +1178,13 @@ cev[39], .name("WorkerAct:setting build foundation"), {
 						v[40] += TT10 > 0 ? 1 : 0
 
 				}
-			@comment "＃＃＃＃＃＃＃＃＃＃
-				地形チェック終
-				＃＃＃＃＃＃＃＃＃＃"
+			@comment "＃＃＃＃＃＃＃＃＃＃				地形チェック終				＃＃＃＃＃＃＃＃＃＃"
 				@comment "#V357以下にコピー"
 				var1.copy TT17, 4
 				@comment "#弾の判定使いまわし"
 				v[252].copy v[381], 2
 				var1.copy v[383], 2
-				@comment "#範囲攻撃処理分岐
-#0なら当たり判定を持たない"
+				@comment "#範囲攻撃処理分岐 #0なら当たり判定を持たない"
 				MousePtr_x.copy var1, 2
 				var1 .sub TT17, 2
 				@call .cev 2002
@@ -1149,9 +1194,7 @@ cev[39], .name("WorkerAct:setting build foundation"), {
 				@call .cev 2002
 				TT1 = TT11
 				TT2 = reg1
-				@comment "TT1 = upper left morton
-				TT2 = bottom right morton
-				TT5 = shift num"
+				@comment "TT1 = upper left morton 				TT2 = bottom right morton				TT5 = shift num"
 				TT3 = TT1 ^ TT2
 				@comment "00ではない一番上位の空間にしょぞく"
 				@comment "#mask with 11000000"
