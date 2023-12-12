@@ -1,3 +1,5 @@
+def Const_units_pop_delay = 68 // 52
+
 def Const_AgentMetaTeam_beginMINUSONE = Const_AgentMetaTeam_begin -1 
 __fn debug_selecting_agt $agtidptr $block {
 	__if DIS_DEBUG_BUILD == 1 {
@@ -9,7 +11,7 @@ __fn debug_selecting_agt $agtidptr $block {
 
 v[4599] = 0
 v[535] += 1
-v[533] = (v[204] / 52 + 1) * v[1134]
+v[533] = (v[204] / Const_units_pop_delay + 1) * v[1134]
 val_mod(v[535],v[533]) // v[535] %= v[533]
 v[536] = v[4532]
 

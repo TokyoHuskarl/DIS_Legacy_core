@@ -1275,24 +1275,36 @@ s[70].off
 								}
 								
 						} .else bl {
+
+								// ##################
 								// "Building Mode.."
+								// ##################
 								MousePtr_x.copy var1, 2
 								@if s[180] .isOff() { // it's not wall
 										var1.copy v[252], 2
 										@call .cev 795 // this one can be fatal I suppose?
 										MousePtr_x.copy var1, 2
-										v[403].copy var3, 2
+										LEGV_MainMAP_PointOfReferenceX.copy var3, 2
 										v[13..14] %= 16
 										// "ずれ計算"
 										v[11..12] /= 16
 										v[11..12] += 1
 										v[11..12] *= 16
+										// TEST
 										var1 .add var3, 2
 										// "処理開始"
-										@if v[37] == 0 {
+										// v[37] = var1 / 8 % 2 <- done in cev 795
+										@if v[37] == 0 { // ???
 												var1 -= 8
 												
 										}
+
+										// this is exactly what needed for long long days
+										v[38] = var2 / 8 % 2
+										@if v[38] == 0 {
+												var2 -= 8
+										}
+
 										
 								} .else bl {
 										var1 = MousePtr_x
@@ -1348,10 +1360,15 @@ s[70].off
 										.affectedByFlash
 										.affectedByShake
 								}
+
+								// id
 								v[441] = 999
 								v[442] = 1
+								// x
 								v[443] = 11
+								// y
 								v[444] = 12
+
 								v[445] = 1
 								v[446] = 100
 								v[448] = 1
@@ -1385,8 +1402,9 @@ s[70].off
 										var4 = var2 + v[38] * 1
 										
 								}
-								
+								// show building sprite
 								@cmd 11110, "static\spr_static_1", .args v[441], 30
+
 								@if Common_Control_Ck == LMB {
 										@if `MousePtr_y <= v[1286] && !(MousePtr_x <= v[4514] && MousePtr_y >= v[4515]) {
 												@if s[11] .isOff() {

@@ -394,9 +394,9 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					@if v[607] <= v[1009]{
 						@if v[608] >= v[1010]{
 							@if v[608] <= v[1011]{
-								// "#描画範囲内であれば保存"
-								// "Will_be_depicted"
-								agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
+									// "#描画範囲内であれば保存"
+									// "Will_be_depicted"
+									agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
 									s[TT8].on
 									// "#"
 									v[v[1112] + v[184]] = (agent_AgentType != -9 ? (v[608] + v[611] >> 1 + v[1011] + 500) * 1000 : 9999000) + v[401]

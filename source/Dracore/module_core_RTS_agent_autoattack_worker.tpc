@@ -778,10 +778,12 @@ cev .id(32), .name("AgentAct:Worker"), {
 						Temp6 += 4805
 						Temp5 += 4806
 						v[Temp5] = v[Temp5] + Temp1
+
+						// building complete
 						@if v[Temp6] <= v[Temp5] {
 							Temp5 = Ptr20 * 300 + 4802
 								@if v[Temp5] == 104 {
-									Temp5 += 178
+										Temp5 += 178
 										v[371] = v[205] < v[1080] ? 1 : 0
 										// "生産施設は例外的に張りなおせる"
 										//???? WTF
@@ -801,7 +803,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 
 												@if Ptr20 > 0 {
 													// "#建築現場を消去"
-													Temp5 = Ptr20 * 300
+														Temp5 = Ptr20 * 300
 														Temp5 += 4806
 														v[Temp5] = -1
 														// "309 = ID	306 = ActionState"
@@ -824,6 +826,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 														// "Remove from UnitList"
 														var1 = Ptr20
 														var2 = 11
+														// remove from foundation(basement) list
 														@call .cev 1896
 														// "Team Get"
 														Temp8 += 4800
@@ -835,6 +838,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 															Temp9 = v[1146]
 
 														}
+
 													@loop v[1012] {
 														@if v[Temp9] == Ptr20 {
 															v[Temp9] = 0

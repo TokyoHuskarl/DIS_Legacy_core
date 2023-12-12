@@ -365,6 +365,10 @@ struct("agent",{
 		AgentBits_MASK_for_initilizing_pathfinding = ~(AgentBits_FLAG_walldetected + AgentBits_FLAG_NeedWpToReachObj + AgentBits_FLAG_PF_walldetection_switch)
 
 
+	// for static agents
+	StaticBits_FLAG_has_generated_sprite = 128
+
+
 	MoveTypeBits_Flying = 1
 	MoveTypeBits_Horse = 2
 	MoveTypeBits_Skate = 8
