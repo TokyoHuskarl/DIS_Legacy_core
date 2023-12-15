@@ -758,6 +758,7 @@ s[70].off
 						}
 						
 				} .else bl {
+						// tile build mode
 						@if v[87] == 1 {
 								@pic[999].erase
 								@pic[973].getInfo .cewh .baseRect TT1, TT2, TT3, TT3
@@ -785,8 +786,7 @@ s[70].off
 								}
 								@if s[11] .isOff() {
 										@if s[180] .isOff() {
-												var1 = MousePtr_x
-												var2 = MousePtr_y
+												MousePtr_x.copy var1, 2
 												var2 += 8
 												macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
 												// v[11..12] *= 10000
@@ -1281,16 +1281,23 @@ s[70].off
 								// ##################
 								MousePtr_x.copy var1, 2
 								@if s[180] .isOff() { // it's not wall
+										var2 += 8
 										var1.copy v[252], 2
+
+										// building check
 										@call .cev 795 // this one can be fatal I suppose?
 										MousePtr_x.copy var1, 2
-										LEGV_MainMAP_PointOfReferenceX.copy var3, 2
-										v[13..14] %= 16
-										// "ずれ計算"
-										v[11..12] /= 16
-										v[11..12] += 1
+										var2 += 8
+
+
+										// neeed to remake 795 
+										macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
+										reg1.copy var1,2
+										var2 -= 1
+										
 										v[11..12] *= 16
 										// TEST
+										LEGV_MainMAP_PointOfReferenceX.copy var3, 2
 										var1 .add var3, 2
 										// "処理開始"
 										// v[37] = var1 / 8 % 2 <- done in cev 795
@@ -1299,11 +1306,15 @@ s[70].off
 												
 										}
 
+										// check how building UI numbers is going
+										// func_devlog(__str("Current building ghost position: \v[",__id(var2),"] \v[",__id(var4),"]"))
+
 										// this is exactly what needed for long long days
-										v[38] = var2 / 8 % 2
-										@if v[38] == 0 {
+										@if v[38] == 1 {
 												var2 -= 8
 										}
+
+
 
 										
 								} .else bl {
