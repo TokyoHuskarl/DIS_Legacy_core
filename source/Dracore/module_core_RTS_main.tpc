@@ -839,8 +839,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 													// if the spawned troop is a worker
 													@if `v[Spawned_Agent_Id_Shift + 4802] == 9 {
 														@if agent_static_WorkTarget >= 1 { // and the parent static agent has work target
-															// "Worker"
-															v[371] |= 1 // IT'S WORKER! - flag switch on
+																// "Worker"
+																v[371] |= 1 // IT'S WORKER! - flag switch on
 																v[Spawned_Agent_Id_Shift + 4718] = agent_static_WorkTarget
 																v[Spawned_Agent_Id_Shift + 4942] = 1
 																v[Spawned_Agent_Id_Shift + 4941] = v[Spawned_Agent_Id_Shift + 4941] != 4 ? 2 : 4

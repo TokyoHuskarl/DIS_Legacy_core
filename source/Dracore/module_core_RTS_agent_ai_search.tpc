@@ -627,6 +627,7 @@ v[4100].repeat 100000000, 13
 						TT1 = v[212] + 84 // temp agent_ActionTimer ptr
 						v[TT1] = v[1195] * 2
 
+						// the static agent has mil ai
 						@if `agent_StaticBits & 1048576 {
 							Ptr20 = v[212] + 18
 							Ptr19 = v[212] + 241 // ?
@@ -634,9 +635,11 @@ v[4100].repeat 100000000, 13
 
 							__if DIS_EXPERIMENTAL == 1 {
 								macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEB
+
 							}.else bl {
 								Temp14 = Const_AgentMetaTeam_begin + v[211]
 								Temp14.deref Temp14,1
+
 							}
 
 							// a naru.
@@ -644,6 +647,7 @@ v[4100].repeat 100000000, 13
 							Temp2.deref Temp2,1
 							Temp2.copy Temp7,1 // Temp7 = Temp2
 							Temp8 = 4034 + Temp14
+
 							// Temp8 = v[4034 + Temp14]
 							Temp8.deref Temp8,1
 
@@ -653,10 +657,12 @@ v[4100].repeat 100000000, 13
 
 							val_const(Temp6,3601) // Temp6 = 3601 // deploy v[3601] 'n check it
 							val_const(Temp7,0) // Temp7 = 0
+
 							@doWhile v[Temp2] != 0 {
 									Temp1 = v[Temp2] * 300 
 									val_add(Temp1,N4700) // Temp1 += 4700
 									calc_victim_distance_and_camo_to_Temp4(Temp1)
+
 									@if Temp4 < agent_UnitEyeSight_for_AgentSearch { // kore teki huesugitara bagurun to tyauw
 											ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
 											TT1 = v[534] + Temp7
@@ -665,6 +671,7 @@ v[4100].repeat 100000000, 13
 											Temp6.add N1,2
 											
 									}
+
 									increment_var(Temp2) // Temp2 += 1
 									
 							}
@@ -746,5 +753,6 @@ __fn calc_victim_distance_and_camo_to_Temp4 $ptrToHead {
 	Temp4 .mul Temp4, 2
 	val_add(Temp4,Temp5)
 	val_add(Temp4,victim_ProcessCamoValue)
+
 }
 

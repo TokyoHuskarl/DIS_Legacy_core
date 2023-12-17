@@ -1751,7 +1751,7 @@ cev .id(2120), .name("Game:Boot"),{
 	//Check if boot_config.txt is generated
 		log_push("Boot config loading...")
 	inputstr .asg  .file PATH_js_bootconfig, .utf8
-	@if inputstr .eq ""{
+	@if inputstr .eq "" {
 			log_push(__str("Boot config missing. Generating config file to ",PATH_js_bootconfig))
 			//There's no boot_config.txt, so going to generate it.
 			inputstr.asg "// DIS boot config file"

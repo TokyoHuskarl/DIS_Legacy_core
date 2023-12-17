@@ -313,7 +313,7 @@ __fn func_control_moveorder_civ {
 							Temp1 = v[v[202]] * 300
 							Temp1 += 4700
 
-							v[Temp1].copy Address_agent_array_head,300
+							v[Temp1].copy Address_agent_array_head,301
 							// town center or something
 							@if agent_AgentType == 11 {
 								agent_static_WorkTarget = v[100]
@@ -423,7 +423,10 @@ __fn func_control_moveorder_civ {
 									v[Ptr13] = 0
 
 							}
-						v[Temp1 + 34] &= ~4096
+
+							v[Temp1 + 34] &= ~4096
+
+							// not a static
 							@if `v[Temp1 + 1] != 11 {
 								@comment "処理開始"
 									v[Ptr20] = s[16] == 1 ? 2 : 3
@@ -443,7 +446,9 @@ __fn func_control_moveorder_civ {
 								agent_static_WorkTarget = 0
 								Temp2 = Temp1 + 1
 								v[Temp2].copyFrom agent_AgentType,299
+
 							}
+
 						@if v[275] >= 1 {
 							Ptr13 = 273
 								Ptr13 -= v[275] * 2
