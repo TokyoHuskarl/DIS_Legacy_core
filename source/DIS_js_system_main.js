@@ -700,15 +700,16 @@ DIS = { // DIS fundamental components
 					sets(317,1);
 					DIS.log.push("Autosave deactivated.");
 				}; 
-				//
+				
 				// autolog?
+				DIS.log.push("Autolog function in js file is incomplete, check it out, Johann.");
 				if (boot_config.autolog == 1) {
-					sets(317,1);
-					DIS.log.push("Autosave activated.");
+					// sets(317,1);
+					DIS.log.push("Autolog activated.");
 				} else {
-					sets(317,0);
-					DIS.log.push("Autosave deactivated.");
-				}; 				
+					// sets(317,0);
+					DIS.log.push("Autolog deactivated.");
+				};
 
 				
 				// Particle limit

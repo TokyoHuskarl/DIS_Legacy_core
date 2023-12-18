@@ -538,9 +538,9 @@ cev .id(32), .name("AgentAct:Worker"), {
 											} .else bl {
 												// "make worker idle"
 												v[Ptr20] = 0
-													v[Ptr19 + 1] = -1
-													v[Ptr20 + 229] = 0
-													Temp7 = 0
+												v[Ptr19 + 1] = -1
+												v[Ptr20 + 229] = 0
+												Temp7 = 0
 
 											}
 										// "init counter and set amount"
@@ -899,11 +899,12 @@ cev .id(32), .name("AgentAct:Worker"), {
 																	Ptr15 = Temp3 + 4718
 																		@if v[Ptr15] == Ptr14 {
 																			Temp5 = Temp3 + 4947
-																				// "#assign job building"
-																				@if reg3 == 105 {
+																				// "#assign building job?"
+
+																				@if reg3 == 105 { // target was resource type building
 																					v[Ptr15] = reg1
-																						@if reg2 == 2 {
-																							v[378] = 0
+																						@if reg2 == 2 { // farm 
+																								v[378] = 0
 																								v[22..23] = 0
 
 																						} .else bl {
@@ -923,7 +924,6 @@ cev .id(32), .name("AgentAct:Worker"), {
 															Temp2 += 1
 
 														}
-
 
 												}
 
@@ -1035,11 +1035,24 @@ cev .id(32), .name("AgentAct:Worker"), {
 																		TT1 = Ptr19 + 18
 																			@if v[TT1] == Ptr10 {
 																				@if Temp15 == 0 {
+																					// target
 																					v[TT1] = 0
+																					// move order
 																					TT1 = Ptr19 + 242
-																					v[TT1] = -2
+																					v[TT1] = -1
+																					// job type
+																					TT1 = Ptr19 + 247
+																					v[TT1] = 0
+																					
+
+																					// make current position its destination 
+																					TT1 = Ptr19 + 7
+																					TT2 = Ptr19 + 41
+																					v[TT1].copy v[TT2], 2
+
 																				}.else bl{
 																					Temp15 = 0
+
 																				}
 
 																			}

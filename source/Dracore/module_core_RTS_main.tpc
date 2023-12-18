@@ -746,14 +746,14 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 
 				// "########################Process Parameters Setting BEGIN########################"
+
 				// "#Base Parameters Get"
-				//v[861] = Temp1 + 109
 				agent_BaseAD.copy agent_ProcessAD, 11
-				//v[872] = Temp1 + 131
 				agent_BaseRegHP.copy agent_ProcessHPreg, 2
 				// "#Never get Morale Effect"
 				agent_ProcessObjBit = agent_static_Obj_flag | BaseObjBit_FLAG_No_mind //... is this necessary?
 				agent_ProcessCamoValue = agent_BaseCamoValue
+
 				// "#Set Process Parameters"
 				TT1 = Temp1 + 261
 				v[861].copy v[TT1], 16 //set.
@@ -767,12 +767,13 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				// "have function? "
 				//v[370] += v[agent_AgentBits] & 1024 ? -1 : 1
 				@if v[370] >= 2 {
+
 					// "AAタイマー"
 					@if v[702] == 106 {
-						v[628] = Temp1 + 28
-							@if v[v[628]] > 0 {
+							@if v[628] > 0 {
 								// "まだAAできない"
 								@if v[v[843]] != 1 {
+										v[628] = Temp1 + 28
 										v[719] = Temp1 + 119
 										v[v[628]] -= v[v[719]]
 
@@ -781,12 +782,32 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							} .else bl {
 								// "AA可能"
 								// "AAクールタイムモーションつきなら解消しておく"
-								//v[726] = Temp1 + 126
-								v[v[843]] = v[Temp1 + 126] == 1 ? 0 : v[v[843]]
+								// v[726] = Temp1 + 126
+								v[v[843]] = v[726] == 1 ? 0 : v[v[843]]
+
+							}
+							
+							// turret AI fix
+							@if agent_TargetAgentID > 0 {
+								TT1 = agent_TargetAgentID * 300
+								val_add(TT1,N4701)
+								// if the target is dead, set target 0
+								agent_TargetAgentID = v[TT1] <= 0 ? 0 : agent_TargetAgentID
+								// will be remade
+								TT2 = Temp1 + 18
+								v[TT2] = agent_TargetAgentID
+
+							}.else bl {
+								agent_StaticBits |= 1048576
+								// will be remade
+								TT2 = Temp1 + 3
+								v[TT2] = agent_StaticBits
 
 							}
 
 					}
+
+
 					// "#予約がある"
 					//v[770] = Temp1 + 170
 					@if v[770] >= 1 {

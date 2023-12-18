@@ -70,7 +70,7 @@ v[4100].repeat 100000000, 13
 										
 								} .else bl {
 									Ptr20 = v[212] + 18
-									Ptr19 = v[212] + 241
+									// Ptr19 = v[212] + 241
 									//get team ID
 									// Temp1 = v[212] + 100
 
@@ -181,178 +181,7 @@ v[4100].repeat 100000000, 13
 
 										})
 
-										/*@comment "#########################		    #2002 Crd->Mort V1V2 reg1		    ##########################"*/
-										agent_RelativeX.copy TT1, 2
-										TT1 .sub UnitAI_agent_eyesight,2 // v[341..342] -= UnitAI_agent_eyesight
-										TT1 .add v[53], 2
-										TT1 .sub v[76], 2
-										TT1 .div v[74], 2
-										TT1 &= 31 // TT1 = max(TT1, 31)
-										TT2 &= 31 // TT2 = max(TT2, 31)
-
-										/*@comment "TT1=MortX
-			 TT2=MortY
-			 ビット演算して処理するよ"*/
-										TT1 = (TT1 | TT1 << 8) & 0xFF00FF
-										TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
-										TT1 = (TT1 | TT1 << 2) & 0x33333333
-										TT1 = (TT1 | TT1 << 1) & 0x55555555
-										TT2 = (TT2 | TT2 << 8) & 0xFF00FF
-										TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
-										TT2 = (TT2 | TT2 << 2) & 0x33333333
-										TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
-
-										//@comment "yは1bitシフトで終わり"
-										//TT2 <<= 1
-										//@comment "最後にTT1 OR TT2"
-										//opt 28.4.23
-										//v[21] = TT1 | TT2
-										/*@comment "#########################		   #2002 Crd->Mort V1V2 reg1 end		   ##########################"*/
-										v[351] = TT1 | TT2
-
-										/*@comment "##########################2002 Crd->Mort V1V2 reg1##########################"*/
-										agent_RelativeX.copy TT1, 2
-										TT1 .add UnitAI_agent_eyesight,2 // v[341..342] += UnitAI_agent_eyesight
-										TT1 .add v[53], 2
-										TT1 .sub v[76], 2
-										TT1 .div v[74], 2
-										TT1 &= 31 // TT1 = min(TT1, 31)
-										TT2 &= 31 // TT2 = min(TT2, 31)
-
-										/*@comment "TT1=MortX
-									TT2=MortY
-									ビット演算して処理するよ"*/
-										TT1 = (TT1 | TT1 << 8) & 0xFF00FF
-										TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
-										TT1 = (TT1 | TT1 << 2) & 0x33333333
-										TT1 = (TT1 | TT1 << 1) & 0x55555555
-										TT2 = (TT2 | TT2 << 8) & 0xFF00FF
-										TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
-										TT2 = (TT2 | TT2 << 2) & 0x33333333
-										TT2 = ((TT2 | TT2 << 1) & 0x55555555) << 1
-										//@comment "yは1bitシフトで終わり"
-										//TT2 <<= 1
-										//@comment "最後にTT1 OR TT2"
-
-				//opt 28.4.23
-										//v[21] = TT1 | TT2
-										TT2 = TT1 | TT2
-										val_asg(TT1,v[351]) // TT1 = v[351]
-										//TT2 = v[21]
-										/*
-										@comment "TT1 = upper left morton
-										TT2 = bottom right morton
-										TT5 = shift num"
-										*/
-
-										TT3 = TT1 ^ TT2
-
-										//If the morton space where you're gonna check is the root space...
-										@if `TT3 & 768 {
-
-											Temp2 = 4031 + Temp14
-											Temp2.deref Temp2,1 // Temp2 = v[Temp2]
-
-											//then just check team agent list - but this seemingly not good design (also kinda buggy), so maybe I need to change this later
-											Temp6 = 3601
-
-											//@if `v[agent_AI_routine_bits] & 7 { // EXPERIMENTAL
-											@doWhile v[Temp2] != 0 {
-
-													Temp1 = v[Temp2] * 300 
-													val_add(Temp1,N4700) // Temp1 += 4700
-													calc_victim_distance_and_camo_to_Temp4(Temp1)
-
-													@if Temp4 < Temp8 {
-														ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
-
-														// debug 
-														debug_selecting_agt(v[536],{
-																func_devlog(__str("Hit. target is \v[\v[",__id(AISearch_morton_ptr),"]] "," I checked teamlist"))
-														})
-
-														// set TT2 = v[534] + Temp7
-														val_asg(TT2,v[534])
-														val_add(TT2,Temp7)
-														@if LEGS_Common_Switch5 .isOn() {
-															v[TT2] = v[Temp6] * 1000 + v[Temp2] + v[4001 + min(victim_UnitType, ClassType_Amount)]
-
-														}.else bl{
-															v[TT2] = v[Temp6] * 1000
-															v[TT2].add v[Temp2],1 // v[TT1] += v[Temp2]
-
-														}
-														Temp6.add N1,2 // v[306..307] += 1
-														
-													}
-
-													increment_var(Temp2) // Temp2 += 1
-													
-											}
-											
-											
-
-										} .else bl {
-
-											//@comment "#TT6 = morton id"
-											//Isn't this formula retarded? 8.Mar
-											TT5 = TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
-											TT6 = TT2 >> TT5
-											//@comment "#mask end"
-
-											TT5 >>= 1 // TT5 /= 2
-											defv AISearch_morton_ptr = __id(Temp12)
-											AISearch_morton_ptr = v[4546 - TT5] + TT6 * v[1004] // morton agent list head
-											v[327] = v[v[4552 - TT5] + TT6] // morton agent list length
-											Temp33 = [1, 0, -2][Temp14]
-											val_const(Temp6,3601) // Temp6 = 3601
-
-											// deb
-											debug_selecting_agt(v[536],{
-													func_devlog(__str("Current selected agent is gonna search morton dim:\v[",__id(TT3), "], for \v[327] Times."))
-											})
-
-											@loop v[327] {
-												// AISearch_morton_ptr = v[340] + Temp10
-												// val_add(AISearch_morton_ptr,v[340])
-
-												__if DIS_EXPERIMENTAL == 1 {
-													macro_get_agent_MetaTeam_into_var(v[AISearch_morton_ptr],TT1) // AEB
-
-												}.else bl {
-													TT1 = Const_AgentMetaTeam_beginMINUSONE + v[AISearch_morton_ptr]
-
-												}
-
-												@if  Temp33 == TT1 { // EXPERIMENTAL - IF YOU USE AEBA  
-												// @if  Temp33 == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA
-
-
-													Temp1 = v[AISearch_morton_ptr] * v[1117] 
-													val_add(Temp1,N4700) // Temp1 += 4700
-													calc_victim_distance_and_camo_to_Temp4(Temp1)
-
-													@if Temp4 < Temp8 { // in agent sight
-														ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
-														
-														// debug 
-														debug_selecting_agt(v[536],{
-																func_devlog(__str("Hit. found target is \v[\v[",__id(AISearch_morton_ptr),"]] "))
-																func_devlog("mydim is \v[609] - current morton list address is \v[", __id(AISearch_morton_ptr),"]")
-														})
-
-														// set TT2 = v[534] + Temp7
-														val_asg(TT2,v[534])
-														val_add(TT2,Temp7)
-														v[TT2] = v[Temp6] * 1000 + v[AISearch_morton_ptr] + v[4001 + min(victim_UnitType, 11)]
-
-														Temp6.add N1,2 // v[306..307] += 1
-														
-													}
-												}
-												increment_var(AISearch_morton_ptr)
-											}
-										}
+										agent_AI_search_with_morton()
 
 										//Has more than 16 enemies in the search radius
 										@if Temp7 >= 16 {
@@ -374,6 +203,7 @@ v[4100].repeat 100000000, 13
 											
 										}
 										v[v[534]].sort Temp7
+
 										@if `agent_AgentBits & AgentBits_FLAG_walldetected {
 											agent_MapX.copy Temp11,2
 											v[621].copy Temp3,2
@@ -490,6 +320,7 @@ v[4100].repeat 100000000, 13
 											}
 											
 										}
+
 										@if v[v[534]] < 999999999 {
 
 											// v[v[534]..v[534] + Temp7 - 1] %= 1000
@@ -626,12 +457,13 @@ v[4100].repeat 100000000, 13
 				@if agent_ActionTimer <= 0 {
 						TT1 = v[212] + 84 // temp agent_ActionTimer ptr
 						v[TT1] = v[1195] * 2
+						// agent_ActionTimer = v[1195] * 2
 
 						// the static agent has mil ai
 						@if `agent_StaticBits & 1048576 {
 							Ptr20 = v[212] + 18
-							Ptr19 = v[212] + 241 // ?
-							Temp1 = v[212] + 100
+							// Ptr19 = v[212] + 241 // ?
+							// Temp1 = v[212] + 100
 
 							__if DIS_EXPERIMENTAL == 1 {
 								macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEB
@@ -646,15 +478,63 @@ v[4100].repeat 100000000, 13
 							Temp2 = 4031 + Temp14
 							Temp2.deref Temp2,1
 							Temp2.copy Temp7,1 // Temp7 = Temp2
-							Temp8 = 4034 + Temp14
 
 							// Temp8 = v[4034 + Temp14]
+							Temp8 = 4034 + Temp14
 							Temp8.deref Temp8,1
-
 
 							v[534] = v[4579] + (v[1012] + 2) * v[211]
 							v[v[534]] = 0
 
+							v[4101].copy v[4001],12
+
+							agent_UnitEyeSight_for_AgentSearch.copy Temp8,1
+
+							// get sight range root
+							__if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
+
+								get_AEB_element_wo_ptr(AgentIDholder,__id(UnitAI_agent_eyesight),AgentExBuffer_SLOT_BaseSight_Root)
+
+							}.else bl {
+								UnitAI_agent_eyesight = v[211] + v[4806]
+								UnitAI_agent_eyesight.deref UnitAI_agent_eyesight,1
+							}
+
+							UnitAI_agent_eyesight.copy v[316],1 // UnitAI_agent_eyesight is v[315]
+
+								// DEBUG
+								debug_selecting_agt(v[536],{
+										agent_RelativeX.copy TT1, 2
+										TT1 .sub UnitAI_agent_eyesight,2 // v[341..342] -= UnitAI_agent_eyesight
+										TT1 .add v[53], 2
+										agent_RelativeX.copy TT3,2
+										TT3 .add UnitAI_agent_eyesight,2 // v[341..342] -= UnitAI_agent_eyesight
+										TT3 .add v[53], 2
+										TT3 -= TT1
+										TT4 -= TT2
+										@pic[10].strpic {
+										"CHECK"
+										.pos TT1, TT2 .topLeft
+										.size TT3, TT4                        .chromakey 1
+										.scale 100
+										.trans 80
+										.rgbs 100, 100, 100, 100
+										.font Font_Common, Font_Common_size
+										.spacing 0, 4
+										.skin ""  .noPadding
+										.mapLayer 8
+										.eraseWhenTransfer
+										.affectedByFlash
+										.affectedByShake
+										}
+
+								})
+
+							// experimental
+							Temp7 = 0
+							agent_AI_search_with_morton()
+
+							/*
 							val_const(Temp6,3601) // Temp6 = 3601 // deploy v[3601] 'n check it
 							val_const(Temp7,0) // Temp7 = 0
 
@@ -675,7 +555,8 @@ v[4100].repeat 100000000, 13
 									increment_var(Temp2) // Temp2 += 1
 									
 							}
-							
+							*/
+
 							v[v[534]].sort Temp7
 							v[Ptr20] = v[v[534]] < 999999999 ? v[v[534]] % 1000 : 0
 							
@@ -710,6 +591,182 @@ v[4100].repeat 100000000, 13
 		
 }
 
+
+// need to set agent UnitAI_agent_eyesight before call
+__fn agent_AI_search_with_morton {
+		/*@comment "#########################		    #2002 Crd->Mort V1V2 reg1		    ##########################"*/
+		agent_RelativeX.copy TT1, 2
+		TT1 .sub UnitAI_agent_eyesight,2 // v[341..342] -= UnitAI_agent_eyesight
+		TT1 .add v[53], 2
+		TT1 .sub v[76], 2
+		TT1 .div v[74], 2
+		TT1 &= 31 // TT1 = max(TT1, 31)
+		TT2 &= 31 // TT2 = max(TT2, 31)
+
+		/*@comment "TT1=MortX
+			TT2=MortY
+			ビット演算して処理するよ"*/
+		TT1 = (TT1 | TT1 << 8) & 0xFF00FF
+		TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
+		TT1 = (TT1 | TT1 << 2) & 0x33333333
+		TT1 = (TT1 | TT1 << 1) & 0x55555555
+		TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+		TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+		TT2 = (TT2 | TT2 << 2) & 0x33333333
+		TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
+
+		//@comment "yは1bitシフトで終わり"
+		//TT2 <<= 1
+		//@comment "最後にTT1 OR TT2"
+		//opt 28.4.23
+		//v[21] = TT1 | TT2
+		/*@comment "#########################		   #2002 Crd->Mort V1V2 reg1 end		   ##########################"*/
+		v[351] = TT1 | TT2
+
+		/*@comment "##########################2002 Crd->Mort V1V2 reg1##########################"*/
+		agent_RelativeX.copy TT1, 2
+		TT1 .add UnitAI_agent_eyesight,2 // v[341..342] += UnitAI_agent_eyesight
+		TT1 .add v[53], 2
+		TT1 .sub v[76], 2
+		TT1 .div v[74], 2
+		TT1 &= 31 // TT1 = min(TT1, 31)
+		TT2 &= 31 // TT2 = min(TT2, 31)
+
+		/*@comment "TT1=MortX
+			TT2=MortY
+			ビット演算して処理するよ"*/
+		TT1 = (TT1 | TT1 << 8) & 0xFF00FF
+		TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
+		TT1 = (TT1 | TT1 << 2) & 0x33333333
+		TT1 = (TT1 | TT1 << 1) & 0x55555555
+		TT2 = (TT2 | TT2 << 8) & 0xFF00FF
+		TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
+		TT2 = (TT2 | TT2 << 2) & 0x33333333
+		TT2 = ((TT2 | TT2 << 1) & 0x55555555) << 1
+		//@comment "yは1bitシフトで終わり"
+		//TT2 <<= 1
+		//@comment "最後にTT1 OR TT2"
+
+		//opt 28.4.23
+		//v[21] = TT1 | TT2
+		TT2 = TT1 | TT2
+		val_asg(TT1,v[351]) // TT1 = v[351]
+		//TT2 = v[21]
+		/*
+			 @comment "TT1 = upper left morton
+			 TT2 = bottom right morton
+			 TT5 = shift num"
+		 */
+
+		TT3 = TT1 ^ TT2
+
+		//If the morton space where you're gonna check is the root space...
+		@if `TT3 & 768 {
+
+			Temp2 = 4031 + Temp14
+				Temp2.deref Temp2,1 // Temp2 = v[Temp2]
+
+				//then just check team agent list - but this seemingly not good design (also kinda buggy), so maybe I need to change this later
+				Temp6 = 3601
+
+				//@if `v[agent_AI_routine_bits] & 7 { // EXPERIMENTAL
+				@doWhile v[Temp2] != 0 {
+
+					Temp1 = v[Temp2] * 300 
+						val_add(Temp1,N4700) // Temp1 += 4700
+						calc_victim_distance_and_camo_to_Temp4(Temp1)
+
+						@if Temp4 < Temp8 {
+							ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
+
+								// debug 
+								debug_selecting_agt(v[536],{
+										func_devlog(__str("Hit. target is \v[\v[",__id(AISearch_morton_ptr),"]] "," I checked teamlist"))
+										})
+
+							// set TT2 = v[534] + Temp7
+							val_asg(TT2,v[534])
+								val_add(TT2,Temp7)
+								@if LEGS_Common_Switch5 .isOn() {
+									v[TT2] = v[Temp6] * 1000 + v[Temp2] + v[4001 + min(victim_UnitType, ClassType_Amount)]
+
+								}.else bl{
+									v[TT2] = v[Temp6] * 1000
+										v[TT2].add v[Temp2],1 // v[TT1] += v[Temp2]
+
+								}
+							Temp6.add N1,2 // v[306..307] += 1
+
+						}
+
+					increment_var(Temp2) // Temp2 += 1
+
+				}
+
+
+
+		} .else bl {
+
+			//@comment "#TT6 = morton id"
+			//Isn't this formula retarded? 8.Mar
+			TT5 = TT3 & 192 ? 8 : TT3 & 48 ? 6 : TT3 & 12 ? 4 : TT3 & 3 ? 2 : 0
+				TT6 = TT2 >> TT5
+				//@comment "#mask end"
+
+				TT5 >>= 1 // TT5 /= 2
+				defv AISearch_morton_ptr = __id(Temp12)
+				AISearch_morton_ptr = v[4546 - TT5] + TT6 * v[1004] // morton agent list head
+				v[327] = v[v[4552 - TT5] + TT6] // morton agent list length
+				Temp33 = [1, 0, -2][Temp14]
+				val_const(Temp6,3601) // Temp6 = 3601
+
+				// deb
+				debug_selecting_agt(v[536],{
+						func_devlog(__str("Current selected agent is gonna search morton dim:\v[",__id(TT3), "], for \v[327] Times."))
+				})
+
+			@loop v[327] {
+				// AISearch_morton_ptr = v[340] + Temp10
+				// val_add(AISearch_morton_ptr,v[340])
+
+				__if DIS_EXPERIMENTAL == 1 {
+					macro_get_agent_MetaTeam_into_var(v[AISearch_morton_ptr],TT1) // AEB
+
+				}.else bl {
+					TT1 = Const_AgentMetaTeam_beginMINUSONE + v[AISearch_morton_ptr]
+
+				}
+
+				@if  Temp33 == TT1 { // EXPERIMENTAL - IF YOU USE AEBA  
+					// @if  Temp33 == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA
+
+
+					Temp1 = v[AISearch_morton_ptr] * v[1117] 
+						val_add(Temp1,N4700) // Temp1 += 4700
+						calc_victim_distance_and_camo_to_Temp4(Temp1)
+
+						@if Temp4 < Temp8 { // in agent sight
+							ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
+
+								// debug 
+								debug_selecting_agt(v[536],{
+										func_devlog(__str("Hit. found target is \v[\v[",__id(AISearch_morton_ptr),"]] "))
+										func_devlog("mydim is \v[609] - current morton list address is \v[", __id(AISearch_morton_ptr),"]")
+										})
+
+							// set TT2 = v[534] + Temp7
+							val_asg(TT2,v[534])
+								val_add(TT2,Temp7)
+								v[TT2] = v[Temp6] * 1000 + v[AISearch_morton_ptr] + v[4001 + min(victim_UnitType, 11)]
+
+								Temp6.add N1,2 // v[306..307] += 1
+
+						}
+				}
+				increment_var(AISearch_morton_ptr)
+				}
+			}
+}
 
 
 __fn agent_AI_check_current_target {
