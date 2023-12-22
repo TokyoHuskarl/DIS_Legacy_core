@@ -917,28 +917,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 }
 
 
-// this is the fastest Array control proc in current RM system
-__fn MAIN_macro_agent_WP_Array_pop {
-	Ptr19 =__id(agent_HoldPointX) // 641
-	Ptr18 =__id(agent_WayPoint1X) // 643
-	@loop 6 { // only 6 slots
-		v[Ptr18].copy v[Ptr19], 2
-		// v[Ptr18].add N2,2
-		v[__id(Ptr18)..__id(Ptr19)] += 2
-	}
-	
-	//@comment "後ろに0代入"
-	v[1301].copy v[Ptr19], 2
 
-	//@comment "#WPへらす"
-	agent_ActionFlag &= -2//~1
-	val_sub(agent_LeftWPtoChase,N1) // agent_LeftWPtoChase -= 1
-}
-
-__fn MAIN_macro_agent_WP_Array_init {
-	val_const(agent_LeftWPtoChase,-1) // agent_LeftWPtoChase = -1 // Agent does not chase left WPs anymore
-
-}
 
 // 
 __fn MAIN_agent_reached_ChasePoint {
@@ -994,5 +973,28 @@ __fn MAIN_agent_reached_ChasePoint {
 
 	agent_AI_routine_bits &= -12289 //~12288 
 
+
+}
+
+// this is the fastest Array control proc in current RM system
+__fn MAIN_macro_agent_WP_Array_pop {
+	Ptr19 =__id(agent_HoldPointX) // 641
+	Ptr18 =__id(agent_WayPoint1X) // 643
+	@loop 6 { // only 6 slots
+		v[Ptr18].copy v[Ptr19], 2
+		// v[Ptr18].add N2,2
+		v[__id(Ptr18)..__id(Ptr19)] += 2
+	}
+	
+	//@comment "後ろに0代入"
+	v[1301].copy v[Ptr19], 2
+
+	//@comment "#WPへらす"
+	agent_ActionFlag &= -2//~1
+	val_sub(agent_LeftWPtoChase,N1) // agent_LeftWPtoChase -= 1
+}
+
+__fn MAIN_macro_agent_WP_Array_init {
+	val_const(agent_LeftWPtoChase,-1) // agent_LeftWPtoChase = -1 // Agent does not chase left WPs anymore
 
 }

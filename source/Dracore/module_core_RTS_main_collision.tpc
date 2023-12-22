@@ -484,6 +484,12 @@ __fn macro_ColCheck_push {
 								v[Col_Ptr2AI_routine_bits] |= agent_LeftWPtoChase > 0 ? Col_AIFLAG_PFandSkip : Col_AIFLAG_PFandRC
 							}
 						}
+					}.else bl { // it's target
+						@if victim_UnitID == 4 {  // if it's construction site
+							// init waypoint setting 
+							TT1 = Temp1 + 55 // agent_LeftWPtoChase
+							v[TT1] = -1 // set -1
+						}
 					}
 				}
 			}

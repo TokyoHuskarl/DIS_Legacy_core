@@ -317,6 +317,7 @@ __fn func_control_moveorder_civ {
 							// town center or something
 							@if agent_AgentType == 11 {
 								agent_static_WorkTarget = v[100]
+								agent_TargetAgentID = 0
 								
 								Temp2 = Temp1 + 1
 								v[Temp2].copyFrom agent_AgentType,299
@@ -442,8 +443,10 @@ __fn func_control_moveorder_civ {
 									v[Ptr15] = v[Ptr15] == 2 ? 0 : v[Ptr15]
 
 							}.else bl {
+								// static and not mil
 								v[Temp1].copy Address_agent_array_head,300
 								agent_static_WorkTarget = 0
+								agent_TargetAgentID = 0
 								Temp2 = Temp1 + 1
 								v[Temp2].copyFrom agent_AgentType,299
 

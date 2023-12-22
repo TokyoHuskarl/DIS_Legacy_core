@@ -68,6 +68,8 @@ cev .id(4) ,.name("@Mission Start") ,{
 	    
 	}
 	s[400].off
+
+	@pic[2135].erase
 }
 
 cev .id(3), .name("@Mission End"),{
@@ -178,6 +180,7 @@ def STRING_greenstr1 = __str("\c[10]","\t[",__id(str1),"]")
 def STRING_redstr1 = __str("\c[5]","\t[",__id(str1),"]") 
 
 cev .id(2121), .name("Game:Battle Result"),{
+	@sys.menuAccess .off
 	@comment "To 60FPS"
 	@pic.erase .all
 	@sys.gameOpt .mouse.disableMsgProcession 0
@@ -570,7 +573,8 @@ cev .id(67), .name("Combat Detection AI.."),.parallel , .cond(1), { // switch 29
 cev[2133] .name("[mapsys]Get Temp v11") {
 
 	v[341] = rnd(1, v[2740 + v[11]])
-	v[342] = v[341] + 10 * (v[11] - 1) + Adrt_mission_misc_data
+	v[341] = max(1, v[341])
+	v[342] = v[341] + 10 * (v[11] - 1) + Adrt_mission_misc_data - 1
 	t[510] .asg t[v[342]]
 	t[510] .split ",", t[2999], v[341]
 	@loop v[341] .dst v[342] {
@@ -582,4 +586,5 @@ cev[2133] .name("[mapsys]Get Temp v11") {
 	}
 
 }
+
 

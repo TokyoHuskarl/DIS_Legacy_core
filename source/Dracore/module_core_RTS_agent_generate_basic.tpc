@@ -638,7 +638,10 @@ __fn func_generate_agent {
 
 			} .else bl {
 				str3 .asg "UNDEFINED"
+				@if .testPlay() {
 					func_errlog("The troop attempted to be spawned is UNDEFINED.")
+				}
+
 			}
 
 	}

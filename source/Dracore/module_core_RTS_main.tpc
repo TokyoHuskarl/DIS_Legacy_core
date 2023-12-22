@@ -769,6 +769,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				@if v[370] >= 2 {
 
 					// "AAタイマー"
+					// turret type
 					@if v[702] == 106 {
 							@if v[628] > 0 {
 								// "まだAAできない"
@@ -802,6 +803,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 								// will be remade
 								TT2 = Temp1 + 3
 								v[TT2] = agent_StaticBits
+								v[v[843]] = 0 // init agent_ActionState
+
+ 
 
 							}
 
@@ -1664,7 +1668,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							
 					}
 					agent_ProcessObjBit = Temp1 + 274
-					@if `v[agent_ProcessObjBit] & 1048576 {
+					@if `v[agent_ProcessObjBit] & BaseObjBit_FLAG_Standard_Bearer {
 							// "standard_bearer"
 							Ptr19 = v[401] + 1
 							@if v[217] < v[4559] {
