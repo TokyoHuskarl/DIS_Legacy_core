@@ -337,4 +337,10 @@ cev .id(2099), .name("cont:Search Worker"), {
 
 }
 
+// buildings
+
+cev .id(795), .name("cont:buildcheck"), {
+	building_check_if_construction_is_possible()
+}
+
 #include "./module_core_RTS_control_camera.tpc"

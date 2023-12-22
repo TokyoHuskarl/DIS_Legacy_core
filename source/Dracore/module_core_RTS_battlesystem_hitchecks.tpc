@@ -162,7 +162,7 @@ __fn func_bs_dummy_hit_check {
 __fn func_bs_mind_hit_check $attacker $victim{
 	Ptr10 = $victim *300
 	reg1 = Ptr10 + 4960
-	reg1.copy victim_Morale, 20
+	v[reg1].copy victim_Morale, 20
 	//@comment "＃＃＃＃＃＃＃＃＃＃memo	＃＃＃＃＃＃＃＃＃＃"
 	//@comment "V1=spell power"
 	//@comment "#そのうち処理作る"

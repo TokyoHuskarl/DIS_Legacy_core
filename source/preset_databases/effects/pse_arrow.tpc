@@ -113,6 +113,9 @@ __fn func_effect_arrow_init $selfid {
 	    effect_milPixVy = muldiv(TT2,sin(effect_2DAngle,1000,1000),1000)
 	    func_devlog("XY 2d vector: v0:\v[4014] vx:\v[4012] vy:\v[4013] angle:\TT1")
 
+			macro_get_agent_slot_to_r1(effect_ParentObject,SLOT_CURRENT_AD)
+			val_asg(effect_Damage,reg1)
+
 	    effect_EffectType.copy v[Temp1], EffectArraySize
 }
 
@@ -272,15 +275,18 @@ __fn func_effect_arrow_hit $WeaponType {
 
 		    // "#Elevation Bonus"
 		    v[421] += 10 * Temp20
-		    /* "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
-	ここそのうち用意した関数に置き換える
-	＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"*/
+				/* "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+					 ここそのうち用意した関数に置き換える
+					 ＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"*/
 		    // "ADを取得"
 		    /*var1 = Ptr19
 		    var2 = 1
 		    @call .cev 2004*/
-		    macro_get_agent_slot_to_r1(Ptr19 SLOT_CURRENT_AD)
-		    Temp1 = reg1
+
+				// fix!
+		    // macro_get_agent_slot_to_r1(Ptr19 SLOT_CURRENT_AD)
+				// get from effect_damage
+		    Temp1 = effect_Damage
 		    // "ARかMRか取得"
 		    v[722] = Ptr9 += 4822
 		    Temp2 = v[v[722]]

@@ -26,6 +26,10 @@ def Str_ScriptsBufferHead = t[Const_save_var_Adr_ScriptsBufferHead]
 __if LOAD_HEADER_AGENT != 1{
 #include "./../headers/header_agent.tpc"
 }
+
+__if LOAD_BUILDING_FUNCTION != 1{
+#include "./../Dracore/module_core_RTS_building_functions.tpc"
+}
 #include "./../NsLib/module_scalescript_main.tpc"
 
 

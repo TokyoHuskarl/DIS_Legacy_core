@@ -638,7 +638,10 @@ __fn func_generate_agent {
 
 			} .else bl {
 				str3 .asg "UNDEFINED"
+				@if .testPlay() {
 					func_errlog("The troop attempted to be spawned is UNDEFINED.")
+				}
+
 			}
 
 	}
@@ -677,6 +680,8 @@ __fn func_generate_agent_finish_set {
 			}
 
 		}
+
+	// NOT STATIC
 	@if v[601] < 11 {
 		v[752] = v[752] == 0 ? -1 : v[752]
 			v[772] = v[772] == 0 ? -1 : v[772]
@@ -684,9 +689,12 @@ __fn func_generate_agent_finish_set {
 			v[812] = v[812] == 0 ? -1 : v[812]
 			v[726] |= 524288
 
+	// STATIC
 	} .else bl {
-		//cache flag
-		v[725] |= 512
+			v[899] = max(1,v[899]) // assure at least one sprite layer
+
+			//cache flag
+			v[725] |= 512
 
 			v[607].copy reg1, 2
 			reg1 .add v[53], 2

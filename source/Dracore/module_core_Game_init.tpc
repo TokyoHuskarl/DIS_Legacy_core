@@ -15,6 +15,7 @@ def {
 }
 
 cev .id(cevID_Game_Init), .name("@Game Init") , {
+	@sys.menuAccess .off
 	//set LF   
 	StrConst_LF .asg "
 "
@@ -49,19 +50,19 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	@sys.gameOpt .picLimit 9200
 	v[2299] = 9200
 	@sys.gameOpt .picLimit 10400
-	v[2299] = 10400
-	v[1201] = 2600
+	v[2299] = Const_agent_cache_picid_start
+	// LEGV_ConstObjCacheStart = 2600
 	v[1166] = 8601
 	v[1167] = 1799
 	v[1168] = v[1166] + v[1167]
 
 	//test
-	v[1166] = 2600
+	v[1166] = Const_sprites_for_agents_in_screen_start
 	v[1167] = 1799
 	v[1168] = v[1166] + v[1167]
-	v[1201] = v[1168] + 1
-	v[2299] = v[1201] + Agents_Limit * Const_layer_amount
-	v[1202] = v[1201] - Const_layer_amount
+	LEGV_ConstObjCacheStart = v[1168] + 1
+	v[2299] = LEGV_ConstObjCacheStart + Agents_Limit * Const_layer_amount
+	v[1202] = LEGV_ConstObjCacheStart - Const_layer_amount
 	@sys.gameOpt .picLimit v[2299]
 
 	@sys.gameOpt .pauseWhenInactive
@@ -1750,8 +1751,14 @@ cev .id(2120), .name("Game:Boot"),{
 
 	//Check if boot_config.txt is generated
 		log_push("Boot config loading...")
+
+		
+		// 1 = first boot 
+		def init_BOOT_flag = __id(reg10)
+		init_BOOT_flag = 0
+
 	inputstr .asg  .file PATH_js_bootconfig, .utf8
-	@if inputstr .eq ""{
+	@if inputstr .eq "" {
 			log_push(__str("Boot config missing. Generating config file to ",PATH_js_bootconfig))
 			//There's no boot_config.txt, so going to generate it.
 			inputstr.asg "// DIS boot config file"
@@ -1768,6 +1775,9 @@ cev .id(2120), .name("Game:Boot"),{
 			inputstr.cat Gen_BootConfig
 			file_output_cooldown()
 			inputstr.toFile PATH_js_bootconfig, .utf8
+			// init boot flag set
+			init_BOOT_flag |= 1
+
 	}
 
 	// add a command for saving module name
@@ -1779,6 +1789,21 @@ cev .id(2120), .name("Game:Boot"),{
 	vname[__id(BOOTMODE)], "SET:BOOTMODE"
 	// @comment "*Load Config*"
 	eval_js(inputstr)
+
+
+	@if `init_BOOT_flag & 1 { // if it's the first time boot
+
+			// write original setting on the global savedata
+			@gsave.open
+			// particle
+			gv[2215].copyto v[2215], 1
+			// autosave setting
+			gs[317].copyto s[317], 1
+			// gore 
+			gs[318].copyto s[318], 1
+			@gsave.saveAndClose
+	}
+
 
 	// module_name.asg 
 

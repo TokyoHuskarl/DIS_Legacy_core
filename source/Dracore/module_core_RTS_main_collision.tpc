@@ -477,11 +477,18 @@ __fn macro_ColCheck_push {
 				@if agent_MovementOrder > 0 {
 					@if v[v[203]] != agent_TargetAgentID { // NOT target
 						@if victim_TeamID == agent_TeamID { // and it's ally
-							Col_Ptr2AI_routine_bits = Temp1 + 34
-							def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_1secDelay_PF + AI_routine_bits_FLAG_RayCast
-							def Col_AIFLAG_PFandRC = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_RayCast
-							v[Col_Ptr2AI_routine_bits] |= agent_LeftWPtoChase > 0 ? Col_AIFLAG_PFandSkip : Col_AIFLAG_PFandRC
-
+							@if  `!(agent_ExMotionFlags & 33554432) { // kite flag is not on
+								Col_Ptr2AI_routine_bits = Temp1 + 34
+								def Col_AIFLAG_PFandSkip = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_1secDelay_PF + AI_routine_bits_FLAG_RayCast
+								def Col_AIFLAG_PFandRC = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_RayCast
+								v[Col_Ptr2AI_routine_bits] |= agent_LeftWPtoChase > 0 ? Col_AIFLAG_PFandSkip : Col_AIFLAG_PFandRC
+							}
+						}
+					}.else bl { // it's target
+						@if victim_UnitID == 4 {  // if it's construction site
+							// init waypoint setting 
+							TT1 = Temp1 + 55 // agent_LeftWPtoChase
+							v[TT1] = -1 // set -1
 						}
 					}
 				}

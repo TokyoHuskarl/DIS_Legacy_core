@@ -220,7 +220,7 @@ struct("agent",{
 	agent_KnockBackTimer = 849
 	agent_ForceSprite = 850
 
-	agent_MainWeaponID = 851 
+	agent_MainWeaponID = 851
 	agent_MainShieldID = 852
 	agent_ArmorID = 853
 	agent_HelmID = 854
@@ -363,6 +363,10 @@ struct("agent",{
 	AgentBits_FLAG_Drawn_in_screen = 1073741824 //31bit
 
 		AgentBits_MASK_for_initilizing_pathfinding = ~(AgentBits_FLAG_walldetected + AgentBits_FLAG_NeedWpToReachObj + AgentBits_FLAG_PF_walldetection_switch)
+
+
+	// for static agents
+	StaticBits_FLAG_has_generated_sprite = 128
 
 
 	MoveTypeBits_Flying = 1

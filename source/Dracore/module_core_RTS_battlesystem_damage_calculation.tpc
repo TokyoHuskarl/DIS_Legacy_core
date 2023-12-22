@@ -128,7 +128,7 @@ __fn func_damage_calculation {
 			damage_multiplier >>= (argv_damage_attribution == 1 && victim_ProcessObjBit & BaseObjBit_FLAG_RangedDamageResist) // damage_multiplier /= argv_damage_attribution == 1 && victim_ProcessObjBit & BaseObjBit_FLAG_RangedDamageResist ? 2 : 1
 
 			// "#Halve All  Damage"
-			damage_multiplier >>= (victim_ProcessObjBit & BaseObjBit_FLAG_HalveAllDamage) // damage_multiplier /= victim_ProcessObjBit & BaseObjBit_FLAG_HalveAllDamage ? 2 : 1
+			damage_multiplier >>= victim_ProcessObjBit & BaseObjBit_FLAG_HalveAllDamage ? 1 : 0
 			// "##############	CheckBitsEND##############"
 
 

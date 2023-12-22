@@ -388,8 +388,8 @@ cev .id(395), .name("!Weapon DataLoad") , {
 		} .else bl {
 			@comment "2H Melee"
 			@if v[1901] < 200 {
-				v[1902] += 6
-				v[1902] = muldiv(v[1902], 117, 100)
+				v[1902] += 5
+				v[1902] = muldiv(v[1902], 116, 100)
 				v[1910] -= 4
 				
 			} .else bl {

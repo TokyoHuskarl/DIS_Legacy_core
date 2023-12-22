@@ -832,7 +832,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 					//Temp10 = Temp1 + 1
 					//@comment "STATIC"
 					@if agent_AgentType == 11 {
-							@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//`s[v[340] + 501] {
+							@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //`s[v[340] + 501] {
 									AgentIDholder = v[340] + 1
 									Temp11 = Temp1 + 2
 									//@comment "Failsafe"
@@ -873,7 +873,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 										})
 
 											@if v[188] > 0 {
-													@if `v[603] & 128 { // walls
+													// has generated sprite
+													@if `agent_StaticBits & StaticBits_FLAG_has_generated_sprite { // walls
 															@pic[v[188]].move {
 																	.pos Temp5, Temp6 .center
 																	.scale 100
@@ -991,7 +992,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 											v[TT1 + v[1004]] = v[187]
 											
 									} .else bl {
-											v[Temp1 + 3] &= -16385//~16384
+											v[Temp1 + 3] &= -16385 //~16384
 											
 									}
 									

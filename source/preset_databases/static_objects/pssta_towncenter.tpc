@@ -1,4 +1,4 @@
-cev .id(801), .name("cev801"), {
+cev .id(801), .name("static:TC"), {
 	@comment "NonWallType"
 		v[35] = 0
 		reg1 = 0
@@ -83,7 +83,7 @@ cev .id(801), .name("cev801"), {
 									}
 
 								}
-								v[708..708] = -1
+									v[708..708] = -1
 									@comment "#AD"
 									v[709] = 63
 									@comment "#AP"
@@ -111,7 +111,9 @@ cev .id(801), .name("cev801"), {
 									v[719] = 150
 									@comment "#AttackMotion"
 									v[720] = 1
+		
 
+									// attack param
 									@if s[1] .isOff() {
 										v[702] = 106
 											@comment "#AAType"
@@ -124,10 +126,10 @@ cev .id(801), .name("cev801"), {
 											v[736] = -45
 											v[737] = 40
 											@comment "#Attacktime"
-											v[728] = 14
-											v[719] = 95
+											v[728] = 8
+											v[719] = 98
 											@comment "#HIT"
-											v[713] = 64
+											v[713] = 65
 											@comment "#Mpen"
 											v[714] = 2
 											@comment "#AD"
@@ -180,6 +182,7 @@ cev .id(801), .name("cev801"), {
 													v[759] = 10282
 
 											}
+
 											@if v[2402] == 2 {
 												@comment "#件きゅ"
 													v[753] = 10219
@@ -194,25 +197,35 @@ cev .id(801), .name("cev801"), {
 										v[754] = 5
 										v[759] = 0
 										v[760] = 22
+										// imperial age
 										@if `v[2409 + v[251] % 3] & 268435456 {
 											@comment "#件きゅ"
 												v[759] = 10257
 												@if v[822] == 8 {
-													v[747] = 97
+														v[747] = 97
 														v[748] = 36
 
 												}
+
 											@if v[822] == 9 {
 												v[759] = 10258
 
 											}
+
+											// cart
+											@if `v[2409 + v[251] % 3] & 16 {
+												v[759] = 10258
+												v[760] = 23
+												
+											}
+											
 
 										}
 									@if v[822] == 1 {
 										@comment "#Decadence"
 											@if `v[2412 + v[251] % 3] & 0x80 {
 												v[744] = 147
-													v[745] = 48
+												v[745] = 48
 
 											}
 										@comment "#生産兵士3"
@@ -252,6 +265,7 @@ cev .id(801), .name("cev801"), {
 													v[754] = 33
 
 											}
+
 											v[602] = 9001
 											@comment "#生産兵士3"
 											v[747] = 149

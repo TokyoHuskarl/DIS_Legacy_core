@@ -136,7 +136,7 @@ s[70].off
 												.scale 100
 												.trans 30
 												.rgbs 100, 100, 100, 100
-												.font Font_Common, Font_Common_size
+												.font Font_UI, Font_UI_size
 												.spacing 0, 4
 												.skin "" .nobg .noframe .noPadding
 												.mapLayer 8
@@ -758,6 +758,7 @@ s[70].off
 						}
 						
 				} .else bl {
+						// tile build mode
 						@if v[87] == 1 {
 								@pic[999].erase
 								@pic[973].getInfo .cewh .baseRect TT1, TT2, TT3, TT3
@@ -785,8 +786,7 @@ s[70].off
 								}
 								@if s[11] .isOff() {
 										@if s[180] .isOff() {
-												var1 = MousePtr_x
-												var2 = MousePtr_y
+												MousePtr_x.copy var1, 2
 												var2 += 8
 												macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
 												// v[11..12] *= 10000
@@ -1275,24 +1275,48 @@ s[70].off
 								}
 								
 						} .else bl {
+
+								// ##################
 								// "Building Mode.."
+								// ##################
 								MousePtr_x.copy var1, 2
 								@if s[180] .isOff() { // it's not wall
+										var2 += 8
 										var1.copy v[252], 2
-										@call .cev 795 // this one can be fatal I suppose?
+
+										// building check
+										// @call .cev 795 // this one can be fatal I suppose?
+										building_check_if_construction_is_possible()
 										MousePtr_x.copy var1, 2
-										v[403].copy var3, 2
-										v[13..14] %= 16
-										// "ずれ計算"
-										v[11..12] /= 16
-										v[11..12] += 1
+										var2 += 8
+
+
+										// neeed to remake 795 
+										macro_convert_relativeXY_into_maptileXY(var1,var2,reg1,reg2)
+										reg1.copy var1,2
+										var2 -= 1
+										
 										v[11..12] *= 16
+										// TEST
+										LEGV_MainMAP_PointOfReferenceX.copy var3, 2
 										var1 .add var3, 2
 										// "処理開始"
-										@if v[37] == 0 {
+										// v[37] = var1 / 8 % 2 <- done in cev 795
+										@if v[37] == 0 { // ???
 												var1 -= 8
 												
 										}
+
+										// check how building UI numbers is going
+										// func_devlog(__str("Current building ghost position: \v[",__id(var2),"] \v[",__id(var4),"]"))
+
+										// this is exactly what needed for long long days
+										@if v[38] == 1 {
+												var2 -= 8
+										}
+
+
+
 										
 								} .else bl {
 										var1 = MousePtr_x
@@ -1331,7 +1355,9 @@ s[70].off
 										}
 										v[1].copy var1, 2
 										var1.copy v[252], 2
-										@call .cev 795 // build check
+										v[253] += 8
+										// @call .cev 795 // build check
+										building_check_if_construction_is_possible()
 										v[1].copy var1, 2
 										
 								}
@@ -1348,10 +1374,15 @@ s[70].off
 										.affectedByFlash
 										.affectedByShake
 								}
+
+								// id
 								v[441] = 999
 								v[442] = 1
+								// x
 								v[443] = 11
+								// y
 								v[444] = 12
+
 								v[445] = 1
 								v[446] = 100
 								v[448] = 1
@@ -1385,8 +1416,9 @@ s[70].off
 										var4 = var2 + v[38] * 1
 										
 								}
-								
+								// show building sprite
 								@cmd 11110, "static\spr_static_1", .args v[441], 30
+
 								@if Common_Control_Ck == LMB {
 										@if `MousePtr_y <= v[1286] && !(MousePtr_x <= v[4514] && MousePtr_y >= v[4515]) {
 												@if s[11] .isOff() {
@@ -1394,6 +1426,7 @@ s[70].off
 														v[42] = -1
 														var1.copy v[252], 2
 														v[251] = 0
+														// build foundation
 														@call .cev 39
 														@if v[40] == 0 {
 																TT3 = 800 + v[88]
@@ -1410,6 +1443,7 @@ s[70].off
 																		GETKEY_Shift = 0
 																		
 																}
+
 																@if GETKEY_Shift <= 0 {
 																		v[87..88] = 0
 																		s[9].on

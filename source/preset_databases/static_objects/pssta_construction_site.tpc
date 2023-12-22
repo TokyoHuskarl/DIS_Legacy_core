@@ -1,204 +1,213 @@
 cev .id(804), .name("Construction Site"), {
-	v[21] = 0
-	@comment "v1= width
-	v2 = height
-	v3 = MaxHP(time to finish constructing)
-	v4 = finished building"
-	@if v[204] < v[1004] {
-	    v[204] += 1
-	    @loop v[1004] .dst v[320] {
-		v[201] %= v[1004]
-		v[301] = v[201] * 300
-		v[301] += 5000
-		v[300] = v[301] + 1
-		@if v[v[300]] <= 0 {
-		    @comment "まず清掃"
-		    v[1301].copy v[601], 300
-		    @comment "Count Picture Layer Array"
-		    v[899] = v[v[201] * 300 + 5299]
-		    v[15] = v[899]
-		    @if v[899] != 0 {
-			@while v[15] > 0 .dst v[16] {
-			    v[15] /= 10
-			    
-			}
-			
-			v[16] += 1
-			
-		    }
-		    v[302] = v[201] * v[4516] + v[1201]
-		    @if s[1] .isOff() {
-			@if `s[v[201] + 501] == 1 {
-			    v[17] = v[v[201] * 300 + 5290]
-			    @if v[17] > 0 {
-				@loop v[16] .dst v[18] {
-				    v[18] += v[17]
-				    @if v[18] > 0 {
-					@pic[v[18]].erase
-					
-				    }
-				    
+	reg1 = 0
+		// v1= width
+		// v2 = height
+		// v3 = MaxHP(time to finish constructing)
+		// v4 = finished building"
+
+		@if v[204] < v[1004] {
+			v[204] += 1
+				@loop v[1004] .dst Temp20 {
+					v[201] %= v[1004]
+						Temp1 = v[201] * 300
+						Temp1 += 5000
+						Ptr20 = Temp1 + 1
+						@if v[Ptr20] <= 0 { // DEBUG... this should be <=
+							@comment "まず清掃"
+								v[1301].copy v[601], 300
+								@comment "Count Picture Layer Array"
+								v[899] = v[v[201] * 300 + 5299]
+								var5 = v[899]
+								@if v[899] != 0 {
+									@while var5 > 0 .dst var6 {
+										var5 /= 10
+
+									}
+
+									var6 += 1
+
+								}
+
+							defv static_flag_for_replacing_sprites = __id(Temp3)
+							// v[4516] = Const_layer_amount
+							Temp2 = v[201] * v[4516] + LEGV_ConstObjCacheStart
+
+								static_flag_for_replacing_sprites = 0 // init
+								@if `v[v[201] * 300 + 5003] & AgentBits_FLAG_Drawn_in_screen { // `s[v[201] + 501] == 1 {
+									static_flag_for_replacing_sprites |= 1
+									var7 = v[v[201] * 300 + 5290] // get the last index number
+										@if var7 > 0 {
+											@loop var6 .dst var8 {
+												var8 += var7
+													@if var8 > 0 {
+														@pic[var8].erase
+													}
+
+											}
+
+											Temp2 = var7
+
+										}
+
+								} .else bl { // out of screen
+									@loop Const_layer_amount .dst var8 {
+										var8 += Temp2
+											@if var8 > 0 {
+												@pic[var8].erase
+
+											}
+
+									}
+
+
+								}
+
+							@comment "Count Picture Layer Array"
+								v[1301].copy v[Ptr20], 300
+								@comment "出る場所セット"
+								v[252].copy v[605], 2
+								@comment "チームセット"
+								v[700] = v[251]
+								v[624] = v[700] + 1
+								@comment "ObjTyp"
+								v[601] = 11
+								@comment "生成場所の数値を入れる"
+								v[605].copy v[607], 2
+								v[605].copy v[641], 2
+								v[310..311] = 10000
+								v[605] .mul Temp10, 2
+								@comment "あたり判定"
+								var1.copy v[610], 2
+								@comment "#HitRange"
+								v[838] = (v[610] + v[611]) / 2
+								@comment "Staticなので生産目標地点をセット"
+								v[252].copy v[641], 2
+								v[642] += v[611]
+								@comment "パラメータ等入力begin"
+								@comment "Inflammable"
+								v[603] |= 2048
+								@comment "#basement flag"
+								v[603] |= 32
+								@comment "#Unit ID"
+								v[701] = 4
+								@comment "#Unit Type"
+								v[702] = 104
+								@comment "#AAType"
+								v[703] = 1
+								@comment "#Level"
+								v[704] = 1
+								@comment "#HP"
+								v[705..705] = var3
+								v[706] = 1
+								@comment "#MP"
+								v[707..707] = 0
+								v[708..708] = -1
+								@comment "#AD"
+								v[709] = 0
+								@comment "#AP"
+								v[710] = 0
+								@comment "#AR"
+								v[711] = 0
+								@comment "#MR"
+								v[712] = 100
+								@comment "#Apen"
+								v[713] = 2
+								@comment "#Mpen"
+								v[714] = 2
+								@comment "#Crit"
+								v[715] = 0
+								@comment "#MS"
+								v[716] = 0
+								@comment "#Range Melee"
+								v[717] = 0
+								@comment "#Range Ranged"
+								v[718] = -1
+								@comment "#AttackSpeed"
+								v[719] = 60
+								@comment "#AttackMotion"
+								v[720] = 1
+								@comment "#Finished Building"
+								v[880] = var4
+								@comment "パラメータ等入力end"
+								@comment "Avoid PictID0 Bug"
+								@comment "DRAW"
+								v[603] |= StaticBits_FLAG_has_generated_sprite
+								@comment "no function "
+								v[603] |= 1024
+								v[603] |= 2097152
+								@comment "Get ID From Cache"
+								v[0] = v[341..342] = [v[610] * 2, v[611] * 2]
+
+
+								// Temp2 must be saved for generating new sprite
+								@if `static_flag_for_replacing_sprites & 1 {
+										// var7 = v[v[201] * 300 + 5290] // kieteruyo
+										// Temp2 = var7
+										@if Temp2 > 0 {
+											@pic[Temp2].strpic {
+												""
+													.pos v[607], v[608] .center
+													.size TT1, TT2                        .scrollWithMap
+													.chromakey 1
+													.scale 100
+													.trans 0
+													.rgbs 100, 100, 100, 100
+													.font "", 10
+													.spacing 0, 0
+													.skin "Odinscall_construction" .nobg
+													.mapLayer 3
+													.eraseWhenTransfer
+													.affectedByFlash
+													.affectedByShake
+											}
+
+										}
+
+								}.else bl {
+									Temp2 = v[201] * Const_layer_amount + v[1201]
+									@if Temp2 > 0 {
+										@pic[Temp2].strpic {
+											""
+												.pos -1111, 1111 .center
+												.size TT1, TT2                    .scrollWithMap
+												.chromakey 1
+												.scale 100
+												.trans 0
+												.rgbs 100, 100, 100, 100
+												.font "", 10
+												.spacing 0, 0
+												.skin "Odinscall_construction" .nobg
+												.mapLayer 3
+												.eraseWhenTransfer
+												.affectedByFlash
+												.affectedByShake
+										}
+
+									}
+								}
+							@comment "newgenstat"
+								@if v[700] == 0 {
+									v[0] = s[2001 + v[201]] = 1
+
+								}
+							v[603] |= 16384
+
+								v[258] = 0 // kill cohort setting flag for construction site
+								@call .cev 1903
+								@comment "敵味方峻別リストに登録"
+								v[2538] += 1
+								@break
+
+						}
+					@if Temp20 >= v[1004] {
+						@comment "Obj多すぎ"
+							@break
+
+					}
+					v[201] += 1
+
 				}
-				
-				v[302] = v[17]
-				
-			    }
-			    
-			} .else bl {
-			    @loop Const_layer_amount .dst v[18] {
-				v[18] += v[302]
-				@if v[18] > 0 {
-				    @pic[v[18]].erase
-				    
-				}
-				
-			    }
-			    
-			    
-			}
-			
-		    }
-		    @comment "Count Picture Layer Array"
-		    v[1301].copy v[v[300]], 300
-		    @comment "出る場所セット"
-		    v[252].copy v[605], 2
-		    @comment "チームセット"
-		    v[700] = v[251]
-		    v[624] = v[700] + 1
-		    @comment "ObjTyp"
-		    v[601] = 11
-		    @comment "生成場所の数値を入れる"
-		    v[605].copy v[607], 2
-		    v[605].copy v[641], 2
-		    v[310..311] = 10000
-		    v[605] .mul v[310], 2
-		    @comment "あたり判定"
-		    v[11].copy v[610], 2
-		    @comment "#HitRange"
-		    v[838] = (v[610] + v[611]) / 2
-		    @comment "Staticなので生産目標地点をセット"
-		    v[252].copy v[641], 2
-		    v[642] += v[611]
-		    @comment "パラメータ等入力begin"
-		    @comment "Inflammable"
-		    v[603] |= 2048
-		    @comment "#basement flag"
-		    v[603] |= 32
-		    @comment "#Unit ID"
-		    v[701] = 4
-		    @comment "#Unit Type"
-		    v[702] = 104
-		    @comment "#AAType"
-		    v[703] = 1
-		    @comment "#Level"
-		    v[704] = 1
-		    @comment "#HP"
-		    v[705..705] = v[13]
-		    v[706] = 1
-		    @comment "#MP"
-		    v[707..707] = 0
-		    v[708..708] = -1
-		    @comment "#AD"
-		    v[709] = 0
-		    @comment "#AP"
-		    v[710] = 0
-		    @comment "#AR"
-		    v[711] = 0
-		    @comment "#MR"
-		    v[712] = 100
-		    @comment "#Apen"
-		    v[713] = 2
-		    @comment "#Mpen"
-		    v[714] = 2
-		    @comment "#Crit"
-		    v[715] = 0
-		    @comment "#MS"
-		    v[716] = 0
-		    @comment "#Range Melee"
-		    v[717] = 0
-		    @comment "#Range Ranged"
-		    v[718] = -1
-		    @comment "#AttackSpeed"
-		    v[719] = 60
-		    @comment "#AttackMotion"
-		    v[720] = 1
-		    @comment "#Finished Building"
-		    v[880] = v[14]
-		    @comment "パラメータ等入力end"
-		    @comment "Avoid PictID0 Bug"
-		    @comment "DRAW"
-		    v[603] |= 128
-		    @comment "no function "
-		    v[603] |= 1024
-		    v[603] |= 2097152
-		    @comment "Get ID From Cache"
-		    v[0] = v[341..342] = [v[610] * 2, v[611] * 2]
-		    @if `s[v[201] + 501] == 1 {
-			v[17] = v[v[201] * 300 + 5290]
-			v[302] = v[17]
-			@if v[302] > 0 {
-			    @pic[v[302]].strpic {
-				""
-				.pos v[607], v[608] .center
-				.size v[341], v[342]                        .scrollWithMap
-				.chromakey 1
-				.scale 100
-				.trans 0
-				.rgbs 100, 100, 100, 100
-				.font "misaki_gothic_2nd", 10
-				.spacing 0, 0
-				.skin "Odinscall_construction" .nobg
-				.mapLayer 3
-				.eraseWhenTransfer
-				.affectedByFlash
-				.affectedByShake
-			    }
-			    
-			}
-			
-		    }
-		    v[302] = v[201] * Const_layer_amount + v[1201]
-		    @if v[302] > 0 {
-			@pic[v[302]].strpic {
-			    ""
-			    .pos -1111, 1111 .center
-			    .size v[341], v[342]                    .scrollWithMap
-			    .chromakey 1
-			    .scale 100
-			    .trans 0
-			    .rgbs 100, 100, 100, 100
-			    .font "misaki_gothic_2nd", 10
-			    .spacing 0, 0
-			    .skin "Odinscall_construction" .nobg
-			    .mapLayer 3
-			    .eraseWhenTransfer
-			    .affectedByFlash
-			    .affectedByShake
-			}
-			
-		    }
-		    @comment "newgenstat"
-		    @if v[700] == 0 {
-			v[0] = s[2001 + v[201]] = 1
-			
-		    }
-		    v[603] |= 16384
-		    v[258] = 0//kill cohort setting flag for construction site
-		    @call .cev 1903
-		    @comment "敵味方峻別リストに登録"
-		    v[2538] += 1
-		    @break
-		    
+
+
 		}
-		@if v[320] >= v[1004] {
-		    @comment "Obj多すぎ"
-		    @break
-		    
-		}
-		v[201] += 1
-		
-	    }
-	    
-	    
-	}
 }

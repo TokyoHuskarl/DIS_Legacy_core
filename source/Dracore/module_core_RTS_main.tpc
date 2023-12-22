@@ -394,9 +394,9 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					@if v[607] <= v[1009]{
 						@if v[608] >= v[1010]{
 							@if v[608] <= v[1011]{
-								// "#描画範囲内であれば保存"
-								// "Will_be_depicted"
-								agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
+									// "#描画範囲内であれば保存"
+									// "Will_be_depicted"
+									agent_AgentBits |= AgentBits_FLAG_Drawn_in_screen
 									s[TT8].on
 									// "#"
 									v[v[1112] + v[184]] = (agent_AgentType != -9 ? (v[608] + v[611] >> 1 + v[1011] + 500) * 1000 : 9999000) + v[401]
@@ -746,14 +746,14 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 
 				// "########################Process Parameters Setting BEGIN########################"
+
 				// "#Base Parameters Get"
-				//v[861] = Temp1 + 109
 				agent_BaseAD.copy agent_ProcessAD, 11
-				//v[872] = Temp1 + 131
 				agent_BaseRegHP.copy agent_ProcessHPreg, 2
 				// "#Never get Morale Effect"
 				agent_ProcessObjBit = agent_static_Obj_flag | BaseObjBit_FLAG_No_mind //... is this necessary?
 				agent_ProcessCamoValue = agent_BaseCamoValue
+
 				// "#Set Process Parameters"
 				TT1 = Temp1 + 261
 				v[861].copy v[TT1], 16 //set.
@@ -767,12 +767,14 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				// "have function? "
 				//v[370] += v[agent_AgentBits] & 1024 ? -1 : 1
 				@if v[370] >= 2 {
+
 					// "AAタイマー"
+					// turret type
 					@if v[702] == 106 {
-						v[628] = Temp1 + 28
-							@if v[v[628]] > 0 {
+							@if v[628] > 0 {
 								// "まだAAできない"
 								@if v[v[843]] != 1 {
+										v[628] = Temp1 + 28
 										v[719] = Temp1 + 119
 										v[v[628]] -= v[v[719]]
 
@@ -781,24 +783,47 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							} .else bl {
 								// "AA可能"
 								// "AAクールタイムモーションつきなら解消しておく"
-								//v[726] = Temp1 + 126
-								v[v[843]] = v[Temp1 + 126] == 1 ? 0 : v[v[843]]
+								// v[726] = Temp1 + 126
+								v[v[843]] = v[726] == 1 ? 0 : v[v[843]]
+
+							}
+							
+							// turret AI fix
+							@if agent_TargetAgentID > 0 {
+								TT1 = agent_TargetAgentID * 300
+								val_add(TT1,N4701)
+								// if the target is dead, set target 0
+								agent_TargetAgentID = v[TT1] <= 0 ? 0 : agent_TargetAgentID
+								// will be remade
+								TT2 = Temp1 + 18
+								v[TT2] = agent_TargetAgentID
+
+							}.else bl {
+								agent_StaticBits |= 1048576
+								// will be remade
+								TT2 = Temp1 + 3
+								v[TT2] = agent_StaticBits
+								v[v[843]] = 0 // init agent_ActionState
+
+ 
 
 							}
 
 					}
+
+
 					// "#予約がある"
 					//v[770] = Temp1 + 170
 					@if v[770] >= 1 {
 						// "MP(生産力)をためようね"
 							TT1 = Temp1 + 108
 							@if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
-								//TT2 = v[2409 + v[251] % 3]
+								// TT2 = v[2409 + v[251] % 3]
 
 								__if DIS_EXPERIMENTAL == -1 { 
 									macro_get_agent_MetaTeam_into_var(v[v[536]],TT2) // AEBA
 								}.else bl {
-									TT2 = v[Const_AgentMetaTeam_begin+v[401]]
+									TT2 = v[Const_AgentMetaTeam_begin + v[401]]
 								}
 
 								v[TT1] += v[740] * 6
@@ -839,8 +864,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 													// if the spawned troop is a worker
 													@if `v[Spawned_Agent_Id_Shift + 4802] == 9 {
 														@if agent_static_WorkTarget >= 1 { // and the parent static agent has work target
-															// "Worker"
-															v[371] |= 1 // IT'S WORKER! - flag switch on
+																// "Worker"
+																v[371] |= 1 // IT'S WORKER! - flag switch on
 																v[Spawned_Agent_Id_Shift + 4718] = agent_static_WorkTarget
 																v[Spawned_Agent_Id_Shift + 4942] = 1
 																v[Spawned_Agent_Id_Shift + 4941] = v[Spawned_Agent_Id_Shift + 4941] != 4 ? 2 : 4
@@ -848,30 +873,32 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 														}
 													}.else bl { // not a worker
 														@if v[618] >= 1 { // and the parent static agent has target
-															//Combat troops - check if the reserved target is enemy
+															// Combat troops - check if the reserved target is enemy
 															v[Spawned_Agent_Id_Shift + 4718] = (v[Spawned_Agent_Id_Shift + 4800] % 3) == (v[v[618] * 300 + 4800] % 3) ? 0 : v[618]
 
 														}
 													}
-												//v[607] = Temp1 + 7
-												//v[v[607]].copy v[607], 2
-												//v[641] = Temp1 + 41
-												//v[v[641]].copy v[641], 2
+
+												// v[607] = Temp1 + 7
+												// v[v[607]].copy v[607], 2
+												// v[641] = Temp1 + 41
+												// v[v[641]].copy v[641], 2
 												@if `v[607] == v[641] && v[608] == v[642] {
 													// "指定されてない"
-													v[252] = v[607] + rnd(-3, 3)
+														v[252] = v[607] + rnd(-3, 3)
 														v[253] = v[608] + v[611] + rnd(-3, 3)
 														v[252] .add v[53], 2
 														v[252].copy v[TT1], 2
 														v[Spawned_Agent_Id_Shift + 4942] = 2
 
 												} .else bl {
-													v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
+														v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
 														// "指定されてる"
 														v[641].copy v[TT1], 2
 
 														def Order_Spawned_agent_Pathfinding = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PF2Agent 
-														v[Spawned_Agent_Id_Shift + 4734] |= Order_Spawned_agent_Pathfinding
+														// v[Spawned_Agent_Id_Shift + 4734] |= Order_Spawned_agent_Pathfinding
+														v[Spawned_Agent_Id_Shift + 4734] |= AI_routine_bits_FLAG_PATHFINDING
 														//v[reg1 * 300 + 4734] |= 524288
 
 												}
@@ -1082,7 +1109,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 						}
 					// "########################Particles"
-					@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//`s[v[401] + 501] {
+					@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //`s[v[401] + 501] {
 						// "#Flammable"
 						@if `!(agent_AgentBits & 2048) {
 							// "#Hp 66%"
@@ -1641,7 +1668,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							
 					}
 					agent_ProcessObjBit = Temp1 + 274
-					@if `v[agent_ProcessObjBit] & 1048576 {
+					@if `v[agent_ProcessObjBit] & BaseObjBit_FLAG_Standard_Bearer {
 							// "standard_bearer"
 							Ptr19 = v[401] + 1
 							@if v[217] < v[4559] {

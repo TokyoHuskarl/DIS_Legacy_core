@@ -700,15 +700,16 @@ DIS = { // DIS fundamental components
 					sets(317,1);
 					DIS.log.push("Autosave deactivated.");
 				}; 
-				//
+				
 				// autolog?
+				DIS.log.push("Autolog function in js file is incomplete, check it out, Johann.");
 				if (boot_config.autolog == 1) {
-					sets(317,1);
-					DIS.log.push("Autosave activated.");
+					// sets(317,1);
+					DIS.log.push("Autolog activated.");
 				} else {
-					sets(317,0);
-					DIS.log.push("Autosave deactivated.");
-				}; 				
+					// sets(317,0);
+					DIS.log.push("Autolog deactivated.");
+				};
 
 				
 				// Particle limit
@@ -1394,6 +1395,7 @@ class RTSmission {
 			this.conf.isMoraleSystemOn = true;
 			this.conf.isLevelSystemOn = false; // not yet
 			this.mapSourceDir = this.missionid;
+			this.dataextension = [];
 
 		} else {
 			let src;
@@ -2060,6 +2062,8 @@ let RTS = {
 			deblog(`RTS.setupMission() - extension file ${elm} loaded`);
 		};
 		Cmd.run();
+
+
 	},
 
 	setupMapLoading: function(mapdir){ // will be called after this.setupMission().
@@ -2091,6 +2095,7 @@ let RTS = {
 
 	}, // unco
 
+	// RTS.restore
 	restore: function(){ // call this function whenever player loads RMsavedata. reload all data from RM memories.
 		// restore mission 
 		this.setupMission(gett(741)); // read mission info json file stored in the savedata
