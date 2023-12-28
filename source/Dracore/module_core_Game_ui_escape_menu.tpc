@@ -362,6 +362,9 @@ cev .id(2051),.name("[System]Escape Menu"),{
 								@sys.gameOpt .fatal 48, 2, 0
 						
 							}
+
+							str1.asg "Game saved successfully in slot \v[2382]." .extract
+							msg(str1)
 							@label.jump 15
 							
 					}
