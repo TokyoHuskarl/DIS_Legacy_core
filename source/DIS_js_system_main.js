@@ -666,6 +666,10 @@ const ADRV = DIS.consts.Adrv
 const ADRS = DIS.consts.Adrs
 const ADRT = DIS.consts.Adrt
 
+/**
+* DIS API object(?) 
+*/
+
 DIS = { // DIS fundamental components
 	init: {
 		
@@ -673,6 +677,7 @@ DIS = { // DIS fundamental components
 			if (typeof boot_config == "undefined") {
 				DIS.log.crash(errorlog("DIS boot config file is broken. Please delete $DISGAMEDIR/Config/boot_config.js and restart the game."));
 			} else {
+
 				// bootmode
 				if (boot_config.bootmode == 1) { // dev mode
 					setv(1265,boot_config.bootmode);
@@ -863,10 +868,12 @@ const Adrt_FontCommon = 529,
 
 
 DIS.lang = {
-	init: function(){ // this function called whenever player changes game language
-		
+	init: function(){ // this function called whenever player changes game language...
+		// unco
 	},
 
+
+	// ??? is there any necessity of not using Object but array? 
 	currentFontdata: {
 		common: [gett(Adrt_FontCommon),getv(Adr_FontCommonSize)],
 		ui: [gett(Adrt_FontUI),getv(Adr_FontUISize)],
@@ -923,7 +930,65 @@ DIS.string = {
 
 	},
 
+
+	// return given char is CJK or not
+
+	isJapaneseChar: function(char) {
+		const charCode = char.charCodeAt(0);
+		return (
+			(charCode >= 0x3000 && charCode <= 0x30ff) || // ひらがなとカタカナ Hiragana and Katakana
+			(charCode >= 0x4e00 && charCode <= 0x9faf) || // CJK統合漢字 Kanji
+			(charCode >= 0xff00 && charCode <= 0xffef)    // フルワイドのASCIIと半角・全角の形 other 2bytes char
+		);
+	},
+
+
+	/**
+	 * return LF inserted text .. needs to be improved for dealing with latin alphabet languages
+	 * maybe add some new proc that attempts to go back to the last blank index I suppose? TokyoHuskarl 
+	 *
+	 * @param {string} text
+	 * @param {int} fontSize
+	 * @param {int} maxWidth
+	 * @return {string} adjusted text
+	 */
+	wrapText: function(text, fontSize, maxWidth) {
+		const englishCharWidth = fontSize * 0.5; // 英語文字の推定幅 supposed width of Latin Alphabet
+		const japaneseCharWidth = fontSize * 0.9; // 日本語文字の推定幅 supposed width of 2bytes char
+		let currentLine = '';
+		let currentLineWidth = 0;
+		let wrappedText = '';
+
+		for (const char of text) {
+			const charWidth = this.isJapaneseChar(char) ? japaneseCharWidth : englishCharWidth;
+
+			if (char === '\n' || (currentLineWidth + charWidth) > maxWidth) {
+				if (currentLine !== '') {
+					wrappedText += currentLine + '\n';
+					currentLine = '';
+					currentLineWidth = 0;
+				};
+				if (char !== '\n') {
+					currentLine += char;
+					currentLineWidth += charWidth;
+				};
+			} else {
+				currentLine += char;
+				currentLineWidth += charWidth;
+			};
+		};
+
+		if (currentLine.length > 0) {
+			wrappedText += currentLine;
+		};
+
+		return wrappedText;
+	}
+
 }
+
+
+
 
 const Adr_ptr_spawnAgent = 201; //v[201]
 
@@ -1104,7 +1169,7 @@ DIS.data = { // DIS.data
 	},
 	
 	/**
-	 * If given src object imported from json has INHERITS property, copy parent properties to the child data object.
+	 * If given src object imported from json with "INHERITS" property, then copy parent properties to the child data object.
 	 * This method is usually called in constructor of DATA entity.
 	 *
 	 * @method makeDataInherit
@@ -1897,13 +1962,18 @@ class RTStrigger {
 class DIS_dialog extends DISentity{
 	constructor(string,time,icon){
 		super();
-		this.string = string;
 		this.showframe = time | 235; // if showframe is -1, it won't automatically disappear until forceSkipDialog() or clearDialogQueue() is called
 		this.opensound = ["cursor09",75,90,50] // file vol tempo balance
 		this.icon = icon || ["",[4,4],1]; // [filename, sprite_number, and?]
 		this.fontdata = DIS.lang.currentFontdata.common; // [filename, fontsize]
 		this.stopworld = false; // 
-		this.size =  [360,78] // [240,64]; // [360,108] [width,height]
+		this.size =  [360,78] // [240,64]; // [360,108] [width,height]  isn't this changed?
+
+		// automatically insert LF
+		this.string = DIS.string.wrapText(string,this.fontdata[1],this.size[0]);
+
+		
+
 	};
 	
 
@@ -2438,18 +2508,35 @@ var Cmd = {
 			
 		},
 
+		/**
+		 * spawnpalisade.
+		 *
+		 * @param {} tileposbeg
+		 * @param {} tileposend
+		 * @param {} team
+		 */
 		spawnPalisade: function(tileposbeg,tileposend,team){ // returns DISagent
 			Cmd.Qset(this.CmdType,"spawnPalisade",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
 			let protostatic = new DISagent(DIS.agent.searchEmptySpace(),staid["STA_palisade"],team,false);
 			return protostatic;
 		},
 
+		/**
+		 * .
+		 *
+		 * @param {} tileposbeg
+		 * @param {} tileposend
+		 * @param {} team
+		 */
 		spawnWall: function(tileposbeg,tileposend,team){ // returns DISagent
 			Cmd.Qset(this.CmdType,"spawnWall",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
 			let protostatic = new DISagent(DIS.agent.searchEmptySpace(),staid["STA_wall"],team,false);
 			return protostatic;
 		},
 
+		/**
+		 * just let the DIS generate height map 
+		 */
 		generateHeightmap: function(){ // generate heightmap
 			Cmd.Qset(this.CmdType,"genHeightmap",""); // just do it
 		},
@@ -2683,11 +2770,13 @@ var Cmd = {
 			forceSkipDialog: function(skipi){ // toggle break flag switch
 				Cmd.Qset(this.CmdType,"forceSkipDialog",skipi);
 				// still triggers afterEffect()
+				
 			},
 
 			clearDialogQueue: function(){ // init dialog queue and force break - clear event switch on
 				RTS.DlogManager.afterEffects = []; // unlike forceSkip, thus will nullfy dialog afterEffect.
 				Cmd.Qset(this.CmdType,"clearDialogQueue","");
+
 			},
 
 			getPictureInfo: function(picid){
