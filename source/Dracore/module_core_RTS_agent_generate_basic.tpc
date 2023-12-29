@@ -1646,6 +1646,8 @@ __fn func_generate_agent_finish_set {
 		val_init(agent_Formbits)
 
 		@comment "Set Timer"
+		agent_RegTimer = v[154] % REG_INIT_FRAME
+
 		@comment "Set SkipFrame"
 		v[625] = 2
 		@comment "#AITimer"

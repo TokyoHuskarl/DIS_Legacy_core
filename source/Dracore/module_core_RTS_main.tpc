@@ -594,22 +594,19 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				val_add(Temp1,N5000) // Temp1 += 5000
 							func_main_extract_agent_vars()
 				// "#Reg Timer"
-				@if v[699] <= 0 {
-						//opt 25.4.23
-						//v[0] = v[11..13] = [v[401] + 1, 0, v[Temp1 + 272]]
-						//var2=0
-						// "#EV RecoverH/M"
-						/* "Var1 = Obj 1~	Var2 = 0/1# HP/MP	Var3 = Amount"*/
-						//TT2 = Temp1+106
-						//TT3 = TT2 - 1
-						//var3=Temp1+272
+
+				@if agent_RegTimer <= 0 {
+
 						// "#そのうち処理作る"
 						val_add(v[706],v[872]) // v[706] += v[872]
+
 						// "Min(HealedHP,MaxHP)"
 						v[706] = min(v[706], v[705])
+
 						// "#EV RecoverH/M end"
 						var1 = v[401] + 1
-						val_asg(var2,N1)// var2 = 1
+						val_asg(var2,N1) // var2 = 1
+
 						// "#Derp Breathing :DDDDDDD"
 						// var3 = divmul(v[707], 100, 35) > v[708] && v[665] & 1024 ? 15 : 10
 						var3 = ((v[665] & 1024 && agent_AddMotionBits & AddMotionFlags_FLAG_OutOfBreath) << 2) + 10 // ? 14 : 10
@@ -647,6 +644,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							
 							
 						}
+
 						// var3 is recovering number
 						var3 = muldiv(var3, v[873], 10)
 						// "#EV RecoverH/M"
@@ -654,16 +652,35 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						// "Min(HealedHP,MaxHP)"
 						v[708] = min(v[707], v[708])
 						// "#EV RecoverH/M end"
-						v[699] = v[95] + 2
+
+						// reset regtimer
+						agent_RegTimer = REG_INIT_FRAME // FPSlim + 2
+
 						// "kill parthian flag AND kiting flag"
 						v[726] &= v[628] <= 0 ? -100663297 : v[726]
-						/*
-						@if v[628] <= 0 {
-							//v[726] &= ~33554432
-							//v[726] &= ~67108864
-							v[726] &=-100663297
+
+
+						// idle animation check..
+						// init idle motion flag first
+						agent_AddMotionBits &= ~AddMotionFlags_FLAG_IdleAction
+						// then
+						@if agent_ActionState == 0 {
+							// in screen
+							@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
+
+								// is horse... ATTENTION, considering camels, wolves and so on, you need to set another flag for horse animation owners
+								@if `agent_ExMotionFlags & ExMotionFlags_FLAG_horseback {
+									@if `!(agent_ActionFlag & ActionFlag_FLAG_Walking) { // not walking
+										@if victim_InCombatTimer < 0 {
+											// horse standing motion
+											TT1 = rnd(0,99) // random
+											agent_AddMotionBits |= TT1 < 18 ? AddMotionFlags_FLAG_IdleAction : 0 // 18 has nomeaning, yes, it's magic number.
+
+										}
+									}
+								}
+							}
 						}
-						*/
 
 						// kill Pathfinding 1 sec delay by wall detection
 						@if `!(v[634] & AI_routine_bits_FLAG_1secDelay_PF) {
@@ -681,13 +698,6 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							v[634] &= ~AI_routine_bits_FLAG_1secDelay_PF
 
 						}
-
-
-
-
-						//v[680] = Temp1 + 80 
-						//v[680] = v[v[680]]
-
 
 						@if `s[7] == 1 || s[474] == 1 {
 							// "##If Fleeing"
@@ -707,6 +717,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							}
 							
 						}
+
 						
 				}
 

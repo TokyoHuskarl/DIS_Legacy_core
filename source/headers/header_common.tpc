@@ -45,6 +45,7 @@ def DIS_EXPERIMENTAL = 1 //0=nah 1=compile experimental features
 //Set basic FPS - 60 in Maniacs patch default setting, 45 in DIS:Classic, 48 in DIS:Legacy.  
 def {
 	DIS_Game_FPS = 48
+	REG_INIT_FRAME =  DIS_Game_FPS + 2
 	g_perFPS = 2041 //98000 / 48 - gravitational acceleration
 	g_perFPS_half = 1020
 

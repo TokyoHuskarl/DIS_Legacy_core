@@ -467,6 +467,7 @@ struct("agent",{
 	AddMotionFlags_FLAG_Blink_close = 128 
 	AddMotionFlags_FLAG_Camel = 1024 
 	AddMotionFlags_FLAG_OutOfBreath = 2048 
+	AddMotionFlags_FLAG_IdleAction = 4096 
 
 	//ExMotions
 
@@ -523,7 +524,7 @@ struct("agent",{
 	MovementOrder_TYPE_fleeing = 11
 
 
-	//Beware, ActionFlag can easily be initialized by some skill functions since at the beginning the slot won't be expected bit variable
+	// Beware, ActionFlag can easily be initialized by some skill functions since at the beginning the slot is not expected as a bit holder variable
 	ActionFLag_FLAG_Hold_direction = 1
 	ActionFlag_FLAG_Walking = 2 //s[v[4558] + :agent_id ]
 	ActionFlag_FLAG_Heading_other_agent = 4 //s[103]
