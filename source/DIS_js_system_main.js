@@ -944,13 +944,14 @@ DIS.string = {
 
 
 	/**
-	 * return LF inserted text .. needs to be improved for dealing with latin alphabet languages
-	 * maybe add some new proc that attempts to go back to the last blank index I suppose? TokyoHuskarl 
+	 * DIS.string.wrapText 
+	 * returns LF inserted text .. needs to be improved for dealing with latin alphabet languages
+	 * maybe add some new proc that attempts to go back to the last blank index I suppose? - TokyoHuskarl 
 	 *
 	 * @param {string} text
 	 * @param {int} fontSize
 	 * @param {int} maxWidth
-	 * @return {string} adjusted text
+	 * @returns {string} adjusted text
 	 */
 	wrapText: function(text, fontSize, maxWidth) {
 		const englishCharWidth = fontSize * 0.5; // 英語文字の推定幅 supposed width of Latin Alphabet
@@ -997,7 +998,7 @@ DIS.agent = {
 	limit: getv(1004), 
 	genPtrPos: 0,
 
-	// Search Empry Space function - this function searches a blank space for an agent in the agent data space.
+	// Search Empty Space function - this function searches a blank space for an agent in the agent data space.
 	// BUT, it has several problems:
 	// 1. It must be very slow.
 	// 2. How can it sync the result after inserting some Cmd.game.wait(n)?

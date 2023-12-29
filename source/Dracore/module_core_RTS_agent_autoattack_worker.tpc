@@ -1,13 +1,16 @@
 
 // well, this one seems different...
+// Attention please?
 cev .id(32), .name("AgentAct:Worker"), {
-	v[711] = Ptr20 * 300
+		v[711] = Ptr20 * 300
 		v[702] = v[711] + 4802
 		v[707] = Ptr20 * 300
 		v[700] = v[707] + 4800
 		v[700] = v[v[700]]
 		// "Get Civilization"
 		v[822] = v[2403 + v[700] % 3]
+
+		// AA to enemy - this part should be reorganized
 		@if `v[700] % 3 != 0 {
 			@if v[Ptr18] > 0 {
 				s[167].off
@@ -461,20 +464,20 @@ cev .id(32), .name("AgentAct:Worker"), {
 			}
 
 		} .else bl {
-			@if v[v[702]] == 105 {
-				// "############	Collecting Resource################"
+			// "############	Collecting Resource################"
+			@if v[v[702]] == 105 { // the target class is resource static
 				v[881] = v[711] + 4981
 					v[701] = v[707] + 4801
 					v[707] = v[707] + 4808
 					@if v[v[707]] >= 1 {
 						v[371] = 0
-							// "farm flag"
+							// the target has farm flag
 							@if `v[Ptr20 * 300 + 4703] & 4096 {
 								TT1 = Ptr20 * 300 
 									TT1 += 4955
 									// "does this farm belong to someone?"
 									@if `v[TT1] != 0 && v[TT1] != Ptr19 {
-										// "search ownerless  farm"
+										// then search ownerless other farm"
 										Temp1 = Ptr19 * v[1117] 
 											Temp1 += 4700
 											Ptr18 = Ptr19 - 1
@@ -550,11 +553,14 @@ cev .id(32), .name("AgentAct:Worker"), {
 											v[371] = 1
 
 									} .else bl {
+										// claim ownership (it will be renewed by a few frames tho)
 										v[TT1] = Ptr19
 
 									}
 
 							}
+
+						// actual Process
 						@if v[371] == 0 {
 							var1 = Ptr20
 								var2 = 1

@@ -5,6 +5,7 @@ def macro_getMilDiff = {
 		FrameCamDiff_MilY = FrameCamDiff_Y * 10000
 }
 
+
 cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 
 	@if .rightAfterLoad() {
@@ -179,7 +180,7 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 
 		}
 		// "################################"
-		v[167] .add v[163], 2
+			v[167] .add v[163], 2
 			@if `abs(v[167]) >= 1000 || abs(v[168]) >= 1000 {
 				//v[169] = v[167] / 1000
 				//v[170] = v[168] / 1000
@@ -223,7 +224,7 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 					v[169..170] = 0
 
 			}
-		v[165] = v[161] / 16
+			v[165] = v[161] / 16
 			v[166] = v[162] / 16
 			// "################################"
 			v[1301].copy v[163], 2

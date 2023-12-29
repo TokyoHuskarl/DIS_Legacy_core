@@ -127,7 +127,9 @@ __fn sysfunc_compress_savedata_autosave {
 	v[ptr_null].copy v[v[1067]],TT1
 }
 
-// shouldn't this be in the system functions file?
+// this function called in cev[6] .name("Camera:Main")
+// The reason is that the cev is the highest priority parallel common event.
+// 
 __fn sysfunc_reboot_RTS_after_loading { //PicID_Auxilia_Message_Window
 	
 	/*
@@ -145,6 +147,7 @@ __fn sysfunc_reboot_RTS_after_loading { //PicID_Auxilia_Message_Window
 			.eraseWhenTransfer
 	}
 	*/
+
 	sysfunc_reload_RTS_data()
 
 	reboot_DIS_js_RTS_system()
