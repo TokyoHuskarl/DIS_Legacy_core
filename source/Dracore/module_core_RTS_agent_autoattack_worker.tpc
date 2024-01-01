@@ -2,19 +2,32 @@
 // well, this one seems different...
 // Attention please?
 cev .id(32), .name("AgentAct:Worker"), {
+
+		// deploy 
+
+		// deploy target data
 		v[711] = Ptr20 * 300
+		v[711].copy v[707],1 // kari, will be abolished
+		Ptr2 = v[711] + __id(victim_AgentType)
+		v[Ptr2].copy victim_AgentType,agent_Basic_Array_size
+
 		v[702] = v[711] + 4802
-		v[707] = Ptr20 * 300
-		v[700] = v[707] + 4800
-		v[700] = v[v[700]]
-		// "Get Civilization"
-		v[822] = v[2403 + v[700] % 3]
+		v[700] = victim_TeamID
+
+		// get Meta Team rom AEB
+		get_AEB_element_wo_ptr(Ptr20,__id(Temp10),AgentExBuffer_SLOT_MetaTeam)
+		// "Get Civilization... of whom? <- this part might cause unexpected result (refering target's civ), beware
+		// kari
+		TT1 = 2403 + Temp10
+		v[822] = v[TT1] 
 
 		// AA to enemy - this part should be reorganized
-		@if `v[700] % 3 != 0 {
+		
+		// @if `v[700] % 3 != 0 {
+		@if Temp10 != 0 {
 			@if v[Ptr18] > 0 {
 				s[167].off
-					@if `v[Ptr20 * 300 + 4701] == 11 {
+					@if victim_AgentType == 11 {
 						s[167].on
 
 					}
@@ -465,20 +478,30 @@ cev .id(32), .name("AgentAct:Worker"), {
 
 		} .else bl {
 			// "############	Collecting Resource################"
-			@if v[v[702]] == 105 { // the target class is resource static
-				v[881] = v[711] + 4981
-					v[701] = v[707] + 4801
-					v[707] = v[707] + 4808
-					@if v[v[707]] >= 1 {
-						v[371] = 0
-							// the target has farm flag
-							@if `v[Ptr20 * 300 + 4703] & 4096 {
-								TT1 = Ptr20 * 300 
-									TT1 += 4955
+			@if victim_UnitType == 105 { // the target class is resource static
+					
+					// resource type
+					// v[881] = v[711] + 4981 -> victim_static_resource_type...replaced
+
+					// v[701] = v[707] + 4801
+					// v[707] = v[707] + 4808
+
+					// there's resource left in the source
+					@if victim_SP >= 1 {
+							v[371] = 0
+							// If the target has farm flag
+							// @if `v[Ptr20 * 300 + 4703] & 4096 {
+							@if `victim_AgentBits & 4096 {
 									// "does this farm belong to someone?"
-									@if `v[TT1] != 0 && v[TT1] != Ptr19 {
+
+									// TT1 = Ptr20 * 300 
+									// TT1 += 4955
+									// @if `v[TT1] != 0 && v[TT1] != Ptr19 {
+
+									@if `victim_static_ownership != 0 && victim_static_ownership != Ptr19 {
 										// then search ownerless other farm"
-										Temp1 = Ptr19 * v[1117] 
+										// you should make nearest target search a function later.
+											Temp1 = Ptr19 * v[1117] 
 											Temp1 += 4700
 											Ptr18 = Ptr19 - 1
 											// "@Searching Nearest Enemy Process@"
@@ -507,9 +530,8 @@ cev .id(32), .name("AgentAct:Worker"), {
 												Temp6 = Temp7 + 3601
 													// "If the taken object from list is 0, set [[Temp6]] = 999999999"
 													Temp1 = v[Temp2] * 300 
-													Temp1 += 4701
+													Temp1 += 4703
 													// "Get ObjectType of the target	TT10"
-													Temp1 += 2
 													@if `v[Temp1] & 4096 && v[Temp1 + 252] == 0 {
 														Temp1 += 4
 															v[Temp9].copy Temp4, 2
@@ -547,13 +569,19 @@ cev .id(32), .name("AgentAct:Worker"), {
 
 											}
 										// "init counter and set amount"
-										Temp6 = 0
+											Temp6 = 0
 											TT1 = v[534] + v[1012]
 											Temp6.copy v[TT1], 2
 											v[371] = 1
+									
 
+									// searching proc ends here
 									} .else bl {
 										// claim ownership (it will be renewed by a few frames tho)
+
+										// kari.
+										TT1 = Ptr20 * 300 
+										TT1 += 4955
 										v[TT1] = Ptr19
 
 									}
@@ -561,30 +589,51 @@ cev .id(32), .name("AgentAct:Worker"), {
 							}
 
 						// actual Process
+
+						// if the resource static is a valid target 
 						@if v[371] == 0 {
-							var1 = Ptr20
+
+								// decrease resource left in static agent
+								/*
+								var1 = Ptr20
 								var2 = 1
 								var3 = -1
 								@call .cev 2006
+								*/
+								val_sub(victim_SP,N1)
+
+
+								// increase resource carried by the worker
 								var1 = Ptr19
 								var2 = 1
 								var3 = 1
 								@call .cev 2006
-								Ptr13 = Ptr19 * 300 
-								Ptr13 += 4947
+								
+
+
+								// TT1 = ptr to maxSP...
 								TT1 = Ptr19 * 300 
 								TT1 += 4807
 								v[TT1].copy TT2, 2
+
+								// ptr to the job type
+								Ptr13 = Ptr19 * 300 
+								Ptr13 += 4947
+
 								// "check job"
 								TT18 = v[Ptr13]
-								v[Ptr13] = v[v[881]] + 1
+								v[Ptr13] = victim_static_resource_type + 1
+
+								// if the assigned job is different from the last job...
 								TT1 += 1
-								v[TT1] = v[Ptr13] == TT18 ? v[TT1] : 0
-								@if `s[Ptr19 + 500] == 1 {
+								v[TT1] = v[Ptr13] == TT18 ? v[TT1] : 0 // init resource in worker hand
+
+								// in screen
+								@if `victim_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 									// "Food"
-									@if v[v[881]] == 0 {
+									@if victim_static_resource_type == 0 {
 										@if v[182] <= 0 {
-											v[182] += 1
+												v[182] += 1
 												// "#########################"
 												v[472] = divmul(23, 100, v[2216])
 												v[473] = rnd(90, 120)
@@ -596,9 +645,9 @@ cev .id(32), .name("AgentAct:Worker"), {
 
 									} .else bl {
 										// "Wood"
-										@if v[v[881]] == 1 {
+										@if victim_static_resource_type == 1 {
 											@if v[182] <= 0 {
-												v[182] += 1
+													v[182] += 1
 													// "#########################"
 													v[472] = divmul(23, 100, v[2216])
 													v[473] = rnd(90, 120)
@@ -611,7 +660,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 										} .else bl {
 											// "Mining"
 											@if v[182] <= 0 {
-												v[182] += 1
+													v[182] += 1
 													// "#########################"
 													v[472] = divmul(23, 100, v[2216])
 													v[473] = rnd(80, 110)
@@ -626,65 +675,87 @@ cev .id(32), .name("AgentAct:Worker"), {
 									}
 
 								}
-							// "MPを見る"
+
+							// use SP as a counter for gathered resource
 							@if TT3 >= TT2 {
-								v[TT1] = 0
-									TT19 = v[4575] + min(v[v[881]] + 1, 4) + 40 * v[700]
+									v[TT1] = 0
+									// get worker's Meta Team from AEB
+									get_AEB_element_wo_ptr(Ptr19,__id(Temp10),AgentExBuffer_SLOT_MetaTeam)
+
+									// ptr for resource slot, need to be changed
+									TT19 = v[4575] + min(victim_static_resource_type + 1, 4) + 40 * v[700]
 									v[240] = v[496] * v[1129]
 									v[240] += v[1130]
 									v[240] = max(v[TT19], v[240])
-									v[TT19] += 10
+									v[TT19] += 10 // add 10 at least?
+
 									// "Food"
-									@if v[v[881]] == 0 {
+									@if victim_static_resource_type == 0 {
 										// "Rurikia-Vorshch"
 										v[TT19] += v[822] == 9 ? 1 : 0
 
 									} .else bl {
 										// "Wood"
-										@if v[v[881]] == 1 {
-											v[TT19] += v[2409 + v[700] % 3] & 4 ? 1 : 0
-												v[TT19] += v[2409 + v[700] % 3] & 8 ? 1 : 0
+										@if victim_static_resource_type == 1 {
+												// wood tech1
+												v[TT19] += v[2409 + Temp10] & 4 ? 1 : 0
+												// wood tech2
+												v[TT19] += v[2409 + Temp10] & 8 ? 1 : 0
 
 										} .else bl {
 											// "Gold"
-											@if v[v[881]] == 3 {
-												v[TT19] += v[2409 + v[251] % 3] & 0x20000 ? 1 : 0
+											@if victim_static_resource_type == 3 {
+												// alchemy
+												v[TT19] += v[2409 + Temp10] & 0x20000 ? 1 : 0
 
 											} .else bl {
+											// stone
 
 											}
-											// "Mining"
 
 										}
 
 									}
-								// "Record"
-								TT2 = 2524 + v[v[881]]
+
+								// "set TT2 as a Pointer for recording amount of gathered resources"
+									TT2 = 2524 + victim_static_resource_type
+									// 
 									v[TT2] += s[498] == 1 ? 12 : 10
 									v[TT2] += s[445] == 1 ? 3 : 0
+
 									// "Imperials"
 									@if v[822] == 1 {
-										// "Decadence"
-										v[TT19] -= v[2503] >= 12 ? 1 : 0
+											// "Decadence"
+											v[TT19] -= v[2503] >= 12 ? 1 : 0
+											// 
 											v[TT19] -= v[2503] >= 24 ? 1 : 0
 
 									}
+
 								// "Dragons"
 								@if v[822] == 3 {
-									// "ToolTech"
-									v[TT19] += v[2406 + v[700] % 3] & 0x20 ? 2 : 0
-										// "Limit"
+										// "ToolTech"
+										v[TT19] += v[2406 + Temp10] & 0x20 ? 2 : 0
+										// "Limitation"
 										v[TT19] = min(v[TT19], v[240])
 
 								}
-								@call .cev 84
+
+								// refresh resource window
+								func_refresh_resource_window()
+								// @call .cev 84
 
 							}
+
+						// save back target data
+						victim_AgentType.copy v[Ptr2],110 // kari, can be replaced with agent_Basic_Array_size
 
 						}
 
 					} .else bl {
-						@if v[v[701]] == 12 {
+
+						// there's no resource left in the static agent...
+						@if victim_UnitID == 12 { // fruits
 							// "Remove from UnitList"
 							var1 = Ptr20
 								var2 = 11
@@ -716,9 +787,9 @@ cev .id(32), .name("AgentAct:Worker"), {
 					}
 
 			} .else bl {
+				// "############	Constructing################"
 				@if v[v[702]] == 104 {
-					// "############	Constructing################"
-					v[421] = 100
+						v[421] = 100
 						// "Access19 = AttackerObjectID 0~	Access20 = TargetObjectID 1~	Access18 = ObjTypeチェックPtr"
 						v[607] = v[711] 
 						v[607] += 4707
@@ -728,16 +799,20 @@ cev .id(32), .name("AgentAct:Worker"), {
 						v[v[843]] = 0
 						// "#assign job building"
 						v[v[843] + 4] = 5
+
+						// in screen
 						@if `s[Ptr19 + 500] == 1 {
 							@if v[181] <= 2 {
 								v[182] += 1
+
+									// what to be built is farm
 									@if `v[Ptr20 * 300 + 4980] == 802 {
 										v[472] = divmul(65, 100, v[2216])
 											v[473] = rnd(70, 100)
 											v[474] = divmul(v[607] + v[1001], v[1281], 50)
 											@cmd 11550, "misc\farming", .args v[472], 3
 
-									} .else bl {
+									} .else bl { // or not
 										v[472] = divmul(65, 100, v[2216])
 											v[473] = rnd(140, 150)
 											v[474] = divmul(v[607] + v[1001], v[1281], 50)
@@ -746,7 +821,8 @@ cev .id(32), .name("AgentAct:Worker"), {
 									}
 
 							}
-							// "#Dust Particle Effect"
+
+							// "set Dust Particle Effect"
 							@loop v[1017] .dst Temp20 {
 								v[244] %= v[1199]
 									TT11 = v[244] * 50 
@@ -776,6 +852,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 
 
 						}
+
 					// "ADを取得"
 					v[709] = v[843] - 134
 						Temp1 = v[v[709]]
@@ -784,6 +861,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 						Temp6 += 4805
 						Temp5 += 4806
 						v[Temp5] = v[Temp5] + Temp1
+
 
 						// building complete
 						@if v[Temp6] <= v[Temp5] {
@@ -1170,7 +1248,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 		}
 }
 
-cev[39], .name("WorkerAct:setting build foundation"), {
+cev[39], .name("WorkerAct:putting build foundation"), {
 
 	v[11..12] *= 10000
 		@call .cev 1999

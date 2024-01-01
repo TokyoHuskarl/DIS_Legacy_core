@@ -77,7 +77,7 @@ v[4100].repeat 100000000, 13
 									//team ID % 3
 									__if DIS_EXPERIMENTAL == 1 {
 										//macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14)
-														get_AEB_element_wo_ptr(AgentIDholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
+										get_AEB_element_wo_ptr(AgentIDholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
 									}.else bl {
 										Temp14 = Const_AgentMetaTeam_begin + v[211]
 										Temp14.deref Temp14,1 // Temp14 = v[Temp14]

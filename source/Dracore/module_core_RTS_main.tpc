@@ -19,7 +19,8 @@ def Ptr_worker_on_job_start = 2940
 
 
 
-//this is obsolete shite
+//this is obsolete shite, will be abolished
+// cev 2006
 __fn macro_HPSPreg $agent $HP_or_SP $amount{
 	/* Var1 = Obj 1~
 	Var2 = 0/1# HP/MP
@@ -674,7 +675,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 										@if victim_InCombatTimer < 0 {
 											// horse standing motion
 											TT1 = rnd(0,99) // random
-											agent_AddMotionBits |= TT1 < 18 ? AddMotionFlags_FLAG_IdleAction : 0 // 18 has nomeaning, yes, it's magic number.
+											agent_AddMotionBits |= TT1 < 15 ? AddMotionFlags_FLAG_IdleAction : 0 // 18 has nomeaning, yes, it's magic number.
 
 										}
 									}
