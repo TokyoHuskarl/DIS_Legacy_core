@@ -1,4 +1,6 @@
 
+// procs in this file seem to be one of the most messy codes in current DIS.
+// you cannot avoid refactoring this tbh
 
 
 
@@ -17,8 +19,12 @@ def {
 __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 	//// "表示なし"
 	@if LEGS_RUN_MAPEDITMODE .isOff() {
+
+		// selecting nothing
 		@if LEGV_State_of_Central_Monitor == CENTMODE_FREE {
-			LEGS_StatusPage2.off
+				LEGS_StatusPage2.off
+
+				// this should be declared as an independent macro for cent monitor I suppose? 
 				//// "Disable Formation Info"
 				v[341] = LEGV_ConstUnitsFormationIndicatorPicStart
 				v[342] = LEGV_ConstUnitsFormationIndicatorPicStart + 39
@@ -27,6 +33,7 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 				@pic[1799..1800].erase
 				@pic[975..977].erase
 				@pic[980..985].erase
+
 				@pic[995].move {
 					.pos v[1041], v[1042] .center
 						.scale 100
@@ -43,7 +50,8 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 					.time 0
 					.rgbs 100, 100, 100, 100
 			}
-			v[341] = v[4556]
+
+			TT1 = v[4556]
 				@loop 4 {
 					@pic[v[341]].move {
 						.pos 0, 0 .topLeft
@@ -52,7 +60,7 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 							.time 0
 							.rgbs 100, 100, 100, 100
 					}
-					v[341] += 1
+					TT1 += 1
 
 				}
 
@@ -87,8 +95,10 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 					.time 0
 					.rgbs 100, 100, 100, 100
 			}
+
+			// reset buff icons
 			@loop 8 .dst LEGV_BuffcheckLoop2 {
-				v[341] = LEGV_ConstBuffIconsDif * LEGV_BuffcheckLoop2 
+					v[341] = LEGV_ConstBuffIconsDif * LEGV_BuffcheckLoop2 
 					v[341] += LEGV_ConstBuffIconsStartX
 					LEGV_BuffcheckLoop2 += 987 // ?
 					@pic[LEGV_BuffcheckLoop2].show {
@@ -113,8 +123,11 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 					.time 0
 					.rgbs 100, 100, 100, 100
 			}
-			v[341] = v[496] * v[1129] 
+
+				v[341] = v[496] * v[1129] 
 				v[341] += v[1130]
+
+				// refresh string
 				@if `v[1971] != v[205] || v[1972] != v[206] || v[1973] != v[v[4580]] {
 					v[342] = min(v[v[4580]], v[1080])
 						v[343] = v[205] >= v[342] ? 17 : 0
@@ -155,7 +168,8 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 						}
 
 				}
-			v[1971] = v[205]
+
+				v[1971] = v[205]
 				v[1972] = v[206]
 				v[1973] = v[v[4580]]
 				@wait 0
@@ -168,6 +182,7 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 			@wait 0
 
 		}
+
 		//// "単体ステータス"
 		@if LEGV_State_of_Central_Monitor == CENTMODE_ALLY_SINGLE {
 			ally_single_unit_monitor()

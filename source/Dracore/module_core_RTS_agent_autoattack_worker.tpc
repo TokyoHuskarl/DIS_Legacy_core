@@ -558,13 +558,16 @@ cev .id(32), .name("AgentAct:Worker"), {
 											@if v[v[534]] < 999999999 {
 												v[v[534]..v[534] + Temp7 - 1] %= 1000
 													v[Ptr20] = v[v[534]]
-													v[Ptr20 + 229] = 1
+													TT1 = Ptr20 + 229
+													v[TT1] = 1
 
 											} .else bl {
 												// "make worker idle"
 												v[Ptr20] = 0
-												v[Ptr19 + 1] = -1
-												v[Ptr20 + 229] = 0
+												TT1 = Ptr19 + 1
+												v[TT1] = -1
+												TT1 = Ptr20 + 229
+												v[TT1] = 0
 												Temp7 = 0
 
 											}
