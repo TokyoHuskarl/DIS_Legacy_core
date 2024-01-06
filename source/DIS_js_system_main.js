@@ -2294,6 +2294,7 @@ class CmdRetLink {
 
 // DIS Command Object
 // (Almost) all command functions in objects in the Cmd object will be executed on RM interpreter, not on js process.
+
 var Cmd = {
 	// DIS command
 	CmdQueue: "",
@@ -2308,7 +2309,10 @@ var Cmd = {
 		Cmd.ReturnQueue[linki].send(sendwhat);
 	},
 
-	restore: function(){ // call this function when the game loads savedata
+	/**
+	 * call this function when the game loads savedata.
+	 */
+	restore: function(){
 		this.runFlags.initAll();
 	},
 
@@ -2316,9 +2320,9 @@ var Cmd = {
 
 
 	/**
-	 * command order Queue set.
+	 * sets command order queue.
 	 *
-	 * @param {CTYP} typ
+	 * @param {int} typ - CTYP
 	 * @param {string} name
 	 * @param {string} ord
 	 */
@@ -2380,6 +2384,14 @@ var Cmd = {
 		CmdType: CTYP_GAME,
 
 
+		/**
+		 * Just play Global SE.
+		 *
+		 * @param {string} file 
+		 * @param {int} vol
+		 * @param {int} tempo
+		 * @param {int} ballance
+		 */
 		playGlobalSE: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
 			Cmd.Qset(this.CmdType,"pGSE",`${file},${vol},${tempo},${ballance}`);
 		},
@@ -2397,24 +2409,54 @@ var Cmd = {
 		pic: { // Cmd.pic
 			CmdType: CTYP_GAME,
 
-			load: function(filepath,picid) { // load to picid 
+			/**
+			 * load picture
+			 * @param {int} filepath
+			 * @param {int} picid
+			 *
+			 * @returns {DISRMpicture} RPG Maker picture 
+			 *
+			 */			load: function(filepath,picid) { // load to picid 
 				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid}`);
 				return (new DISRMpicture(picid,filepath)); // no pos gg
 			},
 
+			/**
+			 * remove picture
+			 *
+			 * @param {int} picid
+			 *
+			 */
 			remove: function(picid) {
 				Cmd.Qset(this.CmdType,"removePic",`${picid}`);
 			},
 		},
 
+		/**
+		 * .
+		 *
+		 * @param {} filepath
+		 */
 		loadText: function(filepath) { 
 			Cmd.Qset(this.CmdType,"loadText",`${filepath}`);
 		},
 
+		/**
+		 * .
+		 *
+		 * @param {int} stringid
+		 * @param {string} filepath
+		 */
 		exportText: function(stringid,filepath) {
 			Cmd.Qset(this.CmdType,"exportText",`${stringid},${filepath}`);
 		},
 
+		/**
+		 * .
+		 *
+		 * @param {} RGBS
+		 * @param {} f
+		 */
 		tintScreen: function(RGBS,f) {
 			f = f || 0;
 			let st = RGBS.join(",") + "," + f;
@@ -2422,6 +2464,12 @@ var Cmd = {
 			deblog(st)
 		},
 
+		/**
+		 * .
+		 *
+		 * @param {int} RMmapid
+		 * @param {[int,int]} tilepos
+		 */
 		gotoRMmap: function(RMmapid,tilepos) { //
 			tilepos = tilepos || [0,0]
 			Cmd.Qset(this.CmdType,"gotoRMmap",`${RMmapid},${tilepos[0]},${tilepos[1]}`);
@@ -2489,6 +2537,20 @@ var Cmd = {
 			return protoagent;
 		},
 
+		/**
+		 * Spawns group of agents on map.
+		 * And returns {RTSagentGroup}
+		 *
+		 * @param {string} troopid -
+		 * @param {[int,int]} tilepos - 
+		 * @param {int} team - 
+		 * @param {[int,int]} delta -
+		 * @param {int} amount - 
+		 * @param {int} dir -
+		 * @param {int} stance - 
+		 * @param {} flag
+		 * @return {RTSagentGroup} -
+		 */
 		spawnAgentgroup: function(troopid,tilepos,team,delta,amount,dir,stance,flag){
 			// temp
 			troopid = trpid.convert(troopid);
@@ -2510,7 +2572,7 @@ var Cmd = {
 		},
 
 		/**
-		 * spawnpalisade.
+		 * Just spawns palisade.
 		 *
 		 * @param {} tileposbeg
 		 * @param {} tileposend
@@ -2525,9 +2587,9 @@ var Cmd = {
 		/**
 		 * .
 		 *
-		 * @param {} tileposbeg
-		 * @param {} tileposend
-		 * @param {} team
+		 * @param {int} tileposbeg
+		 * @param {int} tileposend
+		 * @param {int} team
 		 */
 		spawnWall: function(tileposbeg,tileposend,team){ // returns DISagent
 			Cmd.Qset(this.CmdType,"spawnWall",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
@@ -2793,6 +2855,7 @@ var Cmd = {
 
 
 };
+
 
 // ----------------------------------
 // DIS Player UI system
