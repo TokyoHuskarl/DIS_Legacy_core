@@ -2541,7 +2541,7 @@ var Cmd = {
 		 * Spawns group of agents on map.
 		 * And returns {RTSagentGroup}
 		 *
-		 * @param {string} troopid -
+		 * @param {*} troopid -
 		 * @param {[int,int]} tilepos - 
 		 * @param {int} team - 
 		 * @param {[int,int]} delta -
@@ -2564,6 +2564,13 @@ var Cmd = {
 			return expected_agentgroup;
 		},
 
+		/**
+		 * 
+		 * @param {*} staticID 
+		 * @param {[int,int]} tilepos 
+		 * @param {int} team 
+		 * @returns {DISagent} - Spawned static
+		 */
 		spawnStatic: function(staticID,tilepos,team){
 			Cmd.Qset(this.CmdType,"spnSt",`${staticID},${tilepos[0]},${tilepos[1]},${team}`);
 			let protostatic = new DISagent(DIS.agent.searchEmptySpace(),staticID,team,false);
@@ -2577,6 +2584,7 @@ var Cmd = {
 		 * @param {} tileposbeg
 		 * @param {} tileposend
 		 * @param {} team
+		 * @return {DISagent} - Spawned Palisade 
 		 */
 		spawnPalisade: function(tileposbeg,tileposend,team){ // returns DISagent
 			Cmd.Qset(this.CmdType,"spawnPalisade",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
@@ -2599,6 +2607,7 @@ var Cmd = {
 
 		/**
 		 * just let the DIS generate height map 
+		 * underconstruction
 		 */
 		generateHeightmap: function(){ // generate heightmap
 			Cmd.Qset(this.CmdType,"genHeightmap",""); // just do it
@@ -2687,7 +2696,9 @@ var Cmd = {
 		endMission: function(consequence) { 
 			Cmd.Qset(this.CmdType,"endGame",`${consequence}`);
 		},
-
+		/**
+		 * - enable quitting RTS map by pressing Tab key.
+		 */
 		allowToQuit: function() {
 			Cmd.Qset(this.CmdType,"setQuit","");
 		},
@@ -2720,10 +2731,19 @@ var Cmd = {
 
 		CmdType: CTYP_PLAYER,
 
+		/**
+		 * Allows a player to show all map terrain.
+		 * Fog of war won't be removed.
+		 * @param {int} playerid 
+		 */
 		revealMap: function(playerid){ 
 			Cmd.Qset(this.CmdType,"rvMap",`${playerid}`);
 		},
 
+		/**
+		 * Move player camera position to designated point
+		 * @param {[int,int]} tilepos 
+		 */
 		moveCamera: function(tilepos){
 			Cmd.Qset(this.CmdType,"mvCam",`${tilepos[0]},${tilepos[1]}`);
 		},
