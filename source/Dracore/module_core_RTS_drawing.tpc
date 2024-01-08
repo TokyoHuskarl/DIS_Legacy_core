@@ -191,11 +191,11 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 							@if TT1 > 0 { // if forcesprite is set...
 									expected_action_sprite = TT1 
-							}.else bl { // if not, pick from AEAB
-							__if DIS_EXPERIMENTAL == -1 {
+							}.else bl { // if not, pick from AEB
+							__if DIS_EXPERIMENTAL == 1 {
 								def AgentExBuffer_SLOT_ActionSprite_0 = AgentExBuffer_SLOT_ActionSprite_1 + 1
 								TT1 = ((agent_ActionFlag & ActionFlag_FLAG_Walking) && v[843] == 0 ? 3 : min(v[843], 4)) + AgentExBuffer_SLOT_ActionSprite_1
-								get_AEAB_element_wo_ptr(AgentIDholder,__id(expected_action_sprite),TT1)
+								get_AEB_element_wo_ptr(AgentIDholder,__id(expected_action_sprite),TT1)
 
 							}.else bl{
 								expected_action_sprite = TT1 > 0 ? TT1 : [v[883] % 10, v[883] / 10 % 10, v[883] / 100 % 10, v[883] / 1000 % 10, v[883] / 10000][((agent_ActionFlag & ActionFlag_FLAG_Walking) && agent_ActionState == 0 ? 3 : min(agent_ActionState, 4))]

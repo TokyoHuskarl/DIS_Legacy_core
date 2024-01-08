@@ -87,13 +87,13 @@ struct("agent",{
 	agent_getTerrainElevation = 657
 	agent_SaveActualTeamID = 658 // ... is this even necessary? <- I saw this is used in remove agent function
 	agent_saveFoWPoint = 659
-	// agent_killXP = 659 // ported to AEBA
+	// agent_killXP = 659 // ported to AEB
 	
 	// agent_gotXP = 660 // ?
 	agent_AbsoluteX  = 661
 	agent_AbsoluteY  = 662
 
-	// agent_UniqueCharIndex=661 //if <0, refer PartyCompanions this one also should be ported to AEBA
+	// agent_UniqueCharIndex=661 //if <0, refer PartyCompanions this one also should be ported to AEB
 	agent_Skin = 663 // 0=Rtpian, 1=Nord, 2= Azghazi, 6= female ...This parameter is for UserCharactors
 	agent_Race = 664 // 0=Human,1=Goblin,2=Orc,3=Dragons,
 	agent_PerkFlagBits1 = 665 // 1=ShieldMaster,2=Brawny,4=BattleForged,8=Nimble,16=Stalwart,32=Dodge,64=Anticipation,128=Pathfinder,256=Fearsome
@@ -185,7 +185,7 @@ struct("agent",{
 
 
 
-	agent_Passive_Text = 821 // this maybe can be relocated into AEBA
+	agent_Passive_Text = 821 // this maybe can be relocated into AEB
 	agent_Culture_Icon = 822
 	agent_Culture = 822
 	
@@ -290,7 +290,7 @@ struct("agent",{
 
 	AgentExBuffer_SLOT_ColBoxWidth = 2
 	AgentExBuffer_SLOT_ColBoxHeight = 3
-	AgentExBuffer_SLOT_BaseEyeSight = 4 // this slot won't be used
+	AgentExBuffer_SLOT_BaseEyeSight = 4 // abolished
 	AgentExBuffer_SLOT_Taken_down_XP = 5
 	AgentExBuffer_SLOT_BaseSight_Root = 6
 

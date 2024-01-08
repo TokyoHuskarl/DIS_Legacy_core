@@ -23,8 +23,10 @@ v[4035..4036] = v[205]
 
 // set expanding temp array for copying
 // v[4100..4112] = 100000000
-v[4100].repeat 100000000, 13
-// WITHOUT AEAB, above part is necessarily
+__if DIS_EXPERIMENTAL != 1 {
+	v[4100].repeat 100000000, 13
+}
+// WITHOUT AEB, above part is necessarily
 
 
 @while v[v[536]] != 0 {
@@ -38,7 +40,6 @@ v[4100].repeat 100000000, 13
 		// NEVER SAVE BACK agent_generated_ID in this proc!
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-		// @if `(v[900] + v[535]) % v[533] == 0 { //9.5.23
 		val_add(agent_generated_ID,v[535])
 		val_mod(agent_generated_ID,v[533])
 		@if agent_generated_ID == 0 {
@@ -87,7 +88,7 @@ v[4100].repeat 100000000, 13
 									Temp8 = 4034 + Temp14
 									Temp8.deref Temp8,1
 
-									__if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
+									__if DIS_EXPERIMENTAL == 1 { // use AEBA to opt! also @if cond can be changed into other shit.
 											get_AEB_array(AgentIDholder,4001,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
 
 									}.else bl {

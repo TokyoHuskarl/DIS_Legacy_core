@@ -1666,6 +1666,8 @@ class RTSmission {
 		// mapDataDirectory: this.mapDataDirectory, // set in constructor
 	};
 
+
+	// will be integrated to RTS.save() 
 	save = function(){
 		// save triggers in queue as a string..
 		let savestring = "";
@@ -1677,12 +1679,13 @@ class RTSmission {
 
 		sett(745,JSON.stringify(this.local)); // Str_Mission_local_save_JSON
 
-
 	};
 
 	restore = function(){
 		// restore mission settings
 		this.passedFrame = getv(Adr_world_frame); //  if DIS game is reloaded, then reload from RM var. 
+
+		// process below should be moved to RTS.restore, since the name space for map variables is changed
 		let saved = JSON.parse(gett(745));
 		for (let elmid in saved){
 			let elm = saved[elmid];
@@ -2119,6 +2122,14 @@ let RTS = {
 	 * this might be needless anymore
 	 */
 	savedVars: [],
+
+	/**
+	 * Variables and arrays in this name space will be saved as JSON string.
+	 * Make sure opening new stage wipes out all properties in RTS.Preserve.
+	 * ...And do not try saving functions.
+	 * @namespace RTS.Preserve
+	 */
+	Preserve: {},
 
 	/**
 	 * RTS object holds each of spawned {DIS_agent} data as elements of this array.
