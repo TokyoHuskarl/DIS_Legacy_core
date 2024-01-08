@@ -1,6 +1,16 @@
-/*
-* @module DIS_js_main_module
-*/
+/**
+ * @module DIS_js_main_module
+ * @copyright TokyoHuskarl
+ * @license ?
+ * 
+ * ~ DIS API ~
+ * 
+ * This js module must be loaded whenever DIS game system reboots.
+ * Thanks to 2003MP's spec, loading other modules on js is kinda stressful,
+ * so this module contains a lot of important and complicated js objects.
+ */
+
+
 
 // if setv() is undefined, it's virtual enviroment on node.js, qjs or sth.
 let VIRTUAL_ENV = (typeof setv == "undefined") ? true : false;
@@ -38,7 +48,13 @@ function devmsg(text) {
 };
 
 
-// debug log function for debug mode 
+/**
+ * Log function for debugging the game. 
+ * With 2003MP binary this copies the same string to the gamelog.
+ * Overridden by nothing if the game mode is BOOT_MODE_DEBUG
+ *
+ * @param {string} text
+ */
 function deblog(text) {
 	console.log(text);
 	if (!VIRTUAL_ENV){
@@ -105,6 +121,11 @@ let LOCAL;
 // ------------------------------------------------
 // DIS Data Objects
 // ------------------------------------------------
+/**
+ * @class DATA_entity
+ * This class is the root templete for the entire DATA_* object class.
+ * Used as elements of game Database. 
+ */
 class DATA_entity {
 	constructor(id){this.id=id;};
 	i = -1; // set in DATA.{datatype}.register()
@@ -241,6 +262,7 @@ class DATA_faction extends DATA_entity {
 
 
 // template class for troops
+
 class DATA_troop extends DATA_entity {
 	constructor(id,src){
 		super(id);
@@ -308,17 +330,18 @@ class DATA_tech extends DATA_entity {
 	};
 
 };
+
 // ------------------------------------------------
 // DIS objects
 // ------------------------------------------------
 
 // DISentities on js system are not real parameters of DIS agents in the game. 
 // It's rather something like a bundle of links to actual entities on RPGMaker.
-// so unless you refresh its information through functions, data in DISentity can be diffrent from the actual value stored in RPGMaker. 
+// so unless you refresh its information through functions, data in DIS_entity can be diffrent from the actual value stored in RPGMaker. 
 
-class DISentity { // prototype for DIS RPGmaker Object
+class DIS_entity { // prototype for DIS RPGmaker Object
 	constructor(){
-		this.class = "DISentity";
+		this.class = "DIS_entity";
 		this.receivedStorage = []; // given from CmdReturn
 		this.isAwaitingReturn = false;
 		this.receivedSth = false;
@@ -339,9 +362,9 @@ class DISentity { // prototype for DIS RPGmaker Object
 
 			}
 			this.receivedSth = true;
-			deblog(`DISentity: received ${stuff}`);
+			deblog(`DIS_entity: received ${stuff}`);
 		} else { // got null
-			errorlog("DISentity: Receiving return value from DIS command process on TPC failed.");
+			errorlog("DIS_entity: Receiving return value from DIS command process on TPC failed.");
 		};
 		this.isAwaitingReturn = false;
 	};
@@ -356,10 +379,10 @@ class DISentity { // prototype for DIS RPGmaker Object
 
 }
 
-class DISRMpicture extends DISentity { // simple picture object.
+class DIS_RMpicture extends DIS_entity { // simple picture object.
 	constructor(pid,file,pos){
 		super();
-		this.class = "DISRMpicture";
+		this.class = "DIS_RMpicture";
 		this.pid = pid;
 		this.file = file;
 		this.pos = pos || [0,0]; // [x,y]
@@ -401,11 +424,34 @@ class DISRMpicture extends DISentity { // simple picture object.
 
 }
 
-class DISagent extends DISentity { // agents for RTS mode 
+/**
+ * This class is used for generating modified version of database unit
+ * for particular situations.
+ *
+ * @class DIS_unit
+ * @extends {DIS_entity}
+ */
+class DIS_unit extends DIS_entity {
+	constructor(unitid,type){
+		super();
+		this.type = type || 0; // static or land? unco 
+		this.unitid = unitid;
+		
+
+	};
+
+}
+
+/**
+ * DIS_agent.
+ * 
+ * @extends {DIS_entity}
+ */
+class DIS_agent extends DIS_entity { // agents for RTS mode 
 	constructor(agentid,unitid,team,isCertified){
 		super();
-		this.agentid = agentid; // only if agent id is secured, then no problemo.
-		this.class = "DISagent";
+		this.agentid = agentid; // if agent id is secured, then no problemo.
+		this.class = "DIS_agent";
 		// this.agenttype = type;
 		this.unitid = unitid;
 		this.team = team;
@@ -424,6 +470,11 @@ class DISagent extends DISentity { // agents for RTS mode
 	getid(){return this.agentid;};
 
 	// {int} 1~300
+ /**
+  * horrible.
+  *
+  * @param {int} slot
+  */
 	getAgentSlot(slot){ // just get slot value.
 		let res = null;
 		if (1 <= slot && slot <= 300){ // safety
@@ -444,21 +495,46 @@ class DISagent extends DISentity { // agents for RTS mode
 		};
 	};
 
+	// #############
+	// Event triggers
+	// #############
+	
+	// Called from TPC in some circumstances (if only flag is set for the agent).
+	// Override them to use
+
+
+	/**
+	 * Triggered when the agent killed.
+	 */
+	EV_OnDeath(){};
+
+	EV_OnEscape(){};
+
+ /**
+  * This will be triggered if the agent takes damages.
+	* @param {int} dmg - damage amount
+  */
+	EV_OnDamage(dmg){};
+
+	EV_OnKilling(){};
+
+	EV_OnSpawn(){};
+
 }
 
-class DISagent_static extends DISagent {
+class DIS_agent_static extends DIS_agent {
 	constructor(agentid,buildingid,team,isCertified){
 		super(agentid,buildingid,team,isCertified);
 	};
 	
 }
 
-class RTSagentGroup { // list object for DISagent.
+class RTSagentGroup { // list object for DIS_agent.
 	constructor(agtArray,team){
 		this.idlist = [];
 
 		// this design can make terrible error in future? idk 
-		if (typeof agtArray[0] == "object"){ // if DISagent is set in agtArray
+		if (typeof agtArray[0] == "object"){ // if DIS_agent is set in agtArray
 			this.agentlist = agtArray; // save agentlist
 			for (let elm of agtArray){
 				this.idlist.push(elm.getid()); // save agentid
@@ -601,15 +677,23 @@ function make_Array_DIStable(array) {
 };
 
 
-// DIS object is basically container for fundamental data of DIS on quickjs.
-// Whenever you want to access DIS game data, the DIS object serves you as a way to get/set the data..
-//
 
+
+
+/**
+ * DIS object is an API for accessing fundamental data of DIS.
+ * Whenever you want to access DIS game data, this object gives you ways to get/set the data..
+ * @namespace DIS
+ */
 var DIS = DIS || {};
 
 const Adrt_ShLog = 782; // same as Shell Log address 
 
-// should I make them const?
+/**
+ * @class IDdict
+ * 
+ *
+ */
 class IDdict {
 	constructor(prefix){this.prefix = prefix + "_";}
 	reserved = new Set(["prefix","reserved","convert","register"]); // never change
@@ -651,6 +735,10 @@ var raceid = new IDdict("RACE"); // race ID table
 var techid =  new IDdict("TECH"); // ["techid",[group,flagbit]]
 
 // consts
+/**
+ *
+ * @namespace DIS.consts
+ */
 DIS.consts = {
 	
 	Adrv:{},
@@ -1425,7 +1513,7 @@ const Adrt_JSSAVE_triggersQueue = 763; // <- header_scripts
 // DIS system component classes - these class objs usually work as component under RTS objects.
 
 // DISvariable
-class DISvariable extends DISentity { // nonvolatile Variable for RTS mission
+class DISvariable extends DIS_entity { // nonvolatile Variable for RTS mission
 	constructor(type, address){
 		super();
 		this.class = "DISvariable";
@@ -1530,7 +1618,13 @@ class RTSmission {
 		},
 	};
 
-	local = {}; // mission local instances - restored when you reload the game.
+	/**
+	 * Mission local instances.
+	 * Elements declared in this instance is restored when you reload the game.
+	 * RM save data holds the elements as stringfied json, so do not expect functions will be restored as well
+	 *
+	 */
+	local = {};
 	
 
 	conf = { // these matter only at the setting up mission part
@@ -1812,7 +1906,7 @@ class RTSmap {
 	};
 };
 	
-class DIS_RTSplayer extends DISentity {
+class DIS_RTSplayer extends DIS_entity {
 	constructor(id,factionid){
 		super();
 		this.id = id;
@@ -1915,7 +2009,7 @@ class DIS_RTSplayer extends DISentity {
 
 };
 
-class DIS_cohort extends DISentity {
+class DIS_cohort extends DIS_entity {
 	constructor(team,id,agtarray){
 		super();
 		this.team = team;
@@ -1960,7 +2054,7 @@ class RTStrigger {
 };
 
 
-class DIS_dialog extends DISentity{
+class DIS_dialog extends DIS_entity{
 	constructor(string,time,icon){
 		super();
 		this.showframe = time | 235; // if showframe is -1, it won't automatically disappear until forceSkipDialog() or clearDialogQueue() is called
@@ -1993,35 +2087,53 @@ class DIS_dialog extends DISentity{
 const Adrt_dialogQueue = 785 // -> Game_script_general.tpc
 const Is_SightSystem_On = 300; // <- header_common.tpc
 const Adrt_mapdirectory = 755;
-
+/**
+ * RTS system object.
+ * This object manages high level stuff around RTS mode.
+ * Lower level stuff are processed in TPC.
+ *
+ * @namespace RTS
+ */
 let RTS = {
 	isRTSmode: false,
 	mission: new RTSmission(),
 	map: new RTSmap(),
 	createdTrgs: [],
+
+	/**
+	 * this might be needless anymore
+	 */
 	savedVars: [],
+
+	/**
+	 * RTS object holds each of spawned {DIS_agent} data as elements of this array.
+	 * BUT HOW SHOULD I RESTORE THE DATA AFTER SAVE/LOAD?
+	 */
 	agents: new Array(DIS.agent.limit), // store mission vars or whatever
 
-	/*
-	Mtrig: {}, // mission triggers
-	Mvar: {}, // mission vars
-	Mbool: {}, // mission switch
-	Mstr: {}, // mission strings
-	*/
-
-	path: { // instances relating to pathfinding or agent movement order. properties won't be restored on loading savegame.
+	/**
+	 * 
+	 * This manages things relating to pathfinding or agent movement order. 
+	 * Beware, its properties won't be restored on loading savegame.
+	 * @namespace RTS.path
+	 */
+	path: {
 		init: function(){
 			for (let i = 0; i < DIS.agent.limit; i++){
 				this.PfWPbuffer[i] = [];
 			};
-
-
 		},
 
 		mvgrp: [], // agent movement group
-
 		PfWPbuffer: [], // node array stored for each agents 
-		storePath: function(agentid,PathArray){ // usually called on TPC
+
+		/**
+		 * usually called from TPC.
+		 *
+		 * @param {} agentid
+		 * @param {} PathArray
+		 */
+		storePath: function(agentid,PathArray){
 			this.PfWPbuffer[agentid] = PathArray; // send PathArray to RTS.path.PfWPbuffer.
 			let t = "RTS.path: stored " + PathArray; // tesT
 			deblog(t);
@@ -2035,7 +2147,14 @@ let RTS = {
 			}
 		},
 
-		givePath: function(agentid){ // give stored path to the agent. array length after this is returned.
+		/**
+		 *  Gives stored path to the agent and deals with array.
+		 *  Returns array length without given path.
+		 *  The WP array is picked up from RTS.path.PfWPbuffer[].
+		 *
+		 * @param {int} agentid
+		 */
+		givePath: function(agentid){
 			
 			let buf = this.PfWPbuffer[agentid];
 			let len = buf.length;
@@ -2056,17 +2175,27 @@ let RTS = {
 			return (len - i); // return to reg1 (expected)
 		},
 
-		copyPath: function(agentid,targetid){
-			deblog(agentid + " to " +targetid) 
+		/**
+		 * Gives the target agent the same path as the source agent.
+		 * BEWARE MAYBE THIS METHOD IS NOT TESTED YET
+		 *
+		 * @param {int} srcagtid - agent id of source agent
+		 * @param {int} targetid - agent id of target agent
+		 */
+		copyPath: function(srcagtid,targetid){
+			deblog(srcagtid + " to " +targetid) 
 			this.PfWPbuffer[targetid] = []; // ? should I use let?
 
-			for (let elm of this.PfWPbuffer[agentid]) {
+			for (let elm of this.PfWPbuffer[srcagtid]) {
 				this.PfWPbuffer[targetid].push(elm);
 				// deblog(elm)
 			};
 		},
 
 
+		/**
+		 * unco
+		 */
 		convertArrayIntoPath: function(array){
 			
 
@@ -2074,10 +2203,13 @@ let RTS = {
 
 
 
-
 	},
 
 
+	/**
+	* Radio Dialog manager.  
+	* @namespace RTS.DlogManager 
+	*/
 	DlogManager: {
 		queue: "",
 		receiveQ: function(){ // whenever you deal with Dialog Queue, you have to get current DialogQueue from RM
@@ -2137,7 +2269,12 @@ let RTS = {
 
 	},
 
-	setupMapLoading: function(mapdir){ // will be called after this.setupMission().
+	/**
+	 *  This will be called after this.setupMission().
+	 *
+	 * @param {string} mapdir - path to map directory.
+	 */
+	setupMapLoading: function(mapdir){
 		// sightsystem setting
 		sets(Is_SightSystem_On,this.mission.conf.isSightSystemOn);
 		
@@ -2236,6 +2373,7 @@ const CTYP_MAP = 1,
 	CTYP_PLAYER = 6,
 	CTYP_GROUP = 7,
 	CTYP_UI = 8,
+	CTYP_OBJ = 9,
 	CTYP_END = 999;
 
 
@@ -2248,13 +2386,21 @@ const LINKSTR_map = 771,
 	LINKSTR_player = 776,
 	LINKSTR_group = 777,
 	LINKSTR_ui = 778,
-	LINKSTR_END = 779;
+	LINKSTR_obj = 779,
+	LINKSTR_END = 780;
 
 
 // -> module_Game_scripts_general.tpc
 const adr_RMbool_RUN_CMD = 132,
 	adr_RMStr_CmdOrder = 795;
 
+/**
+ * CmdRetLink.
+ * It's initially designed to return value from TPC process to js.
+ * Shit class, none uses it
+ *
+ * @class CmdRetLink
+ */
 class CmdRetLink {
 	constructor(typ){
 		this.index = Cmd.ReturnQueue.length;
@@ -2292,15 +2438,29 @@ class CmdRetLink {
 
 
 
-// DIS Command Object
-// (Almost) all command functions in objects in the Cmd object will be executed on RM interpreter, not on js process.
-
+/**
+ * DIS Command Object Cmd
+ * (Almost) all command functions in objects in the Cmd object will be executed on RM interpreter, not on js process.
+ * @namespace Cmd
+ */
 var Cmd = {
-	// DIS command
+
+	/**
+	 * @type {string}
+	 * Commands will be sent to RPG Maker as a string.
+	 */
 	CmdQueue: "",
 
 	ReturnQueue: [],
-	sendback: function(stuff,linki,sendwhat){ // this function is to be called by TPC. send RM stuff back to ReturnQueue.
+
+	/**
+	 * This function is to be called by TPC. send RM stuff back to ReturnQueue.
+	 *
+	 * @param {} stuff
+	 * @param {} linki
+	 * @param {} sendwhat
+	 */
+	sendback: function(stuff,linki,sendwhat){
 		deblog(`RetLink:sending back thing ${stuff} to returnArray[${linki}]!`)
 		deblog(`${Cmd.ReturnQueue[linki]} is receiver.`)
 		Cmd.ReturnQueue[linki].receive(stuff);
@@ -2316,7 +2476,10 @@ var Cmd = {
 		this.runFlags.initAll();
 	},
 
-	CmCon: {}, // command name associative array
+	/**
+	 * Command name associative array.
+	 */
+	CmCon: {}, 
 
 
 	/**
@@ -2330,6 +2493,7 @@ var Cmd = {
 		let cmdid = Cmd.CmCon[name];
 		Cmd.CmdQueue += (typ + "," + cmdid + "," + ord + ";");
 	},
+
 	
 	runFlags: {
 		SpawnDetect: false, // init this flag
@@ -2380,7 +2544,11 @@ var Cmd = {
 
 	// actual command objects start 
 	//Cmd.game
+	
 	game: {
+		/**
+		 * CTYP_GAME 
+		 */
 		CmdType: CTYP_GAME,
 
 
@@ -2406,23 +2574,27 @@ var Cmd = {
 			Cmd.runFlags.RMwaitDetect = true;
 		},
 
+		/**
+		 * @namespace Cmd.pic
+		 *
+		 */
 		pic: { // Cmd.pic
 			CmdType: CTYP_GAME,
 
 			/**
-			 * load picture
+			 * load picture command.
 			 * @param {int} filepath
 			 * @param {int} picid
 			 *
-			 * @returns {DISRMpicture} RPG Maker picture 
+			 * @returns {DIS_RMpicture} RPG Maker picture 
 			 *
 			 */			load: function(filepath,picid) { // load to picid 
 				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid}`);
-				return (new DISRMpicture(picid,filepath)); // no pos gg
+				return (new DIS_RMpicture(picid,filepath)); // no pos gg
 			},
 
 			/**
-			 * remove picture
+			 * remove picture command.
 			 *
 			 * @param {int} picid
 			 *
@@ -2512,26 +2684,51 @@ var Cmd = {
 
 	},
 
-	//Cmd.map
+	/**
+	 * Cmd.map
+	 * @namespace Cmd.map
+	 */
 	map: {
 		CmdType: CTYP_MAP,
 		
-		
-
 		
 		/* spawnerInfoUpdate: ()=> {
 			if (Cmd.bl_SpawnCmdCalled == false){}
 		} need to consider well */ 
 
 		// {int}, array[x,y]
-		spawnAgent: function(troopid,tilepos,team,dir,stance,flag){ // returns DISagent
+
+		/**
+		 * Spawns an unit as a agent to given pos in RTS map.
+		 *
+		 * @param {trpid} troopid
+		 * @param {} tilepos
+		 * @param {} team
+		 * @param {} dir
+		 * @param {} stance
+		 * @param {} flag
+		 */
+		spawnAgent: function(troopid,tilepos,team,dir,stance,flag){ // returns DIS_agent
 			troopid = trpid.convert(troopid);
 			dir = dir || Cmd.runFlags.spawnagent_lastdir;
 			stance = stance || 0;
 			flag = flag || 0;
 			
 			Cmd.Qset(this.CmdType,"spnAg",`${troopid},${tilepos[0]},${tilepos[1]},${team},${dir},${stance}`);
-			let protoagent = new DISagent(DIS.agent.searchEmptySpace(),troopid,team,false);
+			let protoagent = new DIS_agent(DIS.agent.searchEmptySpace(),troopid,team,false);
+
+			Cmd.runFlags.spawnagent_lastdir = dir
+			return protoagent;
+		},
+
+		placeUnit: function(troopid,tilepos,team,dir,stance,flag){ // returns DIS_agent
+			troopid = trpid.convert(troopid);
+			dir = dir || Cmd.runFlags.spawnagent_lastdir;
+			stance = stance || 0;
+			flag = flag || 0;
+			
+			Cmd.Qset(this.CmdType,"spnAg",`${troopid},${tilepos[0]},${tilepos[1]},${team},${dir},${stance}`);
+			let protoagent = new DIS_agent(DIS.agent.searchEmptySpace(),troopid,team,false);
 
 			Cmd.runFlags.spawnagent_lastdir = dir
 			return protoagent;
@@ -2569,11 +2766,11 @@ var Cmd = {
 		 * @param {*} staticID 
 		 * @param {[int,int]} tilepos 
 		 * @param {int} team 
-		 * @returns {DISagent} - Spawned static
+		 * @returns {DIS_agent} - Spawned static
 		 */
 		spawnStatic: function(staticID,tilepos,team){
 			Cmd.Qset(this.CmdType,"spnSt",`${staticID},${tilepos[0]},${tilepos[1]},${team}`);
-			let protostatic = new DISagent(DIS.agent.searchEmptySpace(),staticID,team,false);
+			let protostatic = new DIS_agent(DIS.agent.searchEmptySpace(),staticID,team,false);
 			return protostatic;
 			
 		},
@@ -2584,11 +2781,11 @@ var Cmd = {
 		 * @param {} tileposbeg
 		 * @param {} tileposend
 		 * @param {} team
-		 * @return {DISagent} - Spawned Palisade 
+		 * @return {DIS_agent} - Spawned Palisade 
 		 */
-		spawnPalisade: function(tileposbeg,tileposend,team){ // returns DISagent
+		spawnPalisade: function(tileposbeg,tileposend,team){ // returns DIS_agent
 			Cmd.Qset(this.CmdType,"spawnPalisade",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
-			let protostatic = new DISagent(DIS.agent.searchEmptySpace(),staid["STA_palisade"],team,false);
+			let protostatic = new DIS_agent(DIS.agent.searchEmptySpace(),staid["STA_palisade"],team,false);
 			return protostatic;
 		},
 
@@ -2599,9 +2796,9 @@ var Cmd = {
 		 * @param {int} tileposend
 		 * @param {int} team
 		 */
-		spawnWall: function(tileposbeg,tileposend,team){ // returns DISagent
+		spawnWall: function(tileposbeg,tileposend,team){ // returns DIS_agent
 			Cmd.Qset(this.CmdType,"spawnWall",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
-			let protostatic = new DISagent(DIS.agent.searchEmptySpace(),staid["STA_wall"],team,false);
+			let protostatic = new DIS_agent(DIS.agent.searchEmptySpace(),staid["STA_wall"],team,false);
 			return protostatic;
 		},
 
@@ -2826,21 +3023,33 @@ var Cmd = {
 	},
 
 
-		// -------------
-		// Cmd.ui
-		// -------------
-
-		//radio dialog
-		//
-		ui: { 
+	/**
+	 * Radio Dialogs and etc etc
+	 * @namespace Cmd.ui
+	 */
+		ui: {
 			CmdType: CTYP_UI,
 			
+	/**
+	 * Sends very simple dialog to Radio dialog manager.
+	 * Returns nothing.
+	 *
+	 * @param {string} txt
+	 * @param {int} time
+	 * @param {} face
+	 */
 			sendSimpleDialog: function(txt,time,face){
 				let log = new DIS_dialog(txt,time,face);
-				pushDialogQueue(log);
+				_pushDialogQueue(log);
 			},
 
-			pushDialogQueue: function(dlog){ // push arg to dialog queue and toggle dialog manager switch
+			/**
+			 * Send push Dialog queue command to RPG maker.
+			 * Called by other methods in Cmd.ui
+			 *
+			 * @param {} dlog
+			 */
+			_pushDialogQueue: function(dlog){ // push arg to dialog queue and toggle dialog manager switch
 				// set up string
 				
 				let sendstring = (DIS.string.convertString(dlog.string) + "," + dlog.showframe + "," + make_Array_DIStable(dlog.icon) + "," + make_Array_DIStable(dlog.size) + "," + make_Array_DIStable(dlog.opensound) + ";");
@@ -2871,6 +3080,49 @@ var Cmd = {
 		
 
 	},
+
+	/**
+	 * This has similar functions with Cmd.map,
+	 * but methods in this object tend to deal with more complicated classes
+	 * @namespace Cmd.obj
+	 */
+	obj: (function(){
+		// CmdType as a private const is better. Other objects in Cmd will also be refactored in this way.
+		const CmdType = CTYP_OBJ;
+		
+		return {
+
+			/**
+			 * Simillar to Cmd.map.spawnAgent(), but uses DIS_unit as param.
+			 *
+			 * @param {DIS_unit} unit - DO NOT USE trpid here, you need to prepare DIS_unit type object.
+			 * @param {[int,int]} tilepos - [x,y]
+			 * @param {int} team - 
+			 * @param {int} dir - 
+			 * @param {int} stance - 
+			 * @param {} flag
+			 * @return {DIS_agent}
+			 */
+			placeUnitAsAgent: function(unit,tilepos,team,dir,stance,flag){
+				// UNCO
+				var troopid = 0; // get from DIS_unit
+				dir = dir || Cmd.runFlags.spawnagent_lastdir;
+				stance = stance || 0;
+				flag = flag || 0;
+
+				Cmd.Qset(CmdType,"plcAg",`${troopid},${tilepos[0]},${tilepos[1]},${team},${dir},${stance}`);
+				let protoagent = new DIS_agent(DIS.agent.searchEmptySpace(),troopid,team,false);
+
+				/*
+				 copy EX events from given DIS_unit
+				 */
+
+				Cmd.runFlags.spawnagent_lastdir = dir
+				return protoagent;
+			},
+		};
+
+	})(),
 
 
 
@@ -3167,6 +3419,7 @@ const techtest = `
 }
 `
 
+
 // without RPG_RT.exe
 if (VIRTUAL_ENV){
 const roottroop = `
@@ -3336,6 +3589,30 @@ const maptest = `
 	
 	DIS.data.init(); // reset DIS data
 	*/
+
+
+
+	// クロージャの使い方知らなかった者
+	const datadata = (function() {
+		function privfun() {
+			// プライベート関数の実装
+			return 1
+		}
+		var I_hate_dragons = 241
+
+		return {
+
+			print: ()=>{
+				deblog(privfun());
+				deblog(I_hate_dragons);
+			},
+			poccia: "pinnis",
+			pockpock: 111
+
+		};
+	})();
+
+	datadata.print()
 
 };
 

@@ -11,6 +11,7 @@ def {
 	CTYP_PLAYER = 6
 	CTYP_GROUP = 7
 	CTYP_UI = 8
+	CTYP_OBJ = 9
 	
 	CTYP_END
 }
@@ -33,6 +34,7 @@ deft {
 	str_link_Cmd_player
 	str_link_Cmd_group
 	str_link_Cmd_ui
+	str_link_Cmd_obj 
 
 }
 
@@ -152,6 +154,9 @@ __fn DIS_Cmd_PackTree $chosenobj $md $counter $given_v_or_str $flags {
 	}.elif $chosenobj == CTYP_UI { // Cmd.ui
 		DIS_Cmd_ui(str_link_Cmd_ui,$md,$counter,$given_v_or_str,$flags)
 
+	}.elif $chosenobj == CTYP_OBJ { // Cmd.ui
+		DIS_Cmd_obj(str_link_Cmd_obj,$md,$counter,$given_v_or_str,$flags)
+
 	}
 
 }
@@ -207,6 +212,12 @@ __fn DIS_Cmd_group $LINKstr $md $counter $given_v_or_str $flags {
 __fn DIS_Cmd_ui $LINKstr $md $counter $given_v_or_str $flags {
 	SScmdPackage_Build("ui",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
 		DIS_ui_methods($LINKstr $md $counter $given_v_or_str $flags)
+	})
+}
+
+__fn DIS_Cmd_obj $LINKstr $md $counter $given_v_or_str $flags {
+	SScmdPackage_Build("obj",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+		DIS_obj_methods($LINKstr $md $counter $given_v_or_str $flags)
 	})
 }
 
@@ -349,6 +360,18 @@ __fn DIS_ui_methods $LINKstr $md $i $given_v_or_str $flags {
 		{NsCmd($LINKstr, $md, $i, "clearDialogQueue",{cmd_clearDialogQueue()})},
 		{NsCmd($LINKstr, $md, $i, "getPictureInfo",{cmd_getPictureInfo()})},
 
+
+	])
+}
+
+
+// Cmd.obj
+__fn DIS_obj_methods $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("obj", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+
+		// let javascript interpreter execute what is written in file
+		{NsCmd($LINKstr, $md, $i, "plcAg",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,"0",SSargs5,SSargs6)})}, // Cmd.obj.placeUnitAsAgent()
+		
 
 	])
 }
