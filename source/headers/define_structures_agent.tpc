@@ -99,6 +99,7 @@ struct("agent",{
 	agent_PerkFlagBits1 = 665 // 1=ShieldMaster,2=Brawny,4=BattleForged,8=Nimble,16=Stalwart,32=Dodge,64=Anticipation,128=Pathfinder,256=Fearsome
 	agent_PerkFlagBits2 = 666 // 1=KillingFrenzy,2=BattleFlow,4=Berserk,8=HeadHunter, ////MASTERIES 16=M_Sword,32=M_Spear,64=M_Axe,128=M_Hammer,256=M_Mace,512=M_Cleaver,1024=M_Dagger,2048=M_Throwing,4096=M_res1,8192=M_res2,16384=M_bow,32768=M_crossbow,65536=M_res3 131072=spellcaster
 
+	agent_ScriptFlags = 668
 	agent_HeadID = 669 //999999=fullcovered
 		agent_GENERATION_Hair = 670 // will be abolished
 
@@ -227,7 +228,7 @@ struct("agent",{
 	agent_AccID = 855
 	agent_ReserveWeaponID = 856
 	agent_ReserveShieldID = 857
-
+	agent_HorseID = 858 // unco
 
 	agent_Formbits = 859
 		agent_static_MapXdiv5 = 858
@@ -335,6 +336,11 @@ struct("agent",{
 	PerkFlagBits3_FLAG_Mountainblade = 64
 	PerkFlagBits3_FLAG_HorseArcher = 128
 	PerkFlagBits3_FLAG_Parthian = 256
+
+
+	// script flags
+	ScriptFlags_has_EV_OnDeath = 1 // call on death
+
 
 	//Agent bits
 	AgentBits_horse_in_forest = 8
@@ -674,6 +680,8 @@ struct("agent",{
 		victim_Race = 740064
 		victim_PerkFlagBits1 = 740065
 		victim_PerkFlagBits2 = 740066	
+
+		victim_ScriptFlags = 740068
 
 		victim_Buff1 = 740071
 

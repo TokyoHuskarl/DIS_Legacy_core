@@ -1081,6 +1081,11 @@ DIS.string = {
 
 const Adr_ptr_spawnAgent = 201; //v[201]
 
+
+/**
+ *
+ * @namespace DIS.agent
+ */
 DIS.agent = { 
 	// get from game variable
 	limit: getv(1004), 
@@ -1115,6 +1120,16 @@ DIS.agent = {
 	getPtrToMainParam: (id) => {return 4700 + id * 300;},
 
 	getMainParam: function(id,slot){return getv(this.getPtrToMainParam(id) +slot);},
+
+	/**
+	 * A simple getter function that returns DIS_agent.
+	 * Toutching RTS.agents directly might be dangerous so maybe you should use this
+	 * @param {int} agid
+	 * @return {DIS_agent}
+	 */
+	getAgent: function(agid){
+		return RTS.agents[agid];
+	},
 
 
 	// BROKEN

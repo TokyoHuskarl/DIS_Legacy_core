@@ -34,18 +34,30 @@ __fn Kill_Agent {
 					// "309 = ID 306 = ActionState"
 					macro_extract_victim_data_Ptr11
 
+
+					// call Death Trigger Event via js
+					@if `victim_ScriptFlags & ScriptFlags_has_EV_OnDeath {
+						// Call DIS_agent.EV_OnDeath() on js
+						def JS_bs_agt_call_EV_OnDeath = __str("RTS.agents.getAgent(","\v[",__id(Ptr20),"]).EV_OnDeath()")
+						eval_js(JS_bs_agt_call_EV_OnDeath)
+
+					}
+
 					Temp11 = Kill_pointer + 4707
 					v[826] = Kill_pointer + 4826 
+
 					// "Flagset"
 					v[v[826]] &= ~524288
 					// "Can be FATALITY?"
 					v[371] = var1
 					// "Randomise upsidedown"
 					v[v[826]] |=  victim_ExMotionFlags & ExMotionFlags_FLAG_horseback ? 0 : [0, 0, 4096][rnd(0, 2)] 
-					// "-1を死体とする"
+
+					// "0未満を死体とする"
 					// "ObjIDを死体に変える"
 					v[331] = v[Ptr18]
 					v[Ptr18] = -1
+
 					// "ActionStateを死体に変える"
 					Temp6 = Kill_pointer + 4943
 					v[Temp6] = -1
@@ -53,18 +65,17 @@ __fn Kill_Agent {
 					victim_RelativeX.copy Temp5, 2
 					// "Colour"
 					v[Kill_pointer + 4995] = 0
-					//v[0] = v[4013..4016] = [TT1 * 1, TT1 * -2, TT1 * -2, TT1 * -2]
 					v[4013] = victim_2hweapon_stain
 					v[4014..4016] = victim_2hweapon_stain * -2
 
 					// "#base colour"
-					//v[0] = v[4001..4004] = [-22, -22, -22, -34]
 					v[4001..4003] = -22
 					v[4004] = -34
 
 					// "#"
 					// "If victim is explosive"
 					v[373] = 0
+					
 					@if `victim_ProcessObjBit & BaseObjBit_FLAG_Explosive {
 						v[190] = 4
 						v[Kill_pointer + 4780] = victim_InCombatTimer <= 0 ? 50 : victim_InCombatTimer
