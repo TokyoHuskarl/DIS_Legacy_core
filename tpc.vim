@@ -9,6 +9,7 @@ if exists('b:current_syntax')
   finish
 endif
 
+
 syn match tpcMetaVar "\$\w*" contains=tpcNumber,tpcString
 syn match tpcString "__str(\S*)" contains=tpcMetaVar
 syn match tpcNumber "__id(\S*)" contains=tpcMetaVar
