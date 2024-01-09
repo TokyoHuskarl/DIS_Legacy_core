@@ -353,6 +353,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													val_asg(v[371],N1) // v[371] = 1
 															
 													v[4036] = (agent_MovementOrder == 11 ? v[844] : !v[844]) * 4096
+
 													
 											}
 
@@ -408,6 +409,10 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																			}
 																			
 																	}
+
+																// Weapon animation
+																v[4114] = agent_ExMotionFlags & ExMotionFlags_FLAG_Weapon_With_Anim ? v[4116] : v[4114] // sync to horse sprite
+
 																	
 															}.elif expected_action_sprite == 2 { // idle state
 																v[4046] += v[325] > 0 ? -1 : 1
