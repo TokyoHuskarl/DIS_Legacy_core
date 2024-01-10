@@ -1677,32 +1677,14 @@ class RTSmission {
 		};
 		sett(Adrt_JSSAVE_triggersQueue,savestring.slice(0,-1));
 
-		sett(745,JSON.stringify(this.local)); // Str_Mission_local_save_JSON
 
 	};
 
+	// mission.restore
 	restore = function(){
 		// restore mission settings
 		this.passedFrame = getv(Adr_world_frame); //  if DIS game is reloaded, then reload from RM var. 
 
-		// process below should be moved to RTS.restore, since the name space for map variables is changed
-		let saved = JSON.parse(gett(745));
-		for (let elmid in saved){
-			let elm = saved[elmid];
-			if (typeof elm == "object"){
-				if (Array.isArray(elm)){ // if it's array
-					this.local[elmid] = [];
-					for (let elm_b of elm) {
-						this.local[elmid].push(elm_b);
-					};
-				}; // otherwise just ignore, since triggers cannot be saved
-			} else {
-				this.local[elmid] = elm; // just copy
-
-			};
-		};
-		
-		deblog(JSON.stringify(this.local));
 		deblog("RTSmission restored.");
 	};
 
@@ -2324,13 +2306,22 @@ let RTS = {
 
 	save: function(){ // called whenever the game is trying to make RM savefile...
 		
+		// save RTS.Preserve to RM strmem[745]
+		sett(745,JSON.stringify(this.Preserve)); // Str_Mission_local_save_JSON
+
 		this.mission.save();
-		deblog("saved :D")
+		deblog("RTS object data saved.")
 
 	}, // unco
 
-	// RTS.restore
-	restore: function(){ // call this function whenever player loads RMsavedata. reload all data from RM memories.
+	// 
+	/**
+	 * RTS.restore()
+	 * call this function whenever player loads RMsavedata. reload all data from RM memories.
+	 * @method
+	 *
+	 */
+	restore: function(){
 		// restore mission 
 		this.setupMission(gett(741)); // read mission info json file stored in the savedata
 		const str_missiondef_storage = 761; // <- header_mission.tpc
@@ -2338,7 +2329,6 @@ let RTS = {
 		// load mission def and setup map system
 		eval(gett(str_missiondef_storage)); // using eval is kinda risky, but still, I have no choice under 2003Maniacs I suppose
 		this.mission.conf.isSightSystemOn = gets(Is_SightSystem_On); // setupMapLoading
-
 		this.mission.restore(); // start actual restoration
 
 		// restore map
@@ -2346,14 +2336,34 @@ let RTS = {
 		const str_mapdef_storage = 762; // <- header_mission.tpc.. is this even necessarily?
 		this.map.restore();
 
-
 		// restore js variables in RTS object
 		for (let elm of this.savedVars) { // restore each of nonvolatileVar in this.savedVars
 			elm.refresh(); // get RPG maker var
 			deblog(elm.address);
 		};
 
+		// moved from RTSmission.
+		let saved = JSON.parse(gett(745)); // get stringfied json from RM string memory
+		for (let elmid in saved){
+			let elm = saved[elmid];
+			if (typeof elm == "object"){
+				if (Array.isArray(elm)){ // if it's array
+					this.Preserve[elmid] = [];
+					for (let elm_b of elm) {
+						this.Preserve[elmid].push(elm_b);
+					};
+				} else { // otherwise just ignore, since triggers cannot be saved
+					errorlog("Object that is not a simple array was saved in RTS.Preserve. Restoration process for it ignored.")
+				}; 
+			} else {
+				this.Preserve[elmid] = elm; // just copy
+			};
+		};
+		
+		deblog(JSON.stringify(this.Preserve));
 		deblog("js variables restored..")
+
+
 
 		// restore simple triggers in RTS object
 		this.mission.triggers.queue = []; // init triggers
@@ -2728,26 +2738,13 @@ var Cmd = {
 		 * Spawns an unit as a agent to given pos in RTS map.
 		 *
 		 * @param {trpid} troopid
-		 * @param {} tilepos
-		 * @param {} team
-		 * @param {} dir
-		 * @param {} stance
+		 * @param {[int,int]} tilepos
+		 * @param {int} team
+		 * @param {int} dir
+		 * @param {int} stance
 		 * @param {} flag
 		 */
 		spawnAgent: function(troopid,tilepos,team,dir,stance,flag){ // returns DIS_agent
-			troopid = trpid.convert(troopid);
-			dir = dir || Cmd.runFlags.spawnagent_lastdir;
-			stance = stance || 0;
-			flag = flag || 0;
-			
-			Cmd.Qset(this.CmdType,"spnAg",`${troopid},${tilepos[0]},${tilepos[1]},${team},${dir},${stance}`);
-			let protoagent = new DIS_agent(DIS.agent.searchEmptySpace(),troopid,team,false);
-
-			Cmd.runFlags.spawnagent_lastdir = dir
-			return protoagent;
-		},
-
-		placeUnit: function(troopid,tilepos,team,dir,stance,flag){ // returns DIS_agent
 			troopid = trpid.convert(troopid);
 			dir = dir || Cmd.runFlags.spawnagent_lastdir;
 			stance = stance || 0;
@@ -2802,11 +2799,11 @@ var Cmd = {
 		},
 
 		/**
-		 * Just spawns palisade.
+		 * Spawns palisade.
 		 *
-		 * @param {} tileposbeg
-		 * @param {} tileposend
-		 * @param {} team
+		 * @param {[int,int]} tileposbeg
+		 * @param {[int,int]} tileposend
+		 * @param {int} team
 		 * @return {DIS_agent} - Spawned Palisade 
 		 */
 		spawnPalisade: function(tileposbeg,tileposend,team){ // returns DIS_agent
@@ -2816,7 +2813,7 @@ var Cmd = {
 		},
 
 		/**
-		 * .
+		 * Spawns wall.
 		 *
 		 * @param {int} tileposbeg
 		 * @param {int} tileposend
@@ -2971,15 +2968,33 @@ var Cmd = {
 			Cmd.Qset(this.CmdType,"mvCam",`${tilepos[0]},${tilepos[1]}`);
 		},
 
+		/**
+		 * Toggle game pause or not.
+		 *
+		 * @param {bool} bool - pause or not
+		 */
 		togglePause: function(bool){
 			let sw = Number(bool)
 			Cmd.Qset(this.CmdType,"tgPaus",`${sw}`);
 		},
 
+		/**
+		 * underconstruction.
+		 *
+		 * @param {} playerid
+		 * @param {} resource
+		 * @param {} amount
+		 */
 		giveResource: function(playerid,resource,amount){ // not done
 			Cmd.Qset(this.CmdType,"giveRs",`${playerid},${resource},${amount}`);
 		},
 
+		/**
+		 * underconstruction.
+		 *
+		 * @param {} playerid
+		 * @param {} tech
+		 */
 		giveTech: function(playerid,tech){ // not done
 			let convt = DATA.TECH.ptrs[[techid.convert(tech)]].getFlagAddress();
 			Cmd.Qset(this.CmdType,"giveTech",`${playerid},${convt[0]},${convt[1]}`);
@@ -3601,44 +3616,6 @@ const maptest = `
 `
 
 
-	/*
-	let fucker = Cmd.game.pic.load("camera_ball",10);
-	fucker.refreshPicInfo();
-	Cmd.run()
-	Cmd.sendback([11,4,5,14],0,RMarray)
-	fucker.refreshPicInfo();
-	RTS.path.init();
-	RTS.path.storePath(1,[1414,4545,1919])
-	RTS.path.givePath(1)
-	RTS.path.copyPath(1,2)
-	DIS.log.crash("test")
-	
-	DIS.data.init(); // reset DIS data
-	*/
-
-
-
-	// クロージャの使い方知らなかった者
-	const datadata = (function() {
-		function privfun() {
-			// プライベート関数の実装
-			return 1
-		}
-		var I_hate_dragons = 241
-
-		return {
-
-			print: ()=>{
-				deblog(privfun());
-				deblog(I_hate_dragons);
-			},
-			poccia: "pinnis",
-			pockpock: 111
-
-		};
-	})();
-
-	datadata.print()
 
 };
 

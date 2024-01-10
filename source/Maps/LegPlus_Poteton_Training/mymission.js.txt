@@ -1,11 +1,11 @@
 // mission script for poteton training
 
-LOCAL.trig1 = RTS.mission.createSimpleTrigger_Timer(0,0,1); // class RTStrigger(condtion)
-LOCAL.trig2 = RTS.mission.createSimpleTrigger_Timer(0,0,20); // class RTStrigger(condtion)
-LOCAL.loop_enMove = RTS.mission.createSimpleTrigger_Loop(500);
-LOCAL.loop_gameend = RTS.mission.createSimpleTrigger_Loop(500);
+RTS.Preserve.trig1 = RTS.mission.createSimpleTrigger_Timer(0,0,1); // class RTStrigger(condtion)
+RTS.Preserve.trig2 = RTS.mission.createSimpleTrigger_Timer(0,0,20); // class RTStrigger(condtion)
+RTS.Preserve.loop_enMove = RTS.mission.createSimpleTrigger_Loop(500);
+RTS.Preserve.loop_gameend = RTS.mission.createSimpleTrigger_Loop(500);
 
-LOCAL.trig1.effect = () => {
+RTS.Preserve.trig1.effect = () => {
 	Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_OP1",33));
 	Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_OP2",33));
 	Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_Hint1",33));
@@ -13,16 +13,16 @@ LOCAL.trig1.effect = () => {
 
 
 // battle 
-LOCAL.trig2.effect = () => {
+RTS.Preserve.trig2.effect = () => {
 	Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_EnemyCharge",33));
 	Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_Hint2",33));
 	
-	MISSION.setTrigger(LOCAL.loop_gameend);
+	MISSION.setTrigger(RTS.Preserve.loop_gameend);
 
 };
 
 // 
-LOCAL.loop_enMove.effect = ()=> {
+RTS.Preserve.loop_enMove.effect = ()=> {
 	
 /*
 	cond_switch_on(402)
@@ -47,7 +47,7 @@ LOCAL.loop_enMove.effect = ()=> {
 };
 
 //
-LOCAL.loop_gameend.effect = function() {
+RTS.Preserve.loop_gameend.effect = function() {
 	// player victory
 	if (g_PLAYER.getCombatPower() <= 4){
 
@@ -77,8 +77,8 @@ LOCAL.loop_gameend.effect = function() {
 
 // start up process
 RTS.mission.startup = function(){
-	MISSION.setTrigger(LOCAL.trig1);
-	MISSION.setTrigger(LOCAL.trig2);
+	MISSION.setTrigger(RTS.Preserve.trig1);
+	MISSION.setTrigger(RTS.Preserve.trig2);
 	//Ally
 	//犠牲者十人未満はいける
 
