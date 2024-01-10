@@ -662,7 +662,7 @@ __fn func_generate_agent_finish_set {
 				init_AEAB_array(SpawnAgentID)
 					reg2 = 4701
 					reg2 += SpawnAgentID * 300 
-					set_AEAB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_Ptr_To_BasicArray)
+					set_AEB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_Ptr_To_BasicArray)
 
 			}
 		}
@@ -1162,9 +1162,11 @@ __fn func_generate_agent_finish_set {
 		// AEB returns
 		__if DIS_EXPERIMENTAL == 1 {
 			set_AEB_array(SpawnAgentID,302,AgentExBuffer_SLOT_ActionSprite_1,5)
+
 		}.else bl{
 			// sprite order -> save AEBA 
 			agent_SpriteOrder = Temp2 * 1 + Temp3 * 10 + Temp4 * 100 + Temp5 * 1000 + Temp6 * 10000
+
 		}
 
 	//ATTENTION
@@ -1262,7 +1264,10 @@ __fn func_generate_agent_finish_set {
 						agent_BaseObjBit |= 32
 						@comment "do not bleed"
 						agent_BaseObjBit |= BaseObjBit_FLAG_Immune_to_bleed
+
+						// TECH CHECK
 						agent_BaseAD += v[2409 + spawnSet_Team % 3] & 0x10000 ? muldiv(agent_BaseAD, 10, 100) : 0
+
 						@comment "##Sushi"
 						@if agent_Culture == 12 {
 							agent_BaseMS = muldiv(agent_BaseMS, 150, 100)
@@ -1344,8 +1349,9 @@ __fn func_generate_agent_finish_set {
 	@comment "#Deffensive perks"
 		@comment "#TakenDamageMul"
 		agent_TakenDamageMultiplier = 100
+
 		@comment "##Nimble #How should I make brawny affect nimble calculation?"
-		@if `agent_PerkFlagBits1 & 8 {
+		@if `agent_PerkFlagBits1 & PerkFlagBits1_FLAG_Nimble {
 			agent_TakenDamageMultiplier = min(100, max(100 - 55 + muldiv(v[838] - 15, 12, 100), 45))
 				@comment "#Nimble"
 				@comment "#Speed Bonus"
@@ -1381,7 +1387,7 @@ __fn func_generate_agent_finish_set {
 		} .else bl {
 			@if agent_UnitType == 106 {
 				@comment "Turret"
-					agent_AgentBits |= 1048576
+					agent_StaticBits |= 1048576
 					agent_ActionTimer = v[154] % v[1195]
 
 			} .else bl {
@@ -1397,7 +1403,7 @@ __fn func_generate_agent_finish_set {
 		@comment "#PassiveTimer"
 		agent_PassiveTimer = v[154] % v[1139]
 		@comment "#FootStepTimer"
-		agent_FootstepSoundTimer = (agent_ExMotionFlags & 1024) == 0 ? agent_BaseMS / 4 + agent_ActionTimer : 999999999
+		agent_FootstepSoundTimer = (agent_ExMotionFlags & ExMotionFlags_FLAG_no_footstepsound) == 0 ? agent_BaseMS / 4 + agent_ActionTimer : 999999999
 		//Get Luck(rand)
 		agent_Luck=rnd(0,999)
 
@@ -1413,7 +1419,7 @@ __fn func_generate_agent_finish_set {
 				@if s[151] .isOff() {
 
 
-					// abolished
+					// reintroduce?
 					vname[4806], "ConstAgentRootSightArrayHead"
 						__if DIS_EXPERIMENTAL == -1 { 
 							reg2 = sqrt(agent_UnitEyeSight_for_AgentSearch, 1)

@@ -4,7 +4,6 @@
 def {
 	UI_BOTTOMLEFT = 0
 	UI_TOPRIGHT = 1
-
 }
 
 def macro_extract_selecting_unit_param = {
@@ -12,6 +11,17 @@ def macro_extract_selecting_unit_param = {
 	    val_add(Ptr1,N4701) // Ptr1 += 4701
 	    v[Ptr1].copy agent_ObjectType,300
 
+}
+
+/**
+ * RTS UI component for control panel.
+ *
+ * @param {[int,int]} $center - [X,Y]
+ * @param {[int,int]} $size - [width,height]
+ * @param {bl} $ 
+ */
+__fn RTSUI_object_controlpanel_button_mouseover $center $size {
+	
 }
 
 
@@ -824,716 +834,779 @@ __fn UI_CEV_MOUSE_OBSERVER {
 						}
 						
 				}
-				// "Q"
-				@if `between(LEGV_MousePointer_X, v[1037] - v[1291], v[1037] + v[1291]) && between(LEGV_MousePointer_Y, v[1038] - v[1292], v[1038] + v[1292]) {
+
+				// upper side button panels 
+				@if `between(LEGV_MousePointer_Y, v[1038] - v[1292], v[1038] + v[1292]) {
+					// "Q"
+					@if `between(LEGV_MousePointer_X, v[1037] - v[1291], v[1037] + v[1291]) {
 						TT1 = v[1037]
-						TT2 = v[1038] - 1
-						@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-						@if `TT1 != v[345] || TT2 != v[346] {
-					v[1291].copy v[343], 2
-					v[343..344] *= 2
-					@pic[PicID_ButtonSelect].strpic {
-							""
-							.pos TT1, TT2 .center
-							.size v[343], v[344]                    .chromakey 1
-							.scale 100
-							.trans 20
-							.rgbs 0, 200, 0, 100
-							.font "", 12 .noShadow
-							.spacing 0, 4
-							.skin "Odinscall_mapcam" .nobg .noGradation
-							.add
-							.mapLayer 9
-							.eraseWhenTransfer
-					}
-					@pic[PicID_Popup_1].erase
-					@pic[PicID_Auxilia_Message_Window].erase
-					@pic[PicID_Square_Checker].erase
-					
-						}
-						@if LEGS_selecting_enemy .isOn() {
-					LEGS_Showing_PopupWindow_1.on
-					Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-					// "スキルチェック"
-					v[301] = Ptr20 + 141
-					// "番号を見る"
-					LEGV_sentence_id_on_popup1 = v[v[301]]
-					// "skillが存在するなら文章を見る"
-					@if LEGV_sentence_id_on_popup1 >= 1 {
-							@call .cev 1200
-							
-					}
-					
-						} .else bl {
-					@if v[101] >= 1 {
-							@if s[27] .isOn() {
-						// "STATICを選択中"
-						LEGS_Showing_PopupWindow_1.on
-						Ptr20 = v[101] * 300 + 4700
-						// "生産できるやつを見る"
-						v[301] = Ptr20 + 138
-						// "Qなので1"
-						TT1 = 1
-						// "番号を見る"
-						v[301] += TT1 * 3
-						LEGV_sentence_id_on_popup1 = v[v[301]]
-						// "生産できる兵士が存在するなら文章を見る"
-						@if LEGV_sentence_id_on_popup1 >= 1 {
-								@call .cev 199
-								
-						}
-						
-							} .else bl {
-						LEGS_Showing_PopupWindow_1.on
-						Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-						// "スキルチェック"
-						v[301] = Ptr20 + 141
-						// "番号を見る"
-						LEGV_sentence_id_on_popup1 = v[v[301]]
-						// "skillが存在するなら文章を見る"
-						v[89] = v[557]
-						@if LEGV_sentence_id_on_popup1 >= 1 {
-								@call .cev 1200
-								
-						}
-						
+							TT2 = v[1038] - 1
+							@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+							@if `TT1 != v[345] || TT2 != v[346] {
+								v[1291].copy v[343], 2
+									v[343..344] *= 2
+									@pic[PicID_ButtonSelect].strpic {
+										""
+											.pos TT1, TT2 .center
+											.size v[343], v[344]                    .chromakey 1
+											.scale 100
+											.trans 20
+											.rgbs 0, 200, 0, 100
+											.font "", 12 .noShadow
+											.spacing 0, 4
+											.skin "Odinscall_mapcam" .nobg .noGradation
+											.add
+											.mapLayer 9
+											.eraseWhenTransfer
+									}
+								@pic[PicID_Popup_1].erase
+									@pic[PicID_Auxilia_Message_Window].erase
+									@pic[PicID_Square_Checker].erase
+
 							}
-							
-					}
-					
+						@if LEGS_selecting_enemy .isOn() {
+							LEGS_Showing_PopupWindow_1.on
+								Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+								// "スキルチェック"
+								v[301] = Ptr20 + 141
+								// "番号を見る"
+								LEGV_sentence_id_on_popup1 = v[v[301]]
+								// "skillが存在するなら文章を見る"
+								@if LEGV_sentence_id_on_popup1 >= 1 {
+									@call .cev 1200
+
+								}
+
+						} .else bl {
+							@if v[101] >= 1 {
+								@if s[27] .isOn() {
+									// "STATICを選択中"
+									LEGS_Showing_PopupWindow_1.on
+										Ptr20 = v[101] * 300 + 4700
+										// "生産できるやつを見る"
+										v[301] = Ptr20 + 138
+										// "Qなので1"
+										TT1 = 1
+										// "番号を見る"
+										v[301] += TT1 * 3
+										LEGV_sentence_id_on_popup1 = v[v[301]]
+										// "生産できる兵士が存在するなら文章を見る"
+										@if LEGV_sentence_id_on_popup1 >= 1 {
+											@call .cev 199
+
+										}
+
+								} .else bl {
+									LEGS_Showing_PopupWindow_1.on
+										Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+										// "スキルチェック"
+										v[301] = Ptr20 + 141
+										// "番号を見る"
+										LEGV_sentence_id_on_popup1 = v[v[301]]
+										// "skillが存在するなら文章を見る"
+										v[89] = v[557]
+										@if LEGV_sentence_id_on_popup1 >= 1 {
+											@call .cev 1200
+
+										}
+
+								}
+
+							}
+
 						}
-						
-				}
-				// "W"
-				@if `between(LEGV_MousePointer_X, v[1039] - v[1291], v[1039] + v[1291]) && between(LEGV_MousePointer_Y, v[1040] - v[1292], v[1040] + v[1292]) {
+
+					}
+					// "W"
+					@if `between(LEGV_MousePointer_X, v[1039] - v[1291], v[1039] + v[1291])  {
 						TT1 = v[1039]
-						TT2 = v[1040] - 1
-						@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-						@if `TT1 != v[345] || TT2 != v[346] {
-					v[1291].copy v[343], 2
-					v[343..344] *= 2
-					@pic[PicID_ButtonSelect].strpic {
-							""
-							.pos TT1, TT2 .center
-							.size v[343], v[344]                    .chromakey 1
-							.scale 100
-							.trans 20
-							.rgbs 0, 200, 0, 100
-							.font "", 12 .noShadow
-							.spacing 0, 4
-							.skin "Odinscall_mapcam" .nobg .noGradation
-							.add
-							.mapLayer 9
-							.eraseWhenTransfer
-					}
-					@pic[PicID_Popup_1].erase
-					@pic[PicID_Auxilia_Message_Window].erase
-					@pic[PicID_Square_Checker].erase
-					
-						}
-						@if LEGS_selecting_enemy .isOn() {
-					LEGS_Showing_PopupWindow_1.on
-					Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-					// "スキルチェック"
-					v[301] = Ptr20 + 161
-					// "番号を見る"
-					LEGV_sentence_id_on_popup1 = v[v[301]]
-					// "生産できる兵士が存在するなら文章を見る"
-					@if LEGV_sentence_id_on_popup1 >= 1 {
-							@call .cev 1200
-							
-					}
-					
-						} .else bl {
-					@if v[101] >= 1 {
-							@if s[27] .isOn() {
-						// "STATICを選択中"
-						LEGS_Showing_PopupWindow_1.on
-						Ptr20 = v[101] * 300 + 4700
-						// "生産できるやつを見る"
-						v[301] = Ptr20 + 138
-						// "W 2"
-						TT1 = 2
-						// "番号を見る"
-						v[301] += TT1 * 3
-						LEGV_sentence_id_on_popup1 = v[v[301]]
-						// "生産できる兵士が存在するなら文章を見る"
-						@if LEGV_sentence_id_on_popup1 >= 1 {
-								@call .cev 199
-								
-						}
-						
-							} .else bl {
-						LEGS_Showing_PopupWindow_1.on
-						Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-						// "スキルチェック"
-						v[301] = Ptr20 + 161
-						// "番号を見る"
-						LEGV_sentence_id_on_popup1 = v[v[301]]
-						// "生産できる兵士が存在するなら文章を見る"
-						v[89] = v[558]
-						@if LEGV_sentence_id_on_popup1 >= 1 {
-								@call .cev 1200
-								
-						}
-						
+							TT2 = v[1040] - 1
+							@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+							@if `TT1 != v[345] || TT2 != v[346] {
+								v[1291].copy v[343], 2
+									v[343..344] *= 2
+									@pic[PicID_ButtonSelect].strpic {
+										""
+											.pos TT1, TT2 .center
+											.size v[343], v[344]                    .chromakey 1
+											.scale 100
+											.trans 20
+											.rgbs 0, 200, 0, 100
+											.font "", 12 .noShadow
+											.spacing 0, 4
+											.skin "Odinscall_mapcam" .nobg .noGradation
+											.add
+											.mapLayer 9
+											.eraseWhenTransfer
+									}
+								@pic[PicID_Popup_1].erase
+									@pic[PicID_Auxilia_Message_Window].erase
+									@pic[PicID_Square_Checker].erase
+
 							}
-							
-					}
-					
+						@if LEGS_selecting_enemy .isOn() {
+							LEGS_Showing_PopupWindow_1.on
+								Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+								// "スキルチェック"
+								v[301] = Ptr20 + 161
+								// "番号を見る"
+								LEGV_sentence_id_on_popup1 = v[v[301]]
+								// "生産できる兵士が存在するなら文章を見る"
+								@if LEGV_sentence_id_on_popup1 >= 1 {
+									@call .cev 1200
+
+								}
+
+						} .else bl {
+							@if v[101] >= 1 {
+								@if s[27] .isOn() {
+									// "STATICを選択中"
+									LEGS_Showing_PopupWindow_1.on
+										Ptr20 = v[101] * 300 + 4700
+										// "生産できるやつを見る"
+										v[301] = Ptr20 + 138
+										// "W 2"
+										TT1 = 2
+										// "番号を見る"
+										v[301] += TT1 * 3
+										LEGV_sentence_id_on_popup1 = v[v[301]]
+										// "生産できる兵士が存在するなら文章を見る"
+										@if LEGV_sentence_id_on_popup1 >= 1 {
+											@call .cev 199
+
+										}
+
+								} .else bl {
+									LEGS_Showing_PopupWindow_1.on
+										Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+										// "スキルチェック"
+										v[301] = Ptr20 + 161
+										// "番号を見る"
+										LEGV_sentence_id_on_popup1 = v[v[301]]
+										// "生産できる兵士が存在するなら文章を見る"
+										v[89] = v[558]
+										@if LEGV_sentence_id_on_popup1 >= 1 {
+											@call .cev 1200
+
+										}
+
+								}
+
+							}
+
 						}
-						
-				}
-				// "E"
-				@if `between(LEGV_MousePointer_X, v[1041] - v[1291], v[1041] + v[1291]) && between(LEGV_MousePointer_Y, v[1042] - v[1292], v[1042] + v[1292]) {
+
+					}
+					// "E"
+					@if `between(LEGV_MousePointer_X, v[1041] - v[1291], v[1041] + v[1291]) {
 						TT1 = v[1041]
-						TT2 = v[1042] - 1
-						@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-						@if `TT1 != v[345] || TT2 != v[346] {
-					v[1291].copy v[343], 2
-					v[343..344] *= 2
-					@pic[PicID_ButtonSelect].strpic {
-							""
-							.pos TT1, TT2 .center
-							.size v[343], v[344]                    .chromakey 1
-							.scale 100
-							.trans 20
-							.rgbs 0, 200, 0, 100
-							.font "", 12 .noShadow
-							.spacing 0, 4
-							.skin "Odinscall_mapcam" .nobg .noGradation
-							.add
-							.mapLayer 9
-							.eraseWhenTransfer
-					}
-					@pic[PicID_Popup_1].erase
-					@pic[PicID_Auxilia_Message_Window].erase
-					@pic[PicID_Square_Checker].erase
-					
-						}
-						@if LEGS_selecting_enemy .isOn() {
-					LEGS_Showing_PopupWindow_1.on
-					Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-					// "スキルチェック"
-					v[301] = Ptr20 + 181
-					// "番号を見る"
-					LEGV_sentence_id_on_popup1 = v[v[301]]
-					// "生産できる兵士が存在するなら文章を見る"
-					@if LEGV_sentence_id_on_popup1 >= 1 {
-							@call .cev 1200
-							
-					}
-					
-						} .else bl {
-					@if v[101] >= 1 {
-							@if s[27] .isOn() {
-						// "STATICを選択中"
-						LEGS_Showing_PopupWindow_1.on
-						Ptr20 = v[101] * 300
-						Ptr20 += 4700
-						// "生産できるやつを見る"
-						v[301] = Ptr20 + 138
-						// "E 3"
-						TT1 = 3
-						// "番号を見る"
-						v[301] += TT1 * 3
-						LEGV_sentence_id_on_popup1 = v[v[301]]
-						// "生産できる兵士が存在するなら文章を見る"
-						@if LEGV_sentence_id_on_popup1 >= 1 {
-								@call .cev 199
-								
-						}
-						
-							} .else bl {
-						LEGS_Showing_PopupWindow_1.on
-						Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-						// "スキルチェック"
-						v[301] = Ptr20 + 181
-						// "番号を見る"
-						LEGV_sentence_id_on_popup1 = v[v[301]]
-						// "生産できる兵士が存在するなら文章を見る"
-						v[89] = v[559]
-						@if LEGV_sentence_id_on_popup1 >= 1 {
-								@call .cev 1200
-								
-						}
-						
+							TT2 = v[1042] - 1
+							@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+							@if `TT1 != v[345] || TT2 != v[346] {
+								v[1291].copy v[343], 2
+									v[343..344] *= 2
+									@pic[PicID_ButtonSelect].strpic {
+										""
+											.pos TT1, TT2 .center
+											.size v[343], v[344]                    .chromakey 1
+											.scale 100
+											.trans 20
+											.rgbs 0, 200, 0, 100
+											.font "", 12 .noShadow
+											.spacing 0, 4
+											.skin "Odinscall_mapcam" .nobg .noGradation
+											.add
+											.mapLayer 9
+											.eraseWhenTransfer
+									}
+								@pic[PicID_Popup_1].erase
+									@pic[PicID_Auxilia_Message_Window].erase
+									@pic[PicID_Square_Checker].erase
+
 							}
-							
-					}
-					
+						@if LEGS_selecting_enemy .isOn() {
+							LEGS_Showing_PopupWindow_1.on
+								Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+								// "スキルチェック"
+								v[301] = Ptr20 + 181
+								// "番号を見る"
+								LEGV_sentence_id_on_popup1 = v[v[301]]
+								// "生産できる兵士が存在するなら文章を見る"
+								@if LEGV_sentence_id_on_popup1 >= 1 {
+									@call .cev 1200
+
+								}
+
+						} .else bl {
+							@if v[101] >= 1 {
+								@if s[27] .isOn() {
+									// "STATICを選択中"
+									LEGS_Showing_PopupWindow_1.on
+										Ptr20 = v[101] * 300
+										Ptr20 += 4700
+										// "生産できるやつを見る"
+										v[301] = Ptr20 + 138
+										// "E 3"
+										TT1 = 3
+										// "番号を見る"
+										v[301] += TT1 * 3
+										LEGV_sentence_id_on_popup1 = v[v[301]]
+										// "生産できる兵士が存在するなら文章を見る"
+										@if LEGV_sentence_id_on_popup1 >= 1 {
+											@call .cev 199
+
+										}
+
+								} .else bl {
+									LEGS_Showing_PopupWindow_1.on
+										Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+										// "スキルチェック"
+										v[301] = Ptr20 + 181
+										// "番号を見る"
+										LEGV_sentence_id_on_popup1 = v[v[301]]
+										// "生産できる兵士が存在するなら文章を見る"
+										v[89] = v[559]
+										@if LEGV_sentence_id_on_popup1 >= 1 {
+											@call .cev 1200
+
+										}
+
+								}
+
+							}
+
 						}
-						
-				}
-				// "R"
-				@if `between(LEGV_MousePointer_X, v[1043] - v[1291], v[1043] + v[1291]) && between(LEGV_MousePointer_Y, v[1044] - v[1292], v[1044] + v[1292]) {
+
+					}
+					// "R"
+					@if `between(LEGV_MousePointer_X, v[1043] - v[1291], v[1043] + v[1291]) {
 						TT1 = v[1043]
-						TT2 = v[1044] - 1
-						@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-						@if `TT1 != v[345] || TT2 != v[346] {
-					v[1291].copy v[343], 2
-					v[343..344] *= 2
-					@pic[PicID_ButtonSelect].strpic {
-							""
-							.pos TT1, TT2 .center
-							.size v[343], v[344]                    .chromakey 1
-							.scale 100
-							.trans 20
-							.rgbs 0, 200, 0, 100
-							.font "", 12 .noShadow
-							.spacing 0, 4
-							.skin "Odinscall_mapcam" .nobg .noGradation
-							.add
-							.mapLayer 9
-							.eraseWhenTransfer
-					}
-					@pic[PicID_Popup_1].erase
-					@pic[PicID_Auxilia_Message_Window].erase
-					@pic[PicID_Square_Checker].erase
-					
-						}
+							TT2 = v[1044] - 1
+							@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+							@if `TT1 != v[345] || TT2 != v[346] {
+								v[1291].copy v[343], 2
+									v[343..344] *= 2
+									@pic[PicID_ButtonSelect].strpic {
+										""
+											.pos TT1, TT2 .center
+											.size v[343], v[344]                    .chromakey 1
+											.scale 100
+											.trans 20
+											.rgbs 0, 200, 0, 100
+											.font "", 12 .noShadow
+											.spacing 0, 4
+											.skin "Odinscall_mapcam" .nobg .noGradation
+											.add
+											.mapLayer 9
+											.eraseWhenTransfer
+									}
+								@pic[PicID_Popup_1].erase
+									@pic[PicID_Auxilia_Message_Window].erase
+									@pic[PicID_Square_Checker].erase
+
+							}
 						@if LEGS_selecting_enemy .isOn() {
-					LEGS_Showing_PopupWindow_1.on
-					Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-					// "スキルチェック"
-					v[301] = Ptr20 + 201
-					// "番号を見る"
-					LEGV_sentence_id_on_popup1 = v[v[301]]
-					// "生産できる兵士が存在するなら文章を見る"
-					@if LEGV_sentence_id_on_popup1 >= 1 {
-							@call .cev 1200
-							
-					}
-					
-						} .else bl {
-					@if v[101] >= 1 {
-							@if s[27] .isOn() {
-						// "STATICを選択中"
-						LEGS_Showing_PopupWindow_1.on
-						Ptr20 = v[101] * 300 + 4700
-						// "生産できるやつを見る"
-						v[301] = Ptr20 + 138
-						// "E 3"
-						TT1 = 4
-						// "番号を見る"
-						v[301] += TT1 * 3
-						LEGV_sentence_id_on_popup1 = v[v[301]]
-						// "生産できる兵士が存在するなら文章を見る"
-						v[89] = v[560]
-						@if LEGV_sentence_id_on_popup1 >= 1 {
-								@call .cev 199
-								
-						}
-						
-							} .else bl {
-						LEGS_Showing_PopupWindow_1.on
-						Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
-						// "スキルチェック"
-						v[301] = Ptr20 + 201
-						// "番号を見る"
-						LEGV_sentence_id_on_popup1 = v[v[301]]
-						// "生産できる兵士が存在するなら文章を見る"
-						@if LEGV_sentence_id_on_popup1 >= 1 {
-								v[89] = v[560]
-								@call .cev 1200
-								
-						}
-						
-							}
-							
-					}
-					
-						}
-						
-				}
-				// "A"
-				TT1 = between(LEGV_MousePointer_X, v[1045] - v[1291], v[1045] + v[1291]) && between(LEGV_MousePointer_Y, v[1046] - v[1292], v[1046] + v[1292]) ? 1 : 0
-				@if TT1 == 1 {
-						TT1 = v[1045]
-						TT2 = v[1046] - 1
-						@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-						@if `TT1 != v[345] || TT2 != v[346] {
-					v[1291].copy v[343], 2
-					v[343..344] *= 2
-					@pic[PicID_ButtonSelect].strpic {
-							""
-							.pos TT1, TT2 .center
-							.size v[343], v[344]                    .chromakey 1
-							.scale 100
-							.trans 20
-							.rgbs 0, 200, 0, 100
-							.font "", 12 .noShadow
-							.spacing 0, 4
-							.skin "Odinscall_mapcam" .nobg .noGradation
-							.add
-							.mapLayer 9
-							.eraseWhenTransfer
-					}
-					@pic[PicID_Popup_1].erase
-					@pic[PicID_Auxilia_Message_Window].erase
-					@pic[PicID_Square_Checker].erase
-					
-						}
-						@if v[101] >= 1 {
-					LEGS_Showing_PopupWindow_1.on
-					@if s[27] .isOff() {
-							@if s[29] .isOn() {
-						LEGS_Showing_PopupWindow_1.on
-						LEGV_sentence_id_on_popup1 = 17
-						// "生産できる兵士が存在するなら文章を見る"
-						@if LEGV_sentence_id_on_popup1 >= 1 {
-								v[89] = v[484]
-								@call .cev 1200
-								
-						}
-						
-							} .else bl {
-
-						// "STATIC以外"
-						@if v[943] >= 1 {
-								
-						} .else bl {
-								// "警戒指令"
-								LEGV_sentence_id_on_popup1 = -1
-								@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
-							// "#call quickstrings"
-							// var1 = 106
-							// @call .cev 1890
-							getQstr(106)
-							@pic[PicID_Popup_1].strpic {
-									t[3000]
-									.pos v[1301], v[1065] .bottomLeft
-									.size 0, 0                                    .chromakey 1
-									.scale 100
-									.trans v[1066]
-									.rgbs 100, 100, 100, 100
-									.font Font_UI, v[4511]
-									.spacing 0, 0
-									.skin "" .stretch
-									.mapLayer 9
-									.eraseWhenTransfer
-									.affectedByFlash
-									.affectedByShake
-							}
-							@pic[PicID_Auxilia_Message_Window].erase
-							
-								}
-								
-						}
-						
-							}
-							
-					} .else bl {
-							// "STATICを選択中"
 							LEGS_Showing_PopupWindow_1.on
-							Ptr20 = v[101] * 300 + 4700
-							// "生産できるやつを見る"
-							v[301] = Ptr20 + 138
-							// "A 5"
-							TT1 = 5
-							// "番号を見る"
-							v[301] += TT1 * 3
-							LEGV_sentence_id_on_popup1 = v[v[301]]
-							// "生産できる兵士が存在するなら文章を見る"
-							@if LEGV_sentence_id_on_popup1 >= 1 {
-						@call .cev 199
-						
+								Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+								// "スキルチェック"
+								v[301] = Ptr20 + 201
+								// "番号を見る"
+								LEGV_sentence_id_on_popup1 = v[v[301]]
+								// "生産できる兵士が存在するなら文章を見る"
+								@if LEGV_sentence_id_on_popup1 >= 1 {
+									@call .cev 1200
+
+								}
+
+						} .else bl {
+							@if v[101] >= 1 {
+								@if s[27] .isOn() {
+									// "STATICを選択中"
+									LEGS_Showing_PopupWindow_1.on
+										Ptr20 = v[101] * 300 + 4700
+										// "生産できるやつを見る"
+										v[301] = Ptr20 + 138
+										// "E 3"
+										TT1 = 4
+										// "番号を見る"
+										v[301] += TT1 * 3
+										LEGV_sentence_id_on_popup1 = v[v[301]]
+										// "生産できる兵士が存在するなら文章を見る"
+										v[89] = v[560]
+										@if LEGV_sentence_id_on_popup1 >= 1 {
+											@call .cev 199
+
+										}
+
+								} .else bl {
+									LEGS_Showing_PopupWindow_1.on
+										Ptr20 = (LEGS_selecting_enemy == 0 ? v[101] : v[100]) * 300 + 4700
+										// "スキルチェック"
+										v[301] = Ptr20 + 201
+										// "番号を見る"
+										LEGV_sentence_id_on_popup1 = v[v[301]]
+										// "生産できる兵士が存在するなら文章を見る"
+										@if LEGV_sentence_id_on_popup1 >= 1 {
+											v[89] = v[560]
+												@call .cev 1200
+
+										}
+
+								}
+
 							}
-							
-					}
-					
+
 						}
-						
+
+					}
+
+					// "T"
+
+					
+					TT1 = v[1043] + 2 * v[1291] + 1 // calc difference from R key X
+					
+					@if `between(LEGV_MousePointer_X, TT1 - v[1291], TT1 + v[1291]) {
+							TT2 = v[1044] - 1
+							@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+							@if `TT1 != v[345] || TT2 != v[346] {
+									v[1291].copy v[343], 2
+									v[343..344] *= 2
+									@pic[PicID_ButtonSelect].strpic {
+										""
+											.pos TT1, TT2 .center
+											.size v[343], v[344]                    .chromakey 1
+											.scale 100
+											.trans 20
+											.rgbs 0, 200, 0, 100
+											.font "", 12 .noShadow
+											.spacing 0, 4
+											.skin "Odinscall_mapcam" .nobg .noGradation
+											.add
+											.mapLayer 9
+											.eraseWhenTransfer
+									}
+									@pic[PicID_Popup_1].erase
+									@pic[PicID_Auxilia_Message_Window].erase
+									@pic[PicID_Square_Checker].erase
+
+							}
+
+						LEGS_Showing_PopupWindow_1.on
+						LEGV_sentence_id_on_popup1 = -1 // temp
+						@if LEGS_selecting_enemy .isOn() {
+
+						} .else bl {
+							@if v[101] >= 1 { // selecting ally
+
+								@if s[27] .isOn() {
+									// "STATICを選択中"
+
+								} .else bl {
+									// not STATIC but ally 
+
+								}
+
+							}.else bl{
+								// selecting nothing
+								LEGS_Showing_PopupWindow_1.off
+							}
+
+						}
+
+					}
 				}
 
-				// "S"
-				@if `between(LEGV_MousePointer_X, v[1047] - v[1291], v[1047] + v[1291]) && between(LEGV_MousePointer_Y, v[1048] - v[1292], v[1048] + v[1292]) {
+
+				// down side buttons
+				@if `between(LEGV_MousePointer_Y, v[1046] - v[1292], v[1046] + v[1292]){
+						// "A"
+						@if `between(LEGV_MousePointer_X, v[1045] - v[1291], v[1045] + v[1291]) {
+							TT1 = v[1045]
+								TT2 = v[1046] - 1
+								@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+								@if `TT1 != v[345] || TT2 != v[346] {
+									v[1291].copy v[343], 2
+										v[343..344] *= 2
+										@pic[PicID_ButtonSelect].strpic {
+											""
+												.pos TT1, TT2 .center
+												.size v[343], v[344]                    .chromakey 1
+												.scale 100
+												.trans 20
+												.rgbs 0, 200, 0, 100
+												.font "", 12 .noShadow
+												.spacing 0, 4
+												.skin "Odinscall_mapcam" .nobg .noGradation
+												.add
+												.mapLayer 9
+												.eraseWhenTransfer
+										}
+									@pic[PicID_Popup_1].erase
+										@pic[PicID_Auxilia_Message_Window].erase
+										@pic[PicID_Square_Checker].erase
+
+								}
+							@if v[101] >= 1 {
+								LEGS_Showing_PopupWindow_1.on
+									@if s[27] .isOff() {
+										@if s[29] .isOn() {
+											LEGS_Showing_PopupWindow_1.on
+												LEGV_sentence_id_on_popup1 = 17
+												// "生産できる兵士が存在するなら文章を見る"
+												@if LEGV_sentence_id_on_popup1 >= 1 {
+													v[89] = v[484]
+														@call .cev 1200
+
+												}
+
+										} .else bl {
+
+											// "STATIC以外"
+											@if v[943] >= 1 {
+
+											} .else bl {
+												// "警戒指令"
+												LEGV_sentence_id_on_popup1 = -1
+													@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+														// "#call quickstrings"
+														// var1 = 106
+														// @call .cev 1890
+														getQstr(106)
+															@pic[PicID_Popup_1].strpic {
+																t[3000]
+																	.pos v[1301], v[1065] .bottomLeft
+																	.size 0, 0                                    .chromakey 1
+																	.scale 100
+																	.trans v[1066]
+																	.rgbs 100, 100, 100, 100
+																	.font Font_UI, v[4511]
+																	.spacing 0, 0
+																	.skin "" .stretch
+																	.mapLayer 9
+																	.eraseWhenTransfer
+																	.affectedByFlash
+																	.affectedByShake
+															}
+														@pic[PicID_Auxilia_Message_Window].erase
+
+													}
+
+											}
+
+										}
+
+									} .else bl {
+										// "STATICを選択中"
+										LEGS_Showing_PopupWindow_1.on
+											Ptr20 = v[101] * 300 + 4700
+											// "生産できるやつを見る"
+											v[301] = Ptr20 + 138
+											// "A 5"
+											TT1 = 5
+											// "番号を見る"
+											v[301] += TT1 * 3
+											LEGV_sentence_id_on_popup1 = v[v[301]]
+											// "生産できる兵士が存在するなら文章を見る"
+											@if LEGV_sentence_id_on_popup1 >= 1 {
+												@call .cev 199
+
+											}
+
+									}
+
+							}
+
+						}
+
+					// "S"
+					@if `between(LEGV_MousePointer_X, v[1047] - v[1291], v[1047] + v[1291]){
 						TT1 = v[1047]
-						TT2 = v[1048] - 1
-						@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-						@if `TT1 != v[345] || TT2 != v[346] {
-					v[1291].copy v[343], 2
-					v[343..344] *= 2
-					@pic[PicID_ButtonSelect].strpic {
-							""
-							.pos TT1, TT2 .center
-							.size v[343], v[344]                    .chromakey 1
-							.scale 100
-							.trans 20
-							.rgbs 0, 200, 0, 100
-							.font "", 12 .noShadow
-							.spacing 0, 4
-							.skin "Odinscall_mapcam" .nobg .noGradation
-							.add
-							.mapLayer 9
-							.eraseWhenTransfer
-					}
-					@pic[PicID_Popup_1].erase
-					@pic[PicID_Auxilia_Message_Window].erase
-					@pic[PicID_Square_Checker].erase
-					
-						}
+							TT2 = v[1048] - 1
+							@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+							@if `TT1 != v[345] || TT2 != v[346] {
+								v[1291].copy v[343], 2
+									v[343..344] *= 2
+									@pic[PicID_ButtonSelect].strpic {
+										""
+											.pos TT1, TT2 .center
+											.size v[343], v[344]                    .chromakey 1
+											.scale 100
+											.trans 20
+											.rgbs 0, 200, 0, 100
+											.font "", 12 .noShadow
+											.spacing 0, 4
+											.skin "Odinscall_mapcam" .nobg .noGradation
+											.add
+											.mapLayer 9
+											.eraseWhenTransfer
+									}
+								@pic[PicID_Popup_1].erase
+									@pic[PicID_Auxilia_Message_Window].erase
+									@pic[PicID_Square_Checker].erase
+
+							}
 
 						@if v[101] >= 1 {
-					LEGS_Showing_PopupWindow_1.on
-					@if s[27] .isOff() {
-							@if s[29] .isOn() {
-						LEGS_Showing_PopupWindow_1.on
-						LEGV_sentence_id_on_popup1 = 17
-						// "生産できる兵士が存在するなら文章を見る"
-						@if LEGV_sentence_id_on_popup1 >= 1 {
-								v[89] = v[485]
-								@call .cev 1200
-								
-						}
-						
-							} .else bl {
-						// "STATIC以外"
-						@if v[943] >= 1 {
-								
-						} .else bl {
-								// "防御指令"
-								LEGV_sentence_id_on_popup1 = -2
-								@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
-							// var1 = 107
-							// @call .cev 1890
-							getQstr(107)
-							@pic[PicID_Popup_1].strpic {
-									t[3000]
-									.pos v[1301], v[1065] .bottomLeft
-									.size 0, 0                                    .chromakey 1
-									.scale 100
-									.trans v[1066]
-									.rgbs 100, 100, 100, 100
-									.font Font_UI, v[4511]
-									.spacing 0, 0
-									.skin "" .stretch
-									.mapLayer 9
-									.eraseWhenTransfer
-									.affectedByFlash
-									.affectedByShake
-							}
-							@pic[PicID_Auxilia_Message_Window].erase
-							
-								}
-								
-						}
-						
-							}
-							
-					} .else bl {
-							// "STATICを選択中"
 							LEGS_Showing_PopupWindow_1.on
-							Ptr20 = v[101] * 300 + 4700
-							// "生産できるやつを見る"
-							v[301] = Ptr20 + 138
-							// "S 6"
-							TT1 = 6
-							// "番号を見る"
-							v[301] += TT1 * 3
-							LEGV_sentence_id_on_popup1 = v[v[301]]
-							// "生産できる兵士が存在するなら文章を見る"
-							@if LEGV_sentence_id_on_popup1 >= 1 {
-						@call .cev 199
-						
-							}
-							
-					}
-					
-						}
-						
-				}
+								@if s[27] .isOff() {
+									@if s[29] .isOn() {
+										LEGS_Showing_PopupWindow_1.on
+											LEGV_sentence_id_on_popup1 = 17
+											// "生産できる兵士が存在するなら文章を見る"
+											@if LEGV_sentence_id_on_popup1 >= 1 {
+												v[89] = v[485]
+													@call .cev 1200
 
-				// "D"
-				@if `between(LEGV_MousePointer_X, v[1049] - v[1291], v[1049] + v[1291]) && between(LEGV_MousePointer_Y, v[1050] - v[1292], v[1050] + v[1292]) {
+											}
+
+									} .else bl {
+										// "STATIC以外"
+										@if v[943] >= 1 {
+
+										} .else bl {
+											// "防御指令"
+											LEGV_sentence_id_on_popup1 = -2
+												@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+													// var1 = 107
+													// @call .cev 1890
+													getQstr(107)
+														@pic[PicID_Popup_1].strpic {
+															t[3000]
+																.pos v[1301], v[1065] .bottomLeft
+																.size 0, 0                                    .chromakey 1
+																.scale 100
+																.trans v[1066]
+																.rgbs 100, 100, 100, 100
+																.font Font_UI, v[4511]
+																.spacing 0, 0
+																.skin "" .stretch
+																.mapLayer 9
+																.eraseWhenTransfer
+																.affectedByFlash
+																.affectedByShake
+														}
+													@pic[PicID_Auxilia_Message_Window].erase
+
+												}
+
+										}
+
+									}
+
+								} .else bl {
+									// "STATICを選択中"
+									LEGS_Showing_PopupWindow_1.on
+										Ptr20 = v[101] * 300 + 4700
+										// "生産できるやつを見る"
+										v[301] = Ptr20 + 138
+										// "S 6"
+										TT1 = 6
+										// "番号を見る"
+										v[301] += TT1 * 3
+										LEGV_sentence_id_on_popup1 = v[v[301]]
+										// "生産できる兵士が存在するなら文章を見る"
+										@if LEGV_sentence_id_on_popup1 >= 1 {
+											@call .cev 199
+
+										}
+
+								}
+
+						}
+
+					}
+
+					// "D"
+					@if `between(LEGV_MousePointer_X, v[1049] - v[1291], v[1049] + v[1291]){
 						TT1 = v[1049]
-						TT2 = v[1050] - 1
-						@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-						@if `TT1 != v[345] || TT2 != v[346] {
-					v[1291].copy v[343], 2
-					v[343..344] *= 2
-					@pic[PicID_ButtonSelect].strpic {
-							""
-							.pos TT1, TT2 .center
-							.size v[343], v[344]                    .chromakey 1
-							.scale 100
-							.trans 20
-							.rgbs 0, 200, 0, 100
-							.font "", 12 .noShadow
-							.spacing 0, 4
-							.skin "Odinscall_mapcam" .nobg .noGradation
-							.add
-							.mapLayer 9
-							.eraseWhenTransfer
-					}
-					@pic[PicID_Popup_1].erase
-					@pic[PicID_Auxilia_Message_Window].erase
-					@pic[PicID_Square_Checker].erase
-					
-						}
+							TT2 = v[1050] - 1
+							@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+							@if `TT1 != v[345] || TT2 != v[346] {
+								v[1291].copy v[343], 2
+									v[343..344] *= 2
+									@pic[PicID_ButtonSelect].strpic {
+										""
+											.pos TT1, TT2 .center
+											.size v[343], v[344]                    .chromakey 1
+											.scale 100
+											.trans 20
+											.rgbs 0, 200, 0, 100
+											.font "", 12 .noShadow
+											.spacing 0, 4
+											.skin "Odinscall_mapcam" .nobg .noGradation
+											.add
+											.mapLayer 9
+											.eraseWhenTransfer
+									}
+								@pic[PicID_Popup_1].erase
+									@pic[PicID_Auxilia_Message_Window].erase
+									@pic[PicID_Square_Checker].erase
+
+							}
 
 						@if v[101] >= 1 {
-					LEGS_Showing_PopupWindow_1.on
-					@if s[27] .isOff() {
-							@if s[29] .isOn() {
-						LEGS_Showing_PopupWindow_1.on
-						LEGV_sentence_id_on_popup1 = 17
-						// "生産できる兵士が存在するなら文章を見る"
-						@if LEGV_sentence_id_on_popup1 >= 1 {
-								v[89] = v[486]
-								@call .cev 1200
-								
-						}
-						
-							} .else bl {
-						// "STATIC以外"
-						@if v[943] >= 1 {
-								
-						} .else bl {
-								// "待機指令"
-								LEGV_sentence_id_on_popup1 = -3
-								@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
-							var1 = 108
-							@call .cev 1890
-
-							@pic[PicID_Popup_1].strpic {
-									"\t[3000]"
-									.pos v[1301], v[1065] .bottomLeft
-									.size 0, 0                                    .chromakey 1
-									.scale 100
-									.trans v[1066]
-									.rgbs 100, 100, 100, 100
-									.font Font_UI, v[4511]
-									.spacing 0, 0
-									.skin "" .stretch
-									.mapLayer 9
-									.eraseWhenTransfer
-									.affectedByFlash
-									.affectedByShake
-							}
-							@pic[PicID_Auxilia_Message_Window].erase
-							
-								}
-								
-						}
-						
-							}
-							
-					} .else bl {
-							// "STATICを選択中"
 							LEGS_Showing_PopupWindow_1.on
-							Ptr20 = v[101] * 300 + 4700
-							// "生産できるやつを見る"
-							v[301] = Ptr20 + 138
-							// "D 7"
-							TT1 = 7
-							// "番号を見る"
-							v[301] += TT1 * 3
-							LEGV_sentence_id_on_popup1 = v[v[301]]
-							// "生産できる兵士が存在するなら文章を見る"
-							@if LEGV_sentence_id_on_popup1 >= 1 {
-								@call .cev 199
-						
-							}
-							
-					}
-					
-						}
-						
-				}
+								@if s[27] .isOff() {
+									@if s[29] .isOn() {
+										LEGS_Showing_PopupWindow_1.on
+											LEGV_sentence_id_on_popup1 = 17
+											// "生産できる兵士が存在するなら文章を見る"
+											@if LEGV_sentence_id_on_popup1 >= 1 {
+												v[89] = v[486]
+													@call .cev 1200
 
-				// "F"
-				@if `between(LEGV_MousePointer_X, v[1051] - v[1291], v[1051] + v[1291]) && between(LEGV_MousePointer_Y, v[1052] - v[1292], v[1052] + v[1292]) {
-						TT1 = v[1051]
-						TT2 = v[1052] - 1
-						@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
-						@if `TT1 != v[345] || TT2 != v[346] {
-					v[1291].copy v[343], 2
-					v[343..344] *= 2
-					@pic[PicID_ButtonSelect].strpic {
-							""
-							.pos TT1, TT2 .center
-							.size v[343], v[344]                    .chromakey 1
-							.scale 100
-							.trans 20
-							.rgbs 0, 200, 0, 100
-							.font "", 12 .noShadow
-							.spacing 0, 4
-							.skin "Odinscall_mapcam" .nobg .noGradation
-							.add
-							.mapLayer 9
-							.eraseWhenTransfer
-					}
-					@pic[PicID_Popup_1].erase
-					@pic[PicID_Auxilia_Message_Window].erase
-					@pic[PicID_Square_Checker].erase
-					
+											}
+
+									} .else bl {
+										// "STATIC以外"
+										@if v[943] >= 1 {
+
+										} .else bl {
+											// "待機指令"
+											LEGV_sentence_id_on_popup1 = -3
+												@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+													var1 = 108
+														@call .cev 1890
+
+														@pic[PicID_Popup_1].strpic {
+															"\t[3000]"
+																.pos v[1301], v[1065] .bottomLeft
+																.size 0, 0                                    .chromakey 1
+																.scale 100
+																.trans v[1066]
+																.rgbs 100, 100, 100, 100
+																.font Font_UI, v[4511]
+																.spacing 0, 0
+																.skin "" .stretch
+																.mapLayer 9
+																.eraseWhenTransfer
+																.affectedByFlash
+																.affectedByShake
+														}
+													@pic[PicID_Auxilia_Message_Window].erase
+
+												}
+
+										}
+
+									}
+
+								} .else bl {
+									// "STATICを選択中"
+									LEGS_Showing_PopupWindow_1.on
+										Ptr20 = v[101] * 300 + 4700
+										// "生産できるやつを見る"
+										v[301] = Ptr20 + 138
+										// "D 7"
+										TT1 = 7
+										// "番号を見る"
+										v[301] += TT1 * 3
+										LEGV_sentence_id_on_popup1 = v[v[301]]
+										// "生産できる兵士が存在するなら文章を見る"
+										@if LEGV_sentence_id_on_popup1 >= 1 {
+											@call .cev 199
+
+										}
+
+								}
+
 						}
+
+					}
+
+					// "F"
+					@if `between(LEGV_MousePointer_X, v[1051] - v[1291], v[1051] + v[1291]){
+						TT1 = v[1051]
+							TT2 = v[1052] - 1
+							@pic[PicID_ButtonSelect].getInfo .cewh .baseRect v[345], v[346], v[347], v[347]
+							@if `TT1 != v[345] || TT2 != v[346] {
+								v[1291].copy v[343], 2
+									v[343..344] *= 2
+									@pic[PicID_ButtonSelect].strpic {
+										""
+											.pos TT1, TT2 .center
+											.size v[343], v[344]                    .chromakey 1
+											.scale 100
+											.trans 20
+											.rgbs 0, 200, 0, 100
+											.font "", 12 .noShadow
+											.spacing 0, 4
+											.skin "Odinscall_mapcam" .nobg .noGradation
+											.add
+											.mapLayer 9
+											.eraseWhenTransfer
+									}
+								@pic[PicID_Popup_1].erase
+									@pic[PicID_Auxilia_Message_Window].erase
+									@pic[PicID_Square_Checker].erase
+
+							}
 
 						@if v[101] >= 1 {
-					LEGS_Showing_PopupWindow_1.on
-					@if s[27] .isOff() {
-							// "STATIC以外"
-							@if s[29] .isOn() {
-						
-							} .else bl {
-						@if v[943] >= 1 {
-								LEGV_sentence_id_on_popup1 = -6
-								@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
-							// "#call quickstrings"
-							// var1 = 104
-							// @call .cev 1890
-							show_pupwin1_with_Qstr(104,v[1301],v[1065])
-							@pic[PicID_Auxilia_Message_Window].erase
-							
+							LEGS_Showing_PopupWindow_1.on
+								@if s[27] .isOff() {
+									// "STATIC以外"
+									@if s[29] .isOn() {
+
+									} .else bl {
+										@if v[943] >= 1 {
+											LEGV_sentence_id_on_popup1 = -6
+												@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+													// "#call quickstrings"
+													// var1 = 104
+													// @call .cev 1890
+													show_pupwin1_with_Qstr(104,v[1301],v[1065])
+														@pic[PicID_Auxilia_Message_Window].erase
+
+												}
+
+										} .else bl {
+											// "手動指令"
+											LEGV_sentence_id_on_popup1 = -4
+												@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+													// var1 = 109
+													// @call .cev 1890
+													show_pupwin1_with_Qstr(109,v[1301],v[1065])
+														@pic[PicID_Auxilia_Message_Window].erase
+
+												}
+
+										}
+
+									}
+
+								} .else bl {
+									// "STATICを選択中"
+									LEGV_sentence_id_on_popup1 = -5
+										@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
+											// "#call quickstrings"
+											// var1 = 105
+											// @call .cev 1890
+											getQstr(105)
+												@pic[PicID_Popup_1].strpic {
+													t[3000]
+														.pos v[1301], v[1065] .bottomLeft
+														.size 0, 0                            .chromakey 1
+														.scale 100
+														.trans v[1066]
+														.rgbs 100, 100, 100, 100
+														.font Font_UI, v[4511]
+														.spacing 0, 0
+														.skin "" .stretch
+														.mapLayer 9
+														.eraseWhenTransfer
+														.affectedByFlash
+														.affectedByShake
+												}
+											@pic[PicID_Auxilia_Message_Window].erase
+
+										}
+
 								}
-								
-						} .else bl {
-								// "手動指令"
-								LEGV_sentence_id_on_popup1 = -4
-								@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
-							// var1 = 109
-							// @call .cev 1890
-							show_pupwin1_with_Qstr(109,v[1301],v[1065])
-							@pic[PicID_Auxilia_Message_Window].erase
-							
-								}
-								
+
 						}
-						
-							}
-							
-					} .else bl {
-							// "STATICを選択中"
-							LEGV_sentence_id_on_popup1 = -5
-							@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
-						// "#call quickstrings"
-						// var1 = 105
-						// @call .cev 1890
-						getQstr(105)
-						@pic[PicID_Popup_1].strpic {
-								t[3000]
-								.pos v[1301], v[1065] .bottomLeft
-								.size 0, 0                            .chromakey 1
-								.scale 100
-								.trans v[1066]
-								.rgbs 100, 100, 100, 100
-								.font Font_UI, v[4511]
-								.spacing 0, 0
-								.skin "" .stretch
-								.mapLayer 9
-								.eraseWhenTransfer
-								.affectedByFlash
-								.affectedByShake
-						}
-						@pic[PicID_Auxilia_Message_Window].erase
-						
-							}
-							
+
 					}
-					
-						}
-						
 				}
 
 
@@ -1751,7 +1824,7 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 	// v[85] = GETKEY_Alt_PRESS == 1 ? 0 : v[85] // force refresh
 	@if save_descID_1fpast != current_descriptionID {
 			s[151].on
-			v[31..34] = 0
+			v[31].repeat 0,4 // v[31..34] = 0
 			@if current_descriptionID <= 80 {
 					v[257] = 200 + current_descriptionID
 					@call .cev v[257]

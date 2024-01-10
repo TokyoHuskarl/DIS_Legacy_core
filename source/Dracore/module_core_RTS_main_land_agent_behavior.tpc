@@ -122,11 +122,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	    // @comment "TEST"
 	    s[103..104].off // turn off Heading to other agent flag AND Trying to stop temporal flag
 	
-	    __if DIS_EXPERIMENTAL == 1 {
-		    // Kill walking flag
-				def Main_KILLActionFlag_FLAG_Walking = ~ActionFlag_FLAG_Walking
-		    agent_ActionFlag &= Main_KILLActionFlag_FLAG_Walking
-	    }
+			// Kill walking flag
+			def Main_KILLActionFlag_FLAG_Walking = ~ActionFlag_FLAG_Walking
+			agent_ActionFlag &= Main_KILLActionFlag_FLAG_Walking
 
 	    // Check if the agent is in dash or KnockBack state
 	    @if agent_MovementOrder != MovementOrder_TYPE_force_moving { // if NOT
@@ -576,18 +574,13 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				} .else bl {
 						TT1 = agent_MovementOrder == MovementOrder_TYPE_fleeing ? -1 : 1
 
-						//v[0] = v[612..613] = [v[621] * agent_ProcessMS * TT1, v[622] * agent_ProcessMS * TT1]
+						// v[0] = v[612..613] = [v[621] * agent_ProcessMS * TT1, v[622] * agent_ProcessMS * TT1]
 						v[621].copy agent_MilPixVx,2
-						//agent_MilPixVx = v[621] * agent_ProcessMS 
-						//agent_MilPixVy = v[622] * agent_ProcessMS 
+						// agent_MilPixVx = v[621] * agent_ProcessMS 
+						// agent_MilPixVy = v[622] * agent_ProcessMS 
 						v[612..613] *= TT1 * agent_ProcessMS
-						//@comment "#WalkingSwitchOn"
-						__if DIS_EXPERIMENTAL == 1 {
-							agent_ActionFlag |= ActionFlag_FLAG_Walking
-						}.else bl{
-							TT1 = v[4558] + v[401]
-							s[TT1].on
-						}
+						// @comment "#WalkingSwitchOn"
+						agent_ActionFlag |= ActionFlag_FLAG_Walking
 				}
 				
 	    } .else bl { // the agent is getting KnockBacked!

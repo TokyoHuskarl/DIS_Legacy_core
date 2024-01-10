@@ -60,10 +60,6 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	LEGV_MapTileOriginX = ev[3].scrx
 	LEGV_MapTileOriginY = ev[3].scry
 
-	// "#WalkingSwitchOff"
-	__if DIS_EXPERIMENTAL == 0 {
-		s[3001..4000].off
-	}
 
 	// "Normal Units"
 	v[536] = v[4532]
@@ -831,8 +827,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							@if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
 								// TT2 = v[2409 + v[251] % 3]
 
-								__if DIS_EXPERIMENTAL == -1 { 
-									macro_get_agent_MetaTeam_into_var(v[v[536]],TT2) // AEBA
+								__if DIS_EXPERIMENTAL == 1 { 
+									macro_get_agent_MetaTeam_into_var(v[v[536]],TT2) // AEB
 								}.else bl {
 									TT2 = v[Const_AgentMetaTeam_begin + v[401]]
 								}
@@ -1969,7 +1965,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					defv bool_if_my_tile_is_covered = __id(TempFlag1)
 
 					// get agent MetaTeam
-					__if DIS_EXPERIMENTAL == -1 { // AEBA
+					__if DIS_EXPERIMENTAL == 1 { // AEB
 						macro_get_agent_MetaTeam_into_var(v[v[536]],TT1)
 						flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << TT1 //shift Meta Team
 					}.else bl {
@@ -1986,7 +1982,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				defv flag_pikecovered = __id(TT10)
 				
 				// get agent MetaTeam
-				__if DIS_EXPERIMENTAL == -1 {
+				__if DIS_EXPERIMENTAL == 1 {
 					macro_get_agent_MetaTeam_into_var(v[v[536]],TT1) // AEBA
 					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << TT1 // shift Meta Team
 				}.else bl {
@@ -2272,7 +2268,7 @@ __fn main_agent_footsound {
 	@if s[2].isOff(){
 	// "#Footstep Sound"
 	@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[401] + 501] == 1 {
-		@if `agent_ActionFlag & ActionFlag_FLAG_Walking { // DIS_EXPERIMENTAL s[v[401] + v[4558]] == 1 {
+		@if `agent_ActionFlag & ActionFlag_FLAG_Walking {
 			// "#Sub timer"
 			// agent_FootstepSoundTimer -= agent_ExMotionFlags & ExMotionFlags_FLAG_no_footstepsound ? 0 : 2
 			val_sub(agent_FootstepSoundTimer,N4)
