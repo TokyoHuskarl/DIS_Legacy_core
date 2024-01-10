@@ -69,7 +69,18 @@ function debObj(obj) {
 function errorlog(text) {
 	if (DEBUG != BOOT_MODE_DEBUG){let contx = "ERROR:" + text;console.log(contx);} else {deblog(`ERROR: ${text}`)};
 	return Cmd.game.log_error(text);
-}
+};
+
+/**
+ * save target object to given TPC string slot as a json.
+ * @param {*} obj
+ * @param {int} strslot - TPC string var slot.
+ */
+function save_jsobj_as_JSON(obj,strslot){
+	sett(strslot,JSON.stringify(obj));
+};
+
+
 
 
 const LF = "\n";
@@ -171,6 +182,11 @@ const TREETYPE_TEMPLATE = 0,
 	TREETYPE_TRP = 1,
 	TREETYPE_TECH = 2;
 
+/**
+ * DATA_tree.
+ * This class deals with tree type structures like tech tree or troop tree for a faction.
+ * @extends {DATA_entity}
+ */
 class DATA_tree extends DATA_entity {
 	constructor(id,typ,tree){ // {string}
 		super(id);
@@ -239,7 +255,12 @@ class DATA_tree extends DATA_entity {
 };
 
 
-// template class for factions
+/**
+ * DATA_faction.
+ * Template class for factions.
+ * 
+ * @extends {DATA_entity}
+ */
 class DATA_faction extends DATA_entity {
 	constructor(id){
 		super(id);
@@ -261,8 +282,13 @@ class DATA_faction extends DATA_entity {
 
 
 
-// template class for troops
+// 
 
+/**
+ * DATA_troop.
+ * template class for troops
+ * @extends {DATA_entity}
+ */
 class DATA_troop extends DATA_entity {
 	constructor(id,src){
 		super(id);
@@ -271,11 +297,11 @@ class DATA_troop extends DATA_entity {
 		// copy given troop template
 		DATA.giveSrcParamToData(this,src);
 
+		//what the fugg is this naming?
 		const pewpew = (key,idcon) => {this[key] = typeof this[key] != "number" ? idcon[this[key]] : this[key]};
 		// convert strings to DIS number id
 		pewpew("faction",facid);
 		pewpew("race",raceid);
-
 
 		// convert arrays into simple number
 	};
@@ -311,7 +337,11 @@ class DATA_skin extends DATA_entity {
 };
 
 
-// template class for troops
+/**
+ * DATA_tech.
+ *
+ * @extends {DATA_entity}
+ */
 class DATA_tech extends DATA_entity {
 	constructor(id,src){
 		super(id);
@@ -323,10 +353,15 @@ class DATA_tech extends DATA_entity {
 		// convert arrays into simple number
 	};
 
-	getFlagAddress(){
+ /**
+  * getFlagSlot.
+	* @return {[int,hex]} - [TechBitsAddress,Flag] 
+  */
+	getFlagSlot(){
 		// [address,flag]
-		let retme = [this.techflagslot[0],parseInt(this.techflagslot[1],16)];
-		return retme;
+		// let retme = [this.techflagslot[0],parseInt(this.techflagslot[1],16)];
+		// return retme;
+		return [this.techflagslot[0],this.techflagslot[1]];
 	};
 
 };
@@ -692,9 +727,15 @@ const Adrt_ShLog = 782; // same as Shell Log address
 /**
  * @class IDdict
  * 
+ * ID dictionary
  *
  */
 class IDdict {
+ /**
+  * constructor.
+  *
+  * @param {string} prefix - like "TRP", "FAC" or etc. It doesn't need "_"
+  */
 	constructor(prefix){this.prefix = prefix + "_";}
 	reserved = new Set(["prefix","reserved","convert","register"]); // never change
 
@@ -703,7 +744,7 @@ class IDdict {
 	 *
 	 * @method convert
 	 * @param {string OR int} given
-	 * @return {int} 
+	 * @return {int} - number id contained in the IDdict.
 	 */
 	convert(given) {
 		let id = given;
@@ -718,10 +759,26 @@ class IDdict {
 		return id;
 	};
 
+ /**
+  * register key and value.
+  * 
+  * @param {string} key - need prefix that fits to one of the IDdict.
+  * @param {int} val - value.
+	* @return {int} - this[key] = val;
+  */
 	register(key,val){
+
+		// if given key is already registered, return error
 		if (this.reserved.has(key)){
 			return errorlog(`The name of the new key "${key}" is reserved word for DIS ID dictionary!`);
 		};
+
+		// if given key has no prefix, return error
+		if (key.lastIndexOf(this.prefix) == -1){
+			return errorlog(`"${key}" has no "${this.prefix}" prefix.`);
+		};
+
+		// if there's no happening, just register key and value
 		return this[key] = val;
 	};
 
@@ -731,12 +788,11 @@ var trpid = new IDdict("TRP"); // troop ID table
 var staid = new IDdict("STA"); // building ID table
 var facid = new IDdict("FAC"); // faction ID table
 var raceid = new IDdict("RACE"); // race ID table
-
 var techid =  new IDdict("TECH"); // ["techid",[group,flagbit]]
 
 // consts
 /**
- *
+ * 
  * @namespace DIS.consts
  */
 DIS.consts = {
@@ -755,7 +811,12 @@ const ADRS = DIS.consts.Adrs
 const ADRT = DIS.consts.Adrt
 
 /**
-* DIS API object(?) 
+* DIS API object
+* This big object has methods to access RPG Maker system, DIS data system and etc directly via js.
+* Plenty of useful methods are there but they don't care overheads very much, so they might be slow.
+* Also be careful of difference of execution timing between DIS API and methods called via Cmd. 
+*
+* @namespace DIS
 */
 
 DIS = { // DIS fundamental components
@@ -923,9 +984,8 @@ DIS.macro = {
 	timeToFrame: (h,m,s) => ((h * 3600 + m * 60 + s) * DIS.RTSFPS), 
 };
 
-//
 DIS.building = {
-
+	
 };
 
 DIS.log = {
@@ -960,7 +1020,6 @@ DIS.lang = {
 		// unco
 	},
 
-
 	// ??? is there any necessity of not using Object but array? 
 	currentFontdata: {
 		common: [gett(Adrt_FontCommon),getv(Adr_FontCommonSize)],
@@ -971,7 +1030,6 @@ DIS.lang = {
 };
 
 DIS.conf = {
-
 	// resolution
 	resolution: [getv(adr_RMresolutionX),getv(adr_RMresolutionY)],
 
@@ -994,7 +1052,7 @@ DIS.string = {
 		return string;
 	},
 
-	// convert js string to show into DIS format string
+	// convert js string into DIS format string
 	convertString: function(given){
 
 		let rs = given;
@@ -1091,12 +1149,15 @@ DIS.agent = {
 	limit: getv(1004), 
 	genPtrPos: 0,
 
-	// Search Empty Space function - this function searches a blank space for an agent in the agent data space.
-	// BUT, it has several problems:
-	// 1. It must be very slow.
-	// 2. How can it sync the result after inserting some Cmd.game.wait(n)?
-	// so this needs improvement anyway I suppose...
+	
 
+	/**
+	 * Search Empty Space function - this function searches a blank space for an agent in the agent data space.
+	 * BUT, it has several problems:
+	 * 1. It must be very slow.
+	 * 2. How can it sync the result after inserting some Cmd.game.wait(n)?
+	 * so this needs improvement anyway I suppose....
+	*/
 	searchEmptySpace: function(){ // this must be fugging slow. just experimental 
 
 		// if spawn cmd is not called yet in this frame, getptr.
@@ -1168,7 +1229,18 @@ function createKeyArrayFromCsvLine(tmp){
 	return elmary;
 }
 
+/**
+ * API for dealing with game data.
+ * Also check DATA_entity extended classes.
+ * You can access DIS.data through global pointer DATA. 
+ * @namespace DIS.data
+ */
 DIS.data = { // DIS.data
+
+	/**
+	 * Mask Templates strings for DIS-csvfying are here.
+	 * @namespace csvtemp
+	 */
 	csvtemp: {
 		TROOP: createKeyArrayFromCsvLine(`id,name,agentDefaultGrp,agentType,agentSprite,race,skin,size:0,size:1,faction,passiveId,unitclass,Lv,HP,SP,AD,AP,AR,MR,HIT,EVA,Crit,MS,WILL,MainWeapon,WEPvariations,Shield,SHDvariations,Armor,AMRvariations,Helmet,HELvariations,Accessory,ACCvariations,SubWeapon,SubWEPvariations,ReserveSetL,?,ActiveSkill:0,ActiveSkill:1,ActiveSkill:2,ActiveSkill:3,PassiveSkill,Perks1,Perks2,Perks3,Perks4,motionFlags,objFlags,AABits,ExtraSettingEv,ExtraParts,Hpreg,Spreg,AS,MoveTypeBits,AArangeMax,AArangeMin,AAmotiontime,AAcost,AAfunction,reserve,AtkTime,AAarmorEff,AAarmorPen,AAeffect,,AIFlag,spriteOffset_x,spriteOffset_y,,,,,,,,train_speed,food,wood,stone,gold,iconsprite,spawnsound,ex_spawn_cev,Description,Lore`),
 
@@ -1179,7 +1251,11 @@ DIS.data = { // DIS.data
 		this.TECH.init();
 	},
 
-	// called by Cmd.sys.importData on RM command interpreter
+	/**
+	 * called by Cmd.sys.importData on RM command interpreter.
+	 *
+	 * @param {object} obj - An object returned from DATA.parseDISjson().
+	 */
 	autoregister: function(obj){
 		// kek fucking retarded if nesting
 		if(obj.hasOwnProperty("TROOP")){
@@ -1273,7 +1349,8 @@ DIS.data = { // DIS.data
 	},
 	
 	/**
-	 * If given src object imported from json with "INHERITS" property, then copy parent properties to the child data object.
+	 * If the given src object imported from json has "INHERITS" property, 
+	 * then copy parent properties to the child data object.
 	 * This method is usually called in constructor of DATA entity.
 	 *
 	 * @method makeDataInherit
@@ -1335,25 +1412,26 @@ DIS.data = { // DIS.data
 			};
 		},
 
+		
 		ptrs: [0],
 
 		/**
+		 * ATTENTION! rewrite DATA_faction constructor!!
 		 * @method createNew
 		 * @param {string} strid
 		 */
-		// rewrite DATA_faction constructor!!
 		createNew: function(strid){
 			return this[strid] = new DATA_faction(strid); // do not resgister to ptrs yet
 		},
 
   /**
-   * register.
+   * register given Dfac to FACTION.ptr[index].
    * @method register
    * @param {DATA_faction} Dfac
-   * @param {int} index
+   * @param {int} index - if this parameter is not set, this function just tries to push Dfac to FACTION.ptr.
    */
 		register(Dfac,index){
-			index = index || this.ptr[0] + 1; // if index is not set,then just push
+			index = index || this.ptr[0] + 1;
 			this.ptrs[index] = Dfac;
 			this.ptrs[0] = this.ptrs.length;
 		},
@@ -1364,18 +1442,21 @@ DIS.data = { // DIS.data
 
 		count: 0,
 		/**
-		 * .
+		 * Just 
+		 * This function won't resgister the DATA_troop to TROOP.ptrs[] alone.
+		 * You need to throw the returned DATA_troop to TROOP.register() if you want to do it.
 		 * @method createNew
-		 * @param {} strid
-		 * @param {} srcdata
+		 * @param {string} strid - NEED CHECK IF THIS TYPE IS CORRECT
+		 * @param {} srcdata - json data? I guess?
+		 * @return {DATA_troop} - 
 		 */
 		createNew: function(strid,srcdata){
-			return this[strid] = new DATA_troop(strid,srcdata); // do not resgister to ptrs yet
+			return this[strid] = new DATA_troop(strid,srcdata); // 
 		},
 
 		/**
 		 * register troop data to id array.
-		 * Newly registered data will be pushed into id array.
+		 * Newly registered data will be pushed into id array(TROOP.ptrs).
 		 * If you want to add mod troop data to the game, use this method.
 		 *
 		 * @method register
@@ -1439,7 +1520,18 @@ DIS.data = { // DIS.data
 		},
 
 	}, 
-	STATIC: {}, 
+
+
+	/**
+	 * @namespace DIS.data.STATIC
+	 */
+	STATIC: {
+
+	}, 
+
+	/**
+	 * @namespace DIS.data.TECH
+	 */
 	TECH: {
 		init: function(){
 			// load faction template json file in current module directly
@@ -1472,6 +1564,7 @@ DIS.data = { // DIS.data
 
 
 	},
+
 	TREETEMP: {
 		/**
 		 * .
@@ -1494,11 +1587,16 @@ DIS.data = { // DIS.data
 		ARMOR: {},
 		HELMET: {},
 		ACCESSORY: {},
+		HORSE: {},
 
 	},
 
 };
 
+/**
+ * Just a pointer to DIS.data
+ * @constant DATA
+ */
 const DATA = DIS.data;
 
 
@@ -1528,6 +1626,11 @@ const Adrt_JSSAVE_triggersQueue = 763; // <- header_scripts
 // DIS system component classes - these class objs usually work as component under RTS objects.
 
 // DISvariable
+/**
+ * DISvariable.
+ * This can be abolished in near future
+ * @extends {DIS_entity}
+ */
 class DISvariable extends DIS_entity { // nonvolatile Variable for RTS mission
 	constructor(type, address){
 		super();
@@ -1551,7 +1654,18 @@ class DISvariable extends DIS_entity { // nonvolatile Variable for RTS mission
 
 // RTSmission Object
 
+/**
+ * This class manages RTS mission system.
+ * Functions for Simple Triggers are here.
+ * Basically loaded from missioninfo.json.
+ * @class RTSmission
+ */
 class RTSmission {
+ /**
+  * constructor.
+  * @param {string} infojson - Stringified missioninfo.json file.
+	* If infojson parameter is missing, then the system considers the mission as a Legacy mission run without js support.
+  */
 	constructor(infojson){
 		infojson = infojson || "undefined";
 			this.RMmapid = 0; // RPGMAKER mapid.
@@ -1613,6 +1727,9 @@ class RTSmission {
 
 	};
 
+ /**
+  * createMissionVar. This one will be abolished soon
+  */
 	createMissionVar = function(){
 		const Adr_MissionVarMemoryHead = 2001; // ACHTUNG
 		const VarmemoryLimit = 20; // ?
@@ -1626,7 +1743,17 @@ class RTSmission {
 		};
 	};
 
-	Cmd = { // mission commands - basically load files from the mission directory
+	/**
+	 * mission commands - Commands that refer files in the mission directories are here.
+	 * @namespace RTSmission.Cmd
+	 */
+	Cmd = { 
+  /**
+   * importData.
+   *
+   * @param {string} finame - Just insert filename in directory. 
+	 * The file refered like this: {RTS.mission.missionPath}/{finame}
+   */
 		importData(finame){
 			let path = RTS.mission.missionPath + finame; // Str_MissionPath
 			Cmd.sys.importData(path);
@@ -1635,21 +1762,34 @@ class RTSmission {
 
 	/**
 	 * Mission local instances.
-	 * Elements declared in this instance is restored when you reload the game.
-	 * RM save data holds the elements as stringfied json, so do not expect functions will be restored as well
-	 *
+	 * Use for temporary namespace for your mission.
+	 * @namespace RTSmission.local
 	 */
 	local = {};
 	
 
+	/**
+	 * is this even needed?
+	 */
 	conf = { // these matter only at the setting up mission part
 		
 		
 	};
 
-	missionPath = ""; // get from RM system in RTS.setupMission
+	/**
+	 * Path to mission directory.
+	 * RTS.setupMission called via TPC sets this property.
+	 * @property RTSmission.missionPath
+	 */
+	missionPath = ""; // 
 
 	strings = {};
+
+ /**
+  * importLangString.
+  *
+  * @param {string} str
+  */
 	importLangString(str){
 		let lines = str.trim().split("\n");
 		lines.forEach(line => {
@@ -1667,7 +1807,9 @@ class RTSmission {
 	};
 
 
-	// will be integrated to RTS.save() 
+ /**
+  * Save states of simple triggers on the RM system.
+  */
 	save = function(){
 		// save triggers in queue as a string..
 		let savestring = "";
@@ -1688,8 +1830,12 @@ class RTSmission {
 		deblog("RTSmission restored.");
 	};
 
-	// mission.run() - this one is called in every frame.
-	run = function(){ // called on RM per 1f -> Dracore/module_core_RTS_mission_general.tpc
+ /**
+	* This function is called in every frame in actual RTS mission.
+	* Called on RM system per 1f -> Dracore/module_core_RTS_mission_general.tpc
+  * @method mission.run()
+  */
+	run = function(){
 		this.passedFrame++; // + 1 frame
 
 		// check simple triggers. if any trigger cond is fulfilled, then send signal to execute Commands
@@ -1697,7 +1843,12 @@ class RTSmission {
 
 	};
 
-	// mission.startup()... always called when the mission starts.
+ /**
+	* *OVERRIDE ME in mymission.js!*
+  * This function called ONLY when the mission starts.
+	* Unlike init(), startup() is not called upon loading a savegame.
+	* @method RTSmission.startup()
+  */
 	startup = () => {/*OVERRIDE ME!*/}; 
 
 	/*
@@ -1708,7 +1859,11 @@ class RTSmission {
 
 	triggers = {
 		
-		runTriggers: function(){ // return if any trigger condition is fulfilled
+		/**
+		 * Check conditions of every trigger registered to triggers.queue and call its effect.
+		 * @return {bool} - Returns true if any trigger condition is fulfilled, otherwise false.
+		 */
+		runTriggers: function(){ 
 			// but how?
 			let newQue = this.queue;
 			let isTriggered = 0b0;
@@ -1721,8 +1876,8 @@ class RTSmission {
 			};
 
 			if (isTriggered & 1){ // there was at least one trigger that fulfilled condition
-				this.queue = newQue; // then renew queue
-				return true; // there was at least one trigger effect called
+				this.queue = newQue; // then renew queue.
+				return true;
 			};
 
 			return false;
@@ -1766,10 +1921,21 @@ class RTSmission {
 		this.mapSourceDir = mapdir;
 	};
 
+ /**
+  * setTrigger.
+  * Push given trigger to RTSmission.triggers.queue
+  * @param {RTStrigger} trig
+  */
 	setTrigger = function(trig){ // {RTStrigger}
 		this.triggers.queue.push(trig);
 	};
 
+ /**
+  * setPlayer.
+  *
+  * @param {int} id
+  * @param {int} faction
+  */
 	setPlayer = function(id,faction){ // set player in mission.
 		this.essential.players[id] = new DIS_RTSplayer(id,faction); // push to players array
 
@@ -1778,6 +1944,12 @@ class RTSmission {
 
 	// save and load will destroy this function's objective.
 	// so you should use this rather for adjusting agent parameter or whatever
+ /**
+  * this seems meaningless.
+  *
+  * @param {} func
+  * @param {} delayframe
+  */
 	setTimeout = function(func,delayframe){
 		// make an instant trigger whose effect is arg function
 		let Trig = new RTStrigger();
@@ -1807,6 +1979,12 @@ const HGEN_NOTHING = 0,
 	HGEN_PRESET_TXT = 3;
 
 class RTSmap {
+ /**
+  * constructor.
+  *
+  * @param {string} infojson - - Stringified mapinfo.json file.
+	* If infojson parameter is missing, then the system considers the map as a Legacy map run without js support.
+  */
 	constructor(infojson){
 		this.size = [50,50]; // temp
 		infojson = infojson || "undefined";
@@ -1860,7 +2038,12 @@ class RTSmap {
 	};
 	
 	
-	build(){ // this function called through mission init process, after RTS.openMissionMapDataloading() done after mapdef.js.txt is read.
+ /**
+  * this function called through mission init process.
+	* first RTS.openMissionMapDataloading() is called, then mapdef.js.txt is read, then this one gets called at last.
+	*
+  */
+	build(){
 		const Adr_TileID = 2060;
 		const Adr_HeightGenType = 2056;
 
@@ -1871,16 +2054,28 @@ class RTSmap {
 	};
 	
 	
-	init(){return NULL;}; // override me. can be written in mapdef.js.txt.
+ /**
+  * override me. can be written in mapdef.js.txt.
+  */
+	init(){return NULL;}; 
 
 
+ /**
+  * currently no meaning.
+  */
 	restore(){
 
 
 		deblog("Map restored.")
 	}; // call me
 	
-	generate(){ // if you don't override this function, this object tries to load this.terrainSource unless the map is LEGACYmission - I mean using RMmap.
+ /**
+  * Generate map.
+	* You can override this function in mapscript.js
+	* If you don't override this function, this object tries to load this.terrainSource unless the map is LEGACYmission
+	* - I mean using RMmap.
+  */
+	generate(){ // 
 	
 			deblog("how about it?: "+ RTS.mission.conf.isLEGACYmission);
 		if (!RTS.mission.conf.isLEGACYmission){
@@ -1900,12 +2095,20 @@ class RTSmap {
 		};
 	
 	};
-
+	/**
+	 * ?
+	 */
 	gensync(){
 	
 	};
+
 };
 	
+/**
+ * DIS_RTSplayer.
+ *
+ * @extends {DIS_entity}
+ */
 class DIS_RTSplayer extends DIS_entity {
 	constructor(id,factionid){
 		super();
@@ -1940,11 +2143,15 @@ class DIS_RTSplayer extends DIS_entity {
 
 	};
 
-	// make json to save
+	
+	/**
+	 * properties in this object will be restored when player load a savegame
+	 * 
+	 */
 	playergamedata = {
 		troopTree: [],
 		techTree: [],
-		techFlags: new Array(3),
+		techFlags: new Array(4),
 	};
 
 
@@ -1969,6 +2176,30 @@ class DIS_RTSplayer extends DIS_entity {
 
 	};
 
+	/**
+	 * setTechFlag.
+	 *
+	 * @param {DATA_tech} tech
+	 * @return {int} - result after tech researched
+	 *
+	 */
+	setTechFlag(tech){
+		const techadd = tech.getFlagSlot();
+		// set tech flag.
+		return this.playergamedata.techFlags[techadd[0]] |= techadd[1];
+	};
+
+	/**
+	 * Check if the player has already researched the given tech.
+	 * 
+	 * @param {DATA_tech} tech - 
+	 * @return {int} - should I convert this bool? idk
+	 */
+	ckTechFlag(tech){
+		const techadd = tech.getFlagSlot();
+		return this.playergamedata.techFlags[techadd[0]] & techadd[1];
+	};
+
 	getSchwerpunkt(){ return this.refreshCurrentTeamList().getSchwerpunkt() };
 
 	getCombatPower(){
@@ -1986,11 +2217,9 @@ class DIS_RTSplayer extends DIS_entity {
 
 	};
 
-
 	receiveTeamList(array){
 		this.teamAgentIDlist = array;
 	};
-
 
 	// select agents and return as a idlist
 	select_all(){
@@ -2003,11 +2232,20 @@ class DIS_RTSplayer extends DIS_entity {
 		return r;
 	};
 
-	restore(){ 
-		// restore tech info
+	/**
+	 * Save RTSplayer.playergamedata to RPG maker string slot.
+	 */
+	save(){
+		// save_jsobj_as_JSON(this.playergamedata, )
 	};
 
+	restore(){ 
+		// restore tech info from RPG maker savedata.
+	};
+
+
 };
+
 
 class DIS_cohort extends DIS_entity {
 	constructor(team,id,agtarray){
@@ -2024,16 +2262,27 @@ class DIS_cohort extends DIS_entity {
 
 
 
-// RTStrigger - old simple trigger.
-// maybe you need to build up restoring processes for mission and triggers.
-// both creation and deletion of the simple triggers must be memorized in RMvar (or str) just for restoring save data. After all.
+/**
+ * RTStrigger.
+ * Works as a simple trigger.
+ * maybe you need to build up restoring processes for mission and triggers.
+ *both creation and deletion of the simple triggers must be memorized in RMvar (or str) just for restoring save data. After all.
+ */
 class RTStrigger {
+ /**
+  * The constructor automatically pushes newly created RTStrigger to RTS.createdTrgs array.
+  */
 	constructor(){
 		this.index = RTS.createdTrgs.length; // push this to created Triggers Array in RTS
 		RTS.createdTrgs.push(this); // push this to created Triggers Array in RTS
 	};
 
-	run = function(){ // if this function returns true, then erase from triggers.
+ /**
+  * if this function returns true, then erase from triggers.
+	* @return {int} - result is 2bits number. 
+	* 0b10 = kill trigger, 0b01 = condition fulfilled.
+  */
+	run = function(){
 		let result =0b00; // bit1 - triggered flag, bit2 - kill this trigger flag
 		if (result |= this.condition()){ // check the condition - if it's true 0b01
 			this.effect();
@@ -2044,9 +2293,20 @@ class RTStrigger {
 
 	};
 
+ /**
+  * override me.
+	* @return {bool}
+  */
 	condition = function(){return true;}; // return bool. override me.
+
+ /**
+  * effect called after condition fulfilled.
+	* override me.
+  */
 	effect = ()=>{ /* override me later in missiondef file! */ }; 
+
 	timer = 0; // ++ in mission trigger run function.
+
 	isLoop = false; // whether this trigger will be called even after fulfilling condition once.
 
 	finishLoop(){this.isLoop = false};
@@ -2307,7 +2567,8 @@ let RTS = {
 	save: function(){ // called whenever the game is trying to make RM savefile...
 		
 		// save RTS.Preserve to RM strmem[745]
-		sett(745,JSON.stringify(this.Preserve)); // Str_Mission_local_save_JSON
+		save_jsobj_as_JSON(745,this.Preserve) // Str_Mission_local_save_JSON
+		// sett(745,JSON.stringify(this.Preserve));
 
 		this.mission.save();
 		deblog("RTS object data saved.")
@@ -2605,12 +2866,19 @@ var Cmd = {
 		},
 	
 
+		/**
+		 * @wait command in TPC.
+		 * YOU SHOULDN'T USE THIS METHOD IN RTS GAME UNLESS YOU UNDERSTAND HOW IT AFFECTS TO PROCESS.
+		 *
+		 * @param {} RMwaittime
+		 */
 		wait: function(RMwaittime) { // RMwaittime: 10 = 1sec, 0 = 1f, -n = {n}f. 
 			Cmd.Qset(this.CmdType,"wait",`${RMwaittime}`);
 			Cmd.runFlags.RMwaitDetect = true;
 		},
 
 		/**
+		 * methods around picture files.
 		 * @namespace Cmd.pic
 		 *
 		 */
@@ -2624,13 +2892,15 @@ var Cmd = {
 			 *
 			 * @returns {DIS_RMpicture} RPG Maker picture 
 			 *
-			 */			load: function(filepath,picid) { // load to picid 
+			 */
+			load: function(filepath,picid) { // simply load a picture file to picid 
 				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid}`);
 				return (new DIS_RMpicture(picid,filepath)); // no pos gg
 			},
 
 			/**
 			 * remove picture command.
+			 * 
 			 *
 			 * @param {int} picid
 			 *
@@ -2686,12 +2956,22 @@ var Cmd = {
 
 		// log series
 
-		// unlike Cmd.game.log, argument will be processed by DIS.string.convertString() 
+		/**
+		 * unlike Cmd.game.log(), argument will be processed by DIS.string.convertString()
+		 * If you want to use message system as a function of your RTS stage, you should use this than Cmd.game.log()
+		 *
+		 * @param {string} txt
+		 */
 		msg: function(txt){
 			txt = DIS.string.convertString(txt)
 			Cmd.Qset(this.CmdType,"msg",`${txt}`);
 		},
 
+		/**
+		 * Show raw string.
+		 *
+		 * @param {string} txt
+		 */
 		log: function(txt){
 			Cmd.Qset(this.CmdType,"msg",`${txt}`);
 		},
@@ -2761,7 +3041,7 @@ var Cmd = {
 		 * Spawns group of agents on map.
 		 * And returns {RTSagentGroup}
 		 *
-		 * @param {*} troopid -
+		 * @param {string} troopid - "TRP_brabra". may work with int but highly recommend using stringid.
 		 * @param {[int,int]} tilepos - 
 		 * @param {int} team - 
 		 * @param {[int,int]} delta -
@@ -2804,7 +3084,7 @@ var Cmd = {
 		 * @param {[int,int]} tileposbeg
 		 * @param {[int,int]} tileposend
 		 * @param {int} team
-		 * @return {DIS_agent} - Spawned Palisade 
+		 * @return {DIS_agent} - Spawned Palisade... this will be changed into {DIS_agent_static}
 		 */
 		spawnPalisade: function(tileposbeg,tileposend,team){ // returns DIS_agent
 			Cmd.Qset(this.CmdType,"spawnPalisade",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
@@ -2818,6 +3098,7 @@ var Cmd = {
 		 * @param {int} tileposbeg
 		 * @param {int} tileposend
 		 * @param {int} team
+		 * @return {DIS_agent} - this will be changed into {DIS_agent_static}
 		 */
 		spawnWall: function(tileposbeg,tileposend,team){ // returns DIS_agent
 			Cmd.Qset(this.CmdType,"spawnWall",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
@@ -3586,20 +3867,8 @@ const inheritancetest = `
 	deblog("\n\n\n")
 	DATA.autoregister(DATA.parseDISjson(inheritancetest))
 
-	/*
-	Cmd.sys.importData("test.json")
-	RTS.mission.setPlayer(9,1)
-	let cohort1 = Cmd.map.spawnAgentgroup("TRP_imperial_comitatenses_menavlion",[27,32],0,[0,-2],8);
-	Cmd.group.registerCohort(cohort1,0,1);
-	Cmd.map.spawnAgent("TRP_imperial_comitatenses_menavlion",[27,32],0,[0,-2],8);
-	deblog(Cmd.CmdQueue)
-	Cmd.group.move(cohort1,[1,1],0);
-	Cmd.run();
 
-	RTS.mission.local.trites = RTS.mission.createSimpleTrigger_Loop(90);
-	deblog(JSON.stringify(RTS.mission))
-	let ply= new DIS_RTSplayer(0,1)
-	*/
+
 const maptest = `
 {
 	"name": "poteton_trainingmap",
@@ -3619,8 +3888,4 @@ const maptest = `
 
 };
 
-
-// mission script for poteton training
-//
-//
 
