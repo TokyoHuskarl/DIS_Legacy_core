@@ -8,6 +8,12 @@ def STATIC_NODE_MOVEMENT_COST = 6
 def STATIC_NODE_MOVEMENT_COST_GATE = 30
 def STATIC_NODE_MOVEMENT_COST_WALL = 24
 
+def AGTACT_SLOT_Q = 1
+def AGTACT_SLOT_W = 2
+def AGTACT_SLOT_E = 3
+def AGTACT_SLOT_R = 4
+// additional
+
 defv ptr_SpawnAgentMainSpace_Head = 201
 defv gl_lastSpawnedAgent = 436
 defv {
@@ -22,6 +28,7 @@ defv {
 
 
 }
+
 defs{
 	bool_SpawnSystemLegacy = 152
 	bool_GenOnehandedWeapon = 154

@@ -833,7 +833,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 									TT2 = v[Const_AgentMetaTeam_begin + v[401]]
 								}
 
-								v[TT1] += v[740] * 6
+									v[TT1] += v[740] * 6 // 6f per 
 									// "徴用スイッチ"
 									v[TT1] += TT2 & 134217728 && !(v[Temp1 + 3] & 1) ? muldiv(v[740], 198, 100) : 0
 									// "MP(生産力)がたまった"
