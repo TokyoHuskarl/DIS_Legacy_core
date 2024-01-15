@@ -5,7 +5,7 @@ def debug_ammochecker ={
 			reg3 = (agent_Ammo >> 16) & 0xFF
 			reg4 = (agent_Ammo >> 8) & 0xFF
 			reg5 = agent_Ammo & 0xFF
-			func_devlog("Ammo - \v[832] - Sub Max \v[22] Sub Ammo \v[23] Cur Max \v[24] Cur Ammo \v[25]")
+			func_devlog("Ammo - \agent_Ammo - Sub Max \reg2 Sub Ammo \reg3 Cur Max \reg4 Cur Ammo \reg5")
 		}
 	}
 
@@ -33,7 +33,7 @@ __fn func_agent_swap_weapon_set $agent {
     //Kill trying flag
     agent_AI_decision_bits &= AI_decision_bits_KILL_ALL_WEAPONCHANGE_FLAG
     //Check old AA
-    func_get_AA_usage(v[299],EXTRACT_FLAG_Data_extracted)
+    func_get_AA_usage(Ptr19,EXTRACT_FLAG_Data_extracted)
     //set what type the old weapon AA is 
     macro_set_agent_AI_decision_Sub_WEP_Type(reg1)
 
@@ -53,20 +53,20 @@ __fn func_agent_swap_weapon_set $agent {
     agent_MainWeaponID.swap agent_ReserveWeaponID, 1
     @call .cev 1923
     // "If Swapped into 2handed weapon and Holding Shield, Unequip the shield"
-    v[350] = v[1950]
+    TT10 = v[1950]
     @if v[1901] >= 100 {
         // "#Shield Ck"
-        var1 = v[852]
+        var1 = agent_MainShieldID
         @call .cev v[1151]
         v[1929] *= -1
         @call .cev 1923
-        v[852].swap v[857], 1
+        agent_MainShieldID.swap agent_ReserveShieldID, 1
         
     } .else bl {
         // "2h to 1h&shield"
-        @if v[852] == 0 {
-            v[852].swap v[857], 1
-            var1 = v[852]
+        @if agent_MainShieldID == 0 {
+            agent_MainShieldID.swap agent_ReserveShieldID, 1
+            var1 = agent_MainShieldID
             @call .cev v[1151]
             @call .cev 1923
             
@@ -78,11 +78,11 @@ __fn func_agent_swap_weapon_set $agent {
     //// "#################Change Graphic#################"
     //NEED TO MODIFY THIS PROC WHEN YOU USE SHIELD SWAP
     //->header_drawing
-    func_get_weapon_picture_id(v[851])
-    t[501].asg Const_str_weapon
-    //t[501].cat "\v[21]" .extract
-    t[501].cat v[21]
-    function_set_agent_picture(v[299] t[501] 4)
+    func_get_weapon_picture_id(agent_MainWeaponID)
+    str1.asg Const_str_weapon
+    //str1.cat "\reg1" .extract
+    str1.cat reg1
+    function_set_agent_picture(Ptr19 str1 4)
    
 
     
@@ -101,7 +101,7 @@ __fn func_agent_swap_weapon_set $agent {
     agent_Ammo = TT1 + TT2
 
     //check new AA type
-    func_get_AA_usage(v[299],EXTRACT_FLAG_Data_extracted)
+    func_get_AA_usage(Ptr19,EXTRACT_FLAG_Data_extracted)
     reg3 = reg1
     //Check If agent has new weapon Ammo
     func_check_if_agent_has_ammo(t[299],EXTRACT_FLAG_Data_extracted)
@@ -219,110 +219,118 @@ __fn func_reload_agent_ammo_full $agent $flags {
 //reg1 0=can cast 1=cannot
 __fn func_CkIfSklCall $agent $skillno {
 	/*@comment "Var1 = Obj 1~
-	Var2 = SkillNo
-	r1 = Cant_call_skill
-	"*/	
+		Var2 = SkillNo
+		r1 = Cant_call_skill
+		"*/	
 
 	reg1 = 0
-	v[341] = $agent * 300
-	Ptr1 = v[341] + 4701
-	v[Ptr1].copy v[601],300
-	//@comment "#Is the ordered skill registered to the obj?"
-	
-	//v[342] = v[341] + 4821 
-	//v[342] += ($skillno * 20)
-	v[342] = 721
-	v[342] += ($skillno * 20)
-
-	//EXTRACT SKILL PARAMETER
-	v[v[342]].copy skill_ID,20
-
-	/*9.3.23 kick out needless var v[343]
-	v[343] = $skillno * 20
-	v[342] += v[343]*/
-	reg1 += skill_ID >= 1 ? 0 : 1
-
-	//@comment "#If Pointed Type, Ck range"
-	//v[342] += 2
-	@if skill_Type == Type_PointSkl {
-
-	    //v[344] = v[342] + 9
-	    //v[352] = v[341] + 4707
-	    //v[351] = v[344] - 2
-	    //camera difference
-	    v[351] = 51
-	    v[v[351]].copy v[353], 2
-	    v[353] .sub agent_RelativeX, 2
-	    v[353] .mul v[353], 2
-	    v[351] = v[353] + v[354]
-	    v[352] = skill_Range_max //v[v[344]]
-	    //if out of range 
-	    @if v[351] > skill_Range_max {
-		reg1 += 1
-		//call ranged indicator
-		TT4 = __id(skill_Range_max)
-		@call .cev 81
 		
-	    }
-	    
-	}.elif skill_Type == Type_TargetSkl {//@comment "#If Target Type, Ck range and ID"
-	    //v[344] = v[342] + 9
-	    //v[352] = v[341] + 4707
-	    //v[351] = v[341] + 4718
-	    //@comment "If target exists"
-	    @if agent_TargetAgentID >= 1 {
-		v[353] = agent_TargetAgentID * 300 
-		v[353] += 4707
-		v[v[353]].copy v[353], 2
-		v[353] .sub agent_RelativeX, 2
-		v[353] .mul v[353], 2
-		v[351] = v[353] + v[354]
-		v[352] = skill_Range_max
-	        //if out of range 
-		@if v[351] > skill_Range_max {
-		    reg1 += 1
-		    //call ranged indicator
-		    TT4 = __id(skill_Range_max)
-		    @call .cev 81
-		    
+		__if AGENT_DATA_EXTRACTED == 0 {
+			def AGENT_DATA_EXTRACTED = 1
+				TT1 = $agent * 300
+				Ptr1 = TT1 + 4701
+				v[Ptr1].copy agent_ObjectType,300
 		}
-		
-	    } .else bl {
-		reg1 += 1
-		
-	    }
-	    
-	}
+	//@comment "#Is the ordered skill registered to the obj?"
+
+		// TT2 = 721
+		// TT2 += ($skillno * 20)
+
+		// use meta var to optimize
+		$skilladdr = 721 + skillno * 20
+		val_const(TT2,$skilladdr)
+
+
+		//EXTRACT SKILL PARAMETER
+		v[TT2].copy skill_ID,20
+
+		/*9.3.23 kick out needless var TT3
+			TT3 = $skillno * 20
+			TT2 += TT3*/
+		reg1 += skill_ID >= 1 ? 0 : 1
+
+		//@comment "#If Pointed Type, Ck range"
+		//TT2 += 2
+		@if skill_Type == Type_PointSkl {
+
+				// camera difference?
+				TT11 = 51
+				v[TT11].copy TT13, 2
+				TT13 .sub agent_RelativeX, 2
+				TT13 .mul TT13, 2
+				TT11 = TT13 + TT14
+				TT12 = skill_Range_max //v[TT4]
+				//if out of range 
+				@if TT11 > skill_Range_max {
+						reg1 += 1
+						//call ranged indicator
+						TT4 = __id(skill_Range_max)
+						// @call .cev 81
+						func_draw_range_indicator()
+
+				}
+
+		}.elif skill_Type == Type_TargetSkl {//@comment "#If Target Type, Ck range and ID"
+			//TT4 = TT2 + 9
+			//TT12 = TT1 + 4707
+			//TT11 = TT1 + 4718
+			//@comment "If target exists"
+			@if agent_TargetAgentID >= 1 {
+					TT13 = agent_TargetAgentID * 300 
+					TT13 += 4707
+					v[TT13].copy TT13, 2
+					TT13 .sub agent_RelativeX, 2
+					TT13 .mul TT13, 2
+					TT11 = TT13 + TT14
+					val_asg(TT12,skill_Range_max) // TT12 = skill_Range_max
+					//if out of range 
+					@if TT11 > skill_Range_max {
+							val_add(reg1,N1) // reg1 += 1
+							//call ranged indicator
+							TT4 = __id(skill_Range_max)
+							// @call .cev 81
+							func_draw_range_indicator()
+
+					}
+
+			} .else bl {
+				reg1 += 1
+
+			}
+
+		}
 
 	//@comment "#Check usage"
-	//v[342] += 1
+	//TT2 += 1
 
 	//@comment "If DamageSkill"
 	@if skill_Usage == Usage_Damage {
-	    //@comment "You cannot use damage skill with shieldwall/pikewall/Scout" 9.3.23 you should check what is going on with Scout tactics flag.
-	    reg1 += agent_TacticsOrderFlag & 135 ? 1 : 0
-	    
+		//@comment "You cannot use damage skill with shieldwall/pikewall/Scout" 9.3.23 you should check what is going on with Scout tactics flag.
+		reg1 += agent_TacticsOrderFlag & 135 ? 1 : 0
+
 	}
 
 	//@comment "#Check CD"
-	//v[342] = v[341] + 4794 
-	//v[342] += $skillno
-	//get the CD timer of the agent 
-	v[342] = 694 + $skillno
-	reg1 += v[v[342]] <= 0 ? 0 : 1
+	//TT2 = TT1 + 4794 
+	//TT2 += $skillno
+	// get the CD timer of the agent 
+		$CDTimeraddr = 694 + $skillno
+		// TT2 = 694 + $skillno
+		val_const(TT2,$CDTimeraddr)
+		reg1 += v[TT2] <= 0 ? 0 : 1
 
 
-	//@comment "#Check Cost"
-	//v[342] = v[341] + 4827 
-	//v[342] += ($skillno * 20)
-	//v[344] = v[341] + 4808
-	reg1 += skill_Cost <= agent_SP ? 0 : 1
+		//@comment "#Check Cost"
+		//TT2 = TT1 + 4827 
+		//TT2 += ($skillno * 20)
+		//TT4 = TT1 + 4808
+		reg1 += skill_Cost <= agent_SP ? 0 : 1
 
-	//@comment "#Check Casting Motion"
-	reg1 += agent_ActionState < 4 ? 0 : 1
+		//@comment "#Check Casting Motion"
+		reg1 += agent_ActionState < 4 ? 0 : 1
 
-	//@comment "#Check silence"
-	reg1 += agent_ProcessObjBit & 262144 ? 1 : 0
+		//@comment "#Check silence"
+		reg1 += agent_ProcessObjBit & BaseObjBit_FLAG_Silence ? 1 : 0
 }
 
 

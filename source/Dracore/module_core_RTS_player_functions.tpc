@@ -1,0 +1,33 @@
+
+/**
+ *
+ * @param {int} $pl - player id
+ * @param {int} $slot - tech slot number
+ * @return {&int} reg1 - Address to player tech slot
+ */
+__fn func_get_ptr_to_player_tech_slot_into_r1 $pl $slot {
+	$addr = 2403 + 3 * $slot + $pl
+	val_const(reg1,$addr)
+	
+}
+
+/**
+ *
+ * @param {int} $pl
+ * @param {DATA_tech} $tech - Array for tech slot is needed here. The format is like [slotnum,flag] 
+ * About tech data, check Modules/{module_name}/Data/data_techs.json
+ */ 
+__fn func_give_tech_fl_to_player $pl $tech {
+
+}
+
+/**
+ * underconstruction
+ *
+ *
+ * @return {bool} reg1 - if researched 1, otherwise 0
+ */
+__fn func_ck_if_player_has_researched_tech_r1 $pl $tech {
+
+
+}

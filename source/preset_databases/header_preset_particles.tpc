@@ -8,26 +8,26 @@ def{
 
 __fn func_set_preset_particle_emitter $pointer $proc { 
 
-    @loop v[1017] .dst v[320] {
-	v[244] %= v[1199]
-	v[__id($pointer)] = v[244] * 50 
-	v[__id($pointer)] += v[1198]
-	@if v[$pointer] <= 1 {
-	    // "まず清掃"
-	    v[1301].copy v[$pointer], 50
-	    v[1301].copy emitter_ParticleType, ParticleArraySize
+	@loop v[1017] .dst v[320] {
+			v[244] %= v[1199]
+			v[__id($pointer)] = v[244] * 50 
+			v[__id($pointer)] += v[1198]
+			@if v[$pointer] <= 1 {
+				// "まず清掃"
+					v[1301].copy v[$pointer], 50
+					v[1301].copy emitter_ParticleType, ParticleArraySize
 
-	    $proc
+					$proc
 
-	    // "仕上げに登録消す"
-	   emitter_ParticleType.copy v[$pointer], ParticleArraySize
- 
-	    v[244] += 1
-	    @break
-	    
+					// "仕上げに登録消す"
+					emitter_ParticleType.copy v[$pointer], ParticleArraySize
+
+					increment_var(v[244]) // v[244] += 1
+					@break
+
+			}
+		increment_var(v[244])
+
 	}
-	v[244] += 1
-	
-    }
 
 }

@@ -61,6 +61,16 @@ __fn func_ai_skill_usage_check {
 
 }
 
+
+// LEG define macro for this cev - maybe not needed anymore...
+def macro_if_it_can_cast_then_do = {
+	// TT2 = agent_TargetAgentID * 300 
+	// TT2 += 4707
+		victim_RelativeX.copy TT5, 2
+		//Inherit what was extracted in func_CkIfSklCall()
+		TT5 .sub agent_RelativeX, 2
+}
+
 // private? func
 __fn _agentai_try_skill_slot $slot {
 		// use TT5,TT6 as a vector to the skill target pos
@@ -68,7 +78,7 @@ __fn _agentai_try_skill_slot $slot {
 		//Inherit what was extracted in func_CkIfSklCall()
 		TT5 .sub agent_RelativeX, 2
 
-		$targx = 730 + 20 * $slot // address of skill target x
+		$targx = 730 + 20 * $slot // address of skill target x <- CHECK if is this working 
 		// TT1 = v[212] + 150
 		func_ai_skill_usage_check()
 		@if reg1 == 0 {
@@ -95,21 +105,21 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 		v[536] = v[4532]
 			@while v[v[536]] != 0 {
 				func_extract_agent_vars(v[v[536]])
-					@if v[684] == 2 {
+					@if agent_ActionTimer == 2 {
 
-						@if `v[603] & 524288 { // has ordinary attack skill AI
+						@if `agent_AgentBits & AgentBits_FLAG_EnableBasicSkillAI { // has ordinary attack skill AI
 							// maybe you can insert some procs here to implement script-driven skill AI. (use ScriptFlags)
 								// Ptr20 = v[212] + 18
 								@if agent_TargetAgentID > 0 {
 										// in free MovementOrder state
-										@if v[842] < 3 {
+										@if agent_MovementOrder < 3 {
 											// not in silence 
-											@if `!(v[634] & 131072) {
+											@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_Manual_Ordered) {
 
 												// leg set ptr
 												v[212] = v[v[536]] * 300 
 												val_add(v[212],N4700) // v[212] += 4700
-												Ptr11 = v[v[536]]
+												Ptr11 = v[v[536]] // asg agent id
 
 												// dep victim param
 												victim_AgentType = agent_TargetAgentID * agent_Basic_Array_size 
@@ -119,7 +129,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 												@loop 1 {
 														//Temp9 = v[212] + 7
-														v[607].copy Temp4, 2
+														agent_RelativeX.copy Temp4, 2
 														// Temp1 = agent_TargetAgentID * 300 
 														// Temp1 += 4707
 														Temp4 .sub victim_RelativeX, 2
@@ -131,16 +141,6 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 															//@call .cev 2008
 															func_CkIfSklCall(Ptr11,AGTACT_SLOT_Q)
 																@if reg1 <= 0 {
-
-																	// LEG define macro for this cev - maybe not needed anymore
-																	def macro_if_it_can_cast_then_do = {
-																		 // TT2 = agent_TargetAgentID * 300 
-																			// TT2 += 4707
-																			victim_RelativeX.copy TT5, 2
-																			//Inherit what was extracted in func_CkIfSklCall()
-																			TT5 .sub agent_RelativeX, 2
-																	}
-
 																	
 																		//macro_if_it_can_cast_then_do
 																		_agentai_try_skill_slot(AGTACT_SLOT_Q)
@@ -182,11 +182,12 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 															}
 
 													}
+
 													@if `!(v[800] & 1) && v[792] >= v[3401] {
 														//var1 = Ptr11
 														//var2 = 3
 														//@call .cev 2008
-														func_CkIfSklCall(Ptr11,AGTACT_SLOT_E)
+															func_CkIfSklCall(Ptr11,AGTACT_SLOT_E)
 															@if reg1 <= 0 {
 																//macro_if_it_can_cast_then_do
 																_agentai_try_skill_slot(AGTACT_SLOT_E)

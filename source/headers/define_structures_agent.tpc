@@ -357,6 +357,7 @@ struct("agent",{
 	// AgentBits_FLAG_KILLED = 16384 
 	AgentBits_FLAG_can_clickable = 16384 
 
+	AgentBits_FLAG_EnableBasicSkillAI = 524288
 	AgentBits_FLAG_EnableBasicAI = 1048576
 	AgentBits_FLAG_EnableCivAI = 2097152
 	AgentBits_FLAG_ForcemoveFlag = 4194304
@@ -373,7 +374,9 @@ struct("agent",{
 
 
 	// for static agents
+	StaticBits_FLAG_working_on_tech = 1
 	StaticBits_FLAG_has_generated_sprite = 128
+	StaticBits_FLAG_flammable = 2048
 
 
 	MoveTypeBits_Flying = 1
@@ -458,6 +461,7 @@ struct("agent",{
 	BaseObjBit_FLAG_Relentless = 32768
 	BaseObjBit_FLAG_Immune_to_stun = 65536
 	BaseObjBit_FLAG_Duelist_Activated = 131072
+	BaseObjBit_FLAG_Silence = 262144
 	BaseObjBit_FLAG_big_unit = 524288
 	BaseObjBit_FLAG_Standard_Bearer = 1048576
 	BaseObjBit_FLAG_Explosive = 2097152
@@ -501,6 +505,7 @@ struct("agent",{
 	ExMotionFlags_FLAG_Shield_With_Anim = 1073741824
 	//Tactical Orders
 	
+	TacticsOrder_FLAG_pikewall = 1
 	TacticsOrder_FLAG_garrison = 134217728
 	//TacticsOrder_FLAG_ShieldWall = 134217728
 	

@@ -221,25 +221,31 @@ __fn agent_ref_stats(){
             }
             
         } .else bl {
-            //@comment "#Civilians"
+            //@comment "#Civilians - worker units"
             @if v[702] == 9 {
 								val_asg(agent_ProcessAD,v[709]) // agent_ProcessAD = v[709]
-                v[341] = v[2409 + v[700] % 3]//get tech
+
+								//get tech slot 2!
+                // v[341] = v[2409 + v[700] % 3]
+								TT1 = v[700] % 3 // kari.. you can use META TEAM
+								func_get_ptr_to_player_tech_slot_into_r1(TT1,2)
+								// now reg1 is ptr to tech slot 2
+									
                 //@comment "cart1"
-                @if `v[341] & 16 {
-                    v[871] += muldiv(v[719], 12, 100)
+                @if `v[reg1] & 16 {
+                    agent_ProcessAS +=  agent_BaseAS >> 3 // muldiv(v[719], 12, 100): actually give +12.5% for performance
                     agent_ProcessMS += agent_ProcessMS >> 3 // muldiv(agent_ProcessMS, 11, 10)
                     
                 }
                 //@comment "cart2"
-                @if `v[341] & 32 {
-                    v[871] += muldiv(v[719], 10, 100)
+                @if `v[reg1] & 32 {
+                    agent_ProcessAS += agent_BaseAS >> 3 // muldiv(v[719], 10, 100) - actually give +12.5% for performance
                     agent_ProcessMS += agent_ProcessMS >> 3 // muldiv(agent_ProcessMS, 11, 10)
                     // agent_ProcessMS = muldiv(agent_ProcessMS, 11, 10)
                     
                 }
                 //@comment "crane"
-                agent_ProcessAD += v[341] & 64 ? agent_ProcessAD >> 2 : 0 // muldiv(agent_ProcessAD, 20, 100)
+                agent_ProcessAD += v[reg1] & 64 ? agent_ProcessAD >> 2 : 0 // muldiv(agent_ProcessAD, 20, 100)
                 
             }
             

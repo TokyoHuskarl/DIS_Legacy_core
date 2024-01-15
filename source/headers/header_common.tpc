@@ -105,6 +105,7 @@ def {
 
 
 // select list vars
+defv Ptr_loop_current_agent = 536
 defv {
 	SelectedAmount = 99
 	PlayerSelectList_Head = Adr_PlayerSelectList_Head
@@ -482,6 +483,19 @@ __fn func_save_extracted_agent_vars {
 		agent_ObjectType.copy v[Ptr1], agent_Basic_Array_size
 	    }
 }
+
+/*
+__fn func_extract_agent_vars $agent {
+	    Ptr1 = $agent * 300
+	    val_add(Ptr1,N4701) // Ptr1 += 4701
+	    v[Ptr1].copy v[601], agent_Basic_Array_size
+	    __if AGENT_DATA_EXTRACTED == 0 {
+	    	def AGENT_DATA_EXTRACTED = 1
+	    }
+}
+*/
+
+
 
 
 __fn macro_check_agent_is_killed $agentid{
