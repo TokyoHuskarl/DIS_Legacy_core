@@ -11,6 +11,18 @@
  */
 
 
+/**
+ * for TPC memory allocation
+ * kari consts... will be moved to other files.
+ * @namespace 
+ */
+const TPCadr = { 
+	t: {
+		Str_playergamedata_0: 767,
+		Str_LanguagePath: 528,
+	},
+};
+
 
 // if setv() is undefined, it's virtual enviroment on node.js, qjs or sth.
 let VIRTUAL_ENV = (typeof setv == "undefined") ? true : false;
@@ -121,6 +133,7 @@ var scene = scene || {};
  */
 let g_PLAYER;  
 let g_ENEMY;  
+
 /**
  * @LOCAL {RTS.mission.local} ptr to RTS mission local properties.
  */
@@ -132,6 +145,7 @@ let LOCAL;
 // ------------------------------------------------
 // DIS Data Objects
 // ------------------------------------------------
+//
 /**
  * @class DATA_entity
  * This class is the root templete for the entire DATA_* object class.
@@ -308,6 +322,7 @@ class DATA_troop extends DATA_entity {
 
 };
 
+// is this really necessarily?
 class DATA_troop_csv extends DATA_entity { // shadow of csv troops. doesn't have any value unless it's referred
 	constructor(id,index){
 		super(id);
@@ -336,6 +351,23 @@ class DATA_skin extends DATA_entity {
 
 };
 
+/**
+ * underconstruction
+ * Data class for buildings.
+ * @class DATA_static_unit
+ */
+class DATA_static_unit extends DATA_entity { // building?
+	constructor(id,src){
+		super(id);
+		// inherit DATA_troop object
+		DATA.makeDataInherit(this,"STATIC_UNIT",src);
+		// copy given troop template
+		DATA.giveSrcParamToData(this,src);
+
+	};
+
+}
+
 
 /**
  * DATA_tech.
@@ -350,7 +382,8 @@ class DATA_tech extends DATA_entity {
 		// copy given troop template
 		DATA.giveSrcParamToData(this,src);
 
-		// convert arrays into simple number
+		// if not
+		this.is_researchable = true;
 	};
 
  /**
@@ -363,6 +396,21 @@ class DATA_tech extends DATA_entity {
 		// return retme;
 		return [this.techflagslot[0],this.techflagslot[1]];
 	};
+
+	/**
+	 * UNDERCONSTRUCTION...
+	 * Called after simple cost condition.
+	 * Override me, but let me always return bool.
+	 * @return {bool} - returns true if it's possible to research.
+	 */
+	Extra_Condition(){return this.is_researchable;};
+
+	/**
+	* UNDERCONSTRUCTION.
+  * Override me!.
+	* Called whenever research of the tech completed.
+  */
+	EV_OnCompletion(){};
 
 };
 
@@ -984,7 +1032,49 @@ DIS.macro = {
 	timeToFrame: (h,m,s) => ((h * 3600 + m * 60 + s) * DIS.RTSFPS), 
 };
 
+
+/**
+ *
+ * Name space for functions for static unit aka buildings.
+ * @namespace 
+ */
 DIS.building = {
+
+ /**
+  * getBuildCost.
+  * unco
+  * @param {STAid} staid
+	* @return {[food,wood,stone,gold,time]} - each elm is {int} type.
+  */
+	getBuildCost(staid){
+		
+
+	},
+
+	getTroopInSlot: function(slot){
+
+		return -1;
+	},
+
+	/**
+	 * Overwrite slot troop data.
+	 * unco
+	 * @param {TRPid} trpid
+	 * @param {int} slot
+	 */
+	setTroopToSlot: function(trpid,slot){
+
+	},
+
+	/**
+	 *  for human mil buildings like barrack and stable.
+	 *  unco
+	 * @param {} agtid
+	 * @param {} upslot
+	 */
+	upgradeBuilding: function(agtid,upslot){
+		
+	},
 	
 };
 
@@ -1019,6 +1109,8 @@ DIS.lang = {
 	init: function(){ // this function called whenever player changes game language...
 		// unco
 	},
+
+	currentLangsuffix: gett(TPCadr.t.Str_LanguagePath), // "_jp", "_en" or whatever
 
 	// ??? is there any necessity of not using Object but array? 
 	currentFontdata: {
@@ -1201,11 +1293,37 @@ DIS.agent = {
 		return (getv(ptr) > 0);
 	},
 
+	/**
+	 * unco.
+	 *
+	 * @param {} agentid
+	 * @param {} name
+	 */
 	setName: function(agentid,name) {
 		
 	},
 
-	
+ /**
+  * getAgentIDListByTroop_team.
+  * unco
+  * @param {TRPid} troopid
+  * @param {int} team
+	* @return {array} - agentid array
+  */
+	getAgentIDListByTroop_team(troopid,team){
+		
+	},
+
+ /**
+  * getAgentIDListByBuilding_team.
+	* Unco
+  *
+  * @param {} staticid
+  * @param {} team
+  */
+	getAgentIDListByBuilding_team(staticid,team){
+
+	},
 
 }
 
@@ -1509,10 +1627,34 @@ DIS.data = { // DIS.data
 				return trpdata.getElmAsString(key) + ",";
 			}; 
 	
-			deblog(DATA.csvtemp.TROOP)
-			for (let elm of DATA.csvtemp.TROOP){
-				str+=pushKeyStr(elm)
+			let csv_temp_str = DATA.csvtemp.TROOP;
+
+			// replace language element!
+			// get lang suffix for checking if there's translation for the trp.
+			const lngsf = DIS.lang.currentLangsuffix;
+			const translatable_elms = ["name","Description","Lore"] 
+
+			// It works, but retarded.
+			for (let strElm of translatable_elms){
+				let trelm_str = strElm + lngsf; // put suffix
+				if(trpdata.hasOwnProperty(trelm_str)){ // and check if the json has translation string for current language
+					for (let i in csv_temp_str) {
+						if (csv_temp_str[i] == strElm){
+						csv_temp_str[i] = trelm_str; // If it does, replace the element name with what with suffix
+							break;
+						};
+					};
+				};
 			};
+
+			deblog(csv_temp_str) // print data format template for debug
+
+			for (let elm of csv_temp_str){
+				str += pushKeyStr(elm);
+			};
+
+			// If language system has translation string for the agent, overwrite again (IN FUTURE)
+			
 
 			deblog(str)
 			return str;
@@ -1523,9 +1665,9 @@ DIS.data = { // DIS.data
 
 
 	/**
-	 * @namespace DIS.data.STATIC
+	 * @namespace DIS.data.STATIC_UNIT
 	 */
-	STATIC: {
+	STATIC_UNIT: {
 
 	}, 
 
@@ -1809,6 +1951,8 @@ class RTSmission {
 
  /**
   * Save states of simple triggers on the RM system.
+	* @method
+	* @return {bool} true - Always return true unless it aborted by some error.
   */
 	save = function(){
 		// save triggers in queue as a string..
@@ -1819,15 +1963,35 @@ class RTSmission {
 		};
 		sett(Adrt_JSSAVE_triggersQueue,savestring.slice(0,-1));
 
+		// save player game data 
+		var address = TPCadr.t.Str_playergamedata_0;
+		for (let pl of this.essential.players){
+			save_jsobj_as_JSON(pl.playergamedata,address)
+			address++;
+		};
 
+		return true;
 	};
 
 	// mission.restore
+ /**
+  * Restore js data from TPC save data.
+	* @method
+	* @return {bool} true - Always return true unless it aborted by some error.
+  */
 	restore = function(){
 		// restore mission settings
 		this.passedFrame = getv(Adr_world_frame); //  if DIS game is reloaded, then reload from RM var. 
 
+		// restore player game data saved as json
+		var address = TPCadr.t.Str_playergamedata_0;
+		for (let pl of this.essential.players){
+			pl.playergamedata = JSON.parse(gett(address));
+			address++;
+		};
+
 		deblog("RTSmission restored.");
+		return true;
 	};
 
  /**
@@ -2570,8 +2734,11 @@ let RTS = {
 		save_jsobj_as_JSON(745,this.Preserve) // Str_Mission_local_save_JSON
 		// sett(745,JSON.stringify(this.Preserve));
 
-		this.mission.save();
-		deblog("RTS object data saved.")
+		if(this.mission.save()) {
+			deblog("RTS object data saved.");
+		} else {
+			errorlog("it seems RTSmission.save() failed");
+		};
 
 	}, // unco
 
@@ -2588,7 +2755,7 @@ let RTS = {
 		const str_missiondef_storage = 761; // <- header_mission.tpc
 
 		// load mission def and setup map system
-		eval(gett(str_missiondef_storage)); // using eval is kinda risky, but still, I have no choice under 2003Maniacs I suppose
+		eval(gett(str_missiondef_storage)); // kari. using eval is kinda risky, but still, I have no choice under 2003Maniacs I suppose?
 		this.mission.conf.isSightSystemOn = gets(Is_SightSystem_On); // setupMapLoading
 		this.mission.restore(); // start actual restoration
 
@@ -3271,14 +3438,17 @@ var Cmd = {
 		},
 
 		/**
-		 * underconstruction.
+		 * underconstruction (need to write TPC proc for this func).
+		 * set given flag to RTSplayer.playergamedata.techFlags[] on js as well
 		 *
-		 * @param {} playerid
-		 * @param {} tech
+		 * @param {int} playerid
+		 * @param {string} techid
 		 */
 		giveTech: function(playerid,tech){ // not done
 			let convt = DATA.TECH.ptrs[[techid.convert(tech)]].getFlagAddress();
 			Cmd.Qset(this.CmdType,"giveTech",`${playerid},${convt[0]},${convt[1]}`);
+			return RTS.mission.essential.players[playerid].setTechFlag(convt);
+			
 		},
 
 	},
@@ -3805,6 +3975,7 @@ const sampletrp = `
 
 		"dra_hero_orthunass": {
 			"name": "Orthunass the Empyrean Lord",
+			"name_jp": "オトナス・ナスン・ソラヌム",
 			"agentType": 1,
 			"size": [10,12],
 			"agentSprite": 71,
@@ -3851,7 +4022,8 @@ const inheritancetest = `
 {
 "TROOP": {
 	"visuna": {
-		"INHERITS": "dra_hero_orthunass"
+		"INHERITS": "dra_hero_orthunass",
+		"name_jp": "ウィスナ"
 
 	}
 
@@ -3863,6 +4035,7 @@ const inheritancetest = `
 	DATA.parseDISjson(roottroop)
 	DATA.parseDISjson(sampletrp)
 	deblog("\n\n\n")
+	DIS.lang.currentLangsuffix = "_jp"
 	DATA.TROOP.convertIntoCsvLine(DATA.TROOP.dra_hero_orthunass);
 	deblog("\n\n\n")
 	DATA.autoregister(DATA.parseDISjson(inheritancetest))

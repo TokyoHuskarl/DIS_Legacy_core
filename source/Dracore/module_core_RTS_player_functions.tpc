@@ -2,6 +2,18 @@
 /**
  *
  * @param {int} $pl - player id
+ * @return {&int} reg1 - Address to player tech slot
+ */
+__fn func_get_player_faction_to_r1 $pl {
+	// WHAT IF in case ($pl > 3)?
+	$addr = 2403 + $pl
+	val_asg(reg1,v[$addr])
+	
+}
+
+/**
+ *
+ * @param {int} $pl - player id
  * @param {int} $slot - tech slot number
  * @return {&int} reg1 - Address to player tech slot
  */

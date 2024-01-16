@@ -130,10 +130,10 @@ __fn func_generate_agent {
 											@if v[1941] >= 1 {
 												@call .cev v[1941]
 
-											} .else bl {
-												// "Hair and Face"
-												// "#Skin"
-												agent_Skin = 0
+											} .else bl { // no skin setting 
+													// "Hair and Face"
+													// "#Skin"
+													agent_Skin = 0
 													// "#Head"
 													agent_HeadID = 0
 													agent_FootstepSoundType = agent_HeadID + agent_Skin * 1000000
@@ -145,13 +145,23 @@ __fn func_generate_agent {
 
 											}
 
-										@call .cev 309 // ?
+											@call .cev 309 // ???
 											// "Hit Box"
 											CSVELM_AGENT_size_0 .toNum agent_Width
 											CSVELM_AGENT_size_1 .toNum agent_Height
 
 											// "#Passive"
+
+											// set culture
 											CSVELM_AGENT_faction .toNum agent_Culture
+											@if agent_Culture == 0 { // if the agent has no culture
+												// then set player faction as its culture
+												func_get_player_faction_to_r1(agent_TeamID) 
+												val_asg(agent_Culture,reg1)
+
+											}
+
+
 											CSVELM_AGENT_passiveId .toNum agent_Passive_Text
 
 											// "#Simplification#Unit Type to MS Add"
@@ -696,8 +706,9 @@ __fn func_generate_agent_finish_set {
 	} .else bl {
 		agent_static_set_adjustments_for_finish_set()
 	}
+
 	@comment "Enabling Skill AI"
-		@if agent_ObjectType <= 8 {
+		@if agent_ObjectType <= 8 { // land type mil agent
 			@comment "standard bearer"
 				agent_Passive_Type_Flag |= agent_BaseObjBit & BaseObjBit_FLAG_Standard_Bearer ? 4 : 0
 				@comment "Access19 = Obj's Behavior Access20 = Obj's target ID"
@@ -745,6 +756,7 @@ __fn func_generate_agent_finish_set {
 				}
 
 		}
+
 	@if agent_UnitType == 9 {
 		agent_AgentBits &= ~(1048576 + 524288)
 			agent_AgentBits |= 2097152
@@ -755,6 +767,8 @@ __fn func_generate_agent_finish_set {
 			v[705..706] += v[2409 + spawnSet_Team % 3] & 0x20 ? 100 : 0
 
 	}
+
+	
 	@comment "Imperials"
 		@if agent_Culture == 1 {
 			@if `v[2412 + spawnSet_Team % 3] & 0x40 {
