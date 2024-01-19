@@ -226,18 +226,35 @@ __fn func_CkIfSklCall $agent $skillno {
 	reg1 = 0
 		
 		__if AGENT_DATA_EXTRACTED == 0 {
+				// in this case, $skillno is {var}
 				TT1 = $agent * 300
 				Ptr1 = TT1 + 4701
 				v[Ptr1].copy agent_ObjectType,300
+				TT2 = 721 + 20 * $skillno
 		}
-	//@comment "#Is the ordered skill registered to the obj?"
 
-		// TT2 = 721
-		// TT2 += ($skillno * 20)
+			__if $skillno == 1 {
+				$skilladdr = 741
+					$CDTimeraddr = 695
 
-		// use meta var to optimize
-		$skilladdr = 721 + $skillno * 20
-		val_const(TT2,$skilladdr)
+			}.elif $skillno == 2 {
+				$skilladdr = 761
+					$CDTimeraddr = 696
+
+			}.elif $skillno == 3 {
+				$skilladdr = 781
+					$CDTimeraddr = 697
+
+			}.elif $skillno == 4 {
+				$skilladdr = 801
+					$CDTimeraddr = 698
+
+			}
+
+			// TT2 = skill pointer
+			// use meta var to optimize
+			val_const(TT2,$skilladdr)
+
 
 
 		//EXTRACT SKILL PARAMETER
@@ -313,9 +330,12 @@ __fn func_CkIfSklCall $agent $skillno {
 	//TT2 = TT1 + 4794 
 	//TT2 += $skillno
 	// get the CD timer of the agent 
-		$CDTimeraddr = 694 + $skillno
+
 		// TT2 = 694 + $skillno
+
 		val_const(TT2,$CDTimeraddr)
+
+
 		reg1 += v[TT2] <= 0 ? 0 : 1
 
 

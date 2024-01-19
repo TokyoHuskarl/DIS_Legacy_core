@@ -26,6 +26,20 @@ cev .id(52) ,.name("Control:Keyboard"), .parallel , .cond(Const_Is_RTS_Mode), {
 	CEV_CONTROL_KEYBOARD()
 }
 
+// legacy key cev events
+cev .id(58),.name("cont:RTS KEY Q"), {
+	CALL_RTS_KEY_Q()
+}
+cev .id(59),.name("cont:RTS KEY w"), {
+	CALL_RTS_KEY_W()
+}
+cev .id(60),.name("cont:RTS KEY e"), {
+	CALL_RTS_KEY_E()
+}
+cev .id(61),.name("cont:RTS KEY R"), {
+	CALL_RTS_KEY_R()
+}
+
 #include "./module_core_RTS_control_selecting_agents.tpc"
 cev .id(50),.name("cont:Selecting Group"), {
 	CEV_CONTROL_SELECT_AGENTS_GROUP()

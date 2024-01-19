@@ -6,8 +6,8 @@
  */
 __fn func_get_player_faction_to_r1 $pl {
 	// WHAT IF in case ($pl > 3)?
-	$addr = 2403 + $pl
-	val_asg(reg1,v[$addr])
+	var1 = 2403 + $pl
+	v[var1].copy reg1,1
 	
 }
 
@@ -18,8 +18,9 @@ __fn func_get_player_faction_to_r1 $pl {
  * @return {&int} reg1 - Address to player tech slot
  */
 __fn func_get_ptr_to_player_tech_slot_into_r1 $pl $slot {
-	$addr = 2403 + 3 * $slot + $pl
-	val_const(reg1,$addr)
+	reg1 = 2403 + $pl
+	reg1 += 3 * $slot
+	// val_const(reg1,var1)
 	
 }
 

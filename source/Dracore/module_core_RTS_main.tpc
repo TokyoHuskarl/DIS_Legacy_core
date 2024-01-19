@@ -1580,7 +1580,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							emitter_ParentObject = v[Ptr_loop_current_agent] // v[401] + 1
 							// "普通にアニメ"
 							agent_RelativeX.copy emitter_RelativeX, 2
-							emitter_RelativeY += 8
+							val_add(emitter_RelativeY,N8)
+							// emitter_RelativeY += 8
 						})
 					)
 				}
@@ -2479,7 +2480,6 @@ __fn agent_behavior_effect_and_motion_check {
 									emitter_ParentObject = v[Ptr_loop_current_agent]
 									// "普通にアニメ"
 									agent_RelativeX.copy emitter_RelativeX, 2
-									val_add(emitter_RelativeY,N8)
 									})
 						)
 
