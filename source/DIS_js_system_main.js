@@ -1822,6 +1822,11 @@ class RTSmission {
 			this.mapSourceDir = this.missionid;
 			this.dataextension = [];
 
+			// set players for temp
+			for (let i = 0; i < 2; i++){
+				this.essential.players[i] = new DIS_RTSplayer(i,0);
+			};
+
 		} else {
 			let src;
 			try {
@@ -1969,6 +1974,7 @@ class RTSmission {
 			save_jsobj_as_JSON(pl.playergamedata,address)
 			address++;
 		};
+		deblog("playerdata saved")
 
 		return true;
 	};
@@ -2242,7 +2248,7 @@ class RTSmap {
 	generate(){ // 
 	
 			deblog("how about it?: "+ RTS.mission.conf.isLEGACYmission);
-		if (!RTS.mission.conf.isLEGACYmission){
+		if (!RTS.mission.conf.isLEGACYmission){ // not 
 			const Adr_mapTerrainSourceType = 2055;
 			let filename = this.terrainSource.split("."); // ignore extension
 			if (filename[1] == "png"){
@@ -2315,7 +2321,7 @@ class DIS_RTSplayer extends DIS_entity {
 	playergamedata = {
 		troopTree: [],
 		techTree: [],
-		techFlags: new Array(4),
+		techFlags: [0,0,0,0], // new Array(4),
 	};
 
 
@@ -2323,8 +2329,8 @@ class DIS_RTSplayer extends DIS_entity {
 
 	combatpower = 0;
 
-
-	getTeamListHead(){return 1145 + Math.min(this.id,1)};
+	// kari
+	getTeamListHead(){return 1145 + Math.min(this.id,1)}; // ?
 			
 
 
@@ -4039,7 +4045,6 @@ const inheritancetest = `
 	DATA.TROOP.convertIntoCsvLine(DATA.TROOP.dra_hero_orthunass);
 	deblog("\n\n\n")
 	DATA.autoregister(DATA.parseDISjson(inheritancetest))
-
 
 
 const maptest = `

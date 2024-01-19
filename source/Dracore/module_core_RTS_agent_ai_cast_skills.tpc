@@ -127,7 +127,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 												v[victim_AgentType].copy victim_AgentType, agent_Basic_Array_size
 
 
-												@loop 1 {
+												// @loop 1 {
 														//Temp9 = v[212] + 7
 														agent_RelativeX.copy Temp4, 2
 														// Temp1 = agent_TargetAgentID * 300 
@@ -158,8 +158,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 																}
 
-														}
-													@if `!(v[780] & 1) && v[772] >= v[3401] {
+														}.elif `!(v[780] & 1) && v[772] >= v[3401] {
 														//var1 = Ptr11
 														//var2 = 2
 														//@call .cev 2008 //9.3.23 found forgetting to comment out - this can be the root of weapon picture collapsing bug.
@@ -181,9 +180,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 															}
 
-													}
-
-													@if `!(v[800] & 1) && v[792] >= v[3401] {
+													}.elif `!(v[800] & 1) && v[792] >= v[3401] {
 														//var1 = Ptr11
 														//var2 = 3
 														//@call .cev 2008
@@ -206,8 +203,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 															}
 
-													}
-													@if `!(v[820] & 1) && v[812] >= v[3401] {
+													}.elif `!(v[820] & 1) && v[812] >= v[3401] {
 														//var1 = Ptr11
 														//var2 = 4
 														//@call .cev 2008
@@ -232,7 +228,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 													}
 
-												}
+												// }
 
 
 											}

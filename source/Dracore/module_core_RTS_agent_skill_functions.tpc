@@ -226,7 +226,6 @@ __fn func_CkIfSklCall $agent $skillno {
 	reg1 = 0
 		
 		__if AGENT_DATA_EXTRACTED == 0 {
-			def AGENT_DATA_EXTRACTED = 1
 				TT1 = $agent * 300
 				Ptr1 = TT1 + 4701
 				v[Ptr1].copy agent_ObjectType,300
@@ -237,7 +236,7 @@ __fn func_CkIfSklCall $agent $skillno {
 		// TT2 += ($skillno * 20)
 
 		// use meta var to optimize
-		$skilladdr = 721 + skillno * 20
+		$skilladdr = 721 + $skillno * 20
 		val_const(TT2,$skilladdr)
 
 
@@ -265,8 +264,8 @@ __fn func_CkIfSklCall $agent $skillno {
 						reg1 += 1
 						//call ranged indicator
 						TT4 = __id(skill_Range_max)
-						// @call .cev 81
-						func_draw_range_indicator()
+						@call .cev 81
+						// func_draw_range_indicator()
 
 				}
 
@@ -288,8 +287,8 @@ __fn func_CkIfSklCall $agent $skillno {
 							val_add(reg1,N1) // reg1 += 1
 							//call ranged indicator
 							TT4 = __id(skill_Range_max)
-							// @call .cev 81
-							func_draw_range_indicator()
+							@call .cev 81 // calling cev is faster
+							// func_draw_range_indicator()
 
 					}
 
