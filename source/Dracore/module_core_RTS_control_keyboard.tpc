@@ -1277,7 +1277,7 @@ __fn CALL_RTS_KEY_Q {
 											// var2 = 1
 											s[83].on
 											// @call .cev 2008
-											func_CkIfSklCall(var1,AGTACT_SLOT_Q)
+											func_CkIfSklCall(var1,AGTACT_SLOT_Q,1)
 											s[83].off
 											@if reg1 <= 0 {
 												@comment "Mouse"
@@ -1527,7 +1527,7 @@ __fn CALL_RTS_KEY_W {
 											s[83].on
 											// @call .cev 2008
 
-											func_CkIfSklCall(var1,AGTACT_SLOT_W)
+											func_CkIfSklCall(var1,AGTACT_SLOT_W,1)
 											s[83].off
 											@if reg1 <= 0 {
 												@comment "とりあえずマウス座標だけ
@@ -1772,7 +1772,7 @@ __fn CALL_RTS_KEY_E {
 										var2 = 3
 										s[83].on
 										// @call .cev 2008
-										func_CkIfSklCall(var1,AGTACT_SLOT_E)
+										func_CkIfSklCall(var1,AGTACT_SLOT_E,1)
 										s[83].off
 										@if reg1 <= 0 {
 											@comment "とりあえずマウス座標だけSkill3"
@@ -2020,7 +2020,7 @@ __fn CALL_RTS_KEY_R {
 											var2 = 4
 											s[83].on
 											// @call .cev 2008
-											func_CkIfSklCall(var1,AGTACT_SLOT_R)
+											func_CkIfSklCall(var1,AGTACT_SLOT_R,1)
 											s[83].off
 											@if reg1 <= 0 {
 												@comment "とりあえずマウス座標だけSkill3"

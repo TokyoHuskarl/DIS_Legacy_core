@@ -217,7 +217,8 @@ __fn func_reload_agent_ammo_full $agent $flags {
 
 //cev 2008 CkIfSklCall v1v2 r1
 //reg1 0=can cast 1=cannot
-__fn func_CkIfSklCall $agent $skillno {
+// $fl - if $fl is set, then load agent data
+__fn func_CkIfSklCall $agent $skillno $fl {
 	/*@comment "Var1 = Obj 1~
 		Var2 = SkillNo
 		r1 = Cant_call_skill
@@ -225,12 +226,12 @@ __fn func_CkIfSklCall $agent $skillno {
 
 	reg1 = 0
 		
-		__if AGENT_DATA_EXTRACTED == 0 {
+		__if $fl == 1 {
 				// in this case, $skillno is {var}
 				TT1 = $agent * 300
 				Ptr1 = TT1 + 4701
 				v[Ptr1].copy agent_ObjectType,300
-				TT2 = 721 + 20 * $skillno
+
 		}
 
 			__if $skillno == 1 {
