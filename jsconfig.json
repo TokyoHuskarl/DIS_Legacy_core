@@ -1,12 +1,19 @@
 {
 	"compilerOptions": {
+		"target": "ES6",
+		"module":"None",
 		"baseUrl": "./",
 		"paths": {
-			"*": ["./source/*"] 
-		}
+			"*": ["./*"]
+		},
+		"allowSyntheticDefaultImports":true
+
 	},
 	"include": [
-		"source/index.js" 
+		"./source/index.js",
+		"./source/js/*",
+		"./source/js/jslib/**/*",
+		"./source/Maps/**/*"
 	]
 }
 

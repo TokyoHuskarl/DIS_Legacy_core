@@ -10,7 +10,6 @@
  * so this module contains a lot of important and complicated js objects.
  */
 
-
 /**
  * for TPC memory allocation
  * kari consts... will be moved to other files.
@@ -3717,11 +3716,14 @@ if (!VIRTUAL_ENV){
 	Cmd.init();
 } else { // virtual
 	if (typeof process !== 'undefined' && process.versions && process.versions.node){ // running on Node.js
-		module.exports = {
+		/*module.exports = {
 			deblog,
 			errorlog,
-			DIS
-		};
+			DIS,
+			Cmd,
+			RTS,
+			
+		};*/
 		deblog("Running on Node.js");
 	}
 
@@ -4130,5 +4132,4 @@ const maptest = `
 
 
 };
-
 

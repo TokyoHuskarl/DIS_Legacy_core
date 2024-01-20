@@ -15,11 +15,10 @@
  */
 
 /*
- * Modified by TokyoHuskarl. Date 2024.1.20
+ * Modified by TokyoHuskarl. Date 2024.1.20 ?
  */
-
 (function(global){
-  var module = global.noise = {};
+  var module = noise = global.noise = {};
 
   function Grad(x, y, z) {
     this.x = x; this.y = y; this.z = z;
@@ -313,12 +312,15 @@
 
 })(this);
 
+
 /**
  * TokyoHuskarl addition
  * If running on virtual environment && it's node.js, prepare to export.
  */
+// nvm it's shit
+/*
 if (typeof VIRTUAL_ENV != "undefined") {
 	if (typeof process !== 'undefined' && process.versions && process.versions.node){
 		module.exports = this.noise;
 	};
-};
+};*/

@@ -1,14 +1,16 @@
+// var { deblog, errorlog, Cmd } = require("./DIS_js_system_main");
 // importing files on virtual enviroment
 if(typeof VIRTUAL_ENV == "undefined"){
 	if (typeof process !== 'undefined' && process.versions && process.versions.node){ // running on Node.js
-		var { deblog, errorlog } = require("./../DIS_js_system_main");
-		var { DIS } = require("./../DIS_js_system_main");
-		var { noise } = require("./jslib/noisejs/perlin");
+		/*var { deblog, errorlog, Cmd } = require("./DIS_js_system_main");
+		var { DIS } = require("./DIS_js_system_main");
+		var { noise } = require("./jslib/noisejs/perlin");*/
 	} else {
 		console.log("ERROR: If you are testing DIS javascript files on virtual environment other than DIS game exe, please do it on Node.js.");
 	};
 	var VIRTUAL_ENV = true
 };
+
 
 
 /**
@@ -61,6 +63,7 @@ const DISmapgen = (function(){
 
 	}
 })();
+
 
 
 // experiment on VIRTUAL_ENV
