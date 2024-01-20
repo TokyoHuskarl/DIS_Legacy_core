@@ -24,7 +24,8 @@ defv Const_save_var_Adr_ScriptsBufferHead = 1219
 def Str_ScriptsBufferHead = t[Const_save_var_Adr_ScriptsBufferHead]
 
 
-def jslib_directory = __str(js_directory+"jslib/")
+
+def jslib_directory = __str(js_directory,"jslib/")
 
 __if LOAD_HEADER_AGENT != 1{
 #include "./../headers/header_agent.tpc"

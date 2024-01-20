@@ -98,6 +98,7 @@ __fn load_json_to $jsonpath $savestr {
  */
 __fn load_jslib $libname {
 	// load
+	log_push(__str("Loading js library:",$libname))
 	js_StringBuffer.asg .cat(jslib_directory,"",$libname)
 	js_StringBuffer.asg .file(js_StringBuffer), .utf8
 	@js .run js_StringBuffer

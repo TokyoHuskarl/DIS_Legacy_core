@@ -63,6 +63,7 @@ const DISmapgen = (function(){
 
 	}
 })();
+deblog("DISmapgen loaded.");
 
 
 

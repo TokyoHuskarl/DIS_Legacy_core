@@ -17,6 +17,7 @@
 /*
  * Modified by TokyoHuskarl. Date 2024.1.20 ?
  */
+let noise; // is this necessarily?
 (function(global){
   var module = noise = global.noise = {};
 

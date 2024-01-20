@@ -1119,7 +1119,8 @@ __fn CEV_MISSION_MAP_INIT {
 
 	// mapdef.js.txt file won't be loaded when the game didn't load missiondef.js.txt.
 	@if loadedJsConfig.isOn() {
-		load_jslib("perlin.js") // load library
+		load_jslib("noisejs/perlin.js")) // load library
+		// execute_js("jslib\noisejs\perlin.js") // load mapgenerator API 
 		execute_js("DIS_mapgenerator.js") // load mapgenerator API 
 		run_RTSmapGeneration()
 		@if Is_LEGACYSTAGE.isOff() {
@@ -2267,7 +2268,7 @@ __fn loadMapInfo $missionpath {
 	str1 .cat "\\mapinfo.json"
 	// str1 .cat "\\mapdef.js" // need rewriting
 	inputstr .asg .file str1, .utf8
-	@if inputstr .neq "" { // there's mapdef.js
+	@if inputstr .neq "" { // mapdef.js exists
 		str_mapdef_storage.asg inputstr
 		@js .run "RTS.openMissionMapData(gett(510));" // parse mapinfo.json in t[510] <-inputstr
 		// return to reg1 reg2 

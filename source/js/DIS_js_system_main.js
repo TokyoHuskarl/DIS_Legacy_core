@@ -2238,7 +2238,7 @@ class RTSmap {
 	
 	
  /**
-  * this function called through mission init process.
+  * this function is called through mission init process on TPC.
 	* first RTS.openMissionMapDataloading() is called, then mapdef.js.txt is read, then this one gets called at last.
 	*
   */
@@ -2268,13 +2268,13 @@ class RTSmap {
 	
  /**
   * Generate map.
-	* You can override this function in mapscript.js
+	* You CAN override this function in your js file for your map!
 	* If you don't override this function, this object tries to load this.terrainSource unless the map is LEGACYmission
 	* - I mean using RMmap.
   */
 	generate(){ // 
 	
-			deblog("how about it?: "+ RTS.mission.conf.isLEGACYmission);
+			deblog("Is this map legacy one?: "+ RTS.mission.conf.isLEGACYmission);
 		if (!RTS.mission.conf.isLEGACYmission){ // not 
 			const Adr_mapTerrainSourceType = 2055;
 			let filename = this.terrainSource.split("."); // ignore extension
