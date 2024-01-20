@@ -21,8 +21,10 @@ const TPCadr = {
 		Str_playergamedata_0: 767,
 		Str_LanguagePath: 528,
 	},
+	v: {
+		Adr_MapElevationArray: 572947, // define_structures_map.tpc
+	}
 };
-
 
 // if setv() is undefined, it's virtual enviroment on node.js, qjs or sth.
 let VIRTUAL_ENV = (typeof setv == "undefined") ? true : false;
@@ -35,6 +37,16 @@ var sett = sett || function(){};
 var gett = gett || function(t){return `string t[${t}]`};
 var sets = sets || function(){};
 var gets = gets || function(){return true};
+
+/**
+ * setva
+ * Set variable array.
+ * @param {int} address - TPC var address
+ * @param {array} jsarray - int array
+ */
+function setva(address,jsarray){setv(address,jsarray);};
+
+
 
 
 //0 = normal mode, 1 = debug mode, 2 = developer mode
@@ -117,6 +129,8 @@ function getRM(typ,add) {
 
 
 // Set RM Var addresses
+
+
 // DIS project
 
 
@@ -1030,6 +1044,22 @@ DIS = { // DIS fundamental components
 
 DIS.macro = {
 	timeToFrame: (h,m,s) => ((h * 3600 + m * 60 + s) * DIS.RTSFPS), 
+	/**
+	 * Convert 2dim array to 1dim array.
+	 *
+	 * @param {object} twoDimensionalArray
+	 * @return {array}
+	 */
+	flattenArray: function(twoDimensionalArray){
+		const flattenedArray = [];
+		for (let row of twoDimensionalArray){
+			// Array.prototype.push.apply
+			Array.prototype.push.apply(flattenedArray, row);
+		}
+
+		return flattenedArray;
+	},
+
 };
 
 
@@ -2188,7 +2218,7 @@ class RTSmap {
 			};
 			this.heightgenType = src.heightgen || 0; // kari
 			this.terrainSource = src.terrainfile || "terrain.png"; // png?
-			this.tileset = src.tileset || 1; // RM tile set - if it's not defined, at least try to load 1.
+			this.tileset = src.tileset || 1; // RM tile set - if it's not defined, at least try loading 1.
 		};
 		
 
@@ -2234,8 +2264,6 @@ class RTSmap {
   * currently no meaning.
   */
 	restore(){
-
-
 		deblog("Map restored.")
 	}; // call me
 	
@@ -2265,6 +2293,25 @@ class RTSmap {
 		};
 	
 	};
+
+ /**
+  * setMapHeight.
+  *
+  * @param {object} heightinfo - two-dimensional array. [width][height]
+	* @return {bool}
+  */
+	setMapElevation(elvinfo){
+		const rawelvdata = DIS.macro.flattenArray(elvinfo)
+		if(typeof rawelvdata === "array"){
+			setva(TPCadr.v.Adr_MapElevationArray,rawelvdata);
+			return true;
+
+		} else {
+			return false;
+		}
+	};
+
+	
 	/**
 	 * ?
 	 */
@@ -3325,6 +3372,15 @@ var Cmd = {
 			Cmd.Qset(this.CmdType,"importDISDjson",`${path}`);
 		},
 
+		/**
+		 * Load up java script library in /Scripts/jslib/.
+		 * Don't call this command unless you understand what are gonna do.
+		 * @param {string} libfile - e.g. "perlin.js"
+		 *
+		 */
+		_loadlib: function(libfile) { // execute js file
+			Cmd.Qset(this.CmdType,"loadlib",`${libfile}`);
+		},
 
 		/**
 		 * danger. never use this cmd unless you're aware of DIS RM string memory allocation
@@ -3659,6 +3715,16 @@ if (!VIRTUAL_ENV){
 	DIS.data.init(); // reset DIS data
 	DIS.init.initID();
 	Cmd.init();
+} else { // virtual
+	if (typeof process !== 'undefined' && process.versions && process.versions.node){ // running on Node.js
+		module.exports = {
+			deblog,
+			errorlog,
+			DIS
+		};
+		deblog("Running on Node.js");
+	}
+
 }
 
 
@@ -4060,8 +4126,7 @@ const maptest = `
 	"heightgen": "HGEN_PRESET"
 
 }
-`
-
+`;
 
 
 };

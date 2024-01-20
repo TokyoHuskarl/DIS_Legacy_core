@@ -45,6 +45,7 @@ def WAIT_FOR_JSCMD_EXECUTION = {
 	}
 }
 
+
 // DIS JS functions
 __fn boot_DIS_js_system {
 	execute_js("DIS_js_system_main.js")
@@ -87,6 +88,20 @@ __fn save_DIS_js_RTS_system {
 __fn load_json_to $jsonpath $savestr {
 	load_json($jsonpath)
 	t[__id($savestr)].asg js_StringBuffer
+}
+
+
+
+/**
+ *
+ * @param {string} $libname - name of Javascript library in /scripts/jslib/.
+ */
+__fn load_jslib $libname {
+	// load
+	js_StringBuffer.asg .cat(jslib_directory,"",$libname)
+	js_StringBuffer.asg .file(js_StringBuffer), .utf8
+	@js .run js_StringBuffer
+
 }
 
 // Open DIS js scene
@@ -256,6 +271,7 @@ __fn DIS_sys_methods $LINKstr $md $i $given_v_or_str $flags {
 			t2v(SSargs0,var1)
 			t[var1].toFile SSargs1, .utf8
 		})},	
+		{NsCmd($LINKstr, $md, $i, "loadlib",{load_jslib(SSargs0)})},
 
 	])
 }

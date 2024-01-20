@@ -12,6 +12,7 @@ def {
 
 // INIT MISSION - this one is called whenever you open new mission
 __fn CEV_MISSION_INIT {
+	
 	v[ptr_null] = 0 // allocate memory
 	// @comment "init map id"
 	t[751] .asg ""
@@ -1118,6 +1119,8 @@ __fn CEV_MISSION_MAP_INIT {
 
 	// mapdef.js.txt file won't be loaded when the game didn't load missiondef.js.txt.
 	@if loadedJsConfig.isOn() {
+		load_jslib("perlin.js") // load library
+		execute_js("DIS_mapgenerator.js") // load mapgenerator API 
 		run_RTSmapGeneration()
 		@if Is_LEGACYSTAGE.isOff() {
 			@map.tileset v[2060]

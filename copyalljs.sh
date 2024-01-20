@@ -1,22 +1,41 @@
+
 #!/bin/bash
 
-# Run this shell script to convert and copy all .js files in DIS source directory to DIS/js/*.js.txt. 
+# /source/js/ 以下のディレクトリ構造を保ったまま $DIS_WORKSPACE にコピーし、
+# コピーした全ての .js と .json ファイルに .txt 拡張子を追加するスクリプト
 
-# 親ディレクトリを指定（例：'parent_folder'）
-PARENT_DIR="$DIS_APPEND/source"
+# ソースディレクトリ（例：'/source/js'）
+SOURCE_DIR="$DIS_APPEND/source/js"
 
-# 親ディレクトリ内のすべてのディレクトリをループ
-for dir in "$PARENT_DIR"/*/; do
-	# 各ディレクトリ内の.jsファイルを一つ上の階層にコピー
-	for file in "$dir"*.js; do
-		base_name=$(basename "$file")
-		cp "$file" "$DIS_WORKSPACE"/Scripts/"$base_name".txt
-	done
+# コピー先のワークスペースディレクトリ
+DEST_DIR="$DIS_WORKSPACE/Scripts"
+
+# $DIS_WORKSPACE/Scripts/以下のjsonとjsを一度全部消す
+# ソースディレクトリ内の全ファイルを再帰的に処理
+find "$DEST_DIR" -type f \( -name "*.js.txt" -o -name "*.json.txt" \) | while read -r file; do
+    # コピー先のパスを生成（ディレクトリ構造を保持）
+    dest_path="$DEST_DIR/${file#$SOURCE_DIR/}"
+    dest_dir=$(dirname "$dest_path")
+
+    # ファイルをコピーし、拡張子を .txt に変更
+    rm "$file"
+done
+echo "old files under /Scripts/ removed."
+
+# ソースディレクトリ内の全ファイルを再帰的に処理
+find "$SOURCE_DIR" -type f \( -name "*.js" -o -name "*.json" \) | while read -r file; do
+    # コピー先のパスを生成（ディレクトリ構造を保持）
+    dest_path="$DEST_DIR/${file#$SOURCE_DIR/}"
+    dest_dir=$(dirname "$dest_path")
+
+    # 必要に応じてディレクトリを作成
+    mkdir -p "$dest_dir"
+
+    # ファイルをコピーし、拡張子を .txt に変更
+    cp "$file" "${dest_path}.txt"
 done
 
-for file in "$PARENT_DIR"/*.js; do
-	base_name=$(basename "$file")
-	cp "$file" "$DIS_WORKSPACE"/Scripts/"$base_name".txt
-done
- #
-echo "All .js files in source directory have been copied to DIS/Scripts/."
+echo "All .js and .json files in $SOURCE_DIR have been copied to $DEST_DIR with .txt extension."
+echo ""
+echo | ls "$DIS_WORKSPACE/Scripts"
+
