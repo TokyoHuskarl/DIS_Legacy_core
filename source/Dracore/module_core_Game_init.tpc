@@ -131,7 +131,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	t[947] .asg "..\user\minions\spr_minions_1"
 	t[949] .asg "..\user\parts\hair\spr_hair_0"
 	@comment "Set Const"
-	v[4580] = 2438
+	Ptr_PopLimitArrayHEAD = 2438
 	v[1266] = 1500001
 	v[4501] = 63
 	v[4502] = 63
@@ -184,9 +184,9 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1145] = 462319
 	v[1146] = 462821
 	Const_save_var_Agents_Limit = Agents_Limit
-	v[1012] = 350
-	@comment "this one is dynamic"
-	v[1080] = 350
+	Const_save_var_Agent_TeamListSize_Limit = TEAMSIZE_SYSTEM_LIMIT
+	// @comment "this one is dynamic"
+	// Mission_Agent_TeamSize_Limit = 350 -> set in mission_init
 	@comment "#Unit Lists"
 	v[4531] = 732947
 	v[4532] = 733947
@@ -480,7 +480,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[4539] = 3276
 	v[4540] = 1365
 	v[4579] = v[1275] + 4001
-	v[1067] = v[4579] + v[1004] * (v[1012] + 2)
+	v[1067] = v[4579] + v[1004] * (Const_save_var_Agent_TeamListSize_Limit + 2)
 	v[1068] = v[1067] + v[1004]
 	TT1 = v[1004] * 4
 	v[1069] = v[1068] + TT1

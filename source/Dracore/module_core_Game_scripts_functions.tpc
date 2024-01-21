@@ -772,7 +772,7 @@ __fn cmd_team_get_schwerepunkt $teamID {
 }
 
 __fn cmd_team_set_pop_limit $teamID $limit {
-	v[LEGV_Ptr2PopLimitArray + $teamID] = $limit
+	v[Ptr_PopLimitArrayHEAD + $teamID] = $limit
 
 }
 

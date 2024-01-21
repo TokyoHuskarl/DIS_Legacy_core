@@ -732,6 +732,10 @@ __fn CEV_MISSION_INIT {
 	// ---------------------------
 	loadedJsConfig.off
 
+	// init mission variables
+	Mission_Agent_TeamSize_Limit = TEAMSIZE_SYSTEM_LIMIT
+
+
 	// LEGACY - remove this part after js management system completion
 	
 	getMissionPath()
@@ -897,6 +901,7 @@ __fn CEV_MISSION_INIT {
 		}
 		
 	}
+
 	@comment "test"
 	s[38].off
 	s[18].off
@@ -914,6 +919,7 @@ __fn CEV_MISSION_INIT {
 	// -----------------------------------
 	// loading terrain bits
 	// -----------------------------------
+	log_push("Loading Terrain Data")
 	@loop 99 .dst TT1 { // 99 is magic numba - string buffer amount
 		TT2 = Adrt_terraindata_head + TT1
 		splitStrData(t[TT2])
@@ -922,28 +928,6 @@ __fn CEV_MISSION_INIT {
 			v[Adr_terrainbits_head + TT1] |= reg1
 		}
 	}
-	log_push("Terrain Data Load")
-
-	/*
-	@comment "#Forest"
-	v[Const_save_var_AdrTerrainBitsHead + 2] |= 8
-	@comment "#Dense Forest"
-	v[Const_save_var_AdrTerrainBitsHead + 5] |= 4
-	v[Const_save_var_AdrTerrainBitsHead + 5] |= 8
-	@comment "#Snow"
-	v[Const_save_var_AdrTerrainBitsHead + 7] |= 32
-	@comment "#Ice"
-	v[Const_save_var_AdrTerrainBitsHead + 10] |= 16
-	@comment "#Road"
-	v[Const_save_var_AdrTerrainBitsHead + 11] |= 64
-	@comment "#Bush"
-	v[Const_save_var_AdrTerrainBitsHead + 17] |= 4
-	@comment "#Shallow Water"
-	v[Const_save_var_AdrTerrainBitsHead + 18] |= 1
-	@comment "#Deep Water"
-	v[Const_save_var_AdrTerrainBitsHead + 22] |= 1
-	*/
-
 
 	//
 	@comment "#For faster calculation"
@@ -958,11 +942,14 @@ __fn CEV_MISSION_INIT {
 
 
 
+	// player settings?
 	@comment "FACTION TEMPLATES"
 	t[3000..3300] .asg ""
 	v[300001..300004] = v[1130]
 	v[300001..300002] -= 30
 	v[300003..300004] -= 80
+
+	// obsolete
 	@if s[1] .isOn() {
 		@comment "*get map config*"
 		@sys.getInfo .tilesetId  .dst v[2060]
@@ -997,76 +984,24 @@ __fn CEV_MISSION_INIT {
 		
 		
 	}
+
 	@if s[7] .isOn() {
 		v[2280 + v[2403]] += 1
 		
 	}
-	@comment "*faction template load*"
-	@comment "PL"
-	var1 = v[4574] + v[2403]
-	t[var1] .split ",", t[2998], v[505]
-	@loop 36 .dst v[506] {
-		var1 = 3001 + v[506]
-		var2 = v[4575] + v[506] + 5
-		t[var1] .toNum v[31]
-		v[var2] = v[31]
-		
-	}
 
-	@comment "EN"
-	var1 = v[4574] + v[2404]
-	t[var1] .split ",", t[2998], v[505]
-	@loop 36 .dst v[506] {
-		var1 = 3001 + v[506]
-		var2 = v[4575] + 40 + v[506] + 5
-		t[var1] .toNum v[31]
-		v[var2] = v[31]
-		
-	}
+	// factional bonuses adn so on :D
+	mission_init_players_settings()
 
-	v[2481] = 150
-	v[2482] = 160
-	v[2483] = 210
-	v[2484] = 25
-	v[2485] = 30
-	v[2486] = 42
-	@comment "#Imperials"
-	v[v[4580] + 0] = 5
-	@if v[2403] == 1 {
-		v[300001..300004] += 100
-		@comment "#Imperial Age"
-		v[2409] |= pow(2, 28)
-		@comment "#Town Watch"
-		v[2409] |= pow(2, 24)
-		
-	}
-	@if v[2403] == 3 {
-		v[v[4580] + 0] = v[1012]
-		@if v[2402] == 3 {
-			v[300004] *= 2
-			
-		}
-		v[1129] = 100
-		@if v[2402] == 1 {
-			v[1129] += 25
-			v[2481] = 130
-			v[2482] = 140
-			v[2483] = 200
-			v[2484] = 30
-			v[2485] = 35
-			v[2486] = 50
-			
-		}
-		
-	}
-	@if s[400] .isOn() {
+	@if s[400] .isOn() { // debug mode
 		@if .testPlay {
-			v[300001..300004] += 10000
+			v[300001..300004] += 10000 // give extra resources
 			
 		}
 		s[471].on
 		
 	}
+
 	v[438] = 100
 	str1 .asg  .file "../Maps/define_maps", .utf8
 	@if t[750] .eq "" {
@@ -1110,8 +1045,91 @@ __fn CEV_MISSION_INIT {
 }
 
 
+__fn mission_init_players_settings {
+	
+	@comment "*faction template load*"
+	@comment "PL"
+	var1 = v[4574] + v[2403]
+	t[var1] .split ",", t[2998], v[505]
+	@loop 36 .dst v[506] {
+		var1 = 3001 + v[506]
+		var2 = v[4575] + v[506] + 5
+		t[var1] .toNum v[31]
+		v[var2] = v[31]
+		
+	}
 
-// 
+	@comment "EN"
+	var1 = v[4574] + v[2404]
+	t[var1] .split ",", t[2998], v[505]
+	@loop 36 .dst v[506] {
+		var1 = 3001 + v[506]
+		var2 = v[4575] + 40 + v[506] + 5
+		t[var1] .toNum v[31]
+		v[var2] = v[31]
+		
+	}
+
+
+	// market rate basic setting
+	/* gold cost
+	v[2481] = 150
+	v[2482] = 160
+	v[2483] = 210
+	*/
+	set_market_basic_resource_rate_buy_all([150,160,210])
+	/*
+	v[2484] = 25
+	v[2485] = 30
+	v[2486] = 42
+	*/
+	set_market_basic_resource_rate_sell_all([25,30,42])
+
+	// set default population limit for player
+	// v[v[4580] + 0] = 5
+	func_set_player_current_pop_limit(0,5) // set for single mode player only
+
+	// check faction bonus
+	func_get_player_faction_to_r1(0)
+	// imperials
+	@if reg1 == 1 { 
+		v[300001..300004] += 100
+		@comment "#Imperial Age"
+		v[2409] |= pow(2, 28)
+		@comment "#Town Watch"
+		v[2409] |= pow(2, 24)
+	}
+
+	// DRAGONS
+	@if reg1 == 3 {
+		// v[v[4580] + 0] = v[1012]
+		func_set_player_current_pop_limit(0,Mission_Agent_TeamSize_Limit) // dragons have no need to build houses
+		func_get_player_subfaction_to_r2(0)
+
+		@if reg2 == 3 { // Drana
+			v[300004] *= 2
+			
+		}
+
+		func_get_ptr_to_player_rs_lim_bonus_per_house_r3(0)
+		v[reg3] = 100
+		@if reg2 == 1 { // Orthunass economy bonus
+			v[reg3] += 25
+			set_market_basic_resource_rate_buy_all([130,140,200])
+			set_market_basic_resource_rate_sell_all([30,35,50])
+			
+		}
+		
+	}
+
+
+}
+
+
+/*
+ * MAP INIT PROCESS
+ */
+
 __fn CEV_MISSION_MAP_INIT {
 	log_push("DIS mission map initializing process...")
 	var_allocatedmapsize = var_Map_Width * var_Map_Height

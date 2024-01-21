@@ -23,6 +23,15 @@ LetscopyStuff () {
 echo "Copy Modules"
 LetscopyStuff
 
+# add .txt
+DEST_DIR_MOD="../Modules"
+find "$DEST_DIR_MOD" -type f \( -name "*.js" -o -name "*.json" \) | while read -r file; do
+    # 拡張子を .txt に変更
+    mv "$file" "$file.txt"
+done
+echo "file copy done."
+
+
 # then try Languages 
 source_dir="./source/Languages"
 echo "Copy Langs"

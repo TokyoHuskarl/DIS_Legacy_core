@@ -1,12 +1,36 @@
 
+__fn func_set_player_current_pop_limit $pl $lim {
+	v[Ptr_PopLimitArrayHEAD + $pl] = min($lim,TEAMSIZE_SYSTEM_LIMIT)
+}
+
+
+/**
+ * WORKS ONLY FOR DRAGONS && HUMAN PLAYER
+ */
+__fn func_get_ptr_to_player_rs_lim_bonus_per_house_r3 $pl {
+	reg1 = __id(v[1129])
+	
+}
+
 /**
  *
  * @param {int} $pl - player id
- * @return {&int} reg1 - Address to player tech slot
+ * @return {int} reg1 - int faction id
  */
 __fn func_get_player_faction_to_r1 $pl {
 	// WHAT IF in case ($pl > 3)?
 	var1 = 2403 + $pl
+	v[var1].copy reg1,1
+	
+}
+
+/**
+ * CURRENTLY WORKS ONLY FOR PLAYER
+ * @param {int} $pl - player id
+ * @return {int} reg1 -int subfaction id 
+ */
+__fn func_get_player_subfaction_to_r2 $pl {
+	var1 = 2402 // 
 	v[var1].copy reg1,1
 	
 }
