@@ -38,7 +38,6 @@ __fn CEV_MISSION_INIT {
 	TT1 = actor[1].mhp
 	TT1 -= 1
 	@actor[1].param .hp .sub TT1
-	@comment "初期化"
 	s[309].off
 	s[401..500].off
 	s[470].off
@@ -89,9 +88,7 @@ __fn CEV_MISSION_INIT {
 		v[2402] = v[2224]
 		@if v[2403] == 999 {
 			v[2403] = [3, 8, 9, 12, 1][rnd(0, 4)]
-			@comment "＃＃＃＃＃＃＃＃＃＃＃＃"
 			@if v[2403] == 3 {
-				@comment "＃＃＃＃＃＃＃＃＃＃＃＃"
 				v[2402] = rnd(1, 3)
 				
 			}
@@ -527,7 +524,6 @@ __fn CEV_MISSION_INIT {
 	@comment "######################"
 	s[2].off
 	s[18].on
-	@comment "＃＃＃＃＃UI Picture Preload＃＃＃＃＃＃"
 	@comment "AItoggle"
 	TT1 = v[4556]
 	@loop 4 {
@@ -694,7 +690,6 @@ __fn CEV_MISSION_INIT {
 	v[143] = 0
 	v[142] = 100
 	v[421] = 100
-	@comment "＃＃＃＃＃＃This part might cause some gaps minimap, so achtung"
 	v[501] = player.mapId
 	v[2080] = 2301
 	Map_LimitCoordX_min = ev[3].x
@@ -782,7 +777,7 @@ __fn CEV_MISSION_INIT {
 	v[162] -= 8
 	v[161] = max(v[161], v[1115])
 	v[162] = max(v[162], v[1116])
-	// @comment "＃＃＃＃＃＃Camera Set Up"
+	// @comment "Camera Set Up"
 	@map.getPlayerPos v[68] TT11 TT12
 	// @map[v[68]].setVehiclePos .pos Map_LimitCoordX_min, Map_LimitCoordY_min .retain
 	@map[v[68]].setPlayerPos .pos Map_LimitCoordX_min Map_LimitCoordY_min
@@ -801,7 +796,6 @@ __fn CEV_MISSION_INIT {
 	@comment "FoW"
 	v[2925] = ev[3].scrx
 	v[2926] = ev[3].scry
-	@comment "#四分木用"
 	Map_LimitCoordX_max = ev[4].scrx
 	Map_LimitCoordX_max -= ev[3].scrx
 	Map_LimitCoordY_max = ev[4].scry
@@ -821,7 +815,6 @@ __fn CEV_MISSION_INIT {
 	Map_LimitCoordY_min = ev[3].y
 	Map_LimitCoordX_max = ev[4].x
 	Map_LimitCoordY_max = ev[4].y
-	@comment "#四分木用End"
 	v[517] = ev[3].scrx
 	v[517] += v[1001] / 2 + 16
 	v[518] = ev[3].scry
@@ -840,14 +833,14 @@ __fn CEV_MISSION_INIT {
 
 
 
-	@comment "Camera Set Up End＃＃＃＃＃"
+	@comment "Camera Set Up End"
 	v[53] = 0
 	v[54] = 0
 	@wait 0
 	v[53] = 0
 	v[54] = 0
 	v[55..56] = 0
-	@comment "＃＃＃＃＃CPU Tactics AI＃＃＃＃＃＃"
+	@comment "CPU Tactics AI$B!t!t!t!t!t!tB"
 	@if s[310] .isOn() {
 		s[305].on
 		
@@ -949,45 +942,10 @@ __fn CEV_MISSION_INIT {
 	v[300001..300002] -= 30
 	v[300003..300004] -= 80
 
-	// obsolete
-	@if s[1] .isOn() {
-		@comment "*get map config*"
-		@sys.getInfo .tilesetId  .dst v[2060]
-		@if t[751] .eq "" {
-			t[751] .asg "\v[501]" .extract
-			
-		}
-		str1 .asg  .file "../Maps/define_maps", .utf8
-		str2 .asg ".*="
-		str2 .cat t[751]
-		str1.exMatch {
-			str2
-			str1
-			TT1
-			.beg 0
-			.extract
-		}
-		str1 .split "=", str1, TT1
-		t[750] .asg str1
-		inputstr .asg "..\Maps\"
-		inputstr .cat t[750]
-		inputstr .cat "\\config"
-		inputstr .asg  .file inputstr, .utf8, .extract
-		inputstr .split LF, t[v[1219]], v[505]
-		@loop v[505] .dst v[506] {
-			var1 = v[1219] + v[506]
-			inputstr .asg t[var1]
-			@call .cev 1796
-			t[3000..3300] .asg ""
-			
-		}
-		
-		
-	}
+
 
 	@if s[7] .isOn() {
 		v[2280 + v[2403]] += 1
-		
 	}
 
 	// factional bonuses adn so on :D
@@ -1043,7 +1001,6 @@ __fn CEV_MISSION_INIT {
 	construct_picture_buffer(PicID_AgentExBuffer,AgentExtraBuffer_ArraySize,AgentExtraBuffer_ArrayAmount)
 	
 }
-
 
 __fn mission_init_players_settings {
 	
@@ -1137,7 +1094,7 @@ __fn CEV_MISSION_MAP_INIT {
 
 	// mapdef.js.txt file won't be loaded when the game didn't load missiondef.js.txt.
 	@if loadedJsConfig.isOn() {
-		load_jslib("noisejs/perlin.js")) // load library
+		load_jslib("noisejs/perlin.js") // load library
 		// execute_js("jslib\noisejs\perlin.js") // load mapgenerator API 
 		execute_js("DIS_mapgenerator.js") // load mapgenerator API 
 		run_RTSmapGeneration()
@@ -2434,3 +2391,4 @@ __fn LEGACY_OLD_MAP_CONF_temporary {
 
 	}
 }
+

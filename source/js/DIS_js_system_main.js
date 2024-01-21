@@ -366,7 +366,7 @@ class DATA_skin extends DATA_entity {
 
 /**
  * underconstruction
- * Data class for buildings.
+ * Data class for building units.
  * @class DATA_static_unit
  */
 class DATA_static_unit extends DATA_entity { // building?
@@ -374,7 +374,7 @@ class DATA_static_unit extends DATA_entity { // building?
 		super(id);
 		// inherit DATA_troop object
 		DATA.makeDataInherit(this,"STATIC_UNIT",src);
-		// copy given troop template
+		// copy given static template
 		DATA.giveSrcParamToData(this,src);
 
 	};
@@ -392,11 +392,35 @@ class DATA_tech extends DATA_entity {
 		super(id);
 		// inherit DATA_tech object
 		DATA.makeDataInherit(this,"TECH",src);
-		// copy given troop template
+		// copy given template to obj
 		DATA.giveSrcParamToData(this,src);
 
+		if(this.type == "preset"){
+			
+		}
+		
 		// if not
 		this.is_researchable = true;
+	};
+
+  /**
+   * #ckIfPreset.
+	 * @return {bool} - if this tech is preset type tech, return true 
+   */
+	#ckIfPreset(){return (this.type == "preset");}
+
+
+ /**
+  * getCost.
+	* OVERRIDE ME if you want any extra cost calculation.
+	* @param {int} teamid - check player one default
+	* @return {array} [food,wood,stone,gold,speed]
+  */
+	getCost(teamid = 0){
+		if(typeof this.cost == "undefined"){
+			return [0,0,0,0,0];
+		};
+		return this.cost;
 	};
 
  /**
@@ -1041,6 +1065,23 @@ DIS = { // DIS fundamental components
 	RTSFPS: 48, // can be changed 
 },
 
+
+DIS.modules = (function(){
+	let currentMod;
+	if(typeof boot_config == "undefined"){
+		deblog("DIS.modules: boot config for getting current module name is missing.\nMaybe DIS API is running on virtual environment, so it's gonna generate dummy module name.")
+		currentMod = "dummymod";
+	} else {
+		currentMod =  boot_config.module
+	}
+
+	return {
+		getCurrentModuleDataPath(){return ("../Modules/" + currentMod + "/Data/");},
+
+	}
+
+})();
+
 DIS.macro = {
 	timeToFrame: (h,m,s) => ((h * 3600 + m * 60 + s) * DIS.RTSFPS), 
 	/**
@@ -1395,7 +1436,12 @@ DIS.data = { // DIS.data
 
 	init: function(){
 		// this.FACTION.init(); <- rewrite this!
-		this.TECH.init();
+		if(!VIRTUAL_ENV){ // ignore when debug run on VIRTUAL_ENV
+			this.TECH.init();
+		}
+		// load module STATIC UNIT DATA.
+		this.STATIC_UNIT.init();
+		Cmd.run();
 	},
 
 	/**
@@ -1404,12 +1450,16 @@ DIS.data = { // DIS.data
 	 * @param {object} obj - An object returned from DATA.parseDISjson().
 	 */
 	autoregister: function(obj){
-		// kek fucking retarded if nesting
-		if(obj.hasOwnProperty("TROOP")){
-			for (let trp of obj.TROOP){
-				this.TROOP.register(trp);
-			};
+		let registerCheck_for_DataType = (datatype)=>{
+			if(obj.hasOwnProperty(datatype)){
+				for (let elm of obj[datatype]){
+					this[datatype].register(elm);
+				};
+			};			
 		};
+		
+		registerCheck_for_DataType("TROOP");
+		registerCheck_for_DataType("STATIC_UNIT");
 
 	},
 
@@ -1578,7 +1628,7 @@ DIS.data = { // DIS.data
    * @param {int} index - if this parameter is not set, this function just tries to push Dfac to FACTION.ptr.
    */
 		register(Dfac,index){
-			index = index || this.ptr[0] + 1;
+			index = index || this.ptrs[0] + 1;
 			this.ptrs[index] = Dfac;
 			this.ptrs[0] = this.ptrs.length;
 		},
@@ -1697,6 +1747,62 @@ DIS.data = { // DIS.data
 	 * @namespace DIS.data.STATIC_UNIT
 	 */
 	STATIC_UNIT: {
+		createNew: function(strid,srcdata){
+			return this[strid] = new DATA_static_unit(strid,srcdata);
+		},
+
+
+  /**
+   * init STATIC_UNIT.
+	 * Import Modules/{current_module}/Data/data_static_units.json
+   */
+		init: function(){
+
+			let mypath = DIS.modules.getCurrentModuleDataPath() + "data_static_units.json";
+			deblog(`importing static units data: ${mypath}`);
+			Cmd.sys.importData(mypath);
+		},
+
+		/**
+		 * register static unit data to id array.
+		 * Newly registered data will be pushed into id array(STATIC_UNIT.ptrs).
+		 * If you want to add mod troop data to the game, use this method.
+		 *
+		 * @method register
+		 * @param {DATA_troop} stadata
+		 */
+		register: function(stadata){
+			let ls4nusta = [];
+			if (Array.isArray(stadata)){ // if it's given as array
+				for (let elm of stadata){
+					ls4nusta.push(elm);
+				}
+			} else {
+				ls4nusta.push(stadata);
+			};
+
+
+			// = index || this.ptrs[0] + 1;
+			let index;
+			for (let nusta of ls4nusta){
+				let ck = "STA_" + nusta.id;
+				if (staid.hasOwnProperty(ck)){ // override
+					index = staid[ck];
+					this.ptrs[index] = nusta;
+
+				} else { // register new data
+					index = nusta.hasOwnProperty("i") ? nusta.i : this.ptrs[0] + 1; // if index is manually set in json data, use it
+					this.ptrs[index] = nusta;
+				};
+				this.ptrs[0] = this.ptrs.length;
+				staid.register(ck,index);
+			};
+
+			deblog(`current registered static units: ${this.ptrs[0]}`);
+
+		},
+
+		ptrs: [0],
 
 	}, 
 
@@ -1977,11 +2083,30 @@ class RTSmission {
 
 	essential = { // these elements must be restored when you reload the game via save/load. <- will be relocated?
 		players: [],
+
+		/**
+		 * RTS entities locked by mission setting
+		 * save as json
+		 *
+		 * each list stores int id, and if a data id is on the locklist, it cannot be produced in this RTSmission.
+		 * 
+		 */
+		locklists: {
+			techs: [],
+			normalUnits: [],
+			staticUnits: [],
+		},
+
 		difficulty: getv(2401), // <- RTS_Difficulty
 		weatherType: 0,
 		// mapDataDirectory: this.mapDataDirectory, // set in constructor
 	};
 
+	// UNCO
+	ckLockList(data){
+		// uh I forget if js can check class of an object <- maybe we can use datatype
+
+	};
 
  /**
   * Save states of simple triggers on the RM system.
@@ -1989,6 +2114,7 @@ class RTSmission {
 	* @return {bool} true - Always return true unless it aborted by some error.
   */
 	save = function(){
+
 		// save triggers in queue as a string..
 		let savestring = "";
 		for (let elmid in this.triggers.queue){
@@ -2003,7 +2129,7 @@ class RTSmission {
 			save_jsobj_as_JSON(pl.playergamedata,address)
 			address++;
 		};
-		deblog("playerdata saved")
+		deblog("playerdata saved");
 
 		return true;
 	};
@@ -3031,6 +3157,7 @@ var Cmd = {
 	init: function() {
 		// start from LINKSTR_map 
 
+		// this one might be needless
 		for (let i = LINKSTR_map;i < LINKSTR_END;i++){
 			let container = gett(i); // get scripts/const_troops.txt
 			container = container.replace(/<.*?>/g, "");
@@ -3711,21 +3838,11 @@ DUI = {
 // init load
 if (!VIRTUAL_ENV){
 	DIS.init.loadBootconf();
+	Cmd.init();
 	DIS.data.init(); // reset DIS data
 	DIS.init.initID();
-	Cmd.init();
-} else { // virtual
-	if (typeof process !== 'undefined' && process.versions && process.versions.node){ // running on Node.js
-		/*module.exports = {
-			deblog,
-			errorlog,
-			DIS,
-			Cmd,
-			RTS,
-			
-		};*/
-		deblog("Running on Node.js");
-	}
+
+
 
 }
 
@@ -4104,6 +4221,7 @@ const inheritancetest = `
 }
 }
 `
+	DATA.init();
 	facid.FAC_dra = 114514;
 	raceid.RACE_dragon = 4545;
 	DATA.parseDISjson(roottroop)
@@ -4126,7 +4244,6 @@ const maptest = `
 	"tileset": 13,
 	"size": [102,55],
 	"heightgen": "HGEN_PRESET"
-
 }
 `;
 

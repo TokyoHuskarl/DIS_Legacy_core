@@ -1,19 +1,18 @@
 // you need to clean up mess of header files tbh
 
-#include "./../Dracore/module_core_RTS_mission_misc_functions.tpc"
-
-defv Mission_Agent_TeamSize_Limit = 1080 // not a constant.
-
-
 // ------------------------------------
 // Economy setting
 // ------------------------------------
 defv MarketRate_food_cost = 2481
 defv MarketRate_wood_cost = 2482
 defv MarketRate_stone_cost = 2483
-defv Market_food_value = 2484
-defv Market_wood_value = 2485
-defv Market_stone_value = 2486
+defv MarketRate_food_value = 2484
+defv MarketRate_wood_value = 2485
+defv MarketRate_stone_value = 2486
+
+#include "./../Dracore/module_core_RTS_mission_misc_functions.tpc"
+
+defv Mission_Agent_TeamSize_Limit = 1080 // not a constant.
 
 // ------------------------------------
 // JS

@@ -1,4 +1,12 @@
 # TPC tools
+## tpc.vim
+### 日本語
+tpc用のvim syntaxファイルです  
+微妙に対応してないオペランドがあったりなかったりしたり/**/コメントアウトの挙動がおかしかったりしますが、一応使えます  
+### English
+Vim syntax file for tpc language.  
+
+
 ## ctags.conf
 ### 日本語
 単なるctags用の設定ファイルです  

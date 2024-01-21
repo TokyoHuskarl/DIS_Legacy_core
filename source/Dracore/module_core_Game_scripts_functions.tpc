@@ -49,6 +49,8 @@ def WAIT_FOR_JSCMD_EXECUTION = {
 // DIS JS functions
 __fn boot_DIS_js_system {
 	execute_js("DIS_js_system_main.js")
+	
+	
 }
 
 def JS_TRYPACK_1 = "try {"
@@ -68,6 +70,7 @@ __fn reboot_DIS_js_system { // called after RMsavedata load
 
 	execute_js(PATH_js_bootconfig) // load boot config
 	boot_DIS_js_system()
+	WAIT_FOR_JSCMD_EXECUTION
 	
 	// and?
 }
