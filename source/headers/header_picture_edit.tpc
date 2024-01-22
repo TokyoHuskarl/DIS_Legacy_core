@@ -50,3 +50,29 @@ __fn func_stamp_picture_on_pic_id $string_stamp_picture_path $picid $x $y $bool_
 	}
 
 }
+
+
+
+// just a test function, not even practical
+__fn bilinear_sizechange_test {
+
+	@pic[30].show {
+		"../assets/title"
+			.pos 0, 0 .topLeft
+			.chromakey 1
+			.scale 100
+			.trans 0
+			.rgbs 100, 100, 100, 100
+			.mapLayer 9
+			.eraseWhenTransfer
+			.affectedByFlash
+			.affectedByShake
+	}
+	@pic[30].getInfo .pixel 0,0,800,450 .dst 5504450
+		eval_js("setv(5504450,resizeImage(getv(5504450,800*450),800,450,0.5))")
+		@pic[30].setPixel .xywh 0, 0, 400, 225 .src v[5504450] .opaq
+
+
+
+
+}

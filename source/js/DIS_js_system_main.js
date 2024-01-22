@@ -10,6 +10,7 @@
  * so this module contains a lot of important and complicated js objects.
  */
 
+
 /**
  * for TPC memory allocation
  * kari consts... will be moved to other files.
@@ -3842,10 +3843,13 @@ if (!VIRTUAL_ENV){
 	DIS.data.init(); // reset DIS data
 	DIS.init.initID();
 
-
-
 }
 
+
+
+
+// without RPG_RT.exe
+if (VIRTUAL_ENV){
 
 const techtest = `
 {
@@ -4103,8 +4107,6 @@ const techtest = `
 `
 
 
-// without RPG_RT.exe
-if (VIRTUAL_ENV){
 const roottroop = `
 {
 	"TROOP": {
@@ -4250,3 +4252,67 @@ const maptest = `
 
 };
 
+
+
+// Bilinear picture size changing functions.
+// NEED REORGANIZATION
+// basically written by GPT so you need to fix these anyway
+// TODO: calc as float and round into int just before pushing into array.
+function linearInterpolate(color1, color2, factor) {
+	const a1 = (color1 >> 24) & 0xff;
+	const r1 = (color1 >> 16) & 0xff;
+	const g1 = (color1 >> 8) & 0xff;
+	const b1 = color1 & 0xff;
+
+	const a2 = (color2 >> 24) & 0xff;
+	const r2 = (color2 >> 16) & 0xff;
+	const g2 = (color2 >> 8) & 0xff;
+	const b2 = color2 & 0xff;
+
+	const r = Math.round(r1 + factor * (r2 - r1));
+	const g = Math.round(g1 + factor * (g2 - g1));
+	const b = Math.round(b1 + factor * (b2 - b1));
+	const a = 0xff // Math.round(a1 + factor * (a2 - a1)); // With current 2003MP, you need not to consider about alpha channel
+
+	return (a << 24) | (r << 16) | (g << 8) | b;
+}
+
+function getPixel(imageData, width, height, x, y) {
+	if (x < 0 || x >= width || y < 0 || y >= height) {
+		return 0; // If the pixel is out of picture, just return 0. 範囲外の場合は黒（または透明）を返す
+	}
+	return imageData[y * width + x];
+}
+
+function resizeImage(imageData, originalWidth, originalHeight,rate) {
+	let newWidth = originalWidth * rate;
+	let newHeight = originalHeight * rate;
+	const resizedData = [];
+
+	for (let y = 0; y < newHeight; y++) {
+		for (let x = 0; x < newWidth; x++) {
+			const srcX = (x / newWidth) * originalWidth;
+			const srcY = (y / newHeight) * originalHeight;
+
+			const x0 = Math.floor(srcX);
+			const x1 = Math.min(Math.ceil(srcX), originalWidth - 1);
+			const y0 = Math.floor(srcY);
+			const y1 = Math.min(Math.ceil(srcY), originalHeight - 1);
+
+			const factorX = srcX - x0;
+			const factorY = srcY - y0;
+
+			const p1 = getPixel(imageData, originalWidth, originalHeight, x0, y0);
+			const p2 = getPixel(imageData, originalWidth, originalHeight, x1, y0);
+			const p3 = getPixel(imageData, originalWidth, originalHeight, x0, y1);
+			const p4 = getPixel(imageData, originalWidth, originalHeight, x1, y1);
+
+			const p12 = linearInterpolate(p1, p2, factorX);
+			const p34 = linearInterpolate(p3, p4, factorX);
+			const pFinal = linearInterpolate(p12, p34, factorY);
+
+			resizedData[y * newWidth + x] = pFinal;
+		}
+	}
+	return resizedData;
+}
