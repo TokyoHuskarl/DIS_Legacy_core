@@ -106,35 +106,36 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						v[609] = TT1 | TT2
 						
 				}
+
 				// "モートン座標を記録しおえたよ 次はリストに登録するよ TT3=カウンター TT2=ポインター"
 				TT1 = v[609]
 				// "#ルート空間だよ"
 				TT2 = v[1067] + v[v[1071]]
-				v[TT2] = v[401] + 1
+				v[TT2] = v[Ptr_loop_current_agent]
 				v[v[1071]] += 1
 				// "#第5空間だよ0~1023"
 				TT3 = v[4538] + TT1
-				v[TT1 * v[1004] + v[4535] + v[TT3]] = v[401] + 1
+				v[TT1 * v[1004] + v[4535] + v[TT3]] = v[Ptr_loop_current_agent]
 				v[TT3] += 1
 				// "#第四空間だよ 0~255"
 				TT1 >>= 2
 				TT3 = v[4537] + TT1
-				v[TT1 * v[1004] + v[4534] + v[TT3]] = v[401] + 1
+				v[TT1 * v[1004] + v[4534] + v[TT3]] = v[Ptr_loop_current_agent]
 				v[TT3] += 1
 				// "#第三空間だよ 0~63"
 				TT1 >>= 2
 				TT3 = v[1074] + TT1
-				v[TT1 * v[1004] + v[1070] + v[TT3]] = v[401] + 1
+				v[TT1 * v[1004] + v[1070] + v[TT3]] = v[Ptr_loop_current_agent]
 				v[TT3] += 1
 				// "#第二空間だよ 0~15"
 				TT1 >>= 2
 				TT3 = v[1073] + TT1
-				v[TT1 * v[1004] + v[1069] + v[TT3]] = v[401] + 1
+				v[TT1 * v[1004] + v[1069] + v[TT3]] = v[Ptr_loop_current_agent]
 				v[TT3] += 1
 				// "#第一空間だよ 0~3"
 				TT1 >>= 2
 				TT3 = v[1072] + TT1
-				v[TT1 * v[1004] + v[1068] + v[TT3]] = v[401] + 1
+				v[TT1 * v[1004] + v[1068] + v[TT3]] = v[Ptr_loop_current_agent]
 				v[TT3] += 1
 				// "モートン座標関係はこれで終わり"
 				
@@ -209,7 +210,6 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //opt
 	    TT10 = Address_agent_inSight_switch_array_head + v[401]
 	    @if s[TT10] .isOn() {
-	    //@if `s[2001 + v[401]] != 0 {
 			// "Walls "
 			v[1008].copy TT14, 4
 			@if `agent_AgentBits & 16 {
@@ -266,19 +266,12 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    // "慣性"
 	    // "座標ずらし"
-	    //Ptr20 = Temp1 + 5
-	    //Ptr19 = Temp1 + 12
-	    //Ptr18 = Temp1 + 7
-	    //Ptr17 = 53
-	    //Ptr15 = Temp1 + 266
-	    //Ptr14 = Temp1 + 265
 
 			// weapon fall
 	    @if v[865] < v[866] {
-				v[864] += g_perFPS //98000 / 48
+				v[864] += g_perFPS // 98000 / 48
 				v[861] .add v[863], 2
 				val_add(v[867],agent_ProcessMS) // v[867] += agent_ProcessMS
-				
 				val_add(v[865],N1) // v[865] += 1
 		
 	    }
@@ -293,7 +286,6 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    @if v[873] < agent_ProcessObjBit {
 
 				v[872] += g_perFPS
-				// val_add(v[872],g_perFPS)
 
 				v[869] .add v[871], 2
 				val_add(v[875],agent_ProcessCamoValue) // v[875] += agent_ProcessCamoValue
@@ -302,7 +294,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    }
 			
 	    @if v[887] < v[888] {
-				agent_FootstepSoundTimer +=  g_perFPS // just the slot is the same as FootstepsSound for living agent, but actual function is diffrent. beware
+				agent_FootstepSoundTimer += g_perFPS // the slot is the same as FootstepsSound for living agent, but actual function is diffrent. beware
 				v[883] .add v[885], 2
 				val_add(v[887],N1) // v[887] += 1
 		
@@ -346,7 +338,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					// "#減衰"
 					@if v[612] != 0 {
 						@map.getTerrain .pos Temp3, Temp12 .dst Temp13
-						v[612] = muldiv(v[612], 4, 5)
+						v[612] = muldiv(v[612], 9, 10)
 						v[612] = 500 >= abs(v[612]) ? 0 : v[612]
 						v[605] += Temp13 < 20 ? v[612] : 0
 						// "#カメラずらして"
@@ -356,7 +348,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					// "#減衰"
 					@if v[613] != 0 {
 						@map.getTerrain .pos Temp11, Temp4 .dst Temp14 // get terrain?
-						v[613] = muldiv(v[613], 4, 5)
+						v[613] = muldiv(v[613], 9, 10)
 						v[613] = 500 >= abs(v[613]) ? 0 : v[613]
 						v[606] += Temp14 < 20 ? v[613] : 0
 					}
@@ -518,6 +510,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	@wait 0
 	// "Even Units"
+	v[TPC_VAR_STACK_HEAD] = AllFrameCount % 5 // muridesita
 	Ptr_loop_current_agent = v[4532]
 	@while v[Ptr_loop_current_agent] != 0 {
 	    v[401] = v[Ptr_loop_current_agent] - 1
@@ -540,6 +533,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	@wait 0
 	// "Odd Units"
+	v[TPC_VAR_STACK_HEAD] = AllFrameCount % 5
 	Ptr_loop_current_agent = v[4532] + 1
 	@while v[Ptr_loop_current_agent] != 0 {
 	    v[401] = v[Ptr_loop_current_agent] - 1

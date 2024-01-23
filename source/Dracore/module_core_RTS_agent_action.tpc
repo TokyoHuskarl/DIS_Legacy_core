@@ -42,7 +42,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 										//Ptr18 += skill_Slot_in_agent * 20 
 										//Ptr18 += 4821
 										//v[Ptr18].copy v[581], 20
-										func_extract_skill_data_from_agent_slot(Ptr19,skill_Slot_in_agent,EXTRACT_FLAG_Data_extracted)
+										func_extract_skill_data_from_agent_slot(Ptr19, skill_Slot_in_agent, EXTRACT_FLAG_Data_extracted)
 										@if agent_CastSkillOrder > 0 {
 												//@comment "#スキル番号取得ついでにCDセット"
 												//var1 = Ptr19
@@ -144,14 +144,11 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 													}
 													@if skill_Extramotion_ID == 1 {
 															//@comment "モーション初期化"
-															// v[Ptr8] = 0
 															val_init(agent_AttackFrame)
-															//agent_ActionState = v[210] + 243
 
 															//@comment "Should I Check AA CD?"
 
 															//actionstate set 0
-															// v[v[210] + 243] = 0
 															val_init(agent_ActionState)
 
 													}
@@ -161,19 +158,15 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 										} .else bl {
 												@if agent_AttackFrame > v[585] {
 														//@comment "モーション初期化"
-														// v[Ptr8] = 0
 														val_init(agent_AttackFrame)
-														//agent_ActionState = v[210] + 243
 														//@comment "Should I Check AA CD?"
 
 														//actionstate set 0
-														// v[v[210] + 243] = 0
 														val_init(agent_ActionState)
 
 												} .else bl {
 													@if v[586] > 100 { // give extra motion animation
 														//Force sprite set
-														// v[v[210] + 250] = skill_Extramotion_ID
 														val_asg(agent_ForceSprite,skill_Extramotion_ID)
 
 													}

@@ -702,11 +702,20 @@ def {
 
 
 
+// test extra stack
+
+// use with Meta var
+def TPC_VAR_STACK_HEAD = 4401
+vname[TPC_VAR_STACK_HEAD] "Extra TPC variable Stack HEAD (ex terrain bit table?)"
+
+
+
 // for array manipulation
 vname[4836] "N5000"
 vname[4837] "N5001"
 vname[4838] "N4700"
 vname[4839] "N4701"
+vname[4849] "N15"
 vname[4850] "N4"
 vname[4851] "N8"
 vname[4852] "N16"
@@ -714,6 +723,7 @@ defv {
 	N0 = 1301
 	N1 = 1089
 	N2 = 4826 // array [2,2]
+	N15 = 4849
 	N4 = 4850
 	N8 = 4851
 	N16 = 4852

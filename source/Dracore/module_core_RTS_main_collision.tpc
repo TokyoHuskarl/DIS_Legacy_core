@@ -442,7 +442,7 @@ __fn macro_ColCheck_distance {
 	//get colbox
 	__if DIS_EXPERIMENTAL == 1 { 
 		//get from AEB
-		v[322] = v[v[203]]
+		v[v[203]].copy v[322],1 // v[322] = v[v[203]]
 		get_AEB_array(v[322],__id(v[322]),AgentExBuffer_SLOT_ColBoxWidth,2)
 	}.else bl {
 		v[322] = Address_Agent_HitCollisionArrayStartMinus2 
