@@ -543,7 +543,7 @@ class DIS_RMpicture extends DIS_entity { // simple picture object.
 		this.activated = false;
 	};
 
-}
+};
 
 /**
  * This class is used for generating modified version of database unit
@@ -556,12 +556,30 @@ class DIS_unit extends DIS_entity {
 	constructor(unitid,type){
 		super();
 		this.type = type || 0; // static or land? unco 
+		if (type === 11){deblog("static data base system is still underconstruction")};
 		this.unitid = unitid;
 		
+		// load parameters from the database
 
 	};
 
-}
+	
+ /**
+  * placeAt.
+  *
+  * @param {[int,int]} pos
+  * @param {} team
+  * @param {} dir
+  * @param {} stance
+  * @param {} flag
+	* @return {DIS_agent}
+  */
+	placeAt(pos,team,dir,stance,flag){
+		
+
+	};
+	
+};
 
 /**
  * DIS_agent.
@@ -569,7 +587,7 @@ class DIS_unit extends DIS_entity {
  * @extends {DIS_entity}
  */
 class DIS_agent extends DIS_entity { // agents for RTS mode 
-	constructor(agentid,unitid,team,isCertified){
+	constructor(agentid,unitid,team,isCertified){ // params around certified shits should be changed into Promise 
 		super();
 		this.agentid = agentid; // if agent id is secured, then no problemo.
 		this.class = "DIS_agent";
@@ -590,11 +608,11 @@ class DIS_agent extends DIS_entity { // agents for RTS mode
 
 	getid(){return this.agentid;};
 
-	// {int} 1~300
- /**
-  * horrible.
-  *
-  * @param {int} slot
+		// {int} 1~300
+		 /**
+			* horrible.
+			*
+		* @param {int} slot
   */
 	getAgentSlot(slot){ // just get slot value.
 		let res = null;
@@ -641,14 +659,14 @@ class DIS_agent extends DIS_entity { // agents for RTS mode
 
 	EV_OnSpawn(){};
 
-}
+};
 
 class DIS_agent_static extends DIS_agent {
 	constructor(agentid,buildingid,team,isCertified){
 		super(agentid,buildingid,team,isCertified);
 	};
 	
-}
+};
 
 class RTSagentGroup { // list object for DIS_agent.
 	constructor(agtArray,team){
@@ -659,12 +677,12 @@ class RTSagentGroup { // list object for DIS_agent.
 			this.agentlist = agtArray; // save agentlist
 			for (let elm of agtArray){
 				this.idlist.push(elm.getid()); // save agentid
-			} 
+			}; 
 			
 		} else { // otherwise, just make only idlist
 			this.agentlist = "undefined";
 			this.idlist = agtArray;
-		}
+		};
 		
 		this.team = team || "undefined";
 	};
@@ -675,7 +693,7 @@ class RTSagentGroup { // list object for DIS_agent.
 
 	pushAgent(agt){
 		this.agentlist.push(agt);
-	}
+	};
 
 	compoundAgtGroup(grp){
 		this.agentlist = this.agentlist.concat(grp.agentlist);
@@ -870,11 +888,14 @@ class IDdict {
 
 };
 
+
+// should they be put under a namespace dictionary?
 var trpid = new IDdict("TRP"); // troop ID table
 var staid = new IDdict("STA"); // building ID table
 var facid = new IDdict("FAC"); // faction ID table
 var raceid = new IDdict("RACE"); // race ID table
 var techid =  new IDdict("TECH"); // ["techid",[group,flagbit]]
+var sklid = new IDdict("SKL"); // skill ID table
 
 // consts
 /**
@@ -925,6 +946,7 @@ DIS = { // DIS fundamental components
 					DEBUG = BOOT_MODE_DEBUG
 					DIS.log.push("Debug mode activated.");
 				};
+				
 				if (DEBUG < BOOT_MODE_DEVELOPER) { devmsg = function(d){}; }; // dummy
 				if (DEBUG != BOOT_MODE_DEBUG) { deblog = function(d){}; }; // dummy
 
@@ -1404,7 +1426,24 @@ DIS.player = {
 }
 
 DIS.control = {
+	
+	
+};
 
+DIS.shell = {
+
+	_boot(){
+		print("");
+	},
+
+	_run(){},
+
+	help(){
+		print(
+			" \n" +
+			" \n" +
+			"");
+	},
 
 };
 
@@ -1456,7 +1495,7 @@ DIS.data = { // DIS.data
 				for (let elm of obj[datatype]){
 					this[datatype].register(elm);
 				};
-			};			
+			};
 		};
 		
 		registerCheck_for_DataType("TROOP");
@@ -1856,18 +1895,56 @@ DIS.data = { // DIS.data
 		},
 
 	},
-	RACE: {},
-	SKIN: {},
-	SKILL: {},
-	ITEM: {
-		WEAPON: {},
-		SHIELD: {},
-		ARMOR: {},
-		HELMET: {},
-		ACCESSORY: {},
-		HORSE: {},
+	RACE: {
+
 
 	},
+
+	SKIN: {
+  /**
+   * init SKIN.
+	 * Import Modules/{current_module}/Data/data_static_units.json
+   */
+		init: function(){
+			let mypath = DIS.modules.getCurrentModuleDataPath() + "data_skins.json";
+			deblog(`importing skin data: ${mypath}`);
+			Cmd.sys.importData(mypath);
+		},
+
+		/**
+		 * maybe common func for static unit is valid with arrow func kari.
+		 * register data to id array.
+		 * Newly registered data will be pushed into id array({YOURDATATYPE}.ptrs).
+		 * If you want to add mod data to the game, use this method.
+		 *
+		 * @method register
+		 * @param {DATA} stadata
+		 * @param {string} prefix
+		 */
+		register: function(data,prefix){
+			
+		},
+
+		ptrs: [0],
+
+	},
+
+	ITEM: (function(){
+		
+		
+		return {
+			WEAPON: {},
+			SHIELD: {},
+			ARMOR: {},
+			HELMET: {},
+			ACCESSORY: {},
+			HORSE: {},
+		}
+	}()),
+
+	SKILL: {},
+	EFFECT: {},
+	PARTICLE: {},
 
 };
 
@@ -2031,6 +2108,7 @@ class RTSmission {
 	 * @namespace RTSmission.Cmd
 	 */
 	Cmd = { 
+
   /**
    * importData.
    *
@@ -2076,7 +2154,7 @@ class RTSmission {
 	importLangString(str){
 		let lines = str.trim().split("\n");
 		lines.forEach(line => {
-			parse_languageString(line,this.strings)
+			parse_languageString(line,this.strings);
 		});
 		deblog("string imported:\n" + str);
 	};
@@ -2268,8 +2346,7 @@ class RTSmission {
 	};
 
 
-	// save and load will destroy this function's objective.
-	// so you should use this rather for adjusting agent parameter or whatever
+
  /**
   * this seems meaningless.
   *
@@ -2375,8 +2452,8 @@ class RTSmap {
 
 		setv(Adr_TileID,this.tileset);
 		this.generate();
-		deblog("build called")
-		setv(Adr_HeightGenType,this.heightgenType)
+		deblog("build called");
+		setv(Adr_HeightGenType,this.heightgenType);
 	};
 	
 	
@@ -2401,7 +2478,7 @@ class RTSmap {
   */
 	generate(){ // 
 	
-			deblog("Is this map legacy one?: "+ RTS.mission.conf.isLEGACYmission);
+		deblog("Is this map legacy one?: "+ RTS.mission.conf.isLEGACYmission);
 		if (!RTS.mission.conf.isLEGACYmission){ // not 
 			const Adr_mapTerrainSourceType = 2055;
 			let filename = this.terrainSource.split("."); // ignore extension
@@ -2434,7 +2511,7 @@ class RTSmap {
 
 		} else {
 			return false;
-		}
+		};
 	};
 
 	
@@ -2723,7 +2800,7 @@ let RTS = {
 	agents: new Array(DIS.agent.limit), // store mission vars or whatever
 
 	/**
-	 * 
+	 * RTS.path
 	 * This manages things relating to pathfinding or agent movement order. 
 	 * Beware, its properties won't be restored on loading savegame.
 	 * @namespace RTS.path
@@ -3413,10 +3490,10 @@ var Cmd = {
 
 		/**
 		 * 
-		 * @param {*} staticID 
+		 * @param {*} static unit ID 
 		 * @param {[int,int]} tilepos 
 		 * @param {int} team 
-		 * @returns {DIS_agent} - Spawned static
+		 * @return {DIS_agent} - Spawned static
 		 */
 		spawnStatic: function(staticID,tilepos,team){
 			Cmd.Qset(this.CmdType,"spnSt",`${staticID},${tilepos[0]},${tilepos[1]},${team}`);
@@ -3618,7 +3695,7 @@ var Cmd = {
 		/**
 		 * underconstruction.
 		 *
-		 * @param {} playerid
+		 * @param {int} playerid
 		 * @param {} resource
 		 * @param {} amount
 		 */
@@ -4312,7 +4389,7 @@ function resizeImage(imageData, originalWidth, originalHeight,rate) {
 			const pFinal = linearInterpolate(p12, p34, factorY);
 
 			resizedData[y * newWidth + x] = pFinal;
-		}
-	}
+		};
+	};
 	return resizedData;
-}
+};
