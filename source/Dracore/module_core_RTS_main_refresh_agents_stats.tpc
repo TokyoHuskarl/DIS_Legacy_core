@@ -87,7 +87,7 @@ __fn agent_ref_stats(){
 
 	
 	__if DEBUG_BUILD == 1 {
-		@if v[Ptr5]>3 {
+		@if v[Ptr5] > 3 {
 			var1 = v[Ptr5] 
 			func_devlog("TileFlag found! its value is \v[11]")
 		}
@@ -184,9 +184,10 @@ __fn agent_ref_stats(){
 
 		// ##############Morale Check###############"
 		
-    TT2 = 10 - agent_Morale // save 10 - agent_Morale
-    v[862..866] *= TT2
-    v[862..866] /= 10
+    TT2 = 10 - agent_Morale // save (10 - agent_Morale)
+    v[862..866] *= TT2 // no need to replace with 2 line array cont, since this is faster in this case
+		agent_ProcessAD.div N10,4 // v[862..866] /= 10
+
     //@comment "##Flee"
     @if agent_Morale == 3 {
         agent_ProcessInstantState |= agent_ProcessInstantState_FLAG_blind

@@ -73,9 +73,26 @@ __fn Kill_Agent {
 					v[4004] = -34
 
 					// "#"
-					// "If victim is explosive"
-					v[373] = 0
+					v[373] = 0 // ?
 					
+
+
+					@if s[302] .isOn() {
+						v[Kill_pointer + 4780] = 0
+				
+					} .else bl {
+						v[Kill_pointer + 4780] *= 2
+				
+					}
+					// "#Frozen to death"
+					@if v[190] == 5 {
+						// "#base colour"
+						v[0] = v[4001..4004] = [55, 78, 91, -55]
+
+				
+					} .else bl {
+					
+					// If victim is explosive & not killed by frost magic, then let him explode
 					@if `victim_ProcessObjBit & BaseObjBit_FLAG_Explosive {
 						v[190] = 4
 						v[Kill_pointer + 4780] = victim_InCombatTimer <= 0 ? 50 : victim_InCombatTimer
@@ -106,20 +123,7 @@ __fn Kill_Agent {
 						
 					}
 
-					@if s[302] .isOn() {
-						v[Kill_pointer + 4780] = 0
-				
-					} .else bl {
-						v[Kill_pointer + 4780] *= 2
-				
-					}
-					// "#Frozen to death"
-					@if v[190] == 5 {
-						// "#base colour"
-						v[0] = v[4001..4004] = [55, 78, 91, -55]
 
-				
-					} .else bl {
 						// "#Death by fire!"
 						@if v[190] == 4 {
 								// "#base colour"

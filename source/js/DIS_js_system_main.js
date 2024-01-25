@@ -1430,6 +1430,10 @@ DIS.control = {
 	
 };
 
+DIS.cache = {
+
+};
+
 DIS.shell = {
 
 	_boot(){
