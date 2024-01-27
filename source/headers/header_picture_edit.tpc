@@ -1,12 +1,13 @@
 //functions and macros relate to picture edit
 
 
-//cev 2011 Stamp pic[2599] T[501] to pic[v1] v2v3 v4
+//cev 2011 Stamp pic[EDITPIC] T[501] to pic[v1] v2v3 v4
 def heap_for_pixel_information = 550445 // it's not heap. retard
 def buffer_for_pixel_information_head = 550445
+def buffer_pixel_info_size_max = 100 * 100 // temp
 __fn func_stamp_picture_on_pic_id $string_stamp_picture_path $picid $x $y $bool_center{
 	//@comment "V4  #0, 1= center"
-	@pic[2599].show {
+	@pic[EDITPIC].show {
 	    $string_stamp_picture_path
 	    .pos -111, -111 .center
 	    .chromakey 1
@@ -18,8 +19,8 @@ __fn func_stamp_picture_on_pic_id $string_stamp_picture_path $picid $x $y $bool_
 	    .affectedByFlash
 	    .affectedByShake
 	}
-	@pic[2599].getInfo .cewh .baseRect v[360], v[360], v[355], v[356]
-	@pic[2599].getInfo .pixel 0, 0, v[355], v[356] .dst heap_for_pixel_information
+	@pic[EDITPIC].getInfo .cewh .baseRect v[360], v[360], v[355], v[356]
+	@pic[EDITPIC].getInfo .pixel 0, 0, v[355], v[356] .dst heap_for_pixel_information
 	@if $bool_center == 1 {
 	    @pic[$picid].getInfo .cewh .baseRect v[360], v[360], v[19], v[20]
 	    v[19..20] /= 2

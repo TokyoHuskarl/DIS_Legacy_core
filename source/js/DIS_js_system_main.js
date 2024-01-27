@@ -1431,6 +1431,7 @@ DIS.control = {
 };
 
 DIS.cache = {
+	misc: {},
 
 };
 
@@ -3348,7 +3349,7 @@ var Cmd = {
 			loadToCache: function(path,key,namespace){
 				
 				namespace = namespace || "misc";
-				//
+				
 				if (typeof DIS.cache[namespace] === "undefined"){
 					DIS.cache[namespace] = {};
 				};
@@ -3948,7 +3949,7 @@ if (!VIRTUAL_ENV){
 	Cmd.init();
 	DIS.data.init(); // reset DIS data
 	DIS.init.initID();
-
+	Cmd.game.pic.loadToCache("camera_ball","test");
 }
 
 

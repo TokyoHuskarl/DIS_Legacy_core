@@ -56,6 +56,11 @@ __fn boot_DIS_js_system {
 
 def JS_TRYPACK_1 = "try {"
 
+__fn callback_js $command $args {
+	str2.asg "TPCback."
+	eval_js(str2)
+}
+
 __fn try_eval_js $script $errormsg {
 	js_StringBuffer.asg $script
 	str2.asg "try {"
@@ -323,6 +328,9 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 			t2v(SSargs0,var1)
 			@pic.erase [var1]
 		})},
+		{NsCmd($LINKstr, $md, $i, "cachePic",{cmd_pic_load_jscache(SSargs0,SSargs1)})},
+
+
 		{NsCmd($LINKstr, $md, $i, "pGSE",{cmd_play_global_sound(SSargs0,SSargs1,SSargs2,SSargs3)})}, // game.playGlobalSE
 		{NsCmd($LINKstr, $md, $i, "pBGM",{cmd_play_global_music(SSargs0,SSargs1,SSargs2,SSargs3)})}, // game.playBGM
 
@@ -715,6 +723,33 @@ __fn cmd_pic_simpleload $pic_name $picid {
 	}
 }
 
+/**
+ * @param {string}
+ * @param {string}
+ */
+__fn cmd_pic_load_jscache $pic_name $cache_path {
+	@pic[EDITPIC].show {
+			$pic_name
+			.pos 0, 0 .topLeft
+			.chromakey 1
+			.scale 100
+			.trans 100
+			.rgbs 100, 100, 100, 100
+			.mapLayer DIS_gui_Layer
+	}
+	// *TODO* need safety in case the picture is too big to load
+	@pic[EDITPIC].getInfo .cewh .baseRect v[360], v[360], v[355], v[356]
+	@pic[EDITPIC].getInfo .pixel 0, 0, v[355], v[356] .dst buffer_for_pixel_information_head
+	TT1 = v[355] * v[356]
+	@if TT1 <= buffer_pixel_info_size_max {
+		$temp = __str("getv(",buffer_for_pixel_information_head,",\v[",__id(TT1),"])")
+			str1.asg .cat(SSargs1,"=",$temp) .extract
+			eval_js(str1)
+	}.else bl{
+		func_errlog("TPC:cmd_pic_load_jscache() - Loaded Picture size is too big to cache. Aborted")
+	}
+
+}
 __fn cmd_pic_simplemove $picid {
 
 }
