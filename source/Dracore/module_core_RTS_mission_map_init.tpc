@@ -765,6 +765,8 @@ __fn CEV_MISSION_INIT {
 	v[412] = (Map_LimitCoordY_max + Map_LimitCoordY_min) / 2
 	v[413] = (Map_LimitCoordX_max - Map_LimitCoordX_min) / v[1277] + 1
 	v[416] = (Map_LimitCoordY_max - Map_LimitCoordY_min) / v[1276] + 1
+
+
 	v[430] = muldiv(Map_LimitCoordX_max - Map_LimitCoordX_min, 100, v[1277])
 	v[431] = muldiv(Map_LimitCoordY_max - Map_LimitCoordY_min, 100, v[1276])
 	var_Map_Width = Map_LimitCoordX_max - Map_LimitCoordX_min
@@ -2308,13 +2310,12 @@ try {
 RTS.mission.startup();
 } catch (error) {
 errorlog(`MISSION.startup() function failed!`);
-};
-Cmd.run();
-"
+};"
 
 __fn startupMission {
 	Str_CmdQueue.asg "" // clean up
 	@js .run JSCMD_STARTUP //
+	DISAPI_JS_CMD_RUN()
 	WAIT_FOR_JSCMD_EXECUTION // just wait. <-module_core_Game_scripts_functions.tpc
 }
 

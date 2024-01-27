@@ -16,7 +16,7 @@
  * kari consts... will be moved to other files.
  * @namespace 
  */
-const TPCadr = { 
+const TPCadr = {
 	t: {
 		Str_playergamedata_0: 767,
 		Str_LanguagePath: 528,
@@ -1430,9 +1430,67 @@ DIS.control = {
 	
 };
 
+class RM_PicCache { // THIS DOESN'T EXTEND DIS_entity.
+	constructor(path,key,namespace){
+		this.class = "DIS_PicCache";
+		this.path = path;
+		this.address = "DIS.cache." + namespace + "." + key; // kore mazi?
+		this.cachedData = [[],[0,0]]; // [[pixel],[width,height]]
+		this.isCertified = false;
+	};
+
+	// called back from TPC
+	receive(data){
+		this.cachedData = data;
+		this.isCertified = true; //pseudo promise is fullfiled
+	};
+
+	/**
+	 *
+	 * {int} adrSize - size array is compressed into 24 bit int and written to one address 
+	 */
+	give(adrData,adrSize){
+		setv(adrData,this.cachedData[0]);
+		let compress = this.cachedData[1][0] | (this.cachedData[1][1] << 12 ); // up to 4095 * 4095
+		setv(adrSize,compress);
+	};
+
+	getAdr(){return this.address;}
+}
+
 DIS.cache = {
 	misc: {},
 
+};
+
+/**
+ * namespace for functions for called back from TPC side.
+ * you shouldn't use properties in this namespace unless you're implementing it in TPC code
+ * @namespace DIS._tpc
+ */
+DIS._tpc = {
+
+	/**
+	 * .
+	 * @param {DIS_PicCache} cacheobj
+	 * @param {array} dataArray - use getv(*,size[0]*size[1])
+	 * @param {[int,int]} size - [width,height]
+	 */
+	send_piccache:(cacheobj,dataArray,size)=>{
+		cacheobj.receive([dataArray,size]);
+		// deblog(cacheobj.cachedData);
+		// deblog(Cmd._Qnext);
+	},
+
+	/**
+	 *
+	 *
+	 *
+	 */
+	take_piccache:(cacheobj,arrayadr,sizeadr)=>{
+		cacheobj.give(arrayadr,sizeadr)
+	},
+	
 };
 
 DIS.shell = {
@@ -1486,7 +1544,7 @@ DIS.data = { // DIS.data
 		}
 		// load module STATIC UNIT DATA.
 		this.STATIC_UNIT.init();
-		Cmd.run();
+		// Cmd.run();
 	},
 
 	/**
@@ -2957,7 +3015,7 @@ let RTS = {
 			MISSION.Cmd.importData(elm)
 			deblog(`RTS.setupMission() - extension file ${elm} loaded`);
 		};
-		Cmd.run();
+		// Cmd.run(); // avoiding duplex call
 
 
 	},
@@ -3175,11 +3233,13 @@ var Cmd = {
 	 * Commands will be sent to RPG Maker as a string.
 	 */
 	CmdQueue: "",
+	CmdSyncQ: "",
 
 	ReturnQueue: [],
 
 	/**
 	 * This function is to be called by TPC. send RM stuff back to ReturnQueue.
+	 * GOMI
 	 *
 	 * @param {} stuff
 	 * @param {} linki
@@ -3217,6 +3277,22 @@ var Cmd = {
 	Qset: function(typ,name,ord){
 		let cmdid = Cmd.CmCon[name];
 		Cmd.CmdQueue += (typ + "," + cmdid + "," + ord + ";");
+		return true;
+	},
+	
+	_Qnext: function(typ,name,ord){
+		let cmdid = Cmd.CmCon[name];
+		Cmd.CmdSyncQ += (typ + "," + cmdid + "," + ord + ";");
+		return false;
+	},
+
+	/**
+	 *
+	 * @param {object} - object that has {bool} isCertified property 
+	 */
+	_CmdAwaitQ: function(obj,typ,nam,ord){
+		let fn = (obj.isCertified) ? this.Qset.bind(this) : this._Qnext.bind(this);
+		return fn(typ,nam,ord);
 	},
 
 	
@@ -3252,8 +3328,13 @@ var Cmd = {
 
 	},
 
-	// Cmd.run()
-	// give signal to run DIS commands 
+	/**
+	 * Cmd.run()
+	 * give signal to run DIS commands 
+	 * Mainly called in cev 1830("JS mission/command manager") in module_core_RTS_mission_general.tpc
+	 * And mission.run()
+	 *
+	 */
 	run: function() {
 
 		// give raw cmd as a string to RPGMaker
@@ -3261,7 +3342,8 @@ var Cmd = {
 		// turn on RM switch to run interpreter as cev
 		sets(adr_RMbool_RUN_CMD,1);
 		// deblog(Cmd.CmdQueue)
-		Cmd.CmdQueue = ""; // initialize Command Order
+		this.CmdQueue = this.CmdSyncQ; // refresh Command Order
+		this.CmdSyncQ = ""; // init next Command Order
 		 
 		// return queue is cleared after TPC finishes actual Cmd processes
 		this.runFlags.initAll();
@@ -3271,187 +3353,194 @@ var Cmd = {
 	// actual command objects start 
 	//Cmd.game
 	
-	game: {
+	game: (function(){
 		/**
 		 * CTYP_GAME 
 		 */
-		CmdType: CTYP_GAME,
-
-
-		/**
-		 * Just play Global SE.
-		 *
-		 * @param {string} file 
-		 * @param {int} vol
-		 * @param {int} tempo
-		 * @param {int} ballance
-		 */
-		playGlobalSE: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
-			Cmd.Qset(this.CmdType,"pGSE",`${file},${vol},${tempo},${ballance}`);
-		},
-
-		playBGM: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
-			Cmd.Qset(this.CmdType,"pBGM",`${file},${vol},${tempo},${ballance}`);
-		},
-	
-
-		/**
-		 * @wait command in TPC.
-		 * YOU SHOULDN'T USE THIS METHOD IN RTS GAME UNLESS YOU UNDERSTAND HOW IT AFFECTS TO PROCESS.
-		 *
-		 * @param {} RMwaittime
-		 */
-		wait: function(RMwaittime) { // RMwaittime: 10 = 1sec, 0 = 1f, -n = {n}f. 
-			Cmd.Qset(this.CmdType,"wait",`${RMwaittime}`);
-			Cmd.runFlags.RMwaitDetect = true;
-		},
-
-		/**
-		 * methods around picture files.
-		 * @namespace Cmd.pic
-		 *
-		 */
-		pic: { // Cmd.pic
-			CmdType: CTYP_GAME,
+		let CmdType = CTYP_GAME;
+		return {
 
 			/**
-			 * load picture command.
-			 * @param {int} filepath
-			 * @param {int} picid
+			 * Just play Global SE.
 			 *
-			 * @returns {DIS_RMpicture} RPG Maker picture 
-			 *
+			 * @param {string} file 
+			 * @param {int} vol
+			 * @param {int} tempo
+			 * @param {int} ballance
 			 */
-			load: function(filepath,picid) { // simply load a picture file to picid 
-				Cmd.Qset(this.CmdType,"loadPic",`${filepath},${picid}`);
-				return (new DIS_RMpicture(picid,filepath)); // no pos gg
+			playGlobalSE: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
+				Cmd.Qset(CmdType,"pGSE",`${file},${vol},${tempo},${ballance}`);
 			},
 
-			/**
-			 * remove picture command.
-			 * 
-			 *
-			 * @param {int} picid
-			 *
-			 */
-			remove: function(picid) {
-				Cmd.Qset(this.CmdType,"removePic",`${picid}`);
+			playBGM: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
+				Cmd.Qset(CmdType,"pBGM",`${file},${vol},${tempo},${ballance}`);
 			},
 
 
 			/**
-			 * UNCO.
+			 * @wait command in TPC.
+			 * YOU SHOULDN'T USE THIS METHOD IN RTS GAME UNLESS YOU UNDERSTAND HOW IT AFFECTS TO PROCESS.
 			 *
-			 * @param {} path
-			 * @param {} key
-			 * @param {} namespace
+			 * @param {} RMwaittime
 			 */
-			loadToCache: function(path,key,namespace){
-				
-				namespace = namespace || "misc";
-				
-				if (typeof DIS.cache[namespace] === "undefined"){
-					DIS.cache[namespace] = {};
-				};
-				DIS.cache[namespace][key] = [];
+			wait: function(RMwaittime) { // RMwaittime: 10 = 1sec, 0 = 1f, -n = {n}f. 
+				Cmd.Qset(CmdType,"wait",`${RMwaittime}`);
+				Cmd.runFlags.RMwaitDetect = true;
+			},
 
-				Cmd.Qset(this.CmdType,"cachePic",`${path},DIS.cache.${namespace}.${key}`);
+			/**
+			 * methods around picture files.
+			 * @namespace Cmd.pic
+			 *
+			 */
+			pic: { // Cmd.pic
+				CmdType: CTYP_GAME,
 
-				
+				/**
+				 * load picture command.
+				 * @param {int} filepath
+				 * @param {int} picid
+				 *
+				 * @returns {DIS_RMpicture} RPG Maker picture 
+				 *
+				 */
+				load: function(filepath,picid) { // simply load a picture file to picid 
+					Cmd.Qset(CmdType,"loadPic",`${filepath},${picid}`);
+					return (new DIS_RMpicture(picid,filepath)); // no pos gg
+				},
+
+				/**
+				 * remove picture command.
+				 * 
+				 *
+				 * @param {int} picid
+				 *
+				 */
+				remove: function(picid) {
+					Cmd.Qset(CmdType,"removePic",`${picid}`);
+				},
+
+
+				/**
+				 * UNCO.
+				 *
+				 * @param {} path
+				 * @param {} key
+				 * @param {} namespace
+				 */
+				loadToCache: function(path,key,namespace = "misc"){
+					// if given namespace is new one
+					if (typeof DIS.cache[namespace] === "undefined"){
+						DIS.cache[namespace] = {}; // make it blank object 
+					};
+					Cmd.Qset(CmdType,"cachePic",`${path},DIS.cache.${namespace}.${key}`);
+					return DIS.cache[namespace][key] = new RM_PicCache(path,key,namespace);
+				},
+
+				/**
+				 * 
+				 * If target cachedPic is not gotten yet, push this command to next cycle
+				 * @param {RM_PicCache} 
+				 * @param {int} 
+				 * @param {[int,int]} 
+				 */
+				pasteFromCache: function(cachedPic,pid,origin = [0,0]){
+					Cmd._CmdAwaitQ(cachedPic,CmdType,"pstCchPc",`${cachedPic.getAdr()},${pid},${origin[0]},${origin[1]}`);
+				},
+
+
+			},
+
+			/**
+			 * .
+			 *
+			 * @param {} filepath
+			 */
+			loadText: function(filepath) { 
+				Cmd.Qset(CmdType,"loadText",`${filepath}`);
+			},
+
+			/**
+			 * .
+			 *
+			 * @param {int} stringid
+			 * @param {string} filepath
+			 */
+			exportText: function(stringid,filepath) {
+				Cmd.Qset(CmdType,"exportText",`${stringid},${filepath}`);
+			},
+
+			/**
+			 * .
+			 *
+			 * @param {} RGBS
+			 * @param {} f
+			 */
+			tintScreen: function(RGBS,f) {
+				f = f || 0;
+				let st = RGBS.join(",") + "," + f;
+				Cmd.Qset(CmdType,"tintScreen",st);
+				deblog(st)
+			},
+
+			/**
+			 * .
+			 *
+			 * @param {int} RMmapid
+			 * @param {[int,int]} tilepos
+			 */
+			gotoRMmap: function(RMmapid,tilepos) { //
+				tilepos = tilepos || [0,0]
+				Cmd.Qset(CmdType,"gotoRMmap",`${RMmapid},${tilepos[0]},${tilepos[1]}`);
 			},
 
 
-		},
+			// log series
 
-		/**
-		 * .
-		 *
-		 * @param {} filepath
-		 */
-		loadText: function(filepath) { 
-			Cmd.Qset(this.CmdType,"loadText",`${filepath}`);
-		},
+			/**
+			 * unlike Cmd.game.log(), argument will be processed by DIS.string.convertString()
+			 * If you want to use message system as a function of your RTS stage, you should use this than Cmd.game.log()
+			 *
+			 * @param {string} txt
+			 */
+			msg: function(txt){
+				txt = DIS.string.convertString(txt)
+				Cmd.Qset(CmdType,"msg",`${txt}`);
+			},
 
-		/**
-		 * .
-		 *
-		 * @param {int} stringid
-		 * @param {string} filepath
-		 */
-		exportText: function(stringid,filepath) {
-			Cmd.Qset(this.CmdType,"exportText",`${stringid},${filepath}`);
-		},
+			/**
+			 * Show raw string.
+			 *
+			 * @param {string} txt
+			 */
+			log: function(txt){
+				Cmd.Qset(CmdType,"msg",`${txt}`);
+			},
 
-		/**
-		 * .
-		 *
-		 * @param {} RGBS
-		 * @param {} f
-		 */
-		tintScreen: function(RGBS,f) {
-			f = f || 0;
-			let st = RGBS.join(",") + "," + f;
-			Cmd.Qset(this.CmdType,"tintScreen",st);
-			deblog(st)
-		},
+			log_error: function(txt){
+				let t = `\\C[17]ERROR:${txt}`;
+				Cmd.Qset(tCmdType,"msg",t);
+				return t;
+				// deblog("`ERROR:${txt}`")
+			},
 
-		/**
-		 * .
-		 *
-		 * @param {int} RMmapid
-		 * @param {[int,int]} tilepos
-		 */
-		gotoRMmap: function(RMmapid,tilepos) { //
-			tilepos = tilepos || [0,0]
-			Cmd.Qset(this.CmdType,"gotoRMmap",`${RMmapid},${tilepos[0]},${tilepos[1]}`);
-		},
+			log_dev: function(txt){
+				let t = `\\C[1]Dev:${txt}`;
+				Cmd.Qset(CmdType,"msg",t);
+				return t;
+			},	
+
+			log_debug: function(txt){
+				let t = `\\C[5]JS DEBUG:${txt}`;
+				Cmd.Qset(CmdType,"msg",t);
+				return t;
+			},	
+
+			//
 
 
-		// log series
-
-		/**
-		 * unlike Cmd.game.log(), argument will be processed by DIS.string.convertString()
-		 * If you want to use message system as a function of your RTS stage, you should use this than Cmd.game.log()
-		 *
-		 * @param {string} txt
-		 */
-		msg: function(txt){
-			txt = DIS.string.convertString(txt)
-			Cmd.Qset(this.CmdType,"msg",`${txt}`);
-		},
-
-		/**
-		 * Show raw string.
-		 *
-		 * @param {string} txt
-		 */
-		log: function(txt){
-			Cmd.Qset(this.CmdType,"msg",`${txt}`);
-		},
-
-		log_error: function(txt){
-			let t = `\\C[17]ERROR:${txt}`;
-			Cmd.Qset(this.CmdType,"msg",t);
-			return t;
-			// deblog("`ERROR:${txt}`")
-		},
-
-		log_dev: function(txt){
-			let t = `\\C[1]Dev:${txt}`;
-			Cmd.Qset(this.CmdType,"msg",t);
-			return t;
-		},	
-
-		log_debug: function(txt){
-			let t = `\\C[5]JS DEBUG:${txt}`;
-			Cmd.Qset(this.CmdType,"msg",t);
-			return t;
-		},	
-		
-		//
-
-
-	},
+		};
+	})(),
 
 	/**
 	 * Cmd.map
@@ -3949,7 +4038,8 @@ if (!VIRTUAL_ENV){
 	Cmd.init();
 	DIS.data.init(); // reset DIS data
 	DIS.init.initID();
-	Cmd.game.pic.loadToCache("camera_ball","test");
+	// Cmd.game.pic.loadToCache("camera_ball","test");
+	// Cmd.game.pic.pasteFromCache(DIS.cache.misc.test,800)
 }
 
 
@@ -4423,3 +4513,5 @@ function resizeImage(imageData, originalWidth, originalHeight,rate) {
 	};
 	return resizedData;
 };
+
+

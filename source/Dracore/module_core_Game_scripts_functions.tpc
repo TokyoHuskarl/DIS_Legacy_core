@@ -329,6 +329,8 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 			@pic.erase [var1]
 		})},
 		{NsCmd($LINKstr, $md, $i, "cachePic",{cmd_pic_load_jscache(SSargs0,SSargs1)})},
+		//pasteFromCache `${cachedPic},${pid},${origin[0]},${origin[1]}`
+		{NsCmd($LINKstr, $md, $i, "pstCchPc",{cmd_pic_paste_from_cache(SSargs0,SSargs1,SSargs2,SSargs3)})}, // paste cache picture to pic
 
 
 		{NsCmd($LINKstr, $md, $i, "pGSE",{cmd_play_global_sound(SSargs0,SSargs1,SSargs2,SSargs3)})}, // game.playGlobalSE
@@ -742,12 +744,28 @@ __fn cmd_pic_load_jscache $pic_name $cache_path {
 	@pic[EDITPIC].getInfo .pixel 0, 0, v[355], v[356] .dst buffer_for_pixel_information_head
 	TT1 = v[355] * v[356]
 	@if TT1 <= buffer_pixel_info_size_max {
-		$temp = __str("getv(",buffer_for_pixel_information_head,",\v[",__id(TT1),"])")
-			str1.asg .cat(SSargs1,"=",$temp) .extract
-			eval_js(str1)
+		$jscode = __str("DIS._tpc.send_piccache(\t[",__id(SSargs1),"],getv(",buffer_for_pixel_information_head,",\v[",__id(TT1),"]),[\v[355],\v[356]])")
+			eval_js($jscode)
 	}.else bl{
 		func_errlog("TPC:cmd_pic_load_jscache() - Loaded Picture size is too big to cache. Aborted")
 	}
+
+}
+
+/**
+ * @param {string}
+ * @param {string}
+ */
+__fn cmd_pic_paste_from_cache $cacheobj $pid $x $y {
+	// get size to reg1
+	$jscode = __str("DIS._tpc.take_piccache(\t[", __id(SSargs0), "],", buffer_for_pixel_information_head, ",", __id(reg1), ")")
+	eval_js($jscode)
+	t2v($pid,var10)
+	t2v($x,var1)
+	t2v($y,var2)
+	var3 = reg1 & 0xFFF // x
+	var4 = reg1 >> 12 // y
+	@pic[var10].setPixel .xywh var1, var2, var3, var4 .src v[buffer_for_pixel_information_head] .skipTransparent
 
 }
 __fn cmd_pic_simplemove $picid {

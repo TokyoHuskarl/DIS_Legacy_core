@@ -27,6 +27,7 @@ __fn UI_CEV_MINIMAP_MANAGER {
 									.eraseWhenTransfer
 							}
 						}
+
 						//v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
 						TT1 = v[1277] * v[1276]
 						v[ptr_null].copy v[v[4563]],TT1
@@ -115,13 +116,6 @@ __fn UI_CEV_MINIMAP_MANAGER {
 								v[335] = v[4804] + v[401]
 								// v[335].deref v[335],1 // v[335] = v[v[335]] -> direct copy to later complex formula
 								v[Temp1].copy agent_AgentType,27 // Ptr19 = Temp1 + 26 && v[Ptr19].copy Temp19, 2
-
-								/*
-								Temp19 = max(min(muldiv(agent_MapX, 100, v[430]), v[1277]) - 1, 0)
-								Temp20 = max(min(muldiv(agent_MapY, 100, v[431]), v[1276]) - 1, 0)
-								v[v[4563] + Temp19 + Temp20 * v[1277]] = v[335] <- it was not refget, pay attention.
-								*/
-
 								v[v[4563] + max(min(muldiv(agent_MapX, 100, v[430]), v[1277]) - 1, 0) + max(min(muldiv(agent_MapY, 100, v[431]), v[1276]) - 1, 0) * v[1277]] = v[v[335]]
 
 						}
