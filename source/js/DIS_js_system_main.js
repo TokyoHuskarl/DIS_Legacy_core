@@ -3336,6 +3336,30 @@ var Cmd = {
 			remove: function(picid) {
 				Cmd.Qset(this.CmdType,"removePic",`${picid}`);
 			},
+
+
+			/**
+			 * UNCO.
+			 *
+			 * @param {} path
+			 * @param {} key
+			 * @param {} namespace
+			 */
+			loadToCache: function(path,key,namespace){
+				
+				namespace = namespace || "misc";
+				//
+				if (typeof DIS.cache[namespace] === "undefined"){
+					DIS.cache[namespace] = {};
+				};
+				DIS.cache[namespace][key] = [];
+
+				Cmd.Qset(this.CmdType,"cachePic",`${path},DIS.cache.${namespace}.${key}`);
+
+				
+			},
+
+
 		},
 
 		/**
@@ -3839,6 +3863,7 @@ var Cmd = {
 				let retLink = new CmdRetLink(RMarray)
 				return retLink;
 			},
+
 		
 
 	},
