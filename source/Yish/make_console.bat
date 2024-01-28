@@ -8,7 +8,7 @@ set log="./../../logs/log_"
 rem ==================================================================================
 
 
-set target=module_console_general
+set target=module_console_main
 echo Compiling Console System. - %target%
 call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
 echo;

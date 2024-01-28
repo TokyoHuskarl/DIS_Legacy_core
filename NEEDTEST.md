@@ -22,8 +22,9 @@
 ### バグ修正系
 
 ## Something is wrong / 何かおかしい
+- js
+  DATA.TROOPSにSTATICが入ってる。要調査
 
-- AEB
 ## Suspicious / 怪しい
 - AEB
   - Save/Loadで壊れないか？

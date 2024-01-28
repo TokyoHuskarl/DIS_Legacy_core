@@ -49,7 +49,7 @@ function setva(address,jsarray){setv(address,jsarray);};
 
 
 
-//0 = normal mode, 1 = debug mode, 2 = developer mode
+//0 = normal mode, 2 = debug mode, 1 = developer mode
 const BOOT_MODE_NORMAL = 0,
 	BOOT_MODE_DEVELOPER = 1,
 	BOOT_MODE_DEBUG = 2;
@@ -536,7 +536,7 @@ class DIS_RMpicture extends DIS_entity { // simple picture object.
 			i = 0;
 		}
 		return i;
-	}
+	};
 
 	kill(){
 		Cmd.game.pic.remove(this.pid);
@@ -925,7 +925,6 @@ const ADRT = DIS.consts.Adrt
 *
 * @namespace DIS
 */
-
 DIS = { // DIS fundamental components
 	init: {
 		
@@ -1493,22 +1492,180 @@ DIS._tpc = {
 	
 };
 
-DIS.shell = {
 
-	_boot(){
-		print("");
-	},
+/**
+ *
+ * DIS.shell
+ *
+ */
+DIS.shell = (function(){
+		const QuitSignalAdr = 183; // LEGS_ClosingConsole 
+		const dshVer = "proto";
 
-	_run(){},
+		const IND_QJS = 'qjs >';
+		const MODE_QJS = 1;
+		let dshmod = 0;
 
-	help(){
-		print(
-			" \n" +
-			" \n" +
-			"");
-	},
+		let args = [];
 
-};
+		/**
+		 *
+		 * @return {bool} - continue evalQjs = true
+		 */
+		const evalQjs = function(st){
+			if(st == "\\q"){
+				dshmod = 0;
+				dsLog("Quitting qjs mode...")
+				return false;
+			}
+			try {
+				eval(st);
+				return true; 
+			} catch(error){
+				dsLog(error)
+				return true;
+			};
+		};
+
+		const dsLog = function(s){
+			if(DEBUG == 0){console.log(s);};
+			DIS.log.push(s);
+		}
+
+
+		const dshCmd = {
+
+			echo(){
+
+				/*
+				 * UNDERCONSTRUCTION
+				const ev = (s)=>{
+					let out = "";
+					// proc
+					const MD_ADD = 0,
+								MD_ESC = 0b1,
+								MD_V = 0b10;
+					let mode = MD_ADD;
+					for (let i = 0; i < s.length; i++){
+						// normal mode
+						if(mode == MD_ADD){
+							// espape char found
+							if(i == "\\"){
+								mode = ED_ESC;
+							} else { // otherwise just add char
+								out += s[i];
+							};
+						} else if(mode == MD_ESC){
+								// check if the next character is "v","s","t"
+								switch(s[i]){
+									case 'v':
+										mode |= MD_V
+										break;
+									case 's':
+										mode |= 0b100
+										break;
+									case 't':
+										mode |= 0b1000
+										break;
+									default:
+										mode = 0;
+								};
+						} else if(mode & 0x1110){
+						};
+					};
+
+					return s;
+				};
+				*/
+
+				for (let i = 1; i < args.length; i++){
+					dsLog(args[i]);
+				};
+				return true;
+			},
+
+			exit(){
+				sets(QuitSignalAdr,true);
+				dsLog("Quitting dsh.");
+				return true;
+			},
+
+			qjs(){
+				if(DEBUG >= BOOT_MODE_DEVELOPER){
+					dshmod = MODE_QJS;
+					dsLog("Booting qjs console mode...\nType '\\\\q' to quit qjs mode.\n" + IND_QJS );
+					return true;
+				} else {
+					dsLog("qjs mode is limited in this boot mode. Aborted.");
+					return false;
+				};
+			},
+
+			clear(){
+				let a = "";
+				for (let i = 0; i < 128; i++){
+					a += "\n";
+				};
+				console.log(a);
+			},
+
+			help(){
+				
+				dsLog(
+					"echo [-neE]           print given string to the console. / 受け取った文字列を表示します\n" +
+					"clear                 empty console messages. / ログを押し流します\n" +
+					"qjs                   boot qjs eval mode. / qjsによるevalモードを起動します\n" +
+					"exit                  close DIS shell console. / コンソールを閉じます\n" +
+					"help                  this command. / このコマンドです");
+				return true;
+			},
+
+
+		};
+
+	return {
+		boot(){
+			dshmod = 0; // init dsh mode
+			dsLog(`dsh version : ${dshVer}\nGame module: ${boot_config.module}\nType "help" for more information.`)
+		},
+
+		run(st){
+			dsLog(eval(st))
+		},
+
+		/**
+		 * eval.
+		 *
+		 * @param {string} st - given from TPC console
+		 * @return {string} - result
+		 */
+		eval(st){
+			// should I make pipeline available?
+			// let stack = st.split("|"); 
+			if(dshmod == 0){
+				args = st.split(" ");
+				// if there's console command
+				if (dshCmd.hasOwnProperty(args[0])){
+					try {
+						dshCmd[args[0]]();
+
+					} catch (error) {
+						dsLog("hmm, something went wrong.");
+						dsLog(error);
+					};
+
+				} else {
+
+					dsLog(`dsh: ${args[0]}: command not found`);
+				};
+			} else if(dshmod == MODE_QJS){
+				if(evalQjs(st)){dsLog(IND_QJS)};
+
+			};
+		},
+
+	};
+})();
 
 
 // set DATA global pointer
@@ -1615,10 +1772,19 @@ DIS.data = { // DIS.data
 					ptr2Res.push(tree)
 				};
 
-			} else if (typ == "TROOP");{ // troop data 
+			/**
+			 * MAKE FUNCTION, what these fuckers doing is almost the same
+			 */
+			} else if (typ == "TROOP"){ // troop data 
 				ptr2Res = neststart(typ,ptr2Res);
 				for (let strid in dataobj[typ]){
 					let nutrp = this.TROOP.createNew(strid,dataobj[typ][strid]);
+					ptr2Res.push(nutrp);
+				};
+			} else if (typ == "STATIC_UNIT"){ // static data 
+				ptr2Res = neststart(typ,ptr2Res);
+				for (let strid in dataobj[typ]){
+					let nutrp = this.STATIC_UNIT.createNew(strid,dataobj[typ][strid]);
 					ptr2Res.push(nutrp);
 				};
 			}
@@ -4041,7 +4207,7 @@ if (!VIRTUAL_ENV){
 
 	// Cmd.game.pic.loadToCache("camera_ball","test");
 	// Cmd.game.pic.pasteFromCache(DIS.cache.misc.test,800)
-}
+};
 
 
 
@@ -4514,5 +4680,3 @@ function resizeImage(imageData, originalWidth, originalHeight,rate) {
 	};
 	return resizedData;
 };
-
-

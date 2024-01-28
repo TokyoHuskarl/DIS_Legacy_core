@@ -45,6 +45,7 @@ __if PROJECT_NAME == "DIS_LEGACY"{
 // kill all "common switch" scums later tbh
 
 
+// LEGACY CONSOLE... will be abolished
 cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_call_console)),{
 	
 	//Deploy a command package!
@@ -1260,6 +1261,18 @@ cev .id(cevid_ConsoleMain), .name("Console:Main"), .parallel, .cond(__id(Bool_ca
 
 }
 
+__fn boot_shell $input {
+	@console .out __str("Welcome to DIS shell - DraCore ", DraCore_version) 
+	eval_js("DIS.shell.boot();")
+}
+
+__fn run_shell $input {
+	@console .in t[__id($input)]
+	js_StringBuffer.asg .cat("DIS.shell.eval(", $input, ");")
+	@js .run js_StringBuffer
+
+}
+
 cev .id(cevid_ConsoleControlManager), .name("Console:Manager"), .parallel, {
 
 	@if .testPlay() { // this condition should be changed
@@ -1285,13 +1298,21 @@ cev .id(cevid_ConsoleControlManager), .name("Console:Manager"), .parallel, {
 
 
 		LEGS_OpenConsole.on
+		@console .open
 		@loop .inf() {
-		    @if LEGS_ClosingConsole .isOn() {
-			@break
-			
-		    }
-		    @wait 0
-		    
+				run_shell(inputstr)
+
+			@if LEGS_ClosingConsole .isOn() {
+				@break
+
+			}
+			@wait 0
+		}
+
+		@if .testPlay() {
+
+		}.else bl{
+			@console .close
 		}
 		
 		@pic[996].erase
