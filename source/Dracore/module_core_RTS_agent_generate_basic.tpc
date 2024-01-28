@@ -699,12 +699,12 @@ __fn agentgen_extra_AA_setting {
 __fn func_generate_agent_finish_set {
 	SpawnAgentID = ptr_SpawnAgentMainSpace_Head + 1 //
 
-		__if DIS_EXPERIMENTAL == -1 {
-			@if s[150].isOff() {
-				init_AEAB_array(SpawnAgentID)
+		__if DIS_EXPERIMENTAL == 1 {
+			@if BOOL_Gen_GetMinionData.isOff() {
+				init_AEB_array(SpawnAgentID)
 					reg2 = 4701
 					reg2 += SpawnAgentID * 300 
-					set_AEB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_Ptr_To_BasicArray)
+					set_AEB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_Ptr_To_BasicArray) // really
 
 			}
 		}
@@ -862,363 +862,48 @@ __fn func_generate_agent_finish_set {
 
 		}
 	s[118].off
-		//Set Agent Name
-		agent_PictArray = ptr_SpawnAgentMainSpace_Head + Address_str_agent_name_array_head
-		agent_PictArray += 1
-		t[agent_PictArray] .asg str1
 
 
-
-
-
-		@comment "###################Set New Picture System###################"
-		Temp2 = ptr_SpawnAgentMainSpace_Head * 6 + v[1185] //ACHTUNG you need to remove this system eventually - it's obsolete legacy system, almost no meaning now
-		@comment "#init"
-		v[Temp2..Temp2 + 5] = 0
-		v[Temp2] = agent_PicID > 0 ? agent_PicID : agent_UnitID
-		@comment "agent_PictArray=Layers"
-		agent_PictArray = 7
-		@comment "#STATIC"
-		@if agent_ObjectType == 11 {
-			agent_static_set_adjustments_for_pic_system()
+			//Set Agent Name
+			/*
+				 agent_PictArray = ptr_SpawnAgentMainSpace_Head + Address_str_agent_name_array_head
+				 agent_PictArray += 1
+				 t[agent_PictArray] .asg str1
+			 */
+		@if BOOL_Gen_NoListAssigningFlag.isOff() {
+			set_agent_name(SpawnAgentID,str1)
 		}
-	@comment "#classic minions"
-		@if agent_ObjectType == 1 {
-			agent_ExMotionFlags |= 2097152
 
-		}
-	@comment "#Weapon Switchable Units"
-		@if agent_ObjectType == 4 {
-			v[0] = v[Temp2..Temp2 + 5] = [agent_PicID, 0, 0, agent_HorseID, agent_Formbits, 0]
-				@if agent_MainWeaponID >= 1 {
-					@comment "#Have Weapon"
-						@if s[154] .isOn() {
-							agent_PictArray = 74
 
-						} .else bl {
-							agent_PictArray = 47
 
-						}
-					@if agent_MainShieldID >= 1 {
-						@comment "#Have Shield"
-							agent_PictArray = 574
+	@comment "###################Set New Picture System###################"
+		agent_troops_set_picture_system()
 
-					}
+
+		// } // ATTENTION!!! suspicious as fugg
+
+		@comment "###################	Set New Picture System END###################"
+
+		@comment "If Without Weapon"
+		@if agent_MainWeaponID == 0 {
+			@comment "nor any AA function"
+				@if agent_AAFunction == 0 {
+					@comment "#Range Melee"
+						agent_BaseRange_max = 19000
+						@comment "#Range Ranged"
+						agent_BaseRange_min = -999999
+						@comment "#AttackSpeed"
+						agent_BaseAS += 50
+						@comment "#AttackMotion"
+						agent_AAMotion = 1
 
 				}
 
 		}
-	@comment "#User Units"
-		@if agent_ObjectType == 3 {
-
-
-			// layered units race settings
-			@comment "Human"
-				@if agent_Race == 0 {
-					@comment "NOT female"
-						@if agent_Skin != 6 {
-							@comment "temp, beard"
-								@if agent_HeadID >= 3 {
-									@if s[159] .isOff() {
-										s[160].on
-
-									}
-
-								}
-
-						}
-
-				}
-			@comment "Goblins"
-				@if agent_Race == 1 {
-					s[160].on
-						s[159].off
-						// @comment "skin set"
-						agent_FootstepSoundTimer = agent_FootstepSoundTimer == 0 ? -1 : agent_FootstepSoundTimer
-
-				}
-
-			@comment "Orks"
-				@if agent_Race == 2 {
-					s[160].on
-						s[159].off
-
-				}
-
-			@if agent_Race == 5 {
-				s[160].on
-					s[159].off
-
-			}
-
-			@if agent_Race == 6 {
-				s[160].on
-					s[159].off
-
-			}
-
-
-			@if s[160] .isOn() {
-				@comment "Have Big Head"
-					agent_PictArray = 321
-					deblog("bighead agent")
-					@comment "Have acc with picture"
-					@if v[889] >= 1 {
-						@comment "#Have Shield"
-							@if agent_MainShieldID >= 1 {
-								agent_PictArray = 563214
-									@comment "#Show Hair"
-									@if v[888] == 0 {
-										agent_PictArray += 6000
-											v[888] = agent_GENERATION_Hair
-
-									}
-
-							} .else bl {
-								@if s[154] .isOn() {
-									agent_PictArray = 63214
-										@comment "#Show Hair"
-										@if v[888] == 0 {
-											agent_PictArray += 6000
-												v[888] = agent_GENERATION_Hair
-
-										}
-
-								} .else bl {
-									agent_PictArray = 46321
-										@comment "#Show Hair"
-										@if v[888] == 0 {
-											agent_PictArray += 600
-												v[888] = agent_GENERATION_Hair
-
-										}
-
-								}
-
-							}
-
-					} .else bl {//no acc
-						@comment "#Have Shield"
-							@if agent_MainShieldID >= 1 {
-								agent_PictArray = 53214
-									@comment "#Show Hair"
-									@if v[888] == 0 {
-										agent_PictArray += 6000
-											v[888] = agent_GENERATION_Hair
-
-									}
-
-							} .else bl {
-								@if s[154] .isOn() {
-									agent_PictArray = 3214
-										@comment "#Show Hair"
-										@if v[888] == 0 {
-											agent_PictArray += 6000
-												v[888] = agent_GENERATION_Hair
-
-										}
-
-								} .else bl {
-									agent_PictArray = 4321
-										@comment "#Show Hair"
-										@if v[888] == 0 {
-											agent_PictArray += 600
-												v[888] = agent_GENERATION_Hair
-
-										}
-
-								}
-
-							}
-
-					}
-
-			} .else bl {//have no big head
-				agent_PictArray = 312
-					@comment "Have acc with picture"
-					@if v[889] >= 1 {
-						@comment "#Have Shield"
-							@if agent_MainShieldID >= 1 {
-								agent_PictArray = 563124
-									@comment "#Show Hair"
-									@if v[888] == 0 {
-										agent_PictArray += 6000
-											v[888] = agent_GENERATION_Hair
-
-									}
-
-							} .else bl { // have space for hair
-								@if s[154] .isOn() {
-									agent_PictArray = 63124
-										@comment "#Show Hair"
-										@if v[888] == 0 {
-											agent_PictArray += 6000
-												v[888] = agent_GENERATION_Hair
-
-										}
-
-								} .else bl {
-									agent_PictArray = 46312
-										@comment "#Show Hair"
-										@if v[888] == 0 {
-											agent_PictArray += 600
-												v[888] = agent_GENERATION_Hair
-
-										}
-
-								}
-
-							}
-
-					} .else bl {
-						@if agent_GENERATION_Hair > 0 {// have hair
-							@comment "#Have Shield"
-								@if agent_MainShieldID >= 1 {
-									agent_PictArray = 539124
-										@comment "#no helm"
-										@if v[888] == 0 {
-											agent_PictArray = 59124
-
-										}
-
-								} .else bl {
-									@if s[154] .isOn() {
-										agent_PictArray = 39124
-											@comment "#Show Hair"
-											@if v[888] == 0 {
-												agent_PictArray = 9124
-
-											}
-
-									} .else bl {
-										agent_PictArray = 43912
-											@comment "#Show Hair"
-											@if v[888] == 0 {
-												agent_PictArray = 4912
-
-											}
-
-									}
-
-								}
-						}.else bl{//no hair
-							@comment "#Have Shield"
-								@if agent_MainShieldID >= 1 {
-									agent_PictArray = 53124
-										@comment "#No Hair No helm"
-										@if v[888] == 0 {
-											agent_PictArray = 5124
-
-										}
-
-								} .else bl {
-									@if s[154] .isOn() {
-										agent_PictArray = 3124
-											@comment "#Show Hair"
-											@if v[888] == 0 {
-												agent_PictArray = 124
-
-
-											}
-
-									} .else bl {
-										agent_PictArray = 4312
-											@comment "#Show Hair"
-											@if v[888] == 0 {
-												agent_PictArray = 412
-
-											}
-
-									}
-
-								}
-
-						}
-
-					}
-				@if s[159] .isOn() {
-					@if LEGS_GenHeadCovered .isOn() {
-						reg1 = agent_PictArray
-							@if reg1 != 0 {
-								@while reg1 > 0 .dst reg3 {
-									reg2 = reg1 % 10
-										@if reg2 == 2 {
-											@break
-
-										}
-									reg1 /= 10
-
-								}
-
-								agent_AddMotionBits |= 524288
-									agent_PictArray = agent_PictArray / pow(10, reg3 + 1) * pow(10, reg3) + agent_PictArray % pow(10, reg3)
-
-							}
-
-					}
-
-				}
-
-			}
-			v[0] = v[Temp2..Temp2 + 5] = [agent_FootstepSoundTimer, agent_FootstepSoundType, v[888], agent_HorseID, agent_Formbits, v[889]]
-
-
-				@comment "If Without Weapon"
-				@if agent_MainWeaponID == 0 {
-					@comment "nor any AA function"
-						@if agent_AAFunction == 0 {
-							@comment "#Range Melee"
-								agent_BaseRange_max = 19000
-								@comment "#Range Ranged"
-								agent_BaseRange_min = -999999
-								@comment "#AttackSpeed"
-								agent_BaseAS += 50
-								@comment "#AttackMotion"
-								agent_AAMotion = 1
-
-						}
-
-				}
-
-		}
-	s[154].off
-		LEGS_GenHeadCovered.off
-		s[159].off
-		s[160].off
 		@comment "having no min range"
 		agent_BaseRange_min = agent_BaseRange_min <= 0 ? -999999 : agent_BaseRange_min
 
-		/*
-			 @comment "#Set SpriteOrder"
-			 v[0] = v[302..306] = [3, 2, 4, 3, 2]
-			 @comment "Has move sprite?"
-			 Temp3 = (agent_ExMotionFlags & 2) == 2 ? 5 : Temp3
-			 Temp3 = (agent_ExMotionFlags & 16) == 16 ? 4 : Temp3
-			 @comment "Skill Moition"
-			 Temp2 = (agent_ExMotionFlags & 4) == 4 ? 5 : 3
-		 */
 
-		v[0] = v[302..306] = [2, 3, 4, 2, 3]
-		@comment "Has move sprite?"
-		Temp5 = (agent_ExMotionFlags & 2) == 2 ? 5 : Temp5
-		Temp5 = (agent_ExMotionFlags & 16) == 16 ? 4 : Temp5
-		@comment "Skill Moition"
-		Temp6 = (agent_ExMotionFlags & 4) == 4 ? 5 : 3
-
-		// AEB returns
-		__if DIS_EXPERIMENTAL == 1 {
-			set_AEB_array(SpawnAgentID,302,AgentExBuffer_SLOT_ActionSprite_1,5)
-
-		}.else bl{
-			// sprite order -> save AEBA 
-			agent_SpriteOrder = Temp2 * 1 + Temp3 * 10 + Temp4 * 100 + Temp5 * 1000 + Temp6 * 10000
-
-		}
-
-	//ATTENTION
-	function_agent_init_set_picture_strs()
-		v[886..889] = 0
-		@comment "###################	Set New Picture System END###################"
 		@if s[1] .isOff() {
 			agent_Cohort_ID = v[258]
 				@comment "#Racial Traits"
@@ -1453,7 +1138,7 @@ __fn func_generate_agent_finish_set {
 		//Get Luck(rand)
 		agent_Luck=rnd(0,999)
 
-		@if s[150] .isOff() {
+		@if BOOL_Gen_GetMinionData .isOff() {
 			@comment "mapxyset"
 				agent_MilPixX.copy agent_MapX, 2
 				agent_MapX .add v[1061], 2
@@ -1462,6 +1147,7 @@ __fn func_generate_agent_finish_set {
 				agent_MapX .sub v[403], 2
 				@comment "ずれおわり"
 				v[626..627] /= 16
+
 				@if s[151] .isOff() {
 
 
@@ -1469,9 +1155,9 @@ __fn func_generate_agent_finish_set {
 					vname[4806], "ConstAgentRootSightArrayHead"
 						__if DIS_EXPERIMENTAL == -1 { 
 							reg2 = sqrt(agent_UnitEyeSight_for_AgentSearch, 1)
-								set_AEAB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_BaseSight_Root)
+								set_AEB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_BaseSight_Root)
 						} .else bl {
-							v[v[4806] + ptr_SpawnAgentMainSpace_Head] = sqrt(agent_UnitEyeSight_for_AgentSearch, 1)
+							agent_reset_BaseSight_Root(SpawnAgentID)
 						}
 
 					@comment "avoid false data"
@@ -1487,23 +1173,15 @@ __fn func_generate_agent_finish_set {
 								@comment "Collision Counter"
 								v[196] += agent_ColDimension != -1 ? 1 : 0
 								@comment "Save ColBox"
-								agent_FootstepSoundTimer = v[4523] + 2 * ptr_SpawnAgentMainSpace_Head
+								agent_FootstepSoundTimer = v[4523] + 2 * ptr_SpawnAgentMainSpace_Head // ATTENTION! this seems needless I suppose?
 								@if agent_ColDimension == -1 {
 									v[1301].copy v[agent_FootstepSoundTimer], 2
 
 								} .else bl {
-
-									//SET ColBox!!!!
-									agent_Width = muldiv(agent_Width, 4, 5)
-										agent_Height = muldiv(agent_Height, 4, 5)
-										agent_Width.copy v[agent_FootstepSoundTimer], 2
-
-										// Experimental - this might be far faster
-										__if DIS_EXPERIMENTAL == 1 {
-											set_AEB_array(SpawnAgentID,610,AgentExBuffer_SLOT_ColBoxWidth,2)
-										}
+										agent_set_ColBox(SpawnAgentID)
 
 								}
+
 							@comment "#############Search and remove from body list"
 								reg1 = v[4531]
 								@doWhile v[reg1] > 0 {
@@ -1577,28 +1255,10 @@ __fn func_generate_agent_finish_set {
 											}
 										reg2 = max(reg2, 1)
 											// regsiter to AEAB
-											set_AEAB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_BaseEyeSight)
+											set_AEB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_BaseEyeSight)
 
 									}.else bl { // this is faster
-										@comment "EyeSightForminimaps const =62500"
-											v[v[4528] + ptr_SpawnAgentMainSpace_Head] = min(agent_UnitEyeSight_for_AgentSearch / 31250, 6)
-											@comment "#Cavs  have better sight"
-											@if `between(agent_UnitType, 1, 2) {
-												v[v[4528] + ptr_SpawnAgentMainSpace_Head] += 1
-
-											}
-										@comment "towers"
-											@if agent_UnitType == 106 {
-												v[v[4528] + ptr_SpawnAgentMainSpace_Head] += 2
-
-											}
-										v[v[4528] + ptr_SpawnAgentMainSpace_Head] -= agent_HeadSPregPenalty
-											@comment "walls"
-											@if agent_UnitType == 107 {
-												v[v[4528] + ptr_SpawnAgentMainSpace_Head] = 1
-
-											}
-										v[v[4528] + ptr_SpawnAgentMainSpace_Head] = max(v[v[4528] + ptr_SpawnAgentMainSpace_Head], 1)
+										agent_reset_MapEyeSight(SpawnAgentID)
 									}
 
 									@if agent_ObjectType == 11 {
@@ -1697,33 +1357,13 @@ __fn func_generate_agent_finish_set {
 
 							// set agent AI target priority
 							__if DIS_EXPERIMENTAL == 1 {
-								def classtypesetend = 4101 + ClassType_Amount
-									defv static_target_set = classtypesetend 
-
-									v[4101..classtypesetend] = 100000000
-
-									// lower value = more priority
-
-									// siege ram type
-									@if `agent_AI_routine_bits & AI_routine_bits_FLAG_siegeweapon_flag {
-										v[4101..classtypesetend] += 900000000
-											static_target_set -= 950000000 
-									}
-
-								@if `agent_AI_routine_bits & AI_routine_bits_FLAG_skirmisher {
-									v[4102] -= 50000000
-
-								}
-
-								@if `agent_AI_routine_bits & AI_routine_bits_FLAG_assassin {
-									v[4105] -= 50000000
-								}
-
-								set_AEB_array(SpawnAgentID,4101,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
+								agent_reset_AI_target_priority_AEB(SpawnAgentID)
 							}
 
 
-							ptr_SpawnAgentMainSpace_Head += 1
+
+								// FINISH
+								ptr_SpawnAgentMainSpace_Head += 1
 								reg1 = ptr_SpawnAgentMainSpace_Head
 								gl_lastSpawnedAgent = reg1
 								reg2 = agent_UnitID
@@ -2151,6 +1791,416 @@ __fn agent_set_skin $raceid $skinkey $headtype $haircolor $hairstyle {
 	agent_FootstepSoundType += agent_Skin != -1 ? agent_Race * 10000000 : 0
 }
 
+__fn agent_set_ColBox $agentid {
+		//SET ColBox!!!!
+
+		var1 = muldiv(agent_Width, 4, 5)
+		var2 = muldiv(agent_Height, 4, 5)
+		// agent_Width.copy v[agent_FootstepSoundTimer], 2 // maybe obsolete
+		set_AEB_array($agentid, __id(var1), AgentExBuffer_SLOT_ColBoxWidth,2)
+}
+
+
+__fn agent_reset_AI_target_priority_AEB $agentid {
+	def classtypesetend = 4101 + ClassType_Amount
+		defv static_target_set = classtypesetend 
+
+		v[4101..classtypesetend] = 100000000
+
+		// lower value = more priority
+
+		// siege ram type
+		@if `agent_AI_routine_bits & AI_routine_bits_FLAG_siegeweapon_flag {
+			v[4101..classtypesetend] += 900000000
+				static_target_set -= 950000000 
+		}
+
+	@if `agent_AI_routine_bits & AI_routine_bits_FLAG_skirmisher {
+		v[4102] -= 50000000
+
+	}
+
+	@if `agent_AI_routine_bits & AI_routine_bits_FLAG_assassin {
+		v[4105] -= 50000000
+	}
+
+	set_AEB_array($agentid,4101,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
+
+
+}
+
+__fn agent_reset_BaseSight_Root $agentid {
+	var1 = $agentid - 1
+	var1 += v[4806]
+	v[var1] = sqrt(agent_UnitEyeSight_for_AgentSearch, 1)
+}
+
+
+__fn agent_reset_MapEyeSight $agentid {
+	@comment "EyeSightForminimaps const =62500"
+		var1 = $agentid - 1
+		var1 += v[4528]
+		v[var1] = min(agent_UnitEyeSight_for_AgentSearch / 31250, 6)
+		@comment "#Cavs  have better sight"
+		@if `between(agent_UnitType, 1, 2) {
+			v[var1] += 1
+
+		}
+	@comment "towers"
+		@if agent_UnitType == 106 {
+			v[var1] += 2
+
+		}
+	v[var1] -= agent_HeadSPregPenalty
+		@comment "walls"
+		@if agent_UnitType == 107 {
+			v[var1] = 1
+
+		}
+	v[var1] = max(v[var1], 1)
+}
+
+
+
+__fn agent_troops_set_picture_system {
+	Temp2 = ptr_SpawnAgentMainSpace_Head * 6 + v[1185] //ACHTUNG you need to remove this system eventually - it's obsolete legacy system, almost no meaning now
+		@comment "#init"
+		v[Temp2..Temp2 + 5] = 0
+		v[Temp2] = agent_PicID > 0 ? agent_PicID : agent_UnitID
+		@comment "agent_PictArray=Layers"
+		agent_PictArray = 7
+		@comment "#STATIC"
+		@if agent_ObjectType == 11 {
+			agent_static_set_adjustments_for_pic_system()
+		}
+	@comment "#classic minions"
+		@if agent_ObjectType == 1 {
+			agent_ExMotionFlags |= 2097152
+
+		}
+
+	@comment "#Weapon Switchable Units"
+		@if agent_ObjectType == 4 {
+			v[0] = v[Temp2..Temp2 + 5] = [agent_PicID, 0, 0, agent_HorseID, agent_Formbits, 0]
+				@if agent_MainWeaponID >= 1 {
+					@comment "#Have Weapon"
+						@if s[154] .isOn() {
+							agent_PictArray = 74
+
+						} .else bl {
+							agent_PictArray = 47
+
+						}
+					@if agent_MainShieldID >= 1 {
+						@comment "#Have Shield"
+							agent_PictArray = 574
+
+					}
+
+				}
+
+		}
+
+	@comment "#User Units"
+		@if agent_ObjectType == 3 {
+			// layered units race settings
+			@comment "Human"
+				@if agent_Race == 0 {
+					@comment "NOT female"
+						@if agent_Skin != 6 {
+							@comment "temp, beard"
+								@if agent_HeadID >= 3 {
+									@if s[159] .isOff() {
+										s[160].on
+
+									}
+
+								}
+
+						}
+
+				}
+			@comment "Goblins"
+				@if agent_Race == 1 {
+					s[160].on
+						s[159].off
+						// @comment "skin set"
+						agent_FootstepSoundTimer = agent_FootstepSoundTimer == 0 ? -1 : agent_FootstepSoundTimer
+
+				}
+
+			@comment "Orks"
+				@if agent_Race == 2 {
+					s[160].on
+						s[159].off
+
+				}
+
+			@if agent_Race == 5 {
+				s[160].on
+					s[159].off
+
+			}
+
+			@if agent_Race == 6 {
+				s[160].on
+					s[159].off
+
+			}
+
+
+			@if s[160] .isOn() {
+				@comment "Have Big Head"
+					agent_PictArray = 321
+					deblog("bighead agent")
+					@comment "Have acc with picture"
+					@if v[889] >= 1 {
+						@comment "#Have Shield"
+							@if agent_MainShieldID >= 1 {
+								agent_PictArray = 563214
+									@comment "#Show Hair"
+									@if v[888] == 0 {
+										agent_PictArray += 6000
+											v[888] = agent_GENERATION_Hair
+
+									}
+
+							} .else bl {
+								@if s[154] .isOn() {
+									agent_PictArray = 63214
+										@comment "#Show Hair"
+										@if v[888] == 0 {
+											agent_PictArray += 6000
+												v[888] = agent_GENERATION_Hair
+
+										}
+
+								} .else bl {
+									agent_PictArray = 46321
+										@comment "#Show Hair"
+										@if v[888] == 0 {
+											agent_PictArray += 600
+												v[888] = agent_GENERATION_Hair
+
+										}
+
+								}
+
+							}
+
+					} .else bl {//no acc
+						@comment "#Have Shield"
+							@if agent_MainShieldID >= 1 {
+								agent_PictArray = 53214
+									@comment "#Show Hair"
+									@if v[888] == 0 {
+										agent_PictArray += 6000
+											v[888] = agent_GENERATION_Hair
+
+									}
+
+							} .else bl {
+								@if s[154] .isOn() {
+									agent_PictArray = 3214
+										@comment "#Show Hair"
+										@if v[888] == 0 {
+											agent_PictArray += 6000
+												v[888] = agent_GENERATION_Hair
+
+										}
+
+								} .else bl {
+									agent_PictArray = 4321
+										@comment "#Show Hair"
+										@if v[888] == 0 {
+											agent_PictArray += 600
+												v[888] = agent_GENERATION_Hair
+
+										}
+
+								}
+
+							}
+
+					}
+
+			} .else bl {//have no big head
+				agent_PictArray = 312
+					@comment "Have acc with picture"
+					@if v[889] >= 1 {
+						@comment "#Have Shield"
+							@if agent_MainShieldID >= 1 {
+								agent_PictArray = 563124
+									@comment "#Show Hair"
+									@if v[888] == 0 {
+										agent_PictArray += 6000
+											v[888] = agent_GENERATION_Hair
+
+									}
+
+							} .else bl { // have space for hair
+								@if s[154] .isOn() {
+									agent_PictArray = 63124
+										@comment "#Show Hair"
+										@if v[888] == 0 {
+											agent_PictArray += 6000
+												v[888] = agent_GENERATION_Hair
+
+										}
+
+								} .else bl {
+									agent_PictArray = 46312
+										@comment "#Show Hair"
+										@if v[888] == 0 {
+											agent_PictArray += 600
+												v[888] = agent_GENERATION_Hair
+
+										}
+
+								}
+
+							}
+
+					} .else bl {
+						@if agent_GENERATION_Hair > 0 {// have hair
+							@comment "#Have Shield"
+								@if agent_MainShieldID >= 1 {
+									agent_PictArray = 539124
+										@comment "#no helm"
+										@if v[888] == 0 {
+											agent_PictArray = 59124
+
+										}
+
+								} .else bl {
+									@if s[154] .isOn() {
+										agent_PictArray = 39124
+											@comment "#Show Hair"
+											@if v[888] == 0 {
+												agent_PictArray = 9124
+
+											}
+
+									} .else bl {
+										agent_PictArray = 43912
+											@comment "#Show Hair"
+											@if v[888] == 0 {
+												agent_PictArray = 4912
+
+											}
+
+									}
+
+								}
+						}.else bl{//no hair
+							@comment "#Have Shield"
+								@if agent_MainShieldID >= 1 {
+									agent_PictArray = 53124
+										@comment "#No Hair No helm"
+										@if v[888] == 0 {
+											agent_PictArray = 5124
+
+										}
+
+								} .else bl {
+									@if s[154] .isOn() {
+										agent_PictArray = 3124
+											@comment "#Show Hair"
+											@if v[888] == 0 {
+												agent_PictArray = 124
+
+
+											}
+
+									} .else bl {
+										agent_PictArray = 4312
+											@comment "#Show Hair"
+											@if v[888] == 0 {
+												agent_PictArray = 412
+
+											}
+
+									}
+
+								}
+
+						}
+
+					}
+				@if s[159] .isOn() {
+					@if LEGS_GenHeadCovered .isOn() {
+						reg1 = agent_PictArray
+							@if reg1 != 0 {
+								@while reg1 > 0 .dst reg3 {
+									reg2 = reg1 % 10
+										@if reg2 == 2 {
+											@break
+
+										}
+									reg1 /= 10
+
+								}
+
+								agent_AddMotionBits |= 524288
+									agent_PictArray = agent_PictArray / pow(10, reg3 + 1) * pow(10, reg3) + agent_PictArray % pow(10, reg3)
+
+							}
+
+					}
+
+				}
+
+			}
+
+			v[0] = v[Temp2..Temp2 + 5] = [agent_FootstepSoundTimer, agent_FootstepSoundType, v[888], agent_HorseID, agent_Formbits, v[889]]
+		}
+
+
+		s[154].off
+		LEGS_GenHeadCovered.off
+		s[159].off
+		s[160].off
+
+		/*
+			 @comment "#Set SpriteOrder"
+			 v[0] = v[302..306] = [3, 2, 4, 3, 2]
+			 @comment "Has move sprite?"
+			 Temp3 = (agent_ExMotionFlags & 2) == 2 ? 5 : Temp3
+			 Temp3 = (agent_ExMotionFlags & 16) == 16 ? 4 : Temp3
+			 @comment "Skill Moition"
+			 Temp2 = (agent_ExMotionFlags & 4) == 4 ? 5 : 3
+		 */
+
+		v[0] = v[302..306] = [2, 3, 4, 2, 3]
+		@comment "Has move sprite?"
+		Temp5 = (agent_ExMotionFlags & 2) == 2 ? 5 : Temp5
+		Temp5 = (agent_ExMotionFlags & 16) == 16 ? 4 : Temp5
+		@comment "Skill Moition"
+		Temp6 = (agent_ExMotionFlags & 4) == 4 ? 5 : 3
+
+		// AEB returns
+		__if DIS_EXPERIMENTAL == 1 {
+			@if BOOL_Gen_NoListAssigningFlag.isOff() {
+				set_AEB_array(SpawnAgentID,302,AgentExBuffer_SLOT_ActionSprite_1,5)
+			}
+
+
+		}.else bl{
+			// sprite order -> save AEBA 
+			agent_SpriteOrder = Temp2 * 1 + Temp3 * 10 + Temp4 * 100 + Temp5 * 1000 + Temp6 * 10000
+
+		}
+
+		//ATTENTION
+
+	@if BOOL_Gen_NoListAssigningFlag.isOff() {
+		func_drawing_agent_init_set_picture_strs(SpawnAgentID) // ->module_core_RTS_drawing_functions.tpc
+	}
+
+		v[886..889] = 0
+
+
+}
 
 // functions for STATIC agents
 __fn agent_static_set_adjustments_for_pic_system {
@@ -2389,8 +2439,6 @@ __fn agent_static_set_adjustments_for_pic_system {
 				// sprite pattern set for static agents
 				// in legacy design, using action state was used to indicate sprite pattern, this will be abolished
 				agent_static_Spritepattern = agent_ActionState > 0 ? agent_ActionState + 2 : 2
-
-
 }
 
 

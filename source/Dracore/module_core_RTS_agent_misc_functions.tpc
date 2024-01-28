@@ -57,35 +57,89 @@ __fn init_AEB_array $agentid {
  * 
  * @param {int} $agentid - 
  * @param {int} $unitid - 
- * @param {int} $flags - EXTRACT_FLAG_Data_extracted:0x1
+ * @param {int} $flags - EXTRACT_FLAG_Data_extracted:0x1 
  */
 __fn func_make_agent_transform_into_unit $agentid $unitid $flags {
+	$FLAG_RECOVER_STATS = 0x2
 
 	// copy agent data to victim array
 	__if $flags & EXTRACT_FLAG_Data_extracted {
-		agent_ObjectType.copy victim_ObjectType agent_Basic_Array_size
+		agent_AgentType.copy victim_AgentType agent_Basic_Array_size
 	}.else bl{
 		var1 = $agentid * agent_Basic_Array_size
 		var1 += 4701
-		v[var1].copy agent_ObjectType agent_Basic_Array_size
+		v[var1].copy victim_AgentType,agent_Basic_Array_size
 	}
-	
-	// bring unit parameters from database
-	func_get_troopinfo_from_csv($unitid)
-	
-	// unit ID
-	agent_UnitID = $unitid
-	// set sprite
-	agentgen_sprite_setting()
-	
 
-	/*
-	  adjustment
-	*/
+		// deploy unit data to agent_buffer
+		v[251] = victim_TeamID
+		v[255] = $agentid
+		victim_RelativeX.copy v[252],2
+		v[254] = $unitid
+
+		BOOL_Gen_NoListAssigningFlag.on
+		BOOL_Gen_GetMinionData.on
+		s[152].on // retarded legacy switch
+		func_generate_agent() // just get data
+		BOOL_Gen_NoListAssigningFlag.off
+		BOOL_Gen_GetMinionData.off
+
+		// does this even work?
+		func_drawing_agent_init_set_picture_strs($agentid)
+
+		// TODO - change AEB values
+		agent_reset_AI_target_priority_AEB($agentid)
+		agent_reset_BaseSight_Root($agentid)
+		agent_reset_MapEyeSight($agentid)
+
+
+
+		
+		agent_AgentType.copy victim_AgentType,3
+
+		// set collision?
+		agent_Width.copy victim_Width,2
+		agent_set_ColBox($agentid)
+		
+
+		agent_MoveTypeBIts.copy victim_MoveTypeBIts,1
+		agent_Skin.copy victim_Skin,7 // to head
+
+		__if $flags & $FLAG_RECOVER_STATS {
+
+		}.else bl {
+				// use current HP and so on
+				victim_HP = min(victim_HP,agent_MaxHP)
+				victim_HP.copy agent_HP,1
+
+				victim_SP = min(victim_SP,agent_MaxSP)
+				victim_SP.copy agent_SP,1
+
+				victim_BaseAR = min(victim_BaseAR,agent_MaxAR)
+				victim_BaseAR.copy agent_BaseAR,1
+		}
+
+		agent_UnitID.copy victim_UnitID,140 // copy all basic data
+		agent_MainWeaponID.copy victim_MainWeaponID,9 // copy equipments
+
+		set_agent_name($agentid,str1)
+	
 
 	/*
 	  rewrite data
 	*/
+
+	__if $flags & EXTRACT_FLAG_Data_extracted {
+		victim_AgentType.copy agent_AgentType agent_Basic_Array_size
+	}.else bl{
+		var1 = $agentid * agent_Basic_Array_size
+		var1 += 4701
+		victim_AgentType.copy v[var1],agent_Basic_Array_size
+	}
+
+	__if DIS_DEBUG_BUILD == 1 {
+		deblog(__str("func_make_agent_transform_into_unit: Try unit conversion to ", $unitid, "."))
+	}
 
 }
 
@@ -120,6 +174,10 @@ __fn func_get_AA_usage $agent $flags {
 }
 
 
+__fn set_agent_name $agentid $name {
+	var1 = $agentid + Address_str_agent_name_array_head
+	t[var1].asg $name
+}
 
 
 

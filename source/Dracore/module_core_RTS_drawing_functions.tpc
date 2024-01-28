@@ -55,8 +55,13 @@ __fn drawing_set_grid_raw $Exmotion $Addmotion {
 
 }
 
-__fn function_agent_init_set_picture_strs {
-	var1 = Const_str_agent_pictures_strings_start + v[201] * 10
+/**
+ *
+ * use 201 as your 
+ */
+__fn func_drawing_agent_init_set_picture_strs $agentid {
+	var1 = $agentid - 1 
+	var1 = Const_str_agent_pictures_strings_start + var1 * 10
 		var2 = var1 + 9
 	t[var1..var2].asg ""
 	@if v[601] == 3 {

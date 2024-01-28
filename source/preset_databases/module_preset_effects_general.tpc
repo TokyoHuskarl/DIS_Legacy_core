@@ -3,6 +3,7 @@
 //__fn func_bs_register_buff $buff_id $agent
 #include "./../headers/header_battlesystem.tpc"
 //macro_SkillCDck($agent $skillno)
+#include "./../headers/header_player.tpc"
 #include "./../headers/header_agent.tpc"
 
 //Readin so fugging many functions from here and there, what a spaghetti!
@@ -13,8 +14,6 @@
 #include "./../Dracore/module_core_RTS_battlesystem_morale.tpc"
 #include "./../Dracore/module_core_RTS_battlesystem_damage_calculation.tpc"
 #include "./../Dracore/module_core_RTS_main_effects_gib_functions.tpc"
-#include "./../Dracore/module_core_RTS_agent_skill_functions.tpc"
-
 
 
 def moduletitle="module_preset_effects_general.tpc"
