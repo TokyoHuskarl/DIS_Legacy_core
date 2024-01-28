@@ -179,5 +179,18 @@ __fn set_agent_name $agentid $name {
 	t[var1].asg $name
 }
 
+__fn force_agent_to_be_idle $agentid $flag {
+	__if $flags & EXTRACT_FLAG_Data_extracted {
+		val_init(agent_TargetAgentID)
+		val_init(agent_StanceOrder)
+		val_const(agent_MovementOrder,-1)
+
+		// if the agent is worker, reset jobtype
+		agent_worker_JobType = agent_UnitType == UNIT_CLASS_WORKER ? 0 : agent_worker_JobType
+	}.else bl{
+		make_agent_idle_ERROR_you_need_to_set_flag_since_other_proc_is_underconstruction
+	}
+}
+
 
 

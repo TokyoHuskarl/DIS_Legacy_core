@@ -629,7 +629,13 @@ cev .id(32), .name("AgentAct:Worker"), {
 
 								// if the assigned job is different from the last job...
 								TT1 += 1
-								v[TT1] = v[Ptr13] == TT18 ? v[TT1] : 0 // init resource in worker hand
+								@if v[Ptr13] != TT18 { 
+									@if v[TT1] > 0 {
+										func_change_player_resource(v[700],TT18,v[TT1]) // store what they had
+									}
+									// and then init resource in worker hand
+									v[TT1] = 0
+								}
 
 								// in screen
 								@if `victim_AgentBits & AgentBits_FLAG_Drawn_in_screen {
@@ -756,6 +762,9 @@ cev .id(32), .name("AgentAct:Worker"), {
 						}
 
 					} .else bl {
+
+						// need save back proc, but before putting it you have to refactor the entire resource collecting proc.
+						force_agent_to_be_idle(Ptr19,EXTRACT_FLAG_Data_extracted)
 
 						// there's no resource left in the static agent...
 						@if victim_UnitID == 12 { // fruits
@@ -961,7 +970,7 @@ __fn agent_aa_construction {
 
 		/* "Access19 = AttackerObjectID 1~ +4700 	Access20 = TargetObjectID 1~ +4700	Access18 = ObjTypeチェックPtr	temp1 = 建築量"*/
 		val_add(victim_HP,Temp1)
-		val_add(agent_Static_Assigned_worker_counter,N1)
+		val_add(victim_Static_Assigned_worker_counter,N1)
 
 		// building complete
 		@if victim_MaxHP <= victim_HP {

@@ -1,5 +1,6 @@
 // mission script for poteton training
 
+
 RTS.Preserve.trig1 = RTS.mission.createSimpleTrigger_Timer(0,0,1); // class RTStrigger(condtion)
 RTS.Preserve.trig2 = RTS.mission.createSimpleTrigger_Timer(0,0,20); // class RTStrigger(condtion)
 RTS.Preserve.loop_enMove = RTS.mission.createSimpleTrigger_Loop(500);

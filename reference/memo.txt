@@ -414,8 +414,8 @@ Set 601-900
 274001~274500 MapSimpleTriggersConditions 500
 274501~275000 MapSimpleTriggersVar 500
 275001~280000 ParticleEffecter [50]*100
-280001~290000 ObjSort
-290001~300000 ObjSort_save
+280001~290000 ObjSort_for _drawing
+290001~300000 ObjSort_save_drawing
 
 
 //Factional Vars should be relocated into pic buffer
@@ -1348,6 +1348,7 @@ Static:
 	resource_cost = 251-254
 	
 	owner_of_farm = 255
+	assigned_workers_counter = 256
 	StaticMapX/5 = 258
 	StaticMapY/5 = 259
 	

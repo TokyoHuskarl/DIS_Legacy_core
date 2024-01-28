@@ -53,13 +53,13 @@ cev .id(83), .name("Game:Achievement Check"), .parallel ,   {
 		    @se.play "decide1" .opt v[472], 100, 50
 		    v[471] = s[20] == 1 ? v[1158] : 10
 		    @pic[927].strpic {
-			"\t[20054]"
+			t[20054]
 			.pos v[1157], v[471] .center
 			.size 0, 0                .chromakey 1
 			.scale 100
 			.trans 100
 			.rgbs 200, 0, 0, 100
-			.font "美咲ゴシック第2", 10 .noShadow
+			.font Font_UI, Font_UI_size .noShadow
 			.spacing 0, 4
 			.skin "" .nobg .noframe .noPadding
 			.mapLayer 10
