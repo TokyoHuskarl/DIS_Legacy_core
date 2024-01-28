@@ -1238,7 +1238,7 @@ __fn init_DIS_database $already_loaded {
 			
 			
 	}
-	v[1215] = 10000
+	Const_save_var_Adrt_TroopDatabaseHEAD = 10000
 	getModulePathTo(inputstr)
 	inputstr .cat "\data\data_minions", .utf8 //this was once sjis so this might cause some trouble
 	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble

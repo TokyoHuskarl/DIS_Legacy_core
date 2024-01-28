@@ -18,7 +18,7 @@ __fn func_bs_morale_recover $agent $power {
 
 __fn func_bs_morale_check $agent $power { // legacy
 	var5 = $agent * 300
-	var5 += 4701 
+	val_add(var5,N4701) // var5 += 4701 
 	v[var5].copy tempbuffer4agt_AgentType,300
 
 	/* "v1=targetobj
@@ -51,7 +51,7 @@ __fn func_bs_morale_check $agent $power { // legacy
 									tempbuffer4agt_RelativeX.copy effectArgX, 2
 										// "Is_dragon?"
 										@loop v[1017] .dst Temp20 {
-											v[242] %= v[1017]
+												v[242] %= v[1017]
 												Temp1 = v[242] * 100
 												Temp1 = Temp1 + v[1018]
 												@if v[Temp1] <= 1 {

@@ -1096,12 +1096,12 @@ DIS.modules = (function(){
 		currentMod = "dummymod";
 	} else {
 		currentMod =  boot_config.module
-	}
+	};
 
 	return {
 		getCurrentModuleDataPath(){return ("../Modules/" + currentMod + "/Data/");},
 
-	}
+	};
 
 })();
 
@@ -2797,7 +2797,7 @@ class RTStrigger {
 };
 
 
-class DIS_dialog extends DIS_entity{
+class DIS_dialog extends DIS_entity {
 	constructor(string,time,icon){
 		super();
 		this.showframe = time | 235; // if showframe is -1, it won't automatically disappear until forceSkipDialog() or clearDialogQueue() is called
@@ -2851,7 +2851,7 @@ let RTS = {
 	/**
 	 * Variables and arrays in this name space will be saved as JSON string.
 	 * Make sure opening new stage wipes out all properties in RTS.Preserve.
-	 * ...And do not try saving functions.
+	 * ...But do not try saving functions.
 	 * @namespace RTS.Preserve
 	 */
 	Preserve: {},
@@ -4038,6 +4038,7 @@ if (!VIRTUAL_ENV){
 	Cmd.init();
 	DIS.data.init(); // reset DIS data
 	DIS.init.initID();
+
 	// Cmd.game.pic.loadToCache("camera_ball","test");
 	// Cmd.game.pic.pasteFromCache(DIS.cache.misc.test,800)
 }

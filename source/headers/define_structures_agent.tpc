@@ -272,6 +272,7 @@ struct("agent",{
 	defv {
 		agent_static_AutoQue = 813
 		agent_static_ReserveAmount = 770
+		agent_Static_Assigned_worker_counter = 856
 
 	}
 
@@ -653,7 +654,7 @@ struct("agent",{
 
 	def{
 		AgentBits_STATIC_FLAG_No_function = 1024
-
+		AgentBits_STATIC_FLAG_Ignore_morton = 2097152
 	}
 
 
@@ -712,6 +713,7 @@ struct("agent",{
 		victim_Level = 740104
 		victim_MaxHP = 740105
 		victim_HP = 740106
+
 		victim_MaxSP = 740107
 		victim_SP = 740108
 		victim_BaseAD = 740109
@@ -770,6 +772,7 @@ struct("agent",{
 		victim_MainShieldID = 740252
 
 		victim_static_ownership = 740255
+		victim_Static_Assigned_worker_counter = 740256 
 
 		victim_Morale = 740260
 		victim_ProcessAD = 740261
@@ -791,6 +794,7 @@ struct("agent",{
 		victim_ProcessCamoValue = 740276
 		victim_ProcessInstantState = 740277
 
+		victim_static_unit_to_be_built = 740280
 		victim_static_resource_type = 740281
 
 		victim_ShieldFlash = 740284

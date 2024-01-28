@@ -935,8 +935,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					}
 					// "#Reg Timer"
 					@if v[699] <= 0 {
-						// "HP"
-						var1 = v[401] + 1
+							// "HP"
+							var1 = v[401] + 1
 							//var2 = 0
 							var3 = Temp1 + 131
 							var3 = v[var3]
@@ -975,8 +975,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 									}
 
 							}
-						// "SP reg"
-						var1 = v[401] + 1
+							// "SP reg"
+							var1 = v[401] + 1
 							//var2 = 1
 							var3 = v[Temp1 + 132]
 							//@call .cev 2006
@@ -985,6 +985,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							v[v[699]] = v[Temp1 + 255] >= 1 ? 88 : 48
 							// "init farm owner"
 							v[Temp1 + 255] = 0
+
+							// init agent_Static_Assigned_worker_counter
+							TT1 = Temp1 + 256
+							v[TT1] = 0
+
 							// "#Flammable"
 							@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 								@if `!(agent_AgentBits & 2048) {

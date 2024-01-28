@@ -14,6 +14,13 @@ struct("weapon",{
 		})
 
 
+__fn func_get_troopinfo_from_csv $int_trpid {
+		v[1941] = Const_save_var_Adrt_TroopDatabaseHEAD + int_trpid
+		// load csv line to CSVELM_AGENT_id
+		CSVELM_AGENT_id .asg t[v[1941]]
+		CSVELM_AGENT_id .split ",", CSVELM_AGENT_id, v[1941] // deploy to CSVELM buffer
+}
+
 __fn func_generate_agent {
 	@if `s[152] == 0 && v[254] < 80 {
 		//legacy common event call spawn
@@ -84,68 +91,20 @@ __fn func_generate_agent {
 
 											// "Init end##################"
 
-
 											agent_UnitID = v[254]
 											agent_UnitID -= s[152] == 0 ? 200 : 0
 
 											// "ObjTyp"
 											CSVELM_AGENT_agentType .toNum agent_ObjectType
-
+											
 											// "#SpriteSet"
-											v[1301].copy v[v[1216]], 100
-
-											// set minion sprite
-											t[3200..3300] .asg ""
-											@if agent_ObjectType != 3 {
-												deploy_DIStable(CSVELM_AGENT_agentSprite)
-													var1 = 3201 + rnd(0,reg3 - 1)
-													checkItemPicFileName(var1,Str_slot_minionfile,Const_str_minion)
-
-
-													// this is needed more or less 
-													t[var1].toNum agent_PicID
-											}.else bl{
-												// kore iru?
-												@loop v[1941] .dst v[1945] {
-													v[1942] = 3200 + v[1945]
-														v[1943] = v[1216] + v[1945]
-														t[v[1942]] .toNum v[1944]
-														v[v[1943]] = v[1944]
-
-												}
-												agent_PicID = v[v[1216] + rnd(0, v[1941] - 1)]
-
-											}
-										// set sprite offsets
-											CSVELM_AGENT_spriteOffset_x .toNum agent_InitialOffsetX
-											CSVELM_AGENT_spriteOffset_y .toNum agent_InitialOffsetY
+											agentgen_sprite_setting()
 
 											// "###"
-											CSVELM_AGENT_race .toNum agent_Race
-
-
-											// skin pattern
-											CSVELM_AGENT_skin .toNum v[1941]
-											// "SkinSet"
-											@if v[1941] >= 1 {
-												@call .cev v[1941]
-
-											} .else bl { // no skin setting 
-													// "Hair and Face"
-													// "#Skin"
-													agent_Skin = 0
-													// "#Head"
-													agent_HeadID = 0
-													agent_FootstepSoundType = agent_HeadID + agent_Skin * 1000000
-													agent_FootstepSoundType += agent_Skin != -1 ? agent_Race * 10000000 : 0
-													// "#Hair"
-													agent_GENERATION_Hair = 0
-
-													
-
-											}
+											agentgen_race_and_skin_setting()
 
 											@call .cev 309 // ???
+
 											// "Hit Box"
 											CSVELM_AGENT_size_0 .toNum agent_Width
 											CSVELM_AGENT_size_1 .toNum agent_Height
@@ -164,7 +123,7 @@ __fn func_generate_agent {
 
 											CSVELM_AGENT_passiveId .toNum agent_Passive_Text
 
-											// "#Simplification#Unit Type to MS Add"
+											// "#Simplification #Unit Type to MS Add"
 											@loop 13 .dst v[1941] {
 												v[1942] = 3009 + v[1941]
 													v[1943] = 1901 + v[1941]
@@ -236,6 +195,7 @@ __fn func_generate_agent {
 												@call .cev v[1944]
 
 											}
+
 											//@call .cev 301
 											GenAgent_BaseStatsPerk()
 											// "###################Equipment Begin###################"
@@ -421,47 +381,10 @@ __fn func_generate_agent {
 											@call .cev v[1154]
 											@call .cev 1923
 											// "###################Equipment End###################"
-											// "########################################################"
-											// "##AA Function"
-											// "#ExtraAA Setting"
-											// "##Range Max/Min"
-											CSVELM_AGENT_AArangeMax .toNum v[1941]
-											agent_BaseRange_max = v[1941] != 0 ? v[1941] : agent_BaseRange_max
-											CSVELM_AGENT_AArangeMin .toNum v[1941]
-											agent_BaseRange_min = v[1941] != 0 ? v[1941] : agent_BaseRange_min
-											// "#AS set"
-											CSVELM_AGENT_AS .toNum v[1941]
-											agent_BaseAS = v[1941] != 0 ? v[1941] : agent_BaseAS
-											CSVELM_AGENT_AAfunction .toNum v[1941]
-											agent_AAFunction = v[1941] != 0 ? v[1941] : agent_AAFunction
-											// "##Without Weapon, change AA type into Function"
-											@if `agent_MainWeaponID <= 0 && v[1941] > 0 {
-												agent_AAType = 4
-
-											}
-										// "##AA Reserve"
-										CSVELM_AGENT_reserve .toNum v[1941]
-											agent_AAamount = v[1941] != 0 ? v[1941] : agent_AAamount
-											// "##Attack Time"
-											CSVELM_AGENT_AtkTime .toNum v[1941]
-											agent_AAtime = v[1941] != 0 ? v[1941] : agent_AAtime
 
 
+											agentgen_extra_AA_setting()
 
-											// "##Motion"
-											CSVELM_AGENT_AAmotiontime .toNum v[1941]
-											agent_AAMotion = v[1941] != 0 ? v[1941] : agent_AAMotion
-											// "##AACost"
-											CSVELM_AGENT_AAcost .toNum v[1941]
-											agent_AACost = v[1941] != 0 ? v[1941] : agent_AACost
-											// "##Eff"
-											CSVELM_AGENT_AAarmorEff .toNum v[1941]
-											agent_AA_AR_effectiveness = v[1941] != 0 ? v[1941] : agent_AA_AR_effectiveness
-											// "##Pen"
-											CSVELM_AGENT_AAarmorPen .toNum v[1941]
-											agent_AA_AR_penetration = v[1941] != 0 ? v[1941] : agent_AA_AR_penetration
-
-											// "########################################################"
 
 											// "##AI Flag"
 											v[v[1216]..v[1216] + 100] = 0
@@ -504,6 +427,9 @@ __fn func_generate_agent {
 
 										}
 										s[118].off
+
+
+
 											// "#Obj Bits"
 											// @call .cev 302
 											GenAgent_PerksAndObjBits()
@@ -560,8 +486,8 @@ __fn func_generate_agent {
 
 										}
 
-										// "Horse"
-										Temp2 = 4101 - 6
+											// "Horse"
+											Temp2 = 4101 - 6
 											//@call .cev 303
 											GenAgent_Horse_Setting()
 
@@ -661,6 +587,112 @@ __fn func_generate_agent {
 	s[152].off
 
 }
+
+
+__fn agentgen_sprite_setting {
+
+	v[1301].copy v[v[1216]], 100
+
+		// set minion sprite
+		t[3200..3300] .asg ""
+		@if agent_ObjectType != 3 {
+			deploy_DIStable(CSVELM_AGENT_agentSprite)
+				var1 = 3201 + rnd(0,reg3 - 1)
+				checkItemPicFileName(var1,Str_slot_minionfile,Const_str_minion)
+				// this is needed more or less 
+				t[var1].toNum agent_PicID
+
+		}.else bl{
+			// kore iru?
+			@loop v[1941] .dst v[1945] {
+				v[1942] = 3200 + v[1945]
+					v[1943] = v[1216] + v[1945]
+					t[v[1942]] .toNum v[1944]
+					v[v[1943]] = v[1944]
+
+			}
+			agent_PicID = v[v[1216] + rnd(0, v[1941] - 1)]
+
+		}
+	// set sprite offsets
+		CSVELM_AGENT_spriteOffset_x .toNum agent_InitialOffsetX
+		CSVELM_AGENT_spriteOffset_y .toNum agent_InitialOffsetY
+}
+
+__fn agentgen_race_and_skin_setting {
+	// "###"
+	CSVELM_AGENT_race .toNum agent_Race
+
+
+		// skin pattern
+		CSVELM_AGENT_skin .toNum v[1941]
+		// "SkinSet"
+		@if v[1941] >= 1 {
+			@call .cev v[1941]
+
+		} .else bl { // no skin setting 
+			// "Hair and Face"
+			// "#Skin"
+			agent_Skin = 0
+				// "#Head"
+				agent_HeadID = 0
+				agent_FootstepSoundType = agent_HeadID + agent_Skin * 1000000
+				agent_FootstepSoundType += agent_Skin != -1 ? agent_Race * 10000000 : 0
+				// "#Hair"
+				agent_GENERATION_Hair = 0
+
+
+
+		}
+
+}
+
+
+__fn agentgen_extra_AA_setting {
+	// "########################################################"
+	// "##AA Function"
+	// "#ExtraAA Setting"
+	// "##Range Max/Min"
+	CSVELM_AGENT_AArangeMax .toNum v[1941]
+		agent_BaseRange_max = v[1941] != 0 ? v[1941] : agent_BaseRange_max
+		CSVELM_AGENT_AArangeMin .toNum v[1941]
+		agent_BaseRange_min = v[1941] != 0 ? v[1941] : agent_BaseRange_min
+		// "#AS set"
+		CSVELM_AGENT_AS .toNum v[1941]
+		agent_BaseAS = v[1941] != 0 ? v[1941] : agent_BaseAS
+		CSVELM_AGENT_AAfunction .toNum v[1941]
+		agent_AAFunction = v[1941] != 0 ? v[1941] : agent_AAFunction
+
+
+		// "##Without Weapon, change AA type into Function"
+		@if `agent_MainWeaponID <= 0 && v[1941] > 0 {
+			agent_AAType = 4
+
+		}
+
+	// "##AA Reserve"
+	CSVELM_AGENT_reserve .toNum v[1941]
+		agent_AAamount = v[1941] != 0 ? v[1941] : agent_AAamount
+		// "##Attack Time"
+		CSVELM_AGENT_AtkTime .toNum v[1941]
+		agent_AAtime = v[1941] != 0 ? v[1941] : agent_AAtime
+
+		// "##Motion"
+		CSVELM_AGENT_AAmotiontime .toNum v[1941]
+		agent_AAMotion = v[1941] != 0 ? v[1941] : agent_AAMotion
+		// "##AACost"
+		CSVELM_AGENT_AAcost .toNum v[1941]
+		agent_AACost = v[1941] != 0 ? v[1941] : agent_AACost
+		// "##Eff"
+		CSVELM_AGENT_AAarmorEff .toNum v[1941]
+		agent_AA_AR_effectiveness = v[1941] != 0 ? v[1941] : agent_AA_AR_effectiveness
+		// "##Pen"
+		CSVELM_AGENT_AAarmorPen .toNum v[1941]
+		agent_AA_AR_penetration = v[1941] != 0 ? v[1941] : agent_AA_AR_penetration
+
+		// "########################################################"
+}
+
 
 
 //cev .id(1903), .name("Agent:Spawn Finish"), {

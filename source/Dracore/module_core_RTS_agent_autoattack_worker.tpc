@@ -8,7 +8,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 		// deploy target data
 		v[711] = Ptr20 * 300
 		v[711].copy v[707],1 // kari, will be abolished
-		Ptr2 = v[711] + __id(victim_AgentType)
+		Ptr2 = v[711] + 4701
 		v[Ptr2].copy victim_AgentType,agent_Basic_Array_size
 
 		v[702] = v[711] + 4802
@@ -790,390 +790,10 @@ cev .id(32), .name("AgentAct:Worker"), {
 					}
 
 			} .else bl {
+
 				// "############	Constructing################"
 				@if v[v[702]] == 104 {
-						v[421] = 100
-						// "Access19 = AttackerObjectID 0~	Access20 = TargetObjectID 1~	Access18 = ObjTypeチェックPtr"
-						v[607] = v[711] 
-						v[607] += 4707
-						v[v[607]].copy v[607], 2
-						v[843] = Ptr19 * 300
-						v[843] += 4943
-						v[v[843]] = 0
-						// "#assign job building"
-						v[v[843] + 4] = 5
-
-						// in screen
-						@if `s[Ptr19 + 500] == 1 {
-							@if v[181] <= 2 {
-								v[182] += 1
-
-									// what to be built is farm
-									@if `v[Ptr20 * 300 + 4980] == 802 {
-										v[472] = divmul(65, 100, v[2216])
-											v[473] = rnd(70, 100)
-											v[474] = divmul(v[607] + v[1001], v[1281], 50)
-											@cmd 11550, "misc\farming", .args v[472], 3
-
-									} .else bl { // or not
-										v[472] = divmul(65, 100, v[2216])
-											v[473] = rnd(140, 150)
-											v[474] = divmul(v[607] + v[1001], v[1281], 50)
-											@cmd 11550, "blow7", .args v[472], 3
-
-									}
-
-							}
-
-							// "set Dust Particle Effect"
-							@loop v[1017] .dst Temp20 {
-								v[244] %= v[1199]
-									TT11 = v[244] * 50 
-									TT11 += v[1198]
-									@if v[TT11] <= 1 {
-										// "まず清掃"
-										v[1301].copy v[TT11], 50
-											// "ポインタセット開始"
-											// "設定"
-											v[TT11] = 1
-											// "500F"
-											v[TT11 + 49] = 3
-											// "Set itself"
-											v[TT11 + 3] = 160
-											// "普通にアニメ"
-											TT1 = TT11 + 6
-											v[607].copy v[TT1], 2
-											// "仕上げに登録消す"
-											s[141].off
-											v[244] += 1
-											@break
-
-									}
-								v[244] += 1
-
-							}
-
-
-						}
-
-					// "ADを取得"
-					v[709] = v[843] - 134
-						Temp1 = v[v[709]]
-						/* "Access19 = AttackerObjectID 1~ +4700 	Access20 = TargetObjectID 1~ +4700	Access18 = ObjTypeチェックPtr	temp1 = 建築量"*/
-						v[305..306] = Ptr20 * 300
-						Temp6 += 4805
-						Temp5 += 4806
-						v[Temp5] = v[Temp5] + Temp1
-
-
-						// building complete
-						@if v[Temp6] <= v[Temp5] {
-							Temp5 = Ptr20 * 300 + 4802
-								@if v[Temp5] == 104 {
-										Temp5 += 178
-										v[371] = v[205] < v[1080] ? 1 : 0
-										// "生産施設は例外的に張りなおせる"
-										//???? WTF
-										v[371] += v[Temp5] == 802 ? 1 : 0
-										v[371] += v[Temp5] == 809 ? 1 : 0
-										v[371] += v[Temp5] == 810 ? 1 : 0
-										v[371] += v[Temp5] == 835 ? 1 : 0
-										v[371] += v[Temp5] == 834 ? 1 : 0
-										Temp5 -= 178
-										@if v[371] >= 1 {
-											v[2538] -= 1
-												// "#建築現場を消去"
-												/* "Access19 = AttackerObjectID
-													 Access20 = TargetObjectID
-													 Access18 = ObjTypeチェックPtr
-													 誤作動防止" */
-
-												@if Ptr20 > 0 {
-													// "#建築現場を消去"
-														Temp5 = Ptr20 * 300
-														Temp5 += 4806
-														v[Temp5] = -1
-														// "309 = ID	306 = ActionState"
-														// "-1を死体とする"
-														// "ObjIDを死体に変える"
-														v[331] = v[Ptr18]
-														v[Ptr18] *= -1
-														// "ActionStateを死体に変える"
-														Temp6 += 4943
-														v[Temp6] = -1
-														Temp11 += 4702
-														Temp7 = v[Temp11]
-														Temp7 -= 1
-														Temp11 += 5
-														Temp5 = v[Temp11]
-														Temp12 += 4708
-														Temp6 = v[Temp12]
-														// "移動"
-														Temp7 += 1
-														// "Remove from UnitList"
-														var1 = Ptr20
-														var2 = 11
-														// remove from foundation(basement) list
-														@call .cev 1896
-														// "Team Get"
-														Temp8 += 4800
-														Temp8 = v[Temp8] % 3
-														@if Temp8 == 0 {
-															Temp9 = v[1145]
-
-														} .else bl {
-															Temp9 = v[1146]
-
-														}
-
-													@loop v[1012] {
-														@if v[Temp9] == Ptr20 {
-															v[Temp9] = 0
-																@break
-
-														}
-														@if v[Temp9] == 0 {
-															@break
-
-														}
-														Temp9 += 1
-
-													}
-
-													@if Temp8 == 0 {
-														Temp9 = v[1145]
-
-													} .else bl {
-														Temp9 = v[1146]
-
-													}
-													v[Temp9].sortDescending v[1012]
-														v[204] -= 1
-
-												}
-												Temp5 = Ptr20 * 300
-												Temp5 += 4707
-												v[Temp5].copy v[252], 2
-												Temp5 += 93
-												v[251] = v[Temp5]
-												Temp5 += 180
-												v[378] = 0
-
-												// check flag for resource building... 
-												Temp15 = 0
-												@if v[Temp5] >= 1 {
-														TT17 = v[Temp5]
-														Ptr14 = Ptr20
-														// "Avoid Cohort setting"
-														@if v[251] == 0 {
-																v[258] = 0
-																v[2521] += 1
-
-														}
-
-														// use the same ID as the foundation
-														v[201] = Ptr20 - 1
-														@call .cev v[Temp5]
-														Temp15 = reg3 == 105 ? 1 : 0
-														// ""
-														Temp5 = 0
-														Temp2 = v[1145]
-														Ptr10 = Ptr14
-														@doWhile v[Temp2] >= 1 {
-															Temp3 = v[Temp2] * 300
-																Temp4 = Temp3 + 4802
-																@if v[Temp4] == 9 {
-																	Ptr15 = Temp3 + 4718
-																		@if v[Ptr15] == Ptr14 {
-																			Temp5 = Temp3 + 4947
-																				// "#assign building job?"
-
-																				@if reg3 == 105 { // target was resource type building
-																					v[Ptr15] = reg1
-																						@if reg2 == 2 { // farm 
-																								v[378] = 0
-																								v[22..23] = 0
-
-																						} .else bl {
-																							v[378] = 1
-
-																						}
-
-																				} .else bl {
-																					v[Temp5] = 0
-																						v[Temp3 + 4942] = -1
-
-																				}
-
-																		}
-
-																}
-															Temp2 += 1
-
-														}
-
-												}
-
-											// "continue buliding"
-											@if v[378] == 0 {
-												// "atleastthere's one"
-												@if v[v[4561]] > 0 {
-													// "save last target to acc10"
-													@loop v[1012] .dst Temp1 {
-														// "Check Player Team List"
-														// "Check AllyTeam List"
-														Ptr20 = Temp1 + v[1145 + v[251] % 3]
-															@if v[Ptr20] >= 1 {
-																Ptr19 = v[Ptr20] * 300
-																	Ptr19 += 4700
-																	@if `v[Ptr19 + 102] == 9 {
-																		@if `v[Ptr19 + 18] == Ptr10 {
-																			@if Temp15 == 0 {
-																				Temp1 = Ptr19
-																					Ptr19 = v[Ptr20]
-																					Ptr18 = Ptr19 - 1
-																					// "@Searching Nearest Enemy Process@"
-																					/* "Access19 = Obj's Behavior
-																						 Access20 = Obj's target ID"*/
-																					Ptr20 = Temp1 + 18
-																					Ptr19 = Temp1 + 241
-																					// "#Check Team ID"
-																					/* "Temp2 = [3000 or 3200]# [team0, team1] this var works as a pointer to his/her enemy team list
-																						 Temp3 = Eye sight of this obj
-																						 Temp4 = Obj X
-																						 Temp5 = Obj Y
-																						 Temp7 = Temp2 Backup
-																						 Temp8 <- WTF IS THIS!?
-																						 Temp9 = X ptr"*/
-																					Temp2 = v[4561]
-																					Temp7 = Temp2
-																					Temp9 = Temp1 + 7
-																					// "ソートする数はここで総数を見て決定"
-																					Temp8 = v[Temp1 + 230]
-																					Temp7 = 0
-																					v[3401..3600] = 999999999
-																					v[534] = v[4579] + (v[1012] + 2) * Ptr18
-																					v[v[534]] = 999999999
-																					@doWhile v[Temp2] != 0 {
-																						// "Temp1 = [Taken Obj's ID] * 300 + 4707	Temp6 = Calculation List Ptr"
-																						Temp6 = Temp7 + 3601
-																							// "If the taken object from list is 0, set [[Temp6]] = 999999999"
-																							Temp1 = v[Temp2] * 300 + 4701
-																							// "Get ObjectType of the target	TT10"
-																							Temp1 += 6
-																							v[Temp9].copy Temp4, 2
-																							Temp4 .sub v[Temp1], 2
-																							Temp4 .mul Temp4, 2
-																							v[Temp6] = Temp4 + Temp5
-																							// "#Check AI eye sight#The last 3 digits are used as ID"
-																							@if v[Temp6] < Temp8 {
-																								TT1 = v[534] + Temp7
-																									v[TT1] = v[Temp6] * 1000 + v[Temp2]
-																									Temp7 += 1
-
-																							}
-																						Temp2 += 1
-
-																					}
-
-																				// "#Check Who's nearest"
-																				v[v[534]].sort Temp7
-																					@if v[v[534]] < 999999999 {
-																						v[v[534]..v[534] + Temp7 - 1] %= 1000
-																							v[Ptr20] = v[v[534]]
-																							v[Ptr20 + 229] = 5
-
-																					} .else bl {
-																						v[Ptr20 + 229] = 0
-																							Temp7 = 0
-
-																					}
-																				// "init counter and set amount"
-																				Temp6 = 0
-																					TT1 = v[534] + v[1012]
-																					Temp6.copy v[TT1], 2
-
-																			}.else bl{
-																				Temp15 = 0
-
-																			}
-
-																		}
-																	}
-
-															} .else bl {
-																@break
-
-															}
-
-													}
-
-
-												}.else bl { // no foundation anymore
-
-													@loop v[1012] .dst Temp1 {
-														// "Check Player Team List"
-														// "Check AllyTeam List"
-														Ptr20 = Temp1 + v[1145 + v[251] % 3]
-															@if v[Ptr20] >= 1 {
-																Ptr19 = v[Ptr20] * 300
-																	Ptr19 += 4700
-																	@if `v[Ptr19 + 102] == 9 {
-																		TT1 = Ptr19 + 18
-																			@if v[TT1] == Ptr10 {
-																				@if Temp15 == 0 {
-																					// target
-																					v[TT1] = 0
-																					// move order
-																					TT1 = Ptr19 + 242
-																					v[TT1] = -1
-																					// job type
-																					TT1 = Ptr19 + 247
-																					v[TT1] = 0
-																					
-
-																					// make current position its destination 
-																					TT1 = Ptr19 + 7
-																					TT2 = Ptr19 + 41
-																					v[TT1].copy v[TT2], 2
-
-																				}.else bl{
-																					Temp15 = 0
-
-																				}
-
-																			}
-
-																	}
-
-															} .else bl {
-																@break
-
-															}
-
-													}
-
-
-
-												}
-
-											}
-
-										} .else bl {
-
-										}
-
-								}
-
-						} .else bl {
-							@if `v[Ptr20 * 300 + 4980] != 802 {
-								v[Ptr20 * 300 + 4703] &= ~2097152
-
-							}
-
-						}
-					v[421] = 100
-
+					agent_aa_construction()
 				} .else bl {
 					v[371] = v[v[702]] >= 101 ? 1 : 0
 						v[371] += v[v[702]] == 5 ? 1 : 0
@@ -1250,6 +870,415 @@ cev .id(32), .name("AgentAct:Worker"), {
 
 		}
 }
+
+__fn agent_aa_construction {
+	v[421] = 100
+		// "Access19 = AttackerObjectID 0~	Access20 = TargetObjectID 1~	Access18 = ObjTypeチェックPtr"
+		v[607] = v[711] 
+		v[607] += 4707
+		v[v[607]].copy v[607], 2
+		v[843] = Ptr19 * 300
+		v[843] += 4943
+		v[v[843]] = 0
+		// "#assign job building"
+		v[v[843] + 4] = 5
+
+		// in screen
+		@if `victim_AgentBits & AgentBits_FLAG_Drawn_in_screen {
+			@if v[181] <= 2 {
+				v[182] += 1
+
+					// what to be built is farm
+					@if victim_static_unit_to_be_built == 802 {
+						v[472] = divmul(65, 100, v[2216])
+							v[473] = rnd(70, 100)
+							v[474] = divmul(v[607] + v[1001], v[1281], 50)
+							@cmd 11550, "misc\farming", .args v[472], 3
+
+					} .else bl { // or not
+						v[472] = divmul(65, 100, v[2216])
+							v[473] = rnd(140, 150)
+							v[474] = divmul(v[607] + v[1001], v[1281], 50)
+							@cmd 11550, "blow7", .args v[472], 3
+
+					}
+
+			}
+
+			// "set Dust Particle Effect"
+			@loop v[1017] .dst Temp20 {
+				v[244] %= v[1199]
+					TT11 = v[244] * 50 
+					TT11 += v[1198]
+					@if v[TT11] <= 1 {
+						// "まず清掃"
+						v[1301].copy v[TT11], 50
+							// "ポインタセット開始"
+							// "設定"
+							v[TT11] = 1
+							// "500F"
+							v[TT11 + 49] = 3
+							// "Set itself"
+							v[TT11 + 3] = 160
+							// "普通にアニメ"
+							TT1 = TT11 + 6
+							v[607].copy v[TT1], 2
+							// "仕上げに登録消す"
+							s[141].off
+							v[244] += 1
+							@break
+
+					}
+				v[244] += 1
+
+			}
+		}
+
+		/*
+		 * AoE2 building time calculation? (source is reddit so it's not serious)
+		 * construction time = t/(0.67 + 0.33n)
+		 * where t is the time it takes 1 builder to build the building, and n is the number of builders.
+		 * DIS design intends easier and casual economics than classic RTS, but simple addition might break game impression...
+		 */
+
+		// "ADを取得"
+		@if agent_UnitType == UNIT_CLASS_WORKER {
+			v[709] = v[843] - 134
+			Temp1 = v[v[709]]
+		}.else bl{
+			// temporary branch for possible future combat builder
+			Temp1 = 10
+		}
+
+
+		val_asg(var1,victim_Static_Assigned_worker_counter)
+		val_asg(var2,Temp1)
+		var2 >= 2 // 25% of build power
+		var2 *= var1 > 2 // efficiency decreases if the foundation gets 4 times in a second
+		val_sub(Temp1,var2)
+		Temp1 = max(1,Temp1) // at least 1 construction point is assured
+		
+
+		/* "Access19 = AttackerObjectID 1~ +4700 	Access20 = TargetObjectID 1~ +4700	Access18 = ObjTypeチェックPtr	temp1 = 建築量"*/
+		val_add(victim_HP,Temp1)
+		val_add(agent_Static_Assigned_worker_counter,N1)
+
+		// building complete
+		@if victim_MaxHP <= victim_HP {
+			Temp6 = Ptr20 * 300
+			Temp6 += 4805
+			v[Temp5] = v[Temp5] + Temp1
+			Temp5 = Ptr20 * 300 + 4802
+				@if v[Temp5] == 104 {
+						Temp5 += 178
+						v[371] = v[205] < v[1080] ? 1 : 0
+						// "生産施設は例外的に張りなおせる"
+						//???? WTF
+						v[371] += v[Temp5] == 802 ? 1 : 0
+						v[371] += v[Temp5] == 809 ? 1 : 0
+						v[371] += v[Temp5] == 810 ? 1 : 0
+						v[371] += v[Temp5] == 835 ? 1 : 0
+						v[371] += v[Temp5] == 834 ? 1 : 0
+						Temp5 -= 178
+						@if v[371] >= 1 {
+							v[2538] -= 1
+								// "#建築現場を消去"
+								/* "Access19 = AttackerObjectID
+									 Access20 = TargetObjectID
+									 Access18 = ObjTypeチェックPtr
+									 誤作動防止" */
+
+								@if Ptr20 > 0 {
+									// "#建築現場を消去"
+									Temp5 = Ptr20 * 300
+										Temp5 += 4806
+										v[Temp5] = -1
+										// "309 = ID	306 = ActionState"
+										// "-1を死体とする"
+										// "ObjIDを死体に変える"
+										v[331] = v[Ptr18]
+										v[Ptr18] *= -1
+										// "ActionStateを死体に変える"
+										Temp6 += 4943
+										v[Temp6] = -1
+										Temp11 += 4702
+										Temp7 = v[Temp11]
+										Temp7 -= 1
+										Temp11 += 5
+										Temp5 = v[Temp11]
+										Temp12 += 4708
+										Temp6 = v[Temp12]
+										// "移動"
+										Temp7 += 1
+										// "Remove from UnitList"
+										var1 = Ptr20
+										var2 = 11
+										// remove from foundation(basement) list
+										@call .cev 1896
+										// "Team Get"
+										Temp8 += 4800
+										Temp8 = v[Temp8] % 3
+										@if Temp8 == 0 {
+											Temp9 = v[1145]
+
+										} .else bl {
+											Temp9 = v[1146]
+
+										}
+
+									@loop v[1012] {
+										@if v[Temp9] == Ptr20 {
+											v[Temp9] = 0
+												@break
+
+										}
+										@if v[Temp9] == 0 {
+											@break
+
+										}
+										Temp9 += 1
+
+									}
+
+									@if Temp8 == 0 {
+										Temp9 = v[1145]
+
+									} .else bl {
+										Temp9 = v[1146]
+
+									}
+									v[Temp9].sortDescending v[1012]
+										v[204] -= 1
+
+								}
+							Temp5 = Ptr20 * 300
+								Temp5 += 4707
+								v[Temp5].copy v[252], 2
+								Temp5 += 93
+								v[251] = v[Temp5]
+								Temp5 += 180
+								v[378] = 0
+
+								// check flag for resource building... 
+								Temp15 = 0
+								@if v[Temp5] >= 1 {
+									TT17 = v[Temp5]
+										Ptr14 = Ptr20
+										// "Avoid Cohort setting"
+										@if v[251] == 0 {
+											v[258] = 0
+												v[2521] += 1
+
+										}
+
+									// use the same ID as the foundation
+									v[201] = Ptr20 - 1
+										@call .cev v[Temp5]
+										Temp15 = reg3 == 105 ? 1 : 0
+										// ""
+										Temp5 = 0
+										Temp2 = v[1145]
+										Ptr10 = Ptr14
+										@doWhile v[Temp2] >= 1 {
+											Temp3 = v[Temp2] * 300
+												Temp4 = Temp3 + 4802
+												@if v[Temp4] == 9 {
+													Ptr15 = Temp3 + 4718
+														@if v[Ptr15] == Ptr14 {
+															Temp5 = Temp3 + 4947
+																// "#assign building job?"
+
+																@if reg3 == 105 { // target was resource type building
+																	v[Ptr15] = reg1
+																		@if reg2 == 2 { // farm 
+																			v[378] = 0
+																				v[22..23] = 0
+
+																		} .else bl {
+																			v[378] = 1
+
+																		}
+
+																} .else bl {
+																	v[Temp5] = 0
+																		v[Temp3 + 4942] = -1
+
+																}
+
+														}
+
+												}
+											Temp2 += 1
+
+										}
+
+								}
+
+							// "continue buliding"
+							@if v[378] == 0 {
+								// "atleastthere's one"
+								@if v[v[4561]] > 0 {
+									// "save last target to acc10"
+									@loop v[1012] .dst Temp1 {
+										// "Check Player Team List"
+										// "Check AllyTeam List"
+										Ptr20 = Temp1 + v[1145 + v[251] % 3]
+											@if v[Ptr20] >= 1 {
+												Ptr19 = v[Ptr20] * 300
+													Ptr19 += 4700
+													@if `v[Ptr19 + 102] == 9 {
+														@if `v[Ptr19 + 18] == Ptr10 {
+															@if Temp15 == 0 {
+																Temp1 = Ptr19
+																	Ptr19 = v[Ptr20]
+																	Ptr18 = Ptr19 - 1
+																	// "@Searching Nearest Enemy Process@"
+																	/* "Access19 = Obj's Behavior
+																		 Access20 = Obj's target ID"*/
+																	Ptr20 = Temp1 + 18
+																	Ptr19 = Temp1 + 241
+																	// "#Check Team ID"
+																	/* "Temp2 = [3000 or 3200]# [team0, team1] this var works as a pointer to his/her enemy team list
+																		 Temp3 = Eye sight of this obj
+																		 Temp4 = Obj X
+																		 Temp5 = Obj Y
+																		 Temp7 = Temp2 Backup
+																		 Temp8 <- WTF IS THIS!?
+																		 Temp9 = X ptr"*/
+																	Temp2 = v[4561]
+																	Temp7 = Temp2
+																	Temp9 = Temp1 + 7
+																	// "ソートする数はここで総数を見て決定"
+																	Temp8 = v[Temp1 + 230]
+																	Temp7 = 0
+																	v[3401..3600] = 999999999
+																	v[534] = v[4579] + (v[1012] + 2) * Ptr18
+																	v[v[534]] = 999999999
+																	@doWhile v[Temp2] != 0 {
+																		// "Temp1 = [Taken Obj's ID] * 300 + 4707	Temp6 = Calculation List Ptr"
+																		Temp6 = Temp7 + 3601
+																			// "If the taken object from list is 0, set [[Temp6]] = 999999999"
+																			Temp1 = v[Temp2] * 300 + 4701
+																			// "Get ObjectType of the target	TT10"
+																			Temp1 += 6
+																			v[Temp9].copy Temp4, 2
+																			Temp4 .sub v[Temp1], 2
+																			Temp4 .mul Temp4, 2
+																			v[Temp6] = Temp4 + Temp5
+																			// "#Check AI eye sight#The last 3 digits are used as ID"
+																			@if v[Temp6] < Temp8 {
+																				TT1 = v[534] + Temp7
+																					v[TT1] = v[Temp6] * 1000 + v[Temp2]
+																					Temp7 += 1
+
+																			}
+																		Temp2 += 1
+
+																	}
+
+																// "#Check Who's nearest"
+																v[v[534]].sort Temp7
+																	@if v[v[534]] < 999999999 {
+																		v[v[534]..v[534] + Temp7 - 1] %= 1000
+																			v[Ptr20] = v[v[534]]
+																			v[Ptr20 + 229] = 5
+
+																	} .else bl {
+																		v[Ptr20 + 229] = 0
+																			Temp7 = 0
+
+																	}
+																// "init counter and set amount"
+																Temp6 = 0
+																	TT1 = v[534] + v[1012]
+																	Temp6.copy v[TT1], 2
+
+															}.else bl{
+																Temp15 = 0
+
+															}
+
+														}
+													}
+
+											} .else bl {
+												@break
+
+											}
+
+									}
+
+
+								}.else bl { // no foundation anymore
+
+									@loop v[1012] .dst Temp1 {
+										// "Check Player Team List"
+										// "Check AllyTeam List"
+										Ptr20 = Temp1 + v[1145 + v[251] % 3]
+											@if v[Ptr20] >= 1 {
+												Ptr19 = v[Ptr20] * 300
+													Ptr19 += 4700
+													@if `v[Ptr19 + 102] == 9 {
+														TT1 = Ptr19 + 18
+															@if v[TT1] == Ptr10 {
+																@if Temp15 == 0 {
+																	// target
+																	v[TT1] = 0
+																		// move order
+																		TT1 = Ptr19 + 242
+																		v[TT1] = -1
+																		// job type
+																		TT1 = Ptr19 + 247
+																		v[TT1] = 0
+
+
+																		// make current position its destination 
+																		TT1 = Ptr19 + 7
+																		TT2 = Ptr19 + 41
+																		v[TT1].copy v[TT2], 2
+
+																}.else bl{
+																	Temp15 = 0
+
+																}
+
+															}
+
+													}
+
+											} .else bl {
+												@break
+
+											}
+
+									}
+
+
+
+								}
+
+							}
+
+						} .else bl {
+
+						}
+
+				}
+
+		// building is not completed
+		} .else bl {
+			@if victim_static_unit_to_be_built != 802 { // not farm
+				victim_AgentBits &= ~AgentBits_STATIC_FLAG_Ignore_morton
+				// save back target data
+			}
+			victim_AgentType.copy v[Ptr2],110 
+
+		}
+	v[421] = 100
+
+
+}
+
 
 cev[39], .name("WorkerAct:putting build foundation"), {
 
