@@ -282,6 +282,11 @@ __fn DIS_sys_methods $LINKstr $md $i $given_v_or_str $flags {
 			t[var1].toFile SSargs1, .utf8
 		})},	
 		{NsCmd($LINKstr, $md, $i, "loadlib",{load_jslib(SSargs0)})},
+		{NsCmd($LINKstr, $md, $i, "cev",{
+			t2v(SSargs0,reg1)
+			@call .cev reg1
+		})},
+
 
 	])
 }

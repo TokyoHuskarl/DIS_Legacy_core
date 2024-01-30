@@ -1416,14 +1416,8 @@ __fn init_DIS_database $already_loaded {
 
 	t[511] .asg  .file "..\scripts\const_troops_id", .utf8
 	@if t[511] .neq t[801] {
-			@loop .inf() {
-					@if .canOutput() {
-							@break
-							
-					}
-					@wait 0
-					
-			}
+			WAIT_FOR_FILE_OUTPUT_LIMIT
+
 			
 			t[801] .toFile "..\scripts\const_troops_id", .utf8
 			@wait 0

@@ -66,6 +66,7 @@ def {
 
 defv RTS_WORLD_passed_frame = 2500
 defv RTS_Difficulty = 2401
+defs MAP_EDIT_MODE = 57
 
 def {
 	DIF_RAGNAROK = 5
@@ -747,6 +748,18 @@ defv {
 
 __fn string_set_colour_var $str $clvar {
 	t[__id($str)].asg __str("\c[\v[",__id($clvar),"]]")
+}
+
+
+def WAIT_FOR_FILE_OUTPUT_LIMIT {
+	@loop .inf() {
+		@if .canOutput() {
+			@break
+
+		}
+		@wait 0
+
+	}
 }
 
 #include "./header_log.tpc"

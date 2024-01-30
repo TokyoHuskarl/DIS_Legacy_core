@@ -1532,6 +1532,7 @@ DIS.shell = (function(){
 			DIS.log.push(s);
 		}
 
+		const isArgHelpCalled = ()=>{return (args.length == 1) || args[1] == "--help"};
 
 		const dshCmd = {
 
@@ -1609,14 +1610,63 @@ DIS.shell = (function(){
 				console.log(a);
 			},
 
+
+			genMapPic: (()=>{
+				const options = {
+
+					t: ()=>{ // tile
+						dsLog("genMapPic: Ordered DIS system to generate Mapdata.png in " + RTS.getCurrentMissionDirectoryPath());
+						Cmd.sys._callCev(1853); // actual function is implemented as a common event
+					},
+					e: ()=>{ // elevation
+						dsLog("genMapPic: Ordered DIS system to generate Elevation Maps in " + RTS.getCurrentMissionDirectoryPath());
+						Cmd.sys._callCev(1804); // actual function is implemented as a common event
+
+					},
+					m: ()=>{ // map picture
+						dsLog("genMapPic: Ordered DIS system to generate mappic.png in " + RTS.getCurrentMissionDirectoryPath());
+						Cmd.sys._callCev(1854); // actual function is implemented as a common event
+					},
+
+				};
+
+				return ()=>{
+					if(isArgHelpCalled()){
+						let out = ("Usage genMapPic [OPTION]\n" +
+							"Generate map asset pictures in current map directory.\n現在のマップディレクトリにマップアセットデータを生成します。\n\n" +
+							"-t                 generate Map Tile data. / マップタイルデータを生成します\n" +
+							"-e                   generate Terrain Elevation data and png. / マップの地形高度マップ画像を生成します\n" +
+							"-m                  generate Map Picture. / マップを一枚の画像として出力します\n" +
+							"-A                  do All processes above at once. / 上の処理を一度に行います。\n" +
+							"--help                  display this help. / このヘルプを表示します");
+						dsLog(out);
+
+					} else if(options.hasOwnProperty(args[1][1])){
+						return options[args[1][1]]();
+					} else {
+							dsLog(`genMapPic: invalid option -- ${args[1][1]}\n`+
+							"Try 'genMapPic --help' for more information.")
+					};
+				}
+			})(),
+
 			help(){
 				
-				dsLog(
-					"echo [-neE]           print given string to the console. / 受け取った文字列を表示します\n" +
+				let out = ("echo [-neE]           print given string to the console. / 受け取った文字列を表示します\n" +
 					"clear                 empty console messages. / ログを押し流します\n" +
 					"qjs                   boot qjs eval mode. / qjsによるevalモードを起動します\n" +
 					"exit                  close DIS shell console. / コンソールを閉じます\n" +
 					"help                  this command. / このコマンドです");
+
+				// kari, commands for map edit mode
+				if(true){
+					out += (
+					"\ngenMapPic             generate map asset picture. / マップ用のピクチャ画像を生成します\n"
+
+					);
+				};
+				
+				dsLog(out);
 				return true;
 			},
 
@@ -3302,6 +3352,9 @@ let RTS = {
 	},
 
 
+	getCurrentMissionDirectoryPath(){
+		return this.mission.mapSourceDir; // kari
+	},
 
 
 };
@@ -3826,61 +3879,74 @@ var Cmd = {
 	},
 
 	//Cmd.sys
-	sys: {
-		CmdType: CTYP_SYS, 
-	
-		exec: function(jsfile) { // execute js file
-			Cmd.Qset(this.CmdType,"exec",`${jsfile}`);
-		},
+	sys: (function(){
+		const CmdType = CTYP_SYS; 
 
-		eval: function(jsSentence) { // eval(jsSentence) on the DISCmd interpreter. might be dangerous 
-			Cmd.Qset(this.CmdType,"eval",`${jsSentence}`);
-		},
+			return {
 
-		/**
-		 * automatically import game data written in json format.
-		 * if you want to import mission local data, then try using 
-		 * -> MISSION.local.importData() 
-		 * @method importData
-		 * @param {string} path Root directory is the game directory. Also you need not to write .json.txt
-		 */
-		importData: function(path){
-			const lastDotIndex = path.lastIndexOf('.');
-			if (lastDotIndex !== -1) {
-				let extension = path.slice(lastDotIndex + 1);
-				if (extension != "json"){
-					errorlog(`Cmd.sys.importData(${path}) loads only json/json.txt file. Also you need not to put extension`)
+				exec: (jsfile)=> { // execute js file
+					Cmd.Qset(CmdType,"exec",`${jsfile}`);
+				},
 
-				}
-			} else {
-				path += ".json"
+				eval: (jsSentence)=> { // eval(jsSentence) on the DISCmd interpreter. might be dangerous 
+					Cmd.Qset(CmdType,"eval",`${jsSentence}`);
+				},
 
-			}
+				/**
+				 * automatically import game data written in json format.
+				 * if you want to import mission local data, then try using 
+				 * -> MISSION.local.importData() 
+				 * @method importData
+				 * @param {string} path Root directory is the game directory. Also you need not to write .json.txt
+				 */
+				importData: (path)=>{
+					const lastDotIndex = path.lastIndexOf('.');
+					if (lastDotIndex !== -1) {
+						let extension = path.slice(lastDotIndex + 1);
+						if (extension != "json"){
+							errorlog(`Cmd.sys.importData(${path}) loads only json/json.txt file. Also you need not to put extension`)
 
-			Cmd.Qset(this.CmdType,"importDISDjson",`${path}`);
-		},
+						}
+					} else {
+						path += ".json"
 
-		/**
-		 * Load up java script library in /Scripts/jslib/.
-		 * Don't call this command unless you understand what are gonna do.
-		 * @param {string} libfile - e.g. "perlin.js"
-		 *
-		 */
-		_loadlib: function(libfile) { // execute js file
-			Cmd.Qset(this.CmdType,"loadlib",`${libfile}`);
-		},
+					}
 
-		/**
-		 * danger. never use this cmd unless you're aware of DIS RM string memory allocation
-		 *
-		 * @param {string} path Starts from game directory.
-		 * @param {RM_ADRT} Adrt 
-		 */
-		loadtext: function(path,Adrt){
-			Cmd.Qset(this.CmdType,"loadtxt",`${path},${Adrt}`);
-		},
-	
-	},
+					Cmd.Qset(CmdType,"importDISDjson",`${path}`);
+				},
+
+				/**
+				 * Load up java script library in /Scripts/jslib/.
+				 * Don't call this command unless you understand what are gonna do.
+				 * @param {string} libfile - e.g. "perlin.js"
+				 *
+				 */
+				_loadlib: (libfile)=>{ // execute js file
+					Cmd.Qset(CmdType,"loadlib",`${libfile}`);
+				},
+
+				/**
+				 * danger. never use this cmd unless you're aware of DIS RM string memory allocation
+				 *
+				 * @param {string} path Starts from game directory.
+				 * @param {RM_ADRT} Adrt 
+				 */
+				loadtext: (path,Adrt)=>{
+					Cmd.Qset(CmdType,"loadtxt",`${path},${Adrt}`);
+				},
+
+				/**
+				 * danger. never use this cmd unless you know what you are doin
+				 *
+				 * @param {int} cev - common event id
+				 */
+				_callCev: (id)=>{
+					Cmd.Qset(CmdType,"cev",`${id}`);
+				},
+
+			};
+	})(),
+
 
 	// -------------
 	// Cmd.mission 
@@ -4214,6 +4280,7 @@ if (!VIRTUAL_ENV){
 
 // without RPG_RT.exe
 if (VIRTUAL_ENV){
+	DIS.shell.eval("genMapPic -t")
 
 const techtest = `
 {
