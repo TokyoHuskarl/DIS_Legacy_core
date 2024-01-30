@@ -1,0 +1,31 @@
+
+__fn preset_skill_transform_self $targetunit {
+	
+}
+
+// kari
+__fn pss_unpack_trebuchet {
+	@if s[118] .isOn() {
+		v[1301].copy v[581], 20
+			@comment "#Q_ID and Q_Func"
+			v[581] = pss_cev_unpack_treb - 1200 // remp
+			v[582] = pss_cev_unpack_treb
+			v[583] = 2
+			@comment "#Q_Motion"
+			v[585] = 1
+			v[584] = -1
+			@comment "#Q_Motion"
+			v[585] = 1
+			@comment "#Q_Cost"
+			v[587] = 0
+			@comment "#Q_Range"
+			v[592] = 8000
+			@comment "#Q_CD"
+			v[588] = 5
+
+	} .else bl {
+		// get trebuchet ID
+		get_troop_numid_to("TRP_trebuchet_unpacked",reg1)
+		func_transform_agent_into_other_unit(Ptr19,reg1,0)
+	}
+}

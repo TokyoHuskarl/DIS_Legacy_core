@@ -1,11 +1,10 @@
 /**
- * @module DIS_js_main_module
  * @copyright TokyoHuskarl
  * @license ?
  * 
  * ~ DIS API ~
  * 
- * This js module must be loaded whenever DIS game system reboots.
+ * This js file must be loaded whenever DIS game system reboots.
  * Thanks to 2003MP's spec, loading other modules on js is kinda stressful,
  * so this module contains a lot of important and complicated js objects.
  */
@@ -171,6 +170,14 @@ class DATA_entity {
 
 	/**
 	 * getElmAsString
+	 *
+	 * convert DATA_entity properties into a string 
+	 * In this method, arrays can be disassembled. 
+	 * e.g. ActiveSkill array for TROOP data [1201,0,0,0] will be like
+	 * "ActiveSkill:0,ActiveSkill:1,ActiveSkill:2,ActiveSkill:3,"
+	 * "1201,0,0,0"
+	 *
+	 * shit explanation
 	 * @param {string} key
 	 * @return {string}
 	 */
@@ -202,6 +209,8 @@ class DATA_entity {
 		};
 		return elm
 	};
+
+	ezConvWord(wd,wdlist){return wdlist[wd];};
 
 };
 
@@ -330,8 +339,17 @@ class DATA_troop extends DATA_entity {
 		// convert strings to DIS number id
 		pewpew("faction",facid);
 		pewpew("race",raceid);
+		
 
-		// convert arrays into simple number
+		// convert string skillid into numid
+		if (this.hasOwnProperty("ActiveSkill")){ 
+			for (let i; i < this.ActiveSkill.length; i++){
+				this.ActiveSkill[i] = sklid.convert(this.ActiveSkill[i]);
+			};
+		} else {
+			this.ActiveSkill = [0,0,0,0]
+		};
+
 	};
 
 };
@@ -380,7 +398,45 @@ class DATA_static_unit extends DATA_entity { // building?
 
 	};
 
-}
+};
+
+
+class DATA_skill extends DATA_entity {
+	constructor(id,src){
+		super(id);
+		// inherit DATA_skill object
+		DATA.makeDataInherit(this,"SKILL",src);
+		// copy given skill temp
+		DATA.giveSrcParamToData(this,src);
+
+		// convert datatype into int
+		this.datatype = this.ezConvWord(this.datatype,{'custom':0, 'enhanced':1,'preset':2});
+		if(this.datatype == 2){ // preset type
+			// override 
+			this.getCallID = function(){return this.cev}; // just return cev id. Do nothing else.
+			// this.setCallID = function(i){return 0};
+			this.isPreset = ()=>{true;};
+		};
+
+	};
+	/**
+	 * #CallID is extra id for skill data.
+	 * If (#CallID > 0), the skill is treated as a preset skill that always directly calls common event in ldb.
+	 * @property
+	 */
+	#CallID = 0;
+
+	setCallID(i){
+		return this.#CallID = i;
+	}
+	getCallID(){
+		// underconstruction, need to make entire design
+		return this.#CallID;
+	};
+	isPreset(){return false;};
+
+
+};
 
 
 /**
@@ -815,6 +871,8 @@ function make_Array_DIStable(array) {
 	return string.slice(0,-1);
 };
 
+function isNumeric(str){return /^\d+$/.test(str);};
+
 
 
 
@@ -847,11 +905,19 @@ class IDdict {
 	 * convert given key to int.
 	 *
 	 * @method convert
-	 * @param {string OR int} given
+	 * @param {string} given
 	 * @return {int} - number id contained in the IDdict.
 	 */
 	convert(given) {
+
+		// if given string is numeric, simply convert it into int number.
+		if (isNumeric(given)){
+			return parseInt(given);
+		};
+
+
 		let id = given;
+		
 		if (typeof given == "string"){
 			if (given.lastIndexOf(this.prefix) != -1){
 				id = this[given];
@@ -871,9 +937,10 @@ class IDdict {
 	* @return {int} - this[key] = val;
   */
 	register(key,val){
-
-		// if given key is already registered, return error
-		if (this.reserved.has(key)){
+		if (isNumeric(key)){ // you cannot use numeric key, since (thanks to old design) DIS system treats them as common event id
+			return errorlog(`You cannot use a pure numeric key like "${key}" in DIS ID dictionary.`);
+		
+		} else if (this.reserved.has(key)){ // if given key is already registered, return error
 			return errorlog(`The name of the new key "${key}" is reserved word for DIS ID dictionary!`);
 		};
 
@@ -896,6 +963,7 @@ var facid = new IDdict("FAC"); // faction ID table
 var raceid = new IDdict("RACE"); // race ID table
 var techid =  new IDdict("TECH"); // ["techid",[group,flagbit]]
 var sklid = new IDdict("SKL"); // skill ID table
+
 
 // consts
 /**
@@ -1053,6 +1121,7 @@ DIS = { // DIS fundamental components
 			// load static ID
 			// --------------------
 			staid = new IDdict("STA"); // init staid
+			// kari. this will be obsolete.
 			store_ID_table(staid,802) // get from ~/scripts/const_statics.
 
 			// --------------------
@@ -1068,12 +1137,22 @@ DIS = { // DIS fundamental components
 			// --------------------
 			
 			techid = new IDdict("TECH"); // init facid
-			for (let i = 1; i < DATA.TECH.ptrs[0]; i++){
+			for (let i = 1; i < DATA.TECH.ptrs.length; i++){
 				techid.register(techid.prefix + (DATA.TECH.ptrs[i].id),i);
 
 			};
 
-					
+
+			// --------------------
+			// load skill ID
+			// --------------------
+			//
+			sklid = new IDdict("SKL"); // init
+			for (let i = 1; i < DATA.SKILL.ptrs.length; i++){
+				sklid.register(sklid.prefix + (DATA.SKILL.ptrs[i].id),i);
+
+			};
+
 			DIS.log.push("ID table init done.")
 		},
 	},
@@ -1463,7 +1542,7 @@ DIS.cache = {
 };
 
 /**
- * namespace for functions for called back from TPC side.
+ * namespace for function wrappers for called back from TPC side.
  * you shouldn't use properties in this namespace unless you're implementing it in TPC code
  * @namespace DIS._tpc
  */
@@ -1488,6 +1567,46 @@ DIS._tpc = {
 	 */
 	take_piccache:(cacheobj,arrayadr,sizeadr)=>{
 		cacheobj.give(arrayadr,sizeadr)
+	},
+
+	convert_id:(dict,str)=>{
+		try {
+			return dict.convert(str);
+		} catch(error) {
+			errorlog(`DIS._tpc.convert_id(${dict},${str}): Something went wrong.\n` + error)
+		};
+	},
+
+	get_skill_CallID:function(strid){
+		try {
+			/**
+			 * 現在、移行措置として[cevそのまま,numid,stringid,0]の４つを受け付けて機能する非常に気持ち悪い仕様になっている。
+			 * 全てのプリセットスキルのJSON対応が済み次第、組み替えて整理する。
+			 * 
+			 * Currently, as a temporary measure, it is functioning with a very awkward specification that accepts four parameters: [raw cev,numid,stringid,0].
+			 * Once all JSON support for preset skills is complete, it will be reorganized and rearranged.
+			 *
+			 */
+			
+			// transition measures. retarded but necessarily
+			if(isNumeric(strid)){ // if number is given
+				if (strid != 0){
+				// try get from SKILL.ptrs[]. if it's not registered just return it back
+				const res = (typeof DATA.SKILL.ptrs[strid] == 'undefined') ? parseInt(strid) : DATA.SKILL.ptrs[strid].getCallID();
+				return res;
+
+				} else { // if 0 is given
+					return 0; // return 0
+
+				};
+				
+			} else { // str given
+				return DATA.SKILL.ptrs[sklid.convert(strid)].getCallID();
+			};
+
+		} catch(error) {
+			errorlog(`DIS._tpc.convert_id(${strid}): Something went wrong.\n` + error)
+		};
 	},
 	
 };
@@ -1749,8 +1868,9 @@ DIS.data = { // DIS.data
 		if(!VIRTUAL_ENV){ // ignore when debug run on VIRTUAL_ENV
 			this.TECH.init();
 		}
-		// load module STATIC UNIT DATA.
-		this.STATIC_UNIT.init();
+			this.SKILL.init();
+			// load module STATIC UNIT DATA.
+			this.STATIC_UNIT.init();
 		// Cmd.run();
 	},
 
@@ -1831,6 +1951,7 @@ DIS.data = { // DIS.data
 					let nutrp = this.TROOP.createNew(strid,dataobj[typ][strid]);
 					ptr2Res.push(nutrp);
 				};
+
 			} else if (typ == "STATIC_UNIT"){ // static data 
 				ptr2Res = neststart(typ,ptr2Res);
 				for (let strid in dataobj[typ]){
@@ -1972,7 +2093,7 @@ DIS.data = { // DIS.data
 
 		/**
 		 * register troop data to id array.
-		 * Newly registered data will be pushed into id array(TROOP.ptrs).
+		 * Newly registered DATA_troop will be pushed into id array(TROOP.ptrs).
 		 * If you want to add mod troop data to the game, use this method.
 		 *
 		 * @method register
@@ -1983,7 +2104,7 @@ DIS.data = { // DIS.data
 			if (Array.isArray(trpdata)){
 				for (let elm of trpdata){
 					ls4nuTrp.push(elm);
-				}
+				};
 			} else {
 				ls4nuTrp.push(trpdata);
 			};
@@ -2001,6 +2122,7 @@ DIS.data = { // DIS.data
 			deblog(this.count);
 		},
 
+
 		/**
 		 * convert troop data into actual DIS troop data CSV string on RM system and write it into RPG maker string system.
 		 * using this method allows you to override already existing troop data on RM.
@@ -2015,6 +2137,7 @@ DIS.data = { // DIS.data
 			let idfied = "TRP_" + trpdata.id;
 			trpdata.i = index; // set index number into trpid container  
 			trpid.register(idfied, index);
+
 			sett(where2write,this.convertIntoCsvLine(trpdata)); // go for it
 		},
 
@@ -2110,6 +2233,9 @@ DIS.data = { // DIS.data
 					this.ptrs[index] = nusta;
 
 				} else { // register new data
+
+					//!!!!!!!!!!! NEED FIX !!!!!!!!!!!!!
+					// ACTUALLY DATA_entity has i so static data always has i.
 					index = nusta.hasOwnProperty("i") ? nusta.i : this.ptrs[0] + 1; // if index is manually set in json data, use it
 					this.ptrs[index] = nusta;
 				};
@@ -2151,7 +2277,7 @@ DIS.data = { // DIS.data
 
 		// can't we omit this with some js function or etwas?
 		register(elm,index){
-			index = index || this.ptr[0] + 1; // if index is not set,then just push
+			index = index || this.ptrs[0] + 1; // if index is not set,then just push
 			elm.i = index;
 			this.ptrs[index] = elm;
 			this.ptrs[0] = this.ptrs.length;
@@ -2221,7 +2347,38 @@ DIS.data = { // DIS.data
 		}
 	}()),
 
-	SKILL: {},
+	SKILL: {
+		cnt_custom: 0,
+
+		init(){
+			this.pss_unpack_trebuchet = new DATA_skill("pss_unpack_trebuchet",{datatype:"preset",cev:1301}) 
+			this.register(this.pss_unpack_trebuchet);
+			deblog("EXPERIMENTAL - SKL_pss_unpack_trebuchet set in DIS.data.SKILL.init();")
+		},
+
+
+		/**
+		 * you cannot set index unlike other DATA types.
+		 * 
+		 */
+		register(elm){
+			let index = this.ptrs.length; // if index is not set, then just push
+			elm.i = index;
+			this.ptrs[index] = elm;
+			this.ptrs[0] = index - 1;
+			if(!(elm.isPreset())){
+				this.cnt_custom += 1; // if it's not preset, count up
+				elm.setCallID((this.cnt_custom) * -1); // CallID set
+			};
+			sklid.register("SKL_" + elm.id, index);
+			deblog("SKL_" + elm.id + "reg!")
+		},
+
+		/**
+		 * ptrs[0] is counter
+		 */
+		ptrs: [0],
+	},
 	EFFECT: {},
 	PARTICLE: {},
 
@@ -3488,7 +3645,7 @@ var Cmd = {
 
 	/**
 	 * sets command order queue.
-	 *
+	 * 
 	 * @param {int} typ - CTYP
 	 * @param {string} name
 	 * @param {string} ord
@@ -3572,6 +3729,10 @@ var Cmd = {
 	// actual command objects start 
 	//Cmd.game
 	
+	/**
+	 * Commands that 
+	 * @namespace
+	 */
 	game: (function(){
 		/**
 		 * CTYP_GAME 
@@ -3763,6 +3924,8 @@ var Cmd = {
 
 	/**
 	 * Cmd.map
+	 * namespace for Commands that affect RTS game map.
+	 * RTSマップに干渉するタイプのコマンド集
 	 * @namespace Cmd.map
 	 */
 	map: {
@@ -3879,6 +4042,11 @@ var Cmd = {
 	},
 
 	//Cmd.sys
+	/**
+	 * Collection of commands related to fundamental system operations such as data loading.
+	 * データロード等、根幹的なシステムに関連するコマンド集
+	 * @namespace 
+	 */
 	sys: (function(){
 		const CmdType = CTYP_SYS; 
 
@@ -3951,6 +4119,9 @@ var Cmd = {
 	// -------------
 	// Cmd.mission 
 	// -------------
+	/**
+	 * @namespace
+	 */
 	mission: {
 		CmdType: CTYP_MISSION,
 		
@@ -4280,8 +4451,6 @@ if (!VIRTUAL_ENV){
 
 // without RPG_RT.exe
 if (VIRTUAL_ENV){
-	DIS.shell.eval("genMapPic -t")
-
 const techtest = `
 {
 	"TECH": {
@@ -4747,3 +4916,4 @@ function resizeImage(imageData, originalWidth, originalHeight,rate) {
 	};
 	return resizedData;
 };
+

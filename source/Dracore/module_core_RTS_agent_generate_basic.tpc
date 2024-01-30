@@ -147,10 +147,10 @@ __fn func_generate_agent {
 											CSVELM_AGENT_MoveTypeBits .toNum agent_MoveTypeBIts
 
 											// "#Skills"
-											CSVELM_AGENT_ActiveSkill_0 .toNum v[741]
-											CSVELM_AGENT_ActiveSkill_1 .toNum v[761]
-											CSVELM_AGENT_ActiveSkill_2 .toNum v[781]
-											CSVELM_AGENT_ActiveSkill_3 .toNum v[801]
+											get_skill_FunctionCallID_to_v(CSVELM_AGENT_ActiveSkill_0,v[741])
+											get_skill_FunctionCallID_to_v(CSVELM_AGENT_ActiveSkill_1,v[761])
+											get_skill_FunctionCallID_to_v(CSVELM_AGENT_ActiveSkill_2,v[781])
+											get_skill_FunctionCallID_to_v(CSVELM_AGENT_ActiveSkill_3,v[801])
 
 											// "#Passive"
 											CSVELM_AGENT_PassiveSkill .toNum v[824]
@@ -320,6 +320,7 @@ __fn func_generate_agent {
 											CSVELM_AGENT_AMRvariations .toNum v[4003]
 											CSVELM_AGENT_HELvariations .toNum v[4004]
 											CSVELM_AGENT_ACCvariations .toNum v[4005]
+
 											// "#Set Equipments Parameter"
 											//Check reserve ammo first
 											@if agent_ReserveWeaponID > 0 {
@@ -405,28 +406,37 @@ __fn func_generate_agent {
 										}
 
 										// "##Skills"
-										s[118].on
-											@if v[741] >= v[1186] {
-												@call .cev v[741]
-													v[581].copy v[741], 20
+										agentgen_register_skill_to_slot(v[741],0)
+										agentgen_register_skill_to_slot(v[761],1)
+										agentgen_register_skill_to_slot(v[781],2)
+										agentgen_register_skill_to_slot(v[801],3)
+
+										__if DIS_EXPERIMENTAL == 1 {
+
+										}.else bl{
+											s[118].on
+												@if v[741] >= v[1186] {
+													@call .cev v[741]
+														v[581].copy v[741], 20
+
+												}
+											@if v[761] >= v[1186] {
+												@call .cev v[761]
+													v[581].copy v[761], 20
 
 											}
-										@if v[761] >= v[1186] {
-											@call .cev v[761]
-												v[581].copy v[761], 20
+											@if v[781] >= v[1186] {
+												@call .cev v[781]
+													v[581].copy v[781], 20
 
-										}
-										@if v[781] >= v[1186] {
-											@call .cev v[781]
-												v[581].copy v[781], 20
+											}
+											@if v[801] >= v[1186] {
+												@call .cev v[801]
+													v[581].copy v[801], 20
 
+											}
+											s[118].off
 										}
-										@if v[801] >= v[1186] {
-											@call .cev v[801]
-												v[581].copy v[801], 20
-
-										}
-										s[118].off
 
 
 
@@ -544,6 +554,7 @@ __fn func_generate_agent {
 														}
 
 													}
+
 													v[472] = divmul(70, 100, v[2216])
 														@se.play CSVELM_AGENT_spawnsound .opt v[472], 100, 50
 
@@ -586,6 +597,41 @@ __fn func_generate_agent {
 	}
 	s[152].off
 
+}
+
+/**
+ *
+ * if given skill id is below 0, get string database to set it.
+ * otherwise just call cev to set skill as usual
+ * {var} $id
+ *
+ */
+__fn agentgen_register_skill_to_slot $id $slot {
+	// set ptr
+	$ptr_to_agent_skl_slot = $slot 
+	$ptr_to_agent_skl_slot *= 20
+	$ptr_to_agent_skl_slot += 741
+
+	v[ptr_null].copy v[581],20 // erase buffer
+	@if v[__id($id)] >= v[1186] { // preset
+		// classic proc
+		s[118].on
+		@call .cev $id
+		s[118].off
+		v[581].copy v[$ptr_to_agent_skl_slot],20
+	
+	}.elif v[__id($id)] < 0 { // custom
+		// get data from string database
+		// underconstruction
+		deblog("agentgen_register_skill_to_slot() in module_core_RTS_agent_generate_basic.tpc is underconstruction.")
+
+	}.elif v[__id($id)] != 0 { // error
+		@if v[__id($id)] != 17 { // if not preset construction
+			errlog("Irregular common event called in agent skill registoration.")
+			errlog($id)
+		}
+	}
+	
 }
 
 
@@ -870,7 +916,7 @@ __fn func_generate_agent_finish_set {
 				 agent_PictArray += 1
 				 t[agent_PictArray] .asg str1
 			 */
-		@if BOOL_Gen_NoListAssigningFlag.isOff() {
+		@if BOOL_Gen_GetMinionData.isOff() {
 			set_agent_name(SpawnAgentID,str1)
 		}
 
@@ -1220,19 +1266,19 @@ __fn func_generate_agent_finish_set {
 								}
 
 
+							__if DIS_EXPERIMENTAL == 1 {
+								// set MetaTeam in AEB
+								reg2 = agent_TeamID % 3
+									set_AEB_element(SpawnAgentID, __id(reg2),AgentExBuffer_SLOT_MetaTeam)
 
+							}
 							// ACHTUNG this will be removed after replace every MetaTeam reference
 							v[Const_AgentMetaTeam_begin + ptr_SpawnAgentMainSpace_Head] = agent_TeamID % 3
 
 
 								@comment "敵味方峻別リストに登録"
 								@if s[157] .isOff() {
-									__if DIS_EXPERIMENTAL == 1 {
-											// set MetaTeam in AEB
-											reg2 = agent_TeamID % 3
-											set_AEB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_MetaTeam)
 
-									}
 
 									__if DIS_EXPERIMENTAL == -2 { // even if AEAB command bug in MP itself is solved, this part won't return, since the traditional way below (what in else block) is faster
 										// EyeSightForminimaps const =62500
@@ -1333,15 +1379,6 @@ __fn func_generate_agent_finish_set {
 												v[reg1] += 1
 
 										}
-
-									// relocated AEBA
-									/*@if agent_AbsoluteX == 0 {
-										@comment "NOT unique unit"
-
-										} .else bl {
-										reg2 = v[reg1]
-
-										}*/
 
 								}
 							v[0] = s[2001 + ptr_SpawnAgentMainSpace_Head] = agent_TeamID % 3 == 2 ? 1 : 0

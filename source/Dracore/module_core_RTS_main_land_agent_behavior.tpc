@@ -580,7 +580,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						// agent_MilPixVy = v[622] * agent_ProcessMS 
 						v[612..613] *= TT1 * agent_ProcessMS
 						// @comment "#WalkingSwitchOn"
-						agent_ActionFlag |= ActionFlag_FLAG_Walking
+						agent_ActionFlag |= agent_ProcessMS != 0 ? ActionFlag_FLAG_Walking : 0
 				}
 				
 	    } .else bl { // the agent is getting KnockBacked!

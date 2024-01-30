@@ -95,8 +95,11 @@ __fn func_errlog $str {
 	DISlogQueue.cat t[3000]
 	PUSH_DIS_LOG.on
 	
+}
 
-
+__fn errlog $s {
+	func_errlog($s)
+	
 }
 
 __fn func_devlog $str{

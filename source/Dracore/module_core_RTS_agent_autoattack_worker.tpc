@@ -12,7 +12,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 		v[Ptr2].copy victim_AgentType,agent_Basic_Array_size
 
 		v[702] = v[711] + 4802
-		v[700] = victim_TeamID
+		// v[700] = victim_TeamID
 
 		// get Meta Team rom AEB
 		get_AEB_element_wo_ptr(Ptr20,__id(Temp10),AgentExBuffer_SLOT_MetaTeam)
@@ -804,74 +804,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 				@if v[v[702]] == 104 {
 					agent_aa_construction()
 				} .else bl {
-					v[371] = v[v[702]] >= 101 ? 1 : 0
-						v[371] += v[v[702]] == 5 ? 1 : 0
-						@if v[371] >= 1 {
-							@if v[300002] >= 2 {
-								v[705] = v[702] + 3
-									v[706] = v[705] + 1
-									@if v[v[705]] > v[v[706]] {
-										// "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃	Repairing	＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"
-										@if `s[Ptr19 + 500] == 1 {
-											@if v[181] <= 2 {
-												v[182] += 1
-													v[607] = v[711] + 4707
-													v[v[607]].copy v[607], 2
-													// "#########################"
-													v[472] = divmul(65, 100, v[2216])
-													v[473] = rnd(140, 150)
-													v[474] = divmul(v[607] + v[1001], v[1281], 50)
-													// "need moar metalic features within the sound"
-													@cmd 11550, "blow7", .args v[472], 3
-													// "#########################"
-
-											}
-											// "#Dust Particle Effect"
-											@loop v[1017] .dst Temp20 {
-												v[244] %= v[1199]
-													TT11 = v[244] * 50 + v[1198]
-													@if v[TT11] <= 1 {
-														// "まず清掃"
-														v[1301].copy v[TT11], 50
-															// "ポインタセット開始"
-															// "設定"
-															v[TT11] = 1
-															// "500F"
-															v[TT11 + 49] = 3
-															// "Set itself"
-															v[TT11 + 3] = 160
-															// "普通にアニメ"
-															TT1 = TT11 + 6
-															v[607].copy v[TT1], 2
-															// "仕上げに登録消す"
-															s[141].off
-															v[244] += 1
-															@break
-
-													}
-												v[244] += 1
-
-											}
-
-
-										}
-										v[300002] -= 2
-											@call .cev 84
-											// "ADを取得"
-											Temp1 = -v[Ptr19 * v[1117] + 4961]
-											// "ARかMRか取得"
-											Temp2 = -2
-											// "AABits"
-											var9 = 0
-											v[421] = 130
-											@call .cev 40
-
-									}
-
-							}
-							v[Ptr19 * 300 + 4947] = 6
-
-						}
+					agent_aa_repair()
 
 				}
 
@@ -1284,6 +1217,79 @@ __fn agent_aa_construction {
 
 		}
 	v[421] = 100
+
+
+}
+
+__fn agent_aa_repair {
+		v[371] = victim_UnitType >= 101 ? 1 : 0 // 
+		v[371] += victim_UnitType == UNIT_CLASS_SIEGE ? 1 : 0 // siege 
+		@if v[371] >= 1 {
+			@if v[300002] >= 2 {
+					@if victim_MaxHP > victim_HP {
+						// "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃	Repairing	＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"
+						@if `victim_AgentBits & AgentBits_FLAG_Drawn_in_screen {
+							@if v[181] <= 2 {
+								v[182] += 1
+									v[607] = v[711] + 4707
+									v[v[607]].copy v[607], 2
+									// "#########################"
+									v[472] = divmul(65, 100, v[2216])
+									v[473] = rnd(140, 150)
+									v[474] = divmul(v[607] + v[1001], v[1281], 50)
+									// "need moar metalic features within the sound"
+									@cmd 11550, "blow7", .args v[472], 3
+									// "#########################"
+
+							}
+							// "#Dust Particle Effect"
+							@loop v[1017] .dst Temp20 {
+								v[244] %= v[1199]
+									TT11 = v[244] * 50 + v[1198]
+									@if v[TT11] <= 1 {
+										// "まず清掃"
+										v[1301].copy v[TT11], 50
+											// "ポインタセット開始"
+											// "設定"
+											v[TT11] = 1
+											// "500F"
+											v[TT11 + 49] = 3
+											// "Set itself"
+											v[TT11 + 3] = 160
+											// "普通にアニメ"
+											TT1 = TT11 + 6
+											v[607].copy v[TT1], 2
+											// "仕上げに登録消す"
+											s[141].off
+											v[244] += 1
+											@break
+
+									}
+								v[244] += 1
+							}
+						}
+
+							// COST
+							v[300002] -= 2
+
+							// ?w wHat?
+							@call .cev 84
+							// heal rate
+							Temp1 = -v[Ptr19 * v[1117] + 4961]
+							// set type healp
+							Temp2 = -2
+							// set AABits
+							var9 = 0
+							v[421] = 130 // multiplier 130%
+							@call .cev 40
+
+					}
+
+			}
+			// job change
+			v[Ptr19 * 300 + 4947] = 6
+
+		}
 
 
 }

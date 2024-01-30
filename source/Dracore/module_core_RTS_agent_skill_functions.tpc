@@ -11,6 +11,25 @@ def debug_ammochecker ={
 
 }
 
+
+__fn get_converted_skill_id_to_v $strid $var {
+	@if t[__id($strid)].neq "" {
+		inputstr.asg .cat("DIS._tpc.convert_id(sklid,`",$strid,"`);")
+		eval_js_return_int(inputstr,$var)
+	}
+}
+__fn get_skill_FunctionCallID_to_v $strid $var {
+	@if t[__id($strid)].neq "" {
+		inputstr.asg .cat("DIS._tpc.get_skill_CallID(`",$strid,"`);")
+		eval_js_return_int(inputstr,$var)
+	}
+}
+
+
+__fn get_skill_registration_data $skillid {
+	
+}
+
 //change weapon!
 __fn func_agent_swap_weapon_set $agent {
     //this function needs extraction of target agent data before called

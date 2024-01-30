@@ -751,7 +751,7 @@ __fn string_set_colour_var $str $clvar {
 }
 
 
-def WAIT_FOR_FILE_OUTPUT_LIMIT {
+def WAIT_FOR_FILE_OUTPUT_LIMIT = {
 	@loop .inf() {
 		@if .canOutput() {
 			@break
@@ -764,6 +764,8 @@ def WAIT_FOR_FILE_OUTPUT_LIMIT {
 
 #include "./header_log.tpc"
 
+// include game functions
 #include "./../Dracore/module_core_Game_system_functions.tpc"
+#include "./../Dracore/module_core_Game_database_functions.tpc"
 
 $DIS_h_common_included = 1
