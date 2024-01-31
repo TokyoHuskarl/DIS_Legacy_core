@@ -26,7 +26,7 @@ const TPCadr = {
 };
 
 // if setv() is undefined, it's virtual enviroment on node.js, qjs or sth.
-let VIRTUAL_ENV = (typeof setv == "undefined") ? true : false;
+const VIRTUAL_ENV = (typeof setv == "undefined") ? true : false;
 
 
 // these lines are written in order not to cause error when you test this file on Node.js
@@ -116,15 +116,15 @@ const RMvar = 1,
 	RMarray = 5;
 
 // this is not necessarily. kek
-function getRM(typ,add) {
+function getRM(typ,add){
 	if (typ == RMvar) {
 		return getv(add)
 	} else if (typ == RMswitch) {
 		return gets(add)
 	} else if (typ = RMstring) {
 		return gett(add)
-	}
-}
+	};
+};
 
 
 // Set RM Var addresses
@@ -132,6 +132,8 @@ function getRM(typ,add) {
 
 // DIS project
 
+// import NsGUI and refer as DGUI
+const DGUI = (typeof NsGUI === "undefined") ? (()=>{deblog("Attention: NsGUI module is missing.");return{};})() : NsGUI;
 
 // global pointers for important objects
 let MISSION; // {RTSmission} current mission - always refers to current RTS.mission
@@ -151,8 +153,6 @@ let g_ENEMY;
  * @LOCAL {RTS.mission.local} ptr to RTS mission local properties.
  */
 let LOCAL;
-
-
 
 
 // ------------------------------------------------
@@ -409,6 +409,18 @@ class DATA_skill extends DATA_entity {
 		// copy given skill temp
 		DATA.giveSrcParamToData(this,src);
 
+		// if there's no data type setting but cev setting in given data, consider this skill as a preset one
+		if(typeof this.datatype === "undefined"){
+			if(this.cev > 0){
+				this.datatype = "preset";
+				
+			} else {
+				// otherwise treat it as custom type
+				this.datatype = "custom";
+
+			};
+		};
+
 		// convert datatype into int
 		this.datatype = this.ezConvWord(this.datatype,{'custom':0, 'enhanced':1,'preset':2});
 		if(this.datatype == 2){ // preset type
@@ -419,20 +431,22 @@ class DATA_skill extends DATA_entity {
 		};
 
 	};
+
 	/**
 	 * #CallID is extra id for skill data.
-	 * If (#CallID > 0), the skill is treated as a preset skill that always directly calls common event in ldb.
 	 * @property
 	 */
 	#CallID = 0;
 
 	setCallID(i){
 		return this.#CallID = i;
-	}
+	};
+
 	getCallID(){
 		// underconstruction, need to make entire design
 		return this.#CallID;
 	};
+
 	isPreset(){return false;};
 
 
@@ -967,7 +981,7 @@ var sklid = new IDdict("SKL"); // skill ID table
 
 // consts
 /**
- * 
+ * might be changed later. 
  * @namespace DIS.consts
  */
 DIS.consts = {
@@ -994,6 +1008,7 @@ const ADRT = DIS.consts.Adrt
 * @namespace DIS
 */
 DIS = { // DIS fundamental components
+
 	init: {
 		
 		loadBootconf: () => {
@@ -1167,6 +1182,10 @@ DIS = { // DIS fundamental components
 },
 
 
+/**
+ * Components for DIS module system.
+ * @namespace
+ */
 DIS.modules = (function(){
 	let currentMod;
 	if(typeof boot_config == "undefined"){
@@ -1183,6 +1202,10 @@ DIS.modules = (function(){
 
 })();
 
+/**
+ * Useful macros for DIS API.
+ * @namespace
+ */
 DIS.macro = {
 	timeToFrame: (h,m,s) => ((h * 3600 + m * 60 + s) * DIS.RTSFPS), 
 	/**
@@ -1249,8 +1272,17 @@ DIS.building = {
 	
 };
 
+
+/**
+ * Components for DIS log system.
+ * @namespace
+ */
 DIS.log = {
-	// push background log
+	
+	/**
+	 * Forcibly crash the game.
+	 * @param {string} error
+	 */
 	crash: function(error){
 		const day = new Date();
 		const file = "user/log/crashlog_" + day.getFullYear() + "_" + day.getMonth() + "_" + day.getDate() + "_" + day.getHours() + "_" + day.getMinutes()
@@ -1260,12 +1292,20 @@ DIS.log = {
 		deblog(file);
 	},
 
+
+	/**
+	 * Push new string to the log.
+	 *
+	 * @param {string} txt
+	 */
 	push: function(txt){
 		let curlog = gett(Adrt_ShLog);
 		curlog += LF + txt;
 		sett(Adrt_ShLog,curlog);
 		deblog(txt); // deb
 	},
+
+
 	
 };
 
@@ -1276,6 +1316,11 @@ const Adrt_FontCommon = 529,
 	Adr_FontUISize = 4511;
 
 
+/**
+ * Components for DIS language system.
+ * UNDERCONSTRUCTION, but ik I have to do this. dang
+ * @namespace
+ */
 DIS.lang = {
 	init: function(){ // this function called whenever player changes game language...
 		// unco
@@ -1298,104 +1343,169 @@ DIS.conf = {
 
 };
 
-// DIS functions around string system
-DIS.string = {
-
-	// return string
-	getQstr: function(id) {
-		const Adrt_Qstr_Head = 20000; // QuickString array starts from this number in DIS
-		var string = gett(Adrt_Qstr_Head + id);
-		return string;
-	},
-
-	// LEGACY map string
-	getMapstr: function(id) { // ?
-		const Adrt_mapstr_head = 40000
-		var string = gett(Adrt_mapstr_head + id);
-		return string;
-	},
-
-	// convert js string into DIS format string
-	convertString: function(given){
-
-		let rs = given;
-		let rsget = rs;
-		if (rs.lastIndexOf('$mstr_') == 0){
-			rs = rs.split("$mstr_")[1];
-			rsget = RTS.mission.strings[rs];
-		} else if (rs.lastIndexOf('$qstr_') == 0){
-			rsget = rs.split("$qstr_")[1];
-			// underconstruction
-		};
-		if (typeof rsget == "undefined") { errorlog(`Map string "${rs}" is not registered.`); rs = "undefined";
-		} else {
-			rs = rsget;
-		};
-
-		// let the in game string can reffer js variables
-		// unco
-		rs = rs.replace(",", "$;");
-		return rs // DIS format comma.
-
-	},
-
+/**
+ * DIS functions for dealing with string.
+ * If you're translator or sth, check DIS.lang as well
+ * @namespace 
+ */
+DIS.string = (function(){
+	const tags = [
+		// color tags
+		["<white>","\\c[0]"],
+		["<yellow>","\\c[14]"],
+		["<ltgreen>","\\c[1]"],
+		["<green>","\\c[2]"],
+		["<ltred>","\\c[5]"],
+		["<red>","\\c[17]"],
+		["<purple>","\\c[16]"],
+		["<ltpurple>","\\c[7]"],
+		["<ltblue>","\\c[10]"],
+		["<blue>","\\c[11]"],
+		["<glay>","\\c[4]"],
+		
+		// parameter tags
+		["<HP>","\\c[12]HP\\c[0]"],
+		["<AD>","\\c[17]AD\\c[0]"],
+		["<AP>","\\c[16]AP\\c[0]"],
+		["<AR>","\\c[4]AR\\c[0]"],
+		["<MR>","\\c[16]MR\\c[0]"],
+		["<HIT>","\\c[5]HIT\\c[0]"],
+		["<EVA>","\\c[4]EVA\\c[0]"],
+		["<WILL>","\\c[0]WILL\\c[0]"],
+		["<MS>","\\c[10]MS\\c[0]"],
+	];
 
 	// return given char is CJK or not
 
-	isJapaneseChar: function(char) {
+	isJapaneseChar = function(char) {
 		const charCode = char.charCodeAt(0);
 		return (
 			(charCode >= 0x3000 && charCode <= 0x30ff) || // ひらがなとカタカナ Hiragana and Katakana
 			(charCode >= 0x4e00 && charCode <= 0x9faf) || // CJK統合漢字 Kanji
 			(charCode >= 0xff00 && charCode <= 0xffef)    // フルワイドのASCIIと半角・全角の形 other 2bytes char
 		);
-	},
+	};
+	
 
+	return {
+		/**
+		 * You can add DIS string tag by using this function.
+		 * @param {[string,string]} mytag - [0] is tag, [1] is what will be replaced with the tag.
+		 */
+		addTag:(mytag)=>{tags.push(mytag);},
 
-	/**
-	 * DIS.string.wrapText 
-	 * returns LF inserted text .. needs to be improved for dealing with latin alphabet languages
-	 * maybe add some new proc that attempts to go back to the last blank index I suppose? - TokyoHuskarl 
-	 *
-	 * @param {string} text
-	 * @param {int} fontSize
-	 * @param {int} maxWidth
-	 * @returns {string} adjusted text
-	 */
-	wrapText: function(text, fontSize, maxWidth) {
-		const englishCharWidth = fontSize * 0.5; // 英語文字の推定幅 supposed width of Latin Alphabet
-		const japaneseCharWidth = fontSize * 0.9; // 日本語文字の推定幅 supposed width of 2bytes char
-		let currentLine = '';
-		let currentLineWidth = 0;
-		let wrappedText = '';
+		// return string
+		getQstr: function(id) {
+			const Adrt_Qstr_Head = 20000; // QuickString array starts from this number in DIS
+			var string = gett(Adrt_Qstr_Head + id);
+			return string;
+		},
 
-		for (const char of text) {
-			const charWidth = this.isJapaneseChar(char) ? japaneseCharWidth : englishCharWidth;
+			// LEGACY map string
+			getMapstr: function(id) { // ?
+				const Adrt_mapstr_head = 40000
+				var string = gett(Adrt_mapstr_head + id);
+				return string;
+			},
 
-			if (char === '\n' || (currentLineWidth + charWidth) > maxWidth) {
-				if (currentLine !== '') {
-					wrappedText += currentLine + '\n';
-					currentLine = '';
-					currentLineWidth = 0;
+			/**
+			 * convert given js string into DIS basic format
+			 * @param {string} given
+			 * @return {string}
+			 */
+			convertString: function(given){
+
+				let rs = given;
+
+				// replace color tags
+				for (let tg of tags){
+					rs = res.replace(tg[0], tg[1]);
+				}
+
+				let rsget = rs;
+				if (rs.lastIndexOf('$mstr_') == 0){
+					rs = rs.split("$mstr_")[1];
+					rsget = RTS.mission.strings[rs];
+				} else if (rs.lastIndexOf('$qstr_') == 0){
+					rsget = rs.split("$qstr_")[1];
+					// underconstruction
 				};
-				if (char !== '\n') {
-					currentLine += char;
-					currentLineWidth += charWidth;
+				if (typeof rsget == "undefined") { errorlog(`Map string "${rs}" is not registered.`); rs = "undefined";
+				} else {
+					rs = rsget;
 				};
-			} else {
-				currentLine += char;
-				currentLineWidth += charWidth;
-			};
-		};
 
-		if (currentLine.length > 0) {
-			wrappedText += currentLine;
-		};
 
-		return wrappedText;
-	}
+				// let the in game string can reffer js variables
+				// unco
+				rs = rs.replace(",", "$;");
+				return rs // DIS format comma.
 
-}
+			},
+
+
+
+
+			/**
+			 * DIS.string.wrapText 
+			 * returns LF inserted text .. needs to be improved for dealing with latin alphabet languages
+			 * maybe add some new proc that attempts to go back to the last blank index I suppose? - TokyoHuskarl 
+			 *
+			 * @param {string} text
+			 * @param {int} fontSize
+			 * @param {int} maxWidth
+			 * @returns {string} adjusted text
+			 */
+			wrapText: function(text, fontSize, maxWidth) {
+				const englishCharWidth = fontSize * 0.5; // 英語文字の推定幅 supposed width of Latin Alphabet
+				const japaneseCharWidth = fontSize * 0.9; // 日本語文字の推定幅 supposed width of 2bytes char
+				let currentLine = '';
+				let currentLineWidth = 0;
+				let wrappedText = '';
+
+				for (const char of text) {
+					const charWidth = isJapaneseChar(char) ? japaneseCharWidth : englishCharWidth;
+
+					if (char === '\n' || (currentLineWidth + charWidth) > maxWidth) {
+						if (currentLine !== '') {
+							wrappedText += currentLine + '\n';
+							currentLine = '';
+							currentLineWidth = 0;
+						};
+						if (char !== '\n') {
+							currentLine += char;
+							currentLineWidth += charWidth;
+						};
+					} else {
+						currentLine += char;
+						currentLineWidth += charWidth;
+					};
+				};
+
+				if (currentLine.length > 0) {
+					wrappedText += currentLine;
+				};
+
+				return wrappedText;
+			},
+
+
+			/**
+			 * Convert given text into DIS UI format.
+			 * DIS.string.convertString() is also called in this function
+			 * UNDERCONSTRUCTION
+			 * "{@AD}"
+			 *
+			 * @param {string} text
+			 * @return {string} formatted text
+			 */
+			formatUIText: function(text){
+				let res = this.convertString(text);
+				return res;
+
+			},
+	};
+})();
 
 
 
@@ -1404,15 +1514,13 @@ const Adr_ptr_spawnAgent = 201; //v[201]
 
 
 /**
- *
+ * Components for accessing RTS agents.
  * @namespace DIS.agent
  */
 DIS.agent = { 
 	// get from game variable
 	limit: getv(1004), 
 	genPtrPos: 0,
-
-	
 
 	/**
 	 * Search Empty Space function - this function searches a blank space for an agent in the agent data space.
@@ -1496,12 +1604,12 @@ DIS.agent = {
 
 	},
 
-}
+};
 
 
 DIS.player = {
 	
-}
+};
 
 DIS.control = {
 	
@@ -1534,16 +1642,23 @@ class RM_PicCache { // THIS DOESN'T EXTEND DIS_entity.
 	};
 
 	getAdr(){return this.address;}
-}
+};
 
+/**
+ * DIS.cache
+ * Namespace for storing file caches on js system.
+ * In this namespace, cache container objects will be dynamically generated.
+ * So you shouldn't put any essential elements or whatever here
+ * @namespace
+ */
 DIS.cache = {
 	misc: {},
 
 };
 
 /**
- * namespace for function wrappers for called back from TPC side.
- * you shouldn't use properties in this namespace unless you're implementing it in TPC code
+ * namespace for function wrappers that called from TPC side.
+ * you shouldn't use properties in this namespace unless you're using it in TPC code
  * @namespace DIS._tpc
  */
 DIS._tpc = {
@@ -1561,9 +1676,9 @@ DIS._tpc = {
 	},
 
 	/**
-	 *
-	 *
-	 *
+	 * 
+	 * 
+	 * 
 	 */
 	take_piccache:(cacheobj,arrayadr,sizeadr)=>{
 		cacheobj.give(arrayadr,sizeadr)
@@ -1580,6 +1695,7 @@ DIS._tpc = {
 	get_skill_CallID:function(strid){
 		try {
 			/**
+			 * ACHTUNG
 			 * 現在、移行措置として[cevそのまま,numid,stringid,0]の４つを受け付けて機能する非常に気持ち悪い仕様になっている。
 			 * 全てのプリセットスキルのJSON対応が済み次第、組み替えて整理する。
 			 * 
@@ -1613,9 +1729,10 @@ DIS._tpc = {
 
 
 /**
- *
  * DIS.shell
- *
+ * DIS shell system (dsh) you can access on DIS game console.
+ * The console can be called by pressing F10(default)
+ * @namespace
  */
 DIS.shell = (function(){
 		const QuitSignalAdr = 183; // LEGS_ClosingConsole 
@@ -1729,6 +1846,10 @@ DIS.shell = (function(){
 				console.log(a);
 			},
 
+			psa(){
+					dsLog("underconstruction");
+			},
+
 
 			genMapPic: (()=>{
 				const options = {
@@ -1754,10 +1875,10 @@ DIS.shell = (function(){
 						let out = ("Usage genMapPic [OPTION]\n" +
 							"Generate map asset pictures in current map directory.\n現在のマップディレクトリにマップアセットデータを生成します。\n\n" +
 							"-t                 generate Map Tile data. / マップタイルデータを生成します\n" +
-							"-e                   generate Terrain Elevation data and png. / マップの地形高度マップ画像を生成します\n" +
-							"-m                  generate Map Picture. / マップを一枚の画像として出力します\n" +
-							"-A                  do All processes above at once. / 上の処理を一度に行います。\n" +
-							"--help                  display this help. / このヘルプを表示します");
+							"-e                 generate Terrain Elevation data and png. / マップの地形高度マップ画像を生成します\n" +
+							"-m                 generate Map Picture. / マップを一枚の画像として出力します\n" +
+							"-A                 do All processes above at once. / 上の処理を一度に行います。\n" +
+							"--help             display this help. / このヘルプを表示します");
 						dsLog(out);
 
 					} else if(options.hasOwnProperty(args[1][1])){
@@ -1773,6 +1894,7 @@ DIS.shell = (function(){
 				
 				let out = ("echo [-neE]           print given string to the console. / 受け取った文字列を表示します\n" +
 					"clear                 empty console messages. / ログを押し流します\n" +
+					"psa                   show Presently Selected Agents. / 現在選択中のRTSエージェントの内部IDを表示します\n" +
 					"qjs                   boot qjs eval mode. / qjsによるevalモードを起動します\n" +
 					"exit                  close DIS shell console. / コンソールを閉じます\n" +
 					"help                  this command. / このコマンドです");
@@ -1847,7 +1969,7 @@ function createKeyArrayFromCsvLine(tmp){
 }
 
 /**
- * API for dealing with game data.
+ * Namespace for dealing with game data.
  * Also check DATA_entity extended classes.
  * You can access DIS.data through global pointer DATA. 
  * @namespace DIS.data
@@ -2379,8 +2501,11 @@ DIS.data = { // DIS.data
 		 */
 		ptrs: [0],
 	},
-	EFFECT: {},
+
 	PARTICLE: {},
+
+	// EVENTS?
+	EFFECT: {},
 
 };
 
@@ -3203,6 +3328,7 @@ class DIS_dialog extends DIS_entity {
 const Adrt_dialogQueue = 785 // -> Game_script_general.tpc
 const Is_SightSystem_On = 300; // <- header_common.tpc
 const Adrt_mapdirectory = 755;
+
 /**
  * RTS system object.
  * This object manages high level stuff around RTS mode.
@@ -4413,7 +4539,8 @@ var Cmd = {
 // DIS Player UI system
 // ----------------------------------
 
-// DUI init process is run after disrc.js in user directory.
+// DUI init process is run after disrc.js in user directory?
+// is it actually called? can we integate this into DIS object?
 
 var DUI = DUI || {};
 

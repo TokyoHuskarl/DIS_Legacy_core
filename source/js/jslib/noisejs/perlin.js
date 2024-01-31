@@ -314,14 +314,3 @@ let noise; // is this necessarily?
 })(this);
 
 
-/**
- * TokyoHuskarl addition
- * If running on virtual environment && it's node.js, prepare to export.
- */
-// nvm it's shit
-/*
-if (typeof VIRTUAL_ENV != "undefined") {
-	if (typeof process !== 'undefined' && process.versions && process.versions.node){
-		module.exports = this.noise;
-	};
-};*/

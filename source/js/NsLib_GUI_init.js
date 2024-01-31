@@ -99,7 +99,7 @@ let NsGUImgr = {
 	},
 
 
-}
+};
 
 
 
@@ -115,7 +115,7 @@ class Ns_Presentation {
 		this.UI_RenderingOrder2RMcev = "";
 		this.UI_ScaleCmdOrder2RMcev = "";
 
-	}
+	};
 
 	// run all UI objects
 	proc = function() {
@@ -138,7 +138,7 @@ class Ns_Presentation {
 		this.alloc_pid += component.set_to_presen(this.alloc_pid); // the presentation allocates pid to the object and its children
 	};
 
-}
+};
 
 
 class RM_Picture {
@@ -294,7 +294,7 @@ class SimpleButton extends UI_object {
 		this.picCmd = PICCMD_Refresh;
 	}
 
-		Lclick = function() {
+	Lclick = function() {
 	
 	}
 
@@ -310,8 +310,7 @@ class SimpleButton extends UI_object {
 		return ORDER;
 	}
 
-	
-}
+};
 
 class Radiobutton extends UI_object {
 	constructor(x,y,targ_address) {
@@ -358,7 +357,7 @@ class Radiobutton extends UI_object {
 	}
 
 	
-}
+};
 
 
 // init load

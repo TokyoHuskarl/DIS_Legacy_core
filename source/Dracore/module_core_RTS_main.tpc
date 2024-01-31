@@ -355,12 +355,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			}
 	    // "#カメラずらして"
 			v[605].add FrameCamDiff_MilX,2
-
-			/*
-	    v[605] += FrameCamDiff_MilX
-	    v[606] += FrameCamDiff_MilY
-			*/
-
+			
 	    // "#座標を反映"
 	    v[607] = v[605] / 10000
 	    v[608] = v[606] / 10000
@@ -416,7 +411,8 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {   
 	@comment "module_core_RTS_main.tpc"
-	// "Normal Units"
+
+	// "Even Units"
 	Ptr_loop_current_agent = v[4532]
 	@while v[Ptr_loop_current_agent] != 0 {
 	    Ptr1 = v[Ptr_loop_current_agent] * v[1117] 
@@ -424,37 +420,63 @@ cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			v[Ptr1].copy agent_ObjectType, 300
 
 	    // "Minions"
-	    // "#########################
-	    //Shield Flash
-	    //#########################"
-	    //opt 26.4.23
-	    //v[Temp1 + 284] -= v[Temp1 + 284] > 0 ? 1 : 0
-	    v[884] -= v[884] > 0 ? 1 : 0
-	    // "Flash Effect"
-	    @if v[895] >= 4 {
-				v[358].repeat 20,3 // v[358..360] = 20
-				v[891] .sub TT18, 3
-				
-	    } .else bl {
-				// "Can be improved"
-				v[ptr_null].copy v[358],3 // v[358..360] = 0
-				@if v[895] > 0 {
-				TT1 = 357 + v[895]
-				ptr_const(TT1,20)
-				v[891] .sub TT18, 3
-				}
-	    }
-	    // "Temp... only check R"
-	    v[895] = v[891] <= 0 ? 0 : v[895]
+			agent_sprite_RGB_check()
+
 	    // "++"
 	    func_main_save_agent_vars()
-	    increment_var(Ptr_loop_current_agent) // Ptr_loop_current_agent += 1
+	    val_add(Ptr_loop_current_agent,N2)
 
 	}
 
 	@wait 0
 
+	// "Odd Units"
+	Ptr_loop_current_agent = v[4532] + 1
+	@while v[Ptr_loop_current_agent] != 0 {
+	    Ptr1 = v[Ptr_loop_current_agent] * v[1117] 
+	    val_add(Ptr1,N4701)// Ptr1 += 4701
+			v[Ptr1].copy agent_ObjectType, 300
+
+	    // "Minions"
+			agent_sprite_RGB_check()
+
+	    // "++"
+	    func_main_save_agent_vars()
+	    val_add(Ptr_loop_current_agent,N2)
+
+	}
+
+
 }
+
+__fn agent_sprite_RGB_check {
+	// "#########################
+	//Shield Flash
+	//#########################"
+	//opt 26.4.23
+	agent_ShieldFlash -= agent_ShieldFlash > 0 ? 1 : 0
+		// "Flash Effect"
+		@if agent_FlashType >= 4 {
+			v[358].repeat 20,3
+				agent_R .sub TT18, 3
+
+		} .else bl {
+			// "Can be improved"
+			v[ptr_null].copy v[358],3
+				@if agent_FlashType > 0 {
+					TT1 = 357 + agent_FlashType
+						ptr_const(TT1,20)
+						agent_R .sub TT18, 3
+				}
+		}
+	// "Temp... only check R"
+	agent_FlashType = agent_R <= 0 ? 0 : agent_FlashType
+
+
+}
+
+
+
 
 
 cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
@@ -488,11 +510,11 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // agent_ProcessObjBit = v[681] >= 1 ? agent_ProcessObjBit & ~1 : agent_ProcessObjBit
 	    agent_ProcessObjBit &= ~(v[681] >= 1)
 
-	    val_asg(v[898],v[880]) // v[898] = v[880]
+	    val_asg(agent_Transparency,v[880]) // agent_Transparency = v[880]
 			
 
 	    @if `agent_ProcessObjBit & 1 {
-				v[898] = 40 + v[880]
+				agent_Transparency = 40 + v[880]
 				agent_ProcessCamoValue += 38000
 				TT1 = v[4518] + v[401]
 				v[TT1] = 0
@@ -500,7 +522,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    }
 
 	    // "##is fleeing?"
-	    agent_ProcessCamoValue += v[860] >= 3 ? 40000 : 0
+	    agent_ProcessCamoValue += agent_Morale >= 3 ? 40000 : 0
 	    // "###############Camo Check end##############"
 	    func_main_save_agent_vars()
 	    // "++"
@@ -671,15 +693,15 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 						@if `s[7] == 1 || s[474] == 1 {
 							// "##If Fleeing"
-							//v[860] = Temp1 + 260
+							//agent_Morale = Temp1 + 260
 							@if v[680] < -480 {
-									v[860] = 0
+									agent_Morale = 0
 									
 							} .else bl {
-								@if v[860] == 3 {
+								@if agent_Morale == 3 {
 									@if v[680] < -100 {
 										// "roll chance to recover from fleeing state"
-										v[860] -= (rnd(0, 99) <= (var2 + v[875] / 5) && v[860] > -1) // ? 1 : 0
+										agent_Morale -= (rnd(0, 99) <= (var2 + v[875] / 5) && agent_Morale > -1) // ? 1 : 0
 										
 									}
 								}
@@ -2118,8 +2140,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    func_main_extract_agent_vars()
 	    val_sub(v[680],N1)// v[680] -= 1
 	    @if v[680] <= 0 {
-				v[898] += 5
-				@if v[898] >= 100 {
+				agent_Transparency += 5
+				@if agent_Transparency >= 100 {
 						// "#############
 						//Search and remove from body list"
 						Temp2 = v[4531]
