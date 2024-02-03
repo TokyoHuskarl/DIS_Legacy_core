@@ -42,6 +42,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 								// this is shite, but needed since current projectile registering procs are all from classic awful design
 								// I mean the system that treats all projectiles based on Relative Coordinates
 								@if `!(projectile_bits2 & PROJ_FL2_AbsSet) {
+									projectile_RelativeX.copy projectile_AbsX,2
 									projectile_AbsX.add FrameCamDiff_X,2
 									projectile_AbsX.sub LEGV_MainMAP_PointOfReferenceX,2
 									projectile_AbsX.copy projectile_milPixX,2
