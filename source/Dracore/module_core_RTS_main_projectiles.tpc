@@ -10,11 +10,11 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
 		v[441] = 303
 		v[442] = 1
-		v[443] = 607
-		v[444] = 608
+		v[443] = __id(projectile_RelativeX)
+		v[444] = __id(projectile_RelativeY)
 		v[445] = 1
 		v[446] = 100
-		v[447] = 626
+		v[447] = __id(projectile_Transparency)
 		v[448] = 1000
 		v[453] = 3
 		v[454] = 341
@@ -35,26 +35,27 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 					// deploy projectile data to buffer
 					v[Projectile_Ptr].copy projectile_ProjectileType,projectileMemSize
 
+						// this is shite, but needed since current projectile registering procs are all from classic awful design
+						// I mean the system that treats all projectiles based on Relative Coordinates
+						@if `!(projectile_bits2 & PROJ_FL2_AbsSet) {
+								projectile_RelativeX.copy projectile_AbsX,2
+								projectile_AbsX.add FrameCamDiff_X,2
+								projectile_AbsX.sub LEGV_MainMAP_PointOfReferenceX,2
+								projectile_AbsX.copy projectile_milPixX,2
+								projectile_milPixX.mul N10000,2 
+								// also init hit flags
+								@if projectile_ProjectileType == 2 {
+										Ptr13 = v[214] * PRJ_HIT_FLAGS_SIZE 
+										Ptr13 += gPtr_ProjectileHitFlags_HEAD
+										v[ptr_null].copy v[Ptr13],PRJ_HIT_FLAGS_SIZE
+								}
+							projectile_bits2 |= PROJ_FL2_AbsSet
+						}
+
 					//@comment "Access15 = タイマー"
 						//@comment "タイマーが切れていない"
 						@if projectile_Timer >= 1 {
 
-								// this is shite, but needed since current projectile registering procs are all from classic awful design
-								// I mean the system that treats all projectiles based on Relative Coordinates
-								@if `!(projectile_bits2 & PROJ_FL2_AbsSet) {
-									projectile_RelativeX.copy projectile_AbsX,2
-									projectile_AbsX.add FrameCamDiff_X,2
-									projectile_AbsX.sub LEGV_MainMAP_PointOfReferenceX,2
-									projectile_AbsX.copy projectile_milPixX,2
-									projectile_milPixX.mul N10000,2 
-									// also init hit flags
-									@if projectile_Hittype == 2 {
-											Ptr10 = v[Projectile_Ptr] * PRJ_HIT_FLAGS_SIZE 
-											Ptr10 += gPtr_ProjectileHitFlags_HEAD - PRJ_HIT_FLAGS_SIZE
-											v[ptr_null].copy v[Ptr10],PRJ_HIT_FLAGS_SIZE
-									}
-									projectile_bits2 |= PROJ_FL2_AbsSet
-								}
 
 								val_add(v[217],N1)
 								// @comment "#T2 = Vxのポインタ#T3 = ピクチャ番号#G5 = 詳細位置xPtr#G6 = 詳細位置上yPtr#G7 = xPtr#G8 = yPtr"
@@ -71,7 +72,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 												v[605..613] += Projectile_Ptr
 												@call .cev projectile_CallFuncProjectile
 												s[123].off
-												v[605].deref projectile_milPixX,9 
+												v[605].deref projectile_milPixX,9  // koko troublesome
 										}
 										//@comment "まず加速の処理から"
 										projectile_milVx .add projectile_milAx, 2
@@ -87,9 +88,12 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 								v[v[606]] += v[54] * 10000
 								v[v[608]] = v[v[606]] / 10000
 								*/
+
+								projectile_milPixX.copy projectile_AbsX,2
+								projectile_AbsX.div N10000,2
 								projectile_AbsX.copy projectile_RelativeX,2
-								projectile_RelativeX.div N10000,2
-								projectile_RelativeX.sub FrameCamDiff_X,2
+								projectile_RelativeX.add FrameCamDiff_X,2
+								projectile_RelativeX.add LEGV_MainMAP_PointOfReferenceX,2
 
 								
 								//@comment "#範囲攻撃処理分岐#仮置き"
@@ -185,22 +189,24 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																		projectile_hitcheck_rectangle()
 																		@if reg1 == 1 {
 																			//@comment "Hit flag switch v[377]"
-																				v[377] = 1
 																				//@comment "If the projectile is SingleHit Pierce type"
 																				
 																				@if projectile_ProjectileType == 2 {
 																						
 																						
 																						//opt 28.4.23
-																						Ptr10 = v[Projectile_Ptr] * PRJ_HIT_FLAGS_SIZE 
-																						Ptr10 += gPtr_ProjectileHitFlags_HEAD - PRJ_HIT_FLAGS_SIZE // set to head
-																						Ptr10 += v[ProjectileHitChecker] >> 5 // / 32
+																						Ptr13 = v[214] * PRJ_HIT_FLAGS_SIZE 
+																						Ptr13 += gPtr_ProjectileHitFlags_HEAD // set to head
+																						Ptr13 += v[ProjectileHitChecker] // >> 5 // / 32
 																						TT3 = pow(2, (v[ProjectileHitChecker] - 1) % 32)
 																						//@comment "Check if already hit the unit or not"
-																						v[377] -= v[Ptr10] & TT3 ? 1 : 0
-																						v[Ptr10] |= TT3
+																						v[377] = v[Ptr13] & TT3 ? 0 : 1
+																						v[Ptr13] |= TT3
 
+																				}.else bl{
+																					v[377] = 1
 																				}
+																				
 
 																			@if v[377] == 1 {
 																				//@comment "ＨＩＴ！"
