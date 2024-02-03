@@ -1,15 +1,75 @@
+defv ProjectilesAmountLimit = 4559
+def projectileMemSize = 100
 
 defv {
-projectile_ProjectileType = 740601
+	projectile_ProjectileType=740301
+	projectile_Pic1=740302
+	projectile_CallFuncProjectile=740303
+	projectile_CallFuncHit=740304
+	projectile_milPixX=740305
+	projectile_milPixY=740306
+	projectile_RelativeX=740307
+	projectile_RelativeY=740308
+	projectile_ParentObject=740309
+	projectile_Width=740310
+	projectile_Height=740311
+	projectile_milVx=740312
+	projectile_milVy=740313
+	projectile_Vab=740314
+	projectile_milAx=740315
+	projectile_milAy=740316
+	projectile_Aab=740317
+	projectile_Team=740318
+	projectile_Angle=740319
+	projectile_AngleDelta=740320
+	projectile_Damage=740321
+	projectile_ARorMR=740322
+	projectile_Element=740323
+	projectile_bits1=740324
+	projectile_bits2=740325
+	projectile_Transparency=740326
+	projectile_Hittype=740327
+	projectile_ProjectilesFlag1=740328
+	projectile_HitLimit=740329
+	projectile_Drawtype=740330
+	projectile_R=740331
+	projectile_G=740332
+	projectile_B=740333
+	projectile_Saturation=740334
+	projectile_R2=740335
+	projectile_G2=740336
+	projectile_B2=740337
+	projectile_Saturation2=740338
+	projectile_HitCount=740339
+	projectile_CollisionTimer=740340
+	projectile_ProjectileBuff=740341
+	projectile_BuffDuration=740342
+	projectile_Funcvar1=740343
+	projectile_Funcvar2=740344
+	projectile_Funcvar3=740345
+	projectile_CallFuncTimer=740348
+	projectile_HitPtr=740349
+	projectile_Spellpower=740350
+	projectile_AbsX=740361
+	projectile_AbsY=740362
+	projectile_pictypeID=740368
+	projectile_weapontype=740369
+	projectile_ProjectileFlag2=740370
+	projectile_Timer=740400
+}
+
+defv projectile_rgst_ProjectileType = 740401
+
+def {
+	PROJ_FL1_CanCrit = 1
+	PROJ_FL1_Splash_upon_timeup = 2
+	PROJ_FL1_Already_hit_someone = 4
+	PROJ_FL1_NoPicture = 8
+	PROJ_FL1_Aftermath_Projectile = 536870912 // newly added projectile that uses projectile_rgst buffer above in its registoration proc.
+	PROJ_FL2_AbsSet = 1073741824
+	PROJ_FL2_MultipleHit = 1
 
 }
 
-//FLAGS
-def{
- 
-}
-
-
-//Victims var for attack check
-defv{
-}
+defv ProjectileTeamSave = 531
+defv ProjectileHitChecker = 4860

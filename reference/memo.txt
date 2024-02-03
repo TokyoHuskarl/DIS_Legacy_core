@@ -405,6 +405,7 @@ Set 601-900
 #56*36 = minimap neu
 
  
+ALLOCATION:
 // 225001~243000 Projectile [100]*180 Pict [1]*180 1001-1180
 // 243001~255000 Effect [100]*120 Pict [1]*120 801-920
 
@@ -442,6 +443,7 @@ FactionResources[4]+[36]
 			enemy List 462821~463321  [500]
 			
 
+463614..463615 dst_MapStartO_from_RefO
 463616~463717 Terrain Bits
 #461318~463717 ObjectPictureIDs 400*[6] Body/Head/Helm/Weapon/Shield/Misc ***
 463718~463758 159528 ///?????????????????????????????????? camera group!!!
@@ -498,7 +500,8 @@ FactionResources[4]+[36]
 740000~740300 BufferForVictimAgent [300]
 740301~740600 MiscBufferForAgent [300]
 
-740601~740700 BufferForProjectiles [99]
+740601~740700 BufferForRunningProjectiles [100]
+740701~740800 BufferForRegisteringProjectiles [100]
 
 	//740948~746948 ObjectPictureIDs 1000*[6] Body/Head/Helm/Weapon/Shield/Misc // this will be needless I guess?
 // So instead..740001~750000 AgentLink 0x00(possible flags?)+0x000(Link2)+0x000(Link1) - basically use only first 3 digits // ???????
@@ -1123,10 +1126,10 @@ Projectile:
 	Pic1 = 2
 	CallFuncProjectile = 3
 	CallFuncHit = 4
-	x*10000 = 5
-	y*10000 = 6
-	x = 7
-	y = 8
+	absx*10000 = 5
+	absy*10000 = 6
+	relx = 7
+	rely = 8
 	ParentObject = 9
 	Width =10
 	Height = 11
@@ -1178,7 +1181,8 @@ Projectile:
 	pictypeID = 68
 	weapontype = 69  //
 	ProjectileFlag2 = 70 #1=multiplehit
-	HitMem = 71~99
+	
+	HitMem = 71~99 // need to relocate somewhere else
 	Timer = 100
 
 

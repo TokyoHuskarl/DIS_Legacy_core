@@ -83,6 +83,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[4575] = 300000
 	//set div 10000
 	v[4813..4814] = 10000
+
 	//set array for picture drawing - this seems needless now I guess?
 	v[0] = v[4815..4823] = [4001, 4001, 4001, 4005, 4009, 4001, 4001, 4001, 4001]
 	@sys.getInfo .winSize  .dst v[1001]
@@ -448,14 +449,17 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	Const_save_var_TileFlags = Const_save_var_UnitAISightRoot + 1000 //allocate 400*400
 	
 	//Projectiles begin
-	v[1075] = Const_save_var_TileFlags + 400 * 400
+	v[1075] = Const_save_var_TileFlags + 400 * 400 + 1
 	v[1076] = v[1075] - 1
+	//Projectiles Hit Flags begin
+	gPtr_ProjectileHitFlags_HEAD = v[1075] + v[4559] * 100 + 1
+
 	//Effects begin
-	v[1018] = v[1075] + v[4559] * 100 //!?
+	v[1018] = gPtr_ProjectileHitFlags_HEAD + v[4559] * PRJ_HIT_FLAGS_SIZE + 1 // after projectiles
 	v[4840] = v[1018] + 1 
 	//Particle
 	v[1198] = 275001
-	v[1198] = v[1018] + v[1017] * 100
+	v[1198] = v[1018] + v[1017] * 100 + 1
 	v[1199] = 128 // amount
 
 	// "##OBJ数拡張する場合ここもいじる必要あり"

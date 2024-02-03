@@ -308,6 +308,16 @@ defs Bool_Refresh_Static_Minimap = 75
 vname[__id(FrameCamDiff_MilX)], "FrameCamDifMilX"
 vname[__id(FrameCamDiff_MilY)], "FrameCamDifMilY"
 
+defv Map_dst_MortO_from_RefO_x = 463614
+defv Map_dst_MortO_from_RefO_y = 463615
+vname[__id(Map_dst_MortO_from_RefO_x)], "Camorigin-TileOrigin Vecx"
+vname[__id(Map_dst_MortO_from_RefO_y)], "Camorigin-TileOrigin Vecy"
+
+vname[4829], "Ptr2ProjectileHitFlagsHEAD"
+defv gPtr_ProjectileHitFlags_HEAD = 4829
+def PRJ_HIT_FLAGS_SIZE = 64
+
+
 //vars
 defv{
 
@@ -471,6 +481,7 @@ defv{
 //basic structures definitions
 #include "./define_structures_agent.tpc"
 #include "./define_structures_map.tpc"
+#include "./define_structures_projectile.tpc"
 
 
 
@@ -743,6 +754,7 @@ defv {
 	N5001 = 4837
 	N4700 = 4838
 	N4701 = 4839
+	N10000 = 4813
 
 	NagtLen = 1117 // agent array length
 }
