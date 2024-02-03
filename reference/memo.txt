@@ -404,18 +404,20 @@ Set 601-900
 
 #56*36 = minimap neu
 
-
-#224576-224976 InSightTimer [400] ****
  
-//225001~243000 Projectile [100]*180 Pict [1]*180 1001-1180
-//243001~255000 Effect [100]*120 Pict [1]*120 801-920
+// 225001~243000 Projectile [100]*180 Pict [1]*180 1001-1180
+// 243001~255000 Effect [100]*120 Pict [1]*120 801-920
 
-// 273901~274000 TerrainBits -> header_common.tpc
-274001~274500 MapSimpleTriggersConditions 500
-274501~275000 MapSimpleTriggersVar 500
-275001~280000 ParticleEffecter [50]*100
-280001~290000 ObjSort_for _drawing
-290001~300000 ObjSort_save_drawing
+// 274001~274500 MapSimpleTriggersConditions 500
+// 274501~275000 MapSimpleTriggersVar 500
+
+
+// 275001~280000 ParticleEffecter [50]*100 // we can possibly increase the max amount of emitters... maybe 255 is better -> move to after effect array
+
+// 280001~290000 ObjSort_for_drawing // srsly
+//290001~300000 ObjSort_save_drawing
+# 280001~281000 ObjSort_for_drawing // keisan misutteta
+# 281001~282000 ObjSort_save_drawing // relocated!
 
 
 //Factional Vars should be relocated into pic buffer
@@ -425,13 +427,14 @@ FactionResources[4]+[36]
 300081~300120 Third
 300121~300160 Ally
 
-#300120~300220 TerrainBits
-300221~300316 MinimapProc
-300317~460317 CurrentMapInfo [400][400] #ElevationLevel[1]+UpperLayer[3]+DownLayer[3]+TerrainID[2]
-#460318~460817 DrawnList [500]
-#460818~461317 DrawnListLayers
+300221~300316 MinimapProc // maybe other buffer can used for minimap proc. I mean you can remove it
 
-460318~461317 AgentTeam%3[1000] METATEAM 
+//
+300317~460317 CurrentMapInfo [400][400] #ElevationLevel[1]+UpperLayer[3]+DownLayer[3]+TerrainID[2]
+
+// THIS ONE ALSO CAN BE REMOVED, but need to check if every metateam check is relocated into AEB
+460318~461317 AgentTeam%3[1000] METATEAM
+
 
 461318-462319 InSightTimer [1000] 
 
@@ -462,23 +465,25 @@ FactionResources[4]+[36]
 	
 		StanceOrder = 20	#0 = alert(search enemies), 1 =  standby, 2 = attack, 3= deffend, 4= player
 
-471544~525544 UnitIDJoiningBattle 4500*[4]*[3] OverallAmount,KillCount,DeathCount,FleeCount; Player,Enemy,Ally
+471544~525544 UnitIDJoiningBattle 4500*[4]*[3] OverallAmount,KillCount,DeathCount,FleeCount; Player,Enemy,Ally // this one might be better changed into js system
 525545~530344 MinimapChecker
-530345~530444 SpawnEquipmentDeployingTemp
+530345~530444 SpawnEquipmentDeployingTemp // retarded buffer
 530445~550444 FreshEffect [100]*200 Pict [1]*100
-550445~560445 pixelbuffer upto100*100
-#561446~562445 ObjColSizeXY [2]*400**
+
+550445~560445 pixelbuffer upto100*100 // this buffer should be a lot more bigger.
+
 562447~572446 FogOfWar [100]*[100]// 5*5 space 0x1=insight_ALLY 0x2=observed_ALLY 0x3=insight_lastck_ALLY
 
 
 572447~572946 ObjFoWSight //is this even working!?
 
+// this might be fucking retarded in this day
 572947~732946 MapTileFunction #[4]…resourceamount+[1]…type+[3]blockfuncID+[1]…pushflag!
 
 732947~733946 DeadbodyList
 733947~734946 LandUnitsList
 734947~735946 StaticList
-735947~736446 BasementListAlly 
+735947~736446 FoundationListAlly 
 
 736447~737446 OBJDrawnList [1000]
 737447~738446 DrawnListLayers [1000]
@@ -486,7 +491,6 @@ FactionResources[4]+[36]
 #LEGACY PARTY VARS
 738447~738747 ConstPartyInvListStart [300] - actually dynamic range (v[1189]), so you shouldn't use up space... 
 
-#125001~125400 GroupSelect [40]*10
 738946-739347 GroupSelect [40]*10
 
 739348~740000 MapScriptNestChecker // will be open
@@ -507,21 +511,24 @@ FactionResources[4]+[36]
 // how about this one?
 +Obj Minimap Colour[1000]
 
+
+// THIS WILL BE REMOVED AFTER removing legacy map simple trigger system
+899001~899500 MapSimpleTriggersConditions 500
+899501~900000 MapSimpleTriggersVar 500 - temp moved to here, after
+// REMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVE
+
 //764742~1548949 Mapnodes [20]*200*200 
+
 900001~Mapnodes [20]*200*200
-#1548950~1126025noderouteSave 134*134 
+#1548950~1126025??? noderouteSave 134*134 
 TileInstant 400*400
 
 +OpenNodes 1548950~+200*200
 +OpenNodesCost 200*200
 +Closed Nodes 200*200
 
-- partytrooplist [8]*800 #[ID,count,wounded,exp,upkeepcost,type,group,flag]
-- TempEnemyTroopsLists [4]*400 [ID,count,wounded,res]
 #NEVER DELETE in a run end
 
-- AllyTroopsReadyToBattle [2] ID,trooptype UP TO 2000
-- EnemyTroopsReadyToBattle [2] ID,trooptype UP TO 2000
 
 
 Mapnodeのあとにzantei Mort
@@ -534,6 +541,11 @@ Mapnodeのあとにzantei Mort
  New mort existing 34000+128000 
 	count existing 85+256
 
+// LEGACY
+- partytrooplist [8]*800 #[ID,count,wounded,exp,upkeepcost,type,group,flag]
+- TempEnemyTroopsLists [4]*400 [ID,count,wounded,res]
+- AllyTroopsReadyToBattle [2] ID,trooptype UP TO 2000
+- EnemyTroopsReadyToBattle [2] ID,trooptype UP TO 2000
 
 
 

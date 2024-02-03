@@ -23,14 +23,23 @@ const DISmapgen = (function(){
 			 * @param {int} max height
 			 * @return {object} - returns simple int array.
 			 */
-			generateElevationMap: function(width, height, scale, bias = 0.5,max = 3) {
+			/**
+			 *
+			 *@param {int} width
+			 *@param {int} height
+			 *@param {float} scale
+			 *@param {float} bias
+			 *@param {int} leastElv
+			 *@return {[][]} - You need to use DIS.macro.flattenArray() before handing the elevation map to TPC
+			 */
+			generateElevationMap: function(width, height, scale, bias = 0.5,leastElv = 3) {
 				const map = [];
 
 				for (let y = 0; y < height; y++) {
 					const row = [];
 					for (let x = 0; x < width; x++) {
 						const noiseValue = noise.simplex2(x / scale, y / scale);
-						const elvValue = Math.max(this.mapNoiseToElevation(noiseValue, bias) + 1,max);
+						const elvValue = Math.max(this.mapNoiseToElevation(noiseValue, bias) + 1, leastElv);
 						row.push(elvValue);
 					}
 					map.push(row);

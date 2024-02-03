@@ -82,7 +82,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	}
 	v[4575] = 300000
 	//set div 10000
-	v[4813..4814]=10000
+	v[4813..4814] = 10000
 	//set array for picture drawing - this seems needless now I guess?
 	v[0] = v[4815..4823] = [4001, 4001, 4001, 4005, 4009, 4001, 4001, 4001, 4001]
 	@sys.getInfo .winSize  .dst v[1001]
@@ -91,8 +91,13 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1218] = 40000
 	v[4577] = 800
 	v[4577] = 50000
-	v[4578] = 274001
-	v[4565] = 274501
+	
+	// SIMPLE TRIGGER for LEGACY MAP SCRIPT SYSTEM
+	// ONCE AFTER LEGACY SYSTEM COMPLETELY REMOVED, THESE TWO VARS WILL ALSO BE REMOVED
+	v[4578] = 899001
+	v[4565] = 899501
+
+
 	v[4807] = 200
 	@comment "DATABASE END########################"
 	s[319].on
@@ -171,7 +176,6 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[4528] = 572447
 	v[4527] = 562447
 	v[4525] = 2441
-	v[4530] = 159528
 	v[4530] = 463759
 	v[4523] = Address_Agent_HitCollisionArrayStart
 	v[4518] = 461318
@@ -244,8 +248,6 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1164] = 2201
 	@comment "#Particle"
 	v[1205] = 12
-	v[1198] = 275001
-	v[1199] = 100
 	v[1200] = 1301
 	@comment "+Logs+"
 	v[1137] = 11
@@ -302,8 +304,9 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	@comment "#OTHERS"
 	v[1128] = Const_Massive_Battle_Amount
 	@comment "##OBJ"
-	v[1112] = 4200
+	// how should I do lmao
 	v[1112] = 280001
+	v[1112] = 746949 // relocated!
 	v[1113] = v[1112] + v[1004]
 	v[v[1113]].enum 0, v[1004]
 	@comment "##BattleCount"
@@ -399,7 +402,9 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1254] = v[1250] + 14
 	@comment "#視界#小さめに"
 	v[1019] = 62500
-	v[1133] = 275000
+
+	v[1133] = 275000 // IS THIS EVEN USED??
+
 	v[1053] = 200
 	v[1054] = 800
 	v[1061] = 80000
@@ -434,9 +439,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1279] = 463718
 	v[1280] = 464631
 	v[1197] = 300221
-	v[1278] = 200001
 	v[1278] = 525545
-	v[1197] = 300221
 	v[4563] = 748949
 	v[4802] = v[4563] + v[1277] * v[1276]
 	v[4803] = v[4802] + v[1276]
@@ -445,16 +448,22 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	Const_save_var_TileFlags = Const_save_var_UnitAISightRoot + 1000 //allocate 400*400
 	
 	//Projectiles begin
-	v[1075] = Const_save_var_TileFlags +400*400
+	v[1075] = Const_save_var_TileFlags + 400 * 400
 	v[1076] = v[1075] - 1
 	//Effects begin
-	v[1018] = v[1075] + v[4559] * 100//!?
+	v[1018] = v[1075] + v[4559] * 100 //!?
 	v[4840] = v[1018] + 1 
+	//Particle
+	v[1198] = 275001
+	v[1198] = v[1018] + v[1017] * 100
+	v[1199] = 128 // amount
+
 	// "##OBJ数拡張する場合ここもいじる必要あり"
 	// "#Pathfinding"
 
 	// NODE DATA ADDRESS SETTING
-	RMconst_Node_Array_Address_Start = v[1018] + v[1017] * 100 //
+	RMconst_Node_Array_Address_Start = v[1018] + v[1017] * 100 // old, starts after effects array
+	RMconst_Node_Array_Address_Start = v[1198] + v[1199] * 50 // starts after particle array
 	RMconst_MapNodeMemSize = 20
 	RMconst_Node_Array_Address_Start_MINUS_NODE_MEMSIZE = RMconst_Node_Array_Address_Start - RMconst_MapNodeMemSize
 	
