@@ -37,19 +37,21 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
 						// this is shite, but needed since current projectile registering procs are all from classic awful design
 						// I mean the system that treats all projectiles based on Relative Coordinates
-						@if `!(projectile_bits2 & PROJ_FL2_AbsSet) {
+						@if `!(projectile_ProjectileFlag2 & PROJ_FL2_AbsSet) {
 								projectile_RelativeX.copy projectile_AbsX,2
 								projectile_AbsX.add FrameCamDiff_X,2
 								projectile_AbsX.sub LEGV_MainMAP_PointOfReferenceX,2
 								projectile_AbsX.copy projectile_milPixX,2
 								projectile_milPixX.mul N10000,2 
+
 								// also init hit flags
 								@if projectile_ProjectileType == 2 {
 										Ptr13 = v[214] * PRJ_HIT_FLAGS_SIZE 
 										Ptr13 += gPtr_ProjectileHitFlags_HEAD
 										v[ptr_null].copy v[Ptr13],PRJ_HIT_FLAGS_SIZE
 								}
-							projectile_bits2 |= PROJ_FL2_AbsSet
+								projectile_ProjectileFlag2 |= PROJ_FL2_AbsSet
+
 						}
 
 					//@comment "Access15 = タイマー"
@@ -60,43 +62,43 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 								val_add(v[217],N1)
 								// @comment "#T2 = Vxのポインタ#T3 = ピクチャ番号#G5 = 詳細位置xPtr#G6 = 詳細位置上yPtr#G7 = xPtr#G8 = yPtr"
 								// @comment "##process delta "
-								//@comment ""
 								@if s[2] .isOff() {
 									//@comment "タイマー減らす"
 									val_sub(projectile_Timer,N1)
 										// if cev is set
 										@if projectile_CallFuncProjectile >= v[1186] {
-												//@comment "##If a function is registered in Get3, call it"
-												s[123].on
-												v[605].enum 4, 9
-												v[605..613] += Projectile_Ptr
-												@call .cev projectile_CallFuncProjectile
-												s[123].off
-												v[605].deref projectile_milPixX,9  // koko troublesome
+												
+												// ordinary
+												@if `projectile_ProjectileFlag1 & PROJ_FL1_Aftermath_Projectile {
+														s[123].on
+														@call .cev projectile_CallFuncProjectile
+														s[123].off
+
+												}.else bl{
+													//@comment "##If a function is registered in Get3, call it"
+														s[123].on
+														v[605].enum 4, 9
+														v[605..613] += Projectile_Ptr
+														@call .cev projectile_CallFuncProjectile
+														s[123].off
+														v[605].deref projectile_milPixX,9  // koko troublesome
+												}
 										}
+
 										//@comment "まず加速の処理から"
 										projectile_milVx .add projectile_milAx, 2
 										//@comment "次に速度を加える"
 										projectile_milPixX .add projectile_milVx, 2
 								}
 
-							//@comment "座標セット"
-								
-								/*
-								v[v[605]] += v[53] * 10000
-								v[v[607]] = v[v[605]] / 10000
-								v[v[606]] += v[54] * 10000
-								v[v[608]] = v[v[606]] / 10000
-								*/
-
+								// @comment "座標セット"
 								projectile_milPixX.copy projectile_AbsX,2
 								projectile_AbsX.div N10000,2
 								projectile_AbsX.copy projectile_RelativeX,2
-								projectile_RelativeX.add FrameCamDiff_X,2
 								projectile_RelativeX.add LEGV_MainMAP_PointOfReferenceX,2
 
 								
-								//@comment "#範囲攻撃処理分岐#仮置き"
+								// @comment "#範囲攻撃処理分岐#仮置き"
 								// these temp vars (v[381..382]) can be removed I suppose?
 								// still used in SFX system, you need to check before removing 
 								projectile_RelativeX.copy v[381], 2
@@ -104,17 +106,19 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 								@if s[2] .isOff() {
 									//@comment "#Width+Height"
 									// TT1 = v[v[610]] + v[v[611]]
-									projectile_Width.copy TT1  
+									projectile_Width.copy TT1,1
 									val_add(TT1,projectile_Height)
 
 										//@comment "#範囲攻撃処理分岐#0なら当たり判定を持たない"
 										val_init(reg10)
 										@if TT1 > 0 {
 												// collision timer
+
 												/*
 												v[640] = v[607] + 33
 												v[v[640]] -= 1
 												*/
+
 												val_sub(projectile_CollisionTimer,N1)
 												@if projectile_CollisionTimer <= 0 {
 														projectile_AbsX.copy Temp7, 2
@@ -123,7 +127,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 														Temp7.copy TT1,2
 														TT1.sub projectile_Width, 2
 														TT1 .div v[74], 2
-														/*@comment "TT1=MortX			TT2=MortY			ビット演算して処理するよ"*/
+														/*@comment "TT1=MortX TT2=MortY ビット演算して処理するよ"*/
 														TT1 = (TT1 | TT1 << 8) & 0xFF00FF
 														TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
 														TT1 = (TT1 | TT1 << 2) & 0x33333333
@@ -210,12 +214,11 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
 																			@if v[377] == 1 {
 																				//@comment "ＨＩＴ！"
-																				/*@comment "Access19 = AttackerObjectID
+																				/* @comment "Access19 = AttackerObjectID
 																					Access20 = TargetObjectID
 																					Access18 = ObjTypeチェックPtr
 																					temp1 = ダメージ量
-																					temp2 = 防御　#0=ARで計算,1=MR
-#temp3 = 属性 元のダメージ量を減らすべき？"*/
+																					temp2 = 防御　#0=ARで計算,1=MR #temp3 = 属性 元のダメージ量を減らすべき？" */
 																					Ptr18 = Temp11
 																					Ptr19 = projectile_ParentObject
 																					Ptr20 = v[ProjectileHitChecker]
@@ -244,7 +247,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																					@if reg1 == 1 {
 																						// @comment "Hit!"
 																						//@comment "#Buff"
-																							var1 = projectile_CollisionTimer 
+																							var1 = projectile_ProjectileBuff
 																							@if var1 >= v[1186] {
 																									var3 = projectile_BuffDuration 
 																									func_bs_register_buff_with_time(var1 Ptr20 var3)
@@ -280,7 +283,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																					//@comment "#HitFuncあれば呼ぶ"
 																					v[604] = Projectile_Ptr + 3
 																					@if projectile_CallFuncHit > 0 {
-																							projectile_ProjectilesFlag1 &= -3//~2
+																							projectile_ProjectileFlag1 &= -3//~2
 																							s[122].on
 																							v[423] = v[214]
 
@@ -331,7 +334,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 										Temp3 = v[4560] + v[214]
 
 										//opt 28.4.23
-										@if `projectile_ProjectilesFlag1 & PROJ_FL1_NoPicture {
+										@if `!(projectile_ProjectileFlag1 & PROJ_FL1_NoPicture) {
 												//@comment "#add angle delta"
 												TT2 = 1 // mirro fl
 												@if projectile_AngleDelta != 0 {
@@ -353,7 +356,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 									@if projectile_Timer <= 0 { // life time is over
 											@pic[Temp3].erase
 											@if projectile_CallFuncHit > 0 {
-												@if `projectile_ProjectilesFlag1 & 2 {
+												@if `projectile_ProjectileFlag1 & 2 {
 													s[122].on
 														//@comment "#Parent Agent"
 														Ptr19 = projectile_ParentObject

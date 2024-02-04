@@ -19,15 +19,15 @@ __fn MAIN_CEV_RTS_NORMAL_EFFECT_MANAGER {
 								EffectPtrHolder = Temp1
 
 									@if v[601] == EffectType_Has_LinkedFunc_Registered { // igonore registered frame
-										v[601] = EffectType_Has_LinkedFunc // convert
+											val_const(v[601],EffectType_Has_LinkedFunc)
 											v[601].copy v[Temp1], 100
 									}.else bl {
-										s[141].off
+											s[141].off
 											//@comment "Access15 = タイマー"
 											Ptr15 = Temp1 + 99
-											v[243] += 1
+											increment_var(v[243])
 											//@comment "タイマー減らす"
-											v[Ptr15] -= 1
+											ptr_sub(Ptr15,N1) // v[Ptr15] -= 1
 
 											// debug report log
 											__if DEBUG_BUILD==1 {
@@ -53,8 +53,7 @@ __fn MAIN_CEV_RTS_NORMAL_EFFECT_MANAGER {
 												@if v[EffectPtrHolder] == 2 {
 													@if v[611] >= 31 {
 
-														Temp1 = EffectPtrHolder
-
+															val_asg(Temp1,EffectPtrHolder) // Temp1 = EffectPtrHolder
 															s[143].on
 
 															//DEBUG FUNCTION!

@@ -1,6 +1,10 @@
 # Changes/Additions that need to be tested in BETA / ベータ版チェック項目
 
 ## Unexamined / そもそも試してすらいない
+### 弾リファクタリング
+絶対に色々とやばい。試しまくること
+  - 破壊突撃はどうか？
+  - ラインブレイカーの挙動お試し
 
 ### 要素系
 - ユニットのトランスフォーム処理がちゃんと機能するかどうかのチェックをせよ
@@ -52,6 +56,7 @@
 
 
 ## Seems okay / 大丈夫そう
+  - ランスチャージの挙動お試し
 - ``DIS.string.wrapText()`` [DIS_js_system_main.js]
   - 調整の余地はあるがエラーはなさそう。
 - cavalry_idle_motion

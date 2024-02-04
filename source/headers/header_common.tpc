@@ -97,15 +97,20 @@ def {
 
 	Projectiles_Limit = 180
 
+	Particle_Emitter_Limit = 256
+
 
 	PlayerSelectList_Size = 40
 	Adr_PlayerSelectList_Head = 101
 }
+// every event call over this number considered custom ones
+def Preset_Cev_Limit = 65535
+
 
 // Agents_Limit must be multiple of 16! if possible multiple of 64 is better.
 // the reason for it is to optimize Morton coordinate calculation.
-def Agents_Limit = 880
-def TEAMSIZE_SYSTEM_LIMIT = 350
+def Agents_Limit = 999 // 880
+def TEAMSIZE_SYSTEM_LIMIT = 480
 
 
 // select list vars

@@ -28,6 +28,29 @@ slot_skillflag=600
 
 }
 
+def MACRO_REFRESH_PROJECTILE_POS = {
+	projectile_RelativeX.copy projectile_AbsX,2
+	projectile_AbsX.sub LEGV_MainMAP_PointOfReferenceX,2
+	projectile_AbsX.copy projectile_milPixX,2
+	projectile_milPixX.mul N10000,2
+}
+
+
+def MACRO_SET_ABS_FOR_LEAGACY_PROJECTILES = {
+	projectile_rgst_RelativeX.copy projectile_rgst_AbsX,2
+	projectile_rgst_AbsX.sub LEGV_MainMAP_PointOfReferenceX,2
+	projectile_rgst_AbsX.copy projectile_rgst_milPixX,2
+	projectile_rgst_milPixX.mul N10000,2
+}
+
+def MACRO_SET_REWORKED_PROJECTILE = {
+	// temp
+	MACRO_SET_ABS_FOR_LEAGACY_PROJECTILES
+	projectile_rgst_ProjectileFlag1 |= PROJ_FL1_Aftermath_Projectile
+	projectile_rgst_ProjectileFlag2 |= PROJ_FL2_AbsSet
+	
+}
+
 //Basically you can consider when preset skill function called as a skill casted by an agent the caster agent data is already extracted in v[601]~
 
 //Preset Skill Common Events 
