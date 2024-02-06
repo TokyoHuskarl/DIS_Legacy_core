@@ -147,18 +147,20 @@ cev .id(skill_cev_devastating_charge), .name("devastatingCharge"), {
 
 		} .else bl {
 			@if s[123] .isOn() {
-				// kari remade
-				TT1 = projectile_ParentObject * 300
+					// kari remade
+					TT1 = projectile_ParentObject * 300
 					TT1 += 4707
 					v[TT1].copy projectile_RelativeX, 2
-					MACRO_REFRESH_PROJECTILE_POS
+					MACRO_REFRESH_PROJECTILE_POS_FROM_REL_COORD
+
+					TT1 += 5
 					v[TT1].copy TT1,2
 					// "動きがなくなったら判定がきえる"
 					TT1 = (abs(TT1) + abs(TT2)) / 1500
 					@if TT1 == 0 {
-						projectile_Timer /= 2
+							projectile_Timer /= 2
 							@if projectile_Timer == 0 {
-								var1 = skill_cev_devastating_charge
+									var1 = skill_cev_devastating_charge
 									var2 = projectile_ParentObject
 									@call .cev 1935
 

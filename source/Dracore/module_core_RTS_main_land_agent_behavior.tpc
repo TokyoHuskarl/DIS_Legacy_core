@@ -879,9 +879,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 				// check if the agent is in screen
 				@if agent_RelativeX >= v[1008] {
-					@if agent_RelativeX <= v[1009]{
-						@if agent_RelativeY >= v[1010]{
-							@if agent_RelativeY <= v[1011]{
+					@if agent_RelativeX <= v[1009] {
+						@if agent_RelativeY >= v[1010] {
+							@if agent_RelativeY <= v[1011] {
 								agent_SpriteX .add v[881], 2
 								//@comment "#描画範囲内であれば保存"
 								//@comment "#画面外"

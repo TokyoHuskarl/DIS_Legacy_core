@@ -28,12 +28,16 @@ slot_skillflag=600
 
 }
 
-def MACRO_REFRESH_PROJECTILE_POS = {
+def MACRO_REFRESH_PROJECTILE_POS_FROM_REL_COORD = {
 	projectile_RelativeX.copy projectile_AbsX,2
 	projectile_AbsX.sub LEGV_MainMAP_PointOfReferenceX,2
 	projectile_AbsX.copy projectile_milPixX,2
 	projectile_milPixX.mul N10000,2
 }
+
+
+
+
 
 
 def MACRO_SET_ABS_FOR_LEAGACY_PROJECTILES = {
@@ -73,6 +77,9 @@ def skill_cev_devastating_charge = 1238
 
 #include "./skills/pss_gliding_charge.tpc"
 
+// linebreaker
+#include "./skills/pss_linebreaker.tpc"
+
 //ScorpionBolt
 #include "./skills/pss_scorpion_bolt.tpc"
 
@@ -81,6 +88,8 @@ def skill_cev_devastating_charge = 1238
 
 #include "./skills/pss_gloryhammer.tpc"
 #include "./skills/pss_windimpact.tpc"
+
+#include "./skills/pss_lifeabsorb.tpc"
 
 def pss_cev_unpack_treb = 1301
 #include "./skills/pss_treb_functions.tpc"

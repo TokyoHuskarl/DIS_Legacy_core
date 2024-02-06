@@ -39,7 +39,7 @@ cev .id(skill_cev_id_lancecharge), .name("LanceCharge"),{
 
 		} .else bl {
 			@if bool_skill_hit_function .isOn() {
-				v[Ptr19 * 300 + 4728] = 3000
+					v[Ptr19 * 300 + 4728] = 3000
 					var1 = 1222
 					var2 = Ptr19
 					@call .cev 1935
@@ -51,8 +51,8 @@ cev .id(skill_cev_id_lancecharge), .name("LanceCharge"),{
 						v[Ptr19 * 300 + 4783] = 6
 							// "演出"
 							@if `s[Ptr20 + 500] == 1 && v[182] < 5 {
-								// "#########################"
-								v[471] = 11550
+									// "#########################"
+									v[471] = 11550
 									v[472] = divmul(90, 100, v[2216])
 									v[473] = rnd(62, 74)
 									v[474] = divmul(v[361] + v[1001], v[1281], 50)
@@ -125,7 +125,7 @@ cev .id(skill_cev_id_lancecharge), .name("LanceCharge"),{
 						TT1 = projectile_ParentObject * 300
 						TT1 += 4707
 						v[TT1].copy projectile_RelativeX, 2
-						MACRO_REFRESH_PROJECTILE_POS
+						MACRO_REFRESH_PROJECTILE_POS_FROM_REL_COORD
 						TT1 += 5
 						v[TT1].copy TT1,2
 						// "動きがなくなったら判定がきえる"

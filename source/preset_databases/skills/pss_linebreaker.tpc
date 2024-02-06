@@ -19,9 +19,10 @@ cev .id(1241), .name("LineBreaker_Main"), {
 	} .else bl {
 		@if s[123] .isOn() {
 				// refactoring
-				v[341] = v[v[609]] * 300 + 4707
+				v[341] = projectile_ParentObject * 300 
+				v[341] += 4707
 				v[TT1].copy projectile_RelativeX, 2
-				MACRO_REFRESH_PROJECTILE_POS
+				MACRO_REFRESH_PROJECTILE_POS_FROM_REL_COORD
 				v[341] += 5
 				v[v[341]].copyTo v[341], 2
 				@comment "動きがなくなったら判定がきえる"
@@ -132,9 +133,7 @@ cev .id(1241), .name("LineBreaker_Main"), {
 							v[v[299] * 300 + 4949] = v[v[22]]
 							@comment "#向き固定"
 							v[v[299] * 300 + 4945] = 1
-							@comment "###############
-							速度べくとるを作る
-###############"
+							@comment "############### 速度べくとるを作る ##############"
 							v[341] = v[299] * 300
 							v[341] += 4707
 							v[v[341]].copyTo v[11], 2
@@ -171,7 +170,7 @@ cev .id(1241), .name("LineBreaker_Main"), {
 					@if v[217] < v[4559] {
 						v[217] += 1
 							@loop v[4559] .dst v[320] {
-								v[216] %= 180
+									v[216] %= v[4559]
 									v[301] = v[216] * 100
 									v[301] += v[1076]
 									v[295] = v[301] + 1
@@ -180,44 +179,44 @@ cev .id(1241), .name("LineBreaker_Main"), {
 											v[297] = v[299] * 300
 											v[297] += 4700
 											@comment "まず清掃"
-											v[1301].copyTo v[601], 100
-											v[1301].copyTo v[v[295]], 100
+											v[1301].copy projectile_rgst_ProjectileType, 100
 											@comment "ParentObjセット☆修正済み,v[299]"
-											v[609] = v[299]
+											projectile_rgst_ParentObject = v[299]
 											@comment "出る場所セット"
 											v[341] = v[297] + 5
-											v[v[341]].copyTo v[605], 2
+											v[v[341]].copyTo projectile_rgst_milPixX, 2
 											v[341] += 2
-											v[v[341]].copyTo v[607], 2
+											v[v[341]].copyTo projectile_rgst_RelativeX, 2
 											@comment "Projectile team"
 											v[341] = v[297] + 100
-											v[618] = v[v[341]]
+											projectile_rgst_Team = v[v[341]]
 											@comment "パラメータ等入力begin"
 											@comment "#Pic"
-											v[602] = 1
+											projectile_rgst_Pic1 = 1
 											@comment "#ProjectileType"
-											v[601] = 1
-											v[603] = 1241
+											projectile_rgst_ProjectileType = 1
+											projectile_rgst_CallFuncProjectile = 1241
 											@comment "#Hit Limit"
-											v[630] = 1
+											projectile_rgst_Drawtype = 1
 											@comment "#あたり判定"
 											v[341] = v[v[299] * 300 + 4817] / 900
-											v[610..611] = v[341]
+											projectile_rgst_Width = v[341]
+											projectile_rgst_Height = v[341]
 											@comment "#威力"
 											v[21] = 30
-											v[621] = v[21]
+											projectile_rgst_Damage = v[21]
 											@comment "#ARMRと属性"
-											v[622] = 0
+											projectile_rgst_ARorMR = 0
 											v[341] = v[297] + 123
-											v[623] = v[v[341]]
+											projectile_rgst_Element = v[v[341]]
 											@comment "#Timer"
-											v[700] = 200
+											projectile_rgst_Timer = 200
 											@comment "#Effect"
-											v[604] = 1241
+											projectile_rgst_CallFuncHit = 1241
 											@comment "#Nopic"
-											v[628] |= 8
-											@if s[316] .isOn() {
-												v[628] = 0
+											projectile_rgst_ProjectileFlag1 |= 8
+											__if DEBUG_BUILD == 1 {
+													projectile_rgst_ProjectileFlag1 &= ~8
 													v[302] = v[216] + v[4560]
 													@pic[v[302]].show {
 														"arrows\throwingaxeb"
@@ -235,12 +234,13 @@ cev .id(1241), .name("LineBreaker_Main"), {
 													}
 
 											} .else bl {
-												v[302] = v[216] + v[4560]
+													v[302] = v[216] + v[4560]
 													@pic[v[302]].erase
 
 											}
-										@comment "描画"
-											v[601].copyTo v[v[295]], 100
+											@comment "描画"
+											MACRO_SET_REWORKED_PROJECTILE
+											projectile_rgst_ProjectileType.copyTo v[v[295]], 100
 											@comment "パラメータ等入力end"
 											@comment "演出"
 											@break
