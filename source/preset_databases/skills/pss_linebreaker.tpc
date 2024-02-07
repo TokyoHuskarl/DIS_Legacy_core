@@ -32,7 +32,7 @@ cev .id(1241), .name("LineBreaker_Main"), {
 
 		} .else bl {
 			@if s[122] .isOn() {
-				v[607].copyTo v[361], 2
+					v[607].copyTo v[361], 2
 					@if `v[v[299] * 300 + 4802] == 0 {
 						@if `s[500 + v[299]] == 1 && v[182] < 4 {
 							v[182] += 1
@@ -47,70 +47,9 @@ cev .id(1241), .name("LineBreaker_Main"), {
 						}
 
 					}
-				@if v[217] < v[4559] {
-					v[217] += 1
-						@loop v[4559] .dst v[320] {
-							v[216] %= v[4559]
-								v[281] = v[216] * 100
-								v[281] += v[1076]
-								v[285] = v[281] + 1
-								@if v[v[285]] == 0 {
-									@comment "Access17 = AttackerObjチェックPtr"
-										v[297] = v[299] * 300
-										v[297] += 4700
-										@comment "まず清掃"
-										v[1301].copyTo v[601], 100
-										v[1301].copyTo v[v[295]], 100
-										@comment "ParentObjセット"
-										v[609] = v[299]
-										@comment "出る場所セット"
-										v[341] = v[300] * 300 + 4707
-										v[v[341]].copyTo v[605], 2
-										v[605..606] *= 10000
-										v[v[341]].copyTo v[607], 2
-										@comment "Projectile team"
-										v[341] = v[297] + 100
-										v[618] = v[v[341]]
-										@comment "パラメータ等入力begin"
-										@comment "#Pic"
-										v[602] = 1
-										@comment "#ProjectileType"
-										v[601] = 2
-										@comment "#あたり判定"
-										v[610] = 32
-										v[611] = 32
-										@comment "#威力"
-										v[11] = v[299]
-										v[12] = 3
-										@call .cev 2004
-										@comment "[AR]*25%"
-										v[21] /= 5
-										v[21] = 0
-										v[621] = v[21]
-										@comment "#ARMRと属性"
-										v[622] = 0
-										v[341] = v[297] + 123
-										v[623] = v[v[341]]
-										@comment "#Hit Type"
-										v[627] = 0
-										@comment "#Timer"
-										v[700] = 2
-										@comment "#Effect"
-										v[604] = 1242
-										@comment "#Nopic"
-										v[628] |= 8
-										@comment "パラメータ等入力end"
-										v[601].copyTo v[v[285]], 100
-										@comment "演出"
-										@break
+					
+					shoot_linebreaker_knockback()
 
-								}
-							v[216] += 1
-
-						}
-
-
-				}
 
 			} .else bl {
 				@comment "Access19 = AttackerObjectID 0~
@@ -168,7 +107,7 @@ cev .id(1241), .name("LineBreaker_Main"), {
 					}
 				@comment "当たり判定を召喚"
 					@if v[217] < v[4559] {
-						v[217] += 1
+							v[217] += 1
 							@loop v[4559] .dst v[320] {
 									v[216] %= v[4559]
 									v[301] = v[216] * 100
@@ -246,7 +185,7 @@ cev .id(1241), .name("LineBreaker_Main"), {
 											@break
 
 									}
-								v[216] += 1
+									v[216] += 1
 
 							}
 
@@ -256,6 +195,74 @@ cev .id(1241), .name("LineBreaker_Main"), {
 			}
 
 		}
+
+	}
+}
+
+
+__fn shoot_linebreaker_knockback {
+	@if v[217] < v[4559] {
+		v[217] += 1
+			@loop v[4559] .dst v[320] {
+				v[216] %= v[4559]
+					v[281] = v[216] * 100
+					v[281] += v[1076]
+					v[285] = v[281] + 1
+					@if v[v[285]] == 0 {
+						@comment "Access17 = AttackerObjチェックPtr"
+							v[297] = v[299] * 300
+							v[297] += 4700
+							@comment "まず清掃"
+							v[1301].copyTo projectile_rgst_ProjectileType, 100
+							@comment "ParentObjセット"
+							projectile_rgst_ParentObject = v[299]
+							@comment "出る場所セット"
+							v[341] = v[300] * 300 + 4707
+							v[v[341]].copyTo projectile_rgst_milPixX, 2
+							projectile_rgst_milPixX.mul N10000,2
+							v[v[341]].copyTo projectile_rgst_RelativeX, 2
+							@comment "Projectile team"
+							v[341] = v[297] + 100
+							projectile_rgst_Team = v[v[341]]
+							@comment "パラメータ等入力begin"
+							@comment "#Pic"
+							projectile_rgst_Pic1 = 1
+							@comment "#ProjectileType"
+							projectile_rgst_ProjectileType = 2
+							@comment "#あたり判定"
+							projectile_rgst_Width = 32
+							projectile_rgst_Height = 32
+							@comment "#威力"
+							v[11] = v[299]
+							v[12] = 3
+							@call .cev 2004
+							@comment "[AR]*25%"
+							v[21] /= 5
+							v[21] = 0
+							projectile_rgst_Damage = v[21]
+							@comment "#ARMRと属性"
+							projectile_rgst_ARorMR = 0
+							v[341] = v[297] + 123
+							projectile_rgst_Element = v[v[341]]
+							@comment "#Hit Type"
+							projectile_rgst_Hittype = 0
+							@comment "#Timer"
+							projectile_rgst_Timer = 2
+							@comment "#Effect"
+							projectile_rgst_CallFuncHit = 1242
+							@comment "#Nopic"
+							projectile_rgst_ProjectileFlag1 |= 8
+							@comment "パラメータ等入力end"
+							MACRO_SET_REWORKED_PROJECTILE
+							projectile_rgst_ProjectileType.copyTo v[v[285]], 100
+							@comment "演出"
+							@break
+
+					}
+				v[216] += 1
+
+			}
+
 
 	}
 }

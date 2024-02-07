@@ -105,7 +105,6 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 								// not pause.. once after did some shits, pause nest will be only one. not like this tarded way
 								@if s[2] .isOff() {
 									//@comment "#Width+Height"
-									// TT1 = v[v[610]] + v[v[611]]
 									projectile_Width.copy TT1,1
 									val_add(TT1,projectile_Height)
 
@@ -197,7 +196,6 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																				
 																				@if projectile_ProjectileType == 2 {
 																						
-																						
 																						//opt 28.4.23
 																						Ptr13 = v[214] * PRJ_HIT_FLAGS_SIZE 
 																						Ptr13 += gPtr_ProjectileHitFlags_HEAD // set to head
@@ -275,13 +273,12 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
 
 																					} .else bl { //@comment "Miss!"
-																						LEGACY_projectile_miss_GFX()
+																						// LEGACY_projectile_miss_GFX()
 																					}
 
 																				//@comment "#Parent Agent"
 																				Ptr19 = projectile_ParentObject
 																					//@comment "#HitFuncあれば呼ぶ"
-																					v[604] = Projectile_Ptr + 3
 																					@if projectile_CallFuncHit > 0 {
 																							projectile_ProjectileFlag1 &= -3//~2
 																							s[122].on
@@ -296,13 +293,11 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																							}
 
 																							// back up to savebuffer
-																							// projectile_ProjectileType.copy projectile_savebuffer_ProjectileType,100
 																							// set Ptr20 again
 																							Ptr20 = v[ProjectileHitChecker]
 																							LEGACY_extract_projectile_data_to_agent_buffer() // retard retard retard retard 
 																							@call .cev projectile_CallFuncHit
 																							// load up backup buffer
-																							// projectile_savebuffer_ProjectileType.copy projectile_ProjectileType, 100
 																							v[214] = v[423]
 																							s[122].off
 
@@ -362,7 +357,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 														Ptr19 = projectile_ParentObject
 														v[423] = v[214]
 														projectile_RelativeX.copy v[607], 2 // legacy feature, should be removed
-														func_devlog("Projectile removed and Cev called - ID:\v[604]")
+														func_devlog("Projectile removed and Cev called - ID:\v[740604]")
 														@call .cev projectile_CallFuncHit
 														v[214] = v[423]
 														s[122].off
@@ -406,12 +401,12 @@ __fn LEGACY_projectile_miss_GFX {
 
 	// oh fugg
 	@if `s[Ptr20 + 500] && v[183] < v[4572] {
-		v[381].copy v[221], 2
+			v[381].copy v[221], 2
 			@if reg2 == 1 {
 				reg10 = 2
-					//@comment "Shield Blocked!"
+					// @comment "Shield Blocked!"
 					reg3 = 0
-					//@comment "Shield Cracking"
+					// @comment "Shield Cracking"
 					Ptr20 = v[ProjectileHitChecker]
 					@if `projectile_bits1 & 1024 {
 						/* @comment "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"*/
@@ -447,7 +442,7 @@ __fn LEGACY_projectile_miss_GFX {
 				@if reg3 == 0 {
 					@if v[182] <= 2 {
 						//@comment "#########################"
-						v[472] = divmul(60, 100, v[2216])
+							v[472] = divmul(60, 100, v[2216])
 							v[473] = rnd(115, 120)
 							v[474] = divmul(v[381] + v[1001], v[1281], 50)
 							@cmd 11550, "weapons/shield_hit", .args v[472], 3
@@ -470,23 +465,23 @@ __fn LEGACY_projectile_miss_GFX {
 
 				// KUSO
 				//@comment "Call Shield"
-				TT2 = Ptr20 * 300 
+					TT2 = Ptr20 * 300 
 					TT2 += 4952
 					v[TT2 + 32] = v[TT2] > 0 ? 4 : 0
 					//@comment "#Shield Motion"
 					TT2 = Ptr20 * 300 
 					TT2 += 4943
 					@if v[TT2] != 1 {
-						v[TT2] = 2
-							TT2 -= 215
+							v[TT2] = 2
+								TT2 -= 215
 							v[TT2] += v[TT2] < 300 ? 900 : 0
 
 					}
 
 				@if s[307] .isOff() {
 					@if `v[183] < v[4572] / 2 {
-						//@comment "#描画範囲内か？"
-						v[220] %= 30
+							//@comment "#描画範囲内か？"
+							v[220] %= 30
 							v[220] += 1201
 							v[220] += 1
 							v[223] = v[220]

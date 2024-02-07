@@ -39,16 +39,16 @@ cev .id(skill_cev_id_lancecharge), .name("LanceCharge"),{
 
 		} .else bl {
 			@if bool_skill_hit_function .isOn() {
-					v[Ptr19 * 300 + 4728] = 3000
+					v[projectile_ParentObject * 300 + 4728] = 3000
 					var1 = 1222
-					var2 = Ptr19
+					var2 = projectile_ParentObject
 					@call .cev 1935
 					v[reg1] = 1222
 					v[reg2] = 24
-					v[607].copy v[361], 2
+					projectile_RelativeX.copy v[361], 2
 					@if `reg10 == 1 || reg10 == 2 {
 						// "Set ShieldMotion Timer"
-						v[Ptr19 * 300 + 4783] = 6
+						v[projectile_ParentObject * 300 + 4783] = 6
 							// "演出"
 							@if `s[Ptr20 + 500] == 1 && v[182] < 5 {
 									// "#########################"
@@ -62,9 +62,12 @@ cev .id(skill_cev_id_lancecharge), .name("LanceCharge"),{
 							}
 
 					}
+
 				// "演出"
 				@if `!(v[Ptr20 * 300 + 4948] & 1) {
-					@call .cev 1241
+						Ptr19 = projectile_ParentObject
+						shoot_linebreaker_knockback()
+						// @call .cev 1241 // linebreaker
 						v[607].copy v[361], 2
 						@if `between(v[361], v[1008], v[1009]) && between(v[362], v[1010], v[1011]) {
 							@loop v[1017] .dst Temp20 {
@@ -96,9 +99,12 @@ cev .id(skill_cev_id_lancecharge), .name("LanceCharge"),{
 
 						}
 
+
+
+				// if it's in pikewall state
 				} .else bl {
-					var1 = 1169
-						var2 = Ptr19
+						var1 = 1169
+						var2 = projectile_ParentObject
 						@call .cev 1911
 						@if reg2 >= 0 {
 							// "#Duration"
