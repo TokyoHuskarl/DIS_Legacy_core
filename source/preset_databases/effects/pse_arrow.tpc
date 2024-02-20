@@ -4,28 +4,19 @@ def Zero_Angle = 8000000
 def arrow_base_hit = 20
 
 __fn macro_parabolic_projectile_cal_angle $v $l {
-	/*TT1 = $l //pix
-	TT1 = pow($l,2)
-	TT1 *= g_perFPS // avoid overflow (pix*1000)/f
-	TT2= $v / 10//pix*1000/10f
-	TT1 = divmul(TT1,pow(TT2,2),5000) //
-	//TT2 = muldiv($l,10000,TT1) // (*10000)
-	TT2 = muldiv($l,100000,TT1) // (*100)
-	//TT3 = 1
-	TT4 = divmul(TT2,4,TT2)
-	TT4 -= 100
-	TT5 = sqrt(TT4,1)//root *10^4 ->?*10^*/
 	//TT2 *= 1000//set digit the same
 	//TT1 = $l //pix
+
 	TT1 = muldiv($l, $l, 1000) //(pix*10)
-	TT1 *= 20//g_perFPS/100 // (pix*10000)
-	TT2= $v //pix*1000/10f
+	TT1 *= 20 // g_perFPS / 100 // (pix*10000)
+	TT2= $v // pix*1000/10f
 	TT2 = muldiv($l,1000,divmul(TT1,pow(TT2,2),20)) //(pix*1000)/(pix*1000)*1000
 	//TT3 = 1
-	TT4 = TT2/1000 //prepare for sqrt
+	TT4 = TT2 / 1000 //prepare for sqrt
 	TT4 = muldiv(TT4,TT4,4)
-	TT4 -= 1
+	val_sub(TT4,N1)
 	TT5 = sqrt(TT4,10000)//root *10^4 ->?*10
+
 	@if TT4 > 0 {
 		//return 
 		TT6 = TT2 / -2 * 10 //* 100// -2 /// / -2 --digit*100
@@ -34,9 +25,10 @@ __fn macro_parabolic_projectile_cal_angle $v $l {
 
 		//TT6 =  360000000 + TT8
 		//TT6 = TT5 - TT2 
+
 		func_math_pseud_arctan(TT8)
 		reg1 += 90000000
-		reg2 = 1
+		val_const(reg2,N1) // reg2 = 1
 	}.else bl{
 		//cannot reach the goal with given parameters!
 		reg2 = -1
@@ -53,19 +45,26 @@ __fn func_effect_arrow_init $selfid {
 	    zeroArray100.copy v[effect_set_ptr], EffectArraySize
 	    zeroArray100.copy effect_EffectType, EffectArraySize
 
-
 	    // set effect type
 	    effect_EffectType = EffectType_Has_LinkedFunc_Registered // ignore the first frame 
+
 	    // set event id
 	    effect_CallEffFunc = $selfid
+
 	    // "描画終了時イベント番号設定"
 	    effect_LinkedFunc = cevid_func_erase_effect
+
 	    // set parents and targets - these vars handed down from ranged_shoot function
-	    effect_ParentObject = Ptr19//Ptr19
-	    effect_TargetObject = Ptr20//Ptr20
-	    effect_DirWhenShot = agent_Direction//v[637]
+	    // effect_ParentObject = Ptr19 //Ptr19
+			val_asg(effect_ParentObject,Ptr19)
+	    // effect_TargetObject = Ptr20 //Ptr20
+			val_asg(effect_TargetObject,Ptr20)
+
+	    // effect_DirWhenShot = agent_Direction //v[637]
+			val_asg(effect_DirWhenShot,agent_Direction)
 	    
-	    effect_Timer = 400 //Arrows can exist only for 400 frames... just in case if the gravity won't work well
+			val_const(effect_Timer,400) // Arrows can exist only for 400 frames... just in case if the gravity won't work well
+
 	    //Set base Positions... 
 	    agent_RelativeX.copy effect_RelativeX,2
 	    //effect_RelativeX.add v[53], 2
@@ -77,9 +76,9 @@ __fn func_effect_arrow_init $selfid {
 	    //v[624..625] set in agent ranged shoot process
 	    v[624].copy effect_TargetObjectX,2
 	    TT1 = rnd(-4,4)
-	    effect_TargetObjectX += TT1 //= v[624] + TT1
+			val_add(effect_TargetObjectX,TT1)
 	    TT1 = rnd(-4,4)
-	    effect_TargetObjectY += TT1 //= v[625] + TT1
+			val_add(effect_TargetObjectY,TT1)
 	    //Cal Distance
 	    effect_TargetObjectX.copy TT1, 2
 	    //TT1.add v[53], 2
@@ -88,29 +87,31 @@ __fn func_effect_arrow_init $selfid {
 	    TT1.mul TT1, 2
 	    effect_Distance_to_goal = TT1 + TT2
 	    effect_Distance_to_goal = sqrt(effect_distance_to_goal,1000)
+
 	    //Set XY velo
-	    effect_milPixVab = agent_AAvelocity
+			val_asg(effect_milPixVab,agent_AAvelocity) // effect_milPixVab = agent_AAvelocity
 
 	    //Then start caluclation
 	    macro_parabolic_projectile_cal_angle(effect_milPixVab effect_Distance_to_goal)
 	    effect_Angle = max(reg1, Zero_Angle)//zero-distance shooting(almost)
 	    effect_milVz = muldiv(effect_milPixVab,sin(effect_Angle,1000000,1000),1000)
-	    @if reg1 < 20000000{ //Close Quarter shooting!
+	    @if reg1 < 20000000 { //Close Quarter shooting!
 	    	effect_milZ = 13000 //give 13pix height if the angle is too low - below 20 degree
 		effect_milVz += g_perFPS
 		effect_ArrowCheckHeight = 21500 //almost check every frame when zero distance shoot
 		effect_HitBonus = effect_Distance_to_goal> agent_BaseRange_max / 3 ?arrow_base_hit+5:(effect_Distance_to_goal>agent_BaseRange_max / 5?(arrow_base_hit/2):-10)//Enemy too close!
+
 	    }.else bl{
 		effect_ArrowCheckHeight = Const_Arrow_Check_Height
 		effect_HitBonus = arrow_base_hit
 	    }
-	    effect_Distance_to_goal /=1000 
+	    effect_Distance_to_goal /= 1000 
 	    func_devlog("cal return: Distance: \v[4020]pix Angle: \reg1mildegree vz:\v[4042]")
 
-	    effect_2DAngle = atan2(effect_milPixVy,effect_milPixVx,1000)
-	    TT2 = muldiv(effect_milPixVab,cos(effect_Angle,1000000,1000),1000)
-	    effect_milPixVx = muldiv(TT2,cos(effect_2DAngle,1000,1000),1000)
-	    effect_milPixVy = muldiv(TT2,sin(effect_2DAngle,1000,1000),1000)
+	    effect_2DAngle = atan2(effect_milPixVy, effect_milPixVx, 1000)
+	    TT2 = muldiv(effect_milPixVab, cos(effect_Angle, 1000000, 1000), 1000)
+	    effect_milPixVx = muldiv(TT2, cos(effect_2DAngle, 1000, 1000), 1000)
+	    effect_milPixVy = muldiv(TT2, sin(effect_2DAngle, 1000, 1000), 1000)
 	    func_devlog("XY 2d vector: v0:\v[4014] vx:\v[4012] vy:\v[4013] angle:\TT1")
 
 			macro_get_agent_slot_to_r1(effect_ParentObject,SLOT_CURRENT_AD)
@@ -135,14 +136,15 @@ __fn func_effect_arrow_proc $arrowPictString {
 	    effect_milX.copy effect_RelativeX,2
 	    v[__id(effect_RelativeX)..__id(effect_RelativeY)] /= 1000
 	    effect_milVz -= g_perFPS 
-	    effect_milZ += effect_milVz
+	    // effect_milZ += effect_milVz
+			val_add(effect_milZ,effect_milVz)
 	    effect_RelativeX.copy effect_ArrowHitX,2
-	    effect_RelativeY -= effect_milZ/1024
+	    effect_RelativeY -= effect_milZ / 1024
 
 	    effect_RelativeX.copy TT1,2
 	    TT1.sub effect_SavedPositionX,2
 	    TT1.sub v[53],2 //angle  cal without cam diff 
-	    effect_Angle = atan2(TT2, TT1, 1000) +360000
+	    effect_Angle = atan2(TT2, TT1, 1000) + 360000
 
 
 
@@ -152,7 +154,8 @@ __fn func_effect_arrow_proc $arrowPictString {
 		}
 	    }
 	    @if effect_milZ <= 100 {//Fall into the Ground
-		effect_Timer=1
+		effect_Timer = 1
+
 	    }
     }.else  bl{
 	    v[53].copy TT1, 2
@@ -190,6 +193,7 @@ __fn func_effect_arrow_hit $WeaponType {
 
 	// "Leave Arrow Picture"
 	//v[Temp1] = 1
+
 	// "エフェクト処理から呼び出される"
 	//TT1 = Temp1 + 8
 	//TT2 = Temp1 + 22
@@ -197,6 +201,7 @@ __fn func_effect_arrow_hit $WeaponType {
 	Ptr20 = effect_TargetObject
 	Ptr10 = Ptr20 * 300
 	Ptr18 = Ptr10 + 4701
+
 	// "TargetObjが存在している"
 	@if v[Ptr18] >= 1 {
 	    // "処理開始"
@@ -215,7 +220,7 @@ __fn func_effect_arrow_hit $WeaponType {
 
 	    // "#当たり判定チェック"
 	    //`between(v[607], TT1, TT3) && between(v[608], TT2, TT4)
-	    @if v[607]>=TT1{ @if v[607]<=TT3{ @if v[608]>=TT2{ @if v[608]<=TT4{ //just box check. This looks awful but faster in RM proc 
+	    @if v[607]>=TT1 { @if v[607]<=TT3 { @if v[608]>=TT2 { @if v[608]<=TT4 { //just box check. This looks awful but faster in RM proc 
 		v[Ptr18].copy victim_AgentType,agent_Basic_Array_size
 		Ptr19 = effect_ParentObject
 		Ptr9 = Ptr19 * 300
@@ -235,8 +240,6 @@ __fn func_effect_arrow_hit $WeaponType {
 		var1 = Ptr19
 		// "Get Dir"
 		@if s[167] .isOff() {
-		    //9.3.23
-
 		    //get effect_DirectionWhenShoot
 		    var3 = Temp1 + 36
 		    var3 = v[var3]
@@ -244,7 +247,7 @@ __fn func_effect_arrow_hit $WeaponType {
 		    var4 = Temp1 + 97
 		    var4 = v[var4]
 		    //@call .cev 43
-		    func_bs_ranged_hit_check(Ptr19 Ptr20 var3 bs_hitcheck_FLAG_ArrowMode var4)
+		    func_bs_ranged_hit_check(Ptr19,Ptr20,var3,bs_hitcheck_FLAG_ArrowMode,var4)
 		    v[607] = Ptr10 + 4707
 		    v[v[607]].copy v[607],2
 		} .else bl {
@@ -611,6 +614,7 @@ cev .id(cevid_eff_arrow), .name("effect:arrow"), {
 		    @cmd v[471], "bow_shoot_01", .args v[472], 3
 		    
 		}
+
 		var3 = v[Ptr15]
 		v[330] = Temp1 + 17
 		v[334] = Temp1 + 23

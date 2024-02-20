@@ -8,7 +8,8 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	@comment "module_RTS_sightsystem_general.tpc"
 	v[161].copy v[2923], 2
 	v[2923] .sub v[1115], 1
-	v[2924] += 8 
+	// v[2924] += 8 
+	val_add(v[2924],N8)
 	v[2924] -= v[1002] / 2
 	v[2923].copy v[2921], 2
 	
