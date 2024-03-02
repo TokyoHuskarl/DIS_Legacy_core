@@ -133,7 +133,7 @@ function getRM(typ,add){
 // DIS project
 
 // import NsGUI and refer as DGUI
-const DGUI = (typeof NsGUI === "undefined") ? (()=>{deblog("Attention: NsGUI module is missing.");return{};})() : NsGUI;
+// const DGUI = (typeof NsGUI === "undefined") ? (()=>{deblog("Attention: NsGUI module is missing.");return{};})() : NsGUI;
 
 // global pointers for important objects
 let MISSION; // {RTSmission} current mission - always refers to current RTS.mission
@@ -1377,7 +1377,7 @@ DIS.string = (function(){
 
 	// return given char is CJK or not
 
-	isJapaneseChar = function(char) {
+	const isJapaneseChar = function(char) {
 		const charCode = char.charCodeAt(0);
 		return (
 			(charCode >= 0x3000 && charCode <= 0x30ff) || // ひらがなとカタカナ Hiragana and Katakana
@@ -1605,6 +1605,25 @@ DIS.agent = {
 	},
 
 };
+
+
+DIS.map = (function(){
+	const Adr_TileInfoHead = 1182;
+	const Adr_MapWidth = 2061;
+	const Adr_MapHeight = 2062;
+
+	return {
+		/**
+		 * 
+		 * @returns 
+		 */
+		getTileinfo(){
+			return getv(getv(Adr_TileInfoHead),(getv(Adr_MapWidth) * getv(Adr_MapHeight)));
+		},
+
+	};
+
+}());
 
 
 DIS.player = {
@@ -2680,6 +2699,12 @@ class RTSmission {
 			let path = RTS.mission.missionPath + finame; // Str_MissionPath
 			Cmd.sys.importData(path);
 		},
+
+		execScript(finame){
+			let path = RTS.mission.missionPath + finame; // Str_MissionPath
+			Cmd.sys.exec(path);
+
+		}
 	};
 
 	/**
@@ -2983,6 +3008,12 @@ class RTSmap {
 			this.heightgenType = src.heightgen || 0; // kari
 			this.terrainSource = src.terrainfile || "terrain.png"; // png?
 			this.tileset = src.tileset || 1; // RM tile set - if it's not defined, at least try loading 1.
+
+					// import mission data extension
+			for (let elm of this.mapscript){
+				RTS.mission.Cmd.execScript(elm); // js execute order
+				deblog(`map script file ${elm} will be executed`);
+			};
 		};
 		
 
@@ -3000,6 +3031,16 @@ class RTSmap {
 		
 
 	};
+	// default elements
+	mapscript = [];
+	dataextension = [];
+	dependency = [];
+	heightgenType = 0; // kari
+	terrainSource = "terrain.png"; // png?
+	tileset = 1; // RM tile set - if it's not defined, at least try loading 1.
+	// end
+
+
 	
 	
  /**
@@ -3012,7 +3053,24 @@ class RTSmap {
 		const Adr_HeightGenType = 2056;
 
 		setv(Adr_TileID,this.tileset);
-		this.generate();
+		// this.generate();
+		deblog("Is this map legacy one?: "+ RTS.mission.conf.isLEGACYmission);
+		if (!RTS.mission.conf.isLEGACYmission){ // not 
+			const Adr_mapTerrainSourceType = 2055;
+			let filename = this.terrainSource.split("."); // ignore extension
+			if (filename[1] == "png"){
+				setv(Adr_mapTerrainSourceType,2);
+
+			} else if (filename[1] == "txt") {
+				setv(Adr_mapTerrainSourceType,1);
+
+			};
+			deblog(filename[0]+filename[1]);
+
+			filename = filename[0]; // this.terrainSource.split(".")[0]; // ignore extension
+			sett(adr_DISstr1,filename) // return to t[501]
+		};
+
 		deblog("build called");
 		setv(Adr_HeightGenType,this.heightgenType);
 	};
@@ -3038,24 +3096,7 @@ class RTSmap {
 	* - I mean using RMmap.
   */
 	generate(){ // 
-	
-		deblog("Is this map legacy one?: "+ RTS.mission.conf.isLEGACYmission);
-		if (!RTS.mission.conf.isLEGACYmission){ // not 
-			const Adr_mapTerrainSourceType = 2055;
-			let filename = this.terrainSource.split("."); // ignore extension
-			if (filename[1] == "png"){
-					setv(Adr_mapTerrainSourceType,2);
-
-			} else if (filename[1] == "txt") {
-					setv(Adr_mapTerrainSourceType,1);
-
-			};
-			deblog(filename[0]+filename[1]);
-
-			filename = filename[0]; // this.terrainSource.split(".")[0]; // ignore extension
-			sett(adr_DISstr1,filename) // return to t[501]
-		};
-	
+		// override me
 	};
 
  /**
@@ -3064,10 +3105,13 @@ class RTSmap {
   * @param {object} heightinfo - two-dimensional array. [width][height]
 	* @return {bool}
   */
-	setMapElevation(elvinfo){
-		const rawelvdata = DIS.macro.flattenArray(elvinfo)
-		if(typeof rawelvdata === "array"){
-			setva(TPCadr.v.Adr_MapElevationArray,rawelvdata);
+	setMapTileInfo(elvinfo){
+		if(Array.isArray(elvinfo)){
+			console.log(elvinfo);
+			const Adr_TileInfoHead = 1182; // kari
+			deblog(getv(Adr_TileInfoHead)) // kari
+			setv(getv(Adr_TileInfoHead),elvinfo); 
+
 			return true;
 
 		} else {
@@ -3542,10 +3586,12 @@ let RTS = {
 		setv(21,MAP.size[0])
 		setv(22,MAP.size[1])
 		deblog("sent back size array to reg1 and reg2")
-		
 	},
 
 
+	/**
+	 * RTS.save()
+	 */
 	save: function(){ // called whenever the game is trying to make RM savefile...
 		
 		// save RTS.Preserve to RM strmem[745]
@@ -5043,4 +5089,7 @@ function resizeImage(imageData, originalWidth, originalHeight,rate) {
 	};
 	return resizedData;
 };
+
+deblog(DIS.string)
+
 

@@ -14,6 +14,13 @@ def {
 __fn CEV_MISSION_INIT {
 	
 	v[ptr_null] = 0 // allocate memory
+
+	// LOAD JS LIBRARIES
+		load_jslib("noisejs/perlin.js") // load library
+		// execute_js("jslib\noisejs\perlin.js") // load mapgenerator API 
+		execute_js("DIS_mapgenerator.js") // load mapgenerator API
+	// 
+
 	// @comment "init map id"
 	t[751] .asg ""
 	t[752] .asg ""
@@ -1098,10 +1105,7 @@ __fn CEV_MISSION_MAP_INIT {
 
 	// mapdef.js.txt file won't be loaded when the game didn't load missiondef.js.txt.
 	@if loadedJsConfig.isOn() {
-		load_jslib("noisejs/perlin.js") // load library
-		// execute_js("jslib\noisejs\perlin.js") // load mapgenerator API 
-		execute_js("DIS_mapgenerator.js") // load mapgenerator API 
-		run_RTSmapGeneration()
+		@js .run "RTS.map.build()"
 		@if Is_LEGACYSTAGE.isOff() {
 			@map.tileset v[2060]
 		}
@@ -1446,6 +1450,10 @@ __fn CEV_MISSION_MAP_INIT {
 		    
 		}
 	}
+	
+	// try js gen
+	run_RTSmapGeneration()
+	
 
 	@wait 0
 	@comment "set mapnodes"
@@ -2251,6 +2259,7 @@ __fn loadMapInfo $missionpath {
 		str_mapdef_storage.asg inputstr
 		@js .run "RTS.openMissionMapData(gett(510));" // parse mapinfo.json in t[510] <-inputstr
 		// return to reg1 reg2 
+		WAIT_FOR_JSCMD_EXECUTION
 
 	}.else bl {
 		@if Is_LEGACYSTAGE.isOff(){
@@ -2264,7 +2273,7 @@ __fn loadMapInfo $missionpath {
 	}
 }
 
-__fn run_RTSmapGeneration {@js .run "RTS.map.build()"}
+__fn run_RTSmapGeneration {@js .run "RTS.map.generate()"}
 
 __fn generateTileMapFromPicfile $filepath {
 		inputstr .asg $filepath

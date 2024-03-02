@@ -628,14 +628,19 @@ cev .id(32), .name("AgentAct:Worker"), {
 								v[Ptr13] = victim_static_resource_type + 1
 
 								// if the assigned job is different from the last job...
+								/* BROKEN.
 								TT1 += 1
 								@if v[Ptr13] != TT18 { 
 									@if v[TT1] > 0 {
+										val_sub(TT18,N1)
 										func_change_player_resource(v[700],TT18,v[TT1]) // store what they had
 									}
 									// and then init resource in worker hand
+									TT1 = Ptr19 * 300 
+									TT1 += 4808
 									v[TT1] = 0
 								}
+								*/
 
 								// in screen
 								@if `victim_AgentBits & AgentBits_FLAG_Drawn_in_screen {

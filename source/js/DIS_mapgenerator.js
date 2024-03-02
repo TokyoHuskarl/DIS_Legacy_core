@@ -43,7 +43,7 @@ const DISmapgen = (function(){
 						row.push(elvValue);
 					}
 					map.push(row);
-				}
+				};
 
 				return map;
 			},
@@ -52,7 +52,10 @@ const DISmapgen = (function(){
 				const normalized = (value + 1) / 2 * bias;
 				return Math.floor(normalized * 9) + 1;
 			},
-		}
+
+			
+
+		};
 
 
 	}
@@ -75,6 +78,30 @@ if(VIRTUAL_ENV){
 			shit = [];
 		}
 	}
+
+	RTS.map.generate = function(){
+	const maptiledata = DIS.map.getTileinfo();
+	const elvmap = DIS.macro.flattenArray(DISmapgen.generateElevationMap(293, 208, 30, 0.5));
+	const ELV = 100000000;
+	for (let i = 0; i < maptiledata.length; i++) {
+		let terrain = maptiledata[i] % 100;
+		if ((terrain === 22)||(terrain === 18)){ // not water tile
+			maptiledata[i] = (maptiledata[i] % ELV) + (elvmap[i] * ELV); // write new elevation
+		};
+	};
+	RTS.map.setMapTileInfo(maptiledata);
+	deblog("map elevation set")
+	deblog(maptiledata);
+};
+
+console.log("aaaa")
+try {
+	RTS.map.generate()
+} catch (error) {
+	deblog(error)
+}
+console.log("eeee")
+
 }
 
 

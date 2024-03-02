@@ -337,18 +337,6 @@ cev .id(2051),.name("[System]Escape Menu"),{
 						
 							}
 							@actor[1].name str1
-							@loop v[1004] .dst Temp1 {
-								Temp2 = Temp1 * 300 + 5001
-								@if v[Temp2] == 0 {
-										@comment "not gate"
-										@if `!(v[Temp16 + 2] & 256) {
-											v[1301].copy v[Temp2], 300
-									
-										}
-										
-								}
-								
-							}
 
 							// sysfunc
 							sysfunc_compress_savedata()
