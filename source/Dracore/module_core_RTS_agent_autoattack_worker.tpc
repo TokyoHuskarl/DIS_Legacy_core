@@ -23,7 +23,6 @@ cev .id(32), .name("AgentAct:Worker"), {
 
 		// AA to enemy - this part should be reorganized
 		
-		// @if `v[700] % 3 != 0 {
 		@if Temp10 != 0 {
 			@if v[Ptr18] > 0 {
 				s[167].off
@@ -769,7 +768,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 					} .else bl {
 
 						// need save back proc, but before putting it you have to refactor the entire resource collecting proc.
-						force_agent_to_be_idle(Ptr19,EXTRACT_FLAG_Data_extracted)
+						force_agent_to_be_idle(Ptr19,0)
 
 						// there's no resource left in the static agent...
 						@if victim_UnitID == 12 { // fruits

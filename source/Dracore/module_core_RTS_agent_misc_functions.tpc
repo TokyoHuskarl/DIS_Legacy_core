@@ -194,7 +194,29 @@ __fn force_agent_to_be_idle $agentid $flag {
 
 		// if the agent is worker, reset jobtype
 		agent_worker_JobType = agent_UnitType == UNIT_CLASS_WORKER ? 0 : agent_worker_JobType
-	}.else bl{
+
+	}.else bl{ // kari, without extraction
+
+		var1 = $agentid * 300
+		val_add(var1,N4700)
+
+		// agent_TargetAgentID
+		var2 = var1 + 18
+		ptr_init(var2)
+
+		// agent_StanceOrder
+		var2 = var1 + 241
+		ptr_init(var2)
+
+		// agent_MovementOrder
+		var2 = var1 + 242
+		ptr_const(var2,-1)
+		
+		// agent_worker_JobType
+		var2 = var1 + 247
+		var3 = var1 + 102
+		v[var2] = v[var3] == UNIT_CLASS_WORKER ? 0 : v[var2]
+
 		//UNCO
 	}
 }

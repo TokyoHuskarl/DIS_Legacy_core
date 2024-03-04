@@ -2262,6 +2262,8 @@ __fn loadMapInfo $missionpath {
 		WAIT_FOR_JSCMD_EXECUTION
 
 	}.else bl {
+		Mapgentype = 0
+		MapHeightMapType = 0
 		@if Is_LEGACYSTAGE.isOff(){
 			str1 .asg, .cat("Couldn't open mapinfo json file!", " filepath is: ~/text", str1) //
 			func_errlog(str1)

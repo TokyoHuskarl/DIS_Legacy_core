@@ -22,6 +22,7 @@ const TPCadr = {
 	},
 	v: {
 		Adr_MapElevationArray: 572947, // define_structures_map.tpc
+		Adr_Mission_Agent_TeamSize_Limit: 1080,
 	}
 };
 
@@ -2616,7 +2617,7 @@ class RTSmission {
 			this.dataextension = [];
 
 			// set players for temp
-			for (let i = 0; i < 2; i++){
+			for (let i = 0; i < 2; i++) {
 				this.essential.players[i] = new DIS_RTSplayer(i,0);
 			};
 
@@ -2628,30 +2629,77 @@ class RTSmission {
 				errorlog("missioninfo.json.txt for the current mission seems broken. Check if it's written in correct JSON format.")
 				src = {name: "Couldn't read missioninfo.json.txt file for this mission"};
 			};
-			this.missionid = src.missionid;
-			this.name = src.name;
-			this.missionscript = src.missionscript || ["mymission.js"];
-			this.dataextension = src.dataextension || [];
-			this.startcamerapos = src.startcamerapos || [0,0];
 
-			this.playcondition = src.playcondition || [];
-			this.dependency = src.dependency || [];
-			this.icon = src.icon || "";
+			const getElmInSrc = (key)=>{
+				if (key in src) {
+					this[key] = src[key];
+				};
+			};
+
+			// essential properties
+			try {
+				this.missionid = src.missionid;
+				this.name = src.name;
+			} catch (error) {
+				errorlog(`Loaded missioninfo.json is lacking essential properties, check if both "missionid" and "name" are defined in the file.`)
+			}
 			
-			this.conf.allows_pick_faction = src.allows_pick_faction || false;
-			this.conf.isSightSystemOn = src.sys_sight || false;
-			this.conf.isMoraleSystemOn = src.sys_morale || true;
-			this.conf.isLevelSystemOn = src.sys_level || false;
+			// this.missionscript = src.missionscript || ["mymission.js"];
+			getElmInSrc("missionscript")
+			// this.dataextension = src.dataextension || [];
+			getElmInSrc("dataextension")
+			// this.startcamerapos = src.startcamerapos || [0,0];
+			getElmInSrc("startcamerapos")
 
-			this.conf.isLEGACYmission = src.legacymission || false;
+			// this.playcondition = src.playcondition || [];
+			getElmInSrc("playcondition")
+
+			// this.dependency = src.dependency || [];
+			getElmInSrc("dependency")
+			// this.icon = src.icon || "";
+			getElmInSrc("icon")
+			
+			const getConfInSrc = (confkey,key)=>{
+				if (key in src) {
+					this.conf[confkey] = src[key];
+				};
+			};
+
+			// this.conf.allows_pick_faction = src.allows_pick_faction || false;
+			getConfInSrc("allows_pick_faction","allows_pick_faction");
+			// this.conf.isSightSystemOn = src.sys_sight || false;
+			getConfInSrc("isSightSystemOn","sys_sight");
+			// this.conf.isMoraleSystemOn = src.sys_morale || true;
+			getConfInSrc("isMoraleSystemOn","sys_morale");
+			// this.conf.isLevelSystemOn = src.sys_level || false;
+			getConfInSrc("isLevelSystemOn","sys_level");
+
+			// this.conf.isLEGACYmission = src.legacymission || false;
+			getConfInSrc("isLEGACYmission","legacymission");
+
+			// map team size?
+			if (typeof src.maxTeamSize != "undefined"){
+				this.conf.maxTeamSize = Math.min(src.maxTeamSize,480);
+			}
+			setv(TPCadr.v.Adr_Mission_Agent_TeamSize_Limit,this.conf.maxTeamSize); // set team size limit
 
 			// set player factions
-			let i = 0;
-			for (let fac of src.default_factions){
-				this.essential.players[i] = new DIS_RTSplayer(i,fac);
-				i++;
+			if ('default_factions' in src){
+				let i = 0;
+				for (let fac of src.default_factions){
+					this.essential.players[i] = new DIS_RTSplayer(i,fac);
+					i++;
+				};
+			} else {
+				this.essential.players = [0,0,0]
 			};
-			this.mapSourceDir = (src.hasOwnProperty("IMPORT_MAP") && src.IMPORT_MAP != "") ? src.IMPORT_MAP : this.missionid;
+			
+			// map import check
+			if ('IMPORT_MAP' in src) {
+				this.mapSourceDir = (src.IMPORT_MAP != "") ? src.IMPORT_MAP : this.missionid;
+			} else {
+				this.mapSourceDir = this.missionid;
+			};
 
 
 
@@ -2664,8 +2712,15 @@ class RTSmission {
 		this.allocVarAmount = 0;
 		this.essential.mapDataDirectory = this.missionid; // initially set the same as mission
 		this.passedFrame = 0; //  if DIS game is reloaded, then reload from RM var. 
-
 	};
+	
+	// non-essential properties
+	missionscript = ["mymission.js"];
+	dataextension = [];
+	startcamerapos = [0,0];
+	playcondition = [];
+	dependency = [];
+	icon = "";
 
  /**
   * createMissionVar. This one will be abolished soon
@@ -2719,8 +2774,12 @@ class RTSmission {
 	 * is this even needed?
 	 */
 	conf = { // these matter only at the setting up mission part
-		
-		
+		maxTeamSize:350,
+		isLEGACYmission:false,
+		allows_pick_faction:false,
+		isSightSystemOn: true,
+		isMoraleSystemOn: false,
+		isLevelSystemOn: false
 	};
 
 	/**
@@ -3107,7 +3166,7 @@ class RTSmap {
   */
 	setMapTileInfo(elvinfo){
 		if(Array.isArray(elvinfo)){
-			console.log(elvinfo);
+			// console.log(elvinfo);
 			const Adr_TileInfoHead = 1182; // kari
 			deblog(getv(Adr_TileInfoHead)) // kari
 			setv(getv(Adr_TileInfoHead),elvinfo); 

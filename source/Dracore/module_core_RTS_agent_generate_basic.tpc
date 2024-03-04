@@ -626,9 +626,11 @@ __fn agentgen_register_skill_to_slot $id $slot {
 		deblog("agentgen_register_skill_to_slot() in module_core_RTS_agent_generate_basic.tpc is underconstruction.")
 
 	}.elif v[__id($id)] != 0 { // error
-		@if v[__id($id)] != 17 { // if not preset construction
-			errlog("Irregular common event called in agent skill registoration.")
-			errlog($id)
+		__if DEBUG_BUILD == 1 {
+			@if v[__id($id)] != 17 { // if not preset construction
+				errlog("Irregular common event called in agent skill registoration.")
+					errlog($id)
+			}
 		}
 	}
 	

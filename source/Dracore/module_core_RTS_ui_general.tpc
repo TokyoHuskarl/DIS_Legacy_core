@@ -45,7 +45,7 @@ cev .id(29) ,.name("UI:Unit management"), .parallel , .cond(Const_Is_RTS_Mode), 
 
 //Mouse Observe
 #include "./module_core_RTS_ui_mouse.tpc"
-cev .id(47) ,.name("UI:Mouse Observer"), .parallel , .cond(Const_Is_RTS_Mode), {
+cev .id(45) ,.name("UI:Mouse Observer"), .parallel , .cond(Const_Is_RTS_Mode), {
 	@comment moduletitle
 	UI_CEV_MOUSE_OBSERVER()
 }
