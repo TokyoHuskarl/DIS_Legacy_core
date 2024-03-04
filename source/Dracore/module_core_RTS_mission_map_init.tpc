@@ -1105,7 +1105,9 @@ __fn CEV_MISSION_MAP_INIT {
 
 	// mapdef.js.txt file won't be loaded when the game didn't load missiondef.js.txt.
 	@if loadedJsConfig.isOn() {
+		// this gives the terrain source file name to str1.
 		@js .run "RTS.map.build()"
+		regs1.asg str1 // save the filename to regs1
 		@if Is_LEGACYSTAGE.isOff() {
 			@map.tileset v[2060]
 		}
@@ -1164,7 +1166,8 @@ __fn CEV_MISSION_MAP_INIT {
 		inputstr .asg DIS_MAPHOMEPATH
 		inputstr .cat RTSmap_MapdefDir
 		inputstr .cat "\"
-		inputstr .cat "mapdata"
+		inputstr .cat regs1
+		// inputstr .cat "mapdata"
 		generateTileMapFromPicfile(inputstr)
 		log_push("Map tile picture imported")
 	}

@@ -91,7 +91,7 @@ function debObj(obj) {
 };
 
 function errorlog(text) {
-	if (DEBUG != BOOT_MODE_DEBUG){let contx = "ERROR:" + text;console.log(contx);} else {deblog(`ERROR: ${text}`)};
+	if (DEBUG != BOOT_MODE_DEBUG){let contx = "JS ERROR:" + text;console.log(contx);} else {deblog(`JS ERROR: ${text}`)};
 	return Cmd.game.log_error(text);
 };
 
@@ -133,8 +133,6 @@ function getRM(typ,add){
 
 // DIS project
 
-// import NsGUI and refer as DGUI
-// const DGUI = (typeof NsGUI === "undefined") ? (()=>{deblog("Attention: NsGUI module is missing.");return{};})() : NsGUI;
 
 // global pointers for important objects
 let MISSION; // {RTSmission} current mission - always refers to current RTS.mission
@@ -804,13 +802,6 @@ class RTSagentGroup { // list object for DIS_agent.
 };
 
 
-
-const RM_MousePointer = {
-	x: 51, // v[51]
-	y: 52, // v[52]
-	click: 43, // ?
-}
-
 // RM information var addresses - if these elements become directly accessible through RM2k3 Object later, this part will be removed
 const adr_RMresolutionX = 1001,
 	adr_RMresolutionY = 1002;
@@ -1189,8 +1180,9 @@ DIS = { // DIS fundamental components
  */
 DIS.modules = (function(){
 	let currentMod;
+
 	if(typeof boot_config == "undefined"){
-		deblog("DIS.modules: boot config for getting current module name is missing.\nMaybe DIS API is running on virtual environment, so it's gonna generate dummy module name.")
+		deblog("DIS.modules: boot config for getting current module name is missing.\nMaybe DIS API is running on virtual environment, so it's gonna generate dummy module name.");
 		currentMod = "dummymod";
 	} else {
 		currentMod =  boot_config.module
@@ -1336,6 +1328,23 @@ DIS.lang = {
 		imperial: [],
 
 	},
+
+	getPropertyWithLangsuffix: function(obj,key){
+		const keyWithSuf = key + this.currentLangsuffix;
+		let res;
+		if (keyWithSuf in obj){
+				res = obj[keyWithSuf];
+		} else {
+			if (key in obj) {
+				res = obj[key];
+			} else {
+				errorlog(`Couldn't find any language property corresponding with given key: ${key}`);
+				res = 0;
+			};
+		};
+		return res;
+	},
+
 };
 
 DIS.conf = {
@@ -1710,6 +1719,15 @@ DIS._tpc = {
 		} catch(error) {
 			errorlog(`DIS._tpc.convert_id(${dict},${str}): Something went wrong.\n` + error)
 		};
+	},
+
+
+	/**
+	 * get js string to regs1 
+	 *
+	 */
+	getString: (str)=>{
+		sett(1,str);
 	},
 
 	get_skill_CallID:function(strid){
@@ -2639,10 +2657,15 @@ class RTSmission {
 			// essential properties
 			try {
 				this.missionid = src.missionid;
-				this.name = src.name;
+				this.name = DIS.lang.getPropertyWithLangsuffix(src,"name");
 			} catch (error) {
 				errorlog(`Loaded missioninfo.json is lacking essential properties, check if both "missionid" and "name" are defined in the file.`)
-			}
+			};
+
+			// check Description
+			if ("description" in src) {
+				DIS.lang.getPropertyWithLangsuffix(src,"description");
+			};
 			
 			// this.missionscript = src.missionscript || ["mymission.js"];
 			getElmInSrc("missionscript")
@@ -2721,6 +2744,7 @@ class RTSmission {
 	playcondition = [];
 	dependency = [];
 	icon = "";
+	description="";
 
  /**
   * createMissionVar. This one will be abolished soon
@@ -3052,18 +3076,30 @@ class RTSmap {
 				errorlog("mapinfo.json.txt for the current mission seems broken. Check if it's written in correct JSON format or not.")
 				src = {name: "Couldn't read mapinfo.json.txt file for this mission"};
 			};
-			this.name = src.name;
-			this.mapscript = src.mapscript || ["mymap.js"];
-			this.dataextension = src.dataextension || [];
 
-			this.dependency = src.dependency || [];
+			const getElmInSrc = (key)=>{
+				if (key in src) {
+					this[key] = src[key];
+				};
+			};
+
+			// this.name = src.name;
+			getElmInSrc("name");
+			// this.mapscript = src.mapscript || ["mymap.js"];
+			getElmInSrc("mapscript");
+			// this.dataextension = src.dataextension || [];
+			getElmInSrc("dataextension");
+
+			// this.dependency = src.dependency || [];
+			getElmInSrc("dependency");
 			
-			// set player factions
+			// map size
 			let i = 0;
 			for (let elm of src.size){
 				this.size[i] = elm;
 				i++;
 			};
+
 			this.heightgenType = src.heightgen || 0; // kari
 			this.terrainSource = src.terrainfile || "terrain.png"; // png?
 			this.tileset = src.tileset || 1; // RM tile set - if it's not defined, at least try loading 1.
@@ -3091,7 +3127,8 @@ class RTSmap {
 
 	};
 	// default elements
-	mapscript = [];
+	name = "temp_map"
+	mapscript = ["mymap.js"];
 	dataextension = [];
 	dependency = [];
 	heightgenType = 0; // kari
@@ -3177,6 +3214,7 @@ class RTSmap {
 			return false;
 		};
 	};
+
 
 	
 	/**
@@ -4130,7 +4168,7 @@ var Cmd = {
 
 			log_error: function(txt){
 				let t = `\\C[17]ERROR:${txt}`;
-				Cmd.Qset(tCmdType,"msg",t);
+				Cmd.Qset(CmdType,"msg",t);
 				return t;
 				// deblog("`ERROR:${txt}`")
 			},
@@ -4665,6 +4703,37 @@ DUI = {
 
 };
 
+/**
+ * DIS js GUI system - DGUI
+ *
+ */
+// import NsGUI and refer as DGUI
+let DGUI;
+if (typeof NsGUI == "undefined"){
+	deblog("Attention: NsGUI is missing.")
+	DGUI = {}; // NS gui is missing
+
+	// NsGUI is found
+} else {
+	DGUI = NsGUI;
+
+	// override mouse state get function for DIS project
+	DGUI.wrappers.getMouseState = function() {
+		const MB = getv(43);
+		let state = [
+			[getv(51),getv(52)], // [x,y]
+			(MB == 1005), // LMB trig
+			(MB == 1006), // RMB trig
+			0, // MB3 trig
+			getv(1236), // MB4 trig
+			getv(1235), // MB5 trig
+			0, // wheelUp
+			0, // wheelDown
+		];
+		return state;
+	};
+
+};
 
 
 // init load

@@ -4,14 +4,6 @@
  *
  */
 
-// these lines are written in order not to cause error when you test this file on console qjs 
-var setv = setv || function(){};
-var getv = getv || function(n){return n};
-var sett = sett || function(){};
-var gett = gett || function(t){return `string t[${t}]`};
-var sets = sets || function(){};
-var gets = gets || function(){return true};
-
 /**
  * @todo ピクチャ制御とクリック回りのラッパだけ作ってあげれば、あとは何とかなるのでは？
  *
@@ -50,9 +42,7 @@ const NsGUI = (function(){
 		};
 	})();
 
-	module.wrappers = (function(){
-
-		return {
+	module.wrappers = {
 
 		/**
 		 * get mouse 
@@ -89,7 +79,6 @@ const NsGUI = (function(){
 		}
 
 	};
-});
 
 
 	// Presentation
@@ -346,22 +335,12 @@ const NsGUI = (function(){
 	let NsGUImgr = module.NsGUImgr = {
 
 		scene: 0,
-		mouseState: mouseState,
 		presentations: [],
 
 		resetPresens: function() {
 			delete this.presentations;
 			this.presentations = [];
 		},
-
-		// get mouse status
-		controlUpdate: function() { 
-			this.mouseState.pos = [getv(RM_MousePointer.x),RM_MousePointer.y];
-			this.mouseState.click = getv(RM_MousePointer.click);
-			this.mouseState.Ldrag = getv(RM_MousePointer.click) == 1005 ? this.mouseState.Ldrag + 1 : 0; // if == 1, it's clicked.
-
-		},
-
 
 
 
@@ -371,7 +350,7 @@ const NsGUI = (function(){
 
 			let UIorderstr = "";
 
-			this.controlUpdate() // get mouse vars
+			module.mouse.refresh() // refresh mouse state
 			for (let PRESEN of this.presentations) {
 
 				if(PRESEN.is_controllable) { //if the presentation is controllable
@@ -387,7 +366,6 @@ const NsGUI = (function(){
 			}
 
 			// give render order string to RPGMaker to execute cmds
-			deblog(UIorderstr);
 			sett(adr_RMstr_UIorder,UIorderstr);
 
 			//sets(adr_RMbool_RUN_RENDER,1); // call render manager
