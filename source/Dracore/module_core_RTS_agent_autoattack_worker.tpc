@@ -489,7 +489,6 @@ cev .id(32), .name("AgentAct:Worker"), {
 					@if victim_SP >= 1 {
 							v[371] = 0
 							// If the target has farm flag
-							// @if `v[Ptr20 * 300 + 4703] & 4096 {
 							@if `victim_AgentBits & 4096 {
 									// "does this farm belong to someone?"
 
@@ -627,8 +626,9 @@ cev .id(32), .name("AgentAct:Worker"), {
 								v[Ptr13] = victim_static_resource_type + 1
 
 								// if the assigned job is different from the last job...
-								/* BROKEN.
 								TT1 += 1
+								/* BROKEN.
+								
 								@if v[Ptr13] != TT18 { 
 									@if v[TT1] > 0 {
 										val_sub(TT18,N1)
@@ -696,7 +696,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 									get_AEB_element_wo_ptr(Ptr19,__id(Temp10),AgentExBuffer_SLOT_MetaTeam)
 
 									// ptr for resource slot, need to be changed
-									TT19 = v[4575] + min(victim_static_resource_type + 1, 4) + 40 * v[700]
+									TT19 = v[4575] + min(victim_static_resource_type + 1, 4) + 40 * Temp10
 									v[240] = v[496] * v[1129]
 									v[240] += v[1130]
 									v[240] = max(v[TT19], v[240])
@@ -705,7 +705,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 									// "Food"
 									@if victim_static_resource_type == 0 {
 										// "Rurikia-Vorshch"
-										v[TT19] += v[822] == 9 ? 1 : 0
+										v[TT19] += agent_Culture == 9 ? 1 : 0
 
 									} .else bl {
 										// "Wood"
@@ -737,7 +737,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 									v[TT2] += s[445] == 1 ? 3 : 0
 
 									// "Imperials"
-									@if v[822] == 1 {
+									@if agent_Culture == 1 {
 											// "Decadence"
 											v[TT19] -= v[2503] >= 12 ? 1 : 0
 											// 
@@ -746,7 +746,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 									}
 
 								// "Dragons"
-								@if v[822] == 3 {
+								@if agent_Culture == 3 {
 										// "ToolTech"
 										v[TT19] += v[2406 + Temp10] & 0x20 ? 2 : 0
 										// "Limitation"
@@ -756,7 +756,6 @@ cev .id(32), .name("AgentAct:Worker"), {
 
 								// refresh resource window
 								func_refresh_resource_window()
-								// @call .cev 84
 
 							}
 
@@ -888,12 +887,17 @@ __fn agent_aa_construction {
 		 */
 
 		// "ADを取得"
+			// kari
+		agent_UnitType = v[843] - 141
+		agent_UnitType = v[agent_UnitType]
 		@if agent_UnitType == UNIT_CLASS_WORKER {
 			v[709] = v[843] - 134
 			Temp1 = v[v[709]]
+
 		}.else bl{
 			// temporary branch for possible future combat builder
 			Temp1 = 10
+
 		}
 
 
