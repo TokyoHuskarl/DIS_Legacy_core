@@ -1176,6 +1176,7 @@ cev .id(30) .name("BattleSystemFunc:Retreat"){
 	// "Access19 = AttackerObjectID	Access20 = TargetObjectID	Access18 = ObjTypeチェックPtr	var1=Is_fatality	誤作動防止"
 	//Ptr10 = Ptr20 * 300
 	@if Ptr20 > 0 {
+			func_devlog(__str("Retreat ID: \v[",__id(Ptr20),"]"))
 	    // "309 = ID	306 = ActionState"
 	    // "-1を死体とする"
 	    // "ObjIDを死体に変える"

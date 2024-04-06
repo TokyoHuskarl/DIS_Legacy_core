@@ -125,7 +125,7 @@ __if DIS_EXPERIMENTAL != 1 {
 
 										// get sight range root
 										defv UnitAI_agent_eyesight = 315
-										__if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
+										__if DIS_EXPERIMENTAL == -1 { // use AEBA to optimize! also @if cond can be changed into other shit.
 
 											get_AEB_element_wo_ptr(AgentIDholder,__id(UnitAI_agent_eyesight),AgentExBuffer_SLOT_BaseSight_Root)
 
@@ -485,7 +485,7 @@ __if DIS_EXPERIMENTAL != 1 {
 							Temp8.deref Temp8,1
 
 							v[534] = v[4579] + (v[1012] + 2) * v[211]
-							v[v[534]] = 0
+							v[ptr_null].copy v[v[534]],1 // v[v[534]] = 0
 
 							v[4101].copy v[4001],12
 
@@ -532,31 +532,8 @@ __if DIS_EXPERIMENTAL != 1 {
 								})
 
 							// experimental
-							Temp7 = 0
+							val_init(Temp7) // Temp7 = 0
 							agent_AI_search_with_morton()
-
-							/*
-							val_const(Temp6,3601) // Temp6 = 3601 // deploy v[3601] 'n check it
-							val_const(Temp7,0) // Temp7 = 0
-
-							@doWhile v[Temp2] != 0 {
-									Temp1 = v[Temp2] * 300 
-									val_add(Temp1,N4700) // Temp1 += 4700
-									calc_victim_distance_and_camo_to_Temp4(Temp1)
-
-									@if Temp4 < agent_UnitEyeSight_for_AgentSearch { // kore teki huesugitara bagurun to tyauw
-											ptr_asg(Temp6,Temp4) // set the value to v[Temp6]
-											TT1 = v[534] + Temp7
-											v[TT1] = v[Temp6] * 1000 
-											v[TT1].add v[Temp2],1
-											Temp6.add N1,2
-											
-									}
-
-									increment_var(Temp2) // Temp2 += 1
-									
-							}
-							*/
 
 							v[v[534]].sort Temp7
 							v[Ptr20] = v[v[534]] < 999999999 ? v[v[534]] % 1000 : 0
