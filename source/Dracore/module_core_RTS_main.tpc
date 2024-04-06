@@ -494,7 +494,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[340] = v[4505] + v[640]
 	    v[340].deref v[340],1 // v[340] = v[v[340]]
 	    /* "###############Camo Check###############"*/
-	    val_asg(agent_ProcessCamoValue,v[617]) // agent_ProcessCamoValue = v[617]
+	    val_asg(agent_ProcessCamoValue,agent_BaseCamoValue) // agent_ProcessCamoValue = v[617]
 
 	    // Ambush setting
 

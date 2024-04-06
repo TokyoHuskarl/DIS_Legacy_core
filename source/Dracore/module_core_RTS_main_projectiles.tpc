@@ -21,7 +21,8 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 		v[455] = 0
 		v[456] = 0
 		v[458] = 1
-		v[459..461] = 0
+		// v[459..461] = 0
+		v[ptr_null].copy v[459],3
 		v[462] = 1
 		v[217] = 0
 
@@ -206,7 +207,8 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																						v[Ptr13] |= TT3
 
 																				}.else bl{
-																					v[377] = 1
+																					// v[377] = 1
+																					val_asg(v[377],N1)
 																				}
 																				
 
@@ -298,16 +300,17 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																							LEGACY_extract_projectile_data_to_agent_buffer() // retard retard retard retard 
 																							@call .cev projectile_CallFuncHit
 																							// load up backup buffer
-																							v[214] = v[423]
+																							val_asg(v[214],v[423]) // v[214] = v[423]
 																							s[122].off
 
 																					}
 
 																					//@comment "Hit Limit check"
-																					projectile_HitCount += 1
+																					val_add(projectile_HitCount,N1) // projectile_HitCount += 1
 																					projectile_ProjectileType = projectile_HitCount == projectile_HitLimit ? 1 : projectile_ProjectileType
 																					@if projectile_ProjectileType == 1 {
-																							projectile_Timer = 0
+																							// projectile_Timer = 0
+																							val_init(projectile_Timer)
 																							@break
 																					}
 
@@ -321,6 +324,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
 
 														}
+
 
 												}
 
@@ -354,12 +358,13 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 												@if `projectile_ProjectileFlag1 & 2 {
 													s[122].on
 														//@comment "#Parent Agent"
-														Ptr19 = projectile_ParentObject
-														v[423] = v[214]
+														val_asg(Ptr19,projectile_ParentObject) // Ptr19 = projectile_ParentObject
+														val_asg(v[423],v[214]) // v[423] = v[214]
 														projectile_RelativeX.copy v[607], 2 // legacy feature, should be removed
 														func_devlog("Projectile removed and Cev called - ID:\v[740604]")
 														@call .cev projectile_CallFuncHit
-														v[214] = v[423]
+														val_asg(v[214],v[423]) // v[214] = v[423]
+
 														s[122].off
 
 												}
@@ -377,8 +382,6 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 						}
 
 				}
-
-
 
 }
 
