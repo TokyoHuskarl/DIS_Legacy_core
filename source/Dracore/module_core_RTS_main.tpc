@@ -52,7 +52,16 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	v[522] = v[2501] == 0 ? -v[522] : v[182] // v[522] = v[2501] == 0 ? 0 : v[522] + v[182]
 	v[ptr_null].copy v[181],4
-	v[191] -= 1
+	
+	val_sub(v[191],N1) // v[191] -= 1
+
+	// sound lock (in order to keep prioritized sound effect e.g. horn)
+	@if g_SELockFrame > 0 {
+		val_asg(v[181],N16)
+	}.else bl{
+		val_sub(g_SELockFrame,N1)
+	}
+
 
 	v[ptr_null].copy v[v[1071]], Const_var_save_all_morton_memories
 
