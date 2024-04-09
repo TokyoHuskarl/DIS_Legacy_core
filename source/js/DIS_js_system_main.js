@@ -969,6 +969,7 @@ var facid = new IDdict("FAC"); // faction ID table
 var raceid = new IDdict("RACE"); // race ID table
 var techid =  new IDdict("TECH"); // ["techid",[group,flagbit]]
 var sklid = new IDdict("SKL"); // skill ID table
+var skinid = new IDdict("SKIN"); // skill ID table
 
 
 // consts
@@ -2228,9 +2229,9 @@ DIS.data = { // DIS.data
    * @param {int} index - if this parameter is not set, this function just tries to push Dfac to FACTION.ptr.
    */
 		register(Dfac,index){
-			index = index || this.ptrs[0] + 1;
+			index = index || this.ptrs.length;
 			this.ptrs[index] = Dfac;
-			this.ptrs[0] = this.ptrs.length;
+			this.ptrs[0] = this.ptrs.length - 1;
 		},
 
 	},
@@ -2477,7 +2478,7 @@ DIS.data = { // DIS.data
 		},
 
 		/**
-		 * maybe common func for static unit is valid with arrow func kari.
+		 * これで本当に動くのか？久々だから謎, 要確認
 		 * register data to id array.
 		 * Newly registered data will be pushed into id array({YOURDATATYPE}.ptrs).
 		 * If you want to add mod data to the game, use this method.
@@ -2486,8 +2487,10 @@ DIS.data = { // DIS.data
 		 * @param {DATA} stadata
 		 * @param {string} prefix
 		 */
-		register: function(data,prefix){
-			
+		register: function(data,index){
+			index = index || this.ptrs.length;
+			this.ptrs[index] = data;
+			this.ptrs[0] = this.ptrs.length - 1;
 		},
 
 		ptrs: [0],
