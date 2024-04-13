@@ -1,5 +1,5 @@
 def Const_units_pop_delay = 68 // 52
-
+def ClassType_Amount_MINUS1 = ClassType_Amount - 1
 def Const_AgentMetaTeam_beginMINUSONE = Const_AgentMetaTeam_begin -1 
 __fn debug_selecting_agt $agtidptr $block {
 	__if DIS_DEBUG_BUILD == 1 {
@@ -335,7 +335,7 @@ __if DIS_EXPERIMENTAL != 1 {
 
 											// debug 
 											debug_selecting_agt(v[536],{
-													func_devlog(__str("I finally decided to chase \v[\v[",__id(Ptr20),"]]"))
+													func_devlog(__str("I finally decided to chase \v[\v[",__id(Ptr20),"]]. Array size:\v[",__id(Temp7),"]"))
 											})
 								
 										} .else bl {
@@ -399,6 +399,9 @@ __if DIS_EXPERIMENTAL != 1 {
 					//finish?
 
 				}.else bl {
+
+
+					// if mil unit's target is not set, try to target nearby unit 
 					@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI { //mil units
 						@if agent_TargetAgentID == 0 { // have no target
 							@if agent_MovementOrder < MovementOrder_TYPE_prioritize_moving { // and can go for his enemy agent...
@@ -407,18 +410,19 @@ __if DIS_EXPERIMENTAL != 1 {
 								// try to pick from own list 
 								v[211] = v[v[536]] - 1
 								v[534] = v[4579] + (v[1012] + 2) * v[211]
-								//pointer offset
+								// pointer offset for the list
 								v[297] = v[534] + v[1012]
-								//get obj amount in the list
+								// Temp2 = agents number left in the list
 								Temp2 = v[v[297] + 1] - v[v[297]]
-								v[296] = v[534] + v[v[297]]
+								v[296] = v[534] + v[v[297]] // set initial address
 								v[371] = 0
 								@loop Temp2 {
-										TT1 = v[v[296]] * 300 
+										TT10 = v[v[296]] % 1000 // TT10 = agent id
+										TT1 = TT10 * 300
 										val_add(TT1,N4701) // TT1 += 4701
 										@if v[TT1] > 0  {
-											agent_TargetAgentID = v[v[296]]
-											val_asg(v[371],N1) // v[371] = 1
+											agent_TargetAgentID = TT10
+											val_asg(v[371],N1) // v[371] = 1 kore iru?
 											@break
 											
 										}
@@ -427,6 +431,7 @@ __if DIS_EXPERIMENTAL != 1 {
 										
 								}
 								
+								// if no agent found in list, set agent_TargetAgentID 0
 								agent_TargetAgentID = v[371] == 0 ? 0 : agent_TargetAgentID
 
 							}
@@ -645,7 +650,8 @@ __fn agent_AI_search_with_morton {
 				Temp2.deref Temp2,1 // Temp2 = v[Temp2]
 
 				//then just check team agent list - but this seemingly not good design (also kinda buggy), so maybe I need to change this later
-				Temp6 = 3601
+				def AGTAI_List_Buffer_Head = 3201
+				val_const(Temp6,AGTAI_List_Buffer_Head)
 
 				@if `v[agent_AI_routine_bits] & 7 { // with extra priority flag 
 
@@ -664,9 +670,10 @@ __fn agent_AI_search_with_morton {
 											})
 
 								// set TT2 = v[534] + Temp7
-								val_asg(TT2,v[534])
+								// TT2 is pointer to enemy finding list for an agent...
+									val_asg(TT2,v[534])
 									val_add(TT2,Temp7)
-									v[TT2] = v[Temp6] * 1000 + v[Temp2] + v[4001 + min(victim_UnitType, ClassType_Amount)]
+									v[TT2] = v[Temp6] * 1000 + v[Temp2] + v[4001 + min(victim_UnitType, ClassType_Amount_MINUS1)]
 
 								Temp6.add N1,2 // v[306..307] += 1
 
@@ -720,7 +727,7 @@ __fn agent_AI_search_with_morton {
 				AISearch_morton_ptr = v[4546 - TT5] + TT6 * v[1004] // morton agent list head
 				v[327] = v[v[4552 - TT5] + TT6] // morton agent list length
 				Temp33 = [1, 0, -2][Temp14]
-				val_const(Temp6,3601) // Temp6 = 3601
+				val_const(Temp6,AGTAI_List_Buffer_Head) // Temp6 = AGTAI_List_Buffer_Head
 
 				// deb
 				debug_selecting_agt(v[536],{
@@ -753,13 +760,13 @@ __fn agent_AI_search_with_morton {
 								// debug 
 								debug_selecting_agt(v[536],{
 										func_devlog(__str("Hit. found target is \v[\v[",__id(AISearch_morton_ptr),"]] "))
-										func_devlog("mydim is \v[609] - current morton list address is \v[", __id(AISearch_morton_ptr),"]")
+										func_devlog(__str("mydim is \v[609] - current morton list address is \v[", __id(AISearch_morton_ptr),"]"))
 										})
 
 							// set TT2 = v[534] + Temp7
 							val_asg(TT2,v[534])
 								val_add(TT2,Temp7)
-								v[TT2] = v[Temp6] * 1000 + v[AISearch_morton_ptr] + v[4001 + min(victim_UnitType, 11)]
+								v[TT2] = v[Temp6] * 1000 + v[AISearch_morton_ptr] + v[4001 + min(victim_UnitType, ClassType_Amount_MINUS1)]
 
 								Temp6.add N1,2 // v[306..307] += 1
 
@@ -776,8 +783,9 @@ __fn agent_AI_check_current_target {
 	@if v[Ptr20] > 0 {
 			//If the unit has cohort order flag
 
-			//if the target is set by cohort order, then agent's sight radius is considered 2 times bigger than actual in this process. Besides if the agent has a target already, the sight radius gets halved..
+			// ABOLISHED-> if the target is set by cohort order, then agent's sight radius is considered 2 times bigger than actual in this process. Besides if the agent has a target already, the sight radius gets halved..
 			Temp8 <<= v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AICohortGatheringAttack ? 1 : 0
+
 
 			//Try checking if current target is in sight radius  
 			Temp1 = v[Ptr20] * v[1117] 
