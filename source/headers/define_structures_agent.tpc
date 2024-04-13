@@ -1009,12 +1009,13 @@ deft {
 
 }
 
+
 __fn checkItemPicFileName $source $slot $name {
 	
 	@if t[$source].contains "spr_" {
-		t[1].asg $name
-		t[1].split ("spr_",t[1],reg9)
-		t[__id($slot)].asg t[1]
+		regs1.asg $name
+		regs1.split ("spr_",regs1,reg9)
+		t[__id($slot)].asg regs1
 		v[1930] = 1 // has sprite
 
 	}.else bl{

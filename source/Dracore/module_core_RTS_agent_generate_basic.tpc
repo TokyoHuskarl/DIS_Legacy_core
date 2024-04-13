@@ -671,28 +671,36 @@ __fn agentgen_race_and_skin_setting {
 	// "###"
 	CSVELM_AGENT_race .toNum agent_Race
 
+		@if CSVELM_AGENT_skin.contains "SKIN_" { // has SKIN prefix
+			// load skin data from js database
+				inputstr.asg .cat("DATA.SKIN.ptrs[skinid.convert('", CSVELM_AGENT_skin, "')].sendSkinData(887);")
+				eval_js(inputstr)
+				
 
-		// skin pattern
-		CSVELM_AGENT_skin .toNum v[1941]
-		// "SkinSet"
-		@if v[1941] >= 1 {
-			@call .cev v[1941]
+		}.else bl{
 
-		} .else bl { // no skin setting 
-			// "Hair and Face"
-			// "#Skin"
-			agent_Skin = 0
-				// "#Head"
-				agent_HeadID = 0
-				agent_FootstepSoundType = agent_HeadID + agent_Skin * 1000000
-				agent_FootstepSoundType += agent_Skin != -1 ? agent_Race * 10000000 : 0
-				// "#Hair"
-				agent_GENERATION_Hair = 0
+			// skin pattern
+			CSVELM_AGENT_skin .toNum v[1941]
+
+				// "SkinSet"
+				@if v[1941] >= 1 {
+					@call .cev v[1941]
+
+				} .else bl { // no skin setting 
+					// "Hair and Face"
+					// "#Skin"
+					agent_Skin = 0
+						// "#Head"
+						agent_HeadID = 0
+						agent_FootstepSoundType = agent_HeadID + agent_Skin * 1000000
+						agent_FootstepSoundType += agent_Skin != -1 ? agent_Race * 10000000 : 0
+						// "#Hair"
+						agent_GENERATION_Hair = 0
 
 
 
+				}
 		}
-
 }
 
 

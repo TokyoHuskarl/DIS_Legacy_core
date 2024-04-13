@@ -372,12 +372,61 @@ class DATA_troop_csv extends DATA_entity { // shadow of csv troops. doesn't have
 
 
 // skin data for troop
+// とりあえず人類だけ対応，racekeyの処理については，初期化処理との関係で注意が必要か。
 class DATA_skin extends DATA_entity {
 	constructor(id,src){
 		super(id);
-		this.i = index;
+		// this.i = index;
 		// copy given troop template
 		DATA.giveSrcParamToData(this,src);
+
+		// convert race key
+		deblog("Racekey conversion method in DATA_skin is underconstruction. So automatically set it to 0"); // kari
+		this.racekey = 0;
+		// this.racekey = raceid.convert(this.racekey);
+		
+		/*
+		 * UNDERCONSTRUCTION
+		 */
+	};
+
+	// default properties
+	racekey = 0;
+	skinTable = [0];
+	headTable = [0];
+	haircolorTable = [0];
+	hairstyleTable = [0];
+
+ /**
+  * sendSkinData.
+  *
+  * @param {int} adrHead - RPG Maker Variable address
+  * @param {int} adrHair - RPG Maker Variable address
+  */
+	sendSkinData(adrHead,adrHair = -1){
+
+		const pickRndElm = (arr)=>{
+			if (arr.length === 0) {
+				const erm = 'Skin data Array is empty!';
+				deblog(erm);
+				throw new Error(erm);
+			};
+			const randomIndex = Math.floor(Math.random() * arr.length);
+			return arr[randomIndex];
+		};
+
+		// set head file id
+		let filenum = this.racekey * 10000000 + pickRndElm(this.skinTable) * 1000000 + pickRndElm(this.haircolorTable) * 10000 + pickRndElm(this.headTable);
+		setv(adrHead,filenum);
+
+		// set hair id
+		// kari. how should I solve this terrible hair sprite system?
+		if (adrHair > 0) {
+			setv(adrHair,pickRndElm(this.hairstyleTable));
+		};
+		// UNDERCONSTRUCTION
+		deblog(`skinkey: ${filenum}`);
+		return filenum; 
 	};
 
 };
@@ -971,7 +1020,6 @@ var techid =  new IDdict("TECH"); // ["techid",[group,flagbit]]
 var sklid = new IDdict("SKL"); // skill ID table
 var skinid = new IDdict("SKIN"); // skill ID table
 
-
 // consts
 /**
  * might be changed later. 
@@ -1098,13 +1146,13 @@ DIS = { // DIS fundamental components
 						text += `TechID loaded - ${amount} techs are preset`
 					} else {
 						text += "unknown RM str is loaded."
-					}
+					};
 				} else { // load amount is below 0
 					text += `loading process t[${type}] seemingly failed. Check integrity of const_*.txt files.`
 					errorlog(text);
-				}
+				};
 				return DIS.log.push(text)
-			}
+			};
 			// --------------------
 			// load race ID
 			// --------------------
@@ -1693,6 +1741,7 @@ DIS.cache = {
  */
 DIS._tpc = {
 
+
 	/**
 	 * .
 	 * @param {DIS_PicCache} cacheobj
@@ -2032,12 +2081,13 @@ DIS.data = { // DIS.data
 			this.SKILL.init();
 			// load module STATIC UNIT DATA.
 			this.STATIC_UNIT.init();
+			this.SKIN.init();
 		// Cmd.run();
 	},
 
 	/**
 	 * called by Cmd.sys.importData on RM command interpreter.
-	 *
+	 * 
 	 * @param {object} obj - An object returned from DATA.parseDISjson().
 	 */
 	autoregister: function(obj){
@@ -2049,8 +2099,12 @@ DIS.data = { // DIS.data
 			};
 		};
 		
+		// Aren't there any better way to process?
 		registerCheck_for_DataType("TROOP");
 		registerCheck_for_DataType("STATIC_UNIT");
+		registerCheck_for_DataType("SKIN");
+		deblog("autoregister called!");
+		deblog(Object.keys(obj));
 
 	},
 
@@ -2119,7 +2173,15 @@ DIS.data = { // DIS.data
 					let nutrp = this.STATIC_UNIT.createNew(strid,dataobj[typ][strid]);
 					ptr2Res.push(nutrp);
 				};
-			}
+
+			} else if (typ == "SKIN"){ // SKIN data 
+				ptr2Res = neststart(typ,ptr2Res);
+				for (let strid in dataobj[typ]){
+					let nu = this.SKIN.createNew(strid,dataobj[typ][strid]);
+					ptr2Res.push(nu);
+				};
+
+			};
 
 		};
 		deblog("DISjson parsing finished.\n result:")
@@ -2467,9 +2529,12 @@ DIS.data = { // DIS.data
 	},
 
 	SKIN: {
+
+		ptrs: [0],
+
   /**
    * init SKIN.
-	 * Import Modules/{current_module}/Data/data_static_units.json
+	 * Import Modules/{current_module}/Data/data_skins.json
    */
 		init: function(){
 			let mypath = DIS.modules.getCurrentModuleDataPath() + "data_skins.json";
@@ -2484,16 +2549,41 @@ DIS.data = { // DIS.data
 		 * If you want to add mod data to the game, use this method.
 		 *
 		 * @method register
-		 * @param {DATA} stadata
-		 * @param {string} prefix
+		 * @param {DATA} data -
 		 */
-		register: function(data,index){
-			index = index || this.ptrs.length;
-			this.ptrs[index] = data;
-			this.ptrs[0] = this.ptrs.length - 1;
+		register: function(data){
+			let ls4nuskin = [];
+			if (Array.isArray(data)){ // if it's given as array
+				for (let elm of data){
+					ls4nuskin.push(elm);
+				}
+			} else {
+				ls4nuskin.push(data);
+			};
+
+			let index;
+			for (let nuskin of ls4nuskin){
+				let ck = "SKIN_" + nuskin.id;
+				if (skinid.hasOwnProperty(ck)){ // override
+					index = skinid[ck];
+					this.ptrs[index] = nuskin;
+
+				} else { // register new data
+					//!!!!!!!!!!! NEED FIX !!!!!!!!!!!!!
+					// ACTUALLY DATA_entity has i so static data always has i.
+					index = this.ptrs[0] + 1; // if index is manually set in json data, use it
+					this.ptrs[index] = nuskin;
+				};
+				this.ptrs[0] = this.ptrs.length;
+
+				skinid.register(ck,index);
+			};
+
 		},
 
-		ptrs: [0],
+		createNew: function(strid,data){
+			return this[strid] = new DATA_skin(strid,data); // do not resgister to ptrs yet
+		},
 
 	},
 
@@ -5222,5 +5312,4 @@ function resizeImage(imageData, originalWidth, originalHeight,rate) {
 };
 
 deblog(DIS.string)
-
 
