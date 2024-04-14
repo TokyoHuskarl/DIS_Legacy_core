@@ -3689,7 +3689,7 @@ let RTS = {
 		convertArrayIntoPath: function(array){
 			
 
-		}
+		},
 
 
 

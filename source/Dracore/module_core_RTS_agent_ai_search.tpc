@@ -44,8 +44,9 @@ __if DIS_EXPERIMENTAL != 1 {
 		val_mod(agent_generated_ID,v[533])
 		@if agent_generated_ID == 0 {
 				v[211] = v[v[536]] - 1
-				AgentIDholder = v[v[536]] 
-				v[v[212] + 3] &= -134217729//~134217728
+				v[v[536]].copy AgentIDholder,1 // AgentIDholder = v[v[536]] 
+				TT1 = v[212] + 3
+				v[TT1] &= -134217729 //~134217728
 
 				//If worker AI flag is on
 				@if `agent_AgentBits & AgentBits_FLAG_EnableCivAI {
@@ -198,7 +199,7 @@ __if DIS_EXPERIMENTAL != 1 {
 													
 											} .else bl {
 												//break the flag
-												v[agent_AI_routine_bits] &= -129//~128
+												v[agent_AI_routine_bits] &= -129 //~128
 													
 											}
 											
@@ -209,34 +210,36 @@ __if DIS_EXPERIMENTAL != 1 {
 											agent_MapX.copy Temp11,2
 											v[621].copy Temp3,2
 											@if Temp4 < -30 {
-												v[312] -= 1
+													val_sub(v[312],N1) // v[312] -= 1
 												
 											} .else bl {
 												@if Temp4 > 30 {
-													v[312] += 1
+													val_add(v[312],N1) // v[312] += 1
 													
 												}
 												
 											}
 
 											@if Temp3 > 30 {
-												Temp11 += 1
+												val_add(Temp11,N1) // Temp11 += 1
 													
 											} .else bl {
 												@if Temp3 < -30 {
-													Temp11 -= 1
+													val_sub(Temp11,N1) // Temp11 -= 1
 													
 												}
 												
 											}
 
 											def MACRO_set_flag_RayCastAndPF = {
-												v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
+												TT1 = v[212] + 3
+												v[TT1] |= AgentBits_FLAG_PF_walldetection_switch
 												v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_RayCast 
 
 												}
 											def MACRO_set_flag_walldetection = {
-												v[v[212] + 3] |= AgentBits_FLAG_PF_walldetection_switch
+												TT1 = v[212] + 3
+												v[TT1] |= AgentBits_FLAG_PF_walldetection_switch
 												// v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
 												// v[agent_AI_routine_bits] &= AI_routine_bits_KILL_FLAG_PFcontinue //~32768
 
@@ -339,11 +342,11 @@ __if DIS_EXPERIMENTAL != 1 {
 											})
 								
 										} .else bl {
-											Temp7 = 0
+											val_init(Temp7) // Temp7 = 0
 											
 										}
 
-										Temp6 = 0
+										val_init(Temp6) // Temp6 = 0
 										TT1 = v[534] + v[1012]
 										Temp6.copy v[TT1], 2
 
@@ -402,9 +405,9 @@ __if DIS_EXPERIMENTAL != 1 {
 
 
 					// if mil unit's target is not set, try to target nearby unit 
-					@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI { //mil units
-						@if agent_TargetAgentID == 0 { // have no target
-							@if agent_MovementOrder < MovementOrder_TYPE_prioritize_moving { // and can go for his enemy agent...
+					@if agent_TargetAgentID == 0 { // have no target
+						@if agent_MovementOrder < MovementOrder_TYPE_prioritize_moving { // and can go for his enemy agent...
+							@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI { //mil units
 								
 								// then
 								// try to pick from own list 
@@ -413,15 +416,17 @@ __if DIS_EXPERIMENTAL != 1 {
 								// pointer offset for the list
 								v[297] = v[534] + v[1012]
 								// Temp2 = agents number left in the list
-								Temp2 = v[v[297] + 1] - v[v[297]]
+
+								Temp2 = v[297] + 1
+								Temp2 = v[Temp2] - v[v[297]]
 								v[296] = v[534] + v[v[297]] // set initial address
-								v[371] = 0
+								val_init(v[371])
 								@loop Temp2 {
 										TT10 = v[v[296]] % 1000 // TT10 = agent id
 										TT1 = TT10 * 300
 										val_add(TT1,N4701) // TT1 += 4701
 										@if v[TT1] > 0  {
-											agent_TargetAgentID = TT10
+											val_asg(agent_TargetAgentID,TT10)
 											val_asg(v[371],N1) // v[371] = 1 kore iru?
 											@break
 											
@@ -432,6 +437,7 @@ __if DIS_EXPERIMENTAL != 1 {
 								}
 								
 								// if no agent found in list, set agent_TargetAgentID 0
+								// Is this line below really needed? 
 								agent_TargetAgentID = v[371] == 0 ? 0 : agent_TargetAgentID
 
 							}
@@ -471,14 +477,8 @@ __if DIS_EXPERIMENTAL != 1 {
 							// Ptr19 = v[212] + 241 // ?
 							// Temp1 = v[212] + 100
 
-							__if DIS_EXPERIMENTAL == 1 {
-								macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEB
+							macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEB
 
-							}.else bl {
-								Temp14 = Const_AgentMetaTeam_begin + v[211]
-								Temp14.deref Temp14,1
-
-							}
 
 							// a naru.
 							Temp2 = 4031 + Temp14
@@ -492,19 +492,14 @@ __if DIS_EXPERIMENTAL != 1 {
 							v[534] = v[4579] + (v[1012] + 2) * v[211]
 							v[ptr_null].copy v[v[534]],1 // v[v[534]] = 0
 
+							// ACHTUNG, STATIC Units seem not using AEB priority
 							v[4101].copy v[4001],12
 
 							agent_UnitEyeSight_for_AgentSearch.copy Temp8,1
 
 							// get sight range root
-							__if DIS_EXPERIMENTAL == -1 { // use AEBA to opt! also @if cond can be changed into other shit.
-
-								get_AEB_element_wo_ptr(AgentIDholder,__id(UnitAI_agent_eyesight),AgentExBuffer_SLOT_BaseSight_Root)
-
-							}.else bl {
-								UnitAI_agent_eyesight = v[211] + v[4806]
-								UnitAI_agent_eyesight.deref UnitAI_agent_eyesight,1
-							}
+							UnitAI_agent_eyesight = v[211] + v[4806]
+							UnitAI_agent_eyesight.deref UnitAI_agent_eyesight,1
 
 							UnitAI_agent_eyesight.copy v[316],1 // UnitAI_agent_eyesight is v[315]
 
@@ -549,6 +544,7 @@ __if DIS_EXPERIMENTAL != 1 {
 				@if `agent_StaticBits & 32768 {
 					@if agent_static_ReserveAmount <= 0 {
 						// auto queue checker
+						// too many cevs, you have to rewrite here
 						@call .cev 1748
 						var1 = v[v[536]]
 						@call .cev 1747
@@ -635,6 +631,7 @@ __fn agent_AI_search_with_morton {
 		TT2 = TT1 | TT2
 		val_asg(TT1,v[351]) // TT1 = v[351]
 		//TT2 = v[21]
+
 		/*
 			 @comment "TT1 = upper left morton
 			 TT2 = bottom right morton
@@ -722,7 +719,7 @@ __fn agent_AI_search_with_morton {
 				TT6 = TT2 >> TT5
 				//@comment "#mask end"
 
-				TT5 >>= 1 // TT5 /= 2
+				TT5 >>= 1
 				defv AISearch_morton_ptr = __id(Temp12)
 				AISearch_morton_ptr = v[4546 - TT5] + TT6 * v[1004] // morton agent list head
 				v[327] = v[v[4552 - TT5] + TT6] // morton agent list length
