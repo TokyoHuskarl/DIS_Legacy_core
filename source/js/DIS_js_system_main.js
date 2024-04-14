@@ -381,9 +381,9 @@ class DATA_skin extends DATA_entity {
 		DATA.giveSrcParamToData(this,src);
 
 		// convert race key
-		deblog("Racekey conversion method in DATA_skin is underconstruction. So automatically set it to 0"); // kari
-		this.racekey = 0;
-		// this.racekey = raceid.convert(this.racekey);
+		// deblog("Racekey conversion method in DATA_skin is underconstruction. So automatically set it to 0"); // kari
+		// this.racekey = 0;
+		this.racekey = raceid.convert(this.racekey);
 		
 		/*
 		 * UNDERCONSTRUCTION
@@ -1157,15 +1157,8 @@ DIS = { // DIS fundamental components
 			// load race ID
 			// --------------------
 
-			// temp
-			raceid.RACE_humankind = 0;
-			raceid.RACE_goblin = 1;
-			raceid.RACE_ork = 2;
-			raceid.RACE_dragon = 3;
-			raceid.RACE_undead = 4;
-			raceid.RACE_skeleton = 5;
-			raceid.RACE_minotaur = 6;
-
+			// ->DIS.data.RACE.init()
+			
 			// --------------------
 			// load troop ID
 			// --------------------
@@ -2075,6 +2068,7 @@ DIS.data = { // DIS.data
 
 	init: function(){
 		// this.FACTION.init(); <- rewrite this!
+			this.RACE.init();
 		if(!VIRTUAL_ENV){ // ignore when debug run on VIRTUAL_ENV
 			this.TECH.init();
 		}
@@ -2524,6 +2518,18 @@ DIS.data = { // DIS.data
 
 	},
 	RACE: {
+
+		init: function(){
+			// kari.
+			raceid.register("RACE_humankind",0);
+			raceid.register("RACE_goblin",1);
+			raceid.register("RACE_ork",2);
+			raceid.register("RACE_dragon",3);
+			raceid.register("RACE_undead",4);
+			raceid.register("RACE_skeleton",5);
+			raceid.register("RACE_minotaur",6);
+
+		},
 
 
 	},
