@@ -557,7 +557,6 @@ struct("agent",{
 
 
 	// AA bits
-	// AAbits = 124 #BITS: 1 = AntiInf,2 = AntiArcher, 4 = AntiCav, 8= AntiMagi, 16 = AntiSiege,32 = reserved, 64= AntiCiv, 128=AntiStatic, 256=SlayStatic, 512=NOTantiStatic, 1024 = ShieldCracking, 2048 = DevastatingStrikes , 4096 = Trample 
 	AABits_FLAG_AntiInf = 1
 	AABits_FLAG_AntiArcher = 2
 	AABits_FLAG_AntiCav = 4
@@ -576,6 +575,7 @@ struct("agent",{
 	AABits_FLAG_CrackingShieldBONUS = 131072
 	AABits_FLAG_BladeDance = 262144 
 	AABits_FLAG_Camel = 524288
+	AABits_FLAG_FatalBlow = 1048576 // bit for daggers
 
 
 	Formbits_FLAG_Line1 = 1
