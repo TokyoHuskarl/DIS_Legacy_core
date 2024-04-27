@@ -1482,7 +1482,7 @@ __fn prepare_deadbody_pictures {
 				//v[0] = v[343..352] = [v[604] % 10, v[604] / 10 % 10, v[604] / 100 % 10]
 				v[468] = 3
 				v[187] = 0
-				v[379] = 0
+				val_init(v[379]) // v[379] = 0
 
 				// FLAG CHECKER
 				def {
@@ -1490,14 +1490,14 @@ __fn prepare_deadbody_pictures {
 					BS_RMAG_PICFLAG_FOUND_WEAPON = 4
 					BS_RMAG_PICFLAG_FOUND_SHIELD = 8
 				}
-				v[378] = 0
+				val_init(v[378]) // v[378] = 0
 
 
 				v[4101..4110] = v[463] // column
 				v[4121..4130] = 1 // line
 				// v[v[725]].copy v[725],2 - was this needed? idk
 
-				v[4106] = victim_ExMotionFlags & ExMotionFlags_FLAG_horseback ? 7 : 5// horse
+				v[4106] = victim_ExMotionFlags & ExMotionFlags_FLAG_horseback ? 7 : 5 // horse
 				v[4111..4120] = v[321] 
 				v[4115] = 2
 
@@ -1505,24 +1505,21 @@ __fn prepare_deadbody_pictures {
 
 
 				//so temporary head setting - use legacy damaged head sprite 
-				v[335] =  (Ptr20 - 1) * 10
-				v[335] = Const_str_agent_pictures_strings_start + v[335]
+				v[335] =  Ptr20 - 1
+				v[335] *= 10
+				v[335] += Const_str_agent_pictures_strings_start
 			
 				//set damaged head
-				@if `(victim_ExMotionFlags & 98304) == 32768 { // isn't this.. terrbile?
-					v[4102] = 5
-					v[4122] = 1
-					var1 = v[335] + 2
-					t[var1].exMatch ("[0-9]{1,}",str1,var2)
-					t[var1].asg "parts\bodyset\set\damaged\spr_damaged_head_"
-					t[var1].cat str1
+				TT2 = victim_ExMotionFlags & ExMotionFlags_MASK_HeadPartDamageChecker
+				@if TT2 == ExMotionFlags_FLAG_HeadHasDamagedSprite {
+					v[4112] += Const_head_spr_grid_damaged
 				}
 
 				v[339] = -1
 
 				@if `victim_ExMotionFlags & 134217728 { // in flippable weapon
-					v[4034] = 0
-					v[4124] = 2
+					val_init(v[4034]) // v[4034] = 0
+					val_asg(v[4124],N2) // v[4124] = 2
 					v[4114] += v[455] / 4096 * v[4104]
 					
 				}

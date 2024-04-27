@@ -715,7 +715,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									}
 
 									@if `agent_ExMotionFlags & ExMotionFlags_FLAG_Weapon_Cannot_be_flipped {
-											v[4034] = 0
+											val_init(v[4034]) // v[4034] = 0
 											v[4124] = 2
 											v[4114] += v[455] / 4096 * v[4104]
 											
@@ -723,14 +723,15 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 			//head and facial expression settings
 			TT1 = v[860] == -1 ? 3 : (v[860] > 2 ? 4 : (v[860] == 2 ? 1 : 0) )//check morale
-			@if TT1 == 0 { //set blink and in fight
+			@if TT1 == 0 { // set blink and in fight facial expressions
 				TT1 = agent_InCombatTimer > 15 ? 3 : (agent_AddMotionBits & AddMotionFlags_FLAG_Blink_close ?  2: (agent_AddMotionBits & 320 ? 1:0) ) //320 = 64+256
 			}
+
 			v[4112] += TT1 * Const_head_spr_gridX
 			// damaged picture check for body part
 			TT2 = agent_ExMotionFlags & ExMotionFlags_MASK_HeadPartDamageChecker
 			@if TT2 == ExMotionFlags_FLAG_HeadHasDamagedSprite { // body part damaged
-				v[4112] += Const_head_spr_grid_damaged // v[4112] += (agent_ExMotionFlags & 98304) == 32768 ? Const_head_spr_grid_damaged : 0
+				v[4112] += Const_head_spr_grid_damaged
 				val_add(v[4117],v[4107]) // add minion slot 
 			}
 
