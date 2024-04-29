@@ -4642,6 +4642,7 @@ var Cmd = {
 
 		registerCohort: function(grp,player,cohortid) {
 			this.checkCurrentGroup(grp);
+
 			// temporary only for player
 			if (player == 0){
 				Cmd.Qset(this.CmdType,"registerCohort",`${player},${cohortid},${this.Adr_cgrp_list_head},${grp.idlist.length}`);

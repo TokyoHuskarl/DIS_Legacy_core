@@ -417,7 +417,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															}.elif expected_action_sprite == 2 { // idle state
 																v[4046] += v[325] > 0 ? -1 : 1
 
-																@if `agent_AddMotionBits & AddMotionFlags_FLAG_IdleAction {
+																def MASK_AddMotionFlags_HorseIdleAction = AddMotionFlags_FLAG_OnHorse + AddMotionFlags_FLAG_IdleAction
+																@if `(agent_AddMotionBits & MASK_AddMotionFlags_HorseIdleAction) == MASK_AddMotionFlags_HorseIdleAction {
 																	// EXPERIMENT
 																	animation_horse_standing()
 																}

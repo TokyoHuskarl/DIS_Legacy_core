@@ -2564,9 +2564,7 @@ __fn check_clickable_units $maskcondbl $flag {
 				@if reg10 == 1 { 
 				MACRO_ck_if_current_agent_is_clickable_to_reg6
 					@if reg6 == 1 {
-						// TT1 = v[agent_pointer] + Adrs_clickable_switches_head_MINUS1
 						Control_ClickableAgentHolder = v[agent_pointer]
-						// s[TT1].on
 						@break
 					}
 				}
