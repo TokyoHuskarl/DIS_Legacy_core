@@ -14,6 +14,11 @@ IF NOT DEFINED build (
 	echo def MAKE_TYPE  = 0 >> %argfile%
 )
 
+set target=module_core_Game_init
+echo Compiling init functions. - %target%
+call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
+echo; 
+
 set target=module_core_RTS_mission_general
 echo Compiling Mission functions. - %target%
 call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en

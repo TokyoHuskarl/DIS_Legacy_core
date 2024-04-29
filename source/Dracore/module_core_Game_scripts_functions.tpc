@@ -329,7 +329,9 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 
 
 		// pic series
+		{NsCmd($LINKstr, $md, $i, "drSimpleRect",{cmd_pic_simplestr(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})},
 		{NsCmd($LINKstr, $md, $i, "loadPic",{cmd_pic_simpleload(SSargs0,SSargs1)})},
+		{NsCmd($LINKstr, $md, $i, "mvPic",{cmd_pic_simplemove(SSargs0,SSargs1,SSargs2)})},
 		{NsCmd($LINKstr, $md, $i, "removePic",{
 			t2v(SSargs0,var1)
 			@pic.erase [var1]
@@ -716,6 +718,42 @@ __fn cmd_sys_loadtxt $path $adrt {
 // picture commands
 //##########################
 
+__fn cmd_pic_simplestr $picid $x $y $w $h {
+
+	t2v($picid,var1)
+	t2v($x,var2)
+	t2v($y,var3)
+	t2v($w,var4)
+	t2v($h,var5)
+
+	@pic[var1].strpic {
+		""
+		.pos var2, var3 .topLeft
+		.size var4, var5        .chromakey 1
+		.scale 100
+		.trans 10
+		.rgbs 100, 100, 100, 100
+		.font Font_UI, Font_UI_size .noShadow
+		.spacing 0, 0
+		.skin "" .stretch .noGradation .noPadding
+		.mapLayer 8
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+	}
+}
+
+__fn cmd_pic_simplemove $picid $x $y {
+	t2v($picid,var1)
+	t2v($x,var2)
+	t2v($y,var3)
+	@pic[var1].move {
+			.pos var2, var3 .topLeft
+			.scale 100
+			.trans 0
+			.time 0
+	}
+}
 
 __fn cmd_pic_simpleload $pic_name $picid {
 	t2v($picid,var1)
@@ -772,9 +810,6 @@ __fn cmd_pic_paste_from_cache $cacheobj $pid $x $y {
 	var3 = reg1 & 0xFFF // x
 	var4 = reg1 >> 12 // y
 	@pic[var10].setPixel .xywh var1, var2, var3, var4 .src v[buffer_for_pixel_information_head] .skipTransparent
-
-}
-__fn cmd_pic_simplemove $picid {
 
 }
 //#########################

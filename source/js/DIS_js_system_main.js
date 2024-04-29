@@ -4141,8 +4141,21 @@ var Cmd = {
 			 * @namespace Cmd.pic
 			 *
 			 */
-			pic: { // Cmd.pic
+			pic: { // Cmd.game.pic
 				CmdType: CTYP_GAME,
+
+				/**
+				 * draw simple rectangle.
+				 * @param {int} picid
+				 * @param {[int x,int y]} pos
+				 * @param {[int width,int height]} size
+				 *
+				 */
+				drawRectangle: function(picid,pos,size) {
+					Cmd.Qset(CmdType,"drSimpleRect",`${picid},${pos[0]},${pos[1]},${size[0]},${size[1]}`);
+				},
+
+
 
 				/**
 				 * load picture command.
@@ -4155,6 +4168,16 @@ var Cmd = {
 				load: function(filepath,picid) { // simply load a picture file to picid 
 					Cmd.Qset(CmdType,"loadPic",`${filepath},${picid}`);
 					return (new DIS_RMpicture(picid,filepath)); // no pos gg
+				},
+
+				/**
+				 * move RMpicture to designated position simply.
+				 *
+				 * @param {int} picid
+				 * @param {[int x,int y]} pos
+				 */
+				movePos: function(picid,pos) {
+					Cmd.Qset(CmdType,"mvPic",`${picid},${pos[0]},${pos[1]}`);
 				},
 
 				/**
@@ -4346,7 +4369,7 @@ var Cmd = {
 		spawnAgentgroup: function(troopid,tilepos,team,delta,amount,dir,stance,flag){
 			// temp
 			troopid = trpid.convert(troopid);
-			let pos = tilepos
+			let pos = tilepos;
 			let agentslist = [];
 			for (let i = 0; i < amount; i++){ // this one is too slow 
 				agentslist[i] = this.spawnAgent(troopid,pos,team,dir,stance,flag);

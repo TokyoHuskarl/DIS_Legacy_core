@@ -68,7 +68,7 @@ const NsGUI = (function(){
 		},
 
 		drawStrPic(pid,strpinfo){
-
+			
 		},
 
 		movePic(pid,pinfo){
@@ -76,7 +76,7 @@ const NsGUI = (function(){
 		},
 
 		erasePic(pid){
-		}
+		},
 
 	};
 

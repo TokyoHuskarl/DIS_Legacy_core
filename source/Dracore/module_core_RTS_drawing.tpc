@@ -419,7 +419,6 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 																def MASK_AddMotionFlags_HorseIdleAction = AddMotionFlags_FLAG_OnHorse + AddMotionFlags_FLAG_IdleAction
 																@if `(agent_AddMotionBits & MASK_AddMotionFlags_HorseIdleAction) == MASK_AddMotionFlags_HorseIdleAction {
-																	// EXPERIMENT
 																	animation_horse_standing()
 																}
 
@@ -459,11 +458,12 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															Temp11.copy v[4044], 2
 
 															//@comment "Archer"
-																agent_AASfx=agent_AASfx % 10000
+															agent_AASfx=agent_AASfx % 10000
 															@if agent_AASfx == 91 {
 																animation_foot_archer()
+
 															//Spear   
-															}.elif agent_AASfx==3{
+															}.elif agent_AASfx == 3 {
 																animation_foot_spear()
 															}
 
