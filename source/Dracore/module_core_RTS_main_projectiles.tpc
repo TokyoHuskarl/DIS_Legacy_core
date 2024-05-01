@@ -200,8 +200,8 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																						//opt 28.4.23
 																						Ptr13 = v[214] * PRJ_HIT_FLAGS_SIZE 
 																						Ptr13 += gPtr_ProjectileHitFlags_HEAD // set to head
-																						Ptr13 += v[ProjectileHitChecker] // >> 5 // / 32
-																						TT3 = pow(2, (v[ProjectileHitChecker] - 1) % 32)
+																						Ptr13 += v[ProjectileHitChecker] / 31 // / 32
+																						TT3 = pow(2, (v[ProjectileHitChecker] - 1) % 30)
 																						//@comment "Check if already hit the unit or not"
 																						v[377] = v[Ptr13] & TT3 ? 0 : 1
 																						v[Ptr13] |= TT3
@@ -372,6 +372,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 											}
 										// init all
 										v[1301].copy projectile_ProjectileType, 100
+										projectile_init_agent_hitflag()
 									}
 									
 
@@ -385,6 +386,12 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
 }
 
+
+__fn projectile_init_agent_hitflag {
+	TT1 = v[214] * PRJ_HIT_FLAGS_SIZE 
+	TT1 += gPtr_ProjectileHitFlags_HEAD // set to head
+	v[ptr_null].copy v[TT1],PRJ_HIT_FLAGS_SIZE
+}
 
 /**
  *

@@ -4155,17 +4155,26 @@ var Cmd = {
 					Cmd.Qset(CmdType,"drSimpleRect",`${picid},${pos[0]},${pos[1]},${size[0]},${size[1]}`);
 				},
 
+				/**
+				 * draw simple string. unco
+				 * @param {int} picid
+				 * @param {[int x,int y]} pos
+				 *
+				 */
+				drawString: function(picid,str,pos) {
+					Cmd.Qset(CmdType,"drSimpleRect",`${picid},${str},${pos[0]},${pos[1]}`);
+				},
 
 
 				/**
 				 * load picture command.
-				 * @param {int} filepath
 				 * @param {int} picid
+				 * @param {int} filepath
 				 *
 				 * @returns {DIS_RMpicture} RPG Maker picture 
 				 *
 				 */
-				load: function(filepath,picid) { // simply load a picture file to picid 
+				load: function(picid,filepath) { // simply load a picture file to picid 
 					Cmd.Qset(CmdType,"loadPic",`${filepath},${picid}`);
 					return (new DIS_RMpicture(picid,filepath)); // no pos gg
 				},

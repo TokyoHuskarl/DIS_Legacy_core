@@ -4,10 +4,9 @@ cev .id(1219), .name("Scorpion Bolt"), {
 			
 	} .else bl {
 			@if s[122] .isOn() {
-					v[Ptr12 + 20] = muldiv(v[Ptr12 + 20], 88, 100)
-					TT1 = Ptr12 + 27
-					@if `!(v[TT1] & 4) {
-							v[TT1] |= 4
+					projectile_Damage = muldiv(projectile_Damage, 88, 100)
+					@if `!(projectile_ProjectileFlag1 & 4) {
+							projectile_ProjectileFlag1 |= 4
 							// "#発動処理"
 							// "#バフ番号指定"
 							var1 = 1196
