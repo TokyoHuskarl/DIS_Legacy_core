@@ -26,15 +26,22 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 
 		}
 	@loop 10 .dst TT2 {
-		@if `v[944] == 1 || s[2] == 1 {
+		// 
+		def COHORT_MACRO_TurnOnSwitches = {
 			s[222].on
 				s[223].on
+
+		}
+		@if v[944] == 1 {
+			COHORT_MACRO_TurnOnSwitches
+		} .elif s[2].isOn() {
+			COHORT_MACRO_TurnOnSwitches
 
 		} .else bl {
 			s[222].off
 				s[223].off
-
 		}
+
 			TT2.copy TT20,1 // TT20 = TT2
 			TT11 = LEGV_Selected_Cohort_Number - 1
 			TT2.copy TT10,1 // TT10 = TT2
@@ -74,16 +81,14 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 							@if agent_TeamID == 0 {
 								@if `agent_Cohort_ID == TT20 + 1 {
 									@if agent_MaxHP >= 1 {
-										Temp2 += 1
+											val_add(Temp2,N1) // Temp2 += 1
 											//@comment "Get current HP"
 											val_add(Temp3,agent_MaxHP) // Temp3 += agent_MaxHP
 											@if agent_ObjectType >= 1 {
 												val_add(Temp4,agent_HP) // Temp4 += agent_HP
 													@if agent_Morale < 3 {
-														Temp14 += 1
-															//Temp16 = Temp1 + 26
+															val_add(Temp14,N1) // Temp14 += 1
 															v[Temp13] .add agent_MapX, 2
-															//Temp16 = Temp1 + 7
 															v[Temp20] .add agent_RelativeX, 2
 															@if s[201] .isOff() {
 																@if agent_StanceOrder == 0 {
@@ -130,14 +135,16 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 
 					}
 
-				v[CohortArrayPtr + 6] = Temp14
+				TT1 = CohortArrayPtr + 6
+				v[TT1] = Temp14
 					@if s[202] .isOn() {
 						v[202] = PlayerSelectList_Size * TT20 
-							v[202] += v[4524]
-							v[v[202]].sortDescending PlayerSelectList_Size
+						v[202] += v[4524]
+
+						v[v[202]].sortDescending PlayerSelectList_Size
 
 					}
-				Temp15 = Temp14
+					Temp15 = Temp14
 					v[Temp13] .div Temp14, 2
 					v[Temp20] .div Temp14, 2
 					//@comment "やっぱりちょっと危険な気がする"
@@ -146,7 +153,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 							//@comment "Alert and fighting"
 							@if cohort_StanceOrder == 0 {
 								@if v[330] > 0 {
-									v[202] = PlayerSelectList_Size * TT20 
+										v[202] = PlayerSelectList_Size * TT20 
 										v[202] += v[4524]
 										@while v[v[202]] != 0 .dst var10 {
 											@if var10 >= PlayerSelectList_Size {
@@ -177,7 +184,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 
 												}
 											agent_ObjectType.copy v[Ptr1], 300//save alle :D
-												v[202] += 1
+											val_add(v[202],N1) // v[202] += 1
 
 										}
 
@@ -190,8 +197,9 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 							//@comment "Fighting end"
 							@if `cohort_StateFlag & cohort_StateFlag_FLAG_fighting {
 								@if v[330] == 0 {
-									v[202] = PlayerSelectList_Size * TT20 
-										v[202] += v[4524]
+										v[202] = PlayerSelectList_Size * TT20 
+										val_add(v[202],v[4524]) // v[202] += v[4524]
+
 										s[202].off
 										@while v[v[202]] != 0 .dst var10 {
 											@if var10 >= PlayerSelectList_Size {
@@ -211,13 +219,13 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 													}
 
 												}
-											v[202] += 1
+											val_add(v[202],N1) // v[202] += 1
 
 										}
 
 									@if s[202] .isOff() {
-										v[CohortArrayPtr + 20] = cohort_StanceOrder == 2 ? 0 : cohort_StanceOrder
-											v[CohortArrayPtr + 4] &= -5//~4
+											v[CohortArrayPtr + 20] = cohort_StanceOrder == 2 ? 0 : cohort_StanceOrder
+											v[CohortArrayPtr + 4] &= -5 //~4
 											//@comment "try restore formation"
 											var2 = TT20
 											var3 = 0
@@ -233,7 +241,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 						}
 
 					}
-				TT1 = 10 + v[1118] 
+					TT1 = 10 + v[1118] 
 					TT1 += TT20
 					//@comment "Check if the resistered units destroyed"
 					@if Temp4 == 0 {
