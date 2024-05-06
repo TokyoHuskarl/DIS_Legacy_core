@@ -1469,10 +1469,7 @@ DIS.string = (function(){
 
 				let rs = given;
 
-				// replace color tags
-				for (let tg of tags){
-					rs = res.replace(tg[0], tg[1]);
-				}
+
 
 				let rsget = rs;
 				if (rs.lastIndexOf('$mstr_') == 0){
@@ -1486,6 +1483,13 @@ DIS.string = (function(){
 				} else {
 					rs = rsget;
 				};
+
+				deblog(`${rs}`)
+
+				// replace color tags
+				for (let tg of tags){
+					rs = rs.replace(tg[0], tg[1]);
+				}
 
 
 				// let the in game string can reffer js variables
@@ -4669,7 +4673,14 @@ var Cmd = {
 		},
 
 		checkCurrentGroup: function(grp){
-			if(grp != this.cgrp){this.setCgrp(grp);};
+			if(grp == 0) {
+				grp = this.cgrp;
+			} else {
+				if(grp != this.cgrp){
+					this.setCgrp(grp);
+				};
+			};
+			return grp;
 		},
 
 		registerCohort: function(grp,player,cohortid) {
@@ -4682,21 +4693,27 @@ var Cmd = {
 			return new DIS_cohort(player,cohortid,grp.idlist);
 		},
 
-		move: function(grp,path,flag){
-			flag = flag || 0;
-			this.checkCurrentGroup(grp);
+		
+		/**
+		 * Simplest way to order agents to move.
+		 *
+		 * @param {} grp
+		 * @param {} path
+		 * @param {} flag
+		 */
+		moveToPoint: function(grp,path,flag = 0){
+			grp = this.checkCurrentGroup(grp);
 			let goal = path; // kari
-			Cmd.Qset(this.CmdType,"move",`${goal[0]},${goal[1]},${flag}`);
+			Cmd.Qset(this.CmdType,"movePt",`${goal[0]},${goal[1]},${flag}`);
 		},
 
 		attack: function(grp,targetid){
-			this.checkCurrentGroup(grp);
+			grp = this.checkCurrentGroup(grp);
 			Cmd.Qset(this.CmdType,"attack",`${targetid}`);
 		},
 
-		setStance: function(grp,stanceid,flag){
-			flag = flag || 0;
-			this.checkCurrentGroup(grp);
+		setStance: function(grp,stanceid,flag = 0){
+			grp = this.checkCurrentGroup(grp);
 			Cmd.Qset(this.CmdType,"setStance",`${stanceid}`);
 		},
 
@@ -5352,3 +5369,4 @@ function resizeImage(imageData, originalWidth, originalHeight,rate) {
 
 deblog(DIS.string)
 
+DIS.string.convertString("nofuckyou")

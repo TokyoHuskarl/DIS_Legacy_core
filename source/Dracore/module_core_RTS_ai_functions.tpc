@@ -1,5 +1,7 @@
 // loaded by header_ai.tpc
 
+defv AI_WP_amount_to_set = 2875
+
 // clear ai agent list - cev 1748
 __fn aiList_clear {
 	v[ptr_null].copy v[Const_save_var_Adr_aiAgentlistHead],aiListSize // init List
@@ -19,6 +21,175 @@ __fn aiList_push $arg {
 		}
 	}
 
+}
+
+// need writing up from zero
+__fn ai_order_agents_move $listhead $x $y $fl {
+
+	// set Ptr
+	LEGV_UnitSelectingPtr = $listhead
+
+	// set goal
+	v[391] = $x
+	v[392] = $y
+
+	def AI_MOVEORDER_FL_ATTACKMOVE = 0x1
+	TempFlag1 = $fl
+	
+
+	defv linecounter = __id(Temp20) 
+	val_init(linecounter)
+
+	// how about flag?
+
+	@loop v[1004] .dst v[340] {
+		// reached list tail
+		@if v[LEGV_UnitSelectingPtr] == 0 {
+			@break
+		}
+		// "skip foundation "
+			Temp1 = v[LEGV_UnitSelectingPtr] * 300
+			val_add(Temp1,N4700) // Temp1 += 4700
+			val_asg(Ptr1,Temp1)
+			val_add(Ptr1,N1)
+			v[Ptr1].copy agent_ObjectType,agent_Basic_Array_size
+
+			@if agent_UnitType != 104 {
+					Ptr19 = __id(agent_HoldPointX)
+					// Ptr14 is used
+					agent_AI_routine_bits &= ~4096
+					// "処理開始"
+					@if agent_MovementOrder != 4 {
+						agent_MovementOrder = TempFlag1 & AI_MOVEORDER_FL_ATTACKMOVE ? MovementOrder_TYPE_move_ordered : MovementOrder_TYPE_prioritize_moving
+
+					}
+				@if agent_AgentType != 11 {
+						agent_Formbits &= ~Formbits_MASK_Lines // init line assignment
+						agent_AgentBits &= ~384
+						agent_AgentBits &= AgentBits_MASK_for_initilizing_pathfinding
+						// "#ForceMoveFlag"
+
+						//is attack move?
+						@if `TempFlag1 & AI_MOVEORDER_FL_ATTACKMOVE {
+								agent_AI_routine_bits &= ~AI_routine_bits_FLAG_AIskip
+								agent_AgentBits &= ~AgentBits_FLAG_ForcemoveFlag // on attack move, kill forcemove flag
+
+								@if agent_InCombatTimer <= -10000 {
+									agent_InCombatTimer = v[1178]
+
+								}
+
+						} .else bl {
+								agent_AI_routine_bits |= AI_routine_bits_FLAG_AIskip
+								agent_AgentBits |= AgentBits_FLAG_ForcemoveFlag
+
+						}
+
+
+					agent_AI_routine_bits &= AI_routine_bits_MASK_for_initilizing_pathfinding
+
+
+						// "#アタックムーブじゃなければActionチェック"
+						TT1 = TempFlag1 & AI_MOVEORDER_FL_ATTACKMOVE ? -999 : agent_ActionState // ACHTUNG!!
+						// "#if Action==Attack, Set Action 0"
+						agent_ActionState = TT1 == 1 ? 0 : agent_ActionState
+						// "#if Forcemove, AA MotionTimer Reset"
+						agent_AttackFrame = TT1 == 1 ? 0 : agent_AttackFrame
+						// "#if Attack Stance, set stance alert"
+						agent_StanceOrder = agent_StanceOrder == 2 ? 0 : agent_StanceOrder
+						// "#Manual"
+						agent_StanceOrder = agent_AI_routine_bits & AI_routine_bits_FLAG_Manual_Ordered ? 4 : agent_StanceOrder
+
+				}
+
+				@if AI_WP_amount_to_set >= 1 { // ACHTUNG need change
+						Ptr14 = 273
+						Ptr14 -= AI_WP_amount_to_set * 2
+						@loop AI_WP_amount_to_set {
+							v[Ptr14].copy v[Ptr19], 2
+								Ptr14 += 2
+								Ptr19 += 2
+
+						}
+
+						v[Ptr14].copy v[Ptr19], 2
+						// "#Set 現在目指してるWPと総WP数"
+						agent_LeftWPtoChase = AI_WP_amount_to_set
+						v[273].copy v[361], 2
+						v[273] .add v[395], 2
+
+				} .else bl {
+					agent_AI_routine_bits |= agent_AAType == 0 ? AI_routine_bits_FLAG_RayCast : 0 // set raycast anyway
+						agent_AI_routine_bits &= ~(AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_tracing_wp)
+						
+
+						// use A* pathfinding or not
+						@if s[1] .isOff() { // always true, temporary
+							agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+								@if `between(agent_Cohort_ID, 1, 10) {
+									agent_AI_routine_bits |= 16793600
+								}
+
+						} .else bl {
+							agent_AI_routine_bits &= ~16809984
+								@if s[112] .isOn() {
+										agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+										@if `between(agent_Cohort_ID, 1, 10) {
+											agent_AI_routine_bits |= 16793600
+
+										}
+
+								}
+
+						}
+						// "#Set goal
+						v[391].copy agent_HoldPointX,2
+						// "#Set 現在目指してるWPと総WP数"
+						agent_LeftWPtoChase = -1
+						v[391].copy v[361], 2
+						v[391] .add v[395], 2
+
+				}
+
+				agent_Formbits |= pow(2,linecounter) // set current line flag
+
+					// "#Set 目標なし"
+					agent_TargetAgentID = 0
+					agent_ActionFlag = 0
+
+					/*
+					// "Make 2nd line"
+					v[390] += 1
+					v[390] %= v[399]
+					@if v[390] == 0 {
+						val_add(linecounter,N1)
+							@if AI_WP_amount_to_set >= 1 {
+								v[393].copy v[273], 2
+									v[273] .add v[397], 2
+									v[273].copy v[393], 2
+
+							} .else bl {
+								v[393].copy v[391], 2
+									v[391] .add v[397], 2
+									v[391].copy v[393], 2
+
+							}
+
+					}
+					*/
+
+				@if agent_AgentType <= 8 {
+					agent_AgentBits = agent_StanceOrder <= 4 ? [agent_AgentBits | 1048576, agent_AgentBits | 1048576, agent_AgentBits & ~1048576, agent_AgentBits | 1048576, agent_AgentBits & ~1048576][agent_StanceOrder] : agent_AgentBits
+
+				}
+
+			}
+		// save back
+		agent_ObjectType.copy v[Ptr1],agent_Basic_Array_size
+		// increment
+		LEGV_UnitSelectingPtr += 1
+
+	}
 }
 
 

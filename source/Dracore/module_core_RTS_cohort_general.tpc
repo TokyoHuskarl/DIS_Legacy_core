@@ -93,7 +93,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 															@if s[201] .isOff() {
 																@if agent_StanceOrder == 0 {
 																	@if agent_TargetAgentID > 0 {
-																		v[330] = agent_TargetAgentID
+																			v[330] = agent_TargetAgentID
 																			v[331] = v[330] * 300
 																			//@comment "is enemy"
 																			@if `v[v[331] + 4800] % 3 == 1 {
@@ -104,6 +104,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 																				v[CohortArrayPtr + 4] |= cohort_StateFlag_FLAG_fighting
 
 																			} .else bl {
+
 																			}
 
 																	}
@@ -121,17 +122,17 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 								} .else bl {
 									//@comment "not the same cohort"
 									v[v[202]] = 0
-										s[202].on
+									s[202].on
 
 								}
 
 							} .else bl {
 								//@comment "not my team"
 								v[v[202]] = 0
-									s[202].on
+								s[202].on
 
 							}
-						v[202] += 1
+						val_add(v[202],N1) // v[202] += 1
 
 					}
 

@@ -71,7 +71,6 @@ __fn func_bs_melee_hit_check_wo_prep {
 	    @if reg2 == 0 {
 		@if s[164] .isOff() {
 		    //@comment "Parry chance"
-		    //v[874] = Ptr10 + 4974
 			@if victim_AAType == 0 {
 				@if `victim_ProcessObjBit & BaseObjBit_FLAG_CanParry { //not ranged type?
 					reg2 = rnd(1, 100) <= victim_ProcessHIT / (victim_ProcessObjBit & BaseObjBit_FLAG_Duelist_Activated ? 2 : 3) + 16 ? 2 : 0

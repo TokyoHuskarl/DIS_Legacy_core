@@ -385,7 +385,7 @@ __fn DIS_group_methods $LINKstr $md $i $given_v_or_str $flags {
 		{NsCmd($LINKstr, $md, $i, "setCgrp",{cmd_grp_setCgrp()})},
 		{NsCmd($LINKstr, $md, $i, "registerCohort",{cmd_grp_registerCohort()})},
 		{NsCmd($LINKstr, $md, $i, "convertPath",{})},
-		{NsCmd($LINKstr, $md, $i, "move",{cmd_grp_move(SSargs0,SSargs1,SSargs2)})},
+		{NsCmd($LINKstr, $md, $i, "movePt",{cmd_grp_move_simple(SSargs0,SSargs1,SSargs2)})},
 		
 	])
 }
@@ -1006,12 +1006,13 @@ __fn cmd_grp_registerCohort {
 	}
 }
 
-__fn cmd_grp_move $x $y $fl {
+__fn cmd_grp_move_simple $x $y $fl {
 	t2v($x,var1) // x
 	t2v($y,var2) // y
 	t2v($fl,var3) // flag
 	macro_convert_maptileXY_into_relativeXY(var1,var2,v[2853],v[2854])
-	@call .cev 1750
+	ai_order_agents_move(Const_save_var_Adr_aiAgentlistHead,var1,var2,var3)
+	// @call .cev 1750
 
 }
 

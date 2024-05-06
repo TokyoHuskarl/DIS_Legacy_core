@@ -1554,7 +1554,7 @@ __fn func_control_moveorder_proc_let_units_attack {
 }
 
 __fn func_control_moveorder_proc_move {
-	v[390] = 0
+		v[390] = 0
 		defv linecounter = __id(Temp20) 
 		val_init(linecounter)
 
@@ -1578,7 +1578,7 @@ __fn func_control_moveorder_proc_move {
 				v[Ptr1].copy agent_ObjectType,agent_Basic_Array_size
 				
 				@if agent_UnitType != 104 {
-					Ptr20 = Temp1 + 242
+						Ptr20 = Temp1 + 242
 						Ptr19 = Temp1 + 41
 						Ptr18 = Temp1 + 42
 						Ptr17 = Temp1 + 18
