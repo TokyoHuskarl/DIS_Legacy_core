@@ -383,9 +383,10 @@ __fn DIS_group_methods $LINKstr $md $i $given_v_or_str $flags {
 
 		//let javascript interpreter execute what is written in file
 		{NsCmd($LINKstr, $md, $i, "setCgrp",{cmd_grp_setCgrp()})},
+		{NsCmd($LINKstr, $md, $i, "agtmv",{cmd_grp_move_simple(SSargs0,SSargs1,SSargs2,SSargs3)})},
+		{NsCmd($LINKstr, $md, $i, "setSt",{cmd_grp_setStance(SSargs0,SSargs1)})},
 		{NsCmd($LINKstr, $md, $i, "registerCohort",{cmd_grp_registerCohort()})},
-		{NsCmd($LINKstr, $md, $i, "convertPath",{})},
-		{NsCmd($LINKstr, $md, $i, "movePt",{cmd_grp_move_simple(SSargs0,SSargs1,SSargs2)})},
+		{NsCmd($LINKstr, $md, $i, "convertPath",{})}, //?
 		
 	])
 }
@@ -1006,15 +1007,74 @@ __fn cmd_grp_registerCohort {
 	}
 }
 
-__fn cmd_grp_move_simple $x $y $fl {
-	t2v($x,var1) // x
-	t2v($y,var2) // y
-	t2v($fl,var3) // flag
-	macro_convert_maptileXY_into_relativeXY(var1,var2,v[2853],v[2854])
-	ai_order_agents_move(Const_save_var_Adr_aiAgentlistHead,var1,var2,var3)
-	// @call .cev 1750
+// not simple at all! what the fugg :D
+__fn cmd_grp_move_simple $x $y $fl $formation {
+	t2v($x,Temp16) // x
+	t2v($y,Temp17) // y
+	t2v($fl,Temp18) // flag
+	t2v($formation,Temp19) // form
+
+	// convert maptile XY
+	macro_convert_maptileXY_into_relativeXY(Temp16,Temp17,Temp21,Temp22) // return relXY pos to Temp21,Temp22
+
+	// underconstruction - how should I deal with formation?
+
+	// line
+	@if Temp19 == 1 {
+
+		// you have to write optional proc for setting angle manually
+		get_agentslist_median_pos_rel_to_reg1_reg2(Const_save_var_Adr_aiAgentlistHead,aiListAgentCounter) // get median pos
+		// save current median po to Temp23~24
+		reg1.copy Temp23,2
+
+		ai_order_calculate_form_line(Const_save_var_Adr_aiAgentlistHead,aiListAgentCounter,reg1,reg2,Temp21,Temp22) // Temporary, get angle from median point of the selected list to the designated point
+
+		@if `Temp18 & AI_MOVEORDER_FL_CHANGE_ONLY_DIRECTION {
+			Temp23.copy Temp21,2 // just change current angle
+		}
+		
+	}.else {
+		// init AI agent move variables
+		MACRO_init_ai_agent_move_vars
+
+	}
+
+
+	// call move order
+	ai_order_agents_move(Const_save_var_Adr_aiAgentlistHead,aiListAgentCounter,Temp21,Temp22,Temp18)
 
 }
+
+/**
+ * Change stance of selected agents.
+ * @param {t} $stance - 
+ * @param {t} $fl - 
+ */
+__fn cmd_grp_setStance $stance $fl {
+	t2v($stance,var1) // x
+	t2v($fl,var2) // y
+
+	// set stance
+	@if var1 == 0 { // alert
+		func_agentlist_order_alert(Const_save_var_Adr_aiAgentlistHead,aiListAgentCounter,var2)
+
+	}.elif var1 == 1 {
+		func_agentlist_order_stand(Const_save_var_Adr_aiAgentlistHead,aiListAgentCounter,var2)
+
+	}.elif var1 == 3 { // defense
+		func_agentlist_order_def(Const_save_var_Adr_aiAgentlistHead,aiListAgentCounter,var2)
+		
+	}.elif var1 == 4 { // manual
+		// UNDERCONSTRUCTION
+		func_devlog("TPC:[cmd_grp_setStance] manual order is underconstruction")
+	}.else {
+		errlog("TPC:[cmd_grp_setStance] Given stance id is invalid.")
+	}
+}
+__fn cmd_grp_attack_agent {
+}
+
+
 
 /*
 		@if inputstr .contains "_get_mapcord(" {

@@ -806,7 +806,7 @@ class RTSagentGroup { // list object for DIS_agent.
 	};
 
 	info = {
-		Schewerpunkt: [0,0],
+		Schwerpunkt: [0,0],
 	};
 
 	pushAgent(agt){
@@ -844,7 +844,7 @@ class RTSagentGroup { // list object for DIS_agent.
 			SP[i] = (SP[i] /= counter) | 0;
 		};
 
-		return (this.Schewerpunkt = SP);
+		return (this.Schwerpunkt = SP);
 	};
 
 	
@@ -4667,13 +4667,13 @@ var Cmd = {
 					agentlist += elm + "|";
 				};
 			};
-			deblog(agentlist)
+			// deblog(agentlist)
 			Cmd.Qset(this.CmdType,"setCgrp",agentlist);
 			this.cgrp = grp;
 		},
 
 		checkCurrentGroup: function(grp){
-			if(grp == 0) {
+			if(grp == 0) { // if 0 is given, return current selecting group
 				grp = this.cgrp;
 			} else {
 				if(grp != this.cgrp){
@@ -4697,24 +4697,55 @@ var Cmd = {
 		/**
 		 * Simplest way to order agents to move.
 		 *
-		 * @param {} grp
-		 * @param {} path
-		 * @param {} flag
+		 * @param {agent_idlist} grp
+		 * @param {array} path
+		 * @param {int} attackmove
+		 * @param {int} formationType - 0:free, 1:line
+		 * @param {} fl = 0x2 - You don't need to set this unless you know what you're gonna do. 
+		 *           0x1:attack move, 0x2:use pathfinding, 0x4:just change direction, 0x8: formation direction manually set
+		 *
+		 * @param {int} angle = -1 - You can set angle manually in range of 0~360000. 
+		 *           If you give a number below 0, this argument means nothing
 		 */
-		moveToPoint: function(grp,path,flag = 0){
+		moveToPoint: function(grp,path,attackmove = 0,formType = 0,fl = 0x2,angle = -1){
 			grp = this.checkCurrentGroup(grp);
 			let goal = path; // kari
-			Cmd.Qset(this.CmdType,"movePt",`${goal[0]},${goal[1]},${flag}`);
+			fl |= attackmove;
+			fl |= angle > 0 ? 0x8 : 0;
+			
+			Cmd.Qset(this.CmdType,"agtmv",`${goal[0]},${goal[1]},${fl},${formType}`);
+		},
+
+		/**
+		 * Order given agent grp to advance straightly to the designated point. Do not try pathfinding.
+		 *
+		 * @param {} grp
+		 * @param {} path
+		 * @param {} attackmove
+		 */
+		advanceToPoint: function(grp,pt,attackmove = 1){
+			this.moveToPoint(grp,pt,attackmove,1,0);
+		},
+
+		turnForPoint: function(grp,pt,formType = 1){
+			this.moveToPoint(grp,pt,1,formType,0x4);
 		},
 
 		attack: function(grp,targetid){
 			grp = this.checkCurrentGroup(grp);
-			Cmd.Qset(this.CmdType,"attack",`${targetid}`);
+			Cmd.Qset(this.CmdType,"atk",`${targetid}`);
 		},
 
-		setStance: function(grp,stanceid,flag = 0){
+		/**
+		 * .
+		 *
+		 * @param {} grp
+		 * @param {int} stanceid - 0:,
+		 * @param {} fl
+		 */
+		setStance: function(grp,stanceid,fl = 0){
 			grp = this.checkCurrentGroup(grp);
-			Cmd.Qset(this.CmdType,"setStance",`${stanceid}`);
+			Cmd.Qset(this.CmdType,"setSt",`${stanceid},${fl}`);
 		},
 
 	},
