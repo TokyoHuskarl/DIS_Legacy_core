@@ -182,7 +182,7 @@ __fn agent_autoattack_melee {
 							@if `agent_AABits & AABits_FLAG_FatalBlow { // if the attacker has FatalBlow AAflag, give his opponent true damage
 								// set AA element
 								val_asg(Temp2,N2) // Temp2 = agent_AA_ARorMR
-								val_const(v[421],150) // true damage multiplier is fixed
+								val_const(v[421],180) // true damage multiplier is fixed
 
 							}.else bl{
 								// set AA element

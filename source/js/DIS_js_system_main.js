@@ -4434,7 +4434,7 @@ var Cmd = {
 		 * @return {DIS_agent} - Spawned Palisade... this will be changed into {DIS_agent_static}
 		 */
 		spawnPalisade: function(tileposbeg,tileposend,team){ // returns DIS_agent
-			Cmd.Qset(this.CmdType,"spawnPalisade",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
+			Cmd.Qset(this.CmdType,"spnPali",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
 			let protostatic = new DIS_agent(DIS.agent.searchEmptySpace(),staid["STA_palisade"],team,false);
 			return protostatic;
 		},
@@ -4448,7 +4448,7 @@ var Cmd = {
 		 * @return {DIS_agent} - this will be changed into {DIS_agent_static}
 		 */
 		spawnWall: function(tileposbeg,tileposend,team){ // returns DIS_agent
-			Cmd.Qset(this.CmdType,"spawnWall",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
+			Cmd.Qset(this.CmdType,"spnWall",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
 			let protostatic = new DIS_agent(DIS.agent.searchEmptySpace(),staid["STA_wall"],team,false);
 			return protostatic;
 		},
