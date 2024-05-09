@@ -4687,7 +4687,7 @@ var Cmd = {
 				};
 			};
 			// deblog(agentlist)
-			Cmd.Qset(this.CmdType,"setCgrp",agentlist);
+			Cmd.Qset(this.CmdType,"stCgrp",agentlist);
 			this.cgrp = grp;
 		},
 
@@ -4707,7 +4707,7 @@ var Cmd = {
 
 			// temporary only for player
 			if (player == 0){
-				Cmd.Qset(this.CmdType,"registerCohort",`${player},${cohortid},${this.Adr_cgrp_list_head},${grp.idlist.length}`);
+				Cmd.Qset(this.CmdType,"regiCoh",`${player},${cohortid},${this.Adr_cgrp_list_head},${grp.idlist.length}`);
 			};
 			return new DIS_cohort(player,cohortid,grp.idlist);
 		},
@@ -4736,7 +4736,8 @@ var Cmd = {
 		},
 
 		/**
-		 * Order given agent grp to advance straightly to the designated point. Do not try pathfinding.
+		 * Order given agent grp to advance straightly to the designated point. 
+		 * With this command, agents don't try pathfinding.
 		 *
 		 * @param {} grp
 		 * @param {} path

@@ -382,10 +382,10 @@ __fn DIS_group_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("grp", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "setCgrp",{cmd_grp_setCgrp()})},
+		{NsCmd($LINKstr, $md, $i, "stCgrp",{cmd_grp_setCgrp()})},
 		{NsCmd($LINKstr, $md, $i, "agtmv",{cmd_grp_move_simple(SSargs0,SSargs1,SSargs2,SSargs3)})},
 		{NsCmd($LINKstr, $md, $i, "setSt",{cmd_grp_setStance(SSargs0,SSargs1)})},
-		{NsCmd($LINKstr, $md, $i, "registerCohort",{cmd_grp_registerCohort()})},
+		{NsCmd($LINKstr, $md, $i, "regiCoh",{cmd_grp_registerCohort()})},
 		{NsCmd($LINKstr, $md, $i, "convertPath",{})}, //?
 		
 	])
