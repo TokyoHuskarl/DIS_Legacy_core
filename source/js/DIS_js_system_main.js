@@ -574,6 +574,25 @@ class DATA_tech extends DATA_entity {
 // DIS objects
 // ------------------------------------------------
 
+// consts 
+const DIR_RIGHT=1,
+	DIR_LEFT=0,
+	ORD_AGG=0,
+	ORD_DEF=3,
+	ORD_STD=1,
+	ORD_MANU=4,
+	DMG_TYPE_CUT=0,
+	DMG_TYPE_PIERCE=1,
+	DMG_TYPE_BLUNT=2,
+	DMG_TYPE_ENERGY=3,
+	DMG_TYPE_FIRE=4,
+	DMG_TYPE_ICE=5,
+	CLASS_INFANTRY=0,
+	CLASS_ARCHER=1,
+	CLASS_CAVALRY=2,
+	CLASS_MAGE=3,
+	CLASS_SIEGE=4;
+
 // DISentities on js system are not real parameters of DIS agents in the game. 
 // It's rather something like a bundle of links to actual entities on RPGMaker.
 // so unless you refresh its information through functions, data in DIS_entity can be diffrent from the actual value stored in RPGMaker. 

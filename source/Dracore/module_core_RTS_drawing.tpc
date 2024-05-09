@@ -322,14 +322,14 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									}
 
 
-			//fleeing 
+									//fleeing 
 									@if agent_Morale == 3 {
 											v[4064].repeat 100,2 // v[4064..4065] = 100
 											
 									}
 
 									v[4065] = agent_ProcessObjBit & BaseObjBit_FLAG_Brokenshield ? 100 : v[4065] // if shield is broken, set shield Transparency 100
-			//horseback
+										//horseback
 									@if `agent_ExMotionFlags & ExMotionFlags_FLAG_horseback {
 
 											// horse sprite column
@@ -337,8 +337,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 											v[371] = 0
 
 
-											//horseback
-											@if `agent_ActionFlag & ActionFlag_FLAG_Walking {
+											// basic horse movement  animation
+											@if `agent_ActionFlag & ActionFlag_FLAG_Walking { // when the agent is walking
 													Temp5.copy Temp11, 2
 													TT1 = 10 * agent_RegTimer
 													Temp12 += sin(TT1, 1, 2)
@@ -380,7 +380,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													}
 													
 											} .else bl {
-													@if expected_action_sprite == 4 {
+													@if expected_action_sprite == 4 { // attacking
 															@if `agent_ProcessObjBit & BaseObjBit_FLAG_LanceCharge {
 																	HORSEBACK_CHARGE_ANIMATION
 																	HORSEBACK_CHARGE_RIDER_POS
@@ -396,9 +396,26 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															}
 															
 													} .else bl {
-															@if expected_action_sprite == 5 { // moving now
-																	@if `agent_AASfx % 10000 == 91 { //cav archer moving
-																			@if agent_InCombatTimer > 0 {
+															@if expected_action_sprite == 5 { // movement sprite pattern
+
+																	@if agent_InCombatTimer > 0 { // in battle
+																			@if `agent_AddMotionBits & AddMotionFlags_FLAG_Pointy_Onehanded_Weapon { // has one handed weapon with edgy stabbing motion
+																				@if `agent_ProcessObjBit & BaseObjBit_FLAG_SpeedBonus { // and with speed bonus
+																						// then the agent holds his weapon more stylish. yay
+																						spriteset_bladedance()
+																						reg1 = agent_AASfx % 10000
+																						@if reg1 == 3 { // spear type
+																								val_sub(v[4054],N8)
+
+																						}.else bl { // sword type
+																								v[4114] = 4
+																								val_sub(v[4054],N1)
+
+																						}
+																					}
+																					
+																			// this condition should be changed imo
+																			}.elif `agent_AASfx % 10000 == 91 { // cav archer moving
 																					v[4134] = 3
 																					v[4144] = 180000 * (1 - 2 * v[325])
 
@@ -417,6 +434,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															}.elif expected_action_sprite == 2 { // idle state
 																v[4046] += v[325] > 0 ? -1 : 1
 
+																// horse idle animation
 																def MASK_AddMotionFlags_HorseIdleAction = AddMotionFlags_FLAG_OnHorse + AddMotionFlags_FLAG_IdleAction
 																@if `(agent_AddMotionBits & MASK_AddMotionFlags_HorseIdleAction) == MASK_AddMotionFlags_HorseIdleAction {
 																	animation_horse_standing()
@@ -438,8 +456,9 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													
 											}
 											
-									} .else bl {
-					//move walking
+									
+									} .else bl { // not on horse
+										//move walking
 											@if expected_action_sprite == 5 {
 													TT1 = (v[340] + v[2500]) % 360 * (5 + v[868] / 16)
 													//@comment "vert flag"
@@ -595,6 +614,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 											
 									}
 
+									// Attack motion!
 									@if expected_action_sprite == 3 {
 										// opt 11.5.23
 										agent_AASfx = agent_AASfx % 10000

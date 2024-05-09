@@ -215,8 +215,8 @@ __fn animation_sword_attack {
 				v[4044].add TT1,1
 				var1.repeat  TT1,9
 				//Horse back
-				@if `(agent_ExMotionFlags & 16777216) {
-					v[4041].add var1,4 // v[4041..4044] += TT1
+				@if `(agent_ExMotionFlags & ExMotionFlags_FLAG_horseback) {
+					v[4041].add var1,4
 				}.else bl {
 					v[4111].repeat 4,10 // v[4111..4120] = 4
 					v[4041].add var1,9 // v[4041..4049] += TT1
