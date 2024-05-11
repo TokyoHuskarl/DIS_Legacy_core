@@ -23,6 +23,10 @@ IF NOT DEFINED build (
 	call %tpc% "./../headers/MAKE_BACKUP.tpc" -en
 	echo; >> %log%".txt" 
 )
+set target=module_preset_buffs_general
+echo Compiling preset buff - %target%  >> %log%".txt"
+call %tpc% %current%%target%".tpc" -en >> %log%".txt"
+echo; >> %log%".txt"
 
 set target=module_preset_particles_general
 echo Compiling preset particles. - %target%  >> %log%".txt"

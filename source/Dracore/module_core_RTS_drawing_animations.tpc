@@ -103,7 +103,6 @@ __fn animation_horse_standing {
 			// val_mul(TT3,TT1)
 			TT4 = TT1 * 2
 			val_sub(Temp11,TT4) // basic offset
-			// val_sub(Temp11,TT3)
 			v[4041].repeat(Temp11, 9)
 
 			// y offset for rider
@@ -123,6 +122,58 @@ __fn animation_horse_standing {
 	}
 
 }
+
+// animid 105
+__fn animation_horse_standing_stunned {
+		// TT10 = frame counter++
+			TT10 = (RTS_WORLD_passed_frame - agent_generated_ID) * 4
+
+		// idle
+			Temp5.copy Temp11, 2
+
+			// set all motion 3
+
+			// set horse sprite angle type
+			v[4136] = 3
+
+
+			// set ordinary sprite 
+			MACRO_DRAWING_get_regular_action_sprite
+			v[4111].repeat expected_action_sprite,9
+
+
+			// set horse sprite
+			v[4116] = 5 + ((agent_generated_ID + v[2500]) / 6) % 3
+
+			// direction fix
+			TT1 = 1 - 2 * v[325]
+
+			// horse angle
+			TT3 =  280000 - sin(TT10, 1, 60000)
+
+			v[4146] = TT3 * TT1
+			v[4156] = 10000
+
+
+			TT2 = sin(TT3,v[4156],15) // get sin 11 -> 15
+
+			val_sub(Temp11,TT1) // basic x offset
+			v[4041].repeat(Temp11, 9)
+
+			// y offset for rider
+			TT3 = TT2 / 3
+			val_add(Temp12,N1)
+			val_sub(Temp12,TT3)
+			v[4051].repeat(Temp12, 9)
+
+			// set horse pos
+			val_asg(v[4046],Temp5) // x
+			val_asg(v[4056],Temp6) // y
+			val_sub(v[4056],N1)
+
+			v[4046] += TT1 * TT2 // horse standing point adjustment for rotation
+}
+
 
 
 //Walking motions

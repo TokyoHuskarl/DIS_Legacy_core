@@ -34,6 +34,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 	@if s[314] .isOn() {
 			@wait 0
 
+
 			@if v[204] >= 400 {
 				@wait 0
 		}
@@ -133,7 +134,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 			v[ptr_null].copy v[187],1 // v[187] = 0
 			v[340] = v[1113] + v[401]
 			v[340].deref v[340],1 // v[340] = v[v[340]]
-			//v[340] = v[v[1113] + v[401]] % 1000
+			//v [340] = v[v[1113] + v[401]] % 1000
 			Temp1 = v[340] * 300 //opt 
 			val_add(Temp1,N5000) // Temp1 += 5000
 			v[Temp1].copy Address_agent_array_head, 300
@@ -192,15 +193,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 							@if TT1 > 0 { // if forcesprite is set...
 									expected_action_sprite = TT1 
 							}.else bl { // if not, pick from AEB
-							__if DIS_EXPERIMENTAL == 1 {
-								def AgentExBuffer_SLOT_ActionSprite_0 = AgentExBuffer_SLOT_ActionSprite_1 + 1
-								TT1 = ((agent_ActionFlag & ActionFlag_FLAG_Walking) && v[843] == 0 ? 3 : min(v[843], 4)) + AgentExBuffer_SLOT_ActionSprite_1
-								get_AEB_element_wo_ptr(AgentIDholder,__id(expected_action_sprite),TT1)
-
-							}.else bl{
-								expected_action_sprite = TT1 > 0 ? TT1 : [v[883] % 10, v[883] / 10 % 10, v[883] / 100 % 10, v[883] / 1000 % 10, v[883] / 10000][((agent_ActionFlag & ActionFlag_FLAG_Walking) && agent_ActionState == 0 ? 3 : min(agent_ActionState, 4))]
-
-								}
+									MACRO_DRAWING_get_regular_action_sprite
 
 							}
 							//@comment "スプライト管理終わり"
@@ -210,8 +203,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 							v[446] = 100
 
 
-				//opt 11.5.23
-				//v[447] = Temp1 + 298
+							//opt 11.5.23
+							//v[447] = Temp1 + 298
 							//v[447] = v[v[447]]
 							val_asg(v[447],v[898]) // v[447] = v[898]
 
@@ -298,22 +291,29 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 							//Agent has multiple layers
 							@if agent_PictArray >= 10 {
 								//Agent has Extra Motion
+									
+									// horse motion debug
+									// agent_ForceSprite = agent_ExMotionFlags & ExMotionFlags_FLAG_horseback ? 105 : agent_ForceSprite
+
 									@if agent_ForceSprite > 100 {
 										//get AA motion end time or skill motion end time
 										agent_AAMotion = v[843] >= 4 ? v[Temp1 + (145 + (v[843] - 4) * 20)] : agent_AAMotion
 										//start
 										//Switch animations 
-										@if agent_ForceSprite == 101 {
+										@if agent_ForceSprite == 101 { // sweeping strike skill motion
 											animation_sweeping_strike()
 
-										} .elif agent_ForceSprite == 102 {
+										} .elif agent_ForceSprite == 102 { // repel skill motion
 											animation_repel()
 
-										} .elif agent_ForceSprite == 103 {
+										} .elif agent_ForceSprite == 103 { // throwing weapon skill motion
 											animation_throwing_skill()     
 
-										} .elif agent_ForceSprite == 104 {
+										} .elif agent_ForceSprite == 104 { // knockout skill motion
 											animation_knockout()
+
+										} .elif agent_ForceSprite == MOTIONID_horse_stun { // horse stunned animation
+											animation_horse_standing_stunned()
 
 										} .elif bl {
 																		

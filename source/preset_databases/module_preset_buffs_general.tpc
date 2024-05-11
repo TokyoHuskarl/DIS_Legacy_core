@@ -1,0 +1,150 @@
+#include "./../headers/header_common.tpc"
+#include "./../headers/id_drawing_agent_motion.tpc"
+
+defv ptr_current_buff_timer = 234
+defv ptr_current_buff_slot = 235
+
+// idk if this seriously works
+__fn register_cev_PRESET_BUFF $cevid $buffname $bl {
+
+	cev[$cevid], .name($buffname), {
+		ptr_current_buff_timer = ptr_current_buff_slot + 15
+		$bl
+	}
+
+}
+
+// Snare
+register_cev_PRESET_BUFF(1169,"Snare", {
+
+		v[868] = 0
+		v[866] = divmul(v[866], 10, 7)
+		@if `v[v[235] + 15] % 5 == 0 {
+		@if s[2] .isOff() {
+		@comment "Bless Particle"
+		@loop v[1017] .dst v[320] {
+		v[244] %= v[1199]
+		v[331] = v[244] * 50
+		v[331] = v[331] + v[1198]
+		@if v[v[331]] <= 1 {
+		@comment "まず清掃"
+		v[1301].copyTo v[v[331]], 50
+		@comment "ポインタセット開始"
+		@comment "設定"
+		v[v[331]] = 1
+		@comment "500F"
+		v[v[331] + 49] = 5
+		@comment "Set itself"
+		v[v[331] + 3] = 141
+		@comment "Set Parent Obj"
+		v[v[331] + 9] = v[401] + 1
+		@comment "普通にアニメ"
+		v[341] = v[331] + 6
+		v[607].copyTo v[v[341]], 2
+		@comment "仕上げに登録消す"
+		v[244] += 1
+		@break
+
+		}
+		v[244] += 1
+
+		}
+
+
+		}
+
+		}
+
+			// horse stun motion
+			agent_ForceSprite = agent_AddMotionBits & AddMotionFlags_FLAG_OnHorse ? MOTIONID_horse_stun : agent_ForceSprite
+
+})
+
+// Stun
+register_cev_PRESET_BUFF(1170,"Stun", {
+		v[868] = 0
+		v[871] = 0
+		v[874] |= 262144
+		@comment "#ForceSpr"
+		v[850] = 0
+		@if `v[v[235] + 15] % 3 == 0 {
+		@if s[2] .isOff() {
+		@comment "Bless Particle"
+		@loop v[1017] .dst v[320] {
+		v[244] %= v[1199]
+		v[331] = v[244] * 50
+		v[331] = v[331] + v[1198]
+		@if v[v[331]] <= 1 {
+		@comment "まず清掃"
+		v[1301].copyTo v[v[331]], 50
+		@comment "ポインタセット開始"
+		@comment "設定"
+		v[v[331]] = 1
+		@comment "500F"
+		v[v[331] + 49] = 5
+		@comment "Set itself"
+		v[v[331] + 3] = 141
+		@comment "Set Parent Obj"
+		v[v[331] + 9] = v[401] + 1
+		@comment "普通にアニメ"
+		v[341] = v[331] + 6
+		v[607].copyTo v[v[341]], 2
+		@comment "仕上げに登録消す"
+		v[244] += 1
+		@break
+
+		}
+		v[244] += 1
+
+		}
+
+
+		}
+
+		}
+
+			// horse stun motion
+			agent_ForceSprite = agent_AddMotionBits & AddMotionFlags_FLAG_OnHorse ? MOTIONID_horse_stun : agent_ForceSprite
+
+})
+
+// Push back
+register_cev_PRESET_BUFF(1196,"Pushback", {
+
+		// @comment "Decay speed"
+		v[341..342] = 5
+		v[612] .mul v[341], 2
+		v[341..342] = 12
+		v[612] .div v[341], 2
+		agent_ActionFlag |= 1
+
+		// horse cc effect motion
+		@if v[ptr_current_buff_timer] >= 2 {
+			agent_ForceSprite = agent_AddMotionBits & AddMotionFlags_FLAG_OnHorse ? MOTIONID_horse_stun : agent_ForceSprite
+		}
+
+})
+
+register_cev_PRESET_BUFF(1197,"Knockback",{
+		agent_ProcessEVA -= 25
+		agent_ActionFlag |= 1
+		// @comment "#Shield Broken"
+		agent_ProcessObjBit |= 67108864
+		// @comment "Decay speed"
+		TT1.repeat 7,2 // v[341..342] = 7
+		agent_MilPixVx .mul TT1, 2
+		TT1.repeat 12,2 // v[341..342] = 12
+		agent_MilPixVx .div TT1, 2
+		// @comment "#Icon Number"
+		reg1.repeat 21,1 // reg1 = 21
+		// @comment "#ForceSpr"
+		@if v[ptr_current_buff_timer] >= 2 {
+			@if `agent_AddMotionBits & AddMotionFlags_FLAG_OnHorse {
+				val_const(agent_ForceSprite,MOTIONID_horse_stun)
+			}.else bl{
+				agent_ForceSprite = (agent_ExMotionFlags & 16809984) == ExMotionFlags_FLAG_HeadHasDamagedSprite ? -1 : agent_ForceSprite
+			}
+
+		}
+})
+
