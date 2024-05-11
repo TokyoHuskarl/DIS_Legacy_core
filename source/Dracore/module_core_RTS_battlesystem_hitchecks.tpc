@@ -7,12 +7,6 @@ def ranged_base_hit = 25 //38
 
 __fn macro_extract_units_parameters {
 	//TEMPORARY
-	/*
-	reg1 = Ptr9 + 4701
-	v[reg1].copy agent_ObjectType, 300
-	reg1 = Ptr10 + 4701
-	v[reg1].copy victim_AgentType, 300 //only 20
-	*/
 
 	reg1.repeat 4701,2
 	reg1.add Ptr9,2
@@ -169,7 +163,7 @@ __fn func_bs_dummy_hit_check {
 }
 
 __fn func_bs_mind_hit_check $attacker $victim{
-	Ptr10 = $victim *300
+	Ptr10 = $victim * 300
 	reg1 = Ptr10 + 4960
 	v[reg1].copy victim_Morale, 20
 	//@comment "＃＃＃＃＃＃＃＃＃＃memo	＃＃＃＃＃＃＃＃＃＃"
@@ -184,8 +178,8 @@ __fn func_bs_mind_hit_check $attacker $victim{
 	Temp1 -= reg1
 	var2 = victim_ProcessObjBit//v[Ptr20 * 300 + 4974]
 	@if s[319] .isOn() {
+	    //Too much will or mindless makes an unit immune against any mind attack 
 	    Temp1 -= reg1 >= 150 || var2 & 4198400 ? 9999 : 0 //var2 & 4096 || var2 & 4194304
-	    //Too much will or mindless makes unit immune to mind attack 
 	    
 	}
 	//@comment "＃＃＃＃＃＃＃＃＃＃	Roll!	＃＃＃＃＃＃＃＃＃＃"

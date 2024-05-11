@@ -94,7 +94,7 @@ __fn Kill_Agent {
 					
 					// If victim is explosive & not killed by frost magic, then let him explode
 					@if `victim_ProcessObjBit & BaseObjBit_FLAG_Explosive {
-						v[190] = 4
+						val_asg(v[190],N4)
 						v[Kill_pointer + 4780] = victim_InCombatTimer <= 0 ? 50 : victim_InCombatTimer
 						victim_RelativeX.copy v[361], 2
 						@loop v[1017] .dst Temp20 {
@@ -204,7 +204,7 @@ __fn Kill_Agent {
 					Temp20 = Temp11 + 14
 					v[321] = v[Temp20]
 					v[0] = s[101] = v[Temp20] >= 0 ? 0 : 1
-				//####
+					//####
 					Temp20 = Temp11 + 94
 					Temp20 = v[Temp20]
 					v[321] = 1
@@ -302,34 +302,39 @@ __fn Kill_Agent {
 									}
 
 								}
+
 								@if v[372] == 0 {
 									// "Get Race"
 									@loop 1 {
 											// "#Human"
 											v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
 											@if victim_Race == 0 {
-												@if `victim_MoveTypeBIts & 2 { // horseman
-													@if `agent_AABits & AABits_FLAG_Camel {
-														v[329] = rnd(1, 3)
-														// "#########################"
-														v[472] = divmul(75, 100, v[2216])
-														v[473] = rnd(90, 115)
-														inputstr .asg "animals\camel_death"
-														inputstr .cat v[329]
-
-													}.else bl {
+												@if `victim_MoveTypeBIts & 2 { // cav type move bit
+													@if `victim_AddMotionBits & AddMotionFlags_FLAG_OnHorse { // REAL horse
 														v[329] = rnd(1, 1)
 														// "#########################"
 														v[472] = divmul(75, 100, v[2216])
 														v[473] = rnd(75, 115)
 														inputstr .asg "animals\horse_death"
 														inputstr .cat v[329]
+
+
+													}.elif `victim_AddMotionBits & AddMotionFlags_FLAG_Camel { // camel
+														v[329] = rnd(1, 3)
+														// "#########################"
+														v[472] = divmul(75, 100, v[2216])
+														v[473] = rnd(90, 115)
+														inputstr .asg "animals\camel_death"
+														inputstr .cat v[329]
+													}.else bl{ // what bout other creatures?
+
 													}
 													// call sound cmd
 													@cmd 11550, inputstr, .args v[472], 3
 														
 												} .else bl {
 														TT1 -= 1
+
 														// "##Not Female"
 														v[182] += 1
 														@if victim_Skin != 6 {

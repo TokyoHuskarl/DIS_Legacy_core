@@ -222,7 +222,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 								//@comment "#WPを使ってOBJにたどり着こうとしていた"
 								@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
-									v[1301].copy v[643], 13
+									v[1301].copy agent_WayPoint1X, 13
 									agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj //~16777216 AgentBits_FLAG_NeedWpToReachObj
 									agent_AI_routine_bits &= ~AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue // 
 									MAIN_macro_agent_WP_Array_init()
@@ -280,7 +280,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					} .else bl {
 							//@comment "#WPを使ってOBJにたどり着こうとしていた"
 							@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
-								v[1301].copy v[643], 13
+								v[1301].copy agent_WayPoint1X, 13
 								agent_MovementOrder = MovementOrder_TYPE_move_ordered
 								agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
 								agent_AI_routine_bits &= -49153//~49152
@@ -337,29 +337,29 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 							agent_Direction = TT1 >= 0 ? 0 : 1
 
 							// @comment "AAレンジ内か否かを見る"
-							v[869].copy TT1, 2
+							agent_ProcessRange_max.copy TT1, 2
 							// @comment "自分がMelee or townsman repairingなら([相手の幅]*1000)を引いて考える"
-							v[340] = agent_MilPixMoveOrderedPointDist
+							val_asg(Temp40,agent_MilPixMoveOrderedPointDist) // Temp40 = agent_MilPixMoveOrderedPointDist
 
-							v[340] -= agent_AAType == 0 ? v[335] : 0
+							Temp40 -= agent_AAType == 0 ? v[335] : 0
 
 							@if agent_UnitType == UNIT_CLASS_WORKER {
 								@if victim_UnitType >= 100 {
 									// @comment "If the target is construction site"
-									v[340] -= victim_UnitType != 105 ? victim_Width << 10 : 0 // Width * 1024 : 0
+									Temp40 -= victim_UnitType != 105 ? victim_Width << 10 : 0 // Width * 1024 : 0
 
 								}.else bl {
 									// worker attack!
-									v[340] -= victim_TeamID != agent_TeamID ? v[335] : 0
+									Temp40 -= victim_TeamID != agent_TeamID ? v[335] : 0
 
 								}
 							}
 							
-							@if v[340] <= TT1 {
-								@if v[340] >= TT2 {
+							@if Temp40 <= TT1 {
+								@if Temp40 >= TT2 {
 									// @comment "#WPを使ってOBJにたどり着こうとしていた"
 									@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
-											v[1301].copy v[643], 13
+											v[1301].copy agent_WayPoint1X, 13
 											agent_AI_routine_bits &= -49153 // ~49152 - AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
 											
 									}
@@ -412,10 +412,10 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 							val_init(agent_OneTimeOffsetX) // agent_OneTimeOffsetX = 0
 
 							// @comment "before: 6700"
-							// v[340] = v[v[294]] > 0 ? (v[610] / 2 + 2) * 1000 : 6700
+							// Temp40 = v[v[294]] > 0 ? (v[610] / 2 + 2) * 1000 : 6700
 							// this part was bugged since v[294] wasn't defined inititally - 9.5.23
-							v[340] = agent_LeftWPtoChase > 0 ? ((agent_Width >> 1) + 3) * 1000 : 6700 //more fuzzy
-							@if agent_MilPixMoveOrderedPointDist <= v[340] {
+							Temp40 = agent_LeftWPtoChase > 0 ? ((agent_Width >> 1) + 3) * 1000 : 6700 //more fuzzy
+							@if agent_MilPixMoveOrderedPointDist <= Temp40 {
 									//@comment "候補なし"
 									//@comment "敵がおらん"
 									//@comment "待機"
@@ -760,16 +760,16 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						agent_MilPixVx = divmul(agent_MilPixVx, TT2, TT1)
 					
 					}
-					//@comment "#カメラずらして"
+					// @comment "#カメラずらして"
 					val_add(agent_MilPixX,FrameCamDiff_MilX) // agent_MilPixX += FrameCamDiff_MilX // v[53] * 10000
 
-					//@comment "#座標を反映"
+					// @comment "#座標を反映"
 					agent_RelativeX = agent_MilPixX / 10000
 					agent_SpriteX = agent_RelativeX + v[896]
 
-					//@comment "Y座標"
-					//v[295..300] += 1
-					//@comment "##垂直方向に壁があれば進行方向vにMSかけたものが速度に"
+					// @comment "Y座標"
+					// v[295..300] += 1
+					// @comment "##垂直方向に壁があれば進行方向vにMSかけたものが速度に"
 					TT2 = abs(agent_MilPixVy)
 					@if v[314] < 21 {
 					agent_MilPixVy.copy var2, 1

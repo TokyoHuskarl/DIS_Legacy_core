@@ -473,7 +473,7 @@ __fn agent_sprite_RGB_check {
 			// "Can be improved"
 			v[ptr_null].copy v[358],3
 				@if agent_FlashType > 0 {
-					TT1 = 357 + agent_FlashType
+						TT1 = 357 + agent_FlashType
 						ptr_const(TT1,20)
 						agent_R .sub TT18, 3
 				}
@@ -1293,7 +1293,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 						}
 						// "gate flag"
-						@if `agent_AgentBits & 256 {
+						@if `agent_StaticBits & 256 {
 							// "##############"
 							Ptr20 = Temp1 + 5
 								Ptr19 = Temp1 + 15
@@ -1538,7 +1538,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "Set Dir"
 	    @if Is_Paused .isOff() {
 				@if `agent_AgentBits & AgentBits_FLAG_DirChange_skip {
-						@if `v[726] & 8388608 {
+						@if `agent_ExMotionFlags & 8388608 { // kore naniw
 							agent_AgentBits &= -134217729 //~134217728 ~AgentBits_FLAG_DirChange_skip
 							
 						}
@@ -1554,8 +1554,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 								 }
 
 							 }.else bl{
-								@if v[621] != 0 {
-									agent_Direction = v[621] < 0 ? 1 : 0
+								@if agent_MoveUvectorX != 0 {
+									agent_Direction = agent_MoveUvectorX < 0 ? 1 : 0
 								}
 
 							 }
@@ -1570,8 +1570,6 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "clock"
 	    @if `agent_AgentBits & AgentBits_Movement_Giveup {
 				@if `agent_AgentBits & AgentBits_Endpoint_Collision_Trouble {
-						//v[842] = Temp1 + 239
-						//v[v[842]] = -1
 						agent_MovementOrder = -1
 						agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
 						agent_AgentBits &= -129 //~128
@@ -1599,15 +1597,15 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    // "Agent Effect"
 	    v[401] = v[Ptr_loop_current_agent] - 1
-	    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //`s[v[401] + 501] ==1 {
+	    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 				// "Hero Particle"
-				@if `agent_ProcessObjBit & 4194304 { //is hero
+				@if `agent_ProcessObjBit & BaseObjBit_FLAG_HeroAura { //is hero
 					func_set_preset_particle_emitter(v[331],
 						PROC({
 							emitter_ParticleType = 1
 							emitter_Timer = 6
 							emitter_CallPartFunc = cevid_hero_particle
-							emitter_ParentObject = v[Ptr_loop_current_agent] // v[401] + 1
+							emitter_ParentObject = v[Ptr_loop_current_agent]
 							// "普通にアニメ"
 							agent_RelativeX.copy emitter_RelativeX, 2
 							val_add(emitter_RelativeY,N8)
@@ -1676,121 +1674,121 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							Ptr19 = v[401] + 1
 							@if v[217] < v[4559] {
 								v[217] += 1
-								@loop v[4559] .dst Temp20 {
+									@loop v[4559] .dst Temp20 {
 										v[216] %= v[4559]
-										Temp1 = v[216] * 100
-										Temp1 += v[1076]
-										Ptr15 = Temp1 + 1
-										@if v[Ptr15] == 0 {
-									// "Access17 = AttackerObjチェックPtr"
-									Ptr17 = Ptr19 * 300
-									Ptr17 += 4700
-									// "まず清掃"
-									v[1301].copy agent_AgentType, 100
-									v[1301].copy v[Ptr15], 100
-									// "ParentObjセット"
-									v[609] = Ptr19
-									// "出る場所セット"
-									TT1 = Ptr17 + 7
-									v[TT1].copy v[605], 2
-									v[605..606] *= 10000
-									v[TT1].copy v[607], 2
-									// "Projectile team"
-									TT1 = Ptr17 + 100
-									v[618] = v[TT1] == 0 ? 1 : 0
-									// "パラメータ等入力begin"
-									// "#Pic"
-									v[602] = 1
-									// "#ProjectileType"
-									agent_AgentType = 2
-									// "#あたり判定"
-									v[610..611] = muldiv(v[Ptr17 + 275], 12, 10)
-									// "#威力"
-									v[621] = 0
-									// "#Timer"
-									v[700] = 1
-									// "#Effect"
-									v[604] = 1231
-									// "#ARMRと属性"
-									v[622] = -1
-									v[623] = 1
-									v[628] |= 8
-									// "パラメータ等入力end"
-									agent_AgentType.copy v[Ptr15], 100
-									// "Having no timer passive conflict"
-									@if `!(v[Ptr17 + 223] & 1) {
-											// "Timer Reset"
-											v[Ptr17 + 94] = v[1240] * 5
-											
-									}
-									// "Eff"
-									TT1 = v[Ptr19 * 300 + 4922]
-									@if TT1 >= 1 {
-											TT2 = Ptr19 * 300 
-											TT2 += 4925
-											v[TT2] = (v[TT2] + 1) % 2
-											@if v[TT2] == 0 {
-										@if `s[500 + Ptr19] == 1 {
-												v[607].copy v[361], 2
-												@loop v[1017] .dst Temp20 {
-											v[242] %= v[1017]
-											Temp1 = v[242] * 100
-											Temp1 = Temp1 + v[1018]
-											@if v[Temp1] <= 1 {
-													v[243] -= v[Temp1] == 1 ? 1 : 0
-													v[242] %= v[1017]
-													Ptr1 = v[242] * 100
-													Ptr1 = Ptr1 + v[1018]
+											Temp1 = v[216] * 100
+											Temp1 += v[1076]
+											Ptr15 = Temp1 + 1
+											@if v[Ptr15] == 0 {
+												// "Access17 = AttackerObjチェックPtr"
+												Ptr17 = Ptr19 * 300
+													Ptr17 += 4700
 													// "まず清掃"
-													v[1301].copy v[Temp1], 100
-													// "ポインタセット開始"
-													Temp10 = v[242] + v[1220]
-													Ptr15 = Temp1 + 99
-													// "設定"
-													v[Temp1] = 1
-													v[Ptr15] = 0
-													// "普通にアニメ"
-													@pic[Temp10].show {
-												"passive_icon\picon_0" .repl 1 TT1
-												.pos v[361], v[362] .center
-												.scrollWithMap
-												.chromakey 1
-												.scale 100
-												.trans 40
-												.rgbs 100, 100, 100, 100
-												.mapLayer 5
-												.eraseWhenTransfer
-												.affectedByFlash
-												.affectedByShake
+													v[1301].copy agent_AgentType, 100
+													v[1301].copy v[Ptr15], 100
+													// "ParentObjセット"
+													v[609] = Ptr19
+													// "出る場所セット"
+													TT1 = Ptr17 + 7
+													v[TT1].copy v[605], 2
+													v[605..606] *= 10000
+													v[TT1].copy v[607], 2
+													// "Projectile team"
+													TT1 = Ptr17 + 100
+													v[618] = v[TT1] == 0 ? 1 : 0
+													// "パラメータ等入力begin"
+													// "#Pic"
+													v[602] = 1
+													// "#ProjectileType"
+													agent_AgentType = 2
+													// "#あたり判定"
+													v[610..611] = muldiv(v[Ptr17 + 275], 12, 10)
+													// "#威力"
+													v[621] = 0
+													// "#Timer"
+													v[700] = 1
+													// "#Effect"
+													v[604] = 1231
+													// "#ARMRと属性"
+													v[622] = -1
+													v[623] = 1
+													v[628] |= 8
+													// "パラメータ等入力end"
+													agent_AgentType.copy v[Ptr15], 100
+													// "Having no timer passive conflict"
+													@if `!(v[Ptr17 + 223] & 1) {
+														// "Timer Reset"
+														v[Ptr17 + 94] = v[1240] * 5
+
 													}
-													v[362] -= 36
-													@pic[Temp10].move {
-												.pos v[361], v[362] .center
-												.scale 250
-												.trans 100
-												.time 21
-												.rgbs 100, 100, 100, 100
+												// "Eff"
+												TT1 = v[Ptr19 * 300 + 4922]
+													@if TT1 >= 1 {
+														TT2 = Ptr19 * 300 
+															TT2 += 4925
+															v[TT2] = (v[TT2] + 1) % 2
+															@if v[TT2] == 0 {
+																@if `s[500 + Ptr19] == 1 {
+																	v[607].copy v[361], 2
+																		@loop v[1017] .dst Temp20 {
+																			v[242] %= v[1017]
+																				Temp1 = v[242] * 100
+																				Temp1 = Temp1 + v[1018]
+																				@if v[Temp1] <= 1 {
+																					v[243] -= v[Temp1] == 1 ? 1 : 0
+																						v[242] %= v[1017]
+																						Ptr1 = v[242] * 100
+																						Ptr1 = Ptr1 + v[1018]
+																						// "まず清掃"
+																						v[1301].copy v[Temp1], 100
+																						// "ポインタセット開始"
+																						Temp10 = v[242] + v[1220]
+																						Ptr15 = Temp1 + 99
+																						// "設定"
+																						v[Temp1] = 1
+																						v[Ptr15] = 0
+																						// "普通にアニメ"
+																						@pic[Temp10].show {
+																							"passive_icon\picon_0" .repl 1 TT1
+																								.pos v[361], v[362] .center
+																								.scrollWithMap
+																								.chromakey 1
+																								.scale 100
+																								.trans 40
+																								.rgbs 100, 100, 100, 100
+																								.mapLayer 5
+																								.eraseWhenTransfer
+																								.affectedByFlash
+																								.affectedByShake
+																						}
+																					v[362] -= 36
+																						@pic[Temp10].move {
+																							.pos v[361], v[362] .center
+																								.scale 250
+																								.trans 100
+																								.time 21
+																								.rgbs 100, 100, 100, 100
+																						}
+																					// "仕上げに登録消す"
+																					v[242..243] += 1
+																						@break
+
+																				}
+																			v[242] += 1
+
+																		}
+
+
+																}
+
+															}
+
 													}
-													// "仕上げに登録消す"
-													v[242..243] += 1
-													@break
-													
+												@break
+
 											}
-											v[242] += 1
-											
-												}
-												
-												
-										}
-										
-											}
-											
+
 									}
-									@break
-									
-										}
-										
-								}
 								
 								v[216] += 1
 								

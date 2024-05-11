@@ -114,11 +114,6 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 										@if TT1 > 0 {
 												// collision timer
 
-												/*
-												v[640] = v[607] + 33
-												v[v[640]] -= 1
-												*/
-
 												val_sub(projectile_CollisionTimer,N1)
 												@if projectile_CollisionTimer <= 0 {
 														projectile_AbsX.copy Temp7, 2
@@ -270,11 +265,11 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																							}
 
 																							//@comment "AABits"
-																							var9 = projectile_bits1
-																							v[422] = projectile_weapontype
+																							val_asg(var9,projectile_bits1)
+																							val_asg(v[422],projectile_weapontype)
 																							@call .cev 40 // call the damage cal.
 																							val_asg(reg10,N1) // reg10 = 1
-																							Ptr20 = v[36]
+																							val_asg(Ptr20,v[36])
 
 
 																					} .else bl { //@comment "Miss!"
@@ -287,7 +282,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																					@if projectile_CallFuncHit > 0 {
 																							projectile_ProjectileFlag1 &= -3//~2
 																							s[122].on
-																							v[423] = v[214]
+																							val_asg(v[423],v[214])
 
 																							// check
 																							__if DEBUG_BUILD == 1 {
@@ -312,7 +307,6 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																					val_add(projectile_HitCount,N1) // projectile_HitCount += 1
 																					projectile_ProjectileType = projectile_HitCount == projectile_HitLimit ? 1 : projectile_ProjectileType
 																					@if projectile_ProjectileType == 1 {
-																							// projectile_Timer = 0
 																							val_init(projectile_Timer)
 																							@break
 																					}
@@ -338,7 +332,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 										//opt 28.4.23
 										@if `!(projectile_ProjectileFlag1 & PROJ_FL1_NoPicture) {
 												//@comment "#add angle delta"
-												TT2 = 1 // mirro fl
+												val_asg(TT2,N1) // mirror fl
 												@if projectile_AngleDelta != 0 {
 														projectile_Angle += s[2] == 0 ? projectile_AngleDelta : 0
 														TT2 = projectile_milVx >= 0 ? 1 : 0
@@ -359,7 +353,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 											@pic[Temp3].erase
 											@if projectile_CallFuncHit > 0 {
 												@if `projectile_ProjectileFlag1 & 2 {
-													s[122].on
+														s[122].on
 														//@comment "#Parent Agent"
 														val_asg(Ptr19,projectile_ParentObject) // Ptr19 = projectile_ParentObject
 														val_asg(v[423],v[214]) // v[423] = v[214]
@@ -416,7 +410,7 @@ __fn LEGACY_projectile_miss_GFX {
 	@if `s[Ptr20 + 500] && v[183] < v[4572] {
 			v[381].copy v[221], 2
 			@if reg2 == 1 {
-				reg10 = 2
+					val_asg(reg10,N2)
 					// @comment "Shield Blocked!"
 					reg3 = 0
 					// @comment "Shield Cracking"
@@ -443,7 +437,7 @@ __fn LEGACY_projectile_miss_GFX {
 									var2 = Ptr20*/
 								func_bs_register_buff_old(1258 Ptr20)
 									@if reg2 >= 0 {
-										reg3 = 1
+											reg3 = 1
 											//@comment "#Duration24sec"
 											v[reg2] = 1344
 

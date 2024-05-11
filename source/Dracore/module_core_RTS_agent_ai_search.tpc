@@ -74,11 +74,9 @@ __if DIS_EXPERIMENTAL != 1 {
 									Ptr20 = v[212] + 18
 									// Ptr19 = v[212] + 241
 									//get team ID
-									// Temp1 = v[212] + 100
 
 									//team ID % 3
 									__if DIS_EXPERIMENTAL == 1 {
-										//macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14)
 										get_AEB_element_wo_ptr(AgentIDholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
 									}.else bl {
 										Temp14 = Const_AgentMetaTeam_begin + v[211]
@@ -127,11 +125,10 @@ __if DIS_EXPERIMENTAL != 1 {
 										// get sight range root
 										defv UnitAI_agent_eyesight = 315
 										__if DIS_EXPERIMENTAL == -1 { // use AEBA to optimize! also @if cond can be changed into other shit.
-
+											// this was not efficient than I thought as far as I remember
 											get_AEB_element_wo_ptr(AgentIDholder,__id(UnitAI_agent_eyesight),AgentExBuffer_SLOT_BaseSight_Root)
 
 										}.else bl {
-
 											UnitAI_agent_eyesight = v[211] + v[4806]
 											UnitAI_agent_eyesight.deref UnitAI_agent_eyesight,1
 										}
@@ -240,8 +237,6 @@ __if DIS_EXPERIMENTAL != 1 {
 											def MACRO_set_flag_walldetection = {
 												TT1 = v[212] + 3
 												v[TT1] |= AgentBits_FLAG_PF_walldetection_switch
-												// v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_PATHFINDING
-												// v[agent_AI_routine_bits] &= AI_routine_bits_KILL_FLAG_PFcontinue //~32768
 
 											}
 
@@ -258,7 +253,8 @@ __if DIS_EXPERIMENTAL != 1 {
 														@if v[Temp1] == 11 {
 															v[agent_AI_routine_bits] &= -193 // ~192//(64 + 128)
 
-															@if `v[Temp1 + 99] != agent_TeamID { // not ally wall
+															TT1 = Temp1 + 99
+															@if v[TT1] != agent_TeamID { // not ally wall
 																@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_Pathblocked { // v[v[212] + 34] & 8388608 {
 																		v[v[534]] = Temp2 // set target
 																		v[v[212] + 241] = ORD_ATK
@@ -469,13 +465,10 @@ __if DIS_EXPERIMENTAL != 1 {
 				@if agent_ActionTimer <= 0 {
 						TT1 = v[212] + 84 // temp agent_ActionTimer ptr
 						v[TT1] = v[1195] * 2
-						// agent_ActionTimer = v[1195] * 2
 
 						// the static agent has mil ai
-						@if `agent_StaticBits & 1048576 {
+						@if `agent_StaticBits & AgentBits_FLAG_EnableBasicAI {
 							Ptr20 = v[212] + 18
-							// Ptr19 = v[212] + 241 // ?
-							// Temp1 = v[212] + 100
 
 							macro_get_agent_MetaTeam_into_var(v[v[536]],Temp14) // AEB
 
@@ -485,7 +478,6 @@ __if DIS_EXPERIMENTAL != 1 {
 							Temp2.deref Temp2,1
 							Temp2.copy Temp7,1 // Temp7 = Temp2
 
-							// Temp8 = v[4034 + Temp14]
 							Temp8 = 4034 + Temp14
 							Temp8.deref Temp8,1
 

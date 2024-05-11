@@ -58,13 +58,13 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 												val_sub(agent_SP,skill_Cost) // agent_SP -= skill_Cost
 												//@comment "#Spend Cost END"
 												//@comment "#Set SkillOrder 0"
-												//Ptr17 += 138
-												//v[Ptr17+4946] = 0
 												val_init(agent_CastSkillOrder)
 												@if `v[599] & 1 {
 														s[114].on
+
 														//TT1 = v[210] + 7
 														v[590] .add agent_RelativeX, 2
+
 														//Temporary Save changes
 														agent_ObjectType.copy v[Ptr1],agent_Basic_Array_size
 														@call .cev skill_MainFunction
@@ -90,8 +90,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 												//@comment "ちゃんとFuncが存在してるなら"
 												skill_MainFunction = skill_MainFunction > 0 ? skill_MainFunction : Const_Function_do_nothing
 												//@comment "よびだすv197=continuous or not"
-												v[197] = 0
-												//TT1 = v[210] + 7
+												val_init(v[197]) // v[197] = 0
 												v[590] .add agent_RelativeX, 2
 
 												func_devlog("Troop Casted Skill, cev called - id:\v[611]")

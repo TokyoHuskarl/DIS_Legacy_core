@@ -299,7 +299,7 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 
 				@if TT17 < 0 {
 					val_add(TT12,TT17) // TT12 += TT17
-					TT17 = 0
+					val_init(TT17) // TT17 = 0
 				}.else bl {
 					TT20 = TT17 + TT12
 					@if TT20 > v[2928] {
@@ -337,7 +337,7 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 									@loop TT11 {
 										FoWManagementFlagProc($breakflag)
 										increment_var(TT20) // TT20 += 1
-										//TT20 += v[2927]
+										
 									}
 									FoWOutlineBreak($breakflag)
 
