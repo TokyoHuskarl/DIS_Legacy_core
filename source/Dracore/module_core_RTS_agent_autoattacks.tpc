@@ -40,7 +40,8 @@ __fn agent_autoattack_melee {
 	// "ObjTypeチェック"
 	s[202..203].off
 	// "Motion"
-	v[v[629]] += 1
+	v[v[629]].add N1,1 // v[v[629]] += 1
+	
 	v[v[896]] += v[v[844]] == 0 ? 1 : -1
 
 	// hold direction
@@ -80,12 +81,11 @@ __fn agent_autoattack_melee {
 			Access20 = TargetObjectID 1~
 			Access18 = ObjTypeチェックPtr*/
 			// Effect
-			v[376] = 0
+			val_init(v[376]) // v[376] = 0
 			s[166].off
-			TT1 = Ptr20 + 500
-			@if s[TT1] .isOn() {
+			@if `victim_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 				s[166].on
-				v[376] = 4
+				val_asg(v[376],N4) // v[376] = 4
 				v[181] += 1
 				@if v[181] <= 6 {
 						@loop v[1017] .dst Temp20 {
@@ -125,7 +125,6 @@ __fn agent_autoattack_melee {
 							v[244] += 1
 							
 						}
-						
 						
 				}
 				@if v[182] <= 0 {

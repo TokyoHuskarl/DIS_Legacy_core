@@ -20,13 +20,7 @@ cev .id(1250), .name("PushOfPike"), {
 		@comment "#発動処理"
 			@comment "#バフ番号指定"
 			func_bs_register_buff_with_time(1196,v[300],16)
-			/*
-			@if v[22] >= 0 {
-				@comment "#Duration"
-					v[v[22]] = 16
-
-			}
-			*/
+			
 		@comment "Give V vector"
 			@if v[v[22]] == 16 {
 				@comment "#Set Dash/Knockback"
@@ -39,11 +33,7 @@ cev .id(1250), .name("PushOfPike"), {
 					*/
 					@comment "#単位ベクトルできた"
 					func_make_unit_vector_from_two_points_atan2(agent_RelativeX,agent_RelativeY,victim_RelativeX,victim_RelativeY,45000)
-					/*
-					@call .cev 2003
-					v[21..22] *= 400
-					@comment "#速度へ代入"
-					*/
+
 					v[341] = v[300] * 300 + 4712
 					v[21].copy v[v[341]], 2
 

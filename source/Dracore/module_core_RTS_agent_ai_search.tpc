@@ -9,16 +9,17 @@ __fn debug_selecting_agt $agtidptr $block {
 	}
 }
 
-v[4599] = 0
-v[535] += 1
+val_init(v[4599]) // v[4599] = 0
+val_add(v[535],N1) // v[535] += 1
 v[533] = (v[204] / Const_units_pop_delay + 1) * v[1134]
 val_mod(v[535],v[533]) // v[535] %= v[533]
-v[536] = v[4532]
+val_asg(v[536],v[4532]) // v[536] = v[4532]
 
-v[4031] = v[1146]
-v[4032..4033] = v[1145]
-v[4034] = v[206]
-v[4035..4036] = v[205]
+v[4031].copy v[1146],1 // v[4031] = v[1146]
+v[4032].repeat v[1145],2 // v[4032..4033] = v[1145]
+v[206].copy v[4034],1 // v[4034] = v[206]
+v[4035].repeat v[205],2 // v[4035..4036] = v[205]
+
 //Check ground type troops agents all
 
 // set expanding temp array for copying

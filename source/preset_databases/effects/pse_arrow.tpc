@@ -150,11 +150,11 @@ __fn func_effect_arrow_proc $arrowPictString {
 
 	    @if effect_milZ <= effect_ArrowCheckHeight{
 		@if `!(effect_Flag&Arrow_Flag_Checked){
-			effect_Flag|=Arrow_Flag_Check_Hit
+			effect_Flag |= Arrow_Flag_Check_Hit
 		}
 	    }
 	    @if effect_milZ <= 100 {//Fall into the Ground
-		effect_Timer = 1
+		val_asg(effect_Timer,N1) // effect_Timer = 1
 
 	    }
     }.else  bl{
@@ -234,10 +234,13 @@ __fn func_effect_arrow_hit $WeaponType {
 		v[TT1] |= Arrow_Flag_Checked
 		v[TT1] &= -2//~Arrow_Flag_Check_Hit
 
-		v[Ptr10 + 4780] = v[1240] * v[4571]
+		TT2 = Ptr10 + 4780
+		v[TT2] = v[1240] * v[4571]
 		// "Get difference of elevationTemp20"
-		Temp20 = v[Ptr9 + 4757] - victim_getTerrainElevation
-		var1 = Ptr19
+		TT3 = Ptr9 + 4757
+		Temp20 = v[TT3] - victim_getTerrainElevation
+		val_asg(var1,Ptr19) // var1 = Ptr19
+
 		// "Get Dir"
 		@if s[167] .isOff() {
 		    //get effect_DirectionWhenShoot

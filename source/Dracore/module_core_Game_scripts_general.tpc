@@ -25,8 +25,8 @@ cev[2041], .name("Script:DIS command interpriter"), .parallel , .cond(__id(BOOL_
 		// CHECK objtype and execute actual cmd
 		DIS_Cmd_callPackageTree(SScmdDynCounter,guiVar8)
 
-		guiVar1 += 1
-		guiVar8 += 1  // get current shit
+		val_add(guiVar1,N1) // guiVar1 += 1
+		val_add(guiVar8,N1) // guiVar8 += 1
 	
 	}
 	Str_CmdQueue.asg "" // init 

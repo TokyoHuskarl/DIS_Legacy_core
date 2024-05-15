@@ -14,7 +14,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	v[2923].copy v[2921], 2
 	
 	// set 80 to Temp3 and Temp4 just for preparation and next loop.
-	v[__id(Temp3)..__id(Temp4)] = 80
+	Temp3.repeat 80,2 // v[__id(Temp3)..__id(Temp4)] = 80
 
 	v[2923].div Temp3,2  // v[2923..2924] /= 80
 	v[2923] += v[2924] * v[2927]
@@ -24,7 +24,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	v[2931] = v[4527] + v[2923]
 	TT6 = muldiv(12, v[1001], 800)
 
-	TT2 = v[4525]
+	val_asg(TT2,v[4525]) // TT2 = v[4525]
 
 	// set flag const array on expanding temp - if MP manages to apply const with array operand this will be immediately fixed since retarded
 	// ACHTUNG
@@ -68,14 +68,14 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	def Const_AgentMetaTeam_HEAD = Const_AgentMetaTeam_begin - 1 
 	@if TT1 == 0 {
 
-		v[536] = v[4532]
-		v[__id(Temp5)..__id(Temp6)] = 5 // const array for next loop
+		val_asg(v[536],v[4532]) // v[536] = v[4532]
+
+		Temp5.repeat 5,2 // v[__id(Temp5)..__id(Temp6)] = 5 // const array for next loop
 		@while v[v[536]] > 0 {
 
 				get_metateam_for_sightproc()
 				TT1 = 2000 + v[v[536]]
 
-				// @if v[TT2] == 0 { //NOT EXPERIMENTAL
 				@if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
 					s[TT1].on
 
@@ -102,7 +102,6 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 				get_metateam_for_sightproc()
 
 				TT1 = 2000 + v[v[536]]
-				// @if v[TT2] == 0 { //NOT EXPERIMENTAL
 				@if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
 
 					s[TT1].on
@@ -110,8 +109,8 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 				} .else bl {
 
 					v[401] = v[v[536]] - 1
-					Temp1 = v[401] * v[1117] 
-					Temp1 += 5258
+					Temp1.repeat 5258,1 // Temp1 = 5258
+					Temp1 += v[401] * v[1117] 
 					v[Temp1].copy v[858], 2
 					Temp2 = v[4518] + v[401]
 
@@ -132,7 +131,6 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 		v[__id(Temp5)..__id(Temp6)] = 5 // const array for next loop
 		@while v[v[536]] > 0 {
 				get_metateam_for_sightproc()
-				// @if v[TT2] != 0 { // check only non ally units
 				@if reg1 != 0 { // AEB
 					checkinsight_agent_non_ally({
 						
