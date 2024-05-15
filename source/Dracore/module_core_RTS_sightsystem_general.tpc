@@ -14,7 +14,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	v[2923].copy v[2921], 2
 	
 	// set 80 to Temp3 and Temp4 just for preparation and next loop.
-	Temp3.repeat 80,2 // v[__id(Temp3)..__id(Temp4)] = 80
+	v[__id(Temp3)..__id(Temp4)] = 80
 
 	v[2923].div Temp3,2  // v[2923..2924] /= 80
 	v[2923] += v[2924] * v[2927]
@@ -70,7 +70,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 
 		val_asg(v[536],v[4532]) // v[536] = v[4532]
 
-		Temp5.repeat 5,2 // v[__id(Temp5)..__id(Temp6)] = 5 // const array for next loop
+		v[__id(Temp5)..__id(Temp6)] = 5 // const array for next loop
 		@while v[v[536]] > 0 {
 
 				get_metateam_for_sightproc()
