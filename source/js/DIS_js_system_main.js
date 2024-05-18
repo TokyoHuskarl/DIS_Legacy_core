@@ -1626,7 +1626,7 @@ DIS.agent = {
 
 	getPtrToMainParam: (id) => {return 4700 + id * 300;},
 
-	getMainParam: function(id,slot){return getv(this.getPtrToMainParam(id) +slot);},
+	getMainParam: function(id,slot){return getv(this.getPtrToMainParam(id) + slot);},
 
 	/**
 	 * A simple getter function that returns DIS_agent.
@@ -1639,9 +1639,21 @@ DIS.agent = {
 	},
 
 
+	/**
+	 * convert agent data in TPC to DIS_agent on js system
+	 *
+	 */
+	loadAgentToJS: function(agid){
+		if (this.ck_if_alive(agid)){
+			return new DIS_agent(agid,this.getMainParam(agid,101),this.getMainParam(agid,100),true);
+		};
+		return null;
+	},
+
+
 	// BROKEN
 	ck_if_alive(agentid){
-		ptr = this.getPtrToMainParam(agentid);
+		let ptr = this.getPtrToMainParam(agentid);
 		ptr += 1; // refering to agenttype slot. If *ptr > 0, the agent is seen alive.
 		// how about checking unique genid?
 		return (getv(ptr) > 0);
@@ -2483,7 +2495,7 @@ DIS.data = { // DIS.data
 				staid.register(ck,index);
 			};
 
-			deblog(`current registered static units: ${this.ptrs[0]}`);
+			// deblog(`current registered static units: ${this.ptrs[0]}`);
 
 		},
 
@@ -3000,6 +3012,9 @@ class RTSmission {
 			address++;
 		};
 		deblog("playerdata saved");
+		
+		// save mapstrings
+		save_jsobj_as_JSON(this.strings,764) // 764 is slot for saved str_mission_mapstrings
 
 		return true;
 	};
@@ -3015,11 +3030,15 @@ class RTSmission {
 		this.passedFrame = getv(Adr_world_frame); //  if DIS game is reloaded, then reload from RM var. 
 
 		// restore player game data saved as json
+
 		var address = TPCadr.t.Str_playergamedata_0;
 		for (let pl of this.essential.players){
 			pl.playergamedata = JSON.parse(gett(address));
 			address++;
 		};
+
+		this.strings = JSON.parse(gett(764)); // 764 is slot for saved str_mission_mapstrings
+
 
 		deblog("RTSmission restored.");
 		return true;
@@ -3852,26 +3871,31 @@ let RTS = {
 			elm.refresh(); // get RPG maker var
 			deblog(elm.address);
 		};
+		deblog("RTS.savedVars restored")
 
 		// moved from RTSmission.
-		let saved = JSON.parse(gett(745)); // get stringfied json from RM string memory
-		for (let elmid in saved){
-			let elm = saved[elmid];
-			if (typeof elm == "object"){
-				if (Array.isArray(elm)){ // if it's array
-					this.Preserve[elmid] = [];
-					for (let elm_b of elm) {
-						this.Preserve[elmid].push(elm_b);
-					};
-				} else { // otherwise just ignore, since triggers cannot be saved
-					errorlog("Object that is not a simple array was saved in RTS.Preserve. Restoration process for it ignored.")
-				}; 
-			} else {
-				this.Preserve[elmid] = elm; // just copy
+		let saved = gett(745);
+		if (saved != ""){
+			saved = JSON.parse(saved); // get stringfied json from RM string memory
+			deblog("t[745] parsed")
+			for (let elmid in saved){
+				let elm = saved[elmid];
+				if (typeof elm == "object"){
+					if (Array.isArray(elm)){ // if it's array
+						this.Preserve[elmid] = [];
+						for (let elm_b of elm) {
+							this.Preserve[elmid].push(elm_b);
+						};
+					} else { // otherwise just ignore, since triggers cannot be saved
+						errorlog("Object that is not a simple array was saved in RTS.Preserve. Restoration process for it ignored.")
+					}; 
+				} else {
+					this.Preserve[elmid] = elm; // just copy
+				};
 			};
+
+			deblog(JSON.stringify(this.Preserve));
 		};
-		
-		deblog(JSON.stringify(this.Preserve));
 		deblog("js variables restored..")
 
 
@@ -3883,19 +3907,28 @@ let RTS = {
 
 		for (let i of trgQArray){ // check it
 			if (typeof this.createdTrgs[i] == "object") { // failsafe
-				this.mission.triggers.queue.push(this.createdTrgs[i]); // re-push trigger to the trigger queue.
+				this.mission.setTrigger(this.createdTrgs[i]); // re-push trigger to the trigger queue.
 			};
 		};
 		deblog("simple triggers restored..");
 
 		deblog(`${this.createdTrgs.length} triggers exist in mission.`);
-		deblog(`and currently ${this.mission.triggers.queue.length} triggers are active. `);
-
-		// path data array init
-		this.path.init();
+		deblog(`and currently ${RTS.mission.triggers.queue.length} triggers are active. `);
 
 		// Dlog?
 		this.DlogManager.receiveQ(); // restore Dlog queue
+
+		// restore agents array of RTS object
+		for (let i = 1; i < DIS.agent.limit; i++){
+			let agt = DIS.agent.loadAgentToJS(i);
+			if (agt != null) {
+				this.agents[i] = agt;
+				// deblog(`load ${i} as DIS_agent`)
+			};
+		};
+		// path data array init
+		this.path.init();
+
 		
 	},
 
@@ -5418,6 +5451,3 @@ function resizeImage(imageData, originalWidth, originalHeight,rate) {
 	return resizedData;
 };
 
-deblog(DIS.string)
-
-DIS.string.convertString("nofuckyou")
