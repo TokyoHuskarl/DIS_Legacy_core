@@ -3577,27 +3577,43 @@ class RTStrigger {
 };
 
 
-class DIS_dialog extends DIS_entity {
-	constructor(string,time,icon){
+
+class DIS_RMDialog extends DIS_entity {
+	// kari
+	constructor(string,icon){
 		super();
-		this.showframe = time | 235; // if showframe is -1, it won't automatically disappear until forceSkipDialog() or clearDialogQueue() is called
-		this.opensound = ["cursor09",75,90,50] // file vol tempo balance
-		this.icon = icon || ["",[4,4],1]; // [filename, sprite_number, and?]
+		
 		this.fontdata = DIS.lang.currentFontdata.common; // [filename, fontsize]
-		this.stopworld = false; // 
-		this.size =  [360,78] // [240,64]; // [360,108] [width,height]  isn't this changed?
+		this.icon = icon || ["",[4,4],1]; // [filename, sprite_number, and?]
+		this.stopworld = true; 
 
 		// automatically insert LF
 		this.string = DIS.string.wrapText(string,this.fontdata[1],this.size[0]);
+	};
+	afterEffect(){/* override me*/}; // called after this one is overino
 
-		
+	setIcon(filename,spritenum){
+		// underconstruction
+	};
+
+};
+
+// radio dialog that basically doesn't pause the game
+// extending DIS_RMDialog might be better
+class DIS_dialog extends DIS_RMDialog {
+	constructor(string,time,icon){
+		super(string,icon);
+		this.showframe = time || 235; // if showframe is -1, it won't automatically disappear until forceSkipDialog() or clearDialogQueue() is called
+		this.opensound = ["cursor09",75,90,50] // file vol tempo balance
+		this.stopworld = false; 
+		this.size =  [360,78] // [240,64]; // [360,108] [width,height]  isn't this changed?
+
 
 	};
 	
 
-	afterEffect(){/* override me*/}; // called after this one is overino
 	setIcon(filename,spritenum){
-		
+		// underconstruction
 	};
 };
 
@@ -4837,7 +4853,7 @@ var Cmd = {
 
 				Cmd.Qset(this.CmdType,"pushDialogQueue",sendstring);
 				RTS.DlogManager.afterEffects.push(dlog.afterEffect);
-				deblog(sendstring)
+				// deblog(sendstring);
 			},
 
 			forceSkipDialog: function(skipi){ // toggle break flag switch
@@ -4850,6 +4866,12 @@ var Cmd = {
 				RTS.DlogManager.afterEffects = []; // unlike forceSkip, thus will nullfy dialog afterEffect.
 				Cmd.Qset(this.CmdType,"clearDialogQueue","");
 
+			},
+
+			// UNDERCONSTRUCTION
+			sendRMDialog: function(txt,face){
+				let log = new DIS_RMDialog(txt,face);
+				_pushDialogQueue(log); 
 			},
 
 			getPictureInfo: function(picid){
