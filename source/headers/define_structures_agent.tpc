@@ -323,8 +323,10 @@ struct("agent",{
 	// erase all agent_ prefix eventually 
 	
 	agent_PerkFlagBits1_FLAG_Pathfinder = 128
+	PerkFlagBits1_FLAG_Shieldmaster = 1
 	PerkFlagBits1_FLAG_BattleForged = 4
 	PerkFlagBits1_FLAG_Nimble = 8
+	PerkFlagBits1_FLAG_Dodge = 32
 	PerkFlagBits1_FLAG_Pathfinder = 128
 	PerkFlagBits1_FLAG_Fearsome = 256
 	PerkFlagBits1_FLAG_Ninelives = 2048
@@ -337,12 +339,14 @@ struct("agent",{
 	PerkFlagBits2_FLAG_KillingFrenzy = 1
 	PerkFlagBits2_FLAG_BattleFlow = 2
 	PerkFlagBits2_FLAG_Berserk = 4
-
+	PerkFlagBits2_FLAG_Grimreaper = 262144
+	PerkFlagBits2_FLAG_Overwhelm = 2097152 // not yet implemented
 
 
 	PerkFlagBits3_FLAG_Mountainblade = 64
 	PerkFlagBits3_FLAG_HorseArcher = 128
 	PerkFlagBits3_FLAG_Parthian = 256
+	PerkFlagBits3_FLAG_Expert_Velites = 1048576
 
 
 	// script flags
@@ -350,6 +354,7 @@ struct("agent",{
 
 
 	//Agent bits
+	AgentBits_AmbushFlag = 1
 	AgentBits_horse_in_forest = 8
 	AgentBits_Inertia = 16
 	AgentBits_Skate = 32

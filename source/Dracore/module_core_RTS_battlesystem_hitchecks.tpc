@@ -44,7 +44,7 @@ __fn func_bs_melee_hit_check_wo_prep {
 	val_asg(reg1,victim_ProcessEVA) // reg1 = victim_ProcessEVA
 	//@comment "#################GetParaNow v1v2r1 END#################"
 	//@comment "#DodgeMS*12%"
-	reg1 += victim_PerkFlagBits1 & 32 ? victim_ProcessMS >> 3 : 0 //muldiv(victim_ProcessMS, 12, 100) : 0
+	reg1 += victim_PerkFlagBits1 & PerkFlagBits1_FLAG_Dodge ? victim_ProcessMS >> 3 : 0 //muldiv(victim_ProcessMS, 12, 100) : 0
 	//@comment "＃＃＃＃＃＃＃＃＃＃Elevation Bonus＃＃＃＃＃＃＃＃＃＃"
 	Temp20 = agent_getTerrainElevation - victim_getTerrainElevation
 	//@comment "＃＃＃＃＃＃＃＃＃＃BackAttack Bonus＃＃＃＃＃＃＃＃＃＃"
@@ -151,8 +151,8 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	}
 
 	Temp1 = max(1, min(99, Temp1))
-	//against ambushed unit, accuracy is halved
-	Temp1 >>= (victim_ProcessObjBit & 1) //fixed BETA2
+	// If the victim is ambushed, accuracy gets halved
+	Temp1 >>= (victim_ProcessObjBit & AgentBits_AmbushFlag) //fixed BETA2
 	//@comment "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"
 	reg1 = Temp3 <= Temp1 ? 1 : 0
 }
@@ -191,7 +191,7 @@ __fn func_bs_mind_hit_check $attacker $victim{
 __fn bs_shield_crack_check {
 	// "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"
 	val_asg(TT1,victim_ShieldBreakResistance) 
-	TT1 += victim_PerkFlagBits1 & 1 ? victim_ShieldBreakResistance >> 2 : 0
+	TT1 += victim_PerkFlagBits1 & PerkFlagBits1_FLAG_Shieldmaster ? victim_ShieldBreakResistance >> 2 : 0
 	// "＃＃＃＃＃＃＃＃＃＃Chance Roll＃＃＃＃＃＃＃＃＃＃"
 	reg1 = agent_ProcessAD / 3
 	reg1 *= agent_AABits & AABits_FLAG_CrackingShieldBONUS ? 2 : 1

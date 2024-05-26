@@ -244,22 +244,27 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																						//@comment "#Buff"
 																							var1 = projectile_ProjectileBuff
 																							@if var1 >= v[1186] {
-																									var3 = projectile_BuffDuration 
+																									val_asg(var3,projectile_BuffDuration)
 																									func_bs_register_buff_with_time(var1 Ptr20 var3)
 																							}
-																							Temp1 = projectile_Damage
-																							Temp2 = projectile_ARorMR
-																							Temp3 = projectile_Element
+																							
+																							val_asg(Temp1,projectile_Damage)
+																							val_asg(Temp2,projectile_ARorMR)
+																							val_asg(Temp3,projectile_Element)
 
 																							//@comment "Perk:Grimreaper"
 																							@if s[167].isOff() { // not applied to static
 																								// only physical damage projectile can crit
 																								@if Temp2 == 0 {
-																									@if `agent_PerkFlagBits2 & 262144 {
+																									@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_Grimreaper {
 																										//@comment "#CheckCrit"
 																										/* @comment "Var1 = Obj 1~V[421] = ダメージ倍率" */
 																										v[421] = agent_ProcessCrit >> 1 + (2 - victim_CritChanceReduction) >= rnd(0, 99) ? 450 - victim_CritDamageReduction : 100
 
+																									}
+																									// only physical damage projectile can be affected by overwhelm perk
+																									@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_Overwhelm {
+																										victim_MeleeFightTimer = victim_ProcessObjBit & BaseObjBit_FLAG_Immune_to_MeleePenalty ? 0 : Const_Melee_Fight_Time_by_Melee_Attack
 																									}
 																								}
 																							}
