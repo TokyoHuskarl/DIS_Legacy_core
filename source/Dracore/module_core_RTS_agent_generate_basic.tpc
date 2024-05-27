@@ -324,7 +324,7 @@ __fn func_generate_agent {
 											// "#Set Equipments Parameter"
 											//Check reserve ammo first
 											@if agent_ReserveWeaponID > 0 {
-												var1 = agent_ReserveWeaponID
+													var1 = agent_ReserveWeaponID
 													var2 = 0
 													@call .cev v[1150]
 													Str_slot_subsetR.asg Str_slot_weaponfile
@@ -332,9 +332,10 @@ __fn func_generate_agent {
 
 													func_convert_weapon_ammo_into_four_byte_ammo_data(weapon_Ammo)
 													agent_Ammo = reg1 << 16
-													macro_set_agent_AI_decision_Sub_WEP_Type(v[1907])//set subset
-													//also...
+													macro_set_agent_AI_decision_Sub_WEP_Type(v[1907]) // set subset
+													// also...
 													agent_AI_decision_bits |= AI_decision_bits_FLAG_Have_reserve_set
+													
 											}.else bl{
 												agent_Ammo = 0
 											}
