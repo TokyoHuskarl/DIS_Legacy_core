@@ -2,7 +2,7 @@
 
 def macro_AtkerSPcost = {
 	// Atker Auto Attack SP Cost
-	agent_SP = agent_SP - agent_AACost
+	val_sub(agent_SP,agent_AACost) // agent_SP -= agent_AACost
 	agent_SP = max(agent_SP, 0)
 }
 
@@ -514,7 +514,14 @@ __fn agent_autoattack_melee {
 				// "Miss!"
 
 				// let atker pay cost as well
-				macro_AtkerSPcost
+				@if `agent_PerkFlagBits2 & PerkFlagBits3_FLAG_Feint {
+						agent_SP -= agent_AACost >> 1 // halve
+						agent_SP = max(agent_SP, 0)
+					
+				}.else bl{
+					macro_AtkerSPcost
+				}
+
 				AtkerSave 
 
 				// "#SP damage#Evading costs 2 SP"
