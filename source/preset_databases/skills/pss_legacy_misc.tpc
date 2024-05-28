@@ -1,0 +1,397 @@
+def COMMENT_defined_in_PSS_LEG_MISC = {
+	@comment "Defined in preset_databases/skills/pss_legacy_misc.tpc"
+}
+
+// Summon Naskarl - Orthunass
+cev .id(1210), .name("Summon Naskarl"), {
+	COMMENT_defined_in_PSS_LEG_MISC
+	@if s[118] .isOn() {
+		v[1301].copyTo v[581], 20
+			@comment "#Q_ID and Q_Func"
+			v[581] = 10
+			v[582] = v[581] + 1200
+			v[583] = 2
+			@comment "#Q_Motion"
+			v[585] = 1
+			v[584] = -1
+			@comment "#Q_Motion"
+			v[585] = 1
+			@comment "#Q_Cost"
+			v[587] = 950
+			@comment "#Q_Range"
+			v[592] = 8000
+			@comment "#Q_CD"
+			v[588] = 5
+
+	} .else bl {
+		@comment "Access19 = AttackerObjectID
+			Access20 = TargetObjectID
+			Access18 = TargetObjTypeチェックPtr"
+			v[590].copyTo v[11], 2
+			v[11..12] *= 10000
+			@call .cev 1999
+			v[341] = player.mapId
+			@map.getTerrain .pos v[21], v[22] .dst v[341]
+			@if v[341] <= 19 {
+				@if v[205] < v[1080] {
+					v[590].copyTo v[607], 2
+						@if v[607] >= v[1008] {
+							@if v[607] <= v[1009] {
+								@if v[608] >= v[1010] {
+									@if v[608] <= v[1011] {
+										v[472] = divmul(80, 100, v[2216])
+											v[473] = 100
+											v[474] = divmul(v[607] + v[1001], v[1281], 50)
+											@se.play "Wind1" .opt v[472], 100, v[474]
+											s[141].on
+											@call .cev 96
+
+									}
+
+								}
+
+							}
+
+						}
+					v[590].copyTo v[252], 2
+						v[251] = 0
+						@if `v[2412 + v[251] % 3] & 0x4 {
+							v[254] = 175
+								v[258] = 0
+								s[151].off
+								s[152].on
+								@call .cev 300
+
+						} .else bl {
+							v[258] = 0
+								@call .cev 227
+
+						}
+
+				} .else bl {
+					v[472] = divmul(80, 100, v[2216])
+						@se.play "Buzzer3" .opt v[472], 100, 50
+
+				}
+
+			} .else bl {
+				v[472] = divmul(80, 100, v[2216])
+					@se.play "Buzzer3" .opt v[472], 100, 50
+
+			}
+
+	}
+}
+
+// building function called for by workers (maybe)
+cev .id(1217), .name("Extra:Building function"), {
+	COMMENT_defined_in_PSS_LEG_MISC
+		@if s[118] .isOn() {
+			v[1301].copyTo v[581], 20
+				@comment "#Q_ID and Q_Func"
+				v[581] = 17
+				v[582] = v[581] + 1200
+				@comment "#Q_Type"
+				v[583] = 11
+				v[584] = -1
+				@comment "#Q_Motion"
+				v[585] = 1
+				v[587] = 0
+				@comment "#Q_Range"
+				v[592] = 999999999
+				@comment "#Q_CD"
+				v[588] = 1
+
+		} .else bl {
+			v[341] = v[204] >= 400 ? 1 : 0
+				@if v[341] == 0 {
+					@comment "Access19 = AttackerObjectID
+						Access20 = TargetObjectID
+						Access18 = TargetObjTypeチェックPtr"
+						v[341] = v[299] * 300
+						v[342] = v[341] + 4943
+						v[342] = v[v[342]] - 4
+						v[342] *= 20
+						v[342] += v[341] + 4854
+						v[344] = v[v[342]]
+						@comment "＃特例措置"
+						@if s[54] .isOn() {
+							v[344] = v[344] == 11 ? 15 : v[344]
+								v[344] = v[344] == 14 ? 16 : v[344]
+								v[344] = v[344] == 3 ? 17 : v[344]
+
+						}
+					v[343] = 800 + v[344]
+						s[151].on
+						@call .cev v[343]
+						s[151].off
+						v[31].copyTo v[15], 4
+						v[341] = v[300001] >= v[15] ? 1 : 0
+						v[341] += v[300002] >= v[16] ? 1 : 0
+						v[341] += v[300003] >= v[17] ? 1 : 0
+						v[341] += v[300004] >= v[18] ? 1 : 0
+						v[21] = v[341] != 4 ? -1 : 0
+						@if v[21] == 0 {
+							v[87] = 2
+								v[88] = v[344]
+
+						} .else bl {
+							@se.play "Cancel1" .opt 90, 100, 50
+
+						}
+
+				} .else bl {
+					@comment "ユニット数上限"
+
+				}
+
+		}
+}
+
+// Crow AA function
+cev .id(1225), .name("Call of Crow"), {
+	COMMENT_defined_in_PSS_LEG_MISC
+		@if s[118] .isOn() {
+			v[1301].copyTo v[581], 20
+				@comment "#Q_ID and Q_Func"
+				v[581] = 25
+				v[582] = v[581] + 1200
+				@comment "#Q_Type"
+				v[583] = 1
+				@comment "#Q_Motion"
+				v[585] = 1
+				@comment "#Q_ExtraMotion"
+				v[586] = 1
+				@comment "#Q_Cost"
+				v[587] = 70
+				@comment "#Q_Range"
+				v[592] = 40000
+				@comment "#Q_CD"
+				v[588] = 76
+
+		} .else bl {
+			@comment "Access19 = AttackerObjectID
+				Access20 = TargetObjectID
+				Access18 = TargetObjTypeチェックPtr"
+				@if s[120] .isOff() {
+					@if v[217] < v[4559] {
+						v[217] += 1
+							@loop v[4559] .dst v[320] {
+								v[216] %= v[4559]
+									v[301] = v[216] * 100
+									v[301] += v[1076]
+									v[295] = v[301] + 1
+									@if v[v[295]] == 0 {
+										@comment "Access17 = AttackerObjチェックPtr"
+											v[297] = v[299] * 300
+											v[297] += 4700
+											@comment "まず清掃"
+											v[1301].copyTo v[601], 100
+											v[1301].copyTo v[v[295]], 100
+											@comment "ParentObjセット"
+											@if s[1] .isOn() {
+												v[341] = v[297] + 1
+													v[609] = v[v[341]]
+
+											}
+										v[609] = v[299]
+											@comment "出る場所セット"
+											v[341] = v[297] + 7
+											v[v[341]].copyTo v[605], 2
+											v[605..606] *= 10000
+											v[v[341]].copyTo v[607], 2
+											@comment "###############
+											速度べくとるを作る
+###############"
+											v[607].copyTo v[11], 2
+											v[590].copyTo v[13], 2
+											@comment "#単位ベクトルできた"
+											@call .cev 2003
+											@comment "#速度をかけよう"
+											@comment "##*30"
+											v[21..22] *= 850
+											@comment "#速度パラメータ入力"
+											v[21].copyTo v[612], 2
+											@comment "#角度情報保存"
+											v[619] = atan2(v[613], v[612], 1000)
+											@if v[619] <= 0 {
+												v[619] += 360000
+
+											}
+										@comment "Projectile team"
+											v[341] = v[297] + 100
+											v[618] = v[v[341]]
+											@comment "パラメータ等入力begin"
+											@comment "#Pic"
+											@comment "#Trans"
+											v[626] = 40
+											@comment "#ProjectileType"
+											v[601] = 1
+											@comment "#Hit Limit"
+											v[630] = 1
+											@comment "#あたり判定"
+											v[610] = 6
+											v[611] = 6
+											@comment "#威力"
+											v[11] = v[299]
+											v[12] = 2
+											@call .cev 2004
+											@comment "[AP]*150%"
+											v[21] *= 15
+											v[21] /= 10
+											v[621] = v[21]
+											@comment "#ARMRと属性"
+											v[622] = 1
+											v[623] = 1
+											@comment "#Timer"
+											v[700] = 22
+											@comment "#Effect"
+											v[604] = 97
+											@comment "パラメータ等入力end"
+											v[601].copyTo v[v[295]], 100
+											@comment "描画"
+											v[302] = v[216]
+											v[302] += 1001
+											@pic[v[302]].show {
+												"projectile\magicmissile"
+													.pos v[605], v[606] .center
+													.scrollWithMap
+													.chromakey 1
+													.scale 100
+													.trans 100
+													.rgbs 100, 100, 100, 100
+													.angle v[619], 1000
+													.mapLayer 7
+													.eraseWhenTransfer
+													.affectedByTint
+													.affectedByFlash
+													.affectedByShake
+											}
+										@comment "演出"
+											@if `s[500 + v[299]] == 1 {
+												@if v[182] <= 5 {
+													v[182] += 1
+														v[472] = divmul(70, 100, v[2216])
+														v[474] = divmul(v[607] + v[1001], v[1281], 50)
+														@se.play "corvus-macrorhynchos-cry1" .opt v[472], 100, v[474]
+
+												}
+
+											}
+										@break
+
+									}
+								v[216] += 1
+
+							}
+
+
+					}
+
+				} .else bl {
+					@comment "#Motion Setting#From Obj描写->"
+						v[341] = v[v[330]]
+						@if v[341] != 4 {
+							v[350] = v[301] + 280
+								v[325] = 49
+								v[v[350]] = 1
+
+						} .else bl {
+							v[350] = v[301] + 280
+								v[345] = v[v[350]]
+								@if s[2] .isOff() {
+									v[v[350]] += v[v[350]] < 3 ? 1 : 0
+
+								}
+							v[325] = v[345] + 49
+
+						}
+
+				}
+
+		}
+}
+
+cev .id(1248), .name("Legion Signum Activation"), {
+	COMMENT_defined_in_PSS_LEG_MISC
+	@if s[118] .isOn() {
+		v[1301].copyTo v[581], 20
+			@comment "#Q_ID and Q_Func"
+			v[581] = 48
+			v[582] = v[581] + 1200
+			@comment "#Q_Type"
+			v[583] = 4
+			v[584] = 2
+			@comment "#Q_Motion"
+			v[585] = 2
+			@comment "#Q_Cost"
+			v[587] = 0
+			@comment "#Q_Range"
+			v[592] = 140000
+			@comment "#Q_CD"
+			v[588] = 450
+
+	} .else bl {
+		@if s[119] .isOn() {
+			v[861..864] *= 11
+				v[861..864] /= 10
+				v[872] = 25
+				@comment "#Icon Number"
+				v[21] = 1
+
+		} .else bl {
+			@comment "##############"
+				v[297] = v[299] * 300
+				v[297] += 4700
+				v[341] = v[297] + 7
+				v[v[341]].copyTo v[607], 2
+				@if `s[500 + v[299]] == 1 {
+					v[182] += 2
+						v[329] = rnd(0, 2)
+						@comment "#########################"
+						v[471] = 11550
+						v[472] = divmul(90, 100, v[2216])
+						v[473] = 100
+						v[474] = divmul(v[607] + v[1001], v[1281], 50)
+						@comment "#########################"
+						@cmd v[471], "Raise3", .args v[472], 3
+						@cmd v[471], "Raise3", .args v[472], 3
+
+				}
+			@comment "v1=UnitID
+				v2=UnitType"
+				@loop v[1012] .dst v[141] {
+					@comment "Check Enemy Team List"
+						v[601] = v[141] + v[1146]
+						@if v[v[601]] >= 1 {
+							v[602] = v[v[601]] * 300
+								v[602] += 4801
+								@comment "Legionary"
+								@if v[v[602]] >= 63 {
+									@if v[v[602]] <= 69 {
+										@comment "#バフ番号指定"
+											v[11] = 1248
+											v[12] = v[v[601]]
+											@call .cev 1911
+											@if v[22] >= 0 {
+												@comment "#Duration"
+													v[v[22]] = 350
+
+											}
+
+									}
+
+								}
+
+						}
+
+				}
+
+			@comment "#発動処理"
+				@comment "出る場所セット"
+
+		}
+
+	}
+
+}
