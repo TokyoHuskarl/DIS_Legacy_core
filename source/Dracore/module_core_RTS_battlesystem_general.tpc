@@ -32,6 +32,10 @@ cev .id(40) .name("BattleSystemFunc:Damage Cal"){
 	func_damage_calculation()
 }
 
+cev .id(cevID_DamageCalc_without_loading_agent_data) .name("BSFunc:Dmg Cal wo agt data"){
+	func_damage_calculation(0x1)
+}
+
 //kill/retreat/disband agent
 #include "./module_core_RTS_battlesystem_remove_agent.tpc"
 

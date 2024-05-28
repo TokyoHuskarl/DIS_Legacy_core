@@ -5,7 +5,12 @@ def  damage_base_morale_check = 15
 
 
 
-__fn func_damage_calculation {
+/*
+ *
+ * $fl {int} - 0x1:do not load agent data
+ *
+**/
+__fn func_damage_calculation $fl {
 	/* Access19 = AttackerObjectID 1~ +4700
 	Access20 = TargetObjectID 1~ +4700
 	Access18 = ObjTypeチェックPtr
@@ -67,12 +72,17 @@ __fn func_damage_calculation {
 		Ptr10 = Ptr20 * agent_Basic_Array_size // victimID * 300
 		Ptr11 = Ptr10 + 4701 // Ptr to victim data
 
-		v[Ptr11].copy victim_AgentType, agent_Basic_Array_size // copy victim data to victim buffer
+
+		__if !($fl & 0x1) {
+			v[Ptr11].copy victim_AgentType, agent_Basic_Array_size // copy victim data to victim buffer
+		}
 		
 
 		Ptr9 = Ptr19 * agent_Basic_Array_size // attackID * 300
 		Ptr1 = Ptr9 + 4701 // Ptr to atker data
-		v[Ptr1].copy agent_AgentType, agent_Basic_Array_size
+		__if !($fl & 0x1) {
+			v[Ptr1].copy agent_AgentType, agent_Basic_Array_size
+		}
 
 		// Temp2 is calculation type
 		@if Temp2 == 2 { // TRUE DAMAGE!
@@ -213,6 +223,7 @@ __fn func_damage_calculation {
 								}
 								
 						}
+
 				
 					}
 

@@ -262,17 +262,18 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																										v[421] = agent_ProcessCrit >> 1 + (2 - victim_CritChanceReduction) >= rnd(0, 99) ? 450 - victim_CritDamageReduction : 100
 
 																									}
-																									// only physical damage projectile can be affected by overwhelm perk
-																									@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_Overwhelm {
-																										victim_MeleeFightTimer = victim_ProcessObjBit & BaseObjBit_FLAG_Immune_to_MeleePenalty ? 0 : Const_Melee_Fight_Time_by_Melee_Attack
+
+																									@if `agent_PerkFlagBits2 & PerkFlagBits2_FLAG_Overwhelm { // if the attacker is faster than victim
+																										victim_MeleeFightTimer = victim_ProcessObjBit & BaseObjBit_FLAG_Immune_to_MeleePenalty ? 0 : Const_Melee_Fight_Time_by_Melee_Attack // Overwhelm might make horse archers too strong
 																									}
+																									
 																								}
 																							}
 
 																							//@comment "AABits"
 																							val_asg(var9,projectile_bits1)
 																							val_asg(v[422],projectile_weapontype)
-																							@call .cev 40 // call the damage cal.
+																							@call .cev cevID_DamageCalc_without_loading_agent_data // call the damage cal.
 																							val_asg(reg10,N1) // reg10 = 1
 																							val_asg(Ptr20,v[36])
 
