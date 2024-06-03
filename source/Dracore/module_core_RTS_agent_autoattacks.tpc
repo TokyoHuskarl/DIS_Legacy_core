@@ -877,22 +877,27 @@ __fn agent_autoattack_ranged {
 
 
 					// "#diffusionf: y=x (x)/(-240)+30"
-					//TT10 = max(pow(v[v[210] + 265], 2) / -240 + 30, 0)
-					TT10 = max(pow(agent_ProcessHIT, 2) / -230 + 32, 0)
+					// cavalry archer's aim spreads more
+					TT10 = max(pow(agent_ProcessHIT, 2) / -230 + 32, 0) + (agent_ExMotionFlags & ExMotionFlags_FLAG_horseback ? 1 : 0)
+
+					/*
+					@if `agent_ExMotionFlags & ExMotionFlags_FLAG_horseback { 
+						v[624] += rnd(-1, 1)
+						v[625] += rnd(-1, 1)
+					}
+					*/
 
 					v[624] += rnd(-TT10, TT10)
 					v[625] += rnd(-TT10, TT10)
+
+
 
 					// this seems what had been breaking arrow and camera relation
 					//v[624].add v[53], 2
 
 					// "#フレーム数を設定"
-					//v[700] = v[v[210] + 128]
-					//v[603] = v[700] - 1
 			
-					//v[729] = v[210] + 129
 					agent_AASfx = agent_AASfx > 90 ? agent_AASfx : 91
-					//v[637] = v[v[210] + 244]
 					s[141].on
 					v[624].copy v[361], 2
 
@@ -901,30 +906,22 @@ __fn agent_autoattack_ranged {
 					//Restore Ptr
 					Ptr1 = v[210] + 1
 					v[Ptr1].copy agent_ObjectType, 300 //deploy atk agent para
-					//v[842] = v[210] + 242
-					//v[v[842]] = 0
-					agent_MovementOrder = 0
-					//v[843] = v[210] + 243
+					val_init(agent_MovementOrder) // agent_AttackFrame = 0
 					// "AAクールタイムモーション"
-					//v[726] = v[210] + 126
 					// "ビット見る"
 					agent_ActionState = agent_ExMotionFlags & ExMotionFlags_FLAG_have_AA_CD_Spr ? 2 : 0
 					// "AAモーション初期化"
-					//v[629] = v[210] + 29
-					//v[v[629]] = 0
-					agent_AttackFrame = 0
+					val_init(agent_AttackFrame) // agent_AttackFrame = 0
 					// "Initialize AI Timer"
-					//v[v[210] + 84] = v[v[210] + 300] % v[1195]
 					agent_ActionTimer = agent_generated_ID % v[1195]
-					//v[v[210] + 80] = v[1240] * v[4571] / 2
 					agent_InCombatTimer = v[1240] * v[4571]
 					agent_InCombatTimer /= 2
 					agent_ObjectType.copy v[Ptr1], 300
 					
 						} .else bl {
-					s[202].on
-					s[203].off
-					
+							s[202].on
+							s[203].off
+
 						}
 						
 				} .else bl {

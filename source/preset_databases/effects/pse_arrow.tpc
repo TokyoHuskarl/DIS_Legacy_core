@@ -148,12 +148,12 @@ __fn func_effect_arrow_proc $arrowPictString {
 
 
 
-	    @if effect_milZ <= effect_ArrowCheckHeight{
-		@if `!(effect_Flag&Arrow_Flag_Checked){
+	    @if effect_milZ <= effect_ArrowCheckHeight {
+		@if `!(effect_Flag&Arrow_Flag_Checked) {
 			effect_Flag |= Arrow_Flag_Check_Hit
 		}
 	    }
-	    @if effect_milZ <= 100 {//Fall into the Ground
+	    @if effect_milZ <= 100 { //Fall into the Ground
 		val_asg(effect_Timer,N1) // effect_Timer = 1
 
 	    }
