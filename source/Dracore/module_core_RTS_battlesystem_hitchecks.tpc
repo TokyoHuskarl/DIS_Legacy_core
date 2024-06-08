@@ -125,7 +125,7 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	}
 
 	//If you covered by ally's shield, you will gain+8 shield value, even if you don't have any shield
-	@if `victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
+	@if `victim_ProcessInstantState & ProcessInstantState_FLAG_shield_covered_double_check {
 		val_add(Temp2,N8)
 
 		//@comment "BackAttack halves evasion chance when the agent is covered by ally shieldwall"

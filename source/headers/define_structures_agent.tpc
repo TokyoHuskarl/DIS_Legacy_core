@@ -530,13 +530,14 @@ struct("agent",{
 
 
 	//InstantStates
-	agent_ProcessInstantState_FLAG_overheal = 1
-	agent_ProcessInstantState_FLAG_blind = 2
-	agent_ProcessInstantState_FLAG_magic_nullfying = 4
-	agent_ProcessInstantState_FLAG_bladedance = 8
-	agent_ProcessInstantState_FLAG_shield_covered = 16
-	agent_ProcessInstantState_FLAG_shield_covered_double_check = 32
-	agent_ProcessInstantState_FLAG_climb_hill = 64
+	ProcessInstantState_FLAG_overheal = 1
+	ProcessInstantState_FLAG_blind = 2
+	ProcessInstantState_FLAG_magic_nullifying = 4
+	ProcessInstantState_FLAG_bladedance = 8
+	ProcessInstantState_FLAG_shield_covered = 16
+	ProcessInstantState_FLAG_shield_covered_double_check = 32
+	ProcessInstantState_FLAG_climb_hill = 64
+	ProcessInstantState_FLAG_immune_to_physical_attack = 128
 
 
 	//MovementOrder

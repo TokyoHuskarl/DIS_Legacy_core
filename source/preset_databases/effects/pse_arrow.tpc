@@ -99,7 +99,15 @@ __fn func_effect_arrow_init $selfid {
 	    	effect_milZ = 13000 //give 13pix height if the angle is too low - below 20 degree
 		effect_milVz += g_perFPS
 		effect_ArrowCheckHeight = 21500 //almost check every frame when zero distance shoot
-		effect_HitBonus = effect_Distance_to_goal> agent_BaseRange_max / 3 ?arrow_base_hit+5:(effect_Distance_to_goal>agent_BaseRange_max / 5?(arrow_base_hit/2):-10)//Enemy too close!
+
+		// cav archer
+		@if `agent_ExMotionFlags & ExMotionFlags_FLAG_horseback { 
+			effect_HitBonus = effect_Distance_to_goal > agent_BaseRange_max / 2 ? arrow_base_hit : (effect_Distance_to_goal > agent_BaseRange_max / 4 ? (arrow_base_hit) : (arrow_base_hit / 2))
+
+		// foot archer
+		}.else bl{
+			effect_HitBonus = effect_Distance_to_goal > agent_BaseRange_max / 3 ? arrow_base_hit + 5 : (effect_Distance_to_goal > agent_BaseRange_max / 5 ? (arrow_base_hit / 2) : -10) // Enemy too close!
+		}
 
 	    }.else bl{
 		effect_ArrowCheckHeight = Const_Arrow_Check_Height

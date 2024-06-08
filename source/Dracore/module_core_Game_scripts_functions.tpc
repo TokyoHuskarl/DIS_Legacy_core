@@ -261,6 +261,14 @@ __fn DIS_map_methods $LINKstr $md $i $given_v_or_str $flags {
 		{NsCmd($LINKstr, $md, $i, "spnSt",{cmd_spawnStatic(SSargs0,SSargs1,SSargs2,SSargs3,"0")})}, // map.spawnStatic
 		{NsCmd($LINKstr, $md, $i, "spnPali",{cmd_spawnPalisade(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnPalisade
 		{NsCmd($LINKstr, $md, $i, "spnWall",{cmd_spawnWall(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnWall
+		{NsCmd($LINKstr, $md, $i, "spnEft",{
+			t2v(SSargs0,var1) // check effect type
+			
+			@if var1 == 0 {
+				cmd_spawnEffect_preset(SSargs1,SSargs2,SSargs3,SSargs4)
+			}
+			
+		})}, // spawnWall
 		{NsCmd($LINKstr, $md, $i, "genHeightmap",{cmd_genHeightmap()})}, // genHeightmap
 		
 
@@ -586,7 +594,10 @@ __fn cmd_spawnPalisade $begX $begY $endX $endY $team {
 __fn cmd_spawnWall $begX $begY $endX $endY $team {
 	generateWall_preparation($begX,$begY,$endX,$endY,$team)
 	@call .cev 834
-	
+}
+
+__fn cmd_spawnEffect_preset $id $tileX $tileY $infoArray {
+		func_errlog("TPC:cmd_spawnEffect_preset() - underconstruction")
 }
 
 //##########################

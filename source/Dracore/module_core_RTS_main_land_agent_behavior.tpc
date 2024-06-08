@@ -702,7 +702,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						var1.add agent_MilPixAx, 2 // and add push
 					}
 
-					agent_ProcessInstantState |= v[Temp20] - Saved_Current_MapTile_Info > 90000000 ? agent_ProcessInstantState_FLAG_climb_hill : 0
+					agent_ProcessInstantState |= v[Temp20] - Saved_Current_MapTile_Info > 90000000 ? ProcessInstantState_FLAG_climb_hill : 0
 					//@if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback {//horse back}
 					
 					/*

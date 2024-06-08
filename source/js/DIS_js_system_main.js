@@ -2097,7 +2097,7 @@ DIS.data = { // DIS.data
 	 * @namespace csvtemp
 	 */
 	csvtemp: {
-		TROOP: createKeyArrayFromCsvLine(`id,name,agentDefaultGrp,agentType,agentSprite,race,skin,size:0,size:1,faction,passiveId,unitclass,Lv,HP,SP,AD,AP,AR,MR,HIT,EVA,Crit,MS,WILL,MainWeapon,WEPvariations,Shield,SHDvariations,Armor,AMRvariations,Helmet,HELvariations,Accessory,ACCvariations,SubWeapon,SubWEPvariations,ReserveSetL,?,ActiveSkill:0,ActiveSkill:1,ActiveSkill:2,ActiveSkill:3,PassiveSkill,Perks1,Perks2,Perks3,Perks4,motionFlags,objFlags,AABits,ExtraSettingEv,ExtraParts,Hpreg,Spreg,AS,MoveTypeBits,AArangeMax,AArangeMin,AAmotiontime,AAcost,AAfunction,reserve,AtkTime,AAarmorEff,AAarmorPen,AAeffect,,AIFlag,spriteOffset_x,spriteOffset_y,,,,,,,,train_speed,food,wood,stone,gold,iconsprite,spawnsound,ex_spawn_cev,Description,Lore`),
+		TROOP: createKeyArrayFromCsvLine(`id,Name,agentDefaultGrp,agentType,agentSprite,race,skin,size:0,size:1,faction,passiveId,unitclass,Lv,HP,SP,AD,AP,AR,MR,HIT,EVA,Crit,MS,WILL,MainWeapon,WEPvariations,Shield,SHDvariations,Armor,AMRvariations,Helmet,HELvariations,Accessory,ACCvariations,SubWeapon,SubWEPvariations,ReserveSetL,?,ActiveSkill:0,ActiveSkill:1,ActiveSkill:2,ActiveSkill:3,PassiveSkill,Perks1,Perks2,Perks3,Perks4,motionFlags,objFlags,AABits,ExtraSettingEv,ExtraParts,Hpreg,Spreg,AS,MoveTypeBits,AArangeMax,AArangeMin,AAmotiontime,AAcost,AAfunction,reserve,AtkTime,AAarmorEff,AAarmorPen,AAeffect,,AIFlag,spriteOffset_x,spriteOffset_y,,,,,,,,train_speed,food,wood,stone,gold,iconsprite,spawnsound,ex_spawn_cev,Description,Lore`),
 
 	},
 
@@ -2287,6 +2287,15 @@ DIS.data = { // DIS.data
 	},
 
 
+	PERK: {
+
+		// underconstruction
+		convertStrIdToArray: function(str){
+			
+			return 0;
+		},
+
+	},
 	
 	FACTION: {
 		init: function(){
@@ -2405,7 +2414,7 @@ DIS.data = { // DIS.data
 			// replace language element!
 			// get lang suffix for checking if there's translation for the trp.
 			const lngsf = DIS.lang.currentLangsuffix;
-			const translatable_elms = ["name","Description","Lore"] 
+			const translatable_elms = ["Name","Description","Lore"] 
 
 			// It works, but retarded.
 			for (let strElm of translatable_elms){
@@ -4500,6 +4509,14 @@ var Cmd = {
 			Cmd.Qset(this.CmdType,"spnWall",`${tileposbeg[0]},${tileposbeg[1]},${tileposend[0]},${tileposend[1]},${team}`);
 			let protostatic = new DIS_agent(DIS.agent.searchEmptySpace(),staid["STA_wall"],team,false);
 			return protostatic;
+		},
+
+
+		// arg Array is underconstruction
+		spawnEffect: function(effectid,tilepos,argArray = []){
+			let typ = 0; // unco
+			Cmd.Qset(this.CmdType,"spnEft",`${typ},${effectid},${tilepos[0]},${tilepos[1]}`);
+
 		},
 
 		/**

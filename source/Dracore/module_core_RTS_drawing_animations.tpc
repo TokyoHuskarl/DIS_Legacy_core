@@ -243,6 +243,11 @@ __fn animation_spear_attack {
 
 }
 
+__fn animation_bow_attack {
+	v[4041..4050] += 2 - 4 * v[325]
+
+}
+
 
 __fn spriteset_bladedance {
 	v[4134] = 3
@@ -272,7 +277,7 @@ __fn animation_sword_attack {
 					v[4111].repeat 4,10 // v[4111..4120] = 4
 					v[4041].add var1,9 // v[4041..4049] += TT1
 
-					@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_bladedance {
+					@if `agent_ProcessInstantState & ProcessInstantState_FLAG_bladedance {
 						spriteset_bladedance()
 						v[4044].add TT1,1
 

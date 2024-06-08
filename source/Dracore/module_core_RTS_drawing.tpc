@@ -44,7 +44,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 	v[233] = 0
 	TT1 = v[1196]
 	@loop v[1203] {
-			increment_var(TT1)// TT1 += 1
+			increment_var(TT1) // TT1 += 1
 			@pic[TT1].move {
 					.pos 0, 0 .center
 					.scale 100
@@ -586,7 +586,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																	
 															}
 															@if `!(agent_ExMotionFlags & ExMotionFlags_FLAG_have_fundamental_movemotion) {
-																	@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_bladedance {
+																	@if `agent_ProcessInstantState & ProcessInstantState_FLAG_bladedance {
 																			spriteset_bladedance()
 																		
 																	} .else bl {
@@ -620,8 +620,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 														animation_throwing_attack()
 														
 												} .else bl {
-														@if agent_AASfx == 91 {
-																v[4041..4050] += 2 - 4 * v[325]
+														@if agent_AASfx == 91 { 
+															animation_bow_attack()
 																
 														} .else bl {
 																@if agent_ActionState == 1 {
@@ -734,15 +734,15 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 									@if `agent_ExMotionFlags & ExMotionFlags_FLAG_Weapon_Cannot_be_flipped {
 											val_init(v[4034]) // v[4034] = 0
-											v[4124] = 2
+											val_asg(v[4124],N2) // v[4124] = 2
 											v[4114] += v[455] / 4096 * v[4104]
 											
 									}
 
 			//head and facial expression settings
-			TT1 = v[860] == -1 ? 3 : (v[860] > 2 ? 4 : (v[860] == 2 ? 1 : 0) )//check morale
+			TT1 = agent_Morale == -1 ? 3 : (agent_Morale > 2 ? 4 : (agent_Morale == 2 ? 1 : 0))//check morale
 			@if TT1 == 0 { // set blink and in fight facial expressions
-				TT1 = agent_InCombatTimer > 15 ? 3 : (agent_AddMotionBits & AddMotionFlags_FLAG_Blink_close ?  2: (agent_AddMotionBits & 320 ? 1:0) ) //320 = 64+256
+				TT1 = agent_InCombatTimer > 15 ? 3 : (agent_AddMotionBits & AddMotionFlags_FLAG_Blink_close ?  2 : (agent_AddMotionBits & 320 ? 1 : 0)) //320 = 64+256
 			}
 
 			v[4112] += TT1 * Const_head_spr_gridX
