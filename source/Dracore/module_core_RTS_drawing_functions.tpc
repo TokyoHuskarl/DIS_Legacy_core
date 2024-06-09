@@ -183,24 +183,48 @@ __fn func_drawing_agent_init_set_picture_strs $agentid {
 __fn function_draw_moving_agent {
 	
 	var1 =  v[340] * 10
-	var1 = Const_str_agent_pictures_strings_start + var1
+	var1 += Const_str_agent_pictures_strings_start
 	@while v[899] >= 1 {
 		TT1 = v[899] % 10
+		val_asg(TT2,TT1) // copy to TT2
+
 		Ptr6 = TT1 + var1
 		//@comment "Layer Setting"
 		TT16.copy v[449], 4
-		
+
+		/*
 		Temp5 = 4040 + TT1
 		Temp6 = 4050 + TT1
-		v[447] = 4060 + TT1
-		TT2 = 4080 + TT1
+		*/
+		TT1.copy Temp5,2
+		Temp5 += 4040
+		Temp6 += 4050
+
+		/*
 		v[463] = 4100 + TT1
 		v[464] = 4120 + TT1
-		v[321] = 4110 + TT1
+		*/
+		TT1.copy v[463],2
+		v[463] += 4100
+		v[464] += 4120
+
+		/*
 		v[453] = 4130 + TT1
 		v[454] = 4140 + TT1
 		v[455] = 4030 + TT1
 		v[456] = 4150 + TT1
+		*/
+		v[453].repeat TT1,4
+		v[453] += 4130 
+		v[454] += 4140 
+		v[455] += 4030 
+		v[456] += 4150 
+
+
+		v[447] = 4060 + TT1
+		v[321] = 4110 + TT1
+		TT2 += 4080 // TT2 = 4080 + TT1
+
 		//surprise, but this seems faster than above... opt 25.4.23
 		Temp5.deref Temp5,2
 		v[447].deref v[447],1 // v[447] = v[v[447]]

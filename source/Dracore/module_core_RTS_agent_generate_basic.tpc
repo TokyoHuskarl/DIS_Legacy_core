@@ -1979,8 +1979,13 @@ __fn agent_troops_set_picture_system {
 				@if agent_Race == 1 {
 					s[160].on
 						s[159].off
-						// @comment "skin set"
-						agent_FootstepSoundTimer = agent_FootstepSoundTimer == 0 ? -1 : agent_FootstepSoundTimer
+						// @comment "default body sprite set"
+						@if agent_FootstepSoundTimer == 0 {
+							agent_FootstepSoundTimer = -1
+							agent_ExMotionFlags |= 512
+							
+						}
+						
 
 				}
 
@@ -1988,7 +1993,11 @@ __fn agent_troops_set_picture_system {
 				@if agent_Race == 2 {
 					s[160].on
 						s[159].off
-
+						@if agent_FootstepSoundTimer == 0 {
+							agent_FootstepSoundTimer = -2
+							agent_ExMotionFlags |= 512
+							
+						}
 				}
 
 			@if agent_Race == 5 {
@@ -2234,17 +2243,10 @@ __fn agent_troops_set_picture_system {
 		Temp6 = (agent_ExMotionFlags & 4) == 4 ? 5 : 3
 
 		// AEB returns
-		__if DIS_EXPERIMENTAL == 1 {
+
 			@if BOOL_Gen_NoListAssigningFlag.isOff() {
 				set_AEB_array(SpawnAgentID,302,AgentExBuffer_SLOT_ActionSprite_1,5)
 			}
-
-
-		}.else bl{
-			// sprite order -> save AEBA 
-			agent_SpriteOrder = Temp2 * 1 + Temp3 * 10 + Temp4 * 100 + Temp5 * 1000 + Temp6 * 10000
-
-		}
 
 		//ATTENTION
 
