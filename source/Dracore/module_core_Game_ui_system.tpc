@@ -237,6 +237,12 @@ def macro_set_faction_default = {
 def PATH_LegacyGUI_faction_select = __str(PATH_gui_setting,"def_selectable_factions")
 def PATH_LegacyGUI_faction_select_language = "lang_selectable_factions"
 
+def PATH_LegacyGUI_faction_select_jingles = "jingles/"
+__fn MACRO_LegacyGUI_faction_select_jingle {
+
+	@bgm.play str4
+
+}
 
 
 __fn func_ui_start_pick_faction_window {
@@ -451,6 +457,8 @@ __fn func_ui_start_pick_faction_window {
 			s[201].on
 			v[472] = divmul(90, 100, v[2216])
 			@se.play "cursor09" .opt v[472], 100, 50
+			MACRO_LegacyGUI_faction_select_jingle()
+			@wait 0
 			@break
 			
 				}
@@ -523,11 +531,14 @@ __fn func_ui_start_pick_faction_window {
 		var2 = TT3 + 1
 		t[2999] .asg t[var2]
 		t[2999] .split ",", t[3000], v[1941]
-		t[3001] .toNum TT1
-		t[3002] .toNum TT2
+		t[3001] .toNum TT1 // civID
+		t[3002] .toNum TT2 // Hero
+
+		
+
 		var2 = TT3 + 100 // pick what is splitted from language file 
 		str1 .asg t[var2]
-		str1 .split ",", str2, var1 // str2 = facname, str3 = fac description
+		str1 .split ",", str2, var1 // str2 = facname, str3 = fac description, str4 = jingle
 
 		@if `between(MousePtr_x, InvVar2 - InvVar4 / 2 - 8, InvVar2 + InvVar4 / 2 + 8) && between(MousePtr_y, InvVar3 - InvVar5 / 2 - 8, InvVar3 + InvVar5 / 2 + 8) {
 				@if `TT1 == v[40] && TT2 == v[39] {
@@ -555,16 +566,18 @@ __fn func_ui_start_pick_faction_window {
 			
 				}
 				@if Common_Control_Ck == 1005 {
-			@if s[11] .isOff() {
-					v[472] = divmul(90, 100, v[2216])
-					@se.play "ui\UI_Quirky_39" .opt v[472], 100, 50
-					s[11].on
-					v[40] = TT1
-					v[39] = TT2
-					@break
-					
-			}
-			
+					@if s[11] .isOff() {
+						v[472] = divmul(90, 100, v[2216])
+							@se.play "ui\UI_Quirky_39" .opt v[472], 100, 50
+							s[11].on
+							v[40] = TT1
+							v[39] = TT2
+							str4 .asg PATH_LegacyGUI_faction_select_jingles // jingle
+							str4 .cat t[3006]
+							@break
+
+					}
+
 				}
 				
 		} .else bl {
@@ -671,7 +684,8 @@ def {
 
 __fn func_ui_show_nowloading {
 
-	@bgm.stop
+	// @bgm.stop
+
 	@call .cev 1915
 	v[342] = 20
 	v[343] = v[1002] - 30

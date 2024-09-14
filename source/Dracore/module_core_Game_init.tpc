@@ -848,6 +848,12 @@ __fn init_DIS_database $already_loaded {
 	// readLangFile(inputstr,inputstr)
 	inputstr .split "*/", t[509], TT1
 	inputstr .split LF, t[v[1213]], TT1
+	@loop TT1 .dst var1 {
+		var2 = var1 + v[1213]
+		t[var2] .asg .rep t[var2], LF, ""
+	}
+
+
 	v[1206] = 5000
 	getModulePathTo(inputstr)
 	inputstr .cat "\data\data_weapons", .utf8 //this was once sjis so this might cause some trouble
