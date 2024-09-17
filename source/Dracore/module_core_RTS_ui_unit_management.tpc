@@ -1424,6 +1424,7 @@ __fn show_Passive_description {
 					@comment "Init"
 					t[3001..3300] .asg ""
 					@comment "Load"
+					/*
 					t[3000] .split "^", t[3001], v[1961]
 					t[3000] .asg ""
 					@loop v[1961] .dst v[1962] {
@@ -1432,6 +1433,8 @@ __fn show_Passive_description {
 							t[3000] .cat LF
 							
 					}
+					*/
+					t[3000] .asg .rep(t[3000],"^",LF)
 					
 					def STRING_N6andLF = __str("[\c[\v[", __id(reg10), "]]\n[6]\c[0]]")
 					t[2999] .asg STRING_N6andLF .extract
@@ -1617,6 +1620,7 @@ __fn show_agent_skill_description {
 							}
 							
 					}
+					/*
 					t[3002] .split "^", t[3201], v[1961]
 					t[3002] .asg ""
 					@comment "###############"
@@ -1627,24 +1631,30 @@ __fn show_agent_skill_description {
 							t[3002] .cat t[525]
 							
 					}
+					*/
+					t[3002] .asg .rep(t[3002],"^",LF)
 					
 					@comment "###############"
-					t[3003] .split "^", t[3201], v[1961]
+					// t[3003] .split "^", t[3201], v[1961]
 					@if t[3003] .eq "" {
 							t[3003] .asg t[3002]
 							
 					} .else bl {
-							t[3003] .asg ""
-							@comment "###############"
-							@loop v[1961] .dst v[1962] {
-									v[1963] = v[1211] + v[1962]
-									v[1963] += 200
-									t[3003] .cat t[v[1963]] .extract
-									t[3003] .cat t[525]
-									
-							}
-							
-							
+						/*
+							 t[3003] .asg ""
+							 @comment "###############"
+							 @loop v[1961] .dst v[1962] {
+							 v[1963] = v[1211] + v[1962]
+							 v[1963] += 200
+							 t[3003] .cat t[v[1963]] .extract
+							 t[3003] .cat t[525]
+
+							 }
+						*/
+						t[3003] .asg .rep(t[3003],"^",LF)
+
+
+
 					}
 					@comment "###############"
 					@comment "Tech:"
