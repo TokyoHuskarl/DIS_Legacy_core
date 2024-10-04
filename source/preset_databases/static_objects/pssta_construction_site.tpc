@@ -144,21 +144,39 @@ cev .id(804), .name("Construction Site"), {
 										// var7 = v[v[201] * 300 + 5290] // kieteruyo
 										// Temp2 = var7
 										@if Temp2 > 0 {
-											@pic[Temp2].strpic {
-												""
-													.pos v[607], v[608] .center
-													.size TT1, TT2                        .scrollWithMap
-													.chromakey 1
-													.scale 100
-													.trans 0
-													.rgbs 100, 100, 100, 100
-													.font "", 10
-													.spacing 0, 0
-													.skin "Odinscall_construction" .nobg
-													.mapLayer 3
-													.eraseWhenTransfer
-													.affectedByFlash
-													.affectedByShake
+
+											@if v[880] == 802 { // farmland
+												@pic[v[302]].show {
+													"static\spr_farmland_basic"
+														.pos v[607], v[607] .center
+														.chromakey 1
+														.scrollWithMap
+														.scale 100
+														.trans 100
+														.rgbs 100, 100, 100, 100
+														.mapLayer 3
+														.affectedByTint
+														.affectedByFlash
+														.affectedByShake
+												}
+											}.else bl {
+												@pic[Temp2].strpic {
+													""
+														.pos v[607], v[608] .center
+														.size TT1, TT2                        .scrollWithMap
+														.chromakey 1
+														.scale 100
+														.scrollWithMap
+														.trans 0
+														.rgbs 100, 100, 100, 100
+														.font "", 10
+														.spacing 0, 0
+														.skin "Odinscall_construction" .nobg
+														.mapLayer 3
+														.eraseWhenTransfer
+														.affectedByFlash
+														.affectedByShake
+												}
 											}
 
 										}
@@ -166,22 +184,37 @@ cev .id(804), .name("Construction Site"), {
 								}.else bl {
 									Temp2 = v[201] * Const_layer_amount + v[1201]
 									@if Temp2 > 0 {
-										@pic[Temp2].strpic {
-											""
-												.pos -1111, 1111 .center
-												.size TT1, TT2                    .scrollWithMap
-												.chromakey 1
-												.scale 100
-												.trans 0
-												.rgbs 100, 100, 100, 100
-												.font "", 10
-												.spacing 0, 0
-												.skin "Odinscall_construction" .nobg
-												.mapLayer 3
-												.eraseWhenTransfer
-												.affectedByFlash
-												.affectedByShake
-										}
+											@if v[880] == 802 { // farmland
+												@pic[v[302]].show {
+													"static\spr_farmland_basic"
+														.pos -1111, 1111 .center
+														.chromakey 1
+														.scale 100
+														.trans 100
+														.rgbs 100, 100, 100, 100
+														.mapLayer 3
+														.affectedByTint
+														.affectedByFlash
+														.affectedByShake
+												}
+											}.else bl {
+												@pic[Temp2].strpic {
+													""
+														.pos -1111, 1111 .center
+														.size TT1, TT2                    .scrollWithMap
+														.chromakey 1
+														.scale 100
+														.trans 0
+														.rgbs 100, 100, 100, 100
+														.font "", 10
+														.spacing 0, 0
+														.skin "Odinscall_construction" .nobg
+														.mapLayer 3
+														.eraseWhenTransfer
+														.affectedByFlash
+														.affectedByShake
+												}
+											}
 
 									}
 								}

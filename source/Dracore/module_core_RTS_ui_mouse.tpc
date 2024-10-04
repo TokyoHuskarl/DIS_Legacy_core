@@ -686,6 +686,23 @@ __fn UI_CEV_MOUSE_OBSERVER {
 							var1 = 1 + v[Ptr20]
 							@call .cev 1890
 							@pic[PicID_Popup_1].strpic {
+									t[3000]
+									.pos TT1, TT2 .bottomLeft
+									.size 0, 0                            .chromakey 1
+									.scale 100
+									.trans v[1066]
+									.rgbs 100, 100, 100, 100
+									.font Font_UI, v[4511]
+									.spacing 0, 0
+									.skin "" .stretch
+									.mapLayer 9
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+							}
+
+							/*
+							@pic[PicID_Popup_1].strpic {
 									"\c[5]\t[3001]\c[0]：
 			\t[3002]
 			\c[5]\t[3003] \t[3004]"
@@ -702,10 +719,27 @@ __fn UI_CEV_MOUSE_OBSERVER {
 									.affectedByFlash
 									.affectedByShake
 							}
+							*/
 							
 								} .else bl {
 							var1 = 5
 							@call .cev 1890
+							@pic[PicID_Popup_1].strpic {
+									t[3000]
+									.pos TT1, TT2 .bottomLeft
+									.size 0, 0                            .chromakey 1
+									.scale 100
+									.trans v[1066]
+									.rgbs 100, 100, 100, 100
+									.font Font_UI, v[4511]
+									.spacing 0, 0
+									.skin "" .stretch
+									.mapLayer 9
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+							}
+							/*
 							@pic[PicID_Popup_1].strpic {
 									"\c[2]\t[3001]\c[0]：
 			\t[3002]
@@ -723,6 +757,7 @@ __fn UI_CEV_MOUSE_OBSERVER {
 									.affectedByFlash
 									.affectedByShake
 							}
+							*/
 							
 								}
 								
@@ -782,22 +817,6 @@ __fn UI_CEV_MOUSE_OBSERVER {
 						@if `TT1 != v[345] || TT2 != v[346] {
 							v[1289].copy v[343], 2
 							show_frame_overlap_effect(TT1,TT2,TT3,TT4)
-							/*
-							@pic[PicID_ButtonSelect].strpic {
-									""
-									.pos TT1, TT2 .center
-									.size v[343], v[344]                    .chromakey 1
-									.scale 100
-									.trans 20
-									.rgbs 0, 200, 0, 100
-									.font Font_UI, v[4511]
-									.spacing 0, 4
-									.skin "Odinscall_mapcam" .nobg .noGradation
-									.add
-									.mapLayer 9
-									.eraseWhenTransfer
-							}
-							*/
 
 							@pic[PicID_Popup_1].erase
 							@pic[PicID_Auxilia_Message_Window].erase
@@ -1459,11 +1478,12 @@ __fn UI_CEV_MOUSE_OBSERVER {
 											// "待機指令"
 											LEGV_sentence_id_on_popup1 = -3
 												@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
-													var1 = 108
-														@call .cev 1890
+														// var1 = 108
+														// @call .cev 1890
+														getQstr(108)
 
 														@pic[PicID_Popup_1].strpic {
-															"\t[3000]"
+															t[3000]
 																.pos v[1301], v[1065] .bottomLeft
 																.size 0, 0                                    .chromakey 1
 																.scale 100
@@ -1547,8 +1567,6 @@ __fn UI_CEV_MOUSE_OBSERVER {
 											LEGV_sentence_id_on_popup1 = -6
 												@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
 													// "#call quickstrings"
-													// var1 = 104
-													// @call .cev 1890
 													show_pupwin1_with_Qstr(104,v[1301],v[1065])
 														@pic[PicID_Auxilia_Message_Window].erase
 
@@ -1558,8 +1576,6 @@ __fn UI_CEV_MOUSE_OBSERVER {
 											// "手動指令"
 											LEGV_sentence_id_on_popup1 = -4
 												@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
-													// var1 = 109
-													// @call .cev 1890
 													show_pupwin1_with_Qstr(109,v[1301],v[1065])
 														@pic[PicID_Auxilia_Message_Window].erase
 
@@ -1574,8 +1590,6 @@ __fn UI_CEV_MOUSE_OBSERVER {
 									LEGV_sentence_id_on_popup1 = -5
 										@if LEGV_Watchdog_on_popupwindow1 != LEGV_sentence_id_on_popup1 {
 											// "#call quickstrings"
-											// var1 = 105
-											// @call .cev 1890
 											getQstr(105)
 												@pic[PicID_Popup_1].strpic {
 													t[3000]
@@ -2404,8 +2418,10 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 									.affectedByShake
 							}
 							@pic[PicID_Popup_1].getInfo .ltrb .currentRect v[350], v[351], v[352], v[353]
-							v[11] = 438
-							@call .cev 1890
+
+							// v[11] = 438
+							// @call .cev 1890
+							getQstr(438)
 							@pic[PicID_Auxilia_Message_Window].strpic {
 									t[3000]
 									.pos v[350], v[351] .bottomLeft
