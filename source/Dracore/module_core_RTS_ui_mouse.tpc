@@ -2208,6 +2208,7 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 
 											// If Alt is held down, show Lore as well.
 											@if t[505].neq "" {
+												t[501] .cat LF
 												t[501] .cat "\c[3]*"
 												@if GETKEY_Alt == 1 {
 													t[501] .cat "-------"
@@ -2253,6 +2254,7 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 
 											// If Alt is held down, show Lore as well.
 											@if t[506].neq "" {
+												t[501] .cat LF
 												t[501] .cat "\c[3]*"
 												@if GETKEY_Alt == 1 {
 													t[501] .cat "-------"

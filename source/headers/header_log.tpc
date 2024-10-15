@@ -51,6 +51,9 @@ __fn func_draw_DIS_log $str {
 	Str_Log.cat t[3000]
 	func_logupdate_begin()
 	var1 = 2
+
+	// have to remove LF thanks to maniacs patch changed how it treats when it deals with strpic.
+	t[3000] .asg .rep t[3000], LF, ""
 	@pic[v[1155]].strpic {
 	    t[3000]
 	    .pos var1, v[1126] .bottomLeft
