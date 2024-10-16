@@ -1509,24 +1509,51 @@ __fn show_Buff_description {
 						@comment "Load"
 						v[1961] = v[4573] + v[84] - 1111
 						t[3000] .asg t[v[1961]] .extract
+
+						/*
 						t[3000] .split "@", t[3000], v[1961]
 						t[3000] .split "|", t[3001], v[1961]
-						@comment "###############"
-						t[3001] .toNum v[351]
-						t[3003] .toNum v[352]
-						t[3005] .toNum v[353]
-						t[3007] .toNum v[354]
-						t[3009] .toNum v[355]
-						v[360] = 3004
-						@loop 4 {
-							@if t[v[360]] .neq "" {
-								t[v[360]] .asg  .ins t[v[360]], 0, t[525]
-									v[360] += 2
+						*/
 
-							}
+						t[3000] .split LANG_CSV_DELIMITER, t[3000], v[1961]
+						@comment "###############"
+						str1.asg t[3001] // set colourtag
+						str1.cat t[3002] // add name
+						str1.cat "\c[0]:"
+						str1.cat LF 
+						str1.cat t[3003] // add short Description
+						str1.cat LF 
+						str1.cat t[3004] // add detailed description
+						eval_js("DIS._tpc.simpleFormatString(501);") // convert t[501] and set it into regs1
+						/* 
+						// ?? 
+						@loop 4 {
+						@if t[v[360]] .neq "" {
+						t[v[360]] .asg  .ins t[v[360]], 0, t[525]
+						v[360] += 2
 
 						}
 
+						}
+						*/
+
+					@pic[996].strpic {
+							regs1
+							.pos v[341], v[342] .bottomLeft
+							.size 0, 0            .chromakey 1
+							.scale 100
+							.trans v[1066]
+							.rgbs 100, 100, 100, 100
+							.font t[530], v[4511]
+							.spacing 0, 0
+							.skin "" .stretch
+							.mapLayer 9
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+
+					/*
 					@pic[996].strpic {
 						"\c[\v[351]]\t[3002]\c[0]：\c[\v[352]\t[3004]\c[\v[353]\t[3006]\c[\v[354]\t[3008]\c[\v[355]\t[3010]"
 							.pos v[341], v[342] .bottomLeft
@@ -1542,13 +1569,14 @@ __fn show_Buff_description {
 							.affectedByFlash
 							.affectedByShake
 					}
+					*/
+
 					s[201].on
 
 				}
 			@if s[201] .isOff() {
 				@pic[996].strpic {
-					"UNKNOWN
-						説明文が設定されていません。"
+					"UNKNOWN BUFF ID"
 						.pos v[341], v[342] .bottomLeft
 						.size 0, 0            .chromakey 1
 						.scale 100

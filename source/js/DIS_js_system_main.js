@@ -1480,6 +1480,19 @@ DIS.string = (function(){
 			},
 
 			/**
+			 * replace tags in given string with actual RM color \c[n] format
+			 * @param {string} given
+			 * @return {string}
+			 */
+			replaceStringTags: function(given) {
+				let rs = given;
+				for (let tg of tags){
+					rs = rs.replace(tg[0], tg[1]);
+				};
+				return rs; 
+			},
+
+			/**
 			 * convert given js string into DIS basic format
 			 * @param {string} given
 			 * @return {string}
@@ -1507,13 +1520,13 @@ DIS.string = (function(){
 
 				// replace color tags
 				for (let tg of tags){
-					rs = rs.replace(tg[0], tg[1]);
+					rs = rs.replace(new RegExp(tg[0],"g"), tg[1]);
 				}
 
 
 				// let the in game string can reffer js variables
 				// unco
-				rs = rs.replace(",", "$;");
+				rs = rs.replace(/,/g, "$;");
 				return rs // DIS format comma.
 
 			},
@@ -1576,8 +1589,9 @@ DIS.string = (function(){
 			 */
 			formatUIText: function(text){
 				let res = this.convertString(text);
+				res = res.replace(/\$,/g, ",");
+				res = res.replace(/\^/g, "\n");
 				return res;
-
 			},
 	};
 })();
@@ -1791,6 +1805,7 @@ DIS._tpc = {
 		cacheobj.give(arrayadr,sizeadr)
 	},
 
+	// what id will be converted with this fucking function?????
 	convert_id:(dict,str)=>{
 		try {
 			return dict.convert(str);
@@ -1799,13 +1814,20 @@ DIS._tpc = {
 		};
 	},
 
-
 	/**
 	 * get js string to regs1 
 	 *
 	 */
 	getString: (str)=>{
 		sett(1,str);
+	},
+
+	/**
+	* try formatting a string in the given string var and give it back to regs1 (t[1])
+	* @param {} isNumeric 
+	*/
+	simpleFormatString: (adrt)=>{
+		sett(1,DIS.string.formatUIText(gett(adrt)));
 	},
 
 	get_skill_CallID:function(strid){

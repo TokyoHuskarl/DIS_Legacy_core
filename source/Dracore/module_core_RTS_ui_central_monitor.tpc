@@ -3,6 +3,12 @@
 // you cannot avoid refactoring this tbh
 
 
+__fn UI_get_buff_icon_to_r1 $id {
+	v[1961] = v[4573] + $id - 1111
+	t[3000] .asg t[v[1961]] .extract
+	t[3000] .split LANG_CSV_DELIMITER, t[3000], v[1961]
+	t[3005] .toNum reg1
+}
 
 
 // string consts
@@ -1333,13 +1339,17 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 						reg1 = 40
 							// "###############"
 							// "Init"
-							t[3000..3300] .asg ""
+							// t[3000..3300] .asg ""
 							// "Load"
+							UI_get_buff_icon_to_r1(v[v[325]])
+							/*
 							v[1961] = v[4573] + v[v[325]] - 1111
 							t[3000] .asg t[v[1961]] .extract
 							t[3000] .split "@", t[3000], v[1961]
 							// "###############"
 							t[3001] .toNum reg1
+							*/
+
 							@pic[LEGV_BuffcheckLoop2].show {
 								"ui\bufficon"
 									.pos v[350], v[1126] .bottomLeft
@@ -3778,13 +3788,16 @@ __fn UI_CEV_CENTRAL_MONITOR_MANAGEMENT {
 							reg1 = 40
 								// "###############"
 								// "Init"
-								t[3000..3300] .asg ""
+								// t[3000..3300] .asg ""
+								UI_get_buff_icon_to_r1(v[v[325]])
+								/*
 								// "Load"
 								v[1961] = v[4573] + v[v[325]] - 1111
 								t[3000] .asg t[v[1961]] .extract
 								t[3000] .split "@", t[3000], v[1961]
 								// "###############"
 								t[3001] .toNum reg1
+								*/
 								@pic[LEGV_BuffcheckLoop2].show {
 									"ui\bufficon"
 										.pos v[350], v[1126] .bottomLeft
