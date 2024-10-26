@@ -18,7 +18,7 @@
 const TPCadr = {
 	t: {
 		Str_playergamedata_0: 767,
-		Str_LanguagePath: 528,
+		Str_LanguagePath: 526,
 	},
 	v: {
 		Adr_MapElevationArray: 572947, // define_structures_map.tpc
@@ -2445,6 +2445,7 @@ DIS.data = { // DIS.data
 					for (let i in csv_temp_str) {
 						if (csv_temp_str[i] == strElm){
 						csv_temp_str[i] = trelm_str; // If it does, replace the element name with what with suffix
+						deblog(trelm_str);
 							break;
 						};
 					};
