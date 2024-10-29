@@ -275,8 +275,6 @@ __fn CEV_CONTROL_KEYBOARD {
 					@key.inputEx .keyCode 46 .dst v[1221]
 					@if `v[1221] >= 1 && s[199] == 0 {
 							@if v[101] >= 1 {
-									v[472] = divmul(90, 100, v[2216])
-									@se.play "Slash9" .opt v[472], 100, 50
 									v[202] = 101
 									v[313..314] = 0
 									@loop .inf() {

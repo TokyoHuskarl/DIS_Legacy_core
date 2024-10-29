@@ -817,13 +817,20 @@ __fn Kill_Agent {
 										
 								}
 
-								// "##########Foundation##########"
+								// "########## Construction Basement ##########"
 								@if `victim_AgentBits & 32 {
+
+										// set agent type 0
 										v[Ptr18] = 0
+
 										v[2538] -= 1
+
+										// Construction cancel
 										@if s[34] .isOn() {
-											// "refund"
-											@if `victim_AgentBits & 2097152 {
+											// refund building cost!
+											@if `victim_AgentBits & AgentBits_STATIC_FLAG_Ignore_morton { 
+
+													// get goal building
 													var4 = v[Kill_pointer + 4980]
 													@if var4 >= 800 { // ?
 														s[175].on
@@ -837,10 +844,12 @@ __fn Kill_Agent {
 														@call .cev 84
 														
 													}
-													
+
 											}
 											
 										}
+											TT1 = Kill_pointer + 4703
+											v[TT1] &= ~AgentBits_FLAG_Drawn_in_screen // kill drawn flag!
 										
 								}
 
@@ -899,6 +908,11 @@ __fn Kill_Agent {
 
 								// "##########	Wall##########"
 								@if victim_UnitType == 107 {
+
+										// kill sprite drawn flag to prevent unit sprite generation bug
+										TT1 = Kill_pointer + 4703
+										v[TT1] &= ~AgentBits_FLAG_Drawn_in_screen // kill drawn flag!
+
 										v[Ptr18] = 0
 										TT2 = Ptr18 + 200
 										v[TT2].copy v[801], 6
@@ -1189,7 +1203,16 @@ cev .id(30) .name("BattleSystemFunc:Retreat"){
 	    // "ActionStateを死体に変える"
 	    Temp6 += 4943
 	    v[Temp6] = 0
+
+
+
 	    Ptr10 = Ptr20 * 300
+
+			// kill drawn flag to prevent agent sprite gen bug
+			TT1 = Ptr10 + 4703
+			v[TT1] &= ~AgentBits_FLAG_Drawn_in_screen // kill drawn flag!
+
+
 	    Temp11 = Ptr10 + 4707
 	    Temp5 = v[Temp11]
 	    v[Temp11].copy Temp5, 2

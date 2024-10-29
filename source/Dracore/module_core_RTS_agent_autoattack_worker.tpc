@@ -940,7 +940,11 @@ __fn agent_aa_construction {
 
 								@if Ptr20 > 0 {
 									// "#建築現場を消去"
-									Temp5 = Ptr20 * 300
+										Temp5 = Ptr20 * 300
+
+										TT1 = Temp5 + 4703
+										v[TT1] &= ~AgentBits_FLAG_Drawn_in_screen // kill drawn flag!
+
 										Temp5 += 4806
 										v[Temp5] = -1
 										// "309 = ID	306 = ActionState"
