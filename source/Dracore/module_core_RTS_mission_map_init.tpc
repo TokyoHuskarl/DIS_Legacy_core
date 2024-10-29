@@ -832,8 +832,8 @@ __fn CEV_MISSION_INIT {
 	v[520] = ev[4].scry
 	v[520] -= v[1002] / 2
 
-	Map_dst_MortO_from_RefO_x = ev[3].x - ev[1].x 
-	Map_dst_MortO_from_RefO_y = ev[3].y - ev[1].y
+	Map_dst_MortO_from_RefO_x = ev[3].x * 16 + 8
+	Map_dst_MortO_from_RefO_y = ev[3].y * 16 + 16
 
 	v[161] = max(v[161], v[517])
 	v[162] = max(v[162], v[518])

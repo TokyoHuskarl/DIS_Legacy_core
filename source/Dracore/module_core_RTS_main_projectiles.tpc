@@ -117,7 +117,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 												val_sub(projectile_CollisionTimer,N1)
 												@if projectile_CollisionTimer <= 0 {
 														projectile_AbsX.copy Temp7, 2
-														Temp7.sub Map_dst_MortO_from_RefO_x, 2
+														Temp7.sub Map_dst_MortO_from_RefO_x, 2 // kore ayasinai?
 														/* @comment "##########################2002 Crd->Mort V1V2 reg1##########################"*/
 														Temp7.copy TT1,2
 														TT1.sub projectile_Width, 2
@@ -147,13 +147,14 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 														TT2 = (TT2 | TT2 << 8) & 0xFF00FF
 														TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
 														TT2 = (TT2 | TT2 << 2) & 0x33333333
-														TT2 = ((TT2 | TT2 << 1) & 0x55555555)<<1
+														TT2 = ((TT2 | TT2 << 1) & 0x55555555) << 1
 														// @comment "yは1bitシフトで終わり"
 														// TT2 <<= 1
 														// @comment "最後にTT1 OR TT2"
 														TT2 = TT1 | TT2
 														/* @comment "#########################2002 Crd->Mort V1V2 reg1 end##########################"*/
-														TT1 = TT11
+														val_asg(TT1,TT11) // TT1 = TT11
+
 														/*@comment "TT1 = upper left morton TT2 = bottom right morton TT5 = shift num"*/
 														TT3 = TT1 ^ TT2
 														/*@comment "#mask with 11000000" "#mask with 110000" @comment "#mask with 001100" @comment "#mask with 000011"*/
@@ -166,7 +167,8 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 														v[327] = v[v[4552 - TT5] + TT6]
 														//@comment "Check if the mort space is overcrowded"
 														projectile_CollisionTimer = v[327] < v[4522] ? projectile_CollisionTimer : 2
-														v[424] = v[340]
+
+														val_asg(v[424],v[340]) // v[424] = v[340]
 														//Projectile Team Save
 														ProjectileTeamSave = projectile_Team % 3
 
@@ -202,7 +204,6 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																						v[Ptr13] |= TT3
 
 																				}.else bl{
-																					// v[377] = 1
 																					val_asg(v[377],N1)
 																				}
 																				
