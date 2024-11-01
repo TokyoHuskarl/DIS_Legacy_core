@@ -150,6 +150,7 @@ __fn animation_horse_standing_stunned {
 
 			// horse angle
 			TT3 =  280000 - sin(TT10, 1, 60000)
+			TT3 *= agent_ExMotionFlags & ExMotionFlags_FLAG_Backshotflag ? -1 : 1  
 
 			v[4146] = TT3 * TT1
 			v[4156] = 10000
