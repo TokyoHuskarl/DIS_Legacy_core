@@ -1,3 +1,4 @@
+// The reason why not using deft{} is for easing tagging with ctags
 
 // common strs
 deft{
@@ -121,7 +122,6 @@ deft{
 
 // other specified strs
 deft {
-
 	
 	DIS_js_buffer = 512 // -> module_NsLib_js_functions.tpc
 	Str_moduleinfo = 520
@@ -149,7 +149,17 @@ deft {
 
 
 	Current_BGMFile = 760
-  str_mission_current_triggers_save_JSON = 763 // will be obsolete
+  str_mission_current_triggers_save_JSON = 763 // will be obsolete <-?
+  str_mission_mapstrings = 764
+
+
+	Str_playergamedata_0 = 767
+	Str_playergamedata_1 = 768
+	Str_playergamedata_2 = 769
+
+	// 771~ is for Cmd
+
+
 	str_ShLog = 782 // -> NsLib_GUI_init.js 
 
 	data_troopID = 801 
@@ -160,6 +170,9 @@ deft {
 	data_armorID = 806
 	data_helmIDD = 807
 	data_accessoryID = 808
+
+	data_horseID = 809 // not used yet
+
 	data_techID = 810
 
 	Str_slot_armorfile = 851

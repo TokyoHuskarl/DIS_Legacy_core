@@ -8,7 +8,8 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	@comment "module_RTS_sightsystem_general.tpc"
 	v[161].copy v[2923], 2
 	v[2923] .sub v[1115], 1
-	v[2924] += 8 
+	// v[2924] += 8 
+	val_add(v[2924],N8)
 	v[2924] -= v[1002] / 2
 	v[2923].copy v[2921], 2
 	
@@ -23,7 +24,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	v[2931] = v[4527] + v[2923]
 	TT6 = muldiv(12, v[1001], 800)
 
-	TT2 = v[4525]
+	val_asg(TT2,v[4525]) // TT2 = v[4525]
 
 	// set flag const array on expanding temp - if MP manages to apply const with array operand this will be immediately fixed since retarded
 	// ACHTUNG
@@ -46,10 +47,6 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	    // TT10 = TT10 & 1 ? 100 : v[TT5] & 2 ? 50 : 0
 			TT10 = ((v[TT5] & 3) << 5) | ((v[TT5] & 2) << 1) // replaced for fast proc :D
 			
-			/*
-	    TT3 = 80 * TT8
-	    TT4 = 80 * TT9
-			*/
 
 			Temp3.copy TT3,2
 			TT3.mul TT8,2
@@ -71,21 +68,20 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	def Const_AgentMetaTeam_HEAD = Const_AgentMetaTeam_begin - 1 
 	@if TT1 == 0 {
 
-		v[536] = v[4532]
+		val_asg(v[536],v[4532]) // v[536] = v[4532]
+
 		v[__id(Temp5)..__id(Temp6)] = 5 // const array for next loop
 		@while v[v[536]] > 0 {
 
 				get_metateam_for_sightproc()
 				TT1 = 2000 + v[v[536]]
 
-				@if v[TT2] == 0 { //NOT EXPERIMENTAL
-				//@if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
+				@if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
 					s[TT1].on
 
 				} .else bl {
 					checkinsight_agent_non_ally({
 						s[TT1].off
-
 						// uh oh, this looks retarded
 						@if `(v[Temp2] = v[v[4527] + agent_MapX + agent_MapY * v[2927]] & 1 ? 100 : v[Temp2] - 1) > 0 {
 								s[TT1].on
@@ -103,28 +99,21 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 		v[536] = v[4533]
 		@while v[v[536]] != 0 {
 
-				__if DIS_EXPERIMENTAL == -1 {
-					macro_get_agent_MetaTeam_into_var(v[v[536]],reg1) // AEBA
-				}.else bl {
-					// v[401] = v[v[536]] - 1
-					TT2 = Const_AgentMetaTeam_HEAD + v[v[536]]
-				}
+				get_metateam_for_sightproc()
 
 				TT1 = 2000 + v[v[536]]
-				@if v[TT2] == 0 { //NOT EXPERIMENTAL
-				// @if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
+				@if reg1 == 0 { // EXPERIMENTAL - MetaTeam of the Agent is 0 - player
 
 					s[TT1].on
 					
 				} .else bl {
 
 					v[401] = v[v[536]] - 1
-					Temp1 = v[401] * v[1117] 
-					Temp1 += 5258
+					Temp1.repeat 5258,1 // Temp1 = 5258
+					Temp1 += v[401] * v[1117] 
 					v[Temp1].copy v[858], 2
 					Temp2 = v[4518] + v[401]
-					//opt 28.4.23
-					//get from saved slot for optimizing
+
 					s[TT1].off
 					@if `(v[Temp2] = v[v[4527] + v[858]  + v[859]  * v[2927]] & 1 ? 100 : v[Temp2]) > 0 {
 						s[TT1].on
@@ -142,7 +131,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 		v[__id(Temp5)..__id(Temp6)] = 5 // const array for next loop
 		@while v[v[536]] > 0 {
 				get_metateam_for_sightproc()
-				@if v[TT2] != 0 { // check only non ally units
+				@if reg1 != 0 { // AEB
 					checkinsight_agent_non_ally({
 						
 						ptr_sub(Temp2,N1)
@@ -192,7 +181,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 }
 
 __fn get_metateam_for_sightproc {
-	__if DIS_EXPERIMENTAL == -1 {
+	__if DIS_EXPERIMENTAL == 1 {
 		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1) // ATTENTION AEBA
 	}.else bl {
 		// v[401] = v[v[536]] - 1
@@ -280,15 +269,9 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 				// if the agent has blind state (v[877] & 2), force its sight 0
 				// agentsight + max((Height - ground0),0) + techbonus
 
-				__if DIS_EXPERIMENTAL == -1 { // won't use this proc since proc speed is slower
-					var1 = v[Ptr19]
-					get_AEAB_element(var1,__id(TT2),AgentExBuffer_SLOT_BaseEyeSight) // get eyesight to TT2
-					TT10 = v[877] & 2 ? 0 : TT2 + max(v[657] - v[504], 0) + SIGHTSYS_sight_teambonus
-				}.else bl {
-					TT10 = v[877] & 2 ? 0 : v[v[4528] + v[401]] + max(v[657] - v[504], 0) + SIGHTSYS_sight_teambonus
-				}
+				TT10 = v[877] & 2 ? 0 : v[v[4528] + v[401]] + max(v[657] - v[504], 0) + SIGHTSYS_sight_teambonus
 
-				v[__id(TT10copyTwin1)..__id(TT10copyTwin2)] = TT10
+				TT10copyTwin1.repeat TT10,2 // v[__id(TT10copyTwin1)..__id(TT10copyTwin2)] = TT10
 			
 				v[356].sub TT10copyTwin1,2 // v[356..357] -= TT10 
 
@@ -314,7 +297,7 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 
 				@if TT17 < 0 {
 					val_add(TT12,TT17) // TT12 += TT17
-					TT17 = 0
+					val_init(TT17) // TT17 = 0
 				}.else bl {
 					TT20 = TT17 + TT12
 					@if TT20 > v[2928] {
@@ -352,7 +335,7 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 									@loop TT11 {
 										FoWManagementFlagProc($breakflag)
 										increment_var(TT20) // TT20 += 1
-										//TT20 += v[2927]
+										
 									}
 									FoWOutlineBreak($breakflag)
 
@@ -382,7 +365,7 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 									TT20 += TT11 - 2
 									@loop TT13 {
 										FoWManagementFlagProc($breakflag)
-										TT20 += v[2927]
+										val_add(TT20,v[2927]) // TT20 += v[2927]
 									}
 									FoWOutlineBreak($breakflag)
 
@@ -503,7 +486,6 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 
 	    //@comment "##################"
 	    @wait 0
-	    //@if LEGS_Request_Refresh_FoW .isOn() {
 
 			// maybe we don't have to
 	    @if `LEGV_FoWManagementFlags & 4 { // EXPERIMENTAL
@@ -519,8 +501,12 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 							.mapLayer 9
 							.eraseWhenTransfer
 						}
-						// use Array operand!
-						v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
+
+						// optimise
+						// v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
+						TT1 = v[1277] * v[1276] // should I add + 1?
+						v[ptr_null].copy v[v[4563]],TT1
+
 						@loop v[1276] .dst TT4 {
 									// tempA = TT4 * v[1277] 
 									// tempB = v[4802] + TT4 ...no need to calc these in inner loop

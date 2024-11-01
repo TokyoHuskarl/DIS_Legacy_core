@@ -87,18 +87,19 @@ struct("agent",{
 	agent_getTerrainElevation = 657
 	agent_SaveActualTeamID = 658 // ... is this even necessary? <- I saw this is used in remove agent function
 	agent_saveFoWPoint = 659
-	// agent_killXP = 659 // ported to AEBA
+	// agent_killXP = 659 // ported to AEB
 	
 	// agent_gotXP = 660 // ?
 	agent_AbsoluteX  = 661
 	agent_AbsoluteY  = 662
 
-	// agent_UniqueCharIndex=661 //if <0, refer PartyCompanions this one also should be ported to AEBA
+	// agent_UniqueCharIndex=661 //if <0, refer PartyCompanions this one also should be ported to AEB
 	agent_Skin = 663 // 0=Rtpian, 1=Nord, 2= Azghazi, 6= female ...This parameter is for UserCharactors
 	agent_Race = 664 // 0=Human,1=Goblin,2=Orc,3=Dragons,
 	agent_PerkFlagBits1 = 665 // 1=ShieldMaster,2=Brawny,4=BattleForged,8=Nimble,16=Stalwart,32=Dodge,64=Anticipation,128=Pathfinder,256=Fearsome
 	agent_PerkFlagBits2 = 666 // 1=KillingFrenzy,2=BattleFlow,4=Berserk,8=HeadHunter, ////MASTERIES 16=M_Sword,32=M_Spear,64=M_Axe,128=M_Hammer,256=M_Mace,512=M_Cleaver,1024=M_Dagger,2048=M_Throwing,4096=M_res1,8192=M_res2,16384=M_bow,32768=M_crossbow,65536=M_res3 131072=spellcaster
 
+	agent_ScriptFlags = 668
 	agent_HeadID = 669 //999999=fullcovered
 		agent_GENERATION_Hair = 670 // will be abolished
 
@@ -184,7 +185,7 @@ struct("agent",{
 
 
 
-	agent_Passive_Text = 821 // this maybe can be relocated into AEBA
+	agent_Passive_Text = 821 // this maybe can be relocated into AEB
 	agent_Culture_Icon = 822
 	agent_Culture = 822
 	
@@ -227,7 +228,7 @@ struct("agent",{
 	agent_AccID = 855
 	agent_ReserveWeaponID = 856
 	agent_ReserveShieldID = 857
-
+	agent_HorseID = 858 // unco
 
 	agent_Formbits = 859
 		agent_static_MapXdiv5 = 858
@@ -261,9 +262,14 @@ struct("agent",{
 	agent_FootstepSoundTimer = 886
 	agent_FootstepSoundType = 887
 
+	agent_R = 891
+	agent_G = 892
+	agent_B = 893
+	agent_Saturation = 894
 	agent_FlashType = 895
 	agent_OneTimeOffsetX = 896
 	agent_OneTimeOffsetY = 897
+	agent_Transparency = 898
 	agent_PictArray = 899
 	agent_generated_ID = 900
 	}
@@ -271,6 +277,7 @@ struct("agent",{
 	defv {
 		agent_static_AutoQue = 813
 		agent_static_ReserveAmount = 770
+		agent_Static_Assigned_worker_counter = 856
 
 	}
 
@@ -289,7 +296,7 @@ struct("agent",{
 
 	AgentExBuffer_SLOT_ColBoxWidth = 2
 	AgentExBuffer_SLOT_ColBoxHeight = 3
-	AgentExBuffer_SLOT_BaseEyeSight = 4 // this slot won't be used
+	AgentExBuffer_SLOT_BaseEyeSight = 4 // abolished
 	AgentExBuffer_SLOT_Taken_down_XP = 5
 	AgentExBuffer_SLOT_BaseSight_Root = 6
 
@@ -308,7 +315,7 @@ struct("agent",{
 
 
 	//FLAGS
-	def{
+	def {
 	//Perks1
 
 
@@ -316,7 +323,10 @@ struct("agent",{
 	// erase all agent_ prefix eventually 
 	
 	agent_PerkFlagBits1_FLAG_Pathfinder = 128
+	PerkFlagBits1_FLAG_Shieldmaster = 1
 	PerkFlagBits1_FLAG_BattleForged = 4
+	PerkFlagBits1_FLAG_Nimble = 8
+	PerkFlagBits1_FLAG_Dodge = 32
 	PerkFlagBits1_FLAG_Pathfinder = 128
 	PerkFlagBits1_FLAG_Fearsome = 256
 	PerkFlagBits1_FLAG_Ninelives = 2048
@@ -329,14 +339,23 @@ struct("agent",{
 	PerkFlagBits2_FLAG_KillingFrenzy = 1
 	PerkFlagBits2_FLAG_BattleFlow = 2
 	PerkFlagBits2_FLAG_Berserk = 4
-
+	PerkFlagBits2_FLAG_Grimreaper = 262144
+	PerkFlagBits2_FLAG_Overwhelm = 2097152
+	PerkFlagBits3_FLAG_Feint = 4194304
 
 
 	PerkFlagBits3_FLAG_Mountainblade = 64
 	PerkFlagBits3_FLAG_HorseArcher = 128
 	PerkFlagBits3_FLAG_Parthian = 256
+	PerkFlagBits3_FLAG_Expert_Velites = 1048576
+
+
+	// script flags
+	ScriptFlags_has_EV_OnDeath = 1 // call on death
+
 
 	//Agent bits
+	AgentBits_AmbushFlag = 1
 	AgentBits_horse_in_forest = 8
 	AgentBits_Inertia = 16
 	AgentBits_Skate = 32
@@ -350,6 +369,7 @@ struct("agent",{
 	// AgentBits_FLAG_KILLED = 16384 
 	AgentBits_FLAG_can_clickable = 16384 
 
+	AgentBits_FLAG_EnableBasicSkillAI = 524288
 	AgentBits_FLAG_EnableBasicAI = 1048576
 	AgentBits_FLAG_EnableCivAI = 2097152
 	AgentBits_FLAG_ForcemoveFlag = 4194304
@@ -366,7 +386,9 @@ struct("agent",{
 
 
 	// for static agents
+	StaticBits_FLAG_working_on_tech = 1
 	StaticBits_FLAG_has_generated_sprite = 128
+	StaticBits_FLAG_flammable = 2048
 
 
 	MoveTypeBits_Flying = 1
@@ -451,10 +473,12 @@ struct("agent",{
 	BaseObjBit_FLAG_Relentless = 32768
 	BaseObjBit_FLAG_Immune_to_stun = 65536
 	BaseObjBit_FLAG_Duelist_Activated = 131072
+	BaseObjBit_FLAG_Silence = 262144
 	BaseObjBit_FLAG_big_unit = 524288
 	BaseObjBit_FLAG_Standard_Bearer = 1048576
 	BaseObjBit_FLAG_Explosive = 2097152
-	
+	BaseObjBit_FLAG_HeroAura = 4194304
+	BaseObjBit_FLAG_CanParry = 16777216
 	BaseObjBit_FLAG_LanceCharge = 33554432
 	BaseObjBit_FLAG_Brokenshield = 67108864
 	BaseObjBit_FLAG_SpeedBonus = 134217728
@@ -463,10 +487,14 @@ struct("agent",{
 
 	// add motions
 	AddMotionFlags_FLAG_Armor_has_second_sprite_line = 1 
+
+	AddMotionFlags_FLAG_Pointy_Onehanded_Weapon = 32 
 	AddMotionFlags_FLAG_Blink_start = 64 
 	AddMotionFlags_FLAG_Blink_close = 128 
 	AddMotionFlags_FLAG_Camel = 1024 
 	AddMotionFlags_FLAG_OutOfBreath = 2048 
+	AddMotionFlags_FLAG_IdleAction = 4096 
+	AddMotionFlags_FLAG_OnHorse = 8192
 
 	//ExMotions
 
@@ -493,6 +521,7 @@ struct("agent",{
 	ExMotionFlags_FLAG_Shield_With_Anim = 1073741824
 	//Tactical Orders
 	
+	TacticsOrder_FLAG_pikewall = 1
 	TacticsOrder_FLAG_garrison = 134217728
 	//TacticsOrder_FLAG_ShieldWall = 134217728
 	
@@ -501,13 +530,14 @@ struct("agent",{
 
 
 	//InstantStates
-	agent_ProcessInstantState_FLAG_overheal = 1
-	agent_ProcessInstantState_FLAG_blind = 2
-	agent_ProcessInstantState_FLAG_magic_nullfying = 4
-	agent_ProcessInstantState_FLAG_bladedance = 8
-	agent_ProcessInstantState_FLAG_shield_covered = 16
-	agent_ProcessInstantState_FLAG_shield_covered_double_check = 32
-	agent_ProcessInstantState_FLAG_climb_hill = 64
+	ProcessInstantState_FLAG_overheal = 1
+	ProcessInstantState_FLAG_blind = 2
+	ProcessInstantState_FLAG_magic_nullifying = 4
+	ProcessInstantState_FLAG_bladedance = 8
+	ProcessInstantState_FLAG_shield_covered = 16
+	ProcessInstantState_FLAG_shield_covered_double_check = 32
+	ProcessInstantState_FLAG_climb_hill = 64
+	ProcessInstantState_FLAG_immune_to_physical_attack = 128
 
 
 	//MovementOrder
@@ -523,7 +553,7 @@ struct("agent",{
 	MovementOrder_TYPE_fleeing = 11
 
 
-	//Beware, ActionFlag can easily be initialized by some skill functions since at the beginning the slot won't be expected bit variable
+	// Beware, ActionFlag can easily be initialized by some skill functions since at the beginning the slot is not expected as a bit holder variable
 	ActionFLag_FLAG_Hold_direction = 1
 	ActionFlag_FLAG_Walking = 2 //s[v[4558] + :agent_id ]
 	ActionFlag_FLAG_Heading_other_agent = 4 //s[103]
@@ -538,7 +568,6 @@ struct("agent",{
 
 
 	// AA bits
-	// AAbits = 124 #BITS: 1 = AntiInf,2 = AntiArcher, 4 = AntiCav, 8= AntiMagi, 16 = AntiSiege,32 = reserved, 64= AntiCiv, 128=AntiStatic, 256=SlayStatic, 512=NOTantiStatic, 1024 = ShieldCracking, 2048 = DevastatingStrikes , 4096 = Trample 
 	AABits_FLAG_AntiInf = 1
 	AABits_FLAG_AntiArcher = 2
 	AABits_FLAG_AntiCav = 4
@@ -557,6 +586,7 @@ struct("agent",{
 	AABits_FLAG_CrackingShieldBONUS = 131072
 	AABits_FLAG_BladeDance = 262144 
 	AABits_FLAG_Camel = 524288
+	AABits_FLAG_FatalBlow = 1048576 // bit for daggers
 
 
 	Formbits_FLAG_Line1 = 1
@@ -568,11 +598,11 @@ struct("agent",{
 	//Stances
 	DIR_RIGHT = 1
 	DIR_LEFT = 0
-	ORD_AGG=0
-	ORD_DEF=3
-	ORD_STD=1
-	ORD_ATK=2
-	ORD_MANU=4
+	ORD_AGG = 0
+	ORD_DEF = 3
+	ORD_STD = 1
+	ORD_ATK = 2
+	ORD_MANU = 4
 	
 	ORD_SCOUT=6
 
@@ -640,7 +670,7 @@ struct("agent",{
 
 	def{
 		AgentBits_STATIC_FLAG_No_function = 1024
-
+		AgentBits_STATIC_FLAG_Ignore_morton = 2097152
 	}
 
 
@@ -674,6 +704,8 @@ struct("agent",{
 		victim_PerkFlagBits1 = 740065
 		victim_PerkFlagBits2 = 740066	
 
+		victim_ScriptFlags = 740068
+
 		victim_Buff1 = 740071
 
 		victim_BuffAmount = 740079
@@ -697,6 +729,7 @@ struct("agent",{
 		victim_Level = 740104
 		victim_MaxHP = 740105
 		victim_HP = 740106
+
 		victim_MaxSP = 740107
 		victim_SP = 740108
 		victim_BaseAD = 740109
@@ -752,7 +785,11 @@ struct("agent",{
 		victim_KnockBackTimer = 740249
 		
 		victim_ForceSprite = 740250
+		victim_MainWeaponID = 740251
 		victim_MainShieldID = 740252
+
+		victim_static_ownership = 740255
+		victim_Static_Assigned_worker_counter = 740256 
 
 		victim_Morale = 740260
 		victim_ProcessAD = 740261
@@ -773,6 +810,10 @@ struct("agent",{
 		victim_ProcessWill = 740275
 		victim_ProcessCamoValue = 740276
 		victim_ProcessInstantState = 740277
+
+		victim_static_unit_to_be_built = 740280
+		victim_static_resource_type = 740281
+
 		victim_ShieldFlash = 740284
 		victim_2hweapon_stain = 740285
 		victim_LastPictureIndex = 740290 
@@ -936,6 +977,8 @@ struct("agent",{
 		tempbuffer4agt_ForceSprite = 740550
 		tempbuffer4agt_MainShieldID = 740552
 
+		tempbuffer4agt_Formbits = 740559
+
 		tempbuffer4agt_Morale = 740560
 		tempbuffer4agt_ProcessAD = 740561
 		tempbuffer4agt_ProcessAP = 740562
@@ -979,12 +1022,13 @@ deft {
 
 }
 
+
 __fn checkItemPicFileName $source $slot $name {
 	
 	@if t[$source].contains "spr_" {
-		t[1].asg $name
-		t[1].split ("spr_",t[1],reg9)
-		t[__id($slot)].asg t[1]
+		regs1.asg $name
+		regs1.split ("spr_",regs1,reg9)
+		t[__id($slot)].asg regs1
 		v[1930] = 1 // has sprite
 
 	}.else bl{

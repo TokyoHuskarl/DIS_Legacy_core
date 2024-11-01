@@ -1,0 +1,30 @@
+// DIS RTS tech func
+
+/**
+ * adjustments for Hard-coded technologies.
+ * 
+ *
+ * cev 435
+ */
+__fn CEV_PRESET_TECH_COMMON_PREPROC {
+	// "modifier for preset technologies"
+	
+
+
+	// LEGACY procs for preset techs
+	// if there's library
+	// oh damn this is not working
+		@if v[493] >= 1 {
+			v[13] += muldiv(v[13], 4, 100) + 1 // faster research
+		}
+
+	// @comment "Hero: Orthunass Nasun Solanum"
+
+		@if v[2402] == 1 {
+				v[31] = muldiv(v[31], 90, 100)
+				v[32] = muldiv(v[32], 90, 100)
+				v[33] = muldiv(v[33], 90, 100)
+				v[34] = muldiv(v[34], 90, 100)
+
+		}
+}

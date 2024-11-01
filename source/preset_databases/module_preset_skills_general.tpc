@@ -5,9 +5,9 @@
 
 #include "./../headers/header_battlesystem.tpc"
 #include "./../headers/header_skills.tpc"
+#include "./../headers/header_player.tpc"
 #include "./../headers/header_agent.tpc"
 
-#include "./../Dracore/module_core_RTS_agent_skill_functions.tpc"
 
 #include "./particles/module_psp_particle_register.tpc"
 def moduletitle="module_preset_skills_general.tpc"
@@ -26,6 +26,33 @@ slot_cooldown=588
 slot_base_spellpower=598
 slot_skillflag=600
 
+}
+
+def MACRO_REFRESH_PROJECTILE_POS_FROM_REL_COORD = {
+	projectile_RelativeX.copy projectile_AbsX,2
+	projectile_AbsX.sub LEGV_MainMAP_PointOfReferenceX,2
+	projectile_AbsX.copy projectile_milPixX,2
+	projectile_milPixX.mul N10000,2
+}
+
+
+
+
+
+
+def MACRO_SET_ABS_FOR_LEAGACY_PROJECTILES = {
+	projectile_rgst_RelativeX.copy projectile_rgst_AbsX,2
+	projectile_rgst_AbsX.sub LEGV_MainMAP_PointOfReferenceX,2
+	projectile_rgst_AbsX.copy projectile_rgst_milPixX,2
+	projectile_rgst_milPixX.mul N10000,2
+}
+
+def MACRO_SET_REWORKED_PROJECTILE = {
+	// temp
+	MACRO_SET_ABS_FOR_LEAGACY_PROJECTILES
+	projectile_rgst_ProjectileFlag1 |= PROJ_FL1_Aftermath_Projectile
+	projectile_rgst_ProjectileFlag2 |= PROJ_FL2_AbsSet
+	
 }
 
 //Basically you can consider when preset skill function called as a skill casted by an agent the caster agent data is already extracted in v[601]~
@@ -50,6 +77,10 @@ def skill_cev_devastating_charge = 1238
 
 #include "./skills/pss_gliding_charge.tpc"
 
+// linebreaker
+#include "./skills/pss_linebreaker.tpc"
+#include "./skills/pss_explosion.tpc"
+
 //ScorpionBolt
 #include "./skills/pss_scorpion_bolt.tpc"
 
@@ -58,4 +89,18 @@ def skill_cev_devastating_charge = 1238
 
 #include "./skills/pss_gloryhammer.tpc"
 #include "./skills/pss_windimpact.tpc"
+#include "./skills/pss_shadegrasp.tpc"
 
+#include "./skills/pss_lifeabsorb.tpc"
+
+// preset passive functions for legacy game
+#include "./skills/pss_passive_functions.tpc"
+
+// misc functions for Legacy game
+#include "./skills/pss_legacy_misc.tpc"
+
+def pss_cev_unpack_treb = 1301
+#include "./skills/pss_treb_functions.tpc"
+cev .id(pss_cev_unpack_treb), .name("fn:Treb_Unpack"),{
+	pss_unpack_trebuchet()
+}

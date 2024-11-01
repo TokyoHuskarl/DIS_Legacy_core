@@ -1,5 +1,5 @@
 __fn func_bs_morale_recover $agent $power {
-	var5 = $agent * 300
+		var5 = $agent * 300
 		var5 += 4960 
 		v[var5].copy tempbuffer4agt_Morale,20
 
@@ -11,14 +11,14 @@ __fn func_bs_morale_recover $agent $power {
 
 		@if `!(tempbuffer4agt_ProcessObjBit & 256) {
 			tempbuffer4agt_Morale -= (rnd(0, 99) <= $power + (tempbuffer4agt_ProcessWill >> 2) && tempbuffer4agt_Morale > -1)
-				v[var5].copyFrom tempbuffer4agt_Morale,20
+			v[var5].copyFrom tempbuffer4agt_Morale,20
 		}
 
 }
 
 __fn func_bs_morale_check $agent $power { // legacy
 	var5 = $agent * 300
-	var5 += 4701 
+	val_add(var5,N4701) // var5 += 4701 
 	v[var5].copy tempbuffer4agt_AgentType,300
 
 	/* "v1=targetobj
@@ -31,27 +31,28 @@ __fn func_bs_morale_check $agent $power { // legacy
 
 			// "Ally death morale check power = 36 + [dead ally's lv] / 2?... temp"
 			/* "WILL,,an ,average untrained human has 30 WILL trained mercs have 50"*/
-			TT1 = tempbuffer4agt_ProcessWill
+			val_asg(TT1,tempbuffer4agt_ProcessWill) // TT1 = tempbuffer4agt_ProcessWill
 			get_morale_check_roll_result(v[371],$power,TT1)
 
 			// "if roll succeed"
 			@if v[371] == 1 {
 					/* V1 = Target ObjID TT15 =  Buff R1 = Buff Ptr R2 = Buff Timer Ptr */
-					tempbuffer4agt_Morale += 1
+					// tempbuffer4agt_Morale += 1
+					val_add(tempbuffer4agt_Morale,N1)
 
 					// flee 
 					@if tempbuffer4agt_Morale == 3 {
 						@if `tempbuffer4agt_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 							tempbuffer4agt_RelativeX.copy effectArgX, 2
 								// "Is_dragon?"
-								TT15 = tempbuffer4agt_Race
+								val_asg(TT15,tempbuffer4agt_Race) // TT15 = tempbuffer4agt_Race
 								effect_agent_starts_fleeing(TT15)
 
 								@if v[204] < v[1006] {
 									tempbuffer4agt_RelativeX.copy effectArgX, 2
 										// "Is_dragon?"
 										@loop v[1017] .dst Temp20 {
-											v[242] %= v[1017]
+												v[242] %= v[1017]
 												Temp1 = v[242] * 100
 												Temp1 = Temp1 + v[1018]
 												@if v[Temp1] <= 1 {

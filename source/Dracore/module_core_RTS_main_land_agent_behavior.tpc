@@ -96,7 +96,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			//@comment "モートン座標関係はこれで終わり"
 
 	    // Auto Attack Process 
-	    @if Is_Paused .isOff() { //optimizing 26.4.23
+	    @if Is_Paused .isOff() { // optimizing 26.4.23
 
 		    // @comment "Minions"
 		    agent_AgentBits &= ~AgentBits_FLAG_1fprocessed
@@ -122,16 +122,14 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	    // @comment "TEST"
 	    s[103..104].off // turn off Heading to other agent flag AND Trying to stop temporal flag
 	
-	    __if DIS_EXPERIMENTAL == 1 {
-		    // Kill walking flag
-				def Main_KILLActionFlag_FLAG_Walking = ~ActionFlag_FLAG_Walking
-		    agent_ActionFlag &= Main_KILLActionFlag_FLAG_Walking
-	    }
+			// Kill walking flag
+			def Main_KILLActionFlag_FLAG_Walking = ~ActionFlag_FLAG_Walking
+			agent_ActionFlag &= Main_KILLActionFlag_FLAG_Walking
 
 	    // Check if the agent is in dash or KnockBack state
 	    @if agent_MovementOrder != MovementOrder_TYPE_force_moving { // if NOT
 
-				// Setting up target agent pointer - this might be dangerous since even if Target is 0 Ptr8 can be used.
+				// Setting up target agent pointer - this might be dangerous since even if Target is 0, Ptr8 might be used in further proc.
 				// You need to check all procs around Ptr8 in this meta function
 
 				@if agent_TargetAgentID >= 1 { // Has target
@@ -142,14 +140,14 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	@if agent_MovementOrder != MovementOrder_TYPE_prioritize_moving { // does not prioritize movement: the agent wants to attack the target
 
 							// @comment "Obj指定があり、そちらに行きたいとき
-							@if victim_AgentType >= 1 { // the target is valid agent
-								@if agent_TargetAgentID != agent_LastTarget { // check if Target is switched
+							@if victim_AgentType >= 1 { // the target is valid
+								@if agent_TargetAgentID != agent_LastTarget { // check whether Target is switched or not
 										@if `!(agent_AgentBits & AgentBits_FLAG_ForcemoveFlag) || agent_StanceOrder == ORD_ATK { // Forcemove order isn't given to the agent
 
 											// RayCast to check if the agent can reach the target straightly AND it's melee troop
 											agent_AI_routine_bits |= agent_AAType == 0 ? AI_routine_bits_FLAG_RayCast : 0 
 
-									@if `(agent_AI_routine_bits & AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue) == AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue { // AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
+									@if `(agent_AI_routine_bits & AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue) == AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue {
 											agent_MovementOrder = MovementOrder_TYPE_move_ordered // Change movement order to loose one
 											@if `!(agent_AgentBits & AgentBits_FLAG_walldetected) { // If there's no wall
 												agent_AI_routine_bits |= AI_routine_bits_FLAG_AIskip // AI check skip
@@ -159,7 +157,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 									}
 									
 										} .else bl { // if the agent gets force move order, then switch the Last target..
-											agent_LastTarget = agent_TargetAgentID
+											val_asg(agent_LastTarget,agent_TargetAgentID) // agent_LastTarget = agent_TargetAgentID
 											// RayCast to check if the agent is worker who is heading to workplace
 											// agent_AI_routine_bits |= agent_UnitType == 9 ? AI_routine_bits_FLAG_RayCast : 0
 
@@ -188,7 +186,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 										// go for the target
 										victim_RelativeX.copy agent_MovePointX, 2
 										@if agent_StanceOrder == ORD_ATK {
-											agent_MovementOrder = MovementOrder_TYPE_move_ordered
+											val_const(agent_MovementOrder,MovementOrder_TYPE_move_ordered) // agent_MovementOrder = MovementOrder_TYPE_move_ordered
 											victim_RelativeX.copy agent_HoldPointX, 2
 									
 										}
@@ -224,7 +222,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 								//@comment "#WPを使ってOBJにたどり着こうとしていた"
 								@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
-									v[1301].copy v[643], 13
+									v[1301].copy agent_WayPoint1X, 13
 									agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj //~16777216 AgentBits_FLAG_NeedWpToReachObj
 									agent_AI_routine_bits &= ~AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue // 
 									MAIN_macro_agent_WP_Array_init()
@@ -233,8 +231,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 								@if agent_AttackFrame <= 0 {
 										//@comment "#Obj目標を消す"
-										agent_TargetAgentID = 0
-										agent_worker_JobType = 0
+										val_init(agent_TargetAgentID) // agent_TargetAgentID = 0
+										val_init(agent_worker_JobType) // agent_worker_JobType = 0
 										agent_AI_routine_bits &= -8404993//~8404992//(16384 + 8388608)
 										@if agent_LeftWPtoChase < 1 {
 											agent_RelativeX.copy agent_MovePointX, 2
@@ -251,7 +249,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 														@if agent_StanceOrder == ORD_DEF {
 															//@comment "#防御モードor have Waypoint であれば、HoldPointへ戻る#"
 															agent_HoldPointX.copy agent_MovePointX, 2
-															agent_ActionFlag |= 1
+															agent_ActionFlag |= ActionFLag_FLAG_Hold_direction
 															agent_MovementOrder = MovementOrder_TYPE_move_ordered
 															
 														}
@@ -260,7 +258,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 													
 											}
 											
-										} .else bl {
+										} .else bl { // the agent has WP
 											agent_HoldPointX.copy agent_MovePointX, 2
 											agent_MovementOrder = MovementOrder_TYPE_move_ordered
 									
@@ -269,6 +267,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 								}
 								
 							}
+
 							agent_LastTarget = agent_TargetAgentID
 							@if LEGS_MAIN_Agent_heading_to_target .isOn(){ 
 								@if `!(victim_AgentBits & AgentBits_FLAG_1fprocessed) {
@@ -281,7 +280,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					} .else bl {
 							//@comment "#WPを使ってOBJにたどり着こうとしていた"
 							@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
-								v[1301].copy v[643], 13
+								v[1301].copy agent_WayPoint1X, 13
 								agent_MovementOrder = MovementOrder_TYPE_move_ordered
 								agent_AgentBits &= ~AgentBits_FLAG_NeedWpToReachObj
 								agent_AI_routine_bits &= -49153//~49152
@@ -293,7 +292,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 							
 					}
 				}.else bl { // If the agent has no target
-							agent_LastTarget = 0 // then reset Last Target
+							val_init(agent_LastTarget) // then init Last Target
 							@if agent_MovementOrder == MovementOrder_TYPE_fleeing { // if it's in fleeing movement..
 								agent_MovementOrder = agent_ProcessObjBit & BaseObjBit_FLAG_Fleeing ? agent_MovementOrder : MovementOrder_TYPE_moving
 
@@ -338,29 +337,29 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 							agent_Direction = TT1 >= 0 ? 0 : 1
 
 							// @comment "AAレンジ内か否かを見る"
-							v[869].copy TT1, 2
+							agent_ProcessRange_max.copy TT1, 2
 							// @comment "自分がMelee or townsman repairingなら([相手の幅]*1000)を引いて考える"
-							v[340] = agent_MilPixMoveOrderedPointDist
+							val_asg(Temp40,agent_MilPixMoveOrderedPointDist) // Temp40 = agent_MilPixMoveOrderedPointDist
 
-							v[340] -= agent_AAType == 0 ? v[335] : 0
+							Temp40 -= agent_AAType == 0 ? v[335] : 0
 
 							@if agent_UnitType == UNIT_CLASS_WORKER {
 								@if victim_UnitType >= 100 {
 									// @comment "If the target is construction site"
-									v[340] -= victim_UnitType != 105 ? victim_Width << 10 : 0 // Width * 1024 : 0
+									Temp40 -= victim_UnitType != 105 ? victim_Width << 10 : 0 // Width * 1024 : 0
 
 								}.else bl {
 									// worker attack!
-									v[340] -= victim_TeamID != agent_TeamID ? v[335] : 0
+									Temp40 -= victim_TeamID != agent_TeamID ? v[335] : 0
 
 								}
 							}
 							
-							@if v[340] <= TT1 {
-								@if v[340] >= TT2 {
+							@if Temp40 <= TT1 {
+								@if Temp40 >= TT2 {
 									// @comment "#WPを使ってOBJにたどり着こうとしていた"
 									@if `agent_AgentBits & AgentBits_FLAG_NeedWpToReachObj {
-											v[1301].copy v[643], 13
+											v[1301].copy agent_WayPoint1X, 13
 											agent_AI_routine_bits &= -49153 // ~49152 - AI_routine_bits_FLAG_PATHFINDING+AI_routine_bits_FLAG_PFcontinue
 											
 									}
@@ -382,24 +381,6 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 								} .else bl {
 									agent_ActionFlag &= -2 // kill dir hold flag
 									//@comment "If closer than minimum range"
-
-									/*
-									@if agent_StanceOrder == ORD_STD {
-											//@comment "#待機モード時はその場で待ち構える"
-											LEGS_MAIN_Agent_tries_to_stop.on
-											agent_MovementOrder = MovementOrder_TYPE_do_not_move
-											
-									} .else bl {
-										
-											LEGS_MAIN_Agent_tries_to_stop.off
-											agent_MovementOrder = MovementOrder_TYPE_fleeing
-											//@comment "#Flip flag"
-											agent_ProcessObjBit |= 1024
-											//@comment "#Kite flag"
-											agent_ExMotionFlags |= 33554432
-											
-									}
-									*/
 
 										LEGS_MAIN_Agent_tries_to_stop.off
 										agent_MovementOrder = MovementOrder_TYPE_fleeing
@@ -431,10 +412,10 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 							val_init(agent_OneTimeOffsetX) // agent_OneTimeOffsetX = 0
 
 							// @comment "before: 6700"
-							// v[340] = v[v[294]] > 0 ? (v[610] / 2 + 2) * 1000 : 6700
+							// Temp40 = v[v[294]] > 0 ? (v[610] / 2 + 2) * 1000 : 6700
 							// this part was bugged since v[294] wasn't defined inititally - 9.5.23
-							v[340] = agent_LeftWPtoChase > 0 ? ((agent_Width >> 1) + 3) * 1000 : 6700 //more fuzzy
-							@if agent_MilPixMoveOrderedPointDist <= v[340] {
+							Temp40 = agent_LeftWPtoChase > 0 ? ((agent_Width >> 1) + 3) * 1000 : 6700 //more fuzzy
+							@if agent_MilPixMoveOrderedPointDist <= Temp40 {
 									//@comment "候補なし"
 									//@comment "敵がおらん"
 									//@comment "待機"
@@ -551,7 +532,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				//@comment "Attacking"
 				@if agent_ActionState == 1 {
 						//@comment "#Set ForceSprite Attack"
-						agent_ForceSprite = ForceSprite_ATTACK
+						val_const(agent_ForceSprite,ForceSprite_ATTACK) // agent_ForceSprite = ForceSprite_ATTACK
 						agent_ActionFlag |= ActionFLag_FLAG_Hold_direction
 						// agent_ActionFlag = agent_AttackFrame > 0 ? agent_ActionFlag | ActionFLag_FLAG_Hold_direction : agent_ActionFlag & ~ActionFLag_FLAG_Hold_direction
 						LEGS_MAIN_Agent_tries_to_stop.on
@@ -576,18 +557,13 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				} .else bl {
 						TT1 = agent_MovementOrder == MovementOrder_TYPE_fleeing ? -1 : 1
 
-						//v[0] = v[612..613] = [v[621] * agent_ProcessMS * TT1, v[622] * agent_ProcessMS * TT1]
+						// v[0] = v[612..613] = [v[621] * agent_ProcessMS * TT1, v[622] * agent_ProcessMS * TT1]
 						v[621].copy agent_MilPixVx,2
-						//agent_MilPixVx = v[621] * agent_ProcessMS 
-						//agent_MilPixVy = v[622] * agent_ProcessMS 
+						// agent_MilPixVx = v[621] * agent_ProcessMS 
+						// agent_MilPixVy = v[622] * agent_ProcessMS 
 						v[612..613] *= TT1 * agent_ProcessMS
-						//@comment "#WalkingSwitchOn"
-						__if DIS_EXPERIMENTAL == 1 {
-							agent_ActionFlag |= ActionFlag_FLAG_Walking
-						}.else bl{
-							TT1 = v[4558] + v[401]
-							s[TT1].on
-						}
+						// @comment "#WalkingSwitchOn"
+						agent_ActionFlag |= agent_ProcessMS != 0 ? ActionFlag_FLAG_Walking : 0
 				}
 				
 	    } .else bl { // the agent is getting KnockBacked!
@@ -679,7 +655,6 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 		agent_MilPixVx .add agent_MilPixAx, 2
 		@if `agent_MilPixVx != 0 || agent_MilPixVy != 0 {
 
-			
 			// get TileXY where the agent goes
 			Temp3 .add agent_MilPixVx, 2
 			macro_cord_diff(Temp3,Temp4)
@@ -726,7 +701,8 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						var1.div Const_2_combi,2 //halve speed
 						var1.add agent_MilPixAx, 2 // and add push
 					}
-					agent_ProcessInstantState |= v[Temp20] - Saved_Current_MapTile_Info > 90000000 ? agent_ProcessInstantState_FLAG_climb_hill : 0
+
+					agent_ProcessInstantState |= v[Temp20] - Saved_Current_MapTile_Info > 90000000 ? ProcessInstantState_FLAG_climb_hill : 0
 					//@if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback {//horse back}
 					
 					/*
@@ -736,6 +712,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						
 					}
 					*/
+
 					agent_AgentBits &= agent_MovementOrder > 1 ? -8388609 : agent_AgentBits // if movement order is > 1, Then break wall detection flag
 
 
@@ -783,16 +760,16 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						agent_MilPixVx = divmul(agent_MilPixVx, TT2, TT1)
 					
 					}
-					//@comment "#カメラずらして"
+					// @comment "#カメラずらして"
 					val_add(agent_MilPixX,FrameCamDiff_MilX) // agent_MilPixX += FrameCamDiff_MilX // v[53] * 10000
 
-					//@comment "#座標を反映"
+					// @comment "#座標を反映"
 					agent_RelativeX = agent_MilPixX / 10000
 					agent_SpriteX = agent_RelativeX + v[896]
 
-					//@comment "Y座標"
-					//v[295..300] += 1
-					//@comment "##垂直方向に壁があれば進行方向vにMSかけたものが速度に"
+					// @comment "Y座標"
+					// v[295..300] += 1
+					// @comment "##垂直方向に壁があれば進行方向vにMSかけたものが速度に"
 					TT2 = abs(agent_MilPixVy)
 					@if v[314] < 21 {
 					agent_MilPixVy.copy var2, 1
@@ -827,20 +804,10 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 				}
 			
 			} .else bl {
-				/*
-				//@comment "#カメラずらして"
-				agent_MilPixX += v[53] * 10000
-				//@comment "#座標を反映"
-				agent_RelativeX = agent_MilPixX / 10000
-				agent_SpriteX = agent_RelativeX + v[896]
-				//@comment "#カメラずらして"
-				agent_MilPixY += v[54] * 10000
-				//@comment "#座標を反映"
-				agent_RelativeY = agent_MilPixY / 10000
-				agent_SpriteY = agent_RelativeY + v[897]*/
-				
+
 				v[53].copy TT1, 2
 				TT1 .mul v[4813], 2
+
 				//add to v[v[300]]
 				agent_MilPixX .add TT1, 2
 				agent_MilPixX.copy agent_RelativeX, 2
@@ -853,8 +820,10 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			
 			}
 		}.else bl{
+
 			v[53].copy TT1, 2
 			TT1 .mul v[4813], 2
+
 			//add to v[v[300]]
 			agent_MilPixX .add TT1, 2
 			agent_MilPixX.copy agent_RelativeX, 2
@@ -886,9 +855,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 				// check if the agent is in screen
 				@if agent_RelativeX >= v[1008] {
-					@if agent_RelativeX <= v[1009]{
-						@if agent_RelativeY >= v[1010]{
-							@if agent_RelativeY <= v[1011]{
+					@if agent_RelativeX <= v[1009] {
+						@if agent_RelativeY >= v[1010] {
+							@if agent_RelativeY <= v[1011] {
 								agent_SpriteX .add v[881], 2
 								//@comment "#描画範囲内であれば保存"
 								//@comment "#画面外"

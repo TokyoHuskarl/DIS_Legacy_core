@@ -1,5 +1,5 @@
 
-def click_waittime = 22 // 18 //12
+def click_waittime = 28 // 22
 
 def click_animation = {v[47] = 3} 
 
@@ -249,7 +249,7 @@ s[70].off
 				
 		}
 		// "##############################"
-		@if s[57] .isOff() {
+		@if MAP_EDIT_MODE .isOff() {
 				// "##############################"
 				@key.inputEx .keyCode 5 .dst GEYKEY_Mouse5
 				@key.inputEx .keyCode 188 .dst GEYKEY_key_comma

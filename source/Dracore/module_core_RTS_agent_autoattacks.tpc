@@ -2,7 +2,7 @@
 
 def macro_AtkerSPcost = {
 	// Atker Auto Attack SP Cost
-	agent_SP = agent_SP - agent_AACost
+	val_sub(agent_SP,agent_AACost) // agent_SP -= agent_AACost
 	agent_SP = max(agent_SP, 0)
 }
 
@@ -40,7 +40,8 @@ __fn agent_autoattack_melee {
 	// "ObjTypeチェック"
 	s[202..203].off
 	// "Motion"
-	v[v[629]] += 1
+	v[v[629]].add N1,1 // v[v[629]] += 1
+	
 	v[v[896]] += v[v[844]] == 0 ? 1 : -1
 
 	// hold direction
@@ -80,12 +81,11 @@ __fn agent_autoattack_melee {
 			Access20 = TargetObjectID 1~
 			Access18 = ObjTypeチェックPtr*/
 			// Effect
-			v[376] = 0
+			val_init(v[376]) // v[376] = 0
 			s[166].off
-			TT1 = Ptr20 + 500
-			@if s[TT1] .isOn() {
+			@if `victim_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 				s[166].on
-				v[376] = 4
+				val_asg(v[376],N4) // v[376] = 4
 				v[181] += 1
 				@if v[181] <= 6 {
 						@loop v[1017] .dst Temp20 {
@@ -126,7 +126,6 @@ __fn agent_autoattack_melee {
 							
 						}
 						
-						
 				}
 				@if v[182] <= 0 {
 						@if v[522] < 30 {
@@ -158,31 +157,44 @@ __fn agent_autoattack_melee {
 			}
 
 			// At least in Melee AA, agent parameters remain via hitcheck
-			@if reg1 == 1 {
-				// "Hit!"
+			@if reg1 == 1 { // "Hit!"
 				@if BOOL_Is_target_static .isOff() { // to Movable Agents
 
 						// "#SP damage#A hit causes 4 SP loss"
-						victim_SP = max(victim_SP - 4, 0)
+						val_sub(victim_SP,N4)
+						victim_SP = max(victim_SP, 0)
 
 						// "#CheckCrit"
 						// "Var1 = Obj 1~V[421] = ダメージ倍率"
-						var1 = Ptr19
+						val_asg(var1,Ptr19) // var1 = Ptr19 <= is this even necessary now?
 						// "#Crit率ゲット+least_crit_melee-CritReduction"
 						TT2 = least_crit_melee
 						TT2 += agent_ProcessCrit - victim_CritChanceReduction
 						TT1 = rnd(1, 100)
-						// "#CritDamageReduction#(450-[Reduction])%"
-						TT3 = 450 - victim_CritDamageReduction
 						// "#[Crit]%でフラグ"
 						@if TT2 >= TT1 { // CRITICAL!
 							// "Set jump Timer"
 							agent_DodgeTimer = 6 // atker jump up to strike!
-							AtkerSave // not here - 9.9
-							v[421] = TT3
+							AtkerSave // not here - 9.9 <= ????
+
+							// set AA element and critical damage multiplier 
+							@if `agent_AABits & AABits_FLAG_FatalBlow { // if the attacker has FatalBlow AAflag, give his opponent true damage
+								// set AA element
+								val_asg(Temp2,N2) // Temp2 = agent_AA_ARorMR
+								val_const(v[421],180) // true damage multiplier is fixed
+
+							}.else bl{
+								// set AA element
+								val_asg(Temp2,agent_AA_ARorMR) // Temp2 = agent_AA_ARorMR
+								// "#CritDamageReduction#(450-[Reduction])%"
+								v[421] = 450 - victim_CritDamageReduction
+
+							}
 					
 						} .else bl {
-							v[421] = 100 
+							val_const(v[421],100)
+							// set AA element
+							val_asg(Temp2,agent_AA_ARorMR) // Temp2 = agent_AA_ARorMR
 					
 						}
 
@@ -193,10 +205,6 @@ __fn agent_autoattack_melee {
 						@if `agent_ProcessObjBit & BaseObjBit_FLAG_ShieldBash {
 							// "#発動処理"
 							// "#バフ番号指定"
-							//var1 = 1196
-							//var2 = Ptr20
-							//@call .cev 1911
-							//v[reg2] = reg2 >= 0 ? 16 : v[reg2]
 							func_bs_register_buff_to_victim(1196,shieldbash_time)
 							// "Give V vector"
 							@if v[reg2] == shieldbash_time {
@@ -219,18 +227,17 @@ __fn agent_autoattack_melee {
 						copyback_victim_data(Ptr11)
 
 				} .else bl { // to buildings
+						val_asg(Temp2,agent_AA_ARorMR) // Temp2 = agent_AA_ARorMR
 						v[421] = 100
-						
 				}
 				
 				// "＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃ここそのうち用意した関数に置き換える＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃"
 				// get Atker AA parameters
-				Temp1 = agent_ProcessAD
-				Temp2 = agent_AA_ARorMR
-				Temp3 = agent_AAElement
+				val_asg(Temp1,agent_ProcessAD) // Temp1 = agent_ProcessAD
+				val_asg(Temp3,agent_AAElement)
 				// "AABits"
 				var9 = agent_AABits & ~v[4812]
-				v[422] = 0
+				val_init(v[422]) // v[422] = 0
 				func_damage_calculation()
 
 				// ################################################
@@ -249,7 +256,7 @@ __fn agent_autoattack_melee {
 						@if reg2 >= TT2 {
 							// "Blood stain on 1h weapon"
 							@if `!(agent_ProcessObjBit & BaseObjBit_FLAG_Standard_Bearer) { // not Standard bearer
-									agent_2hweapon_stain += 1
+									val_add(agent_2hweapon_stain,N1) // agent_2hweapon_stain += 1
 									agent_2hweapon_stain = min(agent_2hweapon_stain, 12)
 									
 							}
@@ -507,7 +514,14 @@ __fn agent_autoattack_melee {
 				// "Miss!"
 
 				// let atker pay cost as well
-				macro_AtkerSPcost
+				@if `agent_PerkFlagBits2 & PerkFlagBits3_FLAG_Feint {
+						agent_SP -= agent_AACost >> 1 // halve
+						agent_SP = max(agent_SP, 0)
+					
+				}.else bl{
+					macro_AtkerSPcost
+				}
+
 				AtkerSave 
 
 				// "#SP damage#Evading costs 2 SP"
@@ -863,22 +877,27 @@ __fn agent_autoattack_ranged {
 
 
 					// "#diffusionf: y=x (x)/(-240)+30"
-					//TT10 = max(pow(v[v[210] + 265], 2) / -240 + 30, 0)
-					TT10 = max(pow(agent_ProcessHIT, 2) / -230 + 32, 0)
+					// cavalry archer's aim spreads more
+					TT10 = max(pow(agent_ProcessHIT, 2) / -230 + 32, 0) + (agent_ExMotionFlags & ExMotionFlags_FLAG_horseback ? 1 : 0)
+
+					/*
+					@if `agent_ExMotionFlags & ExMotionFlags_FLAG_horseback { 
+						v[624] += rnd(-1, 1)
+						v[625] += rnd(-1, 1)
+					}
+					*/
 
 					v[624] += rnd(-TT10, TT10)
 					v[625] += rnd(-TT10, TT10)
+
+
 
 					// this seems what had been breaking arrow and camera relation
 					//v[624].add v[53], 2
 
 					// "#フレーム数を設定"
-					//v[700] = v[v[210] + 128]
-					//v[603] = v[700] - 1
 			
-					//v[729] = v[210] + 129
 					agent_AASfx = agent_AASfx > 90 ? agent_AASfx : 91
-					//v[637] = v[v[210] + 244]
 					s[141].on
 					v[624].copy v[361], 2
 
@@ -887,30 +906,22 @@ __fn agent_autoattack_ranged {
 					//Restore Ptr
 					Ptr1 = v[210] + 1
 					v[Ptr1].copy agent_ObjectType, 300 //deploy atk agent para
-					//v[842] = v[210] + 242
-					//v[v[842]] = 0
-					agent_MovementOrder = 0
-					//v[843] = v[210] + 243
+					val_init(agent_MovementOrder) // agent_AttackFrame = 0
 					// "AAクールタイムモーション"
-					//v[726] = v[210] + 126
 					// "ビット見る"
 					agent_ActionState = agent_ExMotionFlags & ExMotionFlags_FLAG_have_AA_CD_Spr ? 2 : 0
 					// "AAモーション初期化"
-					//v[629] = v[210] + 29
-					//v[v[629]] = 0
-					agent_AttackFrame = 0
+					val_init(agent_AttackFrame) // agent_AttackFrame = 0
 					// "Initialize AI Timer"
-					//v[v[210] + 84] = v[v[210] + 300] % v[1195]
 					agent_ActionTimer = agent_generated_ID % v[1195]
-					//v[v[210] + 80] = v[1240] * v[4571] / 2
 					agent_InCombatTimer = v[1240] * v[4571]
 					agent_InCombatTimer /= 2
 					agent_ObjectType.copy v[Ptr1], 300
 					
 						} .else bl {
-					s[202].on
-					s[203].off
-					
+							s[202].on
+							s[203].off
+
 						}
 						
 				} .else bl {

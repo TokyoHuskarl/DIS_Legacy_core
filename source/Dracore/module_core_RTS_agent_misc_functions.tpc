@@ -51,6 +51,106 @@ __fn init_AEB_array $agentid {
 
 
 
+/**
+ * cannot be used for static unit 
+ * This function deploys agent data to victim array
+ * 
+ * @param {int} $agentid - 
+ * @param {int} $unitid - 
+ * @param {int} $flags - EXTRACT_FLAG_Data_extracted:0x1 
+ */
+__fn func_transform_agent_into_other_unit $agentid $unitid $flags {
+	$FLAG_RECOVER_STATS = 0x2
+
+	var1 = $unitid
+	// unit exists
+	@if var1 > 0 {
+		// copy agent data to victim array
+		__if $flags & EXTRACT_FLAG_Data_extracted {
+			agent_AgentType.copy victim_AgentType agent_Basic_Array_size
+		}.else bl{
+			var1 = $agentid * agent_Basic_Array_size
+				var1 += 4701
+				v[var1].copy victim_AgentType,agent_Basic_Array_size
+		}
+
+		// deploy unit data to agent_buffer
+		v[251] = victim_TeamID
+			v[255] = $agentid
+			victim_RelativeX.copy v[252],2
+			v[254] = $unitid
+
+			BOOL_Gen_NoListAssigningFlag.on
+			BOOL_Gen_GetMinionData.on
+			s[152].on // retarded legacy switch
+			func_generate_agent() // just get data
+			BOOL_Gen_NoListAssigningFlag.off
+			BOOL_Gen_GetMinionData.off
+
+			// does this even work?
+			func_drawing_agent_init_set_picture_strs($agentid)
+
+			// TODO - change AEB values
+			agent_reset_AI_target_priority_AEB($agentid)
+			agent_reset_BaseSight_Root($agentid)
+			agent_reset_MapEyeSight($agentid)
+
+
+
+
+			agent_AgentType.copy victim_AgentType,3
+
+			// set collision?
+			agent_Width.copy victim_Width,2
+			agent_set_ColBox($agentid)
+
+
+			agent_MoveTypeBIts.copy victim_MoveTypeBIts,1
+			agent_Skin.copy victim_Skin,7 // to head
+
+			__if $flags & $FLAG_RECOVER_STATS {
+
+			}.else bl {
+				// use current HP and so on
+				victim_HP = min(victim_HP,agent_MaxHP)
+					victim_HP.copy agent_HP,1
+
+					victim_SP = min(victim_SP,agent_MaxSP)
+					victim_SP.copy agent_SP,1
+
+					victim_BaseAR = min(victim_BaseAR,agent_MaxAR)
+					victim_BaseAR.copy agent_BaseAR,1
+			}
+
+		agent_UnitID.copy victim_UnitID,140 // copy all basic data
+			agent_MainWeaponID.copy victim_MainWeaponID,9 // copy equipments
+
+			set_agent_name($agentid,str1)
+
+
+			/*
+				 rewrite data
+			 */
+
+			__if $flags & EXTRACT_FLAG_Data_extracted {
+				victim_AgentType.copy agent_AgentType agent_Basic_Array_size
+			}.else bl{
+				var1 = $agentid * agent_Basic_Array_size
+					var1 += 4701
+					victim_AgentType.copy v[var1],agent_Basic_Array_size
+			}
+
+		__if DIS_DEBUG_BUILD == 1 {
+			deblog(__str("func_make_agent_transform_into_unit: Try unit conversion to ", $unitid, "."))
+		}
+
+	}.else bl{
+		errlog("func_transform_agent_into_other_unit(): Aborted - Irregular unit id called.")
+	}
+
+}
+
+
 __fn func_extract_skill_data_from_agent_slot $agent $skillno $flags {
 	__if $flags & EXTRACT_FLAG_Data_extracted {
 		reg1 = $skillno * skill_Array_size
@@ -62,7 +162,6 @@ __fn func_extract_skill_data_from_agent_slot $agent $skillno $flags {
 		reg1 += 4821
 		v[reg1].copy skill_ID,skill_Array_size
 	}
-
 }
 
 //reg1 = 0:melee 1:ranged 2:magic... idk 
@@ -70,9 +169,9 @@ __fn func_get_AA_usage $agent $flags {
 	__if $flags & EXTRACT_FLAG_Data_extracted {
 		@if agent_AAType == 0 {//melee
 			reg1 = 0
-		}.elif agent_AAType == 2{
+		}.elif agent_AAType == 2 {
 			reg1 = 1
-		}.elif agent_AAType == 4{
+		}.elif agent_AAType == 4 {
 			reg1 = agent_AA_ARorMR == 0 ? 1 : 2 
 		}
 		
@@ -82,6 +181,45 @@ __fn func_get_AA_usage $agent $flags {
 }
 
 
+__fn set_agent_name $agentid $name {
+	var1 = $agentid + Address_str_agent_name_array_head
+	t[var1].asg $name
+}
+
+__fn force_agent_to_be_idle $agentid $flag {
+	__if $flags & EXTRACT_FLAG_Data_extracted {
+		val_init(agent_TargetAgentID)
+		val_init(agent_StanceOrder)
+		val_const(agent_MovementOrder,-1)
+
+		// if the agent is worker, reset jobtype
+		agent_worker_JobType = agent_UnitType == UNIT_CLASS_WORKER ? 0 : agent_worker_JobType
+
+	}.else bl{ // kari, without extraction
+
+		var1 = $agentid * 300
+		val_add(var1,N4700)
+
+		// agent_TargetAgentID
+		var2 = var1 + 18
+		ptr_init(var2)
+
+		// agent_StanceOrder
+		var2 = var1 + 241
+		ptr_init(var2)
+
+		// agent_MovementOrder
+		var2 = var1 + 242
+		ptr_const(var2,-1)
+		
+		// agent_worker_JobType
+		var2 = var1 + 247
+		var3 = var1 + 102
+		v[var2] = v[var3] == UNIT_CLASS_WORKER ? 0 : v[var2]
+
+		//UNCO
+	}
+}
 
 
 

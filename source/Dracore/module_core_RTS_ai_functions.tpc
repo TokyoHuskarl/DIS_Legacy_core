@@ -1,5 +1,9 @@
 // loaded by header_ai.tpc
 
+// selected agents amount counter: v[2841] should be an argument as well
+
+defv AI_WP_amount_to_set = 2875
+
 // clear ai agent list - cev 1748
 __fn aiList_clear {
 	v[ptr_null].copy v[Const_save_var_Adr_aiAgentlistHead],aiListSize // init List
@@ -19,6 +23,293 @@ __fn aiList_push $arg {
 		}
 	}
 
+}
+
+
+def MACRO_init_ai_agent_move_vars = {
+			v[2853..2858] = 0
+			v[2859] = 8888
+			v[2860] = 1
+			v[2883..2884] = 0
+}
+
+__fn ai_order_calculate_form_line $listhead $listcounter $X1 $Y1 $X2 $Y2 {
+	@comment "V5=X,V6=Y"
+			MACRO_init_ai_agent_move_vars
+			v[2851] = $X2
+			v[2852] = $Y2
+
+
+			@if $listcounter > 1 {
+				@comment "Order Direction"
+					TT1 = $X1 - v[2851]
+					TT2 = $Y1 - v[2852]
+					v[2842..2843] = atan2(TT2, TT1, 1000)
+					v[2842..2843] = v[2808] > 0 ? atan2(TT2, TT1, 1000) : 0
+					@comment "########################"
+					@comment "列数設定"
+					v[2860] = $listcounter > 9 ? 2 : 1
+					v[2860] += $listcounter > 20 ? 1 : 0
+					v[2860] += $listcounter > 30 ? 1 : 0
+					@comment "一列の長さを決定"
+					@comment "仮置き、そのうちなおす"
+					v[2859] = $listcounter
+					v[2859] /= v[2860]
+					TT1 = v[2859] % 2
+					v[2859] = $listcounter
+					v[2859] += $listcounter > 6 ? 1 : 0
+					v[2859] /= v[2860]
+					@comment ""
+					v[2853..2854] = v[2859] * v[1148] / 2
+					v[2853..2854] = v[2859] * v[1148] / 2
+					v[2853] *= sin(v[2843], 1000, -1000)
+					v[2854] *= cos(v[2843], 1000, 1000)
+					v[2853].copyTo v[2855], 2
+					v[2853..2854] /= 1000
+					v[2851] .sub v[2853], 2
+					v[2855..2856] /= v[2859] / 2
+					v[2855..2856] /= 1000
+					v[2857] = cos(90, 1, 1000) * v[2855] - sin(90, 1, 1000) * v[2856]
+					v[2858] = sin(90, 1, 1000) * v[2855] + cos(90, 1, 1000) * v[2856]
+					v[2857..2858] /= 1000
+					@comment "仮置き、そのうちなおす"
+					@comment "中心をあわせるため1単位ずらす"
+					@if TT1 == 0 {
+						v[2855..2856] /= 2
+							v[2851] .add v[2855], 2
+							v[2855..2856] *= 2
+
+					} .else bl {
+						v[2855..2856] /= 4
+							v[2851] .add v[2855], 2
+							v[2855..2856] *= 4
+
+					}
+
+
+					// this list sort seemingly has problem with current AI agent list
+					// @comment "###########################descending sort"
+					@loop $listcounter .dst TT13 {
+							TT1 = $listhead + TT13
+							TT2 = v[TT1] * 300
+							// @comment "Save ordered direction"
+							v[TT2 + 4756] = v[2843]
+							TT2 += 4804
+							TT3 = v[TT2] * 10000
+							TT2 -= 2
+							// @comment "Infs tends to go frontal side *100"
+							TT3 *= v[TT2] == 0 ? 10 : 1
+							// @comment "Cavs"
+							TT3 *= v[TT2] == 3 ? 3 : 1
+							v[TT1] += TT3
+
+					}
+
+					v[$listhead].sortDescending $listcounter
+					TT5 = $listhead + $listcounter
+					v[$listhead..TT5] %= 10000
+
+			}
+}
+
+/**
+ * @param {} listhead
+ * 
+ * 
+ * 
+ */
+__fn ai_order_agents_move $listhead $listcounter $x $y $fl {
+
+		@if AI_WP_amount_to_set >= 1 {
+				// "WPをとおる"
+				v[2863].copy v[2861], 2
+				v[2865].copy v[2863], 2
+				v[2867].copy v[2865], 2
+				v[2869].copy v[2867], 2
+				v[2871].copy v[2869], 2
+				v[2873].copy v[2871], 2
+				// "#Set 移動するX"
+				// "#Set 移動するY"
+				v[2851].copy v[2873], 2
+				
+		}
+
+	// set Ptr
+	v[2878] = $listhead
+
+	// set goal
+	v[2851] = $x
+	v[2852] = $y
+	v[2851].copyTo v[2853], 2
+
+	def AI_MOVEORDER_FL_ATTACKMOVE = 0x1
+	def AI_MOVEORDER_FL_DO_PATHFINDING = 0x2
+	def AI_MOVEORDER_FL_CHANGE_ONLY_DIRECTION = 0x4
+
+	TempFlag1 = $fl
+	
+
+	defv linecounter = __id(Temp20) 
+	val_init(linecounter)
+	val_init(v[390]) // move ordered agent counter
+
+	// how about flag?
+
+	@loop $listcounter .dst v[340] {
+		// reached list tail
+		@if v[v[2878]] == 0 {
+			@break
+		}
+		// "skip foundation "
+			Temp1 = v[v[2878]] * 300
+			val_add(Temp1,N4700) // Temp1 += 4700
+			val_asg(Ptr1,Temp1)
+			val_add(Ptr1,N1)
+			v[Ptr1].copy agent_ObjectType,agent_Basic_Array_size
+
+			@if agent_UnitType != 104 {
+					Ptr19 = __id(agent_HoldPointX)
+					// Ptr14 is used
+					agent_AI_routine_bits &= ~4096
+					// "処理開始"
+					@if agent_MovementOrder != 4 {
+						agent_MovementOrder = TempFlag1 & AI_MOVEORDER_FL_ATTACKMOVE ? MovementOrder_TYPE_move_ordered : MovementOrder_TYPE_prioritize_moving
+
+					}
+				@if agent_AgentType != 11 {
+						agent_Formbits &= ~Formbits_MASK_Lines // init line assignment
+						agent_AgentBits &= ~384
+						agent_AgentBits &= AgentBits_MASK_for_initilizing_pathfinding
+						// "#ForceMoveFlag"
+
+						//is attack move?
+						@if `TempFlag1 & AI_MOVEORDER_FL_ATTACKMOVE {
+								agent_AI_routine_bits &= ~AI_routine_bits_FLAG_AIskip
+								agent_AgentBits &= ~AgentBits_FLAG_ForcemoveFlag // on attack move, kill forcemove flag
+
+								@if agent_InCombatTimer <= -10000 {
+									agent_InCombatTimer = v[1178]
+
+								}
+
+						} .else bl {
+								agent_AI_routine_bits |= AI_routine_bits_FLAG_AIskip
+								agent_AgentBits |= AgentBits_FLAG_ForcemoveFlag
+
+						}
+
+
+					agent_AI_routine_bits &= AI_routine_bits_MASK_for_initilizing_pathfinding
+
+
+						// "#アタックムーブじゃなければActionチェック"
+						TT1 = TempFlag1 & AI_MOVEORDER_FL_ATTACKMOVE ? -999 : agent_ActionState // ACHTUNG!!
+						// "#if Action==Attack, Set Action 0"
+						agent_ActionState = TT1 == 1 ? 0 : agent_ActionState
+						// "#if Forcemove, AA MotionTimer Reset"
+						agent_AttackFrame = TT1 == 1 ? 0 : agent_AttackFrame
+						// "#if Attack Stance, set stance alert"
+						agent_StanceOrder = agent_StanceOrder == 2 ? 0 : agent_StanceOrder
+						// "#Manual"
+						agent_StanceOrder = agent_AI_routine_bits & AI_routine_bits_FLAG_Manual_Ordered ? ORD_MANU : agent_StanceOrder
+
+				}
+
+				@if AI_WP_amount_to_set >= 1 { // ACHTUNG need change
+						Ptr14 = 2873
+						Ptr14 -= AI_WP_amount_to_set * 2
+						@loop AI_WP_amount_to_set {
+							v[Ptr14].copy v[Ptr19], 2
+								Ptr14 += 2
+								Ptr19 += 2
+
+						}
+
+						v[Ptr14].copy v[Ptr19], 2
+						// "#Set 現在目指してるWPと総WP数"
+						agent_LeftWPtoChase = AI_WP_amount_to_set
+						v[273] .add v[2855], 2
+
+				} .else bl {
+						agent_AI_routine_bits |= agent_AAType == 0 ? AI_routine_bits_FLAG_RayCast : 0 // set raycast anyway
+						agent_AI_routine_bits &= ~(AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_tracing_wp)
+						
+
+						// use A* pathfinding or not
+						@if `TempFlag1 & AI_MOVEORDER_FL_DO_PATHFINDING { // always true, temporary
+							agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+
+								// How should I write here
+								/*
+								@if `between(agent_Cohort_ID, 1, 10) {
+									agent_AI_routine_bits |= 16793600
+								}
+								*/
+
+
+						} .else bl {
+							agent_AI_routine_bits &= ~16809984
+
+								/*
+								@if s[112] .isOn() {
+										agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+										@if `between(agent_Cohort_ID, 1, 10) {
+											agent_AI_routine_bits |= 16793600
+
+										}
+
+								}
+								*/
+
+						}
+						// "#Set goal
+						v[2851].copy agent_HoldPointX,2
+						// "#Set 現在目指してるWPと総WP数"
+						agent_LeftWPtoChase = -1
+
+						// how should I deal with line deltas?
+						v[2851] .add v[2855], 2
+
+				}
+
+				agent_Formbits |= pow(2,linecounter) // set current line flag
+
+					// "#Set 目標なし"
+					agent_TargetAgentID = 0
+					agent_ActionFlag = 0
+
+					// ここをどうにかしろ
+					// "Make 2nd line"
+					v[390] += 1
+					v[390] %= v[2859]
+					@if v[390] == 0 {
+						val_add(linecounter,N1)
+							@if AI_WP_amount_to_set >= 1 {
+									v[2853].copy v[273], 2
+									v[273] .add v[2857], 2
+									v[273].copy v[2853], 2
+
+							} .else bl {
+									v[2853].copy v[2851], 2
+									v[2851] .add v[2857], 2
+									v[2851].copy v[2853], 2
+
+							}
+
+					}
+
+				@if agent_AgentType <= 8 {
+					agent_AgentBits = agent_StanceOrder <= ORD_MANU ? [agent_AgentBits | AgentBits_FLAG_EnableBasicAI, agent_AgentBits | AgentBits_FLAG_EnableBasicAI, agent_AgentBits & ~AgentBits_FLAG_EnableBasicAI, agent_AgentBits | AgentBits_FLAG_EnableBasicAI, agent_AgentBits & ~AgentBits_FLAG_EnableBasicAI][agent_StanceOrder] : agent_AgentBits
+
+				}
+
+			}
+		// save back
+		agent_ObjectType.copy v[Ptr1],agent_Basic_Array_size
+		// increment
+		v[2878] += 1
+
+	}
 }
 
 

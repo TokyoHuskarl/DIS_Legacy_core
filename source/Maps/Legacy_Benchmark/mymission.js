@@ -6,6 +6,7 @@
 
 }
 
+
 RTS.mission.startup = function(){
 
 	// Player troops begin

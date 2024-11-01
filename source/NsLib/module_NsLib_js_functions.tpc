@@ -2,9 +2,7 @@
 // dealing with java script
 // -------------------------
 
-def {
-	js_directory = "../Scripts/"// "../js/"
-}
+def js_directory = "../Scripts/"// "../js/"
 
 // kari
 deft js_StringBuffer = __id(DIS_js_buffer)
@@ -17,10 +15,20 @@ __fn execute_js $filename {
 	@js .run js_StringBuffer
 }
 
+
 __fn eval_js $string {
 	// load
 	js_StringBuffer.asg $string, .extract
 	@js .run js_StringBuffer
+	__if DEBUG_BUILD == 1 {
+		deblog_js(js_StringBuffer)
+	}
+}
+
+__fn eval_js_return_int $string $ret {
+	// load
+	js_StringBuffer.asg $string, .extract
+	@js .run js_StringBuffer v[__id($ret)]
 	__if DEBUG_BUILD == 1 {
 		deblog_js(js_StringBuffer)
 	}

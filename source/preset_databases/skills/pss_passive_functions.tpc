@@ -1,0 +1,641 @@
+
+def COMMENT_defined_in_PSS_PASSIVE_FUNCTIONS = {
+	@comment "Defined in preset_databases/skills/pss_passive_functions.tpc"
+}
+
+// investigation needed, idk if defend tower aura is correctly working in v1.163BETA <- correctly working, it's confirmed. 24/05/28
+cev .id(1235), .name("Passive:defend tower aura"), {
+	COMMENT_defined_in_PSS_PASSIVE_FUNCTIONS
+		@if s[122] .isOn() {
+			@comment "Access19 = AttackerObjectID 0~
+				Access20 = TargetObjectID 1~
+				Access18 = ObjTypeチェックPtr
+				reg10=bool_hit"
+				@comment "#Combat Penalty Resist"
+				@comment "#################交戦デバフを付与################"
+				v[v[300] * 300 + 4781] = (v[v[300] * 300 + 4974] & 128) == 128 ? 0 : 135
+
+		} .else bl {
+			@comment "PASSIVE"
+				v[299] = v[401] + 1
+				@if v[217] < v[4559] {
+					v[217] += 1
+						@loop v[4559] .dst v[320] {
+							v[216] %= v[4559]
+								v[301] = v[216] * 100
+								v[301] += v[1076]
+								v[295] = v[301] + 1
+								@if v[v[295]] == 0 {
+									@comment "Access17 = AttackerObjチェックPtr"
+										v[297] = v[299] * 300
+										v[297] += 4700
+										@comment "まず清掃"
+										v[1301].copyTo v[601], 100
+										v[1301].copyTo v[v[295]], 100
+										@comment "ParentObjセット"
+										v[609] = v[299]
+										@comment "出る場所セット"
+										v[341] = v[297] + 7
+										v[v[341]].copyTo v[605], 2
+										v[605..606] *= 10000
+										v[v[341]].copyTo v[607], 2
+										@comment "Projectile team"
+										v[341] = v[297] + 100
+										v[618] = v[v[341]]
+										@comment "パラメータ等入力begin"
+										@comment "#Pic"
+										v[602] = 1
+										@comment "#ProjectileType"
+										v[601] = 2
+										@comment "#あたり判定"
+										v[610..611] = 88
+										@comment "#威力"
+										v[621] = 0
+										@comment "#Timer"
+										v[700] = 2
+										@comment "#Effect"
+										v[604] = 1235
+										@comment "#ARMRと属性"
+										v[622] = -1
+										v[623] = 1
+										@comment "#Nopic"
+										v[628] |= 8
+										@comment "パラメータ等入力end"
+										v[601].copyTo v[v[295]], 100
+										@comment "Timer Reset"
+										v[v[297] + 94] = v[1139] * 3
+										@break
+
+								}
+							v[216] += 1
+
+						}
+
+
+				}
+
+		}
+
+
+}
+
+cev .id(1240), .name("Passive:Dragon Maid Aura"), {
+	@if s[118] .isOn() {
+		v[823] = 1
+
+	} .else bl {
+		@comment "PASSIVE"
+			v[299] = v[401] + 1
+			@if v[217] < v[4559] {
+				v[217] += 1
+					@loop v[4559] .dst v[320] {
+						v[216] %= v[4559]
+							v[301] = v[216] * 100
+							v[301] += v[1076]
+							v[295] = v[301] + 1
+							@if v[v[295]] == 0 {
+								@comment "Access17 = AttackerObjチェックPtr"
+									v[297] = v[299] * 300
+									v[297] += 4700
+									@comment "まず清掃"
+									v[1301].copyTo v[601], 100
+									v[1301].copyTo v[v[295]], 100
+									@comment "ParentObjセット"
+									v[609] = v[299]
+									@comment "出る場所セット"
+									v[341] = v[297] + 7
+									v[v[341]].copyTo v[605], 2
+									v[605..606] *= 10000
+									v[v[341]].copyTo v[607], 2
+									@comment "Projectile team"
+									v[341] = v[297] + 100
+									v[618] = v[v[341]] == 0 ? 1 : 0
+									@comment "パラメータ等入力begin"
+									@comment "#Pic"
+									v[602] = 1
+									@comment "#ProjectileType"
+									v[601] = 2
+									@comment "#あたり判定"
+									v[610] = 48
+									v[611] = 48
+									@comment "#威力"
+									v[11] = v[299]
+									v[12] = 2
+									@call .cev 2004
+									@comment "[AP]*100%"
+									v[21] *= -9
+									v[21] /= 10
+									v[621] = v[21]
+									@comment "#ARMRと属性"
+									v[622] = -1
+									v[623] = 1
+									@comment "#Timer"
+									v[700] = 1
+									@comment "パラメータ等入力end"
+									v[601].copyTo v[v[295]], 100
+									@comment "Timer Reset"
+									v[v[297] + 94] = v[1139] * 6
+									@break
+
+							}
+						v[216] += 1
+
+					}
+
+
+			}
+
+	}
+}
+
+// COMITATENSES
+cev .id(1268), .name("Passive:Comitatenses"), {
+	COMMENT_defined_in_PSS_PASSIVE_FUNCTIONS
+	@comment "PASSIVE"
+		@if s[118] .isOn() {
+			v[823] = 1
+
+		} .else bl {
+			@if s[119] .isOn() {
+				v[868] = muldiv(v[868], 170, 100)
+					v[v[235] + 15] = v[680] > 0 ? 0 : v[v[235] + 15]
+					@comment "#Icon Number"
+					v[21] = 9
+
+			} .else bl {
+				@comment "#発動処理"
+					v[299] = v[401] + 1
+					@comment "Access17 = AttackerObjチェックPtr"
+					v[297] = v[299] * 300
+					v[297] += 4700
+					@if `v[v[297] + 80] <= 0 {
+						@comment "#バフ番号指定"
+							v[11] = 1268
+							v[12] = v[299]
+							@call .cev 1911
+							@if v[22] >= 0 {
+								@comment "#Duration"
+									v[v[22]] = 120
+
+							}
+
+					}
+				@if `v[2412 + v[v[299] * 300 + 4800] % 3] & 0x20 {
+					v[711] = v[299] * 300 + 4811
+						v[738] = v[299] * 300 + 4838
+						v[v[711]] += muldiv(v[v[738]], 8, 100)
+						v[v[711]] = min(v[v[711]], v[v[738]])
+
+				}
+
+			}
+
+		}
+
+}
+
+cev .id(1281), .name("Passive:Blacksmith"), {
+	@comment "*ATTENTION*
+		Spawning too many leader units will surely cause LAG"
+		@if s[122] .isOn() {
+			@comment "Access19 = AttackerObjectID 0~
+				Access20 = TargetObjectID 1~
+				Access18 = ObjTypeチェックPtr
+				reg10=bool_hit"
+				@comment "#Combat Penalty Resist"
+				@comment "not static"
+				@if `v[v[300] * 300 + 4701] != 11 {
+					v[711] = v[300] * 300 + 4811
+						v[738] = v[300] * 300 + 4838
+						@if `v[v[711] - 31] <= 0 {
+							v[v[711]] += 18 * (v[v[299] * 300 + 4922] == 1 ? 3 : 2) / 2
+								v[v[711]] = min(v[v[711]], v[v[738]])
+								@if v[v[711]] < v[v[738]] {
+									@comment "#Dust Particle Effect"
+										@loop v[1017] .dst v[320] {
+											v[244] %= v[1199]
+												v[351] = v[244] * 50 + v[1198]
+												@if v[v[351]] <= 1 {
+													@comment "まず清掃"
+														v[1301].copyTo v[v[351]], 50
+														@comment "ポインタセット開始"
+														@comment "設定"
+														v[v[351]] = 1
+														@comment "500F"
+														v[v[351] + 49] = 3
+														@comment "Set itself"
+														v[v[351] + 3] = 160
+														@comment "普通にアニメ"
+														v[341] = v[351] + 6
+														v[607] = v[300] * 300 + 4707
+														v[v[607]].copyTo v[v[341]], 2
+														@comment "仕上げに登録消す"
+														s[141].off
+														v[244] += 1
+														@break
+
+												}
+											v[244] += 1
+
+										}
+
+
+								}
+
+						}
+
+				}
+
+		} .else bl {
+			@comment "PASSIVE"
+				v[299] = v[401] + 1
+				@if v[217] < v[4559] {
+					v[217] += 1
+						@loop v[4559] .dst v[320] {
+							v[216] %= v[4559]
+								v[301] = v[216] * 100
+								v[301] += v[1076]
+								v[295] = v[301] + 1
+								@if v[v[295]] == 0 {
+									@comment "Access17 = AttackerObjチェックPtr"
+										v[297] = v[299] * 300
+										v[297] += 4700
+										@comment "まず清掃"
+										v[1301].copyTo v[601], 100
+										v[1301].copyTo v[v[295]], 100
+										@comment "ParentObjセット"
+										v[609] = v[299]
+										@comment "出る場所セット"
+										v[341] = v[297] + 7
+										v[v[341]].copyTo v[605], 2
+										v[605..606] *= 10000
+										v[v[341]].copyTo v[607], 2
+										@comment "Projectile team"
+										v[341] = v[297] + 100
+										v[618] = (v[v[341]] % 3 + 1) % 2
+										@comment "パラメータ等入力begin"
+										@comment "#Pic"
+										v[602] = 1
+										@comment "#ProjectileType"
+										v[601] = 2
+										@comment "#あたり判定"
+										v[610..611] = 184
+										@comment "#威力"
+										v[621] = 0
+										@comment "#Timer"
+										v[700] = 2
+										@comment "#Effect"
+										v[604] = 1281
+										@comment "#ARMRと属性"
+										v[622] = -1
+										v[623] = 1
+										v[628] |= 8
+										@comment "パラメータ等入力end"
+										v[601].copyTo v[v[295]], 100
+										@comment "Timer Reset"
+										v[v[297] + 94] = v[1139] * 3
+										@break
+
+								}
+							v[216] += 1
+
+						}
+
+
+				}
+
+		}
+}
+
+cev .id(1282), .name("Passive:Market Gold production"), {
+	@comment "PASSIVE"
+		v[299] = v[401] + 1
+		v[297] = v[299] * 300
+		v[297] += 4700
+		@comment "Gold"
+		v[v[4575] + 4 + 40 * (v[v[297] + 100] % 3)] += rnd(1, 5)
+		v[v[4575] + 4 + 40 * (v[v[297] + 100] % 3)] += v[2409 + v[251] % 3] & 0x20000 ? 1 : 0
+		@call .cev 84
+		@comment "Timer Reset"
+		v[v[297] + 94] = v[1139] * 24
+
+}
+
+cev .id(1283), .name("Passive:Heal Aura"), {
+	@comment "*ATTENTION*
+		Spawning too many leader units will surely cause LAG"
+		@if s[122] .isOn() {
+			@comment "Access19 = AttackerObjectID 0~
+				Access20 = TargetObjectID 1~
+				Access18 = ObjTypeチェックPtr
+				reg10=bool_hit"
+				@comment "#Combat Penalty Resist"
+				@comment "not static"
+				@if `v[v[300] * 300 + 4701] != 11 {
+					v[706] = v[300] * 300 + 4806
+						v[705] = v[300] * 300 + 4805
+						@if `v[v[706] - 26] <= 0 {
+							v[v[706]] += (v[v[706] - 26] <= 0 ? muldiv(v[v[705]], 8, 100) : 0) * (v[v[299] * 300 + 4922] == 1 ? 3 : 2) / 2
+								v[v[706]] = min(v[v[706]], v[v[705]])
+								@if v[v[706]] < v[v[705]] {
+									@comment "#Heal Particle Effect"
+										@loop v[1017] .dst v[320] {
+											v[244] %= v[1199]
+												v[351] = v[244] * 50
+												v[351] = v[351] + v[1198]
+												@if v[v[351]] <= 1 {
+													@comment "まず清掃"
+														v[1301].copyTo v[v[351]], 50
+														@comment "ポインタセット開始"
+														@comment "設定"
+														v[v[351]] = 1
+														@comment "500F"
+														v[345] = v[351] + 49
+														v[v[345]] = 1
+														@comment "Set itself"
+														v[345] = v[351] + 3
+														v[v[345]] = 119
+														@comment "Set Amount"
+														v[345] = v[351] + 1
+														v[v[345]] = 3
+														@comment "Set Dire"
+														v[345] = v[351] + 27
+														v[v[345]] = 0
+														@comment "けす処理をLinkedFuncに入れる"
+														v[345] = v[351] + 10
+														@comment "XY set"
+														v[345] = v[351] + 6
+														v[607] = v[300] * 300 + 4707
+														v[v[607]].copyTo v[v[345]], 2
+														@comment "仕上げに登録消す"
+														s[141].off
+														v[244] += 1
+														@break
+
+												}
+											v[244] += 1
+
+										}
+
+
+								}
+
+						}
+
+				}
+
+		} .else bl {
+			@comment "PASSIVE"
+				v[299] = v[401] + 1
+				@if v[217] < v[4559] {
+					v[217] += 1
+						@loop v[4559] .dst v[320] {
+							v[216] %= v[4559]
+								v[301] = v[216] * 100
+								v[301] += v[1076]
+								v[295] = v[301] + 1
+								@if v[v[295]] == 0 {
+									@comment "Access17 = AttackerObjチェックPtr"
+										v[297] = v[299] * 300
+										v[297] += 4700
+										@comment "まず清掃"
+										v[1301].copyTo v[601], 100
+										v[1301].copyTo v[v[295]], 100
+										@comment "ParentObjセット"
+										v[609] = v[299]
+										@comment "出る場所セット"
+										v[341] = v[297] + 7
+										v[v[341]].copyTo v[605], 2
+										v[605..606] *= 10000
+										v[v[341]].copyTo v[607], 2
+										@comment "Projectile team"
+										v[341] = v[297] + 100
+										v[618] = (v[v[341]] % 3 + 1) % 2
+										@comment "パラメータ等入力begin"
+										@comment "#Pic"
+										v[602] = 1
+										@comment "#ProjectileType"
+										v[601] = 2
+										@comment "#あたり判定"
+										v[610..611] = 184
+										@comment "#威力"
+										v[621] = 0
+										@comment "#Timer"
+										v[700] = 2
+										@comment "#Effect"
+										v[604] = 1283
+										@comment "#ARMRと属性"
+										v[622] = -1
+										v[623] = 1
+										v[628] |= 8
+										@comment "パラメータ等入力end"
+										v[601].copyTo v[v[295]], 100
+										@comment "Timer Reset"
+										v[v[297] + 94] = v[1139] * 5
+										@break
+
+								}
+							v[216] += 1
+
+						}
+
+
+				}
+
+		}
+
+}
+
+cev .id(1286), .name("P:Stable Aura"), {
+
+	@comment "PASSIVE"
+		v[299] = v[401] + 1
+		v[297] = v[299] * 300
+		v[297] += 4700
+		@comment "Food"
+		v[v[4575] + 1 + 40 * (v[v[297] + 100] % 3)] += v[2409 + v[v[297] + 100] % 3] & 0x80000 ? 4 : 2
+		@call .cev 84
+		@comment "Timer Reset"
+		v[v[297] + 94] = v[1139] * 28
+}
+
+cev .id(1291), .name("P:Lorica Nanos"), {
+	@comment "PASSIVE"
+		@if s[118] .isOn() {
+			v[823] = 1
+
+		} .else bl {
+			@comment "Lorica Nanos"
+				v[299] = v[401] + 1
+				@if `v[2412 + v[v[299] * 300 + 4800] % 3] & 0x20 {
+					v[711] = v[299] * 300 + 4811
+						v[738] = v[299] * 300 + 4838
+						v[v[711]] += muldiv(v[v[738]], 8, 100)
+						v[v[711]] = min(v[v[711]], v[v[738]])
+
+				}
+
+		}
+}
+
+
+cev .id(1296), .name("P:RallyingSTATIC"), {
+	@comment "*ATTENTION*
+		Spawning too many leader units will surely cause LAG"
+		@comment "PASSIVE"
+		@if s[118] .isOn() {
+			v[823] = 1
+				v[823] |= 2
+
+		} .else bl {
+			@if s[122] .isOn() {
+				@comment "Access19 = AttackerObjectID 0~
+					Access20 = TargetObjectID 1~
+					Access18 = ObjTypeチェックPtr
+					reg10=bool_hit"
+					@comment "If same faction"
+					v[371] = v[299] != v[300] ? 1 : 0
+					v[371] += v[v[299] * 300 + 4922] == v[v[300] * 300 + 4922] ? 1 : 0
+					@if v[371] == 2 {
+						@comment "#発動処理"
+							@comment "#バフ番号指定"
+							v[11] = 1182
+							v[12] = v[300]
+							@call .cev 1911
+							@if v[22] >= 0 {
+								@comment "#Duration"
+									v[v[22]] = 300
+
+							}
+
+					}
+
+			} .else bl {
+				@comment "PASSIVE"
+					v[299] = v[401] + 1
+					@if v[217] < v[4559] {
+						v[217] += 1
+							@loop v[4559] .dst v[320] {
+								v[216] %= v[4559]
+									v[301] = v[216] * 100
+									v[301] += v[1076]
+									v[295] = v[301] + 1
+									@if v[v[295]] == 0 {
+										@comment "Access17 = AttackerObjチェックPtr"
+											v[297] = v[299] * 300
+											v[297] += 4700
+											@comment "まず清掃"
+											v[1301].copyTo v[601], 100
+											v[1301].copyTo v[v[295]], 100
+											@comment "ParentObjセット"
+											v[609] = v[299]
+											@comment "出る場所セット"
+											v[341] = v[297] + 7
+											v[v[341]].copyTo v[605], 2
+											v[605..606] *= 10000
+											v[v[341]].copyTo v[607], 2
+											@comment "Projectile team"
+											v[341] = v[297] + 100
+											v[618] = v[v[341]] == 0 ? 1 : 0
+											@comment "パラメータ等入力begin"
+											@comment "#Pic"
+											v[602] = 1
+											@comment "#ProjectileType"
+											v[601] = 2
+											@comment "#あたり判定"
+											v[610..611] = 128
+											@comment "#威力"
+											v[621] = 0
+											@comment "#Timer"
+											v[700] = 1
+											@comment "#Effect"
+											v[604] = 1235
+											@comment "#ARMRと属性"
+											v[622] = -1
+											v[623] = 1
+											@comment "#Effect"
+											v[604] = 1231
+											@comment "#Nopic"
+											v[628] |= 8
+											@comment "パラメータ等入力end"
+											v[601].copyTo v[v[295]], 100
+											@comment "Timer Reset"
+											v[v[297] + 94] = v[1139] * 3
+											@comment "Eff"
+											v[341] = v[v[299] * 300 + 4922]
+											@if v[341] >= 1 {
+												v[342] = v[299] * 300 + 4925
+													v[v[342]] = (v[v[342]] + 1) % 2
+													@if v[v[342]] == 0 {
+														@if `s[500 + v[299]] == 1 {
+															v[607].copyTo v[361], 2
+																@loop v[1017] .dst v[320] {
+																	v[242] %= v[1017]
+																		v[301] = v[242] * 100
+																		v[301] = v[301] + v[1018]
+																		@if v[v[301]] <= 1 {
+																			v[243] -= v[v[301]] == 1 ? 1 : 0
+																				v[242] %= v[1017]
+																				v[281] = v[242] * 100
+																				v[281] = v[281] + v[1018]
+																				@comment "まず清掃"
+																				v[1301].copyTo v[v[301]], 100
+																				@comment "ポインタセット開始"
+																				v[310] = v[242] + v[1220]
+																				v[295] = v[301] + 99
+																				@comment "設定"
+																				v[v[301]] = 1
+																				v[v[295]] = 0
+																				@comment "普通にアニメ"
+																				@pic[v[310]].show {
+																					"passive_icon\picon_0" .repl 1 v[341]
+																						.pos v[361], v[362] .center
+																						.scrollWithMap
+																						.chromakey 1
+																						.scale 100
+																						.trans 40
+																						.rgbs 100, 100, 100, 100
+																						.mapLayer 5
+																						.eraseWhenTransfer
+																						.affectedByFlash
+																						.affectedByShake
+																				}
+																			v[362] -= 36
+																				@pic[v[310]].move {
+																					.pos v[361], v[362] .center
+																						.scale 250
+																						.trans 100
+																						.time 21
+																						.rgbs 100, 100, 100, 100
+																				}
+																			@comment "仕上げに登録消す"
+																				v[242..243] += 1
+																				@break
+
+																		}
+																	v[242] += 1
+
+																}
+
+
+														}
+
+													}
+
+											}
+										@break
+
+									}
+								v[216] += 1
+
+							}
+
+
+					}
+
+			}
+
+		}
+}
+
+

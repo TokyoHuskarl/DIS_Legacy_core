@@ -2,14 +2,16 @@
 //9.3.23
 //cev 42
 
+
 def ranged_base_hit = 25 //38 
 
 __fn macro_extract_units_parameters {
 	//TEMPORARY
-	reg1 = Ptr9 + 4701
+
+	reg1.repeat 4701,2
+	reg1.add Ptr9,2
 	v[reg1].copy agent_ObjectType, 300
-	reg1 = Ptr10 + 4701
-	v[reg1].copy victim_AgentType, 300 //only 20
+	v[reg2].copy victim_AgentType, 300
 
 }
 
@@ -42,7 +44,7 @@ __fn func_bs_melee_hit_check_wo_prep {
 	val_asg(reg1,victim_ProcessEVA) // reg1 = victim_ProcessEVA
 	//@comment "#################GetParaNow v1v2r1 END#################"
 	//@comment "#DodgeMS*12%"
-	reg1 += victim_PerkFlagBits1 & 32 ? victim_ProcessMS >> 3 : 0 //muldiv(victim_ProcessMS, 12, 100) : 0
+	reg1 += victim_PerkFlagBits1 & PerkFlagBits1_FLAG_Dodge ? victim_ProcessMS >> 3 : 0 //muldiv(victim_ProcessMS, 12, 100) : 0
 	//@comment "＃＃＃＃＃＃＃＃＃＃Elevation Bonus＃＃＃＃＃＃＃＃＃＃"
 	Temp20 = agent_getTerrainElevation - victim_getTerrainElevation
 	//@comment "＃＃＃＃＃＃＃＃＃＃BackAttack Bonus＃＃＃＃＃＃＃＃＃＃"
@@ -51,6 +53,7 @@ __fn func_bs_melee_hit_check_wo_prep {
 	//@comment "＃＃＃＃＃＃＃＃＃＃Base Hit Per...10% min5% max95%＃＃＃＃＃＃＃＃＃＃"
 	Temp1 += 10 - reg1 + 5 * Temp20
 	Temp1 = max(5, min(95, Temp1))
+
 	//@comment "＃＃＃＃＃＃＃＃＃＃Roll!	＃＃＃＃＃＃＃＃＃＃"
 	Temp3 = rnd(1, 100)
 	reg1 = Temp3 <= Temp1 ? 1 : 0
@@ -62,14 +65,13 @@ __fn func_bs_melee_hit_check_wo_prep {
 	    @if reg2 == 0 {
 		@if s[164] .isOff() {
 		    //@comment "Parry chance"
-		    //v[874] = Ptr10 + 4974
-		    @if `victim_ProcessObjBit & 16777216 {
-			@if victim_AAType == 0 { //not ranged type?
-			    reg2 = rnd(1, 100) <= victim_ProcessHIT / (victim_ProcessObjBit & 131072 ? 2 : 3) + 16 ? 2 : 0
-			    
+			@if victim_AAType == 0 {
+				@if `victim_ProcessObjBit & BaseObjBit_FLAG_CanParry { //not ranged type?
+					reg2 = rnd(1, 100) <= victim_ProcessHIT / (victim_ProcessObjBit & BaseObjBit_FLAG_Duelist_Activated ? 2 : 3) + 16 ? 2 : 0
+
+				}
+
 			}
-			
-		    }
 		    
 		}
 		
@@ -107,8 +109,8 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 
 
 	@if Temp2 > 0 { //if victim has shield
-		@if `victim_ProcessObjBit & 67108864 { //check if broken
-			v[ptr_null].copy Temp2,1 // Temp2 = 0
+		@if `victim_ProcessObjBit & BaseObjBit_FLAG_Brokenshield { //check if broken
+			v[ptr_null].copy Temp2,1
 
  
 		}.else bl { // not broken
@@ -123,11 +125,12 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	}
 
 	//If you covered by ally's shield, you will gain+8 shield value, even if you don't have any shield
-	@if `victim_ProcessInstantState & agent_ProcessInstantState_FLAG_shield_covered_double_check {
-		val_add(Temp2,N8) // Temp2 += 8
+	@if `victim_ProcessInstantState & ProcessInstantState_FLAG_shield_covered_double_check {
+		val_add(Temp2,N8)
+
 		//@comment "BackAttack halves evasion chance when the agent is covered by ally shieldwall"
 		reg1 = (reg1 + Temp2) >> ($dir == victim_Direction)
-		val_add(reg1,N4) // reg1 += 4
+		val_add(reg1,N4)
 
 
 	}.else bl{
@@ -148,8 +151,8 @@ __fn func_bs_ranged_hit_check $attacker $victim $dir $flags $aux_var {
 	}
 
 	Temp1 = max(1, min(99, Temp1))
-	//against ambushed unit, accuracy is halved
-	Temp1 >>= (victim_ProcessObjBit & 1) //fixed BETA2
+	// If the victim is ambushed, accuracy gets halved
+	Temp1 >>= (victim_ProcessObjBit & AgentBits_AmbushFlag) //fixed BETA2
 	//@comment "＃＃＃＃＃＃＃＃＃＃Roll!＃＃＃＃＃＃＃＃＃＃"
 	reg1 = Temp3 <= Temp1 ? 1 : 0
 }
@@ -160,7 +163,7 @@ __fn func_bs_dummy_hit_check {
 }
 
 __fn func_bs_mind_hit_check $attacker $victim{
-	Ptr10 = $victim *300
+	Ptr10 = $victim * 300
 	reg1 = Ptr10 + 4960
 	v[reg1].copy victim_Morale, 20
 	//@comment "＃＃＃＃＃＃＃＃＃＃memo	＃＃＃＃＃＃＃＃＃＃"
@@ -175,8 +178,8 @@ __fn func_bs_mind_hit_check $attacker $victim{
 	Temp1 -= reg1
 	var2 = victim_ProcessObjBit//v[Ptr20 * 300 + 4974]
 	@if s[319] .isOn() {
+	    //Too much will or mindless makes an unit immune against any mind attack 
 	    Temp1 -= reg1 >= 150 || var2 & 4198400 ? 9999 : 0 //var2 & 4096 || var2 & 4194304
-	    //Too much will or mindless makes unit immune to mind attack 
 	    
 	}
 	//@comment "＃＃＃＃＃＃＃＃＃＃	Roll!	＃＃＃＃＃＃＃＃＃＃"
@@ -188,7 +191,7 @@ __fn func_bs_mind_hit_check $attacker $victim{
 __fn bs_shield_crack_check {
 	// "＃＃＃＃＃＃＃＃＃＃Get Shield Break Resistance＃＃＃＃＃＃＃＃＃＃"
 	val_asg(TT1,victim_ShieldBreakResistance) 
-	TT1 += victim_PerkFlagBits1 & 1 ? victim_ShieldBreakResistance >> 2 : 0
+	TT1 += victim_PerkFlagBits1 & PerkFlagBits1_FLAG_Shieldmaster ? victim_ShieldBreakResistance >> 2 : 0
 	// "＃＃＃＃＃＃＃＃＃＃Chance Roll＃＃＃＃＃＃＃＃＃＃"
 	reg1 = agent_ProcessAD / 3
 	reg1 *= agent_AABits & AABits_FLAG_CrackingShieldBONUS ? 2 : 1

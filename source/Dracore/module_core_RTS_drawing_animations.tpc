@@ -52,12 +52,129 @@ __fn animation_knockout {
 	v[4111..4120] = expected_action_sprite
 	v[4134] = 3
 	//v[4144] = 1200000 / v[720] * (v[720] - (v[v[301] + 29]-2)) * (1 - 2 * v[325])
-	v[4144] = (1100000 -  min(34333*(pow(agent_AttackFrame-2,2)),1300000)) * (1 - 2 * v[325])
+	v[4144] = (1100000 -  min(34333 * (pow(agent_AttackFrame - 2, 2)), 1300000)) * (1 - 2 * v[325])
 	v[4154] = 10000
 	v[4044] -= v[325]
 	
     }
 }
+
+__fn animation_horse_standing {
+		// TT10 = frame counter++
+		TT10 = REG_INIT_FRAME - agent_RegTimer // 0 <= TT10 <= REG_INIT_FRAME
+
+		// idle
+		@if TT10 <= 21 {
+			Temp5.copy Temp11, 2
+
+			// set all motion 3
+			// v[4111].repeat(4, 9)
+
+			// set horse sprite angle type
+			v[4136] = 3
+
+
+			// set horse sprite
+			TT1 = 10 * TT10
+			v[4116].repeat(52,1)
+			v[4116] += sin(TT1, 1, 11)
+			v[4116] >>= 3 // /= 8
+
+			// direction fix
+			TT1 = 1 - 2 * v[325]
+
+			// horse angle
+			@if TT10 <= 10 { 
+				TT3 = 30000 * TT10
+			}.elif TT10 > 13 {
+				TT3 =  820000 - (40000 * TT10)
+			}.else bl {
+				TT3 = 300000
+			}
+
+			v[4146] = TT3 * TT1
+			v[4156] = 10000
+
+
+			TT2 = sin(TT3,v[4156],15) // get sin 11 -> 15
+
+			// x offset for rider
+			// TT3 = TT2 / 6
+			// val_mul(TT3,TT1)
+			TT4 = TT1 * 2
+			val_sub(Temp11,TT4) // basic offset
+			v[4041].repeat(Temp11, 9)
+
+			// y offset for rider
+			TT3 = TT2 / 3
+			val_add(Temp12,N1)
+			val_sub(Temp12,TT3)
+			v[4051].repeat(Temp12, 9)
+
+			// set horse pos
+			val_asg(v[4046],Temp5) // x
+			val_asg(v[4056],Temp6) // y
+
+			// we need (r * sin(30rad)) = 5
+			// at that condition r = 11.547... so simply * 3 to TT2 = (3 * sin()) to get near result?
+			v[4046] += TT1 * TT2 // horse standing point adjustment for rotation
+
+	}
+
+}
+
+// animid 105
+__fn animation_horse_standing_stunned {
+		// TT10 = frame counter++
+			TT10 = (RTS_WORLD_passed_frame - agent_generated_ID) * 4
+
+		// idle
+			Temp5.copy Temp11, 2
+
+			// set all motion 3
+
+			// set horse sprite angle type
+			v[4136] = 3
+
+
+			// set ordinary sprite 
+			MACRO_DRAWING_get_regular_action_sprite
+			v[4111].repeat expected_action_sprite,9
+
+
+			// set horse sprite
+			v[4116] = 5 + ((agent_generated_ID + v[2500]) / 6) % 3
+
+			// direction fix
+			TT1 = 1 - 2 * v[325]
+
+			// horse angle
+			TT3 =  280000 - sin(TT10, 1, 60000)
+			TT3 *= agent_ExMotionFlags & ExMotionFlags_FLAG_Backshotflag ? -1 : 1  
+
+			v[4146] = TT3 * TT1
+			v[4156] = 10000
+
+
+			TT2 = sin(TT3,v[4156],15) // get sin 11 -> 15
+
+			val_sub(Temp11,TT1) // basic x offset
+			v[4041].repeat(Temp11, 9)
+
+			// y offset for rider
+			TT3 = TT2 / 3
+			val_add(Temp12,N1)
+			val_sub(Temp12,TT3)
+			v[4051].repeat(Temp12, 9)
+
+			// set horse pos
+			val_asg(v[4046],Temp5) // x
+			val_asg(v[4056],Temp6) // y
+			val_sub(v[4056],N1)
+
+			v[4046] += TT1 * TT2 // horse standing point adjustment for rotation
+}
+
 
 
 //Walking motions
@@ -127,6 +244,11 @@ __fn animation_spear_attack {
 
 }
 
+__fn animation_bow_attack {
+	v[4041..4050] += 2 - 4 * v[325]
+
+}
+
 
 __fn spriteset_bladedance {
 	v[4134] = 3
@@ -150,13 +272,13 @@ __fn animation_sword_attack {
 				v[4044].add TT1,1
 				var1.repeat  TT1,9
 				//Horse back
-				@if `(agent_ExMotionFlags & 16777216) {
-					v[4041].add var1,4 // v[4041..4044] += TT1
+				@if `(agent_ExMotionFlags & ExMotionFlags_FLAG_horseback) {
+					v[4041].add var1,4
 				}.else bl {
 					v[4111].repeat 4,10 // v[4111..4120] = 4
 					v[4041].add var1,9 // v[4041..4049] += TT1
 
-					@if `agent_ProcessInstantState & agent_ProcessInstantState_FLAG_bladedance {
+					@if `agent_ProcessInstantState & ProcessInstantState_FLAG_bladedance {
 						spriteset_bladedance()
 						v[4044].add TT1,1
 

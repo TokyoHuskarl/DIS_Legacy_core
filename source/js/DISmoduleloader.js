@@ -1,6 +1,5 @@
 // DIS moduleinfo loader
 
-
 // parse t[520] <- Str_moduleinfo
 let moduleinfo;
 

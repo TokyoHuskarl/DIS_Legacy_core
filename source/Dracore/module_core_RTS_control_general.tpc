@@ -17,13 +17,27 @@ def moduletitle="module_core_RTS_control_general.tpc"
 #include "./module_core_RTS_control_mapedit.tpc"
 #include "./module_core_RTS_control_moveorders.tpc"
 
-cev .id(45) ,.name("Control:Mouse"), .parallel , .cond(Const_Is_RTS_Mode), {
+cev .id(47) ,.name("Control:Mouse"), .parallel , .cond(Const_Is_RTS_Mode), {
 #include "./module_core_RTS_control_mouse.tpc"
 }
 
 #include "./module_core_RTS_control_keyboard.tpc"
 cev .id(52) ,.name("Control:Keyboard"), .parallel , .cond(Const_Is_RTS_Mode), {
 	CEV_CONTROL_KEYBOARD()
+}
+
+// legacy key cev events
+cev .id(58),.name("cont:RTS KEY Q"), {
+	CALL_RTS_KEY_Q()
+}
+cev .id(59),.name("cont:RTS KEY w"), {
+	CALL_RTS_KEY_W()
+}
+cev .id(60),.name("cont:RTS KEY e"), {
+	CALL_RTS_KEY_E()
+}
+cev .id(61),.name("cont:RTS KEY R"), {
+	CALL_RTS_KEY_R()
 }
 
 #include "./module_core_RTS_control_selecting_agents.tpc"

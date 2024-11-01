@@ -11,7 +11,7 @@
 #include "./../headers/header_battlesystem.tpc"
 
 #include "./module_core_RTS_misc_functions.tpc"
-#include  "./module_core_RTS_ui_misc_functions.tpc"
+// #include  "./module_core_RTS_ui_misc_functions.tpc" included in header
 
 def moduletitle="module_core_RTS_ui_general"
 
@@ -45,7 +45,7 @@ cev .id(29) ,.name("UI:Unit management"), .parallel , .cond(Const_Is_RTS_Mode), 
 
 //Mouse Observe
 #include "./module_core_RTS_ui_mouse.tpc"
-cev .id(47) ,.name("UI:Mouse Observer"), .parallel , .cond(Const_Is_RTS_Mode), {
+cev .id(45) ,.name("UI:Mouse Observer"), .parallel , .cond(Const_Is_RTS_Mode), {
 	@comment moduletitle
 	UI_CEV_MOUSE_OBSERVER()
 }
@@ -124,6 +124,10 @@ cev[81] "Draw Range Indicator", {
 
 cev[1100] "UI:PASSIVE DESCRPTION", {
 	show_Passive_description()
+}
+
+cev[1101] "UI:Buff DESCRPTION", {
+	show_Buff_description()
 }
 
 cev[1200] "UI:SKILL DESCRIPTION", {

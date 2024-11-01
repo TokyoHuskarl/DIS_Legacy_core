@@ -1,9 +1,31 @@
 #include "./../headers/header_common.tpc"
 
 
+// Legacy common events
 
 cev .id(2003), .name("macro:make vector_old"), {
 	func_make_unit_vector_from_two_points_sqrt(var1,var2,var3,var4)
+}
+
+cev .id(1890), .name("Lang_quick_strings v1"), {
+		@comment "module_core_Game_misc_general.tpc"
+		// @comment "Init"
+		t[3000..3300] .asg ""
+		// @comment "Load"
+		v[1961] = v[1213] + v[11]
+		t[3000] .asg t[v[1961]] .extract
+		/*
+		t[3000] .split "^", t[3001], v[1961]
+		t[3000] .asg ""
+		@loop v[1961] .dst v[1962] {
+			v[1963] = v[1211] + v[1962]
+				t[3000] .cat t[v[1963]] .extract
+				t[3000] .cat t[525]
+
+		}
+	t[3000] .asg t[3000] .extract
+	*/
+	t[3000].asg .rep(t[3000],"^",LF)
 }
 
 //Export Bonus Text
@@ -54,13 +76,13 @@ cev .id(83), .name("Game:Achievement Check"), .parallel ,   {
 		    @se.play "decide1" .opt v[472], 100, 50
 		    v[471] = s[20] == 1 ? v[1158] : 10
 		    @pic[927].strpic {
-			"\t[20054]"
+			t[20054]
 			.pos v[1157], v[471] .center
 			.size 0, 0                .chromakey 1
 			.scale 100
 			.trans 100
 			.rgbs 200, 0, 0, 100
-			.font "美咲ゴシック第2", 10 .noShadow
+			.font Font_UI, Font_UI_size .noShadow
 			.spacing 0, 4
 			.skin "" .nobg .noframe .noPadding
 			.mapLayer 10

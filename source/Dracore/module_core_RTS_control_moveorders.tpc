@@ -1554,9 +1554,9 @@ __fn func_control_moveorder_proc_let_units_attack {
 }
 
 __fn func_control_moveorder_proc_move {
-	v[390] = 0
-		defv linecounter = __id(Temp20) 
-		val_init(linecounter)
+		v[390] = 0
+		defv FNVar_control_moveorder_linecounter = __id(Temp20) 
+		val_init(FNVar_control_moveorder_linecounter)
 
 		@loop v[1004] .dst v[340] {
 			@if v[v[202]] == 0 {
@@ -1578,7 +1578,7 @@ __fn func_control_moveorder_proc_move {
 				v[Ptr1].copy agent_ObjectType,agent_Basic_Array_size
 				
 				@if agent_UnitType != 104 {
-					Ptr20 = Temp1 + 242
+						Ptr20 = Temp1 + 242
 						Ptr19 = Temp1 + 41
 						Ptr18 = Temp1 + 42
 						Ptr17 = Temp1 + 18
@@ -1705,7 +1705,7 @@ __fn func_control_moveorder_proc_move {
 						}
 					
 					}
-					v[Ptr12] |= pow(2,linecounter) // set current line flag
+					v[Ptr12] |= pow(2,FNVar_control_moveorder_linecounter) // set current line flag
 
 
 						// "#Set 目標なし"
@@ -1716,7 +1716,7 @@ __fn func_control_moveorder_proc_move {
 						v[390] += 1
 						v[390] %= v[399]
 						@if v[390] == 0 {
-							val_add(linecounter,N1)
+							val_add(FNVar_control_moveorder_linecounter,N1)
 							@if LEGV_WPamount_to_set >= 1 {
 								v[393].copy v[273], 2
 									v[273] .add v[397], 2

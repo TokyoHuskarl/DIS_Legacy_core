@@ -1,4 +1,5 @@
 __if LOAD_HEADER_DRAW != 1 {
+#include "./../headers/id_drawing_agent_motion.tpc"
 
 def Const_str_agent_pictures_strings_start = 60000
 def Const_layer_amount = 8 //6
@@ -29,6 +30,12 @@ def {
 def Const_camel_offsetY = 2
 def Const_camel_offsetY_draw = 4 
 
+
+def AgentExBuffer_SLOT_ActionSprite_0 = AgentExBuffer_SLOT_ActionSprite_1 + 1
+def MACRO_DRAWING_get_regular_action_sprite = {
+	TT1 = ((agent_ActionFlag & ActionFlag_FLAG_Walking) && agent_ActionState == 0 ? 3 : min(agent_ActionState, 4)) + AgentExBuffer_SLOT_ActionSprite_1
+	get_AEB_element_wo_ptr(AgentIDholder,__id(expected_action_sprite),TT1)
+}
 
 #include "./../Dracore/module_core_RTS_drawing_functions.tpc"
 

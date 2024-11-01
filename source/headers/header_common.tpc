@@ -8,7 +8,7 @@ __if PSEUDO_ARG_SET == 0 {
 	//def MAKE_TYPE = 0
 }
 
-def DEBUG_BUILD = 0 //0 = release, 1 = debug
+def DEBUG_BUILD = 0 // 0 = release, 1 = debug
 
 __if MAKE_TYPE == 0 {
 #apply
@@ -45,11 +45,15 @@ def DIS_EXPERIMENTAL = 1 //0=nah 1=compile experimental features
 //Set basic FPS - 60 in Maniacs patch default setting, 45 in DIS:Classic, 48 in DIS:Legacy.  
 def {
 	DIS_Game_FPS = 48
+	REG_INIT_FRAME =  DIS_Game_FPS + 2
 	g_perFPS = 2041 //98000 / 48 - gravitational acceleration
 	g_perFPS_half = 1020
 
 	AA_WAIT_FPSx1= 4800
 	AA_WAIT_FPSx2= 10000
+
+
+	LANG_CSV_DELIMITER = ","
 }
 
 
@@ -65,6 +69,7 @@ def {
 
 defv RTS_WORLD_passed_frame = 2500
 defv RTS_Difficulty = 2401
+defs MAP_EDIT_MODE = 57
 
 def {
 	DIF_RAGNAROK = 5
@@ -87,9 +92,7 @@ def {
 
 	Const_Map_Allocate_Limit = 160000 // which part of the map mem allocated???
 
-	// Agents_Limit must be multiple of 16! if possible multiple of 64 is better.
-	// the reason for it is to optimize Morton coordinate calculation.
-	Agents_Limit = 880 
+
 
 	Effects_Limit = 120
 	Effects_Additional_Cap = 65
@@ -97,13 +100,24 @@ def {
 
 	Projectiles_Limit = 180
 
+	Particle_Emitter_Limit = 256
+
 
 	PlayerSelectList_Size = 40
 	Adr_PlayerSelectList_Head = 101
 }
+// every event call over this number considered custom ones
+def Preset_Cev_Limit = 65535
+
+
+// Agents_Limit must be multiple of 16! if possible multiple of 64 is better.
+// the reason for it is to optimize Morton coordinate calculation.
+def Agents_Limit = 983 // 880
+def TEAMSIZE_SYSTEM_LIMIT = 480
 
 
 // select list vars
+defv Ptr_loop_current_agent = 536
 defv {
 	SelectedAmount = 99
 	PlayerSelectList_Head = Adr_PlayerSelectList_Head
@@ -123,8 +137,8 @@ defv {
 	Const_save_var_AdrTerrainBitsHead = 4505
 	Const_save_var_Projefctiles_Limit = 4559
 
-
 }
+defv Const_save_var_Agent_TeamListSize_Limit = 1012
 
 //load old switches and variables name as defv or defs 
 #include "./id_project_defs.tpc"
@@ -256,6 +270,7 @@ def {
 
 }
 #include "./const_picture_ids.tpc"
+#include "./const_pointers.tpc"
 
 
 __fn macro_get_agent_slot_to_r1 $agent $slot{
@@ -288,6 +303,8 @@ defs Is_RTS_Mode = 20
 defs Is_Paused = 2
 
 //What da fugg is this confusing naming rule lmao
+
+
 def Const_Is_SightSystem_On = 300
 defs Is_SightSystem_On = 300
 def Const_Is_Drawing_Units = 35
@@ -298,6 +315,16 @@ defs Bool_Refresh_Static_Minimap = 75
 
 vname[__id(FrameCamDiff_MilX)], "FrameCamDifMilX"
 vname[__id(FrameCamDiff_MilY)], "FrameCamDifMilY"
+
+defv Map_dst_MortO_from_RefO_x = 463614
+defv Map_dst_MortO_from_RefO_y = 463615
+vname[__id(Map_dst_MortO_from_RefO_x)], "Camorigin-TileOrigin Vecx"
+vname[__id(Map_dst_MortO_from_RefO_y)], "Camorigin-TileOrigin Vecy"
+
+vname[4829], "Ptr2ProjectileHitFlagsHEAD"
+defv gPtr_ProjectileHitFlags_HEAD = 4829
+def PRJ_HIT_FLAGS_SIZE = 64
+
 
 //vars
 defv{
@@ -314,7 +341,8 @@ defv{
 	FrameCamDiff_MilY = 4862
 
 	AllFrameCount = 2501
-	ConstPtr_ObjPicSort_begin = 1112
+
+	ConstPtr_ObjPicSort_begin = 1112 // beware, relocated
 	ConstPtr_ObjDrawnList_begin = 1184
 
 //map vars
@@ -408,6 +436,9 @@ defv{
 	Temp33 = 333
 	Temp35 = 335
 	Temp37 = 337
+	Temp38 = 338
+	Temp39 = 339
+	Temp40 = 340
     //TEMPTEMPS
     //They are more temporary than regular TEMPS... what?
 	TT1 = 341
@@ -445,6 +476,7 @@ defv{
 	InvVar9
 
 	TempFlag1 = 371
+	TempFlag2 = 372
 
 	var_allocatedmapsize = 2063
 
@@ -461,6 +493,7 @@ defv{
 //basic structures definitions
 #include "./define_structures_agent.tpc"
 #include "./define_structures_map.tpc"
+#include "./define_structures_projectile.tpc"
 
 
 
@@ -481,6 +514,19 @@ __fn func_save_extracted_agent_vars {
 		agent_ObjectType.copy v[Ptr1], agent_Basic_Array_size
 	    }
 }
+
+/*
+__fn func_extract_agent_vars $agent {
+	    Ptr1 = $agent * 300
+	    val_add(Ptr1,N4701) // Ptr1 += 4701
+	    v[Ptr1].copy v[601], agent_Basic_Array_size
+	    __if AGENT_DATA_EXTRACTED == 0 {
+	    	def AGENT_DATA_EXTRACTED = 1
+	    }
+}
+*/
+
+
 
 
 __fn macro_check_agent_is_killed $agentid{
@@ -681,26 +727,51 @@ def {
 
 
 
+// test extra stack
+
+// use with Meta var
+vname[4401] "DO NOT USE HERE, since the ancient shit process around checking agent death has severe fraw with this value, I mean v[-1 * 300 + 4701]"
+
+// DO NOT USE 4401
+def TPC_VAR_STACK_HEAD = 4402
+vname[TPC_VAR_STACK_HEAD] "Extra TPC variable Stack HEAD (ex terrain bit table?)"
+
+
+vname[2478] "SoundEffectLockFrame"
+defv g_SELockFrame = 2478
+
 // for array manipulation
 vname[4836] "N5000"
 vname[4837] "N5001"
 vname[4838] "N4700"
 vname[4839] "N4701"
+vname[4849] "N15"
 vname[4850] "N4"
 vname[4851] "N8"
 vname[4852] "N16"
+vname[4871] "N10[0]"
+vname[4872] "N10[1]"
+vname[4873] "N10[2]"
+vname[4874] "N10[3]"
+vname[4875] "N10[4]"
+vname[4876] "N10[5]"
+vname[4877] "N10[6]"
 defv {
 	N0 = 1301
 	N1 = 1089
 	N2 = 4826 // array [2,2]
+	N15 = 4849
 	N4 = 4850
 	N8 = 4851
 	N16 = 4852
+
+	N10 = 4871
 
 	N5000 = 4836
 	N5001 = 4837
 	N4700 = 4838
 	N4701 = 4839
+	N10000 = 4813
 
 	NagtLen = 1117 // agent array length
 }
@@ -709,8 +780,22 @@ __fn string_set_colour_var $str $clvar {
 	t[__id($str)].asg __str("\c[\v[",__id($clvar),"]]")
 }
 
+
+def WAIT_FOR_FILE_OUTPUT_LIMIT = {
+	@loop .inf() {
+		@if .canOutput() {
+			@break
+
+		}
+		@wait 0
+
+	}
+}
+
 #include "./header_log.tpc"
 
+// include game functions
 #include "./../Dracore/module_core_Game_system_functions.tpc"
+#include "./../Dracore/module_core_Game_database_functions.tpc"
 
 $DIS_h_common_included = 1

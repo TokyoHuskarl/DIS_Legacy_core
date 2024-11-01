@@ -5,6 +5,7 @@ def macro_getMilDiff = {
 		FrameCamDiff_MilY = FrameCamDiff_Y * 10000
 }
 
+
 cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 
 	@if .rightAfterLoad() {
@@ -120,7 +121,7 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 						.mclick
 					}
 				v[80] = v[44] == 1007 ? 150 : 0
-					v[305] = v[305] + v[306]
+					val_add(v[305],v[306]) // v[305] = v[305] + v[306]
 					@if v[61] == 1 {
 						@if v[62] == 1 {
 							v[163] = v[1181]
@@ -179,7 +180,7 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 
 		}
 		// "################################"
-		v[167] .add v[163], 2
+			v[167] .add v[163], 2
 			@if `abs(v[167]) >= 1000 || abs(v[168]) >= 1000 {
 				//v[169] = v[167] / 1000
 				//v[170] = v[168] / 1000
@@ -196,19 +197,6 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 
 
 					// this part was handled by the primitive command call before introducing TPC, but after MP 19.3.2023, the scr.scroll command behavior changed due to bug fix, and this part also has to be modified.
-					/*
-					// "#########################"
-					v[472] = 7
-					v[473] = 17
-					v[474] = 161
-					v[475] = 162
-					v[476] = 6
-					v[477] = 0
-					// "#########################"
-					v[471] = 11060
-					// "#Safety"
-					@cmd v[471], "", .args v[472], 6
-					 */
 
 					// new command
 					func_general_camera_move(v[161],v[162])
@@ -220,10 +208,11 @@ cev[6] .name("Camera:Main"), .parallel , .cond(Const_Is_RTS_Mode),{
 
 			} .else bl {
 				s[71].off
-					v[169..170] = 0
+				// v[169..170] = 0
+				v[ptr_null].copy v[169],2
 
 			}
-		v[165] = v[161] / 16
+			v[165] = v[161] / 16
 			v[166] = v[162] / 16
 			// "################################"
 			v[1301].copy v[163], 2
@@ -329,8 +318,9 @@ cev[9] .name("Camera:WatchDiff1"), .parallel , .cond(Const_Is_RTS_Mode),{
 		s[49].on
 
 }
+
 cev[10] .name("Camera:WatchDiff2"), .parallel , .cond(49),{
-	v[63] = ev[1].scrx
+		v[63] = ev[1].scrx
 		v[64] = ev[1].scry
 		@wait 0
 		v[53] = ev[1].scrx // - v[63]

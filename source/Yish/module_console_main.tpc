@@ -1,0 +1,128 @@
+#include "./../headers/header_common.tpc"
+
+
+__if __defined(PROJECT_NAME) {}.else bl{
+
+	//def PROJECT_NAME "YOUR PROJECT" // name your project freely, or just let this be
+					// this const usually doesn't have any meaning unless you have TPC knowledge
+}
+
+def {
+	YISH_INST_MINIMUM = 0
+	YISH_INST_MEDIUM = 1
+	YISH_INST_FULL = 2
+}
+
+def YISH_INSTALL_TYPE = YISH_INST_FULL
+
+
+defs Bool_call_console = 182
+
+def cevid_ConsoleMain = 1848
+def cevid_ConsoleControlManager = 1849
+
+deft SHELL_CMD_LOG = 781
+deft SHELL_CMD_PACK = 789
+deft SHELL_INPUT_STRING = 511
+
+
+
+__if YISH_INSTALL_TYPE >= YISH_INST_MEDIUM {
+	deft SHELL_SCREEN_STRING = 782
+
+}
+
+
+
+
+__fn boot_shell $input {
+	@console .open
+	@console .out "Welcome to " .nolb
+	@console .setColor .front  .red .emph
+	@console .out "D" .nolb
+	@console .setColor .front  .black
+	@console .setColor .front  .green .emph
+	@console .out "I" .nolb
+	@console .setColor .front  .black
+	@console .setColor .front  .red .blue .emph
+	@console .out "S" .nolb
+	@console .setColor .front  .black
+	@console .setColor .front  .red .blue .green
+	@console .out __str(" shell - DraCore ", DraCore_version) 
+	eval_js("DIS.shell.boot();")
+	@console .setColor .front  .red .blue
+}
+
+__fn run_shell $input {
+
+	@console .setColor .front .green 
+	@console .in t[__id($input)]
+	@console .setColor .front .black 
+	@console .setColor .front  .red .blue .green
+	js_StringBuffer.asg .cat("DIS.shell.eval(""", $input, """);")
+	@js .run js_StringBuffer
+
+}
+
+cev .id(cevid_ConsoleControlManager), .name("Console:Manager"), .parallel, {
+
+		//F10 default
+		@key.inputEx .keyCode 121 .dst reg1
+
+
+			@if reg1 == 1 {
+
+				// SHELL_OPEN_BLOCK
+				v[472] = divmul(90, 100, v[2216])
+					@se.play "cursor19" .opt v[472], 100, 50
+					@if LEGS_RTS_MODE .isOn() {
+							LEGS_PAUSE.on
+							LEGS_Fix_Camera_position.on
+							LEGS_Player_can_control.off
+							LEGS_Run_NonLocked_Mouse_Pointer.on
+
+					};
+
+
+					boot_shell()
+					@loop .inf() {
+						run_shell(inputstr)
+
+							@if LEGS_ClosingConsole .isOn() {
+								@break
+
+							}
+					}
+
+				@if .testPlay() {
+
+				}.else bl{
+					@console .close
+				}
+
+				@pic[996].erase
+					LEGS_ClosingConsole.off
+					LEGS_OpenConsole.off
+
+					// SHELL_CLOSE_BLOCK
+					@if LEGS_RTS_MODE .isOn() {
+						LEGS_Run_NonLocked_Mouse_Pointer.off
+							LEGS_Fix_Camera_position.off
+							LEGS_Player_can_control.on
+
+					} .else bl {
+
+					}
+
+
+
+				SHELL_CMD_LOG.cat SHELL_INPUT_STRING
+					SHELL_CMD_LOG.cat LF
+
+
+
+
+			}
+
+
+}

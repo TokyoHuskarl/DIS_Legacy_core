@@ -4,8 +4,7 @@
 #include "./../headers/header_control.tpc"
 #include "./../headers/header_scripts_functions.tpc"
 #include "./../headers/header_pathfinding.tpc"
-
-#include "./../Toolbox/module_console_functions_DIS.tpc"
+#include "./../headers/header_player.tpc"
 
 
 
@@ -28,15 +27,26 @@ def moduletitle="module_core_RTS_mission_general.tpc"
 
 
 
+
 def CEV_JS_MANAGER_RUN_PER_FRAME = "
 RTS.mission.run();
 "
 // actual functions are written in js file.
 // this cev just call run() functions of objects under RTS module.
 
-cev .id(1830), .name("JS MissionManager"),.parallel , .cond(__id(RUN_js_MissionManager)), {
-	@if s[2].isOff(){ // pause
-		eval_js(CEV_JS_MANAGER_RUN_PER_FRAME)
+cev .id(1830), .name("JS Mission/CommandManager"),.parallel, {
+	
+	@if s[20].isOn(){ // RTS GAME
+		@if s[2].isOff(){ // pause
+			@if RUN_js_MissionManager.isOn() {
+				eval_js(CEV_JS_MANAGER_RUN_PER_FRAME)
+			}
+		}.else bl{
+			DISAPI_JS_CMD_RUN()
+		}
+	// not in RTS game
+	}.else bl{
+		DISAPI_JS_CMD_RUN()
 	}
 }
 
@@ -531,6 +541,7 @@ cev .id(1804),.name("mission:gen_elevationmap"),{
 #include "./module_core_RTS_mission_weather_general.tpc" 
 
 
+// OBSOLETE
 cev .id(67), .name("Combat Detection AI.."),.parallel , .cond(1), { // switch 297
 
 	@wait 5

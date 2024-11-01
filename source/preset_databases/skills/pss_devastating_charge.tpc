@@ -1,390 +1,387 @@
 
 //skill_cev_devastating_charge 
 cev .id(skill_cev_devastating_charge), .name("devastatingCharge"), {
-@if s[118] .isOn() {
-    // "Cav Only"
-    v[1301].copy v[581], 20
-    @if v[702] == 2 {
-        // "#Q_ID and Q_Func"
-        v[581] = 38
-        v[582] = v[581] + 1200
-        // "#Q_Type"
-        v[583] = 5
-        v[584] = 2
-        // "#Q_Motion"
-        v[585] = 1
-        // "#Q_Cost"
-        v[587] = 18
-        // "#Q_Range"
-        v[592] = 23500
-        // "#Q_CD"
-        v[588] = 1490
-        // "#Spellpowerbase"
-        v[598] = 200400
-        // "Only when the unit is moving"
-        v[600] |= 2
-        v[600] |= 4
-        
-    }
-    
-} .else bl {
-    @if s[122] .isOn() {
-        v[v[299] * 300 + 4728] = 3000
-        v[11] = 1238
-        v[12] = v[299]
-        //@call .cev 1935
-	func_bs_remove_buff(1238 v[299])
-        v[v[21]] = 1238
-        v[v[22]] = 24
-        v[607].copy v[361], 2
-        @if `v[30] == 1 || v[30] == 2 {
-            // "Set ShieldMotion Timer"
-            v[v[299] * 300 + 4783] = 6
-            // "演出"
-            @if `s[v[300] + 500] == 1 && v[182] < 5 {
-                // "#########################"
-                v[471] = 11550
-                v[472] = divmul(90, 100, v[2216])
-                v[473] = rnd(62, 74)
-                v[474] = divmul(v[361] + v[1001], v[1281], 50)
-                // "#########################"
-                @cmd v[471], "weapons\lancecharge", .args v[472], 3
-                
-            }
-            
-        }
-        v[607].copy v[361], 2
-        @if `between(v[361], v[1008], v[1009]) && between(v[362], v[1010], v[1011]) {
-            @loop v[1017] .dst v[320] {
-                v[244] %= v[1199]
-                v[331] = v[244] * 50
-                v[331] = v[331] + v[1198]
-                @if v[v[331]] <= 1 {
-                    // "まず清掃"
-                    v[1301].copy v[v[331]], 50
-                    // "ポインタセット開始"
-                    // "設定"
-                    v[v[331]] = 1
-                    // "500F"
-                    v[v[331] + 49] = 3
-                    // "Set itself"
-                    v[v[331] + 3] = 131
-                    // "普通にアニメ"
-                    v[341] = v[331] + 6
-                    v[607].copy v[v[341]], 2
-                    // "仕上げに登録消す"
-                    v[244] += 1
-                    @break
-                    
-                }
-                v[244] += 1
-                
-            }
-            
-            
-        }
-        @if v[217] < v[4559] {
-            v[217] += 1
-            @loop v[4559] .dst v[320] {
-                v[216] %= v[4559]
-                v[281] = v[216] * 100
-                v[281] += v[1076]
-                v[285] = v[281] + 1
-                @if v[v[285]] == 0 {
-                    // "Access17 = AttackerObjチェックPtr"
-                    v[297] = v[299] * 300
-                    v[297] += 4700
-                    // "まず清掃"
-                    v[1301].copy v[601], 100
-                    v[1301].copy v[v[295]], 100
-                    // "ParentObjセット"
-                    v[609] = v[299]
-                    // "出る場所セット"
-                    v[341] = v[300] * 300 + 4707
-                    v[v[341]].copy v[605], 2
-                    v[605..606] *= 10000
-                    v[v[341]].copy v[607], 2
-                    // "Projectile team"
-                    v[341] = v[297] + 100
-                    v[618] = v[v[341]]
-                    // "パラメータ等入力begin"
-                    // "#Pic"
-                    v[602] = 1
-                    // "#ProjectileType"
-                    v[601] = 2
-                    // "#あたり判定"
-                    v[610] = 32
-                    v[611] = 32
-                    // "#威力"
-                    v[11] = v[299]
-                    v[12] = 1
-                    @call .cev 2004
-                    // "[AD]*20%"
-                    v[21] /= 5
-                    v[621] = v[21]
-                    // "#ARMRと属性"
-                    v[622] = 0
-                    v[341] = v[297] + 123
-                    v[623] = v[v[341]]
-                    // "#Hit Type"
-                    v[627] = 0
-                    // "#Timer"
-                    v[700] = 2
-                    // "#Effect"
-                    v[604] = 1242
-                    // "パラメータ等入力end"
-                    v[601].copy v[v[285]], 100
-                    // "演出"
-                    @break
-                    
-                }
-                v[216] += 1
-                
-            }
-            
-            
-        }
-        
-    } .else bl {
-        @if s[123] .isOn() {
-            v[341] = v[v[609]] * 300 + 4705
-            v[v[341]].copy v[v[605]], 2
-            v[341] += 2
-            v[v[341]].copy v[v[607]], 2
-            v[v[607]] .sub v[53], 2
-            v[341] += 5
-            v[v[341]].copy v[341], 2
-            // "動きがなくなったら判定がきえる"
-            v[341] = (abs(v[341]) + abs(v[342])) / 1500
-            @if v[341] == 0 {
-                v[v[295]] /= 2
-                @if v[v[295]] == 0 {
-                    v[11] = 1238
-                    v[12] = v[v[609]]
-                    @call .cev 1935
-                    
-                }
-                
-            }
-            s[123].off
-            
-        } .else bl {
-            @if s[119] .isOn() {
-                v[603] |= 16
-                v[868] = muldiv(v[868], 144 + (138 - v[v[235] + 15]), 100)
-                // "#V[301]=agentwhogetsbuff"
-                v[861] *= 13
-                v[861] /= 10
-                v[865] += 20
-                v[864] += 800
-                // "##fearsome"
-                v[874] |= 2048
-                v[874] |= 262144
-                // "#Lance"
-                v[874] |= 33554432
-                // "#ForceSpr"
-                v[850] = 1
-                // "#Icon Number"
-                v[21] = 18
-                
-            } .else bl {
-                // "#発動処理"
-                v[297] = v[299] * 300
-                v[297] += 4700
-                @if `v[v[297] + 81] <= 0 {
-                    // "#バフ番号指定"
-                    v[11] = 1238
-                    v[12] = v[299]
-                    @call .cev 1911
-                    @if v[22] >= 0 {
-                        // "#Duration"
-                        v[v[22]] = 150
-                        
-                    }
-                    // "当たり判定を召喚"
-                    @if v[217] < v[4559] {
-                        v[217] += 1
-                        @loop v[4559] .dst v[320] {
-                            v[216] %= v[4559]
-                            v[301] = v[216] * 100
-                            v[301] += v[1076]
-                            v[295] = v[301] + 1
-                            @if v[v[295]] == 0 {
-                                // "Access17 = AttackerObjチェックPtr"
-                                v[297] = v[299] * 300
-                                v[297] += 4700
-                                // "まず清掃"
-                                v[1301].copy v[601], 100
-                                v[1301].copy v[v[295]], 100
-                                // "ParentObjセット☆修正済み,v[299]"
-                                v[609] = v[299]
-                                // "出る場所セット"
-                                v[341] = v[297] + 5
-                                v[v[341]].copy v[605], 2
-                                v[341] += 2
-                                v[v[341]].copy v[607], 2
-                                // "Projectile team"
-                                v[341] = v[297] + 100
-                                v[618] = v[v[341]]
-                                // "パラメータ等入力begin"
-                                // "#Pic"
-                                v[602] = 1
-                                // "#ProjectileType"
-                                v[601] = 1
-                                v[603] = 1238
-                                // "#Hit Limit"
-                                v[629] = 1
-                                // "#あたり判定"
-                                v[341] = v[v[299] * 300 + 4817] / 900
-                                v[610..611] = v[341]
-                                // "#威力"
+	@if s[118] .isOn() {
+		// "Cav Only"
+		v[1301].copy v[581], 20
+			@if v[702] == 2 {
+				// "#Q_ID and Q_Func"
+				v[581] = 38
+					v[582] = v[581] + 1200
+					// "#Q_Type"
+					v[583] = 5
+					v[584] = 2
+					// "#Q_Motion"
+					v[585] = 1
+					// "#Q_Cost"
+					v[587] = 18
+					// "#Q_Range"
+					v[592] = 23500
+					// "#Q_CD"
+					v[588] = 1490
+					// "#Spellpowerbase"
+					v[598] = 200400
+					// "Only when the unit is moving"
+					v[600] |= 2
+					v[600] |= 4
 
-                                /*v[11] = v[299]
-                                v[12] = 1
-                                @call .cev 2004*/
-				
-				macro_get_agent_slot_to_r1(v[299] AGENT_SLOT_CURRENT_AD)
+			}
 
-                                // "[AD]*400%+30"
-                                v[21] *= 400
-                                v[21] /= 100
-                                v[21] += 20
-                                v[621] = v[21]
-                                // "#ARMRと属性"
-                                v[622] = 0
-                                v[341] = v[297] + 123
-                                v[623] = v[v[341]]
-                                // "#Crack shield"
-                                v[623] |= 1024
-                                // "#Timer"
-                                v[700] = 140
-                                // "#Hit Type"
-                                v[627] = 2
-                                // "#Effect"
-                                v[604] = 1238
-                                // "#Nopic"
-                                v[628] |= 1
-                                v[628] |= 8
-                                // "パラメータ等入力end"
-                                // "描画"
-                                @if s[316] .isOn() {
-                                    v[628] = 0
-                                    v[302] = v[216] + v[4560]
-                                    @pic[v[302]].show {
-                                        "arrows\throwingaxeb"
-                                        .pos v[361], v[362] .center
-                                        .scrollWithMap
-                                        .chromakey 1
-                                        .scale 100
-                                        .trans 0
-                                        .rgbs 80, 80, 80, 80
-                                        .mapLayer 7
-                                        .eraseWhenTransfer
-                                        .affectedByTint
-                                        .affectedByFlash
-                                        .affectedByShake
-                                    }
-                                    
-                                } .else bl {
-                                    v[302] = v[216] + v[4560]
-                                    @pic[v[302]].erase
-                                    
-                                }
-                                // "演出"
-                                v[601].copy v[v[295]], 100
-                                @break
-                                
-                            }
-                            v[216] += 1
-                            
-                        }
-                        
-                        
-                    }
-                    v[341] = v[297] + 7
-                    v[v[341]].copy v[605], 2
-                    v[605..606] *= 10000
-                    v[v[341]].copy v[607], 2
-                    @if `s[500 + v[299]] == 1 {
-                        @if v[182] <= 5 {
-                            v[182] += 2
-                            // "#########################"
-                            v[471] = 11550
-                            v[472] = divmul(65, 100, v[2216])
-                            v[473] = 85
-                            v[474] = divmul(v[361] + v[1001], v[1281], 50)
-                            // "#########################"
-                            @cmd v[471], "Horse", .args v[472], 3
-                            v[473] = 120
-                            @cmd v[471], "Sword1", .args v[472], 3
-                            
-                        }
-                        @loop v[1017] .dst v[320] {
-                            v[242] %= v[1017]
-                            v[301] = v[242] * 100
-                            v[301] = v[301] + v[1018]
-                            @if v[v[301]] <= 1 {
-                                v[243] -= v[v[301]] == 1 ? 1 : 0
-                                v[242] %= v[1017]
-                                v[281] = v[242] * 100
-                                v[281] = v[281] + v[1018]
-                                // "まず清掃"
-                                v[1301].copy v[v[301]], 100
-                                // "ポインタセット開始"
-                                v[310] = v[242] + v[1220]
-                                v[295] = v[301] + 99
-                                // "設定"
-                                v[v[301]] = 1
-                                v[v[295]] = 0
-                                // "普通にアニメ"
-                                v[607].copy v[361], 2
-                                @pic[v[310]].show {
-                                    "popstrings\charge"
-                                    .pos v[361], v[362] .center
-                                    .scrollWithMap
-                                    .chromakey 1
-                                    .scale 100
-                                    .trans v[1066]
-                                    .rgbs 100, 100, 100, 100
-                                    .mapLayer 7
-                                    .eraseWhenTransfer
-                                    .affectedByFlash
-                                    .affectedByShake
-                                }
-                                v[362] -= 48
-                                @pic[v[310]].move {
-                                    .pos v[361], v[362] .center
-                                    .scale 100
-                                    .trans 100
-                                    .time 20
-                                    .rgbs 100, 100, 100, 100
-                                }
-                                // "仕上げに登録消す"
-                                v[242..243] += 1
-                                s[141].off
-                                @break
-                                
-                            }
-                            v[242] += 1
-                            
-                        }
-                        
-                        s[141].on
-                        v[607].copy v[361], 2
-                        v[11] = v[299]
-                        v[12] = 108
-                        @call .cev 116
-                        s[141].off
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        }
-        
-    }
-    
-}
+	} .else bl {
+		@if s[122] .isOn() {
+			v[v[299] * 300 + 4728] = 3000
+				v[11] = skill_cev_devastating_charge
+				v[12] = v[299]
+				//@call .cev 1935
+				func_bs_remove_buff(1238 v[299])
+				v[v[21]] = 1238
+				v[v[22]] = 24
+				v[607].copy v[361], 2
+				@if `v[30] == 1 || v[30] == 2 {
+					// "Set ShieldMotion Timer"
+					v[v[299] * 300 + 4783] = 6
+						// "演出"
+						@if `s[v[300] + 500] == 1 && v[182] < 5 {
+							// "#########################"
+							v[471] = 11550
+								v[472] = divmul(90, 100, v[2216])
+								v[473] = rnd(62, 74)
+								v[474] = divmul(v[361] + v[1001], v[1281], 50)
+								// "#########################"
+								@cmd v[471], "weapons\lancecharge", .args v[472], 3
+
+						}
+
+				}
+			v[607].copy v[361], 2
+				@if `between(v[361], v[1008], v[1009]) && between(v[362], v[1010], v[1011]) {
+					@loop v[1017] .dst v[320] {
+						v[244] %= v[1199]
+							v[331] = v[244] * 50
+							v[331] = v[331] + v[1198]
+							@if v[v[331]] <= 1 {
+								// "まず清掃"
+								v[1301].copy v[v[331]], 50
+									// "ポインタセット開始"
+									// "設定"
+									v[v[331]] = 1
+									// "500F"
+									v[v[331] + 49] = 3
+									// "Set itself"
+									v[v[331] + 3] = 131
+									// "普通にアニメ"
+									v[341] = v[331] + 6
+									v[607].copy v[v[341]], 2
+									// "仕上げに登録消す"
+									v[244] += 1
+									@break
+
+							}
+						v[244] += 1
+
+					}
+
+
+				}
+			@if v[217] < v[4559] {
+				v[217] += 1
+					@loop v[4559] .dst v[320] {
+						v[216] %= v[4559]
+							v[281] = v[216] * 100
+							v[281] += v[1076]
+							v[285] = v[281] + 1
+							@if v[v[285]] == 0 {
+								// "Access17 = AttackerObjチェックPtr"
+									v[297] = v[299] * 300
+									v[297] += 4700
+									// "まず清掃"
+									v[1301].copy v[740701], 100
+									v[1301].copy v[v[295]], 100
+									// "ParentObjセット"
+									v[740709] = v[299]
+									// "出る場所セット"
+									v[341] = v[300] * 300 + 4707
+									v[v[341]].copy v[740705], 2
+									v[740705..740706] *= 10000
+									v[v[341]].copy v[740707], 2
+									// "Projectile team"
+									v[341] = v[297] + 100
+									projectile_rgst_Team = v[v[341]]
+									// "パラメータ等入力begin"
+									// "#Pic"
+									projectile_rgst_Pic1 = 1
+									// "#ProjectileType"
+									v[740701] = 2
+									// "#あたり判定"
+									v[740710] = 32
+									v[740711] = 32
+									// "#威力"
+									v[11] = v[299]
+									v[12] = 1
+									@call .cev 2004
+									// "[AD]*20%"
+									v[21] /= 5
+									v[740721] = v[21]
+									// "#ARMRと属性"
+									v[740722] = 0
+									v[341] = v[297] + 123
+									v[740723] = v[v[341]]
+									// "#Hit Type"
+									v[740727] = 0
+									// "#Timer"
+									v[740800] = 2
+									// "#Effect"
+									v[740704] = 1242
+									// "パラメータ等入力end"
+									v[740701].copy v[v[285]], 100
+									// "演出"
+									@break
+
+							}
+						v[216] += 1
+
+					}
+
+
+			}
+
+		} .else bl {
+			@if s[123] .isOn() {
+					// kari remade
+					TT1 = projectile_ParentObject * 300
+					TT1 += 4707
+					v[TT1].copy projectile_RelativeX, 2
+					MACRO_REFRESH_PROJECTILE_POS_FROM_REL_COORD
+
+					TT1 += 5
+					v[TT1].copy TT1,2
+					// "動きがなくなったら判定がきえる"
+					TT1 = (abs(TT1) + abs(TT2)) / 1500
+					@if TT1 == 0 {
+							projectile_Timer /= 2
+							@if projectile_Timer == 0 {
+									var1 = skill_cev_devastating_charge
+									var2 = projectile_ParentObject
+									@call .cev 1935
+
+							}
+
+					}
+				s[123].off
+
+			} .else bl {
+				@if s[119] .isOn() {
+					v[603] |= 16
+						v[868] = muldiv(v[868], 144 + (138 - v[v[235] + 15]), 100)
+						// "#V[301]=agentwhogetsbuff"
+						v[861] *= 13
+						v[861] /= 10
+						v[865] += 20
+						v[864] += 800
+						// "##fearsome"
+						v[874] |= 2048
+						v[874] |= 262144
+						// "#Lance"
+						v[874] |= 33554432
+						// "#ForceSpr"
+						v[850] = 1
+						// "#Icon Number"
+						v[21] = 18
+
+				} .else bl {
+					// "#発動処理"
+					v[297] = v[299] * 300
+						v[297] += 4700
+						@if `v[v[297] + 81] <= 0 {
+							// "#バフ番号指定"
+							v[11] = 1238
+								v[12] = v[299]
+								@call .cev 1911
+								@if v[22] >= 0 {
+									// "#Duration"
+									v[v[22]] = 150
+
+								}
+							// "当たり判定を召喚"
+							@if v[217] < v[4559] {
+								v[217] += 1
+									@loop v[4559] .dst v[320] {
+										v[216] %= v[4559]
+											v[301] = v[216] * 100
+											v[301] += v[1076]
+											v[295] = v[301] + 1
+											@if v[v[295]] == 0 {
+												// "Access17 = AttackerObjチェックPtr"
+												v[297] = v[299] * 300
+													v[297] += 4700
+													// "まず清掃"
+													v[1301].copy projectile_rgst_ProjectileType, 100
+													// "ParentObjセット☆修正済み,Ptr19"
+													projectile_rgst_ParentObject = Ptr19
+													// "出る場所セット"
+													TT1 = Ptr17 + 5
+													v[TT1].copy projectile_rgst_milPixX, 2
+													TT1 += 2
+													v[TT1].copy projectile_rgst_RelativeX, 2
+													// "Projectile team"
+													TT1 = Ptr17 + 100
+													projectile_rgst_Team = v[TT1]
+													// "パラメータ等入力begin"
+													// "#Pic"
+													projectile_rgst_Pic1 = 1
+													// "#ProjectileType"
+													projectile_rgst_ProjectileType = 1
+													projectile_rgst_CallFuncProjectile = skill_cev_devastating_charge
+													// "#Hit Limit"
+													projectile_rgst_HitLimit = 1
+													// "#あたり判定"
+													TT1 = v[Ptr19 * 300 + 4817] / 880
+													projectile_rgst_Width.repeat TT1,2
+													// "#威力"
+													var1 = Ptr19
+													var2 = 1
+													@call .cev 2004
+													// "[AD] * 390% + 10"
+													reg1 *= 400
+													reg1 /= 100
+													reg1 += 20
+													projectile_rgst_Damage = reg1
+													// "#ARMRと属性"
+													projectile_rgst_ARorMR = 0
+													TT1 = Ptr17 + 123
+													projectile_rgst_Element = v[TT1]
+													// "#Crack shield"
+													projectile_rgst_bits1 |= 1024
+													// "#Nopic"
+													projectile_rgst_ProjectileFlag1 |= 1
+													projectile_rgst_ProjectileFlag1 |= 8
+													// "#Timer"
+													projectile_rgst_Timer = 140
+													// "#Hit Type"
+													projectile_rgst_Hittype = 2
+													// "#Effect"
+													projectile_rgst_CallFuncHit = skill_cev_devastating_charge
+													MACRO_SET_REWORKED_PROJECTILE
+													// "パラメータ等入力end"
+													projectile_rgst_ProjectileType.copy v[Ptr15], 100
+													// "描画"
+													Temp2 = v[216] + v[4560]
+													@pic[Temp2].erase
+													// "パラメータ等入力end"
+													// "描画"
+													__if DEBUG_BUILD == 1 {
+														@pic[v[302]].show {
+															"arrows\throwingaxeb"
+																.pos v[361], v[362] .center
+																.scrollWithMap
+																.chromakey 1
+																.scale 100
+																.trans 0
+																.rgbs 80, 80, 80, 80
+																.mapLayer 7
+																.eraseWhenTransfer
+																.affectedByTint
+																.affectedByFlash
+																.affectedByShake
+														}
+
+													} .else bl {
+														@pic[v[302]].erase
+
+													}
+												@break
+
+											}
+										v[216] += 1
+
+									}
+
+
+							}
+							v[341] = v[297] + 7
+								v[v[341]].copy v[605], 2
+								v[605..606] *= 10000
+								v[v[341]].copy v[607], 2
+								@if `s[500 + v[299]] == 1 {
+									@if v[182] <= 5 {
+										v[182] += 2
+											// "#########################"
+											v[471] = 11550
+											v[472] = divmul(65, 100, v[2216])
+											v[473] = 85
+											v[474] = divmul(v[361] + v[1001], v[1281], 50)
+											// "#########################"
+											@cmd v[471], "Horse", .args v[472], 3
+											v[473] = 120
+											@cmd v[471], "Sword1", .args v[472], 3
+
+									}
+									@loop v[1017] .dst v[320] {
+										v[242] %= v[1017]
+											v[301] = v[242] * 100
+											v[301] = v[301] + v[1018]
+											@if v[v[301]] <= 1 {
+												v[243] -= v[v[301]] == 1 ? 1 : 0
+													v[242] %= v[1017]
+													v[281] = v[242] * 100
+													v[281] = v[281] + v[1018]
+													// "まず清掃"
+													v[1301].copy v[v[301]], 100
+													// "ポインタセット開始"
+													v[310] = v[242] + v[1220]
+													v[295] = v[301] + 99
+													// "設定"
+													v[v[301]] = 1
+													v[v[295]] = 0
+													// "普通にアニメ"
+													v[607].copy v[361], 2
+													@pic[v[310]].show {
+														"popstrings\charge"
+															.pos v[361], v[362] .center
+															.scrollWithMap
+															.chromakey 1
+															.scale 100
+															.trans v[1066]
+															.rgbs 100, 100, 100, 100
+															.mapLayer 7
+															.eraseWhenTransfer
+															.affectedByFlash
+															.affectedByShake
+													}
+												v[362] -= 48
+													@pic[v[310]].move {
+														.pos v[361], v[362] .center
+															.scale 100
+															.trans 100
+															.time 20
+															.rgbs 100, 100, 100, 100
+													}
+												// "仕上げに登録消す"
+												v[242..243] += 1
+													s[141].off
+													@break
+
+											}
+										v[242] += 1
+
+									}
+
+									s[141].on
+										v[607].copy v[361], 2
+										v[11] = v[299]
+										v[12] = 108
+										@call .cev 116
+										s[141].off
+
+								}
+
+						}
+
+				}
+
+			}
+
+		}
+
+	}
 }

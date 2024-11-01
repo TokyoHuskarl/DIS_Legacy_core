@@ -11,6 +11,7 @@ def {
 	CTYP_PLAYER = 6
 	CTYP_GROUP = 7
 	CTYP_UI = 8
+	CTYP_OBJ = 9
 	
 	CTYP_END
 }
@@ -33,6 +34,7 @@ deft {
 	str_link_Cmd_player
 	str_link_Cmd_group
 	str_link_Cmd_ui
+	str_link_Cmd_obj 
 
 }
 
@@ -43,12 +45,22 @@ def WAIT_FOR_JSCMD_EXECUTION = {
 	}
 }
 
+
 // DIS JS functions
 __fn boot_DIS_js_system {
+	load_jslib("CryptoJS/aes.js") // AES lib
+	execute_js("NsGUI.js")
 	execute_js("DIS_js_system_main.js")
+	
+	
 }
 
 def JS_TRYPACK_1 = "try {"
+
+__fn callback_js $command $args {
+	str2.asg "TPCback."
+	eval_js(str2)
+}
 
 __fn try_eval_js $script $errormsg {
 	js_StringBuffer.asg $script
@@ -65,6 +77,7 @@ __fn reboot_DIS_js_system { // called after RMsavedata load
 
 	execute_js(PATH_js_bootconfig) // load boot config
 	boot_DIS_js_system()
+	WAIT_FOR_JSCMD_EXECUTION
 	
 	// and?
 }
@@ -85,6 +98,21 @@ __fn save_DIS_js_RTS_system {
 __fn load_json_to $jsonpath $savestr {
 	load_json($jsonpath)
 	t[__id($savestr)].asg js_StringBuffer
+}
+
+
+
+/**
+ *
+ * @param {string} $libname - name of Javascript library in /scripts/jslib/.
+ */
+__fn load_jslib $libname {
+	// load
+	log_push(__str("Loading js library:",$libname))
+	js_StringBuffer.asg .cat(jslib_directory,"",$libname)
+	js_StringBuffer.asg .file(js_StringBuffer), .utf8
+	@js .run js_StringBuffer
+
 }
 
 // Open DIS js scene
@@ -152,6 +180,9 @@ __fn DIS_Cmd_PackTree $chosenobj $md $counter $given_v_or_str $flags {
 	}.elif $chosenobj == CTYP_UI { // Cmd.ui
 		DIS_Cmd_ui(str_link_Cmd_ui,$md,$counter,$given_v_or_str,$flags)
 
+	}.elif $chosenobj == CTYP_OBJ { // Cmd.ui
+		DIS_Cmd_obj(str_link_Cmd_obj,$md,$counter,$given_v_or_str,$flags)
+
 	}
 
 }
@@ -210,6 +241,12 @@ __fn DIS_Cmd_ui $LINKstr $md $counter $given_v_or_str $flags {
 	})
 }
 
+__fn DIS_Cmd_obj $LINKstr $md $counter $given_v_or_str $flags {
+	SScmdPackage_Build("obj",$LINKstr, $md, $counter, $given_v_or_str, $flags, {
+		DIS_obj_methods($LINKstr $md $counter $given_v_or_str $flags)
+	})
+}
+
 // ---------------------------------------------
 // Scale Script Command libraries
 // ---------------------------------------------
@@ -222,8 +259,16 @@ __fn DIS_map_methods $LINKstr $md $i $given_v_or_str $flags {
 		// let javascript interpreter execute what is written in file
 		{NsCmd($LINKstr, $md, $i, "spnAg",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,"0",SSargs5,SSargs6)})}, // map.spawnAgent
 		{NsCmd($LINKstr, $md, $i, "spnSt",{cmd_spawnStatic(SSargs0,SSargs1,SSargs2,SSargs3,"0")})}, // map.spawnStatic
-		{NsCmd($LINKstr, $md, $i, "spawnPalisade",{cmd_spawnPalisade(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnPalisade
-		{NsCmd($LINKstr, $md, $i, "spawnWall",{cmd_spawnWall(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnWall
+		{NsCmd($LINKstr, $md, $i, "spnPali",{cmd_spawnPalisade(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnPalisade
+		{NsCmd($LINKstr, $md, $i, "spnWall",{cmd_spawnWall(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})}, // spawnWall
+		{NsCmd($LINKstr, $md, $i, "spnEft",{
+			t2v(SSargs0,var1) // check effect type
+			
+			@if var1 == 0 {
+				cmd_spawnEffect_preset(SSargs1,SSargs2,SSargs3,SSargs4)
+			}
+			
+		})}, // spawnWall
 		{NsCmd($LINKstr, $md, $i, "genHeightmap",{cmd_genHeightmap()})}, // genHeightmap
 		
 
@@ -245,6 +290,12 @@ __fn DIS_sys_methods $LINKstr $md $i $given_v_or_str $flags {
 			t2v(SSargs0,var1)
 			t[var1].toFile SSargs1, .utf8
 		})},	
+		{NsCmd($LINKstr, $md, $i, "loadlib",{load_jslib(SSargs0)})},
+		{NsCmd($LINKstr, $md, $i, "cev",{
+			t2v(SSargs0,reg1)
+			@call .cev reg1
+		})},
+
 
 	])
 }
@@ -286,11 +337,18 @@ __fn DIS_game_methods $LINKstr $md $i $given_v_or_str $flags {
 
 
 		// pic series
+		{NsCmd($LINKstr, $md, $i, "drSimpleRect",{cmd_pic_simplestr(SSargs0,SSargs1,SSargs2,SSargs3,SSargs4)})},
 		{NsCmd($LINKstr, $md, $i, "loadPic",{cmd_pic_simpleload(SSargs0,SSargs1)})},
+		{NsCmd($LINKstr, $md, $i, "mvPic",{cmd_pic_simplemove(SSargs0,SSargs1,SSargs2)})},
 		{NsCmd($LINKstr, $md, $i, "removePic",{
 			t2v(SSargs0,var1)
 			@pic.erase [var1]
 		})},
+		{NsCmd($LINKstr, $md, $i, "cachePic",{cmd_pic_load_jscache(SSargs0,SSargs1)})},
+		//pasteFromCache `${cachedPic},${pid},${origin[0]},${origin[1]}`
+		{NsCmd($LINKstr, $md, $i, "pstCchPc",{cmd_pic_paste_from_cache(SSargs0,SSargs1,SSargs2,SSargs3)})}, // paste cache picture to pic
+
+
 		{NsCmd($LINKstr, $md, $i, "pGSE",{cmd_play_global_sound(SSargs0,SSargs1,SSargs2,SSargs3)})}, // game.playGlobalSE
 		{NsCmd($LINKstr, $md, $i, "pBGM",{cmd_play_global_music(SSargs0,SSargs1,SSargs2,SSargs3)})}, // game.playBGM
 
@@ -332,10 +390,11 @@ __fn DIS_group_methods $LINKstr $md $i $given_v_or_str $flags {
 	SScmdLib_Build("grp", $LINKstr, $md, $i, $given_v_or_str,$flags, [
 
 		//let javascript interpreter execute what is written in file
-		{NsCmd($LINKstr, $md, $i, "setCgrp",{cmd_grp_setCgrp()})},
-		{NsCmd($LINKstr, $md, $i, "registerCohort",{cmd_grp_registerCohort()})},
-		{NsCmd($LINKstr, $md, $i, "convertPath",{})},
-		{NsCmd($LINKstr, $md, $i, "move",{cmd_grp_move(SSargs0,SSargs1,SSargs2)})},
+		{NsCmd($LINKstr, $md, $i, "stCgrp",{cmd_grp_setCgrp()})},
+		{NsCmd($LINKstr, $md, $i, "agtmv",{cmd_grp_move_simple(SSargs0,SSargs1,SSargs2,SSargs3)})},
+		{NsCmd($LINKstr, $md, $i, "setSt",{cmd_grp_setStance(SSargs0,SSargs1)})},
+		{NsCmd($LINKstr, $md, $i, "regiCoh",{cmd_grp_registerCohort()})},
+		{NsCmd($LINKstr, $md, $i, "convertPath",{})}, //?
 		
 	])
 }
@@ -349,6 +408,18 @@ __fn DIS_ui_methods $LINKstr $md $i $given_v_or_str $flags {
 		{NsCmd($LINKstr, $md, $i, "clearDialogQueue",{cmd_clearDialogQueue()})},
 		{NsCmd($LINKstr, $md, $i, "getPictureInfo",{cmd_getPictureInfo()})},
 
+
+	])
+}
+
+
+// Cmd.obj
+__fn DIS_obj_methods $LINKstr $md $i $given_v_or_str $flags {
+	SScmdLib_Build("obj", $LINKstr, $md, $i, $given_v_or_str,$flags, [
+
+		// let javascript interpreter execute what is written in file
+		{NsCmd($LINKstr, $md, $i, "plcAg",{cmd_spawn_agent(SSargs0,SSargs1,SSargs2,SSargs3,"0",SSargs5,SSargs6)})}, // Cmd.obj.placeUnitAsAgent()
+		
 
 	])
 }
@@ -523,7 +594,10 @@ __fn cmd_spawnPalisade $begX $begY $endX $endY $team {
 __fn cmd_spawnWall $begX $begY $endX $endY $team {
 	generateWall_preparation($begX,$begY,$endX,$endY,$team)
 	@call .cev 834
-	
+}
+
+__fn cmd_spawnEffect_preset $id $tileX $tileY $infoArray {
+		func_errlog("TPC:cmd_spawnEffect_preset() - underconstruction")
 }
 
 //##########################
@@ -656,6 +730,42 @@ __fn cmd_sys_loadtxt $path $adrt {
 // picture commands
 //##########################
 
+__fn cmd_pic_simplestr $picid $x $y $w $h {
+
+	t2v($picid,var1)
+	t2v($x,var2)
+	t2v($y,var3)
+	t2v($w,var4)
+	t2v($h,var5)
+
+	@pic[var1].strpic {
+		""
+		.pos var2, var3 .topLeft
+		.size var4, var5        .chromakey 1
+		.scale 100
+		.trans 10
+		.rgbs 100, 100, 100, 100
+		.font Font_UI, Font_UI_size .noShadow
+		.spacing 0, 0
+		.skin "" .stretch .noGradation .noPadding
+		.mapLayer 8
+		.eraseWhenTransfer
+		.affectedByFlash
+		.affectedByShake
+	}
+}
+
+__fn cmd_pic_simplemove $picid $x $y {
+	t2v($picid,var1)
+	t2v($x,var2)
+	t2v($y,var3)
+	@pic[var1].move {
+			.pos var2, var3 .topLeft
+			.scale 100
+			.trans 0
+			.time 0
+	}
+}
 
 __fn cmd_pic_simpleload $pic_name $picid {
 	t2v($picid,var1)
@@ -671,7 +781,47 @@ __fn cmd_pic_simpleload $pic_name $picid {
 	}
 }
 
-__fn cmd_pic_simplemove $picid {
+/**
+ * @param {string}
+ * @param {string}
+ */
+__fn cmd_pic_load_jscache $pic_name $cache_path {
+	@pic[EDITPIC].show {
+			$pic_name
+			.pos 0, 0 .topLeft
+			.chromakey 1
+			.scale 100
+			.trans 100
+			.rgbs 100, 100, 100, 100
+			.mapLayer DIS_gui_Layer
+	}
+	// *TODO* need safety in case the picture is too big to load
+	@pic[EDITPIC].getInfo .cewh .baseRect v[360], v[360], v[355], v[356]
+	@pic[EDITPIC].getInfo .pixel 0, 0, v[355], v[356] .dst buffer_for_pixel_information_head
+	TT1 = v[355] * v[356]
+	@if TT1 <= buffer_pixel_info_size_max {
+		$jscode = __str("DIS._tpc.send_piccache(\t[",__id(SSargs1),"],getv(",buffer_for_pixel_information_head,",\v[",__id(TT1),"]),[\v[355],\v[356]])")
+			eval_js($jscode)
+	}.else bl{
+		func_errlog("TPC:cmd_pic_load_jscache() - Loaded Picture size is too big to cache. Aborted")
+	}
+
+}
+
+/**
+ * @param {string}
+ * @param {string}
+ */
+__fn cmd_pic_paste_from_cache $cacheobj $pid $x $y {
+	// get size to reg1
+	$jscode = __str("DIS._tpc.take_piccache(\t[", __id(SSargs0), "],", buffer_for_pixel_information_head, ",", __id(reg1), ")")
+	eval_js($jscode)
+	t2v($pid,var10)
+	t2v($x,var1)
+	t2v($y,var2)
+	var3 = reg1 & 0xFFF // x
+	var4 = reg1 >> 12 // y
+	@pic[var10].setPixel .xywh var1, var2, var3, var4 .src v[buffer_for_pixel_information_head] .skipTransparent
 
 }
 //#########################
@@ -732,7 +882,7 @@ __fn cmd_team_get_schwerepunkt $teamID {
 }
 
 __fn cmd_team_set_pop_limit $teamID $limit {
-	v[LEGV_Ptr2PopLimitArray + $teamID] = $limit
+	v[Ptr_PopLimitArrayHEAD + $teamID] = $limit
 
 }
 
@@ -868,14 +1018,74 @@ __fn cmd_grp_registerCohort {
 	}
 }
 
-__fn cmd_grp_move $x $y $fl {
-	t2v($x,var1) // x
-	t2v($y,var2) // y
-	t2v($fl,var3) // flag
-	macro_convert_maptileXY_into_relativeXY(var1,var2,v[2853],v[2854])
-	@call .cev 1750
+// not simple at all! what the fugg :D
+__fn cmd_grp_move_simple $x $y $fl $formation {
+	t2v($x,Temp16) // x
+	t2v($y,Temp17) // y
+	t2v($fl,Temp18) // flag
+	t2v($formation,Temp19) // form
+
+	// convert maptile XY
+	macro_convert_maptileXY_into_relativeXY(Temp16,Temp17,Temp21,Temp22) // return relXY pos to Temp21,Temp22
+
+	// underconstruction - how should I deal with formation?
+
+	// line
+	@if Temp19 == 1 {
+
+		// you have to write optional proc for setting angle manually
+		get_agentslist_median_pos_rel_to_reg1_reg2(Const_save_var_Adr_aiAgentlistHead,aiListAgentCounter) // get median pos
+		// save current median po to Temp23~24
+		reg1.copy Temp23,2
+
+		ai_order_calculate_form_line(Const_save_var_Adr_aiAgentlistHead,aiListAgentCounter,reg1,reg2,Temp21,Temp22) // Temporary, get angle from median point of the selected list to the designated point
+
+		@if `Temp18 & AI_MOVEORDER_FL_CHANGE_ONLY_DIRECTION {
+			Temp23.copy Temp21,2 // just change current angle
+		}
+		
+	}.else {
+		// init AI agent move variables
+		MACRO_init_ai_agent_move_vars
+
+	}
+
+
+	// call move order
+	ai_order_agents_move(Const_save_var_Adr_aiAgentlistHead,aiListAgentCounter,Temp21,Temp22,Temp18)
 
 }
+
+/**
+ * Change stance of selected agents.
+ * @param {t} $stance - 
+ * @param {t} $fl - 
+ */
+__fn cmd_grp_setStance $stance $fl {
+	t2v($stance,var1) // x
+	t2v($fl,var2) // y
+
+	// set stance
+	@if var1 == 0 { // alert
+		func_agentlist_order_alert(Const_save_var_Adr_aiAgentlistHead,aiListAgentCounter,var2)
+
+	}.elif var1 == 1 {
+		func_agentlist_order_stand(Const_save_var_Adr_aiAgentlistHead,aiListAgentCounter,var2)
+
+	}.elif var1 == 3 { // defense
+		func_agentlist_order_def(Const_save_var_Adr_aiAgentlistHead,aiListAgentCounter,var2)
+		
+	}.elif var1 == 4 { // manual
+		// UNDERCONSTRUCTION
+		func_devlog("TPC:[cmd_grp_setStance] manual order is underconstruction")
+	}.else {
+		errlog("TPC:[cmd_grp_setStance] Given stance id is invalid.")
+	}
+}
+__fn cmd_grp_attack_agent {
+}
+
+
 
 /*
 		@if inputstr .contains "_get_mapcord(" {

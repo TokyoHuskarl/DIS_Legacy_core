@@ -4,13 +4,15 @@
 #include "./../headers/header_scripts.tpc"
 #include "./../headers/header_ai.tpc"
 #include "./../headers/header_drawing.tpc"
+#include "./../headers/header_picture_edit.tpc"
 #include "./../headers/header_cohort.tpc"
 
-// This weird shit will be gone after Scale Script completed
-#include "./../headers/header_scripts_functions.tpc"
+#include "./../headers/header_scripts_functions.tpc" // This weird shit include file will be gone soon (TM)
 
 
 
+
+// BEWARE of addresses of guiVars. They are carelessly set and haven't been touched since forever
 cev[2041], .name("Script:DIS command interpriter"), .parallel , .cond(__id(BOOL_CMD_RUN)), {
 	BOOL_CMD_CALLING.on
 	// split ORDER string given from js UI manager object 
@@ -23,8 +25,8 @@ cev[2041], .name("Script:DIS command interpriter"), .parallel , .cond(__id(BOOL_
 		// CHECK objtype and execute actual cmd
 		DIS_Cmd_callPackageTree(SScmdDynCounter,guiVar8)
 
-		guiVar1 += 1
-		guiVar8 += 1  // get current shit
+		val_add(guiVar1,N1) // guiVar1 += 1
+		val_add(guiVar8,N1) // guiVar8 += 1
 	
 	}
 	Str_CmdQueue.asg "" // init 
@@ -36,6 +38,8 @@ cev[2041], .name("Script:DIS command interpriter"), .parallel , .cond(__id(BOOL_
 
 // dialog manager
 cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_Dialog)), {
+
+	//
 	deft {
 			dialog_treeid = 2998
 			dialog_orderid = 2999
@@ -138,7 +142,8 @@ cev .id(2042), .name("Script:Dialog Manager"), .parallel , .cond(__id(RUN_Radio_
 
 
 
-// LEGACY
+// LEGACY.
+// Remove when you decide to remove #include "./../headers/header_scripts_functions.tpc"
 
 cev .id(1821), .name("*MapScriptGeneral*"), {
 	/*
@@ -200,6 +205,7 @@ cev .id(1821), .name("*MapScriptGeneral*"), {
 }
 
 
+// this one might be useful in some situations even after removing legacy
 cev .id(1840), .name("ScriptPreproc"), {
 
 	t[800] .split t[525], t[Const_save_var_Adr_ScriptsBufferHead], v[505]

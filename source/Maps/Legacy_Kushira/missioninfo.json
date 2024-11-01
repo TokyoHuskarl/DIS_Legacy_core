@@ -1,33 +1,19 @@
 {
-	"MISSIONINFO": {
+		"missionid": "Legacy_Kushira",
 		"name": "Kushira",
-		"missionscript": ["mymission.js"],
-		"dataextension": [],
-		"startcamerapos": [0,0],
+		"name_jp": "クルシラ",
+		"description": " The enemy is currently assembling on the opposite bank of the Curcilla River.^It is believed that by tomorrow morning, the enemy forces will target the southern cities and are expected to advance towards the front of our troops.^ The Northern Mobile Field Army should prepare for the enemy's onslaught,^concentrating forces on the highways east of Tredecim Mound,^striving for their annihilation.^ Furthermore, against the enemy's heavy infantry,^a strict order is issued for a cavalry attack on their flanks and rear.",
+		"description_jp": "^敵　クルシラ川対岸ニテ　集結中^明朝　南方諸都市ヲ目標トシ^我ガ部隊正面ニ　進出スルト思ハレル^^機動野戦軍北部方面隊ハ　敵突進ニ備ヘ^トレデキム塚以東ノ街道ニ　戦力ヲ集中シ^此レ撃滅ニ勉ムベシ^^尚　敵重装歩兵隊ニ対シテハ^騎兵戦力ニヨル　側背面攻撃ヲ厳命ス",
 
-		"playcondition": [],
-		"dependency": [],
-		"icon": "",
+		"default_factions": [1,8,1],
 
-		"allows_pick_faction": true,
-		"default_factions": [],
-		"allows_set_difficulty": false,
+		"allows_set_difficulty": true,
 		"difficulty_list": [],
 
 		"sys_morale": true,
-		"sys_sight": false,
-		"sys_level": false
+		"sys_sight": true,
 
+		"legacymission": true
 
-	},
-
-	"MAPINFO": {
-		"IMPORT": "Legacy_Petrovka",
-		"mapscript": ["mymap.js"],
-		"mapdata": "",
-		"tileset": 15,
-		"size": [308,201],
-		"heightgen": "HGEN_PRESET"
-	}
 
 }

@@ -46,7 +46,7 @@ Inv　v[145]にユニット番号挿入<-v[340]が同じ機能果たしてるの
 Fatalities
 
 
-strings strid
+strings strid 
 	#1-400 unitsname
 	#401-410 ConstLoadPath #1=Body,2=Head,3=Helm,4=RHand,5=LHand,6=Horse,7=Minion
 	
@@ -79,6 +79,7 @@ strings strid
 	UI_ORDER = 731
 
 	740 = cache
+	741
 
 
 	748 = MissionLogName
@@ -95,6 +96,10 @@ strings strid
 	762 = mapdef.js
 	763 = saveSimpleTriggers
 	
+	Str_playergamedata_0 = 767
+	Str_playergamedata_1 = 768
+	Str_playergamedata_2 = 769
+
 	771 = Cmd.map
 
 	774 = Cmd.game
@@ -119,6 +124,7 @@ strings strid
 	806 = armorID
 	807 = helmIDD
 	808 = accID
+	810 = techID
 	
 
 	851..
@@ -398,18 +404,21 @@ Set 601-900
 
 #56*36 = minimap neu
 
-
-#224576-224976 InSightTimer [400] ****
  
-//225001~243000 Projectile [100]*180 Pict [1]*180 1001-1180
-//243001~255000 Effect [100]*120 Pict [1]*120 801-920
+ALLOCATION:
+// 225001~243000 Projectile [100]*180 Pict [1]*180 1001-1180
+// 243001~255000 Effect [100]*120 Pict [1]*120 801-920
 
-// 273901~274000 TerrainBits -> header_common.tpc
-274001~274500 MapSimpleTriggersConditions 500
-274501~275000 MapSimpleTriggersVar 500
-275001~280000 ParticleEffecter [50]*100
-280001~290000 ObjSort
-290001~300000 ObjSort_save
+// 274001~274500 MapSimpleTriggersConditions 500
+// 274501~275000 MapSimpleTriggersVar 500
+
+
+// 275001~280000 ParticleEffecter [50]*100 // we can possibly increase the max amount of emitters... maybe 255 is better -> move to after effect array
+
+// 280001~290000 ObjSort_for_drawing // srsly
+//290001~300000 ObjSort_save_drawing
+# 280001~281000 ObjSort_for_drawing // keisan misutteta
+# 281001~282000 ObjSort_save_drawing // relocated!
 
 
 //Factional Vars should be relocated into pic buffer
@@ -419,13 +428,14 @@ FactionResources[4]+[36]
 300081~300120 Third
 300121~300160 Ally
 
-#300120~300220 TerrainBits
-300221~300316 MinimapProc
-300317~460317 CurrentMapInfo [400][400] #ElevationLevel[1]+UpperLayer[3]+DownLayer[3]+TerrainID[2]
-#460318~460817 DrawnList [500]
-#460818~461317 DrawnListLayers
+300221~300316 MinimapProc // maybe other buffer can used for minimap proc. I mean you can remove it
 
-460318~461317 AgentTeam%3[1000] METATEAM 
+//
+300317~460317 CurrentMapInfo [400][400] #ElevationLevel[1]+UpperLayer[3]+DownLayer[3]+TerrainID[2]
+
+// THIS ONE ALSO CAN BE REMOVED, but need to check if every metateam check is relocated into AEB
+460318~461317 AgentTeam%3[1000] METATEAM
+
 
 461318-462319 InSightTimer [1000] 
 
@@ -433,6 +443,7 @@ FactionResources[4]+[36]
 			enemy List 462821~463321  [500]
 			
 
+463614..463615 dst_MapStartO_from_RefO
 463616~463717 Terrain Bits
 #461318~463717 ObjectPictureIDs 400*[6] Body/Head/Helm/Weapon/Shield/Misc ***
 463718~463758 159528 ///?????????????????????????????????? camera group!!!
@@ -456,23 +467,25 @@ FactionResources[4]+[36]
 	
 		StanceOrder = 20	#0 = alert(search enemies), 1 =  standby, 2 = attack, 3= deffend, 4= player
 
-471544~525544  UnitIDJoiningBattle 4500*[4]*[3] OverallAmount,KillCount,DeathCount,FleeCount; Player,Enemy,Ally
+471544~525544 UnitIDJoiningBattle 4500*[4]*[3] OverallAmount,KillCount,DeathCount,FleeCount; Player,Enemy,Ally // this one might be better changed into js system
 525545~530344 MinimapChecker
-530345~530444 SpawnEquipmentDeployingTemp
+530345~530444 SpawnEquipmentDeployingTemp // retarded buffer
 530445~550444 FreshEffect [100]*200 Pict [1]*100
-550445~560445 pixel upto100*100
-#561446~562445 ObjColSizeXY [2]*400**
+
+550445~560445 pixelbuffer upto100*100 // this buffer should be a lot more bigger.
+
 562447~572446 FogOfWar [100]*[100]// 5*5 space 0x1=insight_ALLY 0x2=observed_ALLY 0x3=insight_lastck_ALLY
 
 
 572447~572946 ObjFoWSight //is this even working!?
 
+// this might be fucking retarded in this day
 572947~732946 MapTileFunction #[4]…resourceamount+[1]…type+[3]blockfuncID+[1]…pushflag!
 
 732947~733946 DeadbodyList
 733947~734946 LandUnitsList
 734947~735946 StaticList
-735947~736446 BasementListAlly 
+735947~736446 FoundationListAlly 
 
 736447~737446 OBJDrawnList [1000]
 737447~738446 DrawnListLayers [1000]
@@ -480,13 +493,15 @@ FactionResources[4]+[36]
 #LEGACY PARTY VARS
 738447~738747 ConstPartyInvListStart [300] - actually dynamic range (v[1189]), so you shouldn't use up space... 
 
-#125001~125400 GroupSelect [40]*10
 738946-739347 GroupSelect [40]*10
 
 739348~740000 MapScriptNestChecker // will be open
 
 740000~740300 BufferForVictimAgent [300]
-740301~740400 BufferForProjectiles [99]
+740301~740600 MiscBufferForAgent [300]
+
+740601~740700 BufferForRunningProjectiles [100]
+740701~740800 BufferForRegisteringProjectiles [100]
 
 	//740948~746948 ObjectPictureIDs 1000*[6] Body/Head/Helm/Weapon/Shield/Misc // this will be needless I guess?
 // So instead..740001~750000 AgentLink 0x00(possible flags?)+0x000(Link2)+0x000(Link1) - basically use only first 3 digits // ???????
@@ -499,21 +514,24 @@ FactionResources[4]+[36]
 // how about this one?
 +Obj Minimap Colour[1000]
 
+
+// THIS WILL BE REMOVED AFTER removing legacy map simple trigger system
+899001~899500 MapSimpleTriggersConditions 500
+899501~900000 MapSimpleTriggersVar 500 - temp moved to here, after
+// REMOVEREMOVEREMOVEREMOVEREMOVEREMOVEREMOVE
+
 //764742~1548949 Mapnodes [20]*200*200 
+
 900001~Mapnodes [20]*200*200
-#1548950~1126025noderouteSave 134*134 
+#1548950~1126025??? noderouteSave 134*134 
 TileInstant 400*400
 
 +OpenNodes 1548950~+200*200
 +OpenNodesCost 200*200
 +Closed Nodes 200*200
 
-- partytrooplist [8]*800 #[ID,count,wounded,exp,upkeepcost,type,group,flag]
-- TempEnemyTroopsLists [4]*400 [ID,count,wounded,res]
 #NEVER DELETE in a run end
 
-- AllyTroopsReadyToBattle [2] ID,trooptype UP TO 2000
-- EnemyTroopsReadyToBattle [2] ID,trooptype UP TO 2000
 
 
 Mapnodeのあとにzantei Mort
@@ -526,6 +544,11 @@ Mapnodeのあとにzantei Mort
  New mort existing 34000+128000 
 	count existing 85+256
 
+// LEGACY
+- partytrooplist [8]*800 #[ID,count,wounded,exp,upkeepcost,type,group,flag]
+- TempEnemyTroopsLists [4]*400 [ID,count,wounded,res]
+- AllyTroopsReadyToBattle [2] ID,trooptype UP TO 2000
+- EnemyTroopsReadyToBattle [2] ID,trooptype UP TO 2000
 
 
 
@@ -546,7 +569,7 @@ picid
 
 	200~ = Experimental Cache
 
-	699 = control_manager
+	699 = control_manager ?
 	700 = agent_arraybuffer
 	701~740=UnitsFormIndicator
 	
@@ -634,6 +657,7 @@ picid
 	1774 = Alert
 	1775 = LogSwitch
 	1790 = minimap_cover
+
 	1795 = terrain
 	1796 = tactical order
 	1797 = Morale
@@ -642,13 +666,13 @@ picid
 	1800 = ARgauge
 	1801~2000 = Unitmarkers
 
-	2001~2100 = MapObjects#使ってる？
+	2001~2100 = MapObjects # 使ってる!
 
 	2101 = OverRay
 	2102 = OverRay2
 	
 	2130 = ScreenEffect
-	2135 = Escape Back
+	2135 = Escape Back// 2135 = Escape Back
 	2136 = Escape Menu
 	2137 = Escape 1
 	2138 = Escape 2
@@ -814,6 +838,7 @@ Object:
 						 131072=spellcaster
 						 
 	#BreakFlags = 68　#1=have_head,2=have_body,4=have_arm,8=have_leg,16=have_wing,32=have_tail,64=reserve,128=reserve,256=reserve,512=reserve
+	scriptflags = 68
 					 #*2**14=BREAK
 	HeadID =69 #999999=fullcovered
 	Hair = 70
@@ -875,10 +900,10 @@ Object:
 	AAbits = 124 #BITS:  1 = AntiInf,2 = AntiArcher, 3:4 = AntiCav, 4:8= AntiMagi, 5:16 = AntiSiege,6:32 = reserved, 7:64= AntiCiv, 8:128=AntiStatic, 9:256=SlayStatic, 10:512=NOTantiStatic , 11:1024 = ShieldCracking, 12:2048 = DevastatingStrikes
 				　#13:4096 = Trample  14:8192=AntiHero 15:16384=AntiDragon , 17:65536=AntiAir, 18:131072 = ShieldDestroyerBonus　19:262144 = bladedanceflag, 20:524288 = camel
 		// AddMotionFlags
-　	AdditionalMotionBits/Atkres? = 125 #1=Armor_has_second_sprite_line,2=has_battle_move_animation,3:4=weapon_double_grip_motion 4:8=melee_double_handed_weapon_motion, 5:16=have_no_idle_motion, /*6:32=bladedanceflag*/ 7:64=blinkstart, 8:128=blink_close, 9:256=blinkend, 10:512=have_cached_obj, 11:1024: camel
+　	AdditionalMotionBits/Atkres? = 125 #1=Armor_has_second_sprite_line,2=has_battle_move_animation,3:4=weapon_double_grip_motion 4:8=melee_double_handed_weapon_motion, 5:16=have_no_idle_motion, /*6:32=bladedanceflag*/ 7:64=blinkstart, 8:128=blink_close, 9:256=blinkend, 10:512=have_cached_obj, 11:1024: camel, 12:2048: OutOfBreath, 13:4096  
 										11:
 										20:524288=fully_covered
-	Have_extra_motion = 126 #1:0000001 = have AA cooldown(pic4), 2:0000010 = have Move Motion(pic5), 3:0000100 = have Skill Motion(pic5) 4:0001000 = slimy/*have Skill Motion(pic4)*/,  5:0010000 = have Move Motion(pic4), 6:32 = Decapitatable, 7:64 = Smashable_head, 8:128= has_skullpicture, 9:256=reserve,10:512=Having_Extra_moving_animation,11:1024=dont_have_footstepsound,12:2048=no_fatigue,13:4096=upsidedown
+	Have_extra_motion = 126 #1:0000001 = have AA cooldown(pic4), 2:0000010 = have Move Motion(pic5), 3:0000100 = have Skill Motion(pic5) 4:0001000 = slimy/*have Skill Motion(pic4)*/,  5:0010000 = have Move Motion(pic4), 6:32 = Decapitatable, 7:64 = Smashable_head, 8:128= has_skullpicture, 9:256=moving_animation_onedirectional, 10:512=Having_Extra_moving_animation,11:1024=dont_have_footstepsound,12:2048=no_fatigue,13:4096=upsidedown
 							#14:8192=CanBeDamaged_Armor, 15:16384=ArmorNotYetDamaged, 16:32768=CanBeDamaged_Head, 17:65536=HeadNotYetDamaged
 							20:524288=LivingMoveAgent,Static(21:1048576=flatStatic) 22:2097152=hold_weapons 23:4194304=wield_weapon_vertical 24:8388608=holdweaponlock 25:16777216=horseback 26:33554432=kiteflag 27:67108864=backshotflag 28:134217728=inflippable_weapon 29:134217728*2=Anim_weapon,30:134217728*4=Anim_helm 31 = ExMotionFlags_FLAG_Shield_With_Anim
 	#Hero_SpriteTimer = 126 have bug issue ->280
@@ -937,6 +962,7 @@ Object:
 	
 	ShieldType = 233
 	ShieldBreakResistance = 234
+	ShieldRangedProtection = 235
     
   RHit/MHit = 236
 
@@ -971,8 +997,8 @@ Object:
 	acc = 255
 	reserveR = 256
 	reserveL = 257
-	RHandSpr1 = 258
-	LHandSpr2 = 259
+		#RHandSpr1 = 258
+		#LHandSpr2 = 259
 
 	Morale=260#  -1=confident, 1=wavering, 2=breaking, 3= fleeing
 
@@ -1100,10 +1126,10 @@ Projectile:
 	Pic1 = 2
 	CallFuncProjectile = 3
 	CallFuncHit = 4
-	x*10000 = 5
-	y*10000 = 6
-	x = 7
-	y = 8
+	absx*10000 = 5
+	absy*10000 = 6
+	relx = 7
+	rely = 8
 	ParentObject = 9
 	Width =10
 	Height = 11
@@ -1120,7 +1146,7 @@ Projectile:
 	ARorMR = 22
 	Element = 23
 	bits1 = 24
-	bits2 = 25
+	bits2 = 25 #
 	Transparency = 26
 	Hittype = 27 #0=wont_check_hit, 1=check_as_ranged,2=check_as_melee,
 	ProjectilesFlag=28 # 1 =Can_crit , 2 =splash_in_air, 3:4=already_hit_someone,4:8=nopicture
@@ -1154,8 +1180,9 @@ Projectile:
 	
 	pictypeID = 68
 	weapontype = 69  //
-	ProjectileFlag = 70 #1=multiplehit
-	HitMem = 71~99
+	ProjectileFlag2 = 70 #1=multiplehit
+	
+	HitMem = 71~99 // need to relocate somewhere else
 	Timer = 100
 
 
@@ -1282,8 +1309,8 @@ Effect:
 	Timer = 100
 
 Static:
-	Agent_bit = 3# 1=producing_tech, /*2:2=gateflag*/ 3:4=gate_open,4:8=gate_lock,5:16=wallflag,6:32=building_basement,7:64=houseflag,8:128=have_generated_picture 9:256=gateflag 10:1024=have_no_function 11:2048=inflammable 12:4096=farmflag 13:8192=marketflag, 14:16384=Newly Generated Static,15:32768:auto_que  65536=KILLED  19:262144=invisible_from_enemy, 21:1048576=EnablebasicAI
-				22:2097152=do_not_register_morton 30:sameasagent 31:not on screen
+	Agent_bit = 3# 1=producing_tech, /*2:2=gateflag*/ 3:4=gate_open,4:8=gate_lock,5:16=wallflag,6:32=building_basement,7:64=houseflag,8:128=have_generated_picture 9:256=gateflag 10:1024=has_no_function 11:2048=inflammable 12:4096=farmflag 13:8192=marketflag, 14:16384=Newly Generated Static,15:32768:auto_que  65536=KILLED  19:262144=invisible_from_enemy, 21:1048576=EnablebasicAI
+				22:2097152=do_not_register_morton 30:sameasagent 31:1073741824 = Drawn_in_screen // 31:not on screen
 
 	Producing_Unit = 138
 	Producing_Cost = 139
@@ -1321,6 +1348,10 @@ Static:
 	
 	Static_obj_flag = 220
 
+	Static_work_target = 221
+
+
+
 	StartMinimapNodeNumber =233
 	MinimapNodeAmountX =234
 	MinimapNodeAmountY =235
@@ -1329,9 +1360,11 @@ Static:
 	SprWidth_oneunit =239
 	SprHeight_oneunit = 240
 
+	sprite_pattern = 250
 	resource_cost = 251-254
 	
 	owner_of_farm = 255
+	assigned_workers_counter = 256
 	StaticMapX/5 = 258
 	StaticMapY/5 = 259
 	

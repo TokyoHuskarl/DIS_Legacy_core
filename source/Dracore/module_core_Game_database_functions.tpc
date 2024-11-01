@@ -1,0 +1,4 @@
+__fn get_troop_numid_to $string $rev {
+	inputstr.asg .cat("DIS._tpc.convert_id(trpid,`",$string,"`);")
+	eval_js_return_int(inputstr,$rev)
+}

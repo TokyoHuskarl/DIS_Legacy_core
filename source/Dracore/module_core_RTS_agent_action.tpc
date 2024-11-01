@@ -7,19 +7,19 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 		@while v[v[536]] != 0 {
 			//@comment "AITimer==1 "
 			func_extract_agent_vars(v[v[536]])
-				@if v[684] == 1 {
-					v[207] = v[v[536]] - 1
+				@if agent_ActionTimer == 1 {
+						v[207] = v[v[536]] - 1
 						v[210] = v[207] * v[1117] 
 						val_add(v[210],N5000) // v[210] += 5000
 						//@comment "Auto Attack"
 						@if agent_ActionState == 1 {
-							//@comment "Set Timer"
+							// @comment "Set Timer"
 								TT1 = v[210] + 84
 								ptr_const(TT1,3) // v[TT1] = 3
-								//@comment "Auto Attack"
+								// @comment "Auto Attack"
 								Ptr20 = v[210] + 18
 								v[340] = 34 + agent_AAType
-								//Legacy - give 843 Ptr
+								// Legacy - set v[843] as Ptr
 								agent_ActionState = v[210] + 243
 								@call .cev v[340]
 
@@ -36,13 +36,13 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 										//Ptr18 += 4821
 										//agent_CastSkillOrder = v[210] + 246
 										skill_Slot_in_agent = agent_ActionState - 3
-										//action frame
+										// action frame - this is reffered in legacy skill function
 										Ptr8 = v[210] + 29
 
 										//Ptr18 += skill_Slot_in_agent * 20 
 										//Ptr18 += 4821
 										//v[Ptr18].copy v[581], 20
-										func_extract_skill_data_from_agent_slot(Ptr19,skill_Slot_in_agent,EXTRACT_FLAG_Data_extracted)
+										func_extract_skill_data_from_agent_slot(Ptr19, skill_Slot_in_agent, EXTRACT_FLAG_Data_extracted)
 										@if agent_CastSkillOrder > 0 {
 												//@comment "#スキル番号取得ついでにCDセット"
 												//var1 = Ptr19
@@ -58,13 +58,13 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 												val_sub(agent_SP,skill_Cost) // agent_SP -= skill_Cost
 												//@comment "#Spend Cost END"
 												//@comment "#Set SkillOrder 0"
-												//Ptr17 += 138
-												//v[Ptr17+4946] = 0
-												agent_CastSkillOrder = 0
+												val_init(agent_CastSkillOrder)
 												@if `v[599] & 1 {
 														s[114].on
+
 														//TT1 = v[210] + 7
 														v[590] .add agent_RelativeX, 2
+
 														//Temporary Save changes
 														agent_ObjectType.copy v[Ptr1],agent_Basic_Array_size
 														@call .cev skill_MainFunction
@@ -90,8 +90,7 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 												//@comment "ちゃんとFuncが存在してるなら"
 												skill_MainFunction = skill_MainFunction > 0 ? skill_MainFunction : Const_Function_do_nothing
 												//@comment "よびだすv197=continuous or not"
-												v[197] = 0
-												//TT1 = v[210] + 7
+												val_init(v[197]) // v[197] = 0
 												v[590] .add agent_RelativeX, 2
 
 												func_devlog("Troop Casted Skill, cev called - id:\v[611]")
@@ -143,36 +142,38 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 
 													}
 													@if skill_Extramotion_ID == 1 {
-														//@comment "モーション初期化"
-														v[Ptr8] = 0
-															//agent_ActionState = v[210] + 243
+															//@comment "モーション初期化"
+															val_init(agent_AttackFrame)
 
 															//@comment "Should I Check AA CD?"
+
 															//actionstate set 0
-															v[v[210] + 243] = 0
+															val_init(agent_ActionState)
 
 													}
 
 												}
 
 										} .else bl {
-											agent_ObjectType.copy v[Ptr1],agent_Basic_Array_size
 												@if agent_AttackFrame > v[585] {
-													//@comment "モーション初期化"
-													v[Ptr8] = 0
-														//agent_ActionState = v[210] + 243
+														//@comment "モーション初期化"
+														val_init(agent_AttackFrame)
 														//@comment "Should I Check AA CD?"
+
 														//actionstate set 0
-														v[v[210] + 243] = 0
+														val_init(agent_ActionState)
 
 												} .else bl {
-													@if v[586] > 100 {// give extra motion animation
+													@if v[586] > 100 { // give extra motion animation
 														//Force sprite set
-														v[v[210] + 250] = skill_Extramotion_ID
+														val_asg(agent_ForceSprite,skill_Extramotion_ID)
 
 													}
 
 												}
+
+											// save back
+											agent_ObjectType.copy v[Ptr1],agent_Basic_Array_size
 
 										}
 
@@ -202,18 +203,21 @@ cev .id(cevID_Agent_Unit_Action), .name("Agent:Unit Action") , .parallel , .cond
 						@if agent_ActionState == 1 {
 								// @comment "Set Timer"
 								val_const(agent_ActionTimer,3) // agent_ActionTimer = 3
-								// @comment "Auto Attack"
+								// save back timer change
 								agent_ObjectType.copy v[Ptr1], 300
 
-								Ptr20 = v[210] + 18
-								victim_AgentType = v[Ptr20] * 300
-								val_add(victim_AgentType,N4701)
-								v[victim_AgentType].copy victim_AgentType, 100
-								// only when it's enemy - temporary, maybe this should be changed later
-								@if agent_TeamID != victim_TeamID {
-									v[340] = 34 + v[703]
-									@call .cev v[340]
+								@if agent_TargetAgentID > 0 {
+										victim_AgentType = agent_TargetAgentID * 300
+										val_add(victim_AgentType,N4701)
+										v[victim_AgentType].copy victim_AgentType, 100
 
+										// Do AA only when the target is enemy - temporary, maybe this should be changed later
+										@if agent_TeamID != victim_TeamID {
+												Ptr20 = v[210] + 18 // set ptr
+												v[340] = 34 + agent_AAType
+												@call .cev v[340]
+
+										}
 								}
 
 						}

@@ -5,6 +5,7 @@ __fn func_restartmap $inputstrnum {
 
 }
 
+
 cev .id(2050), .name("GameRestarter"), .auto .cond(459){
 	@wait 0
 	v[501] = 0
@@ -336,18 +337,6 @@ cev .id(2051),.name("[System]Escape Menu"),{
 						
 							}
 							@actor[1].name str1
-							@loop v[1004] .dst Temp1 {
-								Temp2 = Temp1 * 300 + 5001
-								@if v[Temp2] == 0 {
-										@comment "not gate"
-										@if `!(v[Temp16 + 2] & 256) {
-											v[1301].copy v[Temp2], 300
-									
-										}
-										
-								}
-								
-							}
 
 							// sysfunc
 							sysfunc_compress_savedata()
@@ -362,6 +351,9 @@ cev .id(2051),.name("[System]Escape Menu"),{
 								@sys.gameOpt .fatal 48, 2, 0
 						
 							}
+
+							str1.asg "Game saved successfully in slot \v[2382]." .extract
+							msg(str1)
 							@label.jump 15
 							
 					}

@@ -34,18 +34,30 @@ __fn Kill_Agent {
 					// "309 = ID 306 = ActionState"
 					macro_extract_victim_data_Ptr11
 
+
+					// call Death Trigger Event via js
+					@if `victim_ScriptFlags & ScriptFlags_has_EV_OnDeath {
+						// Call DIS_agent.EV_OnDeath() on js
+						def JS_bs_agt_call_EV_OnDeath = __str("RTS.agents.getAgent(","\v[",__id(Ptr20),"]).EV_OnDeath()")
+						eval_js(JS_bs_agt_call_EV_OnDeath)
+
+					}
+
 					Temp11 = Kill_pointer + 4707
 					v[826] = Kill_pointer + 4826 
+
 					// "Flagset"
 					v[v[826]] &= ~524288
 					// "Can be FATALITY?"
 					v[371] = var1
 					// "Randomise upsidedown"
 					v[v[826]] |=  victim_ExMotionFlags & ExMotionFlags_FLAG_horseback ? 0 : [0, 0, 4096][rnd(0, 2)] 
-					// "-1を死体とする"
+
+					// "0未満を死体とする"
 					// "ObjIDを死体に変える"
 					v[331] = v[Ptr18]
 					v[Ptr18] = -1
+
 					// "ActionStateを死体に変える"
 					Temp6 = Kill_pointer + 4943
 					v[Temp6] = -1
@@ -53,20 +65,36 @@ __fn Kill_Agent {
 					victim_RelativeX.copy Temp5, 2
 					// "Colour"
 					v[Kill_pointer + 4995] = 0
-					//v[0] = v[4013..4016] = [TT1 * 1, TT1 * -2, TT1 * -2, TT1 * -2]
 					v[4013] = victim_2hweapon_stain
 					v[4014..4016] = victim_2hweapon_stain * -2
 
 					// "#base colour"
-					//v[0] = v[4001..4004] = [-22, -22, -22, -34]
 					v[4001..4003] = -22
 					v[4004] = -34
 
 					// "#"
-					// "If victim is explosive"
-					v[373] = 0
+					v[373] = 0 // ?
+					
+
+
+					@if s[302] .isOn() {
+						v[Kill_pointer + 4780] = 0
+				
+					} .else bl {
+						v[Kill_pointer + 4780] *= 2
+				
+					}
+					// "#Frozen to death"
+					@if v[190] == 5 {
+						// "#base colour"
+						v[0] = v[4001..4004] = [55, 78, 91, -55]
+
+				
+					} .else bl {
+					
+					// If victim is explosive & not killed by frost magic, then let him explode
 					@if `victim_ProcessObjBit & BaseObjBit_FLAG_Explosive {
-						v[190] = 4
+						val_asg(v[190],N4)
 						v[Kill_pointer + 4780] = victim_InCombatTimer <= 0 ? 50 : victim_InCombatTimer
 						victim_RelativeX.copy v[361], 2
 						@loop v[1017] .dst Temp20 {
@@ -95,20 +123,7 @@ __fn Kill_Agent {
 						
 					}
 
-					@if s[302] .isOn() {
-						v[Kill_pointer + 4780] = 0
-				
-					} .else bl {
-						v[Kill_pointer + 4780] *= 2
-				
-					}
-					// "#Frozen to death"
-					@if v[190] == 5 {
-						// "#base colour"
-						v[0] = v[4001..4004] = [55, 78, 91, -55]
 
-				
-					} .else bl {
 						// "#Death by fire!"
 						@if v[190] == 4 {
 								// "#base colour"
@@ -189,7 +204,7 @@ __fn Kill_Agent {
 					Temp20 = Temp11 + 14
 					v[321] = v[Temp20]
 					v[0] = s[101] = v[Temp20] >= 0 ? 0 : 1
-				//####
+					//####
 					Temp20 = Temp11 + 94
 					Temp20 = v[Temp20]
 					v[321] = 1
@@ -287,34 +302,39 @@ __fn Kill_Agent {
 									}
 
 								}
+
 								@if v[372] == 0 {
 									// "Get Race"
 									@loop 1 {
 											// "#Human"
 											v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
 											@if victim_Race == 0 {
-												@if `victim_MoveTypeBIts & 2 { // horseman
-													@if `agent_AABits & AABits_FLAG_Camel {
-														v[329] = rnd(1, 3)
-														// "#########################"
-														v[472] = divmul(75, 100, v[2216])
-														v[473] = rnd(90, 115)
-														inputstr .asg "animals\camel_death"
-														inputstr .cat v[329]
-
-													}.else bl {
+												@if `victim_MoveTypeBIts & 2 { // cav type move bit
+													@if `victim_AddMotionBits & AddMotionFlags_FLAG_OnHorse { // REAL horse
 														v[329] = rnd(1, 1)
 														// "#########################"
 														v[472] = divmul(75, 100, v[2216])
 														v[473] = rnd(75, 115)
 														inputstr .asg "animals\horse_death"
 														inputstr .cat v[329]
+
+
+													}.elif `victim_AddMotionBits & AddMotionFlags_FLAG_Camel { // camel
+														v[329] = rnd(1, 3)
+														// "#########################"
+														v[472] = divmul(75, 100, v[2216])
+														v[473] = rnd(90, 115)
+														inputstr .asg "animals\camel_death"
+														inputstr .cat v[329]
+													}.else bl{ // what bout other creatures?
+
 													}
 													// call sound cmd
 													@cmd 11550, inputstr, .args v[472], 3
 														
 												} .else bl {
 														TT1 -= 1
+
 														// "##Not Female"
 														v[182] += 1
 														@if victim_Skin != 6 {
@@ -797,13 +817,20 @@ __fn Kill_Agent {
 										
 								}
 
-								// "##########Foundation##########"
+								// "########## Construction Basement ##########"
 								@if `victim_AgentBits & 32 {
+
+										// set agent type 0
 										v[Ptr18] = 0
+
 										v[2538] -= 1
+
+										// Construction cancel
 										@if s[34] .isOn() {
-											// "refund"
-											@if `victim_AgentBits & 2097152 {
+											// refund building cost!
+											@if `victim_AgentBits & AgentBits_STATIC_FLAG_Ignore_morton { 
+
+													// get goal building
 													var4 = v[Kill_pointer + 4980]
 													@if var4 >= 800 { // ?
 														s[175].on
@@ -817,10 +844,12 @@ __fn Kill_Agent {
 														@call .cev 84
 														
 													}
-													
+
 											}
 											
 										}
+											TT1 = Kill_pointer + 4703
+											v[TT1] &= ~AgentBits_FLAG_Drawn_in_screen // kill drawn flag!
 										
 								}
 
@@ -879,6 +908,11 @@ __fn Kill_Agent {
 
 								// "##########	Wall##########"
 								@if victim_UnitType == 107 {
+
+										// kill sprite drawn flag to prevent unit sprite generation bug
+										TT1 = Kill_pointer + 4703
+										v[TT1] &= ~AgentBits_FLAG_Drawn_in_screen // kill drawn flag!
+
 										v[Ptr18] = 0
 										TT2 = Ptr18 + 200
 										v[TT2].copy v[801], 6
@@ -1161,6 +1195,7 @@ cev .id(30) .name("BattleSystemFunc:Retreat"){
 	// "Access19 = AttackerObjectID	Access20 = TargetObjectID	Access18 = ObjTypeチェックPtr	var1=Is_fatality	誤作動防止"
 	//Ptr10 = Ptr20 * 300
 	@if Ptr20 > 0 {
+			func_devlog(__str("Retreat ID: \v[",__id(Ptr20),"]"))
 	    // "309 = ID	306 = ActionState"
 	    // "-1を死体とする"
 	    // "ObjIDを死体に変える"
@@ -1168,7 +1203,16 @@ cev .id(30) .name("BattleSystemFunc:Retreat"){
 	    // "ActionStateを死体に変える"
 	    Temp6 += 4943
 	    v[Temp6] = 0
+
+
+
 	    Ptr10 = Ptr20 * 300
+
+			// kill drawn flag to prevent agent sprite gen bug
+			TT1 = Ptr10 + 4703
+			v[TT1] &= ~AgentBits_FLAG_Drawn_in_screen // kill drawn flag!
+
+
 	    Temp11 = Ptr10 + 4707
 	    Temp5 = v[Temp11]
 	    v[Temp11].copy Temp5, 2
@@ -1206,7 +1250,7 @@ cev .id(30) .name("BattleSystemFunc:Retreat"){
 							.scale 100
 							.trans v[1066]
 							.rgbs 100, 100, 100, 100
-							.font "misaki_gothic_2nd", 10
+							.font Font_UI, Font_UI_size
 							.spacing 0, 0
 							.skin "" .nobg .noframe .noGradation .noPadding
 							.mapLayer 7
@@ -1466,7 +1510,7 @@ __fn prepare_deadbody_pictures {
 				//v[0] = v[343..352] = [v[604] % 10, v[604] / 10 % 10, v[604] / 100 % 10]
 				v[468] = 3
 				v[187] = 0
-				v[379] = 0
+				val_init(v[379]) // v[379] = 0
 
 				// FLAG CHECKER
 				def {
@@ -1474,14 +1518,14 @@ __fn prepare_deadbody_pictures {
 					BS_RMAG_PICFLAG_FOUND_WEAPON = 4
 					BS_RMAG_PICFLAG_FOUND_SHIELD = 8
 				}
-				v[378] = 0
+				val_init(v[378]) // v[378] = 0
 
 
 				v[4101..4110] = v[463] // column
 				v[4121..4130] = 1 // line
 				// v[v[725]].copy v[725],2 - was this needed? idk
 
-				v[4106] = victim_ExMotionFlags & ExMotionFlags_FLAG_horseback ? 7 : 5// horse
+				v[4106] = victim_ExMotionFlags & ExMotionFlags_FLAG_horseback ? 7 : 5 // horse
 				v[4111..4120] = v[321] 
 				v[4115] = 2
 
@@ -1489,24 +1533,21 @@ __fn prepare_deadbody_pictures {
 
 
 				//so temporary head setting - use legacy damaged head sprite 
-				v[335] =  (Ptr20 - 1) * 10
-				v[335] = Const_str_agent_pictures_strings_start + v[335]
+				v[335] =  Ptr20 - 1
+				v[335] *= 10
+				v[335] += Const_str_agent_pictures_strings_start
 			
 				//set damaged head
-				@if `(victim_ExMotionFlags & 98304) == 32768 { // isn't this.. terrbile?
-					v[4102] = 5
-					v[4122] = 1
-					var1 = v[335] + 2
-					t[var1].exMatch ("[0-9]{1,}",str1,var2)
-					t[var1].asg "parts\bodyset\set\damaged\spr_damaged_head_"
-					t[var1].cat str1
+				TT2 = victim_ExMotionFlags & ExMotionFlags_MASK_HeadPartDamageChecker
+				@if TT2 == ExMotionFlags_FLAG_HeadHasDamagedSprite {
+					v[4112] += Const_head_spr_grid_damaged
 				}
 
 				v[339] = -1
 
 				@if `victim_ExMotionFlags & 134217728 { // in flippable weapon
-					v[4034] = 0
-					v[4124] = 2
+					val_init(v[4034]) // v[4034] = 0
+					val_asg(v[4124],N2) // v[4124] = 2
 					v[4114] += v[455] / 4096 * v[4104]
 					
 				}
@@ -1973,5 +2014,128 @@ __fn prepare_deadbody_pictures {
 		v[Temp15 + 7] = rnd(-60000, 60000)
 		
 	}
+}
+
+// TODO
+// cev 1896. need refactoring
+__fn remove_agent_from_RTS_unitlist $agent $unittype {
+	v[24] = 0
+		@if v[12] <= 10 {
+			v[22] = v[4532]
+				v[23] = v[4532] + v[v[4532] + v[1004]]
+				@while v[22] <= v[23] {
+					v[21] = (v[22] + v[23]) / 2
+						@if v[v[21]] == v[11] {
+							v[v[21]] = 0
+								v[v[4532]].sortDescending v[1004]
+								v[v[4532] + v[1004]] -= 1
+								v[24] = 1
+								@break
+
+						} .else bl {
+							@if v[v[21]] < v[11] {
+								v[23] = v[21] - 1
+
+							} .else bl {
+								v[22] = v[21] + 1
+
+							}
+
+						}
+
+				}
+
+			@comment "recovery - reconstructing list"
+				@if v[24] == 0 {
+					v[21] = v[4532]
+						v[v[4532] + v[1004]] = 0
+						@doWhile v[v[21]] > 0 {
+							v[v[4532] + v[1004]] += 1
+								@if v[11] == v[v[21]] {
+									v[v[21]] = 0
+										v[v[4532] + v[1004]] -= 1
+
+								}
+							v[21] += 1
+
+						}
+
+					v[v[4532]].sortDescending v[1004]
+
+				}
+
+		} .else bl {
+			v[22] = v[4533]
+				v[23] = v[4533] + v[v[4533] + v[1004]]
+				@while v[22] <= v[23] {
+					v[21] = (v[22] + v[23]) / 2
+						@if v[v[21]] == v[11] {
+							v[v[21]] = 0
+								v[v[4533]].sortDescending v[1004]
+								v[v[4533] + v[1004]] -= 1
+								v[24] = 1
+								@break
+
+						} .else bl {
+							@if v[v[21]] < v[11] {
+								v[23] = v[21] - 1
+
+							} .else bl {
+								v[22] = v[21] + 1
+
+							}
+
+						}
+
+				}
+
+			@comment "recovery - reconstructing list"
+				@if v[24] == 0 {
+					v[21] = v[4533]
+						v[v[4533] + v[1004]] = 0
+						@doWhile v[v[21]] > 0 {
+							v[v[4533] + v[1004]] += 1
+								@if v[11] == v[v[21]] {
+									v[v[21]] = 0
+										v[v[4533] + v[1004]] -= 1
+
+								}
+							v[21] += 1
+
+						}
+
+					v[v[4533]].sortDescending v[1004]
+
+				}
+			@comment "BASEMENT"
+				@if `v[v[11] * 300 + 4801] == 4 {
+					v[22] = v[4561]
+						v[23] = v[4561] + v[v[4561] + v[1012]]
+						@while v[22] <= v[23] {
+							v[21] = (v[22] + v[23]) / 2
+								@if v[v[21]] == v[11] {
+									v[v[21]] = 0
+										v[v[4561]].sortDescending v[1012]
+										v[v[4561] + v[1012]] -= 1
+										@break
+
+								} .else bl {
+									@if v[v[21]] < v[11] {
+										v[23] = v[21] - 1
+
+									} .else bl {
+										v[22] = v[21] + 1
+
+									}
+
+								}
+
+						}
+
+
+				}
+
+		}
+
 }
 

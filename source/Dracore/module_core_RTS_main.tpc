@@ -3,10 +3,11 @@
 #include "./../headers/header_common.tpc"
 
 #include "./module_core_RTS_misc_functions.tpc"
-#include "./module_core_RTS_ui_misc_functions.tpc"
 #include "./../headers/header_drawing.tpc"
 #include "./../headers/header_scripts.tpc"
 #include "./../headers/header_ui.tpc"
+#include "./../headers/header_player.tpc"
+
 // #include "./../headers/header_agent.tpc" - included in header_scripts.tpc
 #include "./../preset_databases/header_preset_particles.tpc"
 
@@ -19,7 +20,8 @@ def Ptr_worker_on_job_start = 2940
 
 
 
-//this is obsolete shite
+//this is obsolete shite, will be abolished
+// cev 2006
 __fn macro_HPSPreg $agent $HP_or_SP $amount{
 	/* Var1 = Obj 1~
 	Var2 = 0/1# HP/MP
@@ -50,7 +52,16 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	v[522] = v[2501] == 0 ? -v[522] : v[182] // v[522] = v[2501] == 0 ? 0 : v[522] + v[182]
 	v[ptr_null].copy v[181],4
-	v[191] -= 1
+	
+	val_sub(v[191],N1) // v[191] -= 1
+
+	// sound lock (in order to keep prioritized sound effect e.g. horn)
+	@if g_SELockFrame > 0 {
+		val_asg(v[181],N16)
+	}.else bl{
+		val_sub(g_SELockFrame,N1)
+	}
+
 
 	v[ptr_null].copy v[v[1071]], Const_var_save_all_morton_memories
 
@@ -60,24 +71,20 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	LEGV_MapTileOriginX = ev[3].scrx
 	LEGV_MapTileOriginY = ev[3].scry
 
-	// "#WalkingSwitchOff"
-	__if DIS_EXPERIMENTAL == 0 {
-		s[3001..4000].off
-	}
 
 	// "Normal Units"
-	v[536] = v[4532]
-	@while v[v[536]] != 0 {
+	Ptr_loop_current_agent = v[4532]
+	@while v[Ptr_loop_current_agent] != 0 {
 		RTS_MAIN_LAND_AGENT_1f()
 		//"++"
-		increment_var(v[536]) // v[536] += 1
+		increment_var(Ptr_loop_current_agent) // Ptr_loop_current_agent += 1
 		
 	}
 
 	// "STATICS"
-	v[536] = v[4533]
-	@while v[v[536]] != 0 {
-	    v[401] = v[v[536]] - 1
+	Ptr_loop_current_agent = v[4533]
+	@while v[Ptr_loop_current_agent] != 0 {
+	    v[401] = v[Ptr_loop_current_agent] - 1
 	    Temp1 = v[401] * v[1117] 
 	    val_add(Temp1,N5001) // Temp1 += 5001
 	    v[Temp1].copy agent_AgentType, 300
@@ -108,35 +115,36 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						v[609] = TT1 | TT2
 						
 				}
+
 				// "モートン座標を記録しおえたよ 次はリストに登録するよ TT3=カウンター TT2=ポインター"
 				TT1 = v[609]
 				// "#ルート空間だよ"
 				TT2 = v[1067] + v[v[1071]]
-				v[TT2] = v[401] + 1
+				v[TT2] = v[Ptr_loop_current_agent]
 				v[v[1071]] += 1
 				// "#第5空間だよ0~1023"
 				TT3 = v[4538] + TT1
-				v[TT1 * v[1004] + v[4535] + v[TT3]] = v[401] + 1
+				v[TT1 * v[1004] + v[4535] + v[TT3]] = v[Ptr_loop_current_agent]
 				v[TT3] += 1
 				// "#第四空間だよ 0~255"
 				TT1 >>= 2
 				TT3 = v[4537] + TT1
-				v[TT1 * v[1004] + v[4534] + v[TT3]] = v[401] + 1
+				v[TT1 * v[1004] + v[4534] + v[TT3]] = v[Ptr_loop_current_agent]
 				v[TT3] += 1
 				// "#第三空間だよ 0~63"
 				TT1 >>= 2
 				TT3 = v[1074] + TT1
-				v[TT1 * v[1004] + v[1070] + v[TT3]] = v[401] + 1
+				v[TT1 * v[1004] + v[1070] + v[TT3]] = v[Ptr_loop_current_agent]
 				v[TT3] += 1
 				// "#第二空間だよ 0~15"
 				TT1 >>= 2
 				TT3 = v[1073] + TT1
-				v[TT1 * v[1004] + v[1069] + v[TT3]] = v[401] + 1
+				v[TT1 * v[1004] + v[1069] + v[TT3]] = v[Ptr_loop_current_agent]
 				v[TT3] += 1
 				// "#第一空間だよ 0~3"
 				TT1 >>= 2
 				TT3 = v[1072] + TT1
-				v[TT1 * v[1004] + v[1068] + v[TT3]] = v[401] + 1
+				v[TT1 * v[1004] + v[1068] + v[TT3]] = v[Ptr_loop_current_agent]
 				v[TT3] += 1
 				// "モートン座標関係はこれで終わり"
 				
@@ -211,7 +219,6 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //opt
 	    TT10 = Address_agent_inSight_switch_array_head + v[401]
 	    @if s[TT10] .isOn() {
-	    //@if `s[2001 + v[401]] != 0 {
 			// "Walls "
 			v[1008].copy TT14, 4
 			@if `agent_AgentBits & 16 {
@@ -253,14 +260,14 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	
 	    // "++"
-	    increment_var(v[536])// v[536] += 1
+	    increment_var(Ptr_loop_current_agent)// Ptr_loop_current_agent += 1
 	    
 	}
 
 	// "DEAD BODIES"
-	v[536] = v[4531]
-	@while v[v[536]] != 0 {
-	    v[401] = v[v[536]] - 1
+	Ptr_loop_current_agent = v[4531]
+	@while v[Ptr_loop_current_agent] != 0 {
+	    v[401] = v[Ptr_loop_current_agent] - 1
 	    // "死体"
 	    Temp1 = v[401] * v[1117] 
 	    val_add(Temp1,N5000) // Temp1 += 5000
@@ -268,19 +275,12 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    // "慣性"
 	    // "座標ずらし"
-	    //Ptr20 = Temp1 + 5
-	    //Ptr19 = Temp1 + 12
-	    //Ptr18 = Temp1 + 7
-	    //Ptr17 = 53
-	    //Ptr15 = Temp1 + 266
-	    //Ptr14 = Temp1 + 265
 
 			// weapon fall
 	    @if v[865] < v[866] {
-				v[864] += g_perFPS //98000 / 48
+				v[864] += g_perFPS // 98000 / 48
 				v[861] .add v[863], 2
 				val_add(v[867],agent_ProcessMS) // v[867] += agent_ProcessMS
-				
 				val_add(v[865],N1) // v[865] += 1
 		
 	    }
@@ -295,7 +295,6 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    @if v[873] < agent_ProcessObjBit {
 
 				v[872] += g_perFPS
-				// val_add(v[872],g_perFPS)
 
 				v[869] .add v[871], 2
 				val_add(v[875],agent_ProcessCamoValue) // v[875] += agent_ProcessCamoValue
@@ -304,7 +303,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    }
 			
 	    @if v[887] < v[888] {
-				agent_FootstepSoundTimer +=  g_perFPS // just the slot is the same as FootstepsSound for living agent, but actual function is diffrent. beware
+				agent_FootstepSoundTimer += g_perFPS // the slot is the same as FootstepsSound for living agent, but actual function is diffrent. beware
 				v[883] .add v[885], 2
 				val_add(v[887],N1) // v[887] += 1
 		
@@ -348,7 +347,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					// "#減衰"
 					@if v[612] != 0 {
 						@map.getTerrain .pos Temp3, Temp12 .dst Temp13
-						v[612] = muldiv(v[612], 4, 5)
+						v[612] = muldiv(v[612], 9, 10)
 						v[612] = 500 >= abs(v[612]) ? 0 : v[612]
 						v[605] += Temp13 < 20 ? v[612] : 0
 						// "#カメラずらして"
@@ -358,19 +357,14 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					// "#減衰"
 					@if v[613] != 0 {
 						@map.getTerrain .pos Temp11, Temp4 .dst Temp14 // get terrain?
-						v[613] = muldiv(v[613], 4, 5)
+						v[613] = muldiv(v[613], 9, 10)
 						v[613] = 500 >= abs(v[613]) ? 0 : v[613]
 						v[606] += Temp14 < 20 ? v[613] : 0
 					}
 			}
 	    // "#カメラずらして"
 			v[605].add FrameCamDiff_MilX,2
-
-			/*
-	    v[605] += FrameCamDiff_MilX
-	    v[606] += FrameCamDiff_MilY
-			*/
-
+			
 	    // "#座標を反映"
 	    v[607] = v[605] / 10000
 	    v[608] = v[606] / 10000
@@ -410,7 +404,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    func_main_save_agent_vars()
 	    
 	    // "++"
-	    increment_var(v[536]) // v[536] += 1
+	    increment_var(Ptr_loop_current_agent) // Ptr_loop_current_agent += 1
 	    
 	}
 
@@ -426,74 +420,81 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 cev .id(17), .name("Main:Agent per2f") , .parallel , .cond(Const_Is_RTS_Mode), {   
 	@comment "module_core_RTS_main.tpc"
-	// "Normal Units"
-	v[536] = v[4532]
-	@while v[v[536]] != 0 {
-	    Ptr1 = v[v[536]] * v[1117] 
+
+	// "Even Units"
+	Ptr_loop_current_agent = v[4532]
+	@while v[Ptr_loop_current_agent] != 0 {
+	    Ptr1 = v[Ptr_loop_current_agent] * v[1117] 
 	    val_add(Ptr1,N4701)// Ptr1 += 4701
 			v[Ptr1].copy agent_ObjectType, 300
 
 	    // "Minions"
-	    // "#########################
-	    //Shield Flash
-	    //#########################"
-	    //opt 26.4.23
-	    //v[Temp1 + 284] -= v[Temp1 + 284] > 0 ? 1 : 0
-	    v[884] -= v[884] > 0 ? 1 : 0
-	    // "Flash Effect"
-	    @if v[895] >= 4 {
-				v[358].repeat 20,3 // v[358..360] = 20
-				v[891] .sub TT18, 3
-				
-	    } .else bl {
-				// "Can be improved"
-				v[ptr_null].copy v[358],3 // v[358..360] = 0
-				@if v[895] > 0 {
-				TT1 = 357 + v[895]
-				ptr_const(TT1,20)
-				v[891] .sub TT18, 3
-				}
-	    }
-	    // "Temp... only check R"
-	    v[895] = v[891] <= 0 ? 0 : v[895]
+			agent_sprite_RGB_check()
+
 	    // "++"
 	    func_main_save_agent_vars()
-	    increment_var(v[536]) // v[536] += 1
+	    val_add(Ptr_loop_current_agent,N2)
 
 	}
 
 	@wait 0
-/*
-	@if Is_Paused .isOff() {
-	    v[536] = v[4532]
-	    @while v[v[536]] != 0 {
-				v[401] = v[v[536]] - 1
-				Temp1 = v[401] * v[1117] 
-				val_add(Temp1,N5000) // Temp1 += 5000
 
+	// "Odd Units"
+	Ptr_loop_current_agent = v[4532] + 1
+	@while v[Ptr_loop_current_agent] != 0 {
+	    Ptr1 = v[Ptr_loop_current_agent] * v[1117] 
+	    val_add(Ptr1,N4701)// Ptr1 += 4701
+			v[Ptr1].copy agent_ObjectType, 300
 
-						func_main_extract_agent_vars()
+	    // "Minions"
+			agent_sprite_RGB_check()
 
-				// "++"
-				func_main_save_agent_vars()
-				v[536] += 1
-				
-	    }
-	    
-	    
+	    // "++"
+	    func_main_save_agent_vars()
+	    val_add(Ptr_loop_current_agent,N2)
+
 	}
-*/
+
 
 }
+
+__fn agent_sprite_RGB_check {
+	// "#########################
+	//Shield Flash
+	//#########################"
+	//opt 26.4.23
+	agent_ShieldFlash -= agent_ShieldFlash > 0 ? 1 : 0
+		// "Flash Effect"
+		@if agent_FlashType >= 4 {
+			v[358].repeat 20,3
+				agent_R .sub TT18, 3
+
+		} .else bl {
+			// "Can be improved"
+			v[ptr_null].copy v[358],3
+				@if agent_FlashType > 0 {
+						TT1 = 357 + agent_FlashType
+						ptr_const(TT1,20)
+						agent_R .sub TT18, 3
+				}
+		}
+	// "Temp... only check R"
+	agent_FlashType = agent_R <= 0 ? 0 : agent_FlashType
+
+
+}
+
+
+
 
 
 cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	@comment "module_core_RTS_main.tpc"
 	// "Normal Units"
-	v[536] = v[4532]
-	@while v[v[536]] != 0 {
-	    v[401] = v[v[536]] - 1
+	Ptr_loop_current_agent = v[4532]
+	@while v[Ptr_loop_current_agent] != 0 {
+	    v[401] = v[Ptr_loop_current_agent] - 1
 	    Temp1 = v[401] * v[1117] 
 	    val_add(Temp1,N5000) // Temp1 += 5000
 	    func_main_extract_agent_vars()
@@ -502,7 +503,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[340] = v[4505] + v[640]
 	    v[340].deref v[340],1 // v[340] = v[v[340]]
 	    /* "###############Camo Check###############"*/
-	    val_asg(agent_ProcessCamoValue,v[617]) // agent_ProcessCamoValue = v[617]
+	    val_asg(agent_ProcessCamoValue,agent_BaseCamoValue) // agent_ProcessCamoValue = v[617]
 
 	    // Ambush setting
 
@@ -518,11 +519,11 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // agent_ProcessObjBit = v[681] >= 1 ? agent_ProcessObjBit & ~1 : agent_ProcessObjBit
 	    agent_ProcessObjBit &= ~(v[681] >= 1)
 
-	    val_asg(v[898],v[880]) // v[898] = v[880]
+	    val_asg(agent_Transparency,v[880]) // agent_Transparency = v[880]
 			
 
 	    @if `agent_ProcessObjBit & 1 {
-				v[898] = 40 + v[880]
+				agent_Transparency = 40 + v[880]
 				agent_ProcessCamoValue += 38000
 				TT1 = v[4518] + v[401]
 				v[TT1] = 0
@@ -530,19 +531,20 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    }
 
 	    // "##is fleeing?"
-	    agent_ProcessCamoValue += v[860] >= 3 ? 40000 : 0
+	    agent_ProcessCamoValue += agent_Morale >= 3 ? 40000 : 0
 	    // "###############Camo Check end##############"
 	    func_main_save_agent_vars()
 	    // "++"
-	    increment_var(v[536]) // v[536] += 1
+	    increment_var(Ptr_loop_current_agent) // Ptr_loop_current_agent += 1
 
 	}
 
 	@wait 0
 	// "Even Units"
-	v[536] = v[4532]
-	@while v[v[536]] != 0 {
-	    v[401] = v[v[536]] - 1
+	v[TPC_VAR_STACK_HEAD] = AllFrameCount % 5 // muridesita
+	Ptr_loop_current_agent = v[4532]
+	@while v[Ptr_loop_current_agent] != 0 {
+	    v[401] = v[Ptr_loop_current_agent] - 1
 	    Temp1 = v[401] * v[1117] 
 	    val_add(Temp1,N5000) // Temp1 += 5000
 
@@ -550,22 +552,22 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    v[Ptr19].copy agent_AgentType, 300
 			agent_ref_stats()
 			func_blink_progress()
-	    //@call .cev 2020
 
 			agent_behavior_effect_and_motion_check()
 			main_agent_footsound()
 
 	    agent_AgentType.copy v[Ptr19], 300    
 	    // "++"
-	    val_add(v[536],N2) // v[536] += 2
+	    val_add(Ptr_loop_current_agent,N2) // Ptr_loop_current_agent += 2
 	    
 	}
 
 	@wait 0
 	// "Odd Units"
-	v[536] = v[4532] + 1
-	@while v[v[536]] != 0 {
-	    v[401] = v[v[536]] - 1
+	v[TPC_VAR_STACK_HEAD] = AllFrameCount % 5
+	Ptr_loop_current_agent = v[4532] + 1
+	@while v[Ptr_loop_current_agent] != 0 {
+	    v[401] = v[Ptr_loop_current_agent] - 1
 	    Temp1 = v[401] * v[1117] 
 	    val_add(Temp1,N5000) // Temp1 += 5000
 
@@ -574,42 +576,38 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 			agent_ref_stats()
 			func_blink_progress()
-	    //@call .cev 2020
 
 			agent_behavior_effect_and_motion_check()
 			main_agent_footsound()
 
 	    agent_AgentType.copy v[Ptr19], 300    
 	    // "++"
-	    val_add(v[536],N2) // v[536] += 2
+	    val_add(Ptr_loop_current_agent,N2) // Ptr_loop_current_agent += 2
 	    
 	}
 
 	@wait 0
 	@if Is_Paused .isOff() {
-	    v[536] = v[4532]
-	    @while v[v[536]] != 0 {
-				v[401] = v[v[536]] - 1
+	    Ptr_loop_current_agent = v[4532]
+	    @while v[Ptr_loop_current_agent] != 0 {
+				v[401] = v[Ptr_loop_current_agent] - 1
 				Temp1 = v[401] * v[1117] 
 				val_add(Temp1,N5000) // Temp1 += 5000
 							func_main_extract_agent_vars()
 				// "#Reg Timer"
-				@if v[699] <= 0 {
-						//opt 25.4.23
-						//v[0] = v[11..13] = [v[401] + 1, 0, v[Temp1 + 272]]
-						//var2=0
-						// "#EV RecoverH/M"
-						/* "Var1 = Obj 1~	Var2 = 0/1# HP/MP	Var3 = Amount"*/
-						//TT2 = Temp1+106
-						//TT3 = TT2 - 1
-						//var3=Temp1+272
+
+				@if agent_RegTimer <= 0 {
+
 						// "#そのうち処理作る"
 						val_add(v[706],v[872]) // v[706] += v[872]
+
 						// "Min(HealedHP,MaxHP)"
 						v[706] = min(v[706], v[705])
+
 						// "#EV RecoverH/M end"
 						var1 = v[401] + 1
-						val_asg(var2,N1)// var2 = 1
+						val_asg(var2,N1) // var2 = 1
+
 						// "#Derp Breathing :DDDDDDD"
 						// var3 = divmul(v[707], 100, 35) > v[708] && v[665] & 1024 ? 15 : 10
 						var3 = ((v[665] & 1024 && agent_AddMotionBits & AddMotionFlags_FLAG_OutOfBreath) << 2) + 10 // ? 14 : 10
@@ -647,6 +645,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							
 							
 						}
+
 						// var3 is recovering number
 						var3 = muldiv(var3, v[873], 10)
 						// "#EV RecoverH/M"
@@ -654,16 +653,35 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						// "Min(HealedHP,MaxHP)"
 						v[708] = min(v[707], v[708])
 						// "#EV RecoverH/M end"
-						v[699] = v[95] + 2
+
+						// reset regtimer
+						agent_RegTimer = REG_INIT_FRAME // FPSlim + 2
+
 						// "kill parthian flag AND kiting flag"
 						v[726] &= v[628] <= 0 ? -100663297 : v[726]
-						/*
-						@if v[628] <= 0 {
-							//v[726] &= ~33554432
-							//v[726] &= ~67108864
-							v[726] &=-100663297
+
+
+						// idle animation check..
+						// init idle motion flag first
+						agent_AddMotionBits &= ~AddMotionFlags_FLAG_IdleAction
+						// then
+						@if agent_ActionState == 0 {
+							// in screen
+							@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
+
+								// is horse... ATTENTION, considering camels, wolves and so on, you need to set another flag for horse animation owners
+								@if `agent_ExMotionFlags & ExMotionFlags_FLAG_horseback {
+									@if `!(agent_ActionFlag & ActionFlag_FLAG_Walking) { // not walking
+										@if victim_InCombatTimer < 0 {
+											// horse standing motion
+											TT1 = rnd(0,99) // random
+											agent_AddMotionBits |= TT1 < 15 ? AddMotionFlags_FLAG_IdleAction : 0 // 18 has nomeaning, yes, it's magic number.
+
+										}
+									}
+								}
+							}
 						}
-						*/
 
 						// kill Pathfinding 1 sec delay by wall detection
 						@if `!(v[634] & AI_routine_bits_FLAG_1secDelay_PF) {
@@ -682,24 +700,17 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 						}
 
-
-
-
-						//v[680] = Temp1 + 80 
-						//v[680] = v[v[680]]
-
-
 						@if `s[7] == 1 || s[474] == 1 {
 							// "##If Fleeing"
-							//v[860] = Temp1 + 260
+							//agent_Morale = Temp1 + 260
 							@if v[680] < -480 {
-									v[860] = 0
+									agent_Morale = 0
 									
 							} .else bl {
-								@if v[860] == 3 {
+								@if agent_Morale == 3 {
 									@if v[680] < -100 {
 										// "roll chance to recover from fleeing state"
-										v[860] -= (rnd(0, 99) <= (var2 + v[875] / 5) && v[860] > -1) // ? 1 : 0
+										agent_Morale -= (rnd(0, 99) <= (var2 + v[875] / 5) && agent_Morale > -1) // ? 1 : 0
 										
 									}
 								}
@@ -707,13 +718,14 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							}
 							
 						}
+
 						
 				}
 
 						func_main_save_agent_vars()
 
 				// "++"
-				increment_var(v[536]) // v[536] += 1
+				increment_var(Ptr_loop_current_agent) // Ptr_loop_current_agent += 1
 				
 	    }
 	    
@@ -727,9 +739,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	@comment "module_core_RTS_main.tpc"
 		// "STATIC"
 		// This process needs complete refactoring.
-		val_asg(v[536],v[4533]) // v[536] = v[4533]
-		@while v[v[536]] != 0 {
-				v[401] = v[v[536]] - 1
+		val_asg(Ptr_loop_current_agent,v[4533]) // Ptr_loop_current_agent = v[4533]
+		@while v[Ptr_loop_current_agent] != 0 {
+				v[401] = v[Ptr_loop_current_agent] - 1
 				Temp1 = v[401] * v[1117] 
 				val_add(Temp1,N5000) // Temp1 += 5000
 				func_main_extract_agent_vars()
@@ -816,22 +828,24 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					//v[770] = Temp1 + 170
 					@if v[770] >= 1 {
 						// "MP(生産力)をためようね"
-							TT1 = Temp1 + 108
-							@if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_AgentBits & 1 {
+							@if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_StaticBits & 1 {
+								TT1 = Temp1 + 108
 								// TT2 = v[2409 + v[251] % 3]
 
-								__if DIS_EXPERIMENTAL == -1 { 
-									macro_get_agent_MetaTeam_into_var(v[v[536]],TT2) // AEBA
+								__if DIS_EXPERIMENTAL == 1 { 
+									macro_get_agent_MetaTeam_into_var(v[Ptr_loop_current_agent],TT2) // AEB
 								}.else bl {
 									TT2 = v[Const_AgentMetaTeam_begin + v[401]]
 								}
+								func_get_ptr_to_player_tech_slot_into_r1(TT2,2) // get address of player tech slot 2 to reg1
 
-								v[TT1] += v[740] * 6
-									// "徴用スイッチ"
-									v[TT1] += TT2 & 134217728 && !(v[Temp1 + 3] & 1) ? muldiv(v[740], 198, 100) : 0
+									v[TT1] += v[740] * 6 // 6f per 
+									// "徴用スイッチ" conscription tech check 
+									v[TT1] += v[reg1] & 134217728 && !(v[Temp1 + 3] & StaticBits_FLAG_working_on_tech) ? v[740] << 1 : 0 // muldiv(v[740], 198, 100) : 0
+
 									// "MP(生産力)がたまった"
 									@if v[TT1] >= v[707] {
-										v[TT1] = 0
+											v[TT1] = 0
 											// "生産完了"
 											// "#Tech Flag"
 
@@ -952,8 +966,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					}
 					// "#Reg Timer"
 					@if v[699] <= 0 {
-						// "HP"
-						var1 = v[401] + 1
+							// "HP"
+							var1 = v[401] + 1
 							//var2 = 0
 							var3 = Temp1 + 131
 							var3 = v[var3]
@@ -992,8 +1006,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 									}
 
 							}
-						// "SP reg"
-						var1 = v[401] + 1
+							// "SP reg"
+							var1 = v[401] + 1
 							//var2 = 1
 							var3 = v[Temp1 + 132]
 							//@call .cev 2006
@@ -1002,6 +1016,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							v[v[699]] = v[Temp1 + 255] >= 1 ? 88 : 48
 							// "init farm owner"
 							v[Temp1 + 255] = 0
+
+							// init agent_Static_Assigned_worker_counter
+							TT1 = Temp1 + 256
+							v[TT1] = 0
+
 							// "#Flammable"
 							@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 								@if `!(agent_AgentBits & 2048) {
@@ -1111,7 +1130,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					// "########################Particles"
 					@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //`s[v[401] + 501] {
 						// "#Flammable"
-						@if `!(agent_AgentBits & 2048) {
+						@if `!(agent_StaticBits & StaticBits_FLAG_flammable) {
 							// "#Hp 66%"
 							@if `divmul(v[Temp1 + 105], 100, 66) > v[Temp1 + 106] {
 								// "Fire Particle"
@@ -1274,7 +1293,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 						}
 						// "gate flag"
-						@if `agent_AgentBits & 256 {
+						@if `agent_StaticBits & 256 {
 							// "##############"
 							Ptr20 = Temp1 + 5
 								Ptr19 = Temp1 + 15
@@ -1483,7 +1502,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 										@if v[182] < 2 {
 											@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {//s[v[401] + 501] == 1 {
-												v[607] = Temp1 + 7
+													v[607] = Temp1 + 7
 													v[v[607]].copy v[607], 2
 													v[182] += 1
 													// "#########################"
@@ -1505,21 +1524,21 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 							}
 							// "++"
-							increment_var(v[536])// v[536] += 1
+							increment_var(Ptr_loop_current_agent)// Ptr_loop_current_agent += 1
 
 						}
 
 	@wait 0
 	// "############"
-	v[536] = v[4532]
-	@while v[v[536]] != 0 {
-	    Temp1 = v[v[536]] * v[1117] 
+	Ptr_loop_current_agent = v[4532]
+	@while v[Ptr_loop_current_agent] != 0 {
+	    Temp1 = v[Ptr_loop_current_agent] * v[1117] 
 	    val_add(Temp1,N4700) // Temp1 += 4700
 	    func_main_extract_agent_vars()
 	    // "Set Dir"
 	    @if Is_Paused .isOff() {
 				@if `agent_AgentBits & AgentBits_FLAG_DirChange_skip {
-						@if `v[726] & 8388608 {
+						@if `agent_ExMotionFlags & 8388608 { // kore naniw
 							agent_AgentBits &= -134217729 //~134217728 ~AgentBits_FLAG_DirChange_skip
 							
 						}
@@ -1535,8 +1554,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 								 }
 
 							 }.else bl{
-								@if v[621] != 0 {
-									agent_Direction = v[621] < 0 ? 1 : 0
+								@if agent_MoveUvectorX != 0 {
+									agent_Direction = agent_MoveUvectorX < 0 ? 1 : 0
 								}
 
 							 }
@@ -1551,8 +1570,6 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "clock"
 	    @if `agent_AgentBits & AgentBits_Movement_Giveup {
 				@if `agent_AgentBits & AgentBits_Endpoint_Collision_Trouble {
-						//v[842] = Temp1 + 239
-						//v[v[842]] = -1
 						agent_MovementOrder = -1
 						agent_Direction = (cos(agent_MarchingDirection, 1000, -100) + 200) / 200
 						agent_AgentBits &= -129 //~128
@@ -1579,19 +1596,20 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 
 	    // "Agent Effect"
-	    v[401] = v[v[536]] - 1
-	    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //`s[v[401] + 501] ==1 {
+	    v[401] = v[Ptr_loop_current_agent] - 1
+	    @if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 				// "Hero Particle"
-				@if `agent_ProcessObjBit & 4194304 { //is hero
+				@if `agent_ProcessObjBit & BaseObjBit_FLAG_HeroAura { //is hero
 					func_set_preset_particle_emitter(v[331],
 						PROC({
 							emitter_ParticleType = 1
 							emitter_Timer = 6
 							emitter_CallPartFunc = cevid_hero_particle
-							emitter_ParentObject = v[401] + 1
+							emitter_ParentObject = v[Ptr_loop_current_agent]
 							// "普通にアニメ"
 							agent_RelativeX.copy emitter_RelativeX, 2
-							emitter_RelativeY += 8
+							val_add(emitter_RelativeY,N8)
+							// emitter_RelativeY += 8
 						})
 					)
 				}
@@ -1602,19 +1620,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			// if it's not fleeing anymore, then reset movement order
 			agent_MovementOrder = agent_MovementOrder == 11 && (agent_ProcessObjBit & BaseObjBit_FLAG_Fleeing) ? 0 : agent_MovementOrder
 			
-			/*
-			@if agent_MovementOrder == 11 {
-				@if `!(agent_ProcessObjBit & 512) {
-						agent_MovementOrder = 0
-						
-				}
-				
-	    }
-			*/
 
-	    //v[827] = Temp1 + 227
-	    //v[640] = Temp1 + 40
-	    //v[640] = v[v[640]]
 	    @if agent_InCombatTimer < v[1178] {
 				agent_2hweapon_stain -= agent_2hweapon_stain > 0 ? 1 : 0
 				
@@ -1623,21 +1629,16 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    @if agent_Morale <= -1 { // fleeing
 				// if the fleeing agent is not in combat for 1800f, stop it fleeing
 				agent_Morale = agent_InCombatTimer <= -1800 ? 0 : agent_Morale 
-				/*
-				@if agent_InCombatTimer <= -1800 { 
-						agent_Morale = 0
-						
-				}
-				*/
 			
 	    }
 
+			// what the fugg is goin on
 	    @if agent_TerrainIDstanding == 22 { // On DeepWater tile..
 				agent_ChokeTimer += 5
 				// "Choked to death"
 				@if agent_ChokeTimer >= 200 {
-						//Ptr20 = Ptr19 = v[v[536]]
-						v[299..300] = v[v[536]]
+						//Ptr20 = Ptr19 = v[Ptr_loop_current_agent]
+						v[299..300] = v[Ptr_loop_current_agent]
 						Ptr18 = Ptr20 * 300 
 						Ptr18 += 4701
 						v[305..312] = Ptr20 * 300
@@ -1654,13 +1655,13 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    // "#########################PAssive#########################"
 	    // "Passive"
 	    
-	    Temp1 = v[v[536]] * v[1117] 
+	    Temp1 = v[Ptr_loop_current_agent] * v[1117] 
 	    val_add(Temp1,N4700) // Temp1 += 4700
 	    TT1 = Temp1 + 1
 	    @if v[TT1] > 0 { //if only the unit isn't choked to death
 		    v[694] = Temp1 + 94
 		    @if v[v[694]] <= 0 {
-					v[401] = v[v[536]] - 1
+					v[401] = v[Ptr_loop_current_agent] - 1
 					v[v[694]] = 100
 					@if `v[Temp1 + 223] & 1 {
 							v[824] = v[Temp1 + 224] > v[1186] ? v[Temp1 + 224] : 1899
@@ -1673,121 +1674,121 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							Ptr19 = v[401] + 1
 							@if v[217] < v[4559] {
 								v[217] += 1
-								@loop v[4559] .dst Temp20 {
+									@loop v[4559] .dst Temp20 {
 										v[216] %= v[4559]
-										Temp1 = v[216] * 100
-										Temp1 += v[1076]
-										Ptr15 = Temp1 + 1
-										@if v[Ptr15] == 0 {
-									// "Access17 = AttackerObjチェックPtr"
-									Ptr17 = Ptr19 * 300
-									Ptr17 += 4700
-									// "まず清掃"
-									v[1301].copy agent_AgentType, 100
-									v[1301].copy v[Ptr15], 100
-									// "ParentObjセット"
-									v[609] = Ptr19
-									// "出る場所セット"
-									TT1 = Ptr17 + 7
-									v[TT1].copy v[605], 2
-									v[605..606] *= 10000
-									v[TT1].copy v[607], 2
-									// "Projectile team"
-									TT1 = Ptr17 + 100
-									v[618] = v[TT1] == 0 ? 1 : 0
-									// "パラメータ等入力begin"
-									// "#Pic"
-									v[602] = 1
-									// "#ProjectileType"
-									agent_AgentType = 2
-									// "#あたり判定"
-									v[610..611] = muldiv(v[Ptr17 + 275], 12, 10)
-									// "#威力"
-									v[621] = 0
-									// "#Timer"
-									v[700] = 1
-									// "#Effect"
-									v[604] = 1231
-									// "#ARMRと属性"
-									v[622] = -1
-									v[623] = 1
-									v[628] |= 8
-									// "パラメータ等入力end"
-									agent_AgentType.copy v[Ptr15], 100
-									// "Having no timer passive conflict"
-									@if `!(v[Ptr17 + 223] & 1) {
-											// "Timer Reset"
-											v[Ptr17 + 94] = v[1240] * 5
-											
-									}
-									// "Eff"
-									TT1 = v[Ptr19 * 300 + 4922]
-									@if TT1 >= 1 {
-											TT2 = Ptr19 * 300 
-											TT2 += 4925
-											v[TT2] = (v[TT2] + 1) % 2
-											@if v[TT2] == 0 {
-										@if `s[500 + Ptr19] == 1 {
-												v[607].copy v[361], 2
-												@loop v[1017] .dst Temp20 {
-											v[242] %= v[1017]
-											Temp1 = v[242] * 100
-											Temp1 = Temp1 + v[1018]
-											@if v[Temp1] <= 1 {
-													v[243] -= v[Temp1] == 1 ? 1 : 0
-													v[242] %= v[1017]
-													Ptr1 = v[242] * 100
-													Ptr1 = Ptr1 + v[1018]
+											Temp1 = v[216] * 100
+											Temp1 += v[1076]
+											Ptr15 = Temp1 + 1
+											@if v[Ptr15] == 0 {
+												// "Access17 = AttackerObjチェックPtr"
+												Ptr17 = Ptr19 * 300
+													Ptr17 += 4700
 													// "まず清掃"
-													v[1301].copy v[Temp1], 100
-													// "ポインタセット開始"
-													Temp10 = v[242] + v[1220]
-													Ptr15 = Temp1 + 99
-													// "設定"
-													v[Temp1] = 1
-													v[Ptr15] = 0
-													// "普通にアニメ"
-													@pic[Temp10].show {
-												"passive_icon\picon_0" .repl 1 TT1
-												.pos v[361], v[362] .center
-												.scrollWithMap
-												.chromakey 1
-												.scale 100
-												.trans 40
-												.rgbs 100, 100, 100, 100
-												.mapLayer 5
-												.eraseWhenTransfer
-												.affectedByFlash
-												.affectedByShake
+													v[1301].copy agent_AgentType, 100
+													v[1301].copy v[Ptr15], 100
+													// "ParentObjセット"
+													v[609] = Ptr19
+													// "出る場所セット"
+													TT1 = Ptr17 + 7
+													v[TT1].copy v[605], 2
+													v[605..606] *= 10000
+													v[TT1].copy v[607], 2
+													// "Projectile team"
+													TT1 = Ptr17 + 100
+													v[618] = v[TT1] == 0 ? 1 : 0
+													// "パラメータ等入力begin"
+													// "#Pic"
+													v[602] = 1
+													// "#ProjectileType"
+													agent_AgentType = 2
+													// "#あたり判定"
+													v[610..611] = muldiv(v[Ptr17 + 275], 12, 10)
+													// "#威力"
+													v[621] = 0
+													// "#Timer"
+													v[700] = 1
+													// "#Effect"
+													v[604] = 1231
+													// "#ARMRと属性"
+													v[622] = -1
+													v[623] = 1
+													v[628] |= 8
+													// "パラメータ等入力end"
+													agent_AgentType.copy v[Ptr15], 100
+													// "Having no timer passive conflict"
+													@if `!(v[Ptr17 + 223] & 1) {
+														// "Timer Reset"
+														v[Ptr17 + 94] = v[1240] * 5
+
 													}
-													v[362] -= 36
-													@pic[Temp10].move {
-												.pos v[361], v[362] .center
-												.scale 250
-												.trans 100
-												.time 21
-												.rgbs 100, 100, 100, 100
+												// "Eff"
+												TT1 = v[Ptr19 * 300 + 4922]
+													@if TT1 >= 1 {
+														TT2 = Ptr19 * 300 
+															TT2 += 4925
+															v[TT2] = (v[TT2] + 1) % 2
+															@if v[TT2] == 0 {
+																@if `s[500 + Ptr19] == 1 {
+																	v[607].copy v[361], 2
+																		@loop v[1017] .dst Temp20 {
+																			v[242] %= v[1017]
+																				Temp1 = v[242] * 100
+																				Temp1 = Temp1 + v[1018]
+																				@if v[Temp1] <= 1 {
+																					v[243] -= v[Temp1] == 1 ? 1 : 0
+																						v[242] %= v[1017]
+																						Ptr1 = v[242] * 100
+																						Ptr1 = Ptr1 + v[1018]
+																						// "まず清掃"
+																						v[1301].copy v[Temp1], 100
+																						// "ポインタセット開始"
+																						Temp10 = v[242] + v[1220]
+																						Ptr15 = Temp1 + 99
+																						// "設定"
+																						v[Temp1] = 1
+																						v[Ptr15] = 0
+																						// "普通にアニメ"
+																						@pic[Temp10].show {
+																							"passive_icon\picon_0" .repl 1 TT1
+																								.pos v[361], v[362] .center
+																								.scrollWithMap
+																								.chromakey 1
+																								.scale 100
+																								.trans 40
+																								.rgbs 100, 100, 100, 100
+																								.mapLayer 5
+																								.eraseWhenTransfer
+																								.affectedByFlash
+																								.affectedByShake
+																						}
+																					v[362] -= 36
+																						@pic[Temp10].move {
+																							.pos v[361], v[362] .center
+																								.scale 250
+																								.trans 100
+																								.time 21
+																								.rgbs 100, 100, 100, 100
+																						}
+																					// "仕上げに登録消す"
+																					v[242..243] += 1
+																						@break
+
+																				}
+																			v[242] += 1
+
+																		}
+
+
+																}
+
+															}
+
 													}
-													// "仕上げに登録消す"
-													v[242..243] += 1
-													@break
-													
+												@break
+
 											}
-											v[242] += 1
-											
-												}
-												
-												
-										}
-										
-											}
-											
+
 									}
-									@break
-									
-										}
-										
-								}
 								
 								v[216] += 1
 								
@@ -1799,7 +1800,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		}
 
 	    // "++"
-	    increment_var(v[536]) //v[536] += 1
+	    increment_var(Ptr_loop_current_agent) //Ptr_loop_current_agent += 1
 	    
 	}
 
@@ -1848,11 +1849,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	v[ptr_null].copy v[Const_save_var_TileFlags], var_allocatedmapsize //you should just kill first 2 flags? or not? - it might be changed later. Idk
 
 	//Land units
-	val_asg(v[536],v[4532]) // v[536] = v[4532]
-	@while v[v[536]] != 0 {
-	    Temp1 = v[v[536]] * v[1117] 
+	val_asg(Ptr_loop_current_agent,v[4532]) // Ptr_loop_current_agent = v[4532]
+	@while v[Ptr_loop_current_agent] != 0 {
+	    Temp1 = v[Ptr_loop_current_agent] * v[1117] 
 	    val_add(Temp1,N4700) // Temp1 += 4700
-	    func_extract_agent_vars(v[v[536]])
+	    func_extract_agent_vars(v[Ptr_loop_current_agent])
 
 			// if it's standing on wall tile, let the tile push the agent
 			agent_AgentBits |= agent_TerrainIDstanding > 20 ? AgentBits_FLAG_Pushed_by_terrain : 0
@@ -1953,37 +1954,40 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		v[Temp2] |= ((v[Temp2] & CrowdedANDOccupied) << 1) | FLAG_Maptile_Occupied // ? FLAG_Maptile_Crowded : FLAG_Maptile_Occupied //set occupied flag
 		@if agent_TacticsOrderFlag > 0 {
 			@if `agent_TacticsOrderFlag & 6 { //using shieldwall
-				@if `!(agent_ProcessObjBit & 67108864) { //can use shield
+				@if `!(agent_ProcessObjBit & BaseObjBit_FLAG_Brokenshield) { // shield not broken
 					defv flag_shieldcovered = __id(TT10)
 					defv bool_if_my_tile_is_covered = __id(TempFlag1)
 
 					// get agent MetaTeam
-					__if DIS_EXPERIMENTAL == -1 { // AEBA
-						macro_get_agent_MetaTeam_into_var(v[v[536]],TT1)
+					__if DIS_EXPERIMENTAL == 1 { // AEB
+						macro_get_agent_MetaTeam_into_var(v[Ptr_loop_current_agent],TT1)
 						flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << TT1 //shift Meta Team
+
 					}.else bl {
-						TT1 = Const_AgentMetaTeam_begin + v[v[536]] //get meta team - isn't this wrong since MetaTeamArray has element in [0]?
+						TT1 = Const_AgentMetaTeam_begin + v[Ptr_loop_current_agent] //get meta team - isn't this wrong since MetaTeamArray has element in [0]?
 						flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << v[TT1] //shift Meta Team
 					}
 
 					bool_if_my_tile_is_covered = v[Temp2] & flag_shieldcovered ? 1 : 0 //Check if agent tile is already covered
-					func_set_tileflag_in_square_range(flag_shieldcovered ShieldWall_Cover_SquareSide ShieldWall_Cover_Diff Temp11 Temp15)
+					func_set_tileflag_in_square_range(flag_shieldcovered,ShieldWall_Cover_SquareSide,ShieldWall_Cover_Diff,Temp11,Temp15)
 					v[Temp2] &= bool_if_my_tile_is_covered & 1 ? v[Temp2] : ~flag_shieldcovered // you must be covered by other unit to get shield covered bonus.
 				}
 
-			}.elif `agent_TacticsOrderFlag & 1 { //spear wall 
+			}.elif `agent_TacticsOrderFlag & TacticsOrder_FLAG_pikewall { // pike wall 
 				defv flag_pikecovered = __id(TT10)
 				
 				// get agent MetaTeam
-				__if DIS_EXPERIMENTAL == -1 {
-					macro_get_agent_MetaTeam_into_var(v[v[536]],TT1) // AEBA
+				__if DIS_EXPERIMENTAL == 1 {
+					macro_get_agent_MetaTeam_into_var(v[Ptr_loop_current_agent],TT1) // AEBA
 					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << TT1 // shift Meta Team
+
 				}.else bl {
-					TT1 = Const_AgentMetaTeam_begin + v[v[536]] // get meta team - isn't this wrong?
+					TT1 = Const_AgentMetaTeam_begin + v[Ptr_loop_current_agent] // get meta team - isn't this wrong?
 					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << v[TT1] // shift Meta Team
+
 				}
 
-				func_set_tileflag_in_square_range(flag_pikecovered ShieldWall_Cover_SquareSide ShieldWall_Cover_Diff Temp11 Temp13)
+				func_set_tileflag_in_square_range(flag_pikecovered,ShieldWall_Cover_SquareSide,ShieldWall_Cover_Diff,Temp11,Temp13)
 			}
 		}
 
@@ -1991,7 +1995,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    // "++"
 	    func_main_save_agent_vars()
-	    increment_var(v[536]) // v[536] += 1
+	    increment_var(Ptr_loop_current_agent) // Ptr_loop_current_agent += 1
 	    
 	}
 
@@ -2000,10 +2004,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	
 	ui_workers_amount.copy ui_workers_amount_save, 5
 	v[ptr_null].copy ui_workers_amount,5 // v[2941..2944] = 0
-	v[536] = v[4532]
+	Ptr_loop_current_agent = v[4532]
 	s[187].off
-	@while v[v[536]] != 0 {
-	    Temp1 = v[v[536]] * v[1117] 
+	@while v[Ptr_loop_current_agent] != 0 {
+	    Temp1 = v[Ptr_loop_current_agent] * v[1117] 
 	    val_add(Temp1,N4700) // Temp1 += 4700
 	    Ptr1 = Temp1 + 1 
 	    v[Ptr1].copy agent_AgentType, 300
@@ -2117,7 +2121,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 	    func_main_save_agent_vars()	
 	    // "++"
-	    increment_var(v[536]) // v[536] += 1
+	    increment_var(Ptr_loop_current_agent) // Ptr_loop_current_agent += 1
 	    
 	}
 
@@ -2134,22 +2138,22 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	//##############
 	@wait 0
 	// "DEAD BODIES"
-	v[536] = v[4531]
-	@while v[v[536]] != 0 {
-	    v[401] = v[v[536]] - 1
+	Ptr_loop_current_agent = v[4531]
+	@while v[Ptr_loop_current_agent] != 0 {
+	    v[401] = v[Ptr_loop_current_agent] - 1
 	    // "死体"
 	    Temp1 = v[401] * v[1117] 
 	    val_add(Temp1,N5000) // Temp1 += 5000
 	    func_main_extract_agent_vars()
 	    val_sub(v[680],N1)// v[680] -= 1
 	    @if v[680] <= 0 {
-				v[898] += 5
-				@if v[898] >= 100 {
+				agent_Transparency += 5
+				@if agent_Transparency >= 100 {
 						// "#############
 						//Search and remove from body list"
 						Temp2 = v[4531]
 						@doWhile v[Temp2] > 0 {
-							@if v[Temp2] == v[v[536]] {
+							@if v[Temp2] == v[Ptr_loop_current_agent] {
 									v[Temp2] = 0
 									v[v[4531] + v[1004]] -= 1
 									v[v[4531]].sortDescending v[1004]
@@ -2163,6 +2167,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						
 						var1 = v[401] + 1
 						@call .cev 2152
+						agent_AgentBits &= ~AgentBits_FLAG_Drawn_in_screen // kill drawn flag!
 						
 				}
 				
@@ -2170,7 +2175,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	  
 	    // "++"
 	    func_main_save_agent_vars()
-	    increment_var(v[536]) // v[536] += 1
+	    increment_var(Ptr_loop_current_agent) // Ptr_loop_current_agent += 1
 	    
 	}
 
@@ -2249,7 +2254,7 @@ __fn func_blink_set {
 }
 
 __fn func_blink_progress {
-	@if Is_Paused .isOff()  { // not pause
+	@if Is_Paused .isOff()  { // not paused
 		@if `agent_AddMotionBits & 448 {
 			agent_AddMotionBits = agent_AddMotionBits & 256 ? agent_AddMotionBits & -449 : (agent_AddMotionBits & 128 ? agent_AddMotionBits | 256 : (agent_AddMotionBits & 64 ? agent_AddMotionBits | 128 : agent_AddMotionBits)) //256+128->384 +64 ->448 then ~448 -> -449
 		}
@@ -2261,7 +2266,7 @@ __fn main_agent_footsound {
 	@if s[2].isOff(){
 	// "#Footstep Sound"
 	@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[401] + 501] == 1 {
-		@if `agent_ActionFlag & ActionFlag_FLAG_Walking { // DIS_EXPERIMENTAL s[v[401] + v[4558]] == 1 {
+		@if `agent_ActionFlag & ActionFlag_FLAG_Walking {
 			// "#Sub timer"
 			// agent_FootstepSoundTimer -= agent_ExMotionFlags & ExMotionFlags_FLAG_no_footstepsound ? 0 : 2
 			val_sub(agent_FootstepSoundTimer,N4)
@@ -2455,46 +2460,61 @@ __fn main_agent_footsound {
 __fn agent_behavior_effect_and_motion_check {
 	/* "###############Timers Check###############"*/
 	// "#Check if AI timer is <=4"
-	@if v[684] <= 4 {
+	@if agent_ActionTimer <= 4 {
 		// "#Unit Behavior Start"
 		// "#Out of Breath"
+
 		@if `divmul(v[707], 100, 35) > v[708] && !(v[726] & 2048) {
 			agent_AddMotionBits |= AddMotionFlags_FLAG_OutOfBreath
 			// "#Hit Timer ==0&&current SP is below 35%&&the unit has fatigue"
-			@if v[682] <= 0 {
-				v[682] = 48
-					// "Sweat Particle"
-					@loop v[1017] .dst Temp20 {
-						v[244] %= v[1199]
-							v[331] = v[244] * 50 
-							v[331] += v[1198]
-							@if v[v[331]] <= 1 {
-								// "まず清掃"
-								v[1301].copy v[v[331]], 50
-									// "ポインタセット開始"
-									// "設定"
-									v[v[331]] = 1
-									// "500F"
-									v[v[331] + 49] = v[682]
-									// "Set itself"
-									v[v[331] + 3] = 124
-									// "Set Parent Obj"
-									v[v[331] + 9] = v[401] + 1
-									// "普通にアニメ"
-									TT1 = v[331] + 6
-									v[607].copy v[TT1], 2
-									// "仕上げに登録消す"
-									v[244] += 1
-									@break
+				@if agent_HitMoveTimer <= 0 {
+					agent_HitMoveTimer = 48
+						// "Sweat Particle"
 
-							}
+						/*
+							 @loop v[1017] .dst Temp20 {
+							 v[244] %= v[1199]
+							 v[331] = v[244] * 50 
+							 v[331] += v[1198]
+							 @if v[v[331]] <= 1 {
+						// "まず清掃"
+						v[1301].copy v[v[331]], 50
+						// "ポインタセット開始"
+						// "設定"
+						v[v[331]] = 1
+						// "500F"
+						v[v[331] + 49] = v[682]
+						// "Set itself"
+						v[v[331] + 3] = 124
+						// "Set Parent Obj"
+						v[v[331] + 9] = v[401] + 1
+						// "普通にアニメ"
+						TT1 = v[331] + 6
+						v[607].copy v[TT1], 2
+						// "仕上げに登録消す"
+						v[244] += 1
+						@break
+
+						}
 						v[244] += 1
 
-					}
+						}
+						 */
+
+						func_set_preset_particle_emitter(v[331],
+								PROC({
+									val_asg(emitter_ParticleType,N1)
+									emitter_Timer = agent_HitMoveTimer
+									emitter_CallPartFunc = cevid_psp_sweat
+									emitter_ParentObject = v[Ptr_loop_current_agent]
+									// "普通にアニメ"
+									agent_RelativeX.copy emitter_RelativeX, 2
+									})
+						)
 
 
-			}
-		}.else bl{
+				}
+		}.else bl {
 			agent_AddMotionBits &= ~AddMotionFlags_FLAG_OutOfBreath
 
 		}

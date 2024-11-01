@@ -25,6 +25,7 @@ __fn func_get_stringid_from_numid $numid $DISdict {
 }
 
 
+
 //###########################
 // file load
 //###########################
@@ -116,7 +117,6 @@ __fn sysfunc_compress_savedata {
 	// v[3201..4160] = 0 kesitya dame jane?
 
 	// v[v[4568]..v[4600]] = 0
-	//"pixel extract"
 	// v[ptr_null].copy v[buffer_for_pixel_information_head],10000
 	v[550445..560445] = 0
 
@@ -127,27 +127,15 @@ __fn sysfunc_compress_savedata_autosave {
 	v[ptr_null].copy v[v[1067]],TT1
 }
 
-// shouldn't this be in the system functions file?
+// this function called in cev[6] .name("Camera:Main")
+// The reason is that the cev is the highest priority parallel common event.
+// 
 __fn sysfunc_reboot_RTS_after_loading { //PicID_Auxilia_Message_Window
-	
-	/*
-	@pic[PicID_Auxilia_Message_Window].strpic {
-			"NOW LOADING..."
-			.pos TT1, TT2
-			.size LEGV_ConstScreenCenterX, LEGV_ConstScreenCenterY    .chromakey 1
-			.scale 100
-			.trans 0
-			.rgbs 100, 100, 100, 100
-			.font Font_Common, Font_Common_size
-			.spacing 0, 4
-			.skin "" .stretch
-			.mapLayer 9
-			.eraseWhenTransfer
-	}
-	*/
+
 	sysfunc_reload_RTS_data()
 
 	reboot_DIS_js_RTS_system()
+
 	s[476].off
 	v[2501] += 1
 

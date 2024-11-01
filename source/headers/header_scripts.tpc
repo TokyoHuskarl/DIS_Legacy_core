@@ -23,6 +23,10 @@ defv RadioDialogTimer = 367
 defv Const_save_var_Adr_ScriptsBufferHead = 1219
 def Str_ScriptsBufferHead = t[Const_save_var_Adr_ScriptsBufferHead]
 
+
+
+def jslib_directory = __str(js_directory,"jslib/")
+
 __if LOAD_HEADER_AGENT != 1{
 #include "./../headers/header_agent.tpc"
 }
@@ -36,6 +40,11 @@ __if LOAD_BUILDING_FUNCTION != 1{
 // actual script commands here
 #include "./../Dracore/module_core_Game_scripts_functions.tpc"
 
+__fn DISAPI_JS_CMD_RUN {
+	@if BOOL_CMD_RUN.isOff(){
+		eval_js("Cmd.run()") // Menu
+	}
+}
 
 def MAPVAR_START = 2000
 def MAPSWITCH_START = 400

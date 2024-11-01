@@ -124,6 +124,10 @@ __fn ptr_asg $v1 $v2 {
 	v[__id($v2)].copy v[$v1],1
 }
 
+__fn ptr_init $v1 $v2 {
+	v[ptr_null].copy v[$v1],1
+}
+
 __fn ptr_add $v1 $v2 {
 	v[$v1].add v[__id($v2)],1
 }

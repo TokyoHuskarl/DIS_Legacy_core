@@ -1,0 +1,83 @@
+
+
+__fn func_change_player_resource $pl $slot $amount {
+	var1 = max($pl, 0)
+	var1 = min(var1, 4)
+	var2 = max($slot, 1)
+	var3 = LEGV_Team_Address_Resource_Array_Start + min(var2, 4) + Team_Variables_Array_Size * var1
+	// this ignores dragonic resource limits
+	var4 = v[var3] + $amount
+	v[var3] = max(var4, 0)
+
+}
+
+
+__fn func_set_player_current_pop_limit $pl $lim {
+	v[Ptr_PopLimitArrayHEAD + $pl] = min($lim,TEAMSIZE_SYSTEM_LIMIT)
+}
+
+
+/**
+ * WORKS ONLY FOR DRAGONS && HUMAN PLAYER
+ */
+__fn func_get_ptr_to_player_rs_lim_bonus_per_house_r3 $pl {
+	reg3 = __id(v[1129])
+	
+}
+
+/**
+ *
+ * @param {int} $pl - player id
+ * @return {int} reg1 - int faction id
+ */
+__fn func_get_player_faction_to_r1 $pl {
+	// WHAT IF in case ($pl > 3)?
+	var1 = 2403 + $pl
+	v[var1].copy reg1,1
+	
+}
+
+/**
+ * CURRENTLY WORKS ONLY FOR PLAYER
+ * @param {int} $pl - player id
+ * @return {int} reg1 -int subfaction id 
+ */
+__fn func_get_player_subfaction_to_r2 $pl {
+	var1 = 2402
+	v[var1].copy reg1,1
+	
+}
+
+/**
+ *
+ * @param {int} $pl - player id
+ * @param {int} $slot - tech slot number
+ * @return {&int} reg1 - Address to player tech slot
+ */
+__fn func_get_ptr_to_player_tech_slot_into_r1 $pl $slot {
+	reg1 = 2403 + $pl
+	reg1 += 3 * $slot
+	// val_const(reg1,var1)
+	
+}
+
+/**
+ *
+ * @param {int} $pl
+ * @param {DATA_tech} $tech - Array for tech slot is needed here. The format is like [slotnum,flag] 
+ * About tech data, check Modules/{module_name}/Data/data_techs.json
+ */ 
+__fn func_give_tech_fl_to_player $pl $tech {
+
+}
+
+/**
+ * underconstruction
+ *
+ *
+ * @return {bool} reg1 - if researched 1, otherwise 0
+ */
+__fn func_ck_if_player_has_researched_tech_r1 $pl $tech {
+
+
+}

@@ -65,6 +65,9 @@ __fn CEV_CONTROL_KEYBOARD {
 
 					// "Ctrlシリーズ"
 					@if GETKEY_Ctrl >= 1 {
+							
+
+
 							GETKEY_Ctrl_PRESS += 1
 							@if v[45] >= 1 {
 									@if v[46] == 0 {
@@ -272,8 +275,6 @@ __fn CEV_CONTROL_KEYBOARD {
 					@key.inputEx .keyCode 46 .dst v[1221]
 					@if `v[1221] >= 1 && s[199] == 0 {
 							@if v[101] >= 1 {
-									v[472] = divmul(90, 100, v[2216])
-									@se.play "Slash9" .opt v[472], 100, 50
 									v[202] = 101
 									v[313..314] = 0
 									@loop .inf() {
@@ -974,6 +975,60 @@ __fn CEV_CONTROL_KEYBOARD {
 	}
 }
 
+__fn macro_qwerty_icon_init $slot {
+
+	// Q
+	__if $slot != 1 {
+		@pic[982].move {
+			.relative
+				.pos 0, 0 .center
+				.scale 0
+				.trans 0
+				.time 0
+				.rgbs 100, 100, 100, 100
+		}
+	}
+
+	__if $slot != 2 {
+		@pic[983].move {
+			.relative
+				.pos 0, 0 .center
+				.scale 0
+				.trans 0
+				.time 0
+				.rgbs 100, 100, 100, 100
+		}
+	}
+
+	__if $slot != 3 {
+		@pic[984].move {
+			.relative
+				.pos 0, 0 .center
+				.scale 0
+				.trans 0
+				.time 0
+				.rgbs 100, 100, 100, 100
+		}
+	}
+
+	__if $slot != 4 {
+		@pic[985].move {
+			.relative
+				.pos 0, 0 .center
+				.scale 0
+				.trans 0
+				.time 0
+				.rgbs 100, 100, 100, 100
+		}
+	}
+
+	// T
+	__if $slot != 5 {
+		
+	}
+
+}
+
 __fn CALL_RTS_KEY_Q {
 	@comment ""
 		@pic[982].getInfo .cewh .baseRect TT1, TT2, TT3, TT4
@@ -1009,6 +1064,9 @@ __fn CALL_RTS_KEY_Q {
 			.time 0
 			.rgbs 100, 100, 100, 100
 	}
+
+
+	// edit mode
 	@if s[57] .isOn() {
 		@msg.show "\>Unit"
 			@msg.inputNum .digit 3 .dst v[2101]
@@ -1036,6 +1094,7 @@ __fn CALL_RTS_KEY_Q {
 			v[87] = 3
 
 	} .else bl {
+		// slot 1
 		@comment ""
 			Temp1 = v[101] * 300
 			Temp1 += 4700
@@ -1044,6 +1103,9 @@ __fn CALL_RTS_KEY_Q {
 			@if v[Ptr20] > 0 {
 				@if s[27] .isOn() {
 					Ptr18 = Temp1 + 3
+
+
+					 // market
 						@if `v[Ptr18] & 8192 {
 							TT1 = GETKEY_Shift >= 1 ? 5 : 1
 								TT1 = GETKEY_Ctrl >= 1 ? 10 : TT1
@@ -1062,9 +1124,13 @@ __fn CALL_RTS_KEY_Q {
 
 
 						} .else bl {
-							@comment "最大MPを持っているか（Unit生産できるか）"
+
+
+								// @comment "最大SPを持っているか（Unit生産できるか）"
+								// If the static agent has SP, consider it able to produce unit or research tech.
 								@if v[Ptr19] >= 1 {
-									@comment "#兵舎の生産コマンド"
+										@comment "#兵舎の生産コマンド"
+										// TT1 is loop amount
 										TT1 = GETKEY_Shift >= 1 ? 5 : 1
 										TT1 = GETKEY_Ctrl >= 1 ? 10 : TT1
 										v[148] = TT1
@@ -1072,7 +1138,8 @@ __fn CALL_RTS_KEY_Q {
 										v[147] = 0
 										@loop TT1 {
 											v[147] %= v[99]
-												Temp1 = v[v[147] + 101] * 300 + 4700
+												Temp1 = v[v[147] + 101] * 300 + 4700 // v[101] found. need to be replaced later
+												
 												Ptr20 = Temp1 + 1
 												Ptr18 = Ptr20 + 137
 												v[Ptr18].copy v[738], 62
@@ -1084,9 +1151,8 @@ __fn CALL_RTS_KEY_Q {
 														@loop 29 {
 															@if v[Temp12] == 0 {
 																s[201].on
-																	@comment "#仮置き
-																	1番だけ"
-																	v[330] = 1
+																	@comment "#仮置 1番だけ"
+																	v[330] = 1 // replace this number with meta var when you make this easy
 																	Temp15 += v[330] * 3
 																	@if v[Temp15] >= 1 {
 																		@break
@@ -1102,7 +1168,7 @@ __fn CALL_RTS_KEY_Q {
 
 														}
 
-													@comment "#RS check"
+														@comment "#RS check"
 														v[1301].copy v[31], 4
 														s[151].on
 														s[152].on
@@ -1154,6 +1220,8 @@ __fn CALL_RTS_KEY_Q {
 									}
 
 								}
+								// function END 
+
 
 						}
 
@@ -1207,9 +1275,10 @@ __fn CALL_RTS_KEY_Q {
 											v[Temp1 + 84] = v[202] == 101 ? 2 : v[Temp1 + 84]
 											@comment "スキル使用指令を出す"
 											var1 = v[v[202]]
-											var2 = 1
+											// var2 = 1
 											s[83].on
-											@call .cev 2008
+											// @call .cev 2008
+											func_CkIfSklCall(var1,AGTACT_SLOT_Q,1)
 											s[83].off
 											@if reg1 <= 0 {
 												@comment "Mouse"
@@ -1457,7 +1526,9 @@ __fn CALL_RTS_KEY_W {
 											var1 = v[v[202]]
 											var2 = 2
 											s[83].on
-											@call .cev 2008
+											// @call .cev 2008
+
+											func_CkIfSklCall(var1,AGTACT_SLOT_W,1)
 											s[83].off
 											@if reg1 <= 0 {
 												@comment "とりあえずマウス座標だけ
@@ -1701,7 +1772,8 @@ __fn CALL_RTS_KEY_E {
 										var1 = v[v[202]]
 										var2 = 3
 										s[83].on
-										@call .cev 2008
+										// @call .cev 2008
+										func_CkIfSklCall(var1,AGTACT_SLOT_E,1)
 										s[83].off
 										@if reg1 <= 0 {
 											@comment "とりあえずマウス座標だけSkill3"
@@ -1769,6 +1841,258 @@ __fn CALL_RTS_KEY_R {
 			.rgbs 150, 150, 150, 100
 	}
 	Temp1 = v[101] * 300
+		Temp1 += 4700
+		Ptr20 = Temp1 + 1
+		Ptr19 = Temp1 + 107
+		@if s[57] .isOn() {
+			@msg.show "\>Elevation"
+				@msg.inputNum .digit 1 .dst v[2101]
+				v[87] = 10
+
+		} .else bl {
+			@if v[Ptr20] > 0 {
+				@if s[27] .isOn() {
+					@comment "最大MPを持っているか（Unit生産できるか）"
+						Ptr18 = Temp1 + 3
+						@if `v[Ptr18] & 8192 {
+							s[84].toggle
+								@if s[84] .isOff() {
+									v[Temp1 + 141] = 160
+										v[Temp1 + 144] = 161
+										v[Temp1 + 147] = 162
+										v[Temp1 + 142] = 50
+										v[Temp1 + 145] = 51
+										v[Temp1 + 148] = 52
+
+								} .else bl {
+									v[Temp1 + 141] = 163
+										v[Temp1 + 144] = 164
+										v[Temp1 + 147] = 165
+										v[Temp1 + 142] = 53
+										v[Temp1 + 145] = 54
+										v[Temp1 + 148] = 55
+
+								}
+
+						} .else bl {
+							@if v[Ptr19] >= 1 {
+								@comment "#兵舎の生産コマンド"
+									TT1 = GETKEY_Shift >= 1 ? 5 : 1
+									TT1 = GETKEY_Ctrl >= 1 ? 10 : TT1
+									v[148] = TT1
+									TT1 *= v[99]
+									@loop TT1 {
+										v[147] %= v[99]
+											Temp1 = v[v[147] + 101] * 300 + 4700
+											v[147] += 1
+											Ptr20 = Temp1 + 1
+											Ptr18 = Ptr20 + 137
+											v[Ptr18].copy v[738], 62
+											Temp11 = Ptr20 + 169
+											@if v[Temp11] < 30 {
+												s[201].off
+													v[314..315] = Ptr20 + 137
+													Temp12 = Ptr20 + 170
+													@loop 29 {
+														@if v[Temp12] == 0 {
+															s[201].on
+																@comment "#仮置き
+																1番だけ"
+																v[330] = 4
+																Temp15 += v[330] * 3
+																@if v[Temp15] >= 1 {
+																	@break
+
+																} .else bl {
+																	s[201].off
+																		@break
+
+																}
+
+														}
+														Temp12 += 1
+
+													}
+
+												@comment "#RS check"
+													v[1301].copy v[31], 4
+													s[151].on
+													s[152].on
+													v[254] = v[Temp15]
+													@call .cev 300
+													s[151].off
+													v[31].copy var5, 4
+													@call .cev 1916
+													Temp16 = Temp15 + 2
+													v[Temp16] = v[Temp16] == 0 ? var3 : v[Temp16]
+													@if reg1 != 0 {
+														s[201].off
+
+													}
+												@if s[201] .isOn() {
+													v[Temp12] = v[330]
+														v[472] = divmul(80, 100, v[2216])
+														@se.play "Clock" .opt v[472], 50, 50
+														v[300001] .sub v[31], 4
+														@comment "#Tech Flag"
+														@call .cev 84
+														@comment "#TT6=MP"
+														v[Temp14].copy v[326], 3
+														TT6 = Temp1 + 108
+														v[TT6] *= v[TT6] == -1 ? 0 : 1
+														@if v[Temp11] == 0 {
+															v[Temp15].copy v[Temp14], 3
+
+														}
+													v[Temp11] += 1
+														v[148] -= 1
+														@if v[148] <= 0 {
+															@break
+
+														}
+
+												}
+
+											}
+
+									}
+
+								@if s[201] .isOff() {
+									v[472] = divmul(90, 100, v[2216])
+										@se.play "Buzzer1" .opt v[472], 100, 50
+										@break
+
+								}
+
+							}
+
+						}
+
+				} .else bl {
+					@if s[29] .isOn() {
+						@if v[560] > -1 {
+							@if v[204] <= v[1004] {
+								TT4 = v[560]
+									@comment "###################"
+									@call .cev 796
+
+							} .else bl {
+								@comment "ユニット数上限"
+
+							}
+
+						} .else bl {
+							var1 = 4
+								s[204].off
+								@call .cev 797
+
+						}
+
+					} .else bl {
+						@if GETKEY_Ctrl >= 1 {
+							var1 = 4
+								@call .cev 2097
+
+						} .else bl {
+							@comment "TEST"
+								@if s[1] .isOff() {
+									s[81].on
+
+								}
+							v[202] = 101
+								@loop .inf() {
+									Temp1 = v[v[202]] * 300
+										Temp1 += 4700
+										@if v[v[202]] == 0 {
+											@comment "とぎれた"
+												@break
+
+										}
+									@if v[202] > v[1007] {
+										@comment "とりあえず40体までしか選択できない"
+											@break
+
+									}
+									@if s[81] .isOn() {
+										@comment "if player controlling only one unit, then the unit immediately cast skill"
+											v[Temp1 + 84] = v[202] == 101 ? 2 : v[Temp1 + 84]
+											@comment "スキル使用指令を出す"
+											var1 = v[v[202]]
+											var2 = 4
+											s[83].on
+											// @call .cev 2008
+											func_CkIfSklCall(var1,AGTACT_SLOT_R,1)
+											s[83].off
+											@if reg1 <= 0 {
+												@comment "とりあえずマウス座標だけSkill3"
+													TT1 = Temp1 + 210
+													MousePtr_x.copy v[TT1], 2
+													TT2 = Temp1 + 7
+													v[TT1] .sub v[TT2], 2
+													@comment "set Order to cast Skill3"
+													v[Temp1 + 246] = 4
+
+											} .else bl {
+												v[472] = divmul(90, 100, v[2216])
+													@se.play "Buzzer3" .opt v[472], 100, 50
+
+											}
+
+									}
+									v[202] += 1
+
+								}
+
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+}
+
+__fn CALL_RTS_KEY_T {
+		@pic[985].getInfo .cewh .baseRect TT1, TT2, TT3, TT4
+		@pic[982].move {
+			.relative
+				.pos 0, 0 .center
+				.scale 0
+				.trans 0
+				.time 0
+				.rgbs 100, 100, 100, 100
+		}
+	@pic[983].move {
+		.relative
+			.pos 0, 0 .center
+			.scale 0
+			.trans 0
+			.time 0
+			.rgbs 100, 100, 100, 100
+	}
+	@pic[984].move {
+		.relative
+			.pos 0, 0 .center
+			.scale 0
+			.trans 0
+			.time 0
+			.rgbs 100, 100, 100, 100
+	}
+	@pic[985].move {
+		.relative
+			.pos 0, 0 .center
+			.scale 0
+			.trans 0
+			.time 0
+			.rgbs 150, 150, 150, 100
+	}
+
+		
+		Temp1 = v[101] * 300
 		Temp1 += 4700
 		Ptr20 = Temp1 + 1
 		Ptr19 = Temp1 + 107
@@ -2952,4 +3276,116 @@ __fn CEV_CALL_BUILDING_GRP_SET {
 	s[204].off
 		s[176].off
 
+}
+
+// cev 2162
+__fn cont_queue_static_agent_tech_research $slot {
+		v[149] = $slot
+		TT1 = v[942] >= 1 ? 5 : 1
+		TT1 = v[943] >= 1 ? 10 : TT1
+		v[148] = TT1
+		TT1 *= v[99]
+		@if s[24] .isOff() {
+			TT1 = 1
+				v[148] = 1
+
+		}
+		v[147] = 0
+		s[201..202].off
+		@loop TT1 {
+			v[147] %= v[99]
+				Temp1 = v[v[147] + 101] * 300 + 4700
+				Ptr20 = Temp1 + 1
+				Ptr19 = Temp1 + 107
+				@if v[Ptr19] >= 1 {
+					Ptr18 = Ptr20 + 137
+						v[Ptr18].copyTo v[738], 62
+						Temp11 = Ptr20 + 169
+						v[603] = Temp1 + 3
+						@if `!(v[v[603]] & 1) {
+							@if v[Temp11] < 29 {
+								v[314..315] = Ptr20 + 137
+									Temp12 = Ptr20 + 170
+									@comment "#研究スロット"
+									v[330] = v[149]
+									Temp15 += v[330] * 3
+									@if v[Temp15] >= 1 {
+										s[201].on
+
+									} .else bl {
+										s[201].off
+
+									}
+								@if s[201] .isOn() {
+
+									@comment "#RS check"
+										v[1301].copyTo v[31], 4
+										s[151].on
+										@if v[Temp15] >= 10000 {
+											TT1 = v[Temp15] - 9800
+												v[255] = v[101 + v[147]]
+
+										} .else bl {
+											TT1 = v[Temp15]
+
+										}
+										@call .cev TT1
+										s[151].off
+										v[31].copyTo var5, 4
+										@call .cev 1916
+										Temp16 = Temp15 + 2
+										v[Temp16] = v[Temp16] == 0 ? var3 : v[Temp16]
+										@if reg1 != 0 {
+											s[201].off
+
+										}
+									@if s[201] .isOn() {
+										TT2 = Temp12 + 1
+											v[Temp12].copyTo v[TT2], 29
+											v[Temp12] = v[330]
+											v[472] = divmul(80, 100, v[2216])
+											@se.play "Clock" .opt v[472], 50, 50
+											v[300001] .sub v[31], 4
+											@comment "#Tech Flag"
+											Temp1 = v[v[147] + 101] * 300 + 4700
+											v[Temp1 + 3] |= 1
+											@call .cev 84
+											@comment "#TT6=MP"
+											v[Temp14].copyTo v[326], 3
+											TT6 = Temp1 + 108
+											v[TT6] = 0
+											v[Temp15].copyTo v[Temp14], 3
+											v[Temp11] += 1
+											s[202].on
+											v[811] = Temp1 + 211
+											@if `v[v[811]] & 4 {
+												v[148] -= 1
+													@if v[148] <= 0 {
+														@break
+
+													}
+
+											} .else bl {
+												@break
+
+											}
+
+									}
+
+								}
+
+							}
+
+						}
+
+				}
+			v[147] += 1
+
+		}
+
+	@if s[202] .isOff() {
+		v[472] = divmul(90, 100, v[2216])
+			@se.play "Buzzer1" .opt v[472], 100, 50
+
+	}
 }

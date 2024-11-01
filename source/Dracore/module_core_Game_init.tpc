@@ -4,7 +4,6 @@
 
 #include "./../headers/header_scripts.tpc"
 
-
 // -----------------------------------
 // GAME INIT
 // -----------------------------------
@@ -27,11 +26,13 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[__id(Const_2_combi)..__id(Const_2_combi) + 1] = 2
 	N4 = 4
 	N8 = 8
+	N15 = 15
 	N16 = 16
 	N4700 = 4700
 	N4701 = 4701
 	N5000 = 5000
 	N5001 = 5001
+	N10.repeat 10,6
 	@comment "module_core_Game_init.tpc"
 
 	ptr_null = 50000000 // This value itself has no meaning, just to get null array from unallocated area to init an array
@@ -81,7 +82,8 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	}
 	v[4575] = 300000
 	//set div 10000
-	v[4813..4814]=10000
+	v[4813..4814] = 10000
+
 	//set array for picture drawing - this seems needless now I guess?
 	v[0] = v[4815..4823] = [4001, 4001, 4001, 4005, 4009, 4001, 4001, 4001, 4001]
 	@sys.getInfo .winSize  .dst v[1001]
@@ -90,8 +92,13 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1218] = 40000
 	v[4577] = 800
 	v[4577] = 50000
-	v[4578] = 274001
-	v[4565] = 274501
+	
+	// SIMPLE TRIGGER for LEGACY MAP SCRIPT SYSTEM
+	// ONCE AFTER LEGACY SYSTEM COMPLETELY REMOVED, THESE TWO VARS WILL ALSO BE REMOVED
+	v[4578] = 899001
+	v[4565] = 899501
+
+
 	v[4807] = 200
 	@comment "DATABASE END########################"
 	s[319].on
@@ -132,7 +139,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	t[947] .asg "..\user\minions\spr_minions_1"
 	t[949] .asg "..\user\parts\hair\spr_hair_0"
 	@comment "Set Const"
-	v[4580] = 2438
+	Ptr_PopLimitArrayHEAD = 2438
 	v[1266] = 1500001
 	v[4501] = 63
 	v[4502] = 63
@@ -165,19 +172,20 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	@comment "Set Const"
 	v[4559] = Projectiles_Limit
 	v[4570] = 10
-	v[4529] = 572947
+	v[4529] = Adr_MapElevationArray
 	v[1182] = 300317
 	v[4528] = 572447
 	v[4527] = 562447
 	v[4525] = 2441
-	v[4530] = 159528
 	v[4530] = 463759
 	v[4523] = Address_Agent_HitCollisionArrayStart
 	v[4518] = 461318
 	v[1186] = 90
 	v[1204] = 42
 	@comment "#Objs"
-	v[4522] = 64 // can be obsolete
+
+	// agent overcrowded
+	v[4522] = 256 // 64 can be obsolete
 	v[1117] = 300
 	v[1005] = 5000
 	@comment "####"
@@ -185,9 +193,9 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1145] = 462319
 	v[1146] = 462821
 	Const_save_var_Agents_Limit = Agents_Limit
-	v[1012] = 350
-	@comment "this one is dynamic"
-	v[1080] = 350
+	Const_save_var_Agent_TeamListSize_Limit = TEAMSIZE_SYSTEM_LIMIT
+	// @comment "this one is dynamic"
+	// Mission_Agent_TeamSize_Limit = 350 -> set in mission_init
 	@comment "#Unit Lists"
 	v[4531] = 732947
 	v[4532] = 733947
@@ -243,8 +251,6 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1164] = 2201
 	@comment "#Particle"
 	v[1205] = 12
-	v[1198] = 275001
-	v[1199] = 100
 	v[1200] = 1301
 	@comment "+Logs+"
 	v[1137] = 11
@@ -301,8 +307,9 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	@comment "#OTHERS"
 	v[1128] = Const_Massive_Battle_Amount
 	@comment "##OBJ"
-	v[1112] = 4200
+	// how should I do lmao
 	v[1112] = 280001
+	v[1112] = 746949 // relocated!
 	v[1113] = v[1112] + v[1004]
 	v[v[1113]].enum 0, v[1004]
 	@comment "##BattleCount"
@@ -398,7 +405,9 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1254] = v[1250] + 14
 	@comment "#視界#小さめに"
 	v[1019] = 62500
-	v[1133] = 275000
+
+	v[1133] = 275000 // IS THIS EVEN USED??
+
 	v[1053] = 200
 	v[1054] = 800
 	v[1061] = 80000
@@ -420,10 +429,6 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[4810] = 781
 	v[4811] = 789
 	v[1258] = 2158
-	v[1277] = 112
-	v[1276] = 72
-	v[1277] = 148 * 2
-	v[1276] = 92 * 2
 	v[1277] = 148
 	v[1276] = 92
 	v[1282] = v[1001] - 2 - v[1277]
@@ -437,9 +442,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[1279] = 463718
 	v[1280] = 464631
 	v[1197] = 300221
-	v[1278] = 200001
 	v[1278] = 525545
-	v[1197] = 300221
 	v[4563] = 748949
 	v[4802] = v[4563] + v[1277] * v[1276]
 	v[4803] = v[4802] + v[1276]
@@ -448,16 +451,25 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	Const_save_var_TileFlags = Const_save_var_UnitAISightRoot + 1000 //allocate 400*400
 	
 	//Projectiles begin
-	v[1075] = Const_save_var_TileFlags +400*400
+	v[1075] = Const_save_var_TileFlags + 400 * 400 + 1
 	v[1076] = v[1075] - 1
+	//Projectiles Hit Flags begin
+	gPtr_ProjectileHitFlags_HEAD = v[1075] + v[4559] * 100 + 1
+
 	//Effects begin
-	v[1018] = v[1075] + v[4559] * 100//!?
+	v[1018] = gPtr_ProjectileHitFlags_HEAD + v[4559] * PRJ_HIT_FLAGS_SIZE + 1 // after projectiles
 	v[4840] = v[1018] + 1 
+	//Particle
+	v[1198] = 275001
+	v[1198] = v[1018] + v[1017] * 100 + 1
+	v[1199] = Particle_Emitter_Limit // amount
+
 	// "##OBJ数拡張する場合ここもいじる必要あり"
 	// "#Pathfinding"
 
 	// NODE DATA ADDRESS SETTING
-	RMconst_Node_Array_Address_Start = v[1018] + v[1017] * 100 //
+	RMconst_Node_Array_Address_Start = v[1018] + v[1017] * 100 // old, starts after effects array
+	RMconst_Node_Array_Address_Start = v[1198] + v[1199] * 50 // starts after particle array
 	RMconst_MapNodeMemSize = 20
 	RMconst_Node_Array_Address_Start_MINUS_NODE_MEMSIZE = RMconst_Node_Array_Address_Start - RMconst_MapNodeMemSize
 	
@@ -481,7 +493,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[4539] = 3276
 	v[4540] = 1365
 	v[4579] = v[1275] + 4001
-	v[1067] = v[4579] + v[1004] * (v[1012] + 2)
+	v[1067] = v[4579] + v[1004] * (Const_save_var_Agent_TeamListSize_Limit + 2)
 	v[1068] = v[1067] + v[1004]
 	TT1 = v[1004] * 4
 	v[1069] = v[1068] + TT1
@@ -838,6 +850,12 @@ __fn init_DIS_database $already_loaded {
 	// readLangFile(inputstr,inputstr)
 	inputstr .split "*/", t[509], TT1
 	inputstr .split LF, t[v[1213]], TT1
+	@loop TT1 .dst var1 {
+		var2 = var1 + v[1213]
+		t[var2] .asg .rep t[var2], LF, ""
+	}
+
+
 	v[1206] = 5000
 	getModulePathTo(inputstr)
 	inputstr .cat "\data\data_weapons", .utf8 //this was once sjis so this might cause some trouble
@@ -1241,7 +1259,7 @@ __fn init_DIS_database $already_loaded {
 			
 			
 	}
-	v[1215] = 10000
+	Const_save_var_Adrt_TroopDatabaseHEAD = 10000
 	getModulePathTo(inputstr)
 	inputstr .cat "\data\data_minions", .utf8 //this was once sjis so this might cause some trouble
 	inputstr .asg .file inputstr, .utf8 //this was once sjis so this might cause some trouble
@@ -1419,14 +1437,8 @@ __fn init_DIS_database $already_loaded {
 
 	t[511] .asg  .file "..\scripts\const_troops_id", .utf8
 	@if t[511] .neq t[801] {
-			@loop .inf() {
-					@if .canOutput() {
-							@break
-							
-					}
-					@wait 0
-					
-			}
+			WAIT_FOR_FILE_OUTPUT_LIMIT
+
 			
 			t[801] .toFile "..\scripts\const_troops_id", .utf8
 			@wait 0

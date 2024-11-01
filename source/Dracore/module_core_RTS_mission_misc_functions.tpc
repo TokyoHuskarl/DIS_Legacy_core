@@ -1,0 +1,24 @@
+
+/**
+ *
+ * @param {array} $array [food,wood,stone]
+ */
+__fn set_market_basic_resource_rate_buy_all $array {
+		__loop $array $elm $i {
+		$ptr = $i + __id(MarketRate_food_cost)
+		v[$ptr] = $elm
+	}
+}
+
+/**
+ *
+ * @param {array} $array [food,wood,stone]
+ */
+__fn set_market_basic_resource_rate_sell_all $array {
+		__loop $array $elm $i {
+		$ptr = $i + __id(MarketRate_food_value)
+		v[$ptr] = $elm
+	}
+}
+
+

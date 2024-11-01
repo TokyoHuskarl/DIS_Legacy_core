@@ -8,8 +8,19 @@ def{
 	PicID_elevation_add = 3
 	PicID_elevation_multi = 4
 
+	// cache 200~
 
 	PicID_AgentExBuffer = 700 // see detail -> define_structures_agent.tpc
+
+	// 701~740=UnitsFormIndicator
+	/*
+	751~760=cohort_banners
+	761~770=cohort_number
+	771~780=minimap_coh_num
+	781~788 = Minimap WP
+	789 =　minimap emphasize
+	800 = minimap_alert
+	*/
 
 
 	PicID_minimap_alert = 800
@@ -20,9 +31,6 @@ def{
 	PicID_VicDef = 1760
 	
 
-	PicID_Radio_Dialog_Back = 1767
-	PicID_Radio_Dialog_Text = 1768
-	PicID_Radio_Dialog_Icon = 1769
 	
 	//#####################
 	// UI Picture IDs
@@ -43,7 +51,7 @@ def{
 	PicID_SP_gauge = 976
 	PicID_Unit_Name = 977
 
-	PicID_Central_Monitor_Text = 978 //OR
+	PicID_Central_Monitor_Text = 978
 	PicID_Unit_HP = 978
 	PicID_Unit_SP = 979
 	PicID_Unit_Param = 980
@@ -51,13 +59,25 @@ def{
 	PicID_Operation_Panel = 981
 
 	PicID_Popup_1 = 996 // this should be renamed later
+
+	// particle 1301~1700
+
 	PicID_ASD_key_head = 1734
 
-	PicID_Auxilia_Message_Window = 1765
 
 	PicID_ButtonSelect = 1764
 
+	PicID_Auxilia_Message_Window = 1765
+
 	PicID_Square_Checker = 1766
+
+	
+	PicID_Radio_Dialog_Back = 1767
+	PicID_Radio_Dialog_Text = 1768
+	PicID_Radio_Dialog_Icon = 1769
+	
+	
+
 	PicID_EscapeButton = 1770
 	PicID_sec = 1771
 
@@ -74,14 +94,17 @@ def{
 	PicID_MeleePenalty = 1798
 	PicID_AR = 1799
 	PicID_ARgauge = 1800
+	// unitmarkers = 1801~2000 ?  
 
 	PicID_CamIcon = 2200
 
 
-
+	//minimap = 2146~ 2165
 
 	EDITPIC = 2599
 	PicID_EDITPIC = EDITPIC
+
+	// dynamic_unit_pictures = 2600~
 
 
 }
