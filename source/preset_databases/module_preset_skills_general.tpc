@@ -55,6 +55,40 @@ def MACRO_SET_REWORKED_PROJECTILE = {
 	
 }
 
+__fn PSS_generate_projectile $define_projectile $effect {
+	@if v[217] < v[4559] {
+			@loop v[4559] .dst v[320] {
+					v[216] %= v[4559]
+					v[301] = v[216] * 100
+					val_add(v[301],v[1076])
+					v[295] = v[301] + 1
+					@if v[v[295]] == 0 {
+							// init register data array 
+							v[1301].copyTo projectile_rgst_ProjectileType, 100
+							v[1301].copyTo v[v[295]], 100
+
+							// set your projectiles parameter manually!
+							$define_projectile
+
+							// generate
+							projectile_rgst_ProjectileType.copyTo v[v[295]], 100
+
+
+							// set effect
+							$effect
+
+							// increment projectiles count
+							val_add(v[217],N1)
+							@break
+
+					}
+				val_add(v[216],N1)
+
+			}
+	}
+}
+
+
 //Basically you can consider when preset skill function called as a skill casted by an agent the caster agent data is already extracted in v[601]~
 
 //Preset Skill Common Events 

@@ -97,19 +97,12 @@ __fn agent_ref_stats(){
 		// TT1 = AllFrameCount % 5 -> module_core_RTS_main.tpc, v[TPC_VAR_STACK_HEAD]
 		@if v[TPC_VAR_STACK_HEAD] == 0 {
 
-			__if DIS_EXPERIMENTAL == 1 {
-				// get Meta team into TT10
-				macro_get_agent_MetaTeam_into_var(v[v[536]], TT10) // AEB
-			}.else bl {
-				TT10 = Const_AgentMetaTeam_begin + v[v[536]]
-
-				val_sub(TT10,N1) // TT10 -= 1
-				TT10.deref TT10,1 // TT10 = v[TT10]
-			}
+			// get Meta team into TT10
+			macro_get_agent_MetaTeam_into_var(v[v[536]], TT10) // AEB
 
 			// SHIELD WALL COVER
 			@if `v[Ptr5] & (FLAG_Maptile_ShieldCoverTeam0 << TT10) { // covered by other guy's shield wall
-				// EXPERIMENTAL - just check if it's working
+
 				agent_ProcessInstantState |= agent_ProcessInstantState & ProcessInstantState_FLAG_shield_covered ? ProcessInstantState_FLAG_shield_covered_double_check : ProcessInstantState_FLAG_shield_covered //needs double check
 				// andthen
 

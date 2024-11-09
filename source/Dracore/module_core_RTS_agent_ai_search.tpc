@@ -22,13 +22,6 @@ v[4035].repeat v[205],2 // v[4035..4036] = v[205]
 
 //Check ground type troops agents all
 
-// set expanding temp array for copying
-// v[4100..4112] = 100000000
-__if DIS_EXPERIMENTAL != 1 {
-	v[4100].repeat 100000000, 13
-}
-// WITHOUT AEB, above part is necessarily
-
 
 @while v[v[536]] != 0 {
 		v[212] = v[v[536]] * 300 
@@ -77,44 +70,14 @@ __if DIS_EXPERIMENTAL != 1 {
 									//get team ID
 
 									//team ID % 3
-									__if DIS_EXPERIMENTAL == 1 {
-										get_AEB_element_wo_ptr(AgentIDholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
-									}.else bl {
-										Temp14 = Const_AgentMetaTeam_begin + v[211]
-										Temp14.deref Temp14,1 // Temp14 = v[Temp14]
-									}
+									get_AEB_element_wo_ptr(AgentIDholder,__id(Temp14),AgentExBuffer_SLOT_MetaTeam)
+									
 
 									// Temp8 = v[4034 + Temp14]
 									Temp8 = 4034 + Temp14
 									Temp8.deref Temp8,1
 
-									__if DIS_EXPERIMENTAL == 1 { // use AEBA to opt! also @if cond can be changed into other shit.
-											get_AEB_array(AgentIDholder,4001,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
-
-									}.else bl {
-
-									agent_AI_routine_bits.deref Temp7,1 // Temp7 = v[agent_AI_routine_bits]
-									v[4101].copy v[4001],12
-
-								// Common_Switch5 serves checking if the agent has bias to prioritize the enemy by its type, if it's on, it means the agent has the bias
-									LEGS_Common_Switch5.off
-									@if `Temp7 & 1 {
-											v[4001..4012] += 900000000
-											v[4012] -= 950000000 // wut
-											LEGS_Common_Switch5.on
-											
-									}
-									@if `Temp7 & 2 {
-											v[4002] -= 50000000
-											LEGS_Common_Switch5.on
-											
-									}
-									@if `Temp7 & 4 {
-											v[4005] -= 50000000
-											LEGS_Common_Switch5.on
-											
-									}
-							}
+									get_AEB_array(AgentIDholder,4001,AgentExBuffer_SLOT_Class_Target_Priority_Array,ClassType_Amount)
 
 										Temp7 = 0
 										// set ptr to array for comparation of agents
@@ -125,14 +88,9 @@ __if DIS_EXPERIMENTAL != 1 {
 
 										// get sight range root
 										defv UnitAI_agent_eyesight = 315
-										__if DIS_EXPERIMENTAL == -1 { // use AEBA to optimize! also @if cond can be changed into other shit.
-											// this was not efficient than I thought as far as I remember
-											get_AEB_element_wo_ptr(AgentIDholder,__id(UnitAI_agent_eyesight),AgentExBuffer_SLOT_BaseSight_Root)
 
-										}.else bl {
-											UnitAI_agent_eyesight = v[211] + v[4806]
-											UnitAI_agent_eyesight.deref UnitAI_agent_eyesight,1
-										}
+										UnitAI_agent_eyesight = v[211] + v[4806]
+										UnitAI_agent_eyesight.deref UnitAI_agent_eyesight,1
 
 										//If the agent has target agent
 										//Temp16 = Temp15  
@@ -728,13 +686,8 @@ __fn agent_AI_search_with_morton {
 				// AISearch_morton_ptr = v[340] + Temp10
 				// val_add(AISearch_morton_ptr,v[340])
 
-				__if DIS_EXPERIMENTAL == 1 {
-					macro_get_agent_MetaTeam_into_var(v[AISearch_morton_ptr],TT1) // AEB
-
-				}.else bl {
-					TT1 = Const_AgentMetaTeam_beginMINUSONE + v[AISearch_morton_ptr]
-
-				}
+				macro_get_agent_MetaTeam_into_var(v[AISearch_morton_ptr],TT1) // AEB
+				
 
 				@if  Temp33 == TT1 { // EXPERIMENTAL - IF YOU USE AEB  
 					// @if  Temp33 == v[TT1] { // NOT EXPERIMENTAL - WITHOUT AEBA

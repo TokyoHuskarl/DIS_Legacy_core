@@ -117,11 +117,9 @@ __fn func_bs_change_agent_team $agentID $team{
 		    reg2 = (v[__id($team)] % 3)
 		    v[Const_AgentMetaTeam_begin + (v[__id($agentID)]-1)] = reg2 
 
-		   __if DIS_EXPERIMENTAL == 1 {
-			    // set MetaTeam in AEB
-		   	    reg3 = $agentID
-			    set_AEB_element(reg3,__id(reg2),AgentExBuffer_SLOT_MetaTeam)
-		   }
+				// set MetaTeam in AEB
+				reg3 = $agentID
+				set_AEB_element(reg3,__id(reg2),AgentExBuffer_SLOT_MetaTeam)
 		   
 		    
 		} .else bl {

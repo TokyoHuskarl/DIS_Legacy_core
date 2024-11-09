@@ -17,9 +17,8 @@
 // The fact that kern commands of the AEB system have fatal bug in the processes where a MP user cannot touch nor deal with, so all AEAB system is gonna be abandoned.
 
 def AEAB_abandon = {
-	__if DIS_EXPERIMENTAL != -1 {
-		func_errlog("AEAB function detected, these functions must be removed from DIS source code.")
-	}
+	// legacy. should be removed later
+
 
 }
 __fn set_AEB_element $agentid $setadd $slot {

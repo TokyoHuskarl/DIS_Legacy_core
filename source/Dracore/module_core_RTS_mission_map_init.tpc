@@ -1817,8 +1817,7 @@ __fn CEV_MISSION_MAP_INIT {
 	@wait 0
 	@comment "Advanced heightmap system"
 	
-	__if DIS_EXPERIMENTAL == 1 {
-		log_push("DIS_EXPERIMENTAL FEATURE: Adv.Heightmap generation system activated.")
+		log_push("Adv.Heightmap generation system activated.")
 		TT1 = ev[3].scrx
 		TT2 = ev[3].scry
 		v[341..342] -= 8
@@ -1886,18 +1885,12 @@ __fn CEV_MISSION_MAP_INIT {
 
 
 
-		
-	}
 
 
 
 	@if MapHeightMapType == 2 {
-			__if DIS_EXPERIMENTAL == 1 {
-				log_push("Adv.Heightmap generation system called.")
-			}.else bl{
-				log_push("Adv.Heightmap generation system called. - But the system is deactivated.")
-			}
-	    @call .cev 1804
+		log_push("Adv.Heightmap generation system called.")
+		@call .cev 1804
 	    
 	} .else bl {
 	    @if MapHeightMapType == 1 {

@@ -412,32 +412,6 @@ __fn func_generate_agent {
 										agentgen_register_skill_to_slot(v[781],2)
 										agentgen_register_skill_to_slot(v[801],3)
 
-										__if DIS_EXPERIMENTAL == 1 {
-
-										}.else bl{
-											s[118].on
-												@if v[741] >= v[1186] {
-													@call .cev v[741]
-														v[581].copy v[741], 20
-
-												}
-											@if v[761] >= v[1186] {
-												@call .cev v[761]
-													v[581].copy v[761], 20
-
-											}
-											@if v[781] >= v[1186] {
-												@call .cev v[781]
-													v[581].copy v[781], 20
-
-											}
-											@if v[801] >= v[1186] {
-												@call .cev v[801]
-													v[581].copy v[801], 20
-
-											}
-											s[118].off
-										}
 
 
 
@@ -756,15 +730,13 @@ __fn agentgen_extra_AA_setting {
 __fn func_generate_agent_finish_set {
 	SpawnAgentID = ptr_SpawnAgentMainSpace_Head + 1 //
 
-		__if DIS_EXPERIMENTAL == 1 {
-			@if BOOL_Gen_GetMinionData.isOff() {
-				init_AEB_array(SpawnAgentID)
-					reg2 = 4701
-					reg2 += SpawnAgentID * 300 
-					set_AEB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_Ptr_To_BasicArray) // really
+	@if BOOL_Gen_GetMinionData.isOff() {
+		init_AEB_array(SpawnAgentID)
+			reg2 = 4701
+			reg2 += SpawnAgentID * 300 
+			set_AEB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_Ptr_To_BasicArray) // really
 
-			}
-		}
+	}
 	@comment "#reg1 = ObjID #reg2 = UnitID #reg3 = UnitType"
 		@comment "Set Dir"
 		agent_MarchingDirection = v[280] * 180000
@@ -1216,12 +1188,8 @@ __fn func_generate_agent_finish_set {
 
 					// reintroduce?
 					vname[4806], "ConstAgentRootSightArrayHead"
-						__if DIS_EXPERIMENTAL == -1 { 
-							reg2 = sqrt(agent_UnitEyeSight_for_AgentSearch, 1)
-								set_AEB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_BaseSight_Root)
-						} .else bl {
-							agent_reset_BaseSight_Root(SpawnAgentID)
-						}
+
+					agent_reset_BaseSight_Root(SpawnAgentID)
 
 					@comment "avoid false data"
 						reg1 = -1
@@ -1282,12 +1250,10 @@ __fn func_generate_agent_finish_set {
 								}
 
 
-							__if DIS_EXPERIMENTAL == 1 {
-								// set MetaTeam in AEB
-								reg2 = agent_TeamID % 3
-									set_AEB_element(SpawnAgentID, __id(reg2),AgentExBuffer_SLOT_MetaTeam)
+							// set MetaTeam in AEB
+							reg2 = agent_TeamID % 3
+							set_AEB_element(SpawnAgentID, __id(reg2),AgentExBuffer_SLOT_MetaTeam)
 
-							}
 							// ACHTUNG this will be removed after replace every MetaTeam reference
 							v[Const_AgentMetaTeam_begin + ptr_SpawnAgentMainSpace_Head] = agent_TeamID % 3
 
@@ -1296,32 +1262,7 @@ __fn func_generate_agent_finish_set {
 								@if s[157] .isOff() {
 
 
-									__if DIS_EXPERIMENTAL == -2 { // even if AEAB command bug in MP itself is solved, this part won't return, since the traditional way below (what in else block) is faster
-										// EyeSightForminimaps const =62500
-										reg2 = min(agent_UnitEyeSight_for_AgentSearch / 31250, 6)
-											// "#Cavs  have better sight"
-											@if `between(agent_UnitType, 1, 2) {
-												reg2 += 1
-
-											}
-										// "towers"
-										@if agent_UnitType == 106 {
-											reg2 += 2
-
-										}
-										reg1 -= agent_HeadSPregPenalty
-											// "walls"
-											@if agent_UnitType == 107 {
-												reg2 = 1
-
-											}
-										reg2 = max(reg2, 1)
-											// regsiter to AEAB
-											set_AEB_element(SpawnAgentID,__id(reg2),AgentExBuffer_SLOT_BaseEyeSight)
-
-									}.else bl { // this is faster
-										agent_reset_MapEyeSight(SpawnAgentID)
-									}
+									agent_reset_MapEyeSight(SpawnAgentID)
 
 									@if agent_ObjectType == 11 {
 										@if agent_UnitType != 105 {
@@ -1409,9 +1350,7 @@ __fn func_generate_agent_finish_set {
 
 
 							// set agent AI target priority
-							__if DIS_EXPERIMENTAL == 1 {
-								agent_reset_AI_target_priority_AEB(SpawnAgentID)
-							}
+							agent_reset_AI_target_priority_AEB(SpawnAgentID)
 
 
 

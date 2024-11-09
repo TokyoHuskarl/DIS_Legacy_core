@@ -832,11 +832,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 								TT1 = Temp1 + 108
 								// TT2 = v[2409 + v[251] % 3]
 
-								__if DIS_EXPERIMENTAL == 1 { 
-									macro_get_agent_MetaTeam_into_var(v[Ptr_loop_current_agent],TT2) // AEB
-								}.else bl {
-									TT2 = v[Const_AgentMetaTeam_begin + v[401]]
-								}
+								macro_get_agent_MetaTeam_into_var(v[Ptr_loop_current_agent],TT2) // AEB
 								func_get_ptr_to_player_tech_slot_into_r1(TT2,2) // get address of player tech slot 2 to reg1
 
 									v[TT1] += v[740] * 6 // 6f per 
@@ -1959,14 +1955,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					defv bool_if_my_tile_is_covered = __id(TempFlag1)
 
 					// get agent MetaTeam
-					__if DIS_EXPERIMENTAL == 1 { // AEB
-						macro_get_agent_MetaTeam_into_var(v[Ptr_loop_current_agent],TT1)
-						flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << TT1 //shift Meta Team
-
-					}.else bl {
-						TT1 = Const_AgentMetaTeam_begin + v[Ptr_loop_current_agent] //get meta team - isn't this wrong since MetaTeamArray has element in [0]?
-						flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << v[TT1] //shift Meta Team
-					}
+					macro_get_agent_MetaTeam_into_var(v[Ptr_loop_current_agent],TT1)
+					flag_shieldcovered = FLAG_Maptile_ShieldCoverTeam0 << TT1 //shift Meta Team
 
 					bool_if_my_tile_is_covered = v[Temp2] & flag_shieldcovered ? 1 : 0 //Check if agent tile is already covered
 					func_set_tileflag_in_square_range(flag_shieldcovered,ShieldWall_Cover_SquareSide,ShieldWall_Cover_Diff,Temp11,Temp15)
@@ -1977,15 +1967,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				defv flag_pikecovered = __id(TT10)
 				
 				// get agent MetaTeam
-				__if DIS_EXPERIMENTAL == 1 {
 					macro_get_agent_MetaTeam_into_var(v[Ptr_loop_current_agent],TT1) // AEBA
 					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << TT1 // shift Meta Team
-
-				}.else bl {
-					TT1 = Const_AgentMetaTeam_begin + v[Ptr_loop_current_agent] // get meta team - isn't this wrong?
-					flag_pikecovered = FLAG_Maptile_PikeWallTeam0 << v[TT1] // shift Meta Team
-
-				}
 
 				func_set_tileflag_in_square_range(flag_pikecovered,ShieldWall_Cover_SquareSide,ShieldWall_Cover_Diff,Temp11,Temp13)
 			}

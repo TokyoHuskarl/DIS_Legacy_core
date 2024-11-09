@@ -253,8 +253,7 @@ cev .id(80),  .name("Mission:Environment Effect"), .parallel, .cond(20), {
 
 	//@comment "#########Env test########"
 	//@comment "#########Adv maptile########"
-	__if DIS_EXPERIMENTAL ==1 {
-		TT1 = ev[3].scrx - 8
+			TT1 = ev[3].scrx - 8
 			TT2 = ev[3].scry - 16
 			@pic[PicID_elevation_add].move {
 				.pos TT1, TT2 .topLeft
@@ -272,7 +271,7 @@ cev .id(80),  .name("Mission:Environment Effect"), .parallel, .cond(20), {
 				.multi
 		}
 
-	}
+
 	@if s[315] .isOn() {
 		TT1 = ev[3].scrx - 8
 			TT2 = ev[3].scry - 16

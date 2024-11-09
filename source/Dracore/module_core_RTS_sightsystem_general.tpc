@@ -151,12 +151,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 		v[536] = v[4533]
 		@while v[v[536]] != 0 {
 
-				__if DIS_EXPERIMENTAL == -1 {
-					macro_get_agent_MetaTeam_into_var(v[v[536]],reg1) // AEBA
-				}.else bl {
-					// v[401] = v[v[536]] - 1
-					TT2 = Const_AgentMetaTeam_HEAD + v[v[536]]
-				}
+			TT2 = Const_AgentMetaTeam_HEAD + v[v[536]]
 
 				@if v[TT2] != 0 {
 					checkinsight_agent_non_ally_static({
@@ -181,12 +176,7 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 }
 
 __fn get_metateam_for_sightproc {
-	__if DIS_EXPERIMENTAL == 1 {
 		macro_get_agent_MetaTeam_into_var(v[v[536]],reg1) // ATTENTION AEBA
-	}.else bl {
-		// v[401] = v[v[536]] - 1
-		TT2 = Const_AgentMetaTeam_HEAD + v[v[536]]
-	}
 }
 
 __fn checkinsight_agent_non_ally $switching {
