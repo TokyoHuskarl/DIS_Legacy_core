@@ -94,9 +94,9 @@ __fn CEV_CONTROL_KEYBOARD {
 				//num key >=1 then try selecting assigned cohort
 							@if v[45] >= 1 {
 									@if v[46] == 0 {
-				//If same cohort is selected, then let camera jump to the cohort
+				//If the same cohort is selected, then let player camera jump to the cohort
 				@if `v[45] % 10 == v[82] || (v[45] == 10 && v[45] == v[82]) {
-						v[202] = 40 * (v[82] - 1) + v[4524]
+						v[202] = PlayerSelectList_Size * (v[82] - 1) + v[4524]
 						v[313..315] = 0
 						@loop v[1004] .dst v[401] {
 					@if v[v[202]] == 0 {
@@ -104,7 +104,7 @@ __fn CEV_CONTROL_KEYBOARD {
 							@break
 							
 					}
-					@if v[401] > 40 {
+					@if v[401] > PlayerSelectList_Size {
 							//@comment "とりあえず40体までしか選択できない"
 							@break
 							

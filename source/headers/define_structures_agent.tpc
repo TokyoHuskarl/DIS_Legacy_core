@@ -414,13 +414,22 @@ struct("agent",{
 		AI_decision_bits_KILL_FLAGs_Out_of_Ammo= -769
 	AI_decision_bits_FLAG_Sub_WEP_needs_Ammo = 2048
 	AI_decision_bits_FLAG_Currently_Melee = 4096
-	AI_decision_bits_FLAG_Currently_Ranged = 8192 
+	AI_decision_bits_FLAG_Currently_Ranged = 8192
+	AI_decision_bits_FLAG_Currently_Magic = 16384
+	AI_decision_bits_FLAG_Currently_Charge = 32768
+	AI_decision_bits_FLAG_Currently_Buff = 65536
+	AI_decision_bits_FLAG_Currently_Heal = 131072
+
+	// trebuchet bit
+	AI_decision_bits_FLAG_Need_to_be_packed_to_move = 262144
+
 	AI_routine_bits_FLAG_Forbid_AI_WeaponChange = 67108864 // AI_routine_bits??!?!?
 		AI_decision_bits_FLAGs_can_change_flags_all = 4+8+16+32+64+128
 		AI_decision_bits_KILL_ALL_WEAPONCHANGE_FLAG = ~(1+2+4+8+16+32+64+128+256+512+4096+8192)
 	
 	
 	AI_decision_bits_FLAG_Forbid_AI_decision = 1073741824//31bit
+
 	//AI routine bits
 	AI_routine_bits_FLAG_siegeweapon_flag = 1
 	AI_routine_bits_FLAG_skirmisher=2
@@ -522,6 +531,7 @@ struct("agent",{
 	//Tactical Orders
 	
 	TacticsOrder_FLAG_pikewall = 1
+
 	TacticsOrder_FLAG_garrison = 134217728
 	//TacticsOrder_FLAG_ShieldWall = 134217728
 	
@@ -615,6 +625,7 @@ struct("agent",{
 	ForceSprite_MOVE = 3
 
 	Address_agent_inSight_switch_array_head = 2001
+
 	}
 
 
@@ -693,6 +704,7 @@ struct("agent",{
 		victim_MapX = 740026
 		victim_MapY = 740027
 		victim_AATimer = 740028
+		victim_AI_decision_bits = 740033
 		victim_AI_routine_bits = 740034
 		victim_Cohort_ID = 740035
 		victim_MoveTypeBits = 740038

@@ -59,12 +59,13 @@ v[4035].repeat v[205],2 // v[4035..4036] = v[205]
 						
 						
 				} .else bl {
+						// basic units
 						@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI { //9.5.23
 								agent_AI_routine_bits = v[212] + 34
 								@if `v[agent_AI_routine_bits] & AI_routine_bits_FLAG_AIskip {
 										v[agent_AI_routine_bits] &= -2097153 //~2097152
 										
-								} .else bl {
+								} .else bl { // Search target
 									Ptr20 = v[212] + 18
 									// Ptr19 = v[212] + 241
 									//get team ID
@@ -135,26 +136,26 @@ v[4035].repeat v[205],2 // v[4035..4036] = v[205]
 												.eraseWhenTransfer
 												.affectedByFlash
 												.affectedByShake
-										}
+											}
 
 										})
 
 										agent_AI_search_with_morton()
 
-										//Has more than 16 enemies in the search radius
+										// Has more than 16 enemies in the search radius
 										@if Temp7 >= 16 {
-											//set next search skip flag 
+											// set next search skip flag 
 											v[agent_AI_routine_bits] |= agent_AAType == 0 ? AI_routine_bits_FLAG_AIskip : 0 //v[v[212] + 103] == 0 ? 2097152 : 0
-											//break the flag
+											// break the flag
 											v[agent_AI_routine_bits] &= -129 //~128
 											
 										} .else bl {
-											//found none in the radius
+											// found none in the radius
 											@if Temp7 == 0 {
 												agent_AI_check_current_target()
 													
 											} .else bl {
-												//break the flag
+												// break the flag
 												v[agent_AI_routine_bits] &= -129 //~128
 													
 											}
@@ -305,11 +306,14 @@ v[4035].repeat v[205],2 // v[4035..4036] = v[205]
 										TT1 = v[534] + v[1012]
 										Temp6.copy v[TT1], 2
 
-										@if v[Ptr20] == 0 {
-												v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_IdleAfterEnemySearch
 
-												@if agent_StanceOrder == 3 {
-														@if agent_MovementOrder != -2 {
+										// There is no target for the agent...
+										@if v[Ptr20] == 0 {
+												v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_IdleAfterEnemySearch // set idle flag
+
+												// if stance is Defensive
+												@if agent_StanceOrder == ORD_DEF {
+														@if agent_MovementOrder != MovementOrder_TYPE_returned {
 																@if agent_MilPixMoveOrderedPointDist > 11000 {
 																		v[v[212] + 245] &= ~ActionFLag_FLAG_Hold_direction
 																		
@@ -319,7 +323,11 @@ v[4035].repeat v[205],2 // v[4035..4036] = v[205]
 														
 												}
 
-												// If agent has not been in combat for a long time
+
+
+
+
+												// If the agent has not been in combat for a long time
 												@if agent_InCombatTimer <= -5000 {
 														v[agent_AI_routine_bits] |= AI_routine_bits_FLAG_AIskip // reduce enemy search frequency
 														

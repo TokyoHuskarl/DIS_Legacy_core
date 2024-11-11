@@ -58,7 +58,7 @@ __fn init_AEB_array $agentid {
  * @param {int} $unitid - 
  * @param {int} $flags - EXTRACT_FLAG_Data_extracted:0x1 
  */
-__fn func_transform_agent_into_other_unit $agentid $unitid $flags {
+__fn func_transform_agent_into_other_unit $agentid $unitid $flags $option {
 	$FLAG_RECOVER_STATS = 0x2
 
 	var1 = $unitid
@@ -121,10 +121,13 @@ __fn func_transform_agent_into_other_unit $agentid $unitid $flags {
 					victim_BaseAR.copy agent_BaseAR,1
 			}
 
-		agent_UnitID.copy victim_UnitID,140 // copy all basic data
+			agent_UnitID.copy victim_UnitID,140 // copy all basic data
 			agent_MainWeaponID.copy victim_MainWeaponID,9 // copy equipments
 
 			set_agent_name($agentid,str1)
+
+
+			$option
 
 
 			/*

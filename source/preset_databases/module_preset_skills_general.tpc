@@ -134,7 +134,11 @@ def skill_cev_devastating_charge = 1238
 #include "./skills/pss_legacy_misc.tpc"
 
 def pss_cev_unpack_treb = 1301
+def pss_cev_pack_treb = 1302
 #include "./skills/pss_treb_functions.tpc"
 cev .id(pss_cev_unpack_treb), .name("fn:Treb_Unpack"),{
 	pss_unpack_trebuchet()
+}
+cev .id(pss_cev_pack_treb), .name("fn:Treb_Pack"),{
+	pss_pack_trebuchet()
 }

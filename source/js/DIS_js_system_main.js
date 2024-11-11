@@ -2679,6 +2679,8 @@ DIS.data = { // DIS.data
 		init(){
 			this.pss_unpack_trebuchet = new DATA_skill("pss_unpack_trebuchet",{datatype:"preset",cev:1301}) 
 			this.register(this.pss_unpack_trebuchet);
+			this.pss_pack_trebuchet = new DATA_skill("pss_pack_trebuchet",{datatype:"preset",cev:1302}) 
+			this.register(this.pss_pack_trebuchet);
 			deblog("EXPERIMENTAL - SKL_pss_unpack_trebuchet set in DIS.data.SKILL.init();")
 		},
 

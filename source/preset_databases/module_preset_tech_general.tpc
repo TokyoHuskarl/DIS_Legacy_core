@@ -101,6 +101,36 @@ __fn func_tech_announce $tech_string_id {
 	    }
 }
 
+cev .id(435), .name("[Adjustment]Tech_Common_Head"), {
+	@comment "module_preset_tech_general.tpc"
+	// @comment "modifier for technologies"
+	@if v[493] >= 1 {
+		v[13] += muldiv(v[13], 4, 100) + 1
+
+	}
+
+	// if your civ is Dragons
+	@if v[822] == 3 {
+		// @comment "Hero: Orthunass Nasun Solanum"
+		@if v[2402] == 1 {
+				v[31] = muldiv(v[31], 90, 100)
+				v[32] = muldiv(v[32], 90, 100)
+				v[33] = muldiv(v[33], 90, 100)
+				v[34] = muldiv(v[34], 90, 100)
+
+		} .else bl { // any other dragonic tribes get tech cost penalty
+				v[31] = muldiv(v[31], 115, 100)
+				v[32] = muldiv(v[32], 115, 100)
+				v[33] = muldiv(v[33], 115, 100)
+				v[34] = muldiv(v[34], 115, 100)
+		}
+	}
+	// @comment "Kismet Draco Lindwurm"
+	@if s[1] .isOn() {
+		v[34] = v[2402] == 2 ? muldiv(v[34], 85, 100) : v[34]
+
+	}
+}
 
 // stable tech
 
