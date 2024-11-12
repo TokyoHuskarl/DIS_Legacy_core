@@ -1058,6 +1058,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 											v[449..452] = 100
 											//v[4001] = Temp1 + 291
 											v[449] .add v[891], 4
+											// simple sprite agents
 											@if `agent_AgentType == -1 || between(agent_AgentType, -9, -4) {
 													TT5 = 168 - v[608]
 													TT5 /= 12
@@ -1082,6 +1083,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													//agent_PictArray = v[agent_PictArray]
 													v[4041..4050] = Temp5
 													v[4051..4060] = Temp6
+													v[4041..4050] += agent_InitialOffsetX
+													v[4051..4060] += agent_InitialOffsetY
 													//v[4141..4151] = 0
 						v[ptr_null].copy v[4141],10
 													@if `v[888] > 0 && agent_ExMotionFlags & 32 {
@@ -1101,27 +1104,27 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 
 		
-				v[460] = 0
-				var1 =  v[340]*10
-				var1 = Const_str_agent_pictures_strings_start+var1
+													v[460] = 0
+													var1 =  v[340]*10
+													var1 = Const_str_agent_pictures_strings_start+var1
 													@while agent_PictArray >= 1 {
-															TT1 = agent_PictArray % 10
-						Temp5 = 4040 + TT1
+														TT1 = agent_PictArray % 10
+															Temp5 = 4040 + TT1
 															Temp6 = 4050 + TT1
-						Temp5.deref Temp5,2
-						v[454] = 4140 + TT1
+															Temp5.deref Temp5,2
+															v[454] = 4140 + TT1
 															v[454].deref v[454],1 // v[454] = v[v[454]]
 															//@comment "Strings = t[Ptr6]"
-						Ptr6 = TT1 + var1
+															Ptr6 = TT1 + var1
 															@if v[188] > 0 {
-																	@cmd 11110, t[Ptr6], .args v[441], 30
-																	
+																@cmd 11110, t[Ptr6], .args v[441], 30
+
 															}
-															v[186].add N1,3 // v[186..188] += 1
+														v[186].add N1,3 // v[186..188] += 1
 															agent_PictArray /= 10
-															
+
 													}
-													
+
 													//@comment "HeadPart"
 													@if `agent_ExMotionFlags & 32 {
 															Temp5 = v[4041]
@@ -1157,6 +1160,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													v[TT1 + v[1004]] = v[187]
 													
 											} .else bl {
+													// custom agent
 													@if agent_AgentType == -3 {
 															//@comment "仮置き"
 															v[449..451] -= (168 - v[608]) / 12
@@ -1253,7 +1257,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															v[v[1184] + v[189] + v[1004]] = v[187]
 															
 													} .else bl {
-						//STATIC SYSTEM
+														//STATIC SYSTEM
 															//@comment "Get ID From Cache"
 															Ptr6 = 900 + agent_PictArray % 10
 															v[188] = v[178] = v[340] * Const_layer_amount + v[1201]

@@ -133,12 +133,11 @@ def skill_cev_devastating_charge = 1238
 // misc functions for Legacy game
 #include "./skills/pss_legacy_misc.tpc"
 
+#include "./skills/pss_treb_functions.tpc"
 def pss_cev_unpack_treb = 1301
 def pss_cev_pack_treb = 1302
-#include "./skills/pss_treb_functions.tpc"
-cev .id(pss_cev_unpack_treb), .name("fn:Treb_Unpack"),{
-	pss_unpack_trebuchet()
-}
-cev .id(pss_cev_pack_treb), .name("fn:Treb_Pack"),{
-	pss_pack_trebuchet()
-}
+def pss_cev_shoot_treb = 1303
+cev .id(pss_cev_unpack_treb), .name("fn:Treb_Unpack"),{pss_unpack_trebuchet()}
+cev .id(pss_cev_pack_treb), .name("fn:Treb_Pack"),{pss_pack_trebuchet()}
+cev .id(pss_cev_shoot_treb), .name("fn:Treb_Shoot"),{pss_trebuchet_shoot()}
+

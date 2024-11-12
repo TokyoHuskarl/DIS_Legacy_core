@@ -109,7 +109,6 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 						@if `agent_AgentBits & AgentBits_FLAG_EnableBasicSkillAI { // has ordinary attack skill AI
 							// maybe you can insert some procs here to implement script-driven skill AI. (use ScriptFlags)
-								// Ptr20 = v[212] + 18
 								@if agent_TargetAgentID > 0 { // the agent has target
 										// in free MovementOrder state
 										@if agent_MovementOrder < 3 {
@@ -191,17 +190,6 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 																//macro_if_it_can_cast_then_do
 																_agentai_try_skill_slot(AGTACT_SLOT_E)
 
-																/*
-																	TT1 = v[212] + 190
-																	//@call .cev 1929
-																	func_ai_skill_usage_check()
-																	@if reg1 == 0 {
-																		TT5.copy v[TT1], 2
-																			v[v[212] + 246] = 3
-																			@break
-
-																	}
-																*/
 
 															}
 
@@ -241,9 +229,8 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 
 
-								// The agent has no target
+						// The agent has no target
 								}.else bl {
-
 									// for trebuchet
 									@if agent_StanceOrder != ORD_MANU { // not in manual mode
 										@if agent_MovementOrder >= MovementOrder_TYPE_move_ordered { // the agent wants to move
@@ -259,6 +246,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 											}
 										}
 									}
+
 								}
 
 						}

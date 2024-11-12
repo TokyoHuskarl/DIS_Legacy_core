@@ -254,8 +254,13 @@ struct("agent",{
 	agent_ProcessCamoValue = 876
 	agent_ProcessInstantState = 877
 	
+	// initial offsets are basically for simple sprite agents and Static agents.
+	// If the agent is custom agent, InitialOffsetXY will be used for the fall down effect upon their death.
+	// And, unless the agent is simple sprite agent, InitialOffsetXY will be init upon their death. 
+	// see => module_core_RTS_battlesystem_remove_agent.tpc
 	agent_InitialOffsetX = 881
 	agent_InitialOffsetY = 882
+
 	agent_SpriteOrder = 883
 	agent_ShieldFlash = 884
 	agent_2hweapon_stain = 885

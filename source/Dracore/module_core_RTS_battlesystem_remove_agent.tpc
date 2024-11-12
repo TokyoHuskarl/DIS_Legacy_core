@@ -211,8 +211,14 @@ __fn Kill_Agent {
 					// " Stop AI"
 					TT1 = Kill_pointer + 4703
 					v[TT1] &= ~1048576
-					TT1 = Kill_pointer + 4981 
-					v[ptr_null].copy v[TT1], 2
+
+
+
+					// Unless the victim is simple sprite agent, init agent_InitialOffset
+					@if v[331] != 1 {
+						TT1 = Kill_pointer + 4981 
+						v[ptr_null].copy v[TT1], 2
+					}
 
 					@if v[331] <= 10 {
 						// "NOT STATIC"
@@ -1405,59 +1411,71 @@ __fn prepare_deadbody_pictures {
 		}
 
 		v[Kill_pointer + 4979] = 0
+
+
+		/*
+			##############################
+			 DEAD BODY FALLING Motion 
+			##############################
+		*/
+
+		// Hamster PC option is not on
 		@if s[314] .isOff() {
-			@if s[220] .isOn() {
-				@if v[331] == 3 {
-						@if victim_ForceSprite != -1 { // ? how dafugg?
-					@if `(Temp15 & 4096) > 0 {
+
+			// the victim is custom agent
+			@if v[331] == 3 {
+				// the victim is in screen
+				@if s[220] .isOn() {
+					@if victim_ForceSprite != -1 { // ? how dafugg?
+						@if `(Temp15 & 4096) > 0 {
 							@if `(Temp15 & 8192) > 0 {
 								v[Kill_pointer + 4982] = -24
-								v[Kill_pointer + 4981] = 16
-								v[Kill_pointer + 4979] = rnd(-720000, -600000)
-						
+									v[Kill_pointer + 4981] = 16
+									v[Kill_pointer + 4979] = rnd(-720000, -600000)
+
 							} .else bl {
 								v[Kill_pointer + 4982] = -4
-								v[Kill_pointer + 4981] = 16
-								v[Kill_pointer + 4979] = rnd(600000, 720000)
-						
+									v[Kill_pointer + 4981] = 16
+									v[Kill_pointer + 4979] = rnd(600000, 720000)
+
 							}
-							
-					} .else bl {
-							@if `(Temp15 & 8192) > 0 {
-								v[Kill_pointer + 4982] = -24
-								v[Kill_pointer + 4981] = -16
-								v[Kill_pointer + 4979] = rnd(600000, 720000)
-								
-							} .else bl {
-								v[Kill_pointer + 4982] = -4
-								v[Kill_pointer + 4981] = -16
-								v[Kill_pointer + 4979] = rnd(-720000, -600000)
-						
-							}
-							
-					}
-					@if `victim_MoveTypeBits & 2 { // cavalry
-							v[Kill_pointer + 4982] -= 28
-							
-					}
-					
+
 						} .else bl {
-							v[Kill_pointer + 4979] = 0
+							@if `(Temp15 & 8192) > 0 {
+								v[Kill_pointer + 4982] = -24
+									v[Kill_pointer + 4981] = -16
+									v[Kill_pointer + 4979] = rnd(600000, 720000)
+
+							} .else bl {
+								v[Kill_pointer + 4982] = -4
+									v[Kill_pointer + 4981] = -16
+									v[Kill_pointer + 4979] = rnd(-720000, -600000)
+
+							}
+
+						}
+						@if `victim_MoveTypeBits & 2 { // cavalry
+							v[Kill_pointer + 4982] -= 28
+
+						}
+
+					} .else bl {
+						v[Kill_pointer + 4979] = 0
 							v[Kill_pointer + 4982] = 0
 							v[Kill_pointer + 4981] = 0
-					
-						}
-						
+
+					}
+
+				} .else bl {
+					v[Kill_pointer + 4979] = 0
+						v[Kill_pointer + 4982] = 0
+						v[Kill_pointer + 4981] = 0
+
 				}
-				
-			} .else bl {
-				v[Kill_pointer + 4979] = 0
-				v[Kill_pointer + 4982] = 0
-				v[Kill_pointer + 4981] = 0
-		
 			}
 			
 		}
+
 		//Set using Cache Flag
 		v[Kill_pointer + 4825] |= 512 // ?
 

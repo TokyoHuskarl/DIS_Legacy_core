@@ -273,44 +273,52 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    val_add(Temp1,N5000) // Temp1 += 5000
 	    func_main_extract_agent_vars()
 
-	    // "慣性"
-	    // "座標ずらし"
+			@if agent_AgentType == -11 {
 
-			// weapon fall
-	    @if v[865] < v[866] {
-				v[864] += g_perFPS // 98000 / 48
-				v[861] .add v[863], 2
-				val_add(v[867],agent_ProcessMS) // v[867] += agent_ProcessMS
-				val_add(v[865],N1) // v[865] += 1
-		
-	    }
 
-	    @if v[881] != 0 {
-				v[881] = muldiv(v[881], 4, 5)
-				val_div(v[882],N2) // /= 2
-				v[879] = divmul(v[879] ,17500,10000) 
-	    }
+				}.else bl{ // not building agent
 
-			// shield fall
-	    @if v[873] < agent_ProcessObjBit {
+					// not simple sprite agent
+					@if agent_AgentType != -1 {
 
-				v[872] += g_perFPS
+						// weapon fall
+						@if v[865] < v[866] {
+							v[864] += g_perFPS // 98000 / 48
+								v[861] .add v[863], 2
+								val_add(v[867],agent_ProcessMS) // v[867] += agent_ProcessMS
+								val_add(v[865],N1) // v[865] += 1
 
-				v[869] .add v[871], 2
-				val_add(v[875],agent_ProcessCamoValue) // v[875] += agent_ProcessCamoValue
-				val_add(v[873],N1) // v[873] += 1
-		
-	    }
-			
-	    @if v[887] < v[888] {
-				agent_FootstepSoundTimer += g_perFPS // the slot is the same as FootstepsSound for living agent, but actual function is diffrent. beware
-				v[883] .add v[885], 2
-				val_add(v[887],N1) // v[887] += 1
-		
-	    } .else bl {
-				v[1301].copy v[885], 2
+						}
 
-	    }
+						@if v[881] != 0 {
+								v[881] = muldiv(v[881], 4, 5)
+								val_div(v[882],N2) // /= 2
+								v[879] = divmul(v[879] ,17500,10000) 
+						}
+
+						// shield fall
+						@if v[873] < agent_ProcessObjBit {
+
+								v[872] += g_perFPS
+								v[869] .add v[871], 2
+								val_add(v[875],agent_ProcessCamoValue) // v[875] += agent_ProcessCamoValue
+								val_add(v[873],N1) // v[873] += 1
+
+						}
+
+						// head?
+						@if v[887] < v[888] {
+							agent_FootstepSoundTimer += g_perFPS // the slot is the same as FootstepsSound for living agent, but actual function is diffrent. beware
+								v[883] .add v[885], 2
+								val_add(v[887],N1) // v[887] += 1
+
+						} .else bl {
+							v[1301].copy v[885], 2
+
+						}
+
+					}
+			}
 	    // "#壁衝突チェックパート
 	    //#自己x 311
 	    //#自己y 312
@@ -362,6 +370,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						v[606] += Temp14 < 20 ? v[613] : 0
 					}
 			}
+
 	    // "#カメラずらして"
 			v[605].add FrameCamDiff_MilX,2
 			
