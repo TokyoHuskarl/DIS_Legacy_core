@@ -913,11 +913,7 @@ __fn func_generate_agent_finish_set {
 
 
 			//Set Agent Name
-			/*
-				 agent_PictArray = ptr_SpawnAgentMainSpace_Head + Address_str_agent_name_array_head
-				 agent_PictArray += 1
-				 t[agent_PictArray] .asg str1
-			 */
+
 		@if BOOL_Gen_GetMinionData.isOff() {
 			set_agent_name(SpawnAgentID,str1)
 		}
@@ -1867,6 +1863,7 @@ __fn agent_troops_set_picture_system {
 		@if agent_ObjectType == 11 {
 			agent_static_set_adjustments_for_pic_system()
 		}
+
 	@comment "#classic minions"
 		@if agent_ObjectType == 1 {
 			agent_ExMotionFlags |= 2097152
@@ -2202,26 +2199,25 @@ __fn agent_troops_set_picture_system {
 __fn agent_static_set_adjustments_for_pic_system {
 
 			@if agent_AAType == 2 {
-				func_get_ranged_weapon_velocity(agent_BaseRange_max,1)
+					func_get_ranged_weapon_velocity(agent_BaseRange_max,1)
 					agent_AAvelocity = reg1
 			}
 
-			Bool_Refresh_Static_Minimap.on //request refresh minimap static
+				Bool_Refresh_Static_Minimap.on //request refresh minimap static
 				v[834..835] = 0
 				//MapXY/5 for minimap
 				v[600 + AGENT_STATIC_SLOT_MINIMAP_X] = agent_MapX / 5
 				v[600 + AGENT_STATIC_SLOT_MINIMAP_Y] = agent_MapY / 5
+
 				@comment "Node check"
-				@comment "walls"
-				@if agent_UnitType == 107 {
+				@if agent_UnitType == 107 { // the unit type is wall
 
 
-					v[600+AGENT_STATIC_SLOT_MINIMAP_X]=(v[803]+agent_Width/16)/5
-						v[600+AGENT_STATIC_SLOT_MINIMAP_Y]=(v[804]+agent_Height/16)/5
-						@if `v[603] & 256 {
+					v[600 + AGENT_STATIC_SLOT_MINIMAP_X] = (v[803]+agent_Width/16)/5
+						v[600 + AGENT_STATIC_SLOT_MINIMAP_Y] = (v[804]+agent_Height/16)/5
+						@if `agent_StaticBits & StaticBits_FLAG_has_gate_function {
 
-
-							v[803].copy var1, 2
+								v[803].copy var1, 2
 								@call .cev 2017
 								v[807] = reg1
 								v[808..809] = 0
@@ -2320,6 +2316,7 @@ __fn agent_static_set_adjustments_for_pic_system {
 						}
 
 				} .else bl {
+					// tile hyu-risutexikku kosuto dayo
 					@if `!between(agent_UnitType, 104, 105) {
 						v[607].copy var1, 2
 							var1 .sub v[610], 2
@@ -2425,6 +2422,7 @@ __fn agent_static_set_adjustments_for_pic_system {
 
 							}
 						@comment "Artitecture"
+						// TECH!
 							v[705..706] += v[2409 + spawnSet_Team % 3] & 0x40000 ? muldiv(v[706], 20, 100) : 0
 							v[711] += v[2409 + spawnSet_Team % 3] & 0x40000 ? 50 : 0
 
@@ -2435,6 +2433,15 @@ __fn agent_static_set_adjustments_for_pic_system {
 				// sprite pattern set for static agents
 				// in legacy design, using action state was used to indicate sprite pattern, this will be abolished
 				agent_static_Spritepattern = agent_ActionState > 0 ? agent_ActionState + 2 : 2
+
+					__if DIS_EXPERIMENTAL == 1 {
+						// multi layer system for static agent
+						@if `agent_StaticBits & StaticBits_FLAG_has_generated_sprite {	
+							agent_PictArray = 8 // kari
+						}.else bl{
+							agent_PictArray = 88 // kari
+						}
+					}
 }
 
 

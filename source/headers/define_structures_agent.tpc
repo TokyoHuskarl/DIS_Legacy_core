@@ -267,6 +267,7 @@ struct("agent",{
 	agent_FootstepSoundTimer = 886
 	agent_FootstepSoundType = 887
 
+	agent_LastSpriteIndex = 890
 	agent_R = 891
 	agent_G = 892
 	agent_B = 893
@@ -393,7 +394,9 @@ struct("agent",{
 	// for static agents
 	StaticBits_FLAG_working_on_tech = 1
 	StaticBits_FLAG_has_generated_sprite = 128
+	StaticBits_FLAG_has_gate_function = 256
 	StaticBits_FLAG_flammable = 2048
+	StaticBits_FLAG_newly_generated_static = 16384
 
 
 	MoveTypeBits_Flying = 1
