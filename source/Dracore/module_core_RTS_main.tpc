@@ -2014,79 +2014,94 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 							@if agent_ActionState == 0 {
 								@if agent_MovementOrder <= 0 {
 									s[187].on // there's at least one idle worker unit 
-									@if Is_Paused .isOff() { // not pause
 										@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { 
-											@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { // 124 = magic number but maybe 48*3
-												@if `!(agent_ProcessObjBit & BaseObjBit_FLAG_Immune_to_bleed) { // skeletons won't say anything
-													agent_RelativeX.copy v[361], 2
-													TT1 = 20422 // quote quickstring
-													//Dragon voice
-													@if agent_Race == 3 {
-															// quotes of dragon workers vary
-															TT1 += agent_UnitID == 10 ? 1 : 2
-															
-													}
+											__if DIS_EXPERIMENTAL == 1 {
+												func_set_preset_particle_emitter(v[331],
+														PROC({
+															emitter_ParticleType = 1
+															emitter_Timer = 6
+															emitter_CallPartFunc = cevid_psp_sweat
+															emitter_ParentObject = v[Ptr_loop_current_agent]
+															// "普通にアニメ"
+															agent_RelativeX.copy emitter_RelativeX, 2
+															val_sub(emitter_RelativeY,N8)
+															})
+														)
 
-													str1 .asg t[TT1] // text that says "I'm idle"
-													// Set new particle emitter
-													@loop v[1017] .dst Temp20 {
-															v[242] %= v[1017]
-															v[331] = v[242] * 100
-															v[331] = v[331] + v[1018]
-															@if v[v[331]] <= 1 {
-																v[243] -= v[v[331]] == 1 ? 1 : 0
-																v[242] %= v[1017]
-																// "まず清掃"
-																v[ptr_null].copy v[v[331]], 100
-																// "ポインタセット開始"
-																Temp10 = v[242] + v[1220]
-																Ptr15 = v[331] + 99
-																// "設定"
-																v[v[331]] = 1
-																v[Ptr15] = 0
-																// "普通にアニメ"
-																v[607].copy v[361], 2
-																@pic[Temp10].strpic {
-																		str1
-																		.pos v[361], v[362] .center
-																		.size 0, 0                                                   .scrollWithMap
-																		.chromakey 1
-																		.scale 100
-																		.trans v[1066]
-																		.rgbs 100, 100, 100, 100
-																		.font Font_UI, 11
-																		.spacing 0, 0
-																		.skin "" .nobg .noframe .noGradation .noPadding
-																		.mapLayer 7
-																		.eraseWhenTransfer
-																		.affectedByFlash
-																		.affectedByShake
+											}.else bl{
+												@if Is_Paused .isOff() { // not pause
+													@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { // 124 = magic number but maybe 48*3
+														@if `!(agent_ProcessObjBit & BaseObjBit_FLAG_Immune_to_bleed) { // skeletons won't say anything
+															agent_RelativeX.copy v[361], 2
+																TT1 = 20422 // quote quickstring
+																//Dragon voice
+																@if agent_Race == 3 {
+																	// quotes of dragon workers vary
+																	TT1 += agent_UnitID == 10 ? 1 : 2
+
 																}
-																v[362] -= 48
-																@pic[Temp10].move {
-																		.pos v[361], v[362] .center
-																		.scale 100
-																		.trans 100
-																		.time 45
-																		.rgbs 100, 100, 100, 100
+
+															str1 .asg t[TT1] // text that says "I'm idle"
+																// Set new particle emitter
+																@loop v[1017] .dst Temp20 {
+																	v[242] %= v[1017]
+																		v[331] = v[242] * 100
+																		v[331] = v[331] + v[1018]
+																		@if v[v[331]] <= 1 {
+																			v[243] -= v[v[331]] == 1 ? 1 : 0
+																				v[242] %= v[1017]
+																				// "まず清掃"
+																				v[ptr_null].copy v[v[331]], 100
+																				// "ポインタセット開始"
+																				Temp10 = v[242] + v[1220]
+																				Ptr15 = v[331] + 99
+																				// "設定"
+																				v[v[331]] = 1
+																				v[Ptr15] = 0
+																				// "普通にアニメ"
+																				v[607].copy v[361], 2
+																				@pic[Temp10].strpic {
+																					str1
+																						.pos v[361], v[362] .center
+																						.size 0, 0                                                   .scrollWithMap
+																						.chromakey 1
+																						.scale 100
+																						.trans v[1066]
+																						.rgbs 100, 100, 100, 100
+																						.font Font_UI, 11
+																						.spacing 0, 0
+																						.skin "" .nobg .noframe .noGradation .noPadding
+																						.mapLayer 7
+																						.eraseWhenTransfer
+																						.affectedByFlash
+																						.affectedByShake
+																				}
+																			v[362] -= 48
+																				@pic[Temp10].move {
+																					.pos v[361], v[362] .center
+																						.scale 100
+																						.trans 100
+																						.time 45
+																						.rgbs 100, 100, 100, 100
+																				}
+																			// "仕上げに登録消す"
+																			v[242..243] += 1
+																				@break
+
+																		}
+																	v[242] += 1
+
 																}
-																// "仕上げに登録消す"
-																v[242..243] += 1
-																@break
-																
-															}
-															v[242] += 1
-															
+
+
+														}
+
 													}
-													
-													
 												}
-												
 											}
-											
+
 										}
 										
-									}
 									
 								}
 								
