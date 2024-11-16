@@ -277,7 +277,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 							v[4031].repeat v[455],9 // v[4031..4040] = v[455] //h v
 							v[4041].repeat Temp5,9  // v[4041..4050] = Temp5 //X
 							v[4051].repeat Temp6,9 // v[4051..4060] = Temp6 //Y
-							v[4061].repeat v[447],9 // v[4061..4070] = v[447] //Transparency
+							v[4061].repeat v[447],9 // Transparency
 							v[4101].repeat v[463],9 // v[4101..4110] = v[463] //grid X
 							v[4121].repeat v[464],9 // v[4121..4130] = v[464] //grid Y
 							fuction_drawing_set_grid()
@@ -899,15 +899,17 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 											TT1 = Temp1 + 290
 											v[TT1] = v[186]
 
-											//@comment "#仮置き、こんど変える"
-											v[447] = GETKEY_Alt > 0 ? 35 : 0 // transparency set
-											v[447] += Control_ClickableStaticHolder == AgentIDholder ? 45 : 0 //  if there's overlapping agent for the static, so make it half-transparent
+											// set transparency!
+											v[447] = GETKEY_Alt > 0 ? 35 : 0 
+
+											// if there's any overlapping agent with the static agent, then make the static half-transparent
+											//TT1 = agent_PictArray > 10 ? 70 : 45 // check if it's multilayered
+											v[447] += Control_ClickableStaticHolder == AgentIDholder ? 45 : 0 //  
 
 										// setting color
 										v[4001].repeat 100,4 // set RGBS
-
 										@if s[72] .isOff() { // if hamster pc flag is off
-												TT1 = agent_StaticBits & StaticBits_FLAG_has_generated_sprite ? 32 : 14 // only a slight effect on wall colour 
+												TT1 = agent_StaticBits & StaticBits_FLAG_has_generated_sprite ? 32 : 14 // gives only a slight effect on wall colour 
 												v[4001..4004] -= (v[1002] - 108 - agent_RelativeY) / TT1 - TT13
 										}
 
@@ -1224,6 +1226,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 															v[4041].repeat Temp5,9  // v[4041..4050] = Temp5 //X
 															v[4051].repeat Temp6,9 // v[4051..4060] = Temp6 //Y
+															// y for SPR_STATIC_WRECK
+															v[4053] += agent_static_DEAD_wreck_Offset_MilY / 10000
 
 															Temp20 = agent_PicID
 
@@ -1477,20 +1481,98 @@ __fn draw_static_picture {
 				}
 
 			} .else bl {
-				@pic[v[188]].show {
-					"static\spr_static_1" .repl 1 Temp20
-						.pos Temp5, Temp6 .center
-						.scrollWithMap
-						.chromakey 1
-						.scale 100
-						.trans v[447]
-						.rgbs draw_main_R, draw_main_G, draw_main_B, draw_main_S
-						.grid 5, 1 .cell expected_action_sprite
-						.mapLayer 4
-						.eraseWhenTransfer
-						.affectedByTint
-						.affectedByFlash
-						.affectedByShake
+				@if TT1 == SPR_STATIC_UPPER {
+					@pic[v[188]].show {
+						"static\spr_static_1" .repl 1 Temp20
+							.pos Temp5, Temp6 .center
+							.scrollWithMap
+							.chromakey 1
+							.scale 100
+							.trans v[447]
+							.rgbs draw_main_R, draw_main_G, draw_main_B, draw_main_S
+							.grid 5, 1 .cell expected_action_sprite
+							.mapLayer 4
+							.eraseWhenTransfer
+							.affectedByTint
+							.affectedByFlash
+							.affectedByShake
+					}
+				
+				}.elif TT1 == SPR_STATIC_WRECK {
+					// if it's dead 
+					@if agent_AgentType < 0 {
+						// run wreck system 
+						@if agent_static_DEAD_wreck_Timer_End >= agent_static_DEAD_wreck_Timer {
+							// remove pixel
+							defv number_of_Pixels_to_be_erased = __id(TT11)
+							defv erase_start_y = __id(TT12)
+
+								// erase sprite pixels
+								number_of_Pixels_to_be_erased = agent_static_DEAD_wreck_MilPixVy  / 1000
+								erase_start_y = agent_static_DEAD_wreck_Sprite_Height - agent_static_DEAD_wreck_Offset_MilY / 10000
+								@pic[v[188]].setPixel .xywh 0, erase_start_y, agent_static_DEAD_wreck_Sprite_Width, number_of_Pixels_to_be_erased .src v[ADR_NULL_HEAD]
+
+								__if DIS_DEBUG_BUILD == 1 {
+									TT1 = number_of_Pixels_to_be_erased
+									TT2 = erase_start_y
+									@pic[100].strpic {
+											"erase sprite id \v[188]'s pixels - amount \v[341] - start - \v[342]"
+											.pos Temp5, Temp6 .center
+											.size 0, 0 .scrollWithMap
+											.chromakey 1
+											.scale 100
+											.trans 0
+											.rgbs 100, 100, 100, 100
+											.font Font_UI, 11
+											.spacing 0, 0
+											.skin "" .nobg .noframe .noGradation .noPadding
+											.mapLayer 7
+											.eraseWhenTransfer
+											.affectedByFlash
+											.affectedByShake
+									}
+								}
+
+								@pic[v[188]].move {
+									.pos Temp5, Temp6 .center
+										.scale 100
+										.trans v[447]
+										.time 0
+										.rgbs draw_main_R, draw_main_G, draw_main_B, draw_main_S
+										.keepFlip
+								}
+
+
+
+						}.else bl{ // after collapse, hide wreck layer
+								@pic[v[188]].move {
+									.pos Temp5, Temp6 .center
+										.scale 100
+										.trans 100
+										.time 0
+										.rgbs draw_main_R, draw_main_G, draw_main_B, draw_main_S
+										.keepFlip
+								}
+						}
+					}.else bl{
+						// hide the wreck layer while the agent is alive
+						@pic[v[188]].show {
+							"static\spr_static_1" .repl 1 Temp20
+								.pos Temp5, Temp6 .center
+								.scrollWithMap
+								.chromakey 1
+								.scale 100
+								.trans 100
+								.rgbs draw_main_R, draw_main_G, draw_main_B, draw_main_S
+								.grid 5, 1 .cell expected_action_sprite
+								.mapLayer 4
+								.eraseWhenTransfer
+								.affectedByTint
+								.affectedByFlash
+								.affectedByShake
+						}
+					}
+
 				}
 
 			}

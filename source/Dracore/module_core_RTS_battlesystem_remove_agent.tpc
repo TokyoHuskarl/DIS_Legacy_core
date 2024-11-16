@@ -1472,6 +1472,7 @@ __fn prepare_deadbody_pictures {
 						v[Kill_pointer + 4981] = 0
 
 				}
+
 			}
 			
 		}
@@ -1523,335 +1524,335 @@ __fn prepare_deadbody_pictures {
 
 		@if v[188] >= 1 {
 				v[178] = v[188]
-				// "#get damaged variation"
-				//v[604] = v[Kill_pointer + 4704]
-				//v[0] = v[343..352] = [v[604] % 10, v[604] / 10 % 10, v[604] / 100 % 10]
-				v[468] = 3
-				v[187] = 0
-				val_init(v[379]) // v[379] = 0
+					// "#get damaged variation"
+					//v[604] = v[Kill_pointer + 4704]
+					//v[0] = v[343..352] = [v[604] % 10, v[604] / 10 % 10, v[604] / 100 % 10]
+					v[468] = 3
+					v[187] = 0
+					val_init(v[379]) // v[379] = 0
 
-				// FLAG CHECKER
-				def {
-					BS_RMAG_PICFLAG_FOUND_HEAD = 2
-					BS_RMAG_PICFLAG_FOUND_WEAPON = 4
-					BS_RMAG_PICFLAG_FOUND_SHIELD = 8
-				}
+					// FLAG CHECKER
+					def {
+						BS_RMAG_PICFLAG_FOUND_HEAD = 2
+							BS_RMAG_PICFLAG_FOUND_WEAPON = 4
+							BS_RMAG_PICFLAG_FOUND_SHIELD = 8
+					}
 				val_init(v[378]) // v[378] = 0
 
 
-				v[4101..4110] = v[463] // column
-				v[4121..4130] = 1 // line
-				// v[v[725]].copy v[725],2 - was this needed? idk
+					v[4101..4110] = v[463] // column
+					v[4121..4130] = 1 // line
+					// v[v[725]].copy v[725],2 - was this needed? idk
 
-				v[4106] = victim_ExMotionFlags & ExMotionFlags_FLAG_horseback ? 7 : 5 // horse
-				v[4111..4120] = v[321] 
-				v[4115] = 2
+					v[4106] = victim_ExMotionFlags & ExMotionFlags_FLAG_horseback ? 7 : 5 // horse
+					v[4111..4120] = v[321] 
+					v[4115] = 2
 
-				drawing_set_grid_raw(victim_ExMotionFlags,victim_AddMotionBits)
+					drawing_set_grid_raw(victim_ExMotionFlags,victim_AddMotionBits)
 
 
-				//so temporary head setting - use legacy damaged head sprite 
-				v[335] =  Ptr20 - 1
-				v[335] *= 10
-				v[335] += Const_str_agent_pictures_strings_start
-			
-				//set damaged head
-				TT2 = victim_ExMotionFlags & ExMotionFlags_MASK_HeadPartDamageChecker
-				@if TT2 == ExMotionFlags_FLAG_HeadHasDamagedSprite {
-					v[4112] += Const_head_spr_grid_damaged
-				}
+					//so temporary head setting - use legacy damaged head sprite 
+					v[335] =  Ptr20 - 1
+					v[335] *= 10
+					v[335] += Const_str_agent_pictures_strings_start
+
+					//set damaged head
+					TT2 = victim_ExMotionFlags & ExMotionFlags_MASK_HeadPartDamageChecker
+					@if TT2 == ExMotionFlags_FLAG_HeadHasDamagedSprite {
+						v[4112] += Const_head_spr_grid_damaged
+					}
 
 				v[339] = -1
 
-				@if `victim_ExMotionFlags & 134217728 { // in flippable weapon
-					val_init(v[4034]) // v[4034] = 0
-					val_asg(v[4124],N2) // v[4124] = 2
-					v[4114] += v[455] / 4096 * v[4104]
-					
-				}
+					@if `victim_ExMotionFlags & 134217728 { // in flippable weapon
+						val_init(v[4034]) // v[4034] = 0
+							val_asg(v[4124],N2) // v[4124] = 2
+							v[4114] += v[455] / 4096 * v[4104]
+
+					}
 
 
 				Temp10 = victim_PictArray
-				@while Temp10 >= 1 .dst v[340] {
-					TT1 = Temp10 % 10
-					Ptr6 = TT1 + v[335]
-					v[463] = 4100 + TT1
-					v[463] = v[v[463]]
-					v[464] = 4120 + TT1
-					v[464] = v[v[464]] 
-					v[321] = 4110 + TT1
-					v[321] = v[v[321]]
-					// "#########################Layer own Setting"
-					// "Found Head" 
-					@if `TT1 == SPR_HEAD || victim_AddMotionBits & 524288 && TT1 == SPR_HELM {
-							v[378] |= BS_RMAG_PICFLAG_FOUND_HEAD // 
-							//If damaged head found-> then check the damaged grid
-							// "Save Head Pic ID"
-							v[379] = v[188]
-							
-					}
-					// "#Decapitated - head parts check"
-					@if `victim_DEAD_beheadTimerEnd > 0 && victim_ExMotionFlags & 32 && (between(TT1, 2, 3) || TT1 == 9) {
+					@while Temp10 >= 1 .dst v[340] {
+							TT1 = Temp10 % 10
+							Ptr6 = TT1 + v[335]
+							v[463] = 4100 + TT1
+							v[463] = v[v[463]]
+							v[464] = 4120 + TT1
+							v[464] = v[v[464]] 
+							v[321] = 4110 + TT1
+							v[321] = v[v[321]]
+							// "#########################Layer own Setting"
+							// "Found Head" 
+							@if `TT1 == SPR_HEAD || victim_AddMotionBits & 524288 && TT1 == SPR_HELM {
+								v[378] |= BS_RMAG_PICFLAG_FOUND_HEAD // 
+									//If damaged head found-> then check the damaged grid
+									// "Save Head Pic ID"
+									v[379] = v[188]
+
+							}
+						// "#Decapitated - head parts check"
+						@if `victim_DEAD_beheadTimerEnd > 0 && victim_ExMotionFlags & 32 && (between(TT1, 2, 3) || TT1 == 9) {
 							v[0] = v[305..306] = [Temp11 + v[Temp14 + 283] / 10000, Temp12 + v[Temp14 + 284] / 10000] // chegg it
-							v[0] = v[453..456] = [3, victim_DEAD_HeadAngleV, v[455], 10000]
-							
-					} .else bl {
+								v[0] = v[453..456] = [3, victim_DEAD_HeadAngleV, v[455], 10000]
+
+						} .else bl {
 							Temp11.copy Temp5, 2
-							v[0] = v[453..456] = [0, 0, v[455], 0]
-							
-					}
+								v[0] = v[453..456] = [0, 0, v[455], 0]
 
-					// "Layer own Setting END#########################"
-					// "Strings = t[Ptr6]"
-					@cmd 11110, t[Ptr6], .args v[441], 30 // wtf lmao
+						}
+
+						// "Layer own Setting END#########################"
+						// "Strings = t[Ptr6]"
+						@cmd 11110, t[Ptr6], .args v[441], 30 // wtf lmao
 
 
 
-					// "When you found (helmet OR hair) AND Head Part is already loaded, then"
-					@if `(TT1 == SPR_HELM || TT1 == SPR_HAIR) && v[378] & BS_RMAG_PICFLAG_FOUND_HEAD {
-							@if `victim_AddMotionBits & 524288 {
-								@pic[v[188]].getInfo .cewh .baseRect TT20, TT20, TT15, TT16
-								@pic[v[188]].getInfo .pixel 0, 0, TT15, TT16 .dst 550445
-						
-							} .else bl {
-								@pic[v[188]].setId .move 2599, 1
-								@pic[2599].getInfo .cewh .baseRect TT20, TT20, TT15, TT16
-								@pic[2599].getInfo .pixel 0, 0, TT15, TT16 .dst 550445
-						
-							}
-							// "V4  #0, 1= center"
-							var1 = v[379]
-							var2 = 0
-							var3 = 0
-							@pic[var1].getInfo .cewh .baseRect TT20, TT20, var9, var10
-							v[19..20] /= 2
-							var8 = Adr_PixelBufferHead
-							@loop TT16 .dst var5 {
-								@loop TT15 .dst var6 {
-										var7 = v[var8]
-										@if `(var7 & 0xFF000000) == 0xFF000000 {
-											TT18 = var2 + var6
-											TT18 -= TT15 / 2
-											TT19 = var3 + var5
-											TT19 -= TT16 / 2
-											TT18 .add var9, 2
-											@pic[var1].setPixel .xywh TT18, TT19, 1, 1 .src var7
-									
-										}
-										var8 += 1
-										
+							// "When you found (helmet OR hair) AND Head Part is already loaded, then"
+							@if `(TT1 == SPR_HELM || TT1 == SPR_HAIR) && v[378] & BS_RMAG_PICFLAG_FOUND_HEAD {
+								@if `victim_AddMotionBits & 524288 {
+									@pic[v[188]].getInfo .cewh .baseRect TT20, TT20, TT15, TT16
+										@pic[v[188]].getInfo .pixel 0, 0, TT15, TT16 .dst 550445
+
+								} .else bl {
+									@pic[v[188]].setId .move 2599, 1
+										@pic[2599].getInfo .cewh .baseRect TT20, TT20, TT15, TT16
+										@pic[2599].getInfo .pixel 0, 0, TT15, TT16 .dst 550445
+
 								}
-						
-						
-							}
-							
-							@if s[212] .isOn() {
-								@if v[372] == 0 { // ? 
+								// "V4  #0, 1= center"
+								var1 = v[379]
+									var2 = 0
+									var3 = 0
+									@pic[var1].getInfo .cewh .baseRect TT20, TT20, var9, var10
+									v[19..20] /= 2
+									var8 = Adr_PixelBufferHead
+									@loop TT16 .dst var5 {
+										@loop TT15 .dst var6 {
+											var7 = v[var8]
+												@if `(var7 & 0xFF000000) == 0xFF000000 {
+													TT18 = var2 + var6
+														TT18 -= TT15 / 2
+														TT19 = var3 + var5
+														TT19 -= TT16 / 2
+														TT18 .add var9, 2
+														@pic[var1].setPixel .xywh TT18, TT19, 1, 1 .src var7
+
+												}
+											var8 += 1
+
+										}
+
+
+									}
+
+								@if s[212] .isOn() {
+									@if v[372] == 0 { // ? 
 										@if v[190] == 1 {
 											// "#Arrow"
 											@if v[422] == 1 {
-													str1 .asg "stamp\wound_1"
+												str1 .asg "stamp\wound_1"
 													var1 = v[379]
 													var2 = 4 + rnd(-1, 3)
 													var3 = 5 + rnd(-3, 1)
 													var4 = 1
 													func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-													
+
 											}.elif v[422] == 2 { // "#Bolt"
-													str1 .asg "stamp\wound_2"
+												str1 .asg "stamp\wound_2"
 													var1 = v[379]
 													var2 = 4 + rnd(-1, 3)
 													var3 = 5 + rnd(-3, 1)
 													var4 = 1
 													func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-													
+
 											}.elif v[422] == 3 {
-													str1 .asg "stamp\wound_3"
+												str1 .asg "stamp\wound_3"
 													var1 = v[188]
 													var1 = v[379]
 													var2 = 4 + rnd(-1, 3)
 													var3 = 4 + rnd(-3, 1)
 													var4 = 1
 													func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-													
+
 											}
-											
+
 										}
-										
+
+									} .else bl {
+
+									}
+
+								}
+
+
+								// if not Fullhelm
+								@if `!(victim_AddMotionBits & 524288) {
+
+									@if TT1 == SPR_HELM {
+										// "save helm pos"
+										v[339] = v[340]
+											// "don't spend pic cache"
+									}.else bl { // hair
+										v[338] = v[340]
+									}
+
+									v[186..188] -= 1
+										@pic[2599].erase
+
 								} .else bl {
-										
-								}
-						
-							}
+									v[338..339] = 0
 
-
-							// if not Fullhelm
-							@if `!(victim_AddMotionBits & 524288) {
-								
-								@if TT1 == SPR_HELM {
-									// "save helm pos"
-									v[339] = v[340]
-									// "don't spend pic cache"
-								}.else bl { // hair
-									v[338] = v[340]
 								}
 
-								v[186..188] -= 1
-								@pic[2599].erase
-
-							} .else bl {
-								v[338..339] = 0
-						
 							}
-							
-					}
 
-					// "######STAMP######"
-					// "#######Armor"
-					@if TT1 == SPR_ARMOR { //0
+						// "######STAMP######"
+						// "#######Armor"
+						@if TT1 == SPR_ARMOR { //0
 							// "#######Greenskins"
 							@if `between(victim_Race, 1, 2) {
 								@if `(v[378] & BS_RMAG_PICFLAG_FOUND_HEAD) == 0 {
-										str1 .asg "stamp\extradeadbody_1"
+									str1 .asg "stamp\extradeadbody_1"
 										var1 = v[188]
 										var2 = -4
 										var3 = 12
 										var4 = 1
 										func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-										
+
 								}
-								
+
 							} .else bl {
 								@if victim_Race == 5 { // skeletons
-										@if `(v[378] & BS_RMAG_PICFLAG_FOUND_HEAD) == 0 {
-									str1 .asg "stamp\extradeadbody_2"
-									var1 = v[188]
-									var2 = -4
-									var3 = 12
-									var4 = 1
-									func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-									
-										}
-										
+									@if `(v[378] & BS_RMAG_PICFLAG_FOUND_HEAD) == 0 {
+										str1 .asg "stamp\extradeadbody_2"
+											var1 = v[188]
+											var2 = -4
+											var3 = 12
+											var4 = 1
+											func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
+
+									}
+
 								} .else bl {
-										
+
 								}
 								@if victim_Race == 6 { // minotaurs
-										@if `(v[378] & BS_RMAG_PICFLAG_FOUND_HEAD) == 0 {
-									str1 .asg "stamp\extradeadbody_3"
-									var1 = v[188]
-									var2 = -4
-									var3 = 12
-									var4 = 1
-									func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-									
-										}
-										
+									@if `(v[378] & BS_RMAG_PICFLAG_FOUND_HEAD) == 0 {
+										str1 .asg "stamp\extradeadbody_3"
+											var1 = v[188]
+											var2 = -4
+											var3 = 12
+											var4 = 1
+											func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
+
+									}
+
 								} .else bl {
-										
+
 								}
-								
+
 							}
 							@if v[372] == 0 {
 								// "#######Cut"
 								@if v[190] == 0 {
-										// "#######Melee Normal"
-										@if v[422] == 0 {
+									// "#######Melee Normal"
+									@if v[422] == 0 {
 
-											@if v[371] == 0 {
-													str1 .asg "stamp\cut"
-													var1 = v[188]
-													var2 = 12 + rnd(-1, 1)
-													var3 = 24 + rnd(0, 1)
-													var4 = 0
-													func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-													
-											}
-											
+										@if v[371] == 0 {
+											str1 .asg "stamp\cut"
+												var1 = v[188]
+												var2 = 12 + rnd(-1, 1)
+												var3 = 24 + rnd(0, 1)
+												var4 = 0
+												func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
+
 										}
-										
+
+									}
+
 								}
 
 								// "#######P"
 								@if v[190] == 1 {
-										// "#######Melee Normal"
-										@if v[422] == 0 {
-											str1 .asg "stamp\stabbed"
+									// "#######Melee Normal"
+									@if v[422] == 0 {
+										str1 .asg "stamp\stabbed"
 											var1 = v[188]
 											var2 = 12 + rnd(-1, 1)
 											var3 = 24 + rnd(-1, 1)
 											var4 = 0
 											func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
 											@if s[212] .isOn() {
-													str1 .asg "stamp\guts"
+												str1 .asg "stamp\guts"
 													var1 = v[188]
 													var2 = 12 + rnd(-1, 1)
 													var3 = 24 + rnd(-1, 1)
 													var4 = 0
 													func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-													
+
 											}
-											
-										}
-										@if s[212] .isOff() {
-											// "#Arrow"
-											@if v[422] == 1 {
-													str1 .asg "stamp\wound_1"
+
+									}
+									@if s[212] .isOff() {
+										// "#Arrow"
+										@if v[422] == 1 {
+											str1 .asg "stamp\wound_1"
+												var1 = v[188]
+												var2 = 13 + rnd(-2, 2)
+												var3 = 20 + rnd(-1, 1)
+												var4 = 0
+												func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
+
+										} .else bl {
+											// "#Bolt"
+											@if v[422] == 2 {
+												str1 .asg "stamp\wound_2"
 													var1 = v[188]
 													var2 = 13 + rnd(-2, 2)
 													var3 = 20 + rnd(-1, 1)
 													var4 = 0
 													func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-													
+
 											} .else bl {
-													// "#Bolt"
-													@if v[422] == 2 {
-														str1 .asg "stamp\wound_2"
+												@if v[422] == 3 {
+													str1 .asg "stamp\wound_3"
 														var1 = v[188]
 														var2 = 13 + rnd(-2, 2)
-														var3 = 20 + rnd(-1, 1)
+														var3 = 19 + rnd(-1, 1)
 														var4 = 0
 														func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-														
-													} .else bl {
-														@if v[422] == 3 {
-																str1 .asg "stamp\wound_3"
-																var1 = v[188]
-																var2 = 13 + rnd(-2, 2)
-																var3 = 19 + rnd(-1, 1)
-																var4 = 0
-																func_stamp_picture_on_pic_id(str1 var1 var2 var3 var4)
-																
-														}
-														
-													}
-													
+
+												}
+
 											}
-											
+
 										}
-										
+
+									}
+
 								}
-								
+
 							} .else bl {
-						
+
 							}
-							
-					} .elif TT1 == SPR_HEAD { //341
 
-					}.elif TT1 == SPR_WEAPON {
-						v[378] |= BS_RMAG_PICFLAG_FOUND_WEAPON
+						} .elif TT1 == SPR_HEAD { //341
 
-					}.elif TT1 == SPR_SHIELD {
-						v[378] |= BS_RMAG_PICFLAG_FOUND_SHIELD
+						}.elif TT1 == SPR_WEAPON {
+							v[378] |= BS_RMAG_PICFLAG_FOUND_WEAPON
+
+						}.elif TT1 == SPR_SHIELD {
+							v[378] |= BS_RMAG_PICFLAG_FOUND_SHIELD
+
+						}
+
+						v[186..188] += 1
+							Temp10 /= 10
 
 					}
-							
-					v[186..188] += 1
-					Temp10 /= 10
-					
-				}
-				
-				
+
+
 		}
 		// "#####################"
 		@if `Temp15 & 4096 {
@@ -2031,7 +2032,75 @@ __fn prepare_deadbody_pictures {
 		v[Temp15 + 6] = rnd(-1800000, 1800000)
 		v[Temp15 + 7] = rnd(-60000, 60000)
 		
-	}
+		
+	}.elif victim_AgentType == -11 { // for static
+		// "if it's drawn sprites on screen"
+		@if `victim_AgentBits & AgentBits_FLAG_Drawn_in_screen { // ayasii
+			v[188] = victim_LastPictureIndex
+		}.else bl {
+			// "Get ID From Cache"
+			v[188] = (Ptr20 - 1) * Const_layer_amount + v[1201]
+		}
+				v[178] = v[188]
+				// WRECK SYSTEM CHECK!
+				Temp10 = victim_PictArray
+				TT2 = 0
+				@while Temp10 >= 1 .dst v[340] {
+					TT1 = Temp10 % 10
+					@if TT1 == SPR_STATIC_WRECK {
+						TT2 = 1 // found
+						@break
+					}
+					increment_var(v[188])
+					Temp10 /= 10
+				}
+
+				@if TT2 == 1 { // the agent has wreck layer sprite
+						v[ptr_null].copy victim_static_DEAD_wreck_Offset_MilX,STATIC_AGENT_WRECK_SYSTEM_DATA_SIZE
+						@if `victim_AgentBits & AgentBits_FLAG_Drawn_in_screen { // it's in screen
+						// init wreck data
+							// get sprite information
+							@pic[v[188]].getInfo .cewh .baseRect TT1, TT1, victim_static_DEAD_wreck_Sprite_Width, victim_static_DEAD_wreck_Sprite_Height
+							victim_static_DEAD_wreck_Timer_End = sqrt(victim_static_DEAD_wreck_Sprite_Height * 10000 * 2 / g_perFPS, 1000) / 1000 // t = sqrt(2y / g)
+							__if DIS_DEBUG_BUILD == 1 {
+								TT1 = victim_static_DEAD_wreck_Timer_End
+								TT2 = victim_static_DEAD_wreck_Sprite_Height
+								@pic[99].strpic {
+									"wreck height \v[342] wreck timer set \v[341] frame - module_core_RTS_battlesystem_remove_agent.tpc"
+										.pos 150, 150 .center
+										.size 0, 0 .scrollWithMap
+										.chromakey 1
+										.scale 100
+										.trans 0
+										.rgbs 100, 100, 100, 100
+										.font Font_UI, 11
+										.spacing 0, 0
+										.skin "" .nobg .noframe .noGradation .noPadding
+										.mapLayer 7
+										.eraseWhenTransfer
+										.affectedByFlash
+										.affectedByShake
+								}
+								// if no timer, forcibly set 30frame
+								victim_static_DEAD_wreck_Timer_End = victim_static_DEAD_wreck_Timer_End == 0 ? 30 : victim_static_DEAD_wreck_Timer_End
+								victim_static_DEAD_wreck_Sprite_Width = victim_static_DEAD_wreck_Sprite_Width == 0 ? 80 : victim_static_DEAD_wreck_Sprite_Width
+								victim_static_DEAD_wreck_Sprite_Height = victim_static_DEAD_wreck_Sprite_Height == 0 ? 80 : victim_static_DEAD_wreck_Sprite_Height
+							}
+
+							
+
+
+						}.else bl{ // otherwise
+							victim_AgentBits &= ~StaticBits_FLAG_has_wreck_system
+							v[Kill_pointer+4703] = victim_AgentBits
+						}
+					// save back 
+						TT1 = Kill_pointer + 4100 + __id(agent_static_DEAD_wreck_Offset_MilX)
+						victim_static_DEAD_wreck_Offset_MilX.copy v[TT1],STATIC_AGENT_WRECK_SYSTEM_DATA_SIZE
+
+				}
+				
+			}
 }
 
 // TODO

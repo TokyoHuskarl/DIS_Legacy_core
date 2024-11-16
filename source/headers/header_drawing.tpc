@@ -19,11 +19,15 @@ def {
 	SPR_SHIELD
 	SPR_MISC
 	SPR_MINIONS
-	SPR_STATIC
+	SPR_STATIC // this will be changed
 	SPR_HAIR
 
+	// #1=Armor,2=Head/NewMinions/Newstatic,3=Helm,4=Weapon,5=Shield,6=Misc,7=Minions,8=static,9=Hair ... Currently up to 8 layers available for an agent 
+	SPR_STATIC_LOWER = 1
+	SPR_STATIC_UPPER = 2
+	SPR_STATIC_WRECK = 3
 
-	//#1=Armor,2=Head/NewMinions/Newstatic,3=Helm,4=Weapon,5=Shield,6=Misc,7=Minions,8=static,9=Hair ...Up to 8 layers available
+	SPR_STATIC_LEGACY = 8 // will be removed
 }
 
 

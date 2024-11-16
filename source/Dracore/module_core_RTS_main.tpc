@@ -273,49 +273,82 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    val_add(Temp1,N5000) // Temp1 += 5000
 	    func_main_extract_agent_vars()
 
+			// STATIC
 			@if agent_AgentType == -11 {
+							@if `1 { // agent_StaticBits &= StaticBits_FLAG_has_wreck_system {
+								@if agent_static_DEAD_wreck_Timer_End > agent_static_DEAD_wreck_Timer {
+									agent_static_DEAD_wreck_MilPixVy += g_perFPS // v = gt
+									val_add(agent_static_DEAD_wreck_Offset_MilY, agent_static_DEAD_wreck_MilPixVy) // y += v
+									increment_var(agent_static_DEAD_wreck_Timer) // t++
 
+									// if timer reached the estimated collapse completion frame, then turn off wreck system
+									agent_StaticBits &= agent_static_DEAD_wreck_Timer_End == agent_static_DEAD_wreck_Timer ? ~StaticBits_FLAG_has_wreck_system : agent_StaticBits
+									
+									
+								__if DIS_DEBUG_BUILD == 1 {
+									TT1 = agent_static_DEAD_wreck_MilPixVy
+									@pic[101].strpic {
+											"wreck dy = \v[341]"
+											.pos 200, 200 .center
+											.size 0, 0 .scrollWithMap
+											.chromakey 1
+											.scale 100
+											.trans 0
+											.rgbs 100, 100, 100, 100
+											.font Font_UI, 11
+											.spacing 0, 0
+											.skin "" .nobg .noframe .noGradation .noPadding
+											.mapLayer 7
+											.eraseWhenTransfer
+											.affectedByFlash
+											.affectedByShake
+									}
+								}
+
+								}
+							}
 
 				}.else bl{ // not building agent
 
 					// not simple sprite agent
-					@if agent_AgentType != -1 {
+					@if agent_AgentType != AgentType_DEAD_Simple_Agent {
+						// not static agent
 
-						// weapon fall
-						@if v[865] < v[866] {
-							v[864] += g_perFPS // 98000 / 48
-								v[861] .add v[863], 2
-								val_add(v[867],agent_ProcessMS) // v[867] += agent_ProcessMS
-								val_add(v[865],N1) // v[865] += 1
+							// weapon fall
+							@if v[865] < v[866] {
+								v[864] += g_perFPS // 98000 / 48
+									v[861] .add v[863], 2
+									val_add(v[867],agent_ProcessMS) // v[867] += agent_ProcessMS
+									val_add(v[865],N1) // v[865] += 1
 
-						}
+							}
 
-						@if v[881] != 0 {
+							@if v[881] != 0 {
 								v[881] = muldiv(v[881], 4, 5)
-								val_div(v[882],N2) // /= 2
-								v[879] = divmul(v[879] ,17500,10000) 
-						}
+									val_div(v[882],N2) // /= 2
+									v[879] = divmul(v[879] ,17500,10000) 
+							}
 
-						// shield fall
-						@if v[873] < agent_ProcessObjBit {
+							// shield fall
+							@if v[873] < agent_ProcessObjBit {
 
 								v[872] += g_perFPS
-								v[869] .add v[871], 2
-								val_add(v[875],agent_ProcessCamoValue) // v[875] += agent_ProcessCamoValue
-								val_add(v[873],N1) // v[873] += 1
+									v[869] .add v[871], 2
+									val_add(v[875],agent_ProcessCamoValue) // v[875] += agent_ProcessCamoValue
+									val_add(v[873],N1) // v[873] += 1
 
-						}
+							}
 
-						// head?
-						@if v[887] < v[888] {
-							agent_FootstepSoundTimer += g_perFPS // the slot is the same as FootstepsSound for living agent, but actual function is diffrent. beware
-								v[883] .add v[885], 2
-								val_add(v[887],N1) // v[887] += 1
+							// head?
+							@if v[887] < v[888] {
+								agent_FootstepSoundTimer += g_perFPS // the slot is the same as FootstepsSound for living agent, but actual function is diffrent. beware
+									v[883] .add v[885], 2
+									val_add(v[887],N1) // v[887] += 1
 
-						} .else bl {
-							v[1301].copy v[885], 2
+							} .else bl {
+								v[1301].copy v[885], 2
 
-						}
+							}
 
 					}
 			}
@@ -2020,7 +2053,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 														PROC({
 															emitter_ParticleType = 1
 															emitter_Timer = 6
-															emitter_CallPartFunc = cevid_psp_sweat
+															emitter_CallPartFunc = cevid_psp_idle_worker
 															emitter_ParentObject = v[Ptr_loop_current_agent]
 															// "普通にアニメ"
 															agent_RelativeX.copy emitter_RelativeX, 2

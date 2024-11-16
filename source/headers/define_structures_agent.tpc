@@ -281,9 +281,6 @@ struct("agent",{
 	}
 
 	defv {
-		agent_static_AutoQue = 813
-		agent_static_ReserveAmount = 770
-		agent_Static_Assigned_worker_counter = 856
 
 	}
 
@@ -397,6 +394,7 @@ struct("agent",{
 	StaticBits_FLAG_has_gate_function = 256
 	StaticBits_FLAG_flammable = 2048
 	StaticBits_FLAG_newly_generated_static = 16384
+	StaticBits_FLAG_has_wreck_system = 4194304
 
 
 	MoveTypeBits_Flying = 1
@@ -579,10 +577,13 @@ struct("agent",{
 	ActionFlag_FLAG_Turn_to_ordered_Direction = 16 //s[104]
 	ActionFlag_FLAG_Already_set_ord_dir = 32
 	
-	//ObjectType
+	// Agent Type
 	AgentType_Simple_Agent = 1
 	AgentType_Layered_Agent = 3
 	AgentType_Static_Agent = 11
+
+	AgentType_DEAD_Simple_Agent = -1
+	AgentType_DEAD_Static_Agent = -11
 
 
 	// AA bits
@@ -678,14 +679,31 @@ struct("agent",{
 	
 
 	agent_static_unit_slot_1 = 741
+	agent_static_ReserveAmount = 770
 
+	agent_static_AutoQue = 813
 
 	agent_static_Attribution_flag = 811
 	agent_static_Obj_flag = 820
 	agent_static_WorkTarget = 821
 	agent_static_Spritepattern = 850
+	agent_Static_Assigned_worker_counter = 856
+
+	// wreck system (for dead body of static agents)
+	agent_static_DEAD_wreck_Offset_MilX = 861 // X * 10000
+	agent_static_DEAD_wreck_Offset_MilY
+	agent_static_DEAD_wreck_MilPixVx // Vx * 1000
+	agent_static_DEAD_wreck_MilPixVy
+	agent_static_DEAD_wreck_Timer
+	agent_static_DEAD_wreck_Timer_End
+	agent_static_DEAD_wreck_Angle
+	agent_static_DEAD_wreck_Angle_v
+	agent_static_DEAD_wreck_Sprite_Width //
+	agent_static_DEAD_wreck_Sprite_Height
+
 
 	}
+	def STATIC_AGENT_WRECK_SYSTEM_DATA_SIZE = 10
 
 	def{
 		AgentBits_STATIC_FLAG_No_function = 1024
@@ -846,6 +864,21 @@ struct("agent",{
 
 		victim_DEAD_beheadTimerEnd = 740288
 		victim_DEAD_HeadAngleV = 740289
+	}
+
+	// for victim static
+	defv {
+			victim_static_DEAD_wreck_Offset_MilX = 740261 // 739400 + agent_static_DEAD_wreck_Offset_MilX // X * 10000
+			victim_static_DEAD_wreck_Offset_MilY
+			victim_static_DEAD_wreck_MilPixVx // Vx * 1000
+			victim_static_DEAD_wreck_MilPixVy
+			victim_static_DEAD_wreck_Timer
+			victim_static_DEAD_wreck_Timer_End
+			victim_static_DEAD_wreck_Angle
+			victim_static_DEAD_wreck_Angle_v
+			victim_static_DEAD_wreck_Sprite_Width //
+			victim_static_DEAD_wreck_Sprite_Height
+
 	}
 
 	//Skill var for attack check

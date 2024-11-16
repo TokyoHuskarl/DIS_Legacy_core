@@ -2437,9 +2437,13 @@ __fn agent_static_set_adjustments_for_pic_system {
 					__if DIS_EXPERIMENTAL == 1 {
 						// multi layer system for static agent
 						@if `agent_StaticBits & StaticBits_FLAG_has_generated_sprite {	
-							agent_PictArray = 8 // kari
+							agent_PictArray = 3 // kari
 						}.else bl{
-							agent_PictArray = 88 // kari
+							agent_PictArray = SPR_STATIC_WRECK * 10 + SPR_STATIC_UPPER // kari
+
+								@if s[314] .isOff() {
+									agent_StaticBits |= StaticBits_FLAG_has_wreck_system
+								}
 						}
 					}
 }

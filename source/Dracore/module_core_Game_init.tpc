@@ -35,7 +35,7 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	N10.repeat 10,6
 	@comment "module_core_Game_init.tpc"
 
-	ptr_null = 50000000 // This value itself has no meaning, just to get null array from unallocated area to init an array
+	ptr_null = ADR_NULL_HEAD // This value itself has no meaning, just to get null array from unallocated area to init an array
 
 	
 
