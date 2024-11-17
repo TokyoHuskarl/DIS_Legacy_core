@@ -700,10 +700,12 @@ struct("agent",{
 	agent_static_DEAD_wreck_Angle_v
 	agent_static_DEAD_wreck_Sprite_Width //
 	agent_static_DEAD_wreck_Sprite_Height
+	agent_static_DEAD_wreck_Ax
+	agent_static_DEAD_wreck_Ay
 
 
 	}
-	def STATIC_AGENT_WRECK_SYSTEM_DATA_SIZE = 10
+	def STATIC_AGENT_WRECK_SYSTEM_DATA_SIZE = 12
 
 	def{
 		AgentBits_STATIC_FLAG_No_function = 1024
@@ -878,6 +880,8 @@ struct("agent",{
 			victim_static_DEAD_wreck_Angle_v
 			victim_static_DEAD_wreck_Sprite_Width //
 			victim_static_DEAD_wreck_Sprite_Height
+			victim_static_DEAD_wreck_Ax
+			victim_static_DEAD_wreck_Ay
 
 	}
 

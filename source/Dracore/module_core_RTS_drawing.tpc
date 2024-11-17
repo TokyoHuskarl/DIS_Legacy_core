@@ -878,7 +878,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									Temp11 = Temp1 + 2
 
 									// kore copy de yokune
-									agent_RelativeX.copy Temp5, 2
+									agent_RelativeX.copy Temp5, 1
+									agent_SpriteY.copy Temp6, 1
 									v[4041].repeat Temp5,9
 									v[4051].repeat Temp6,9
 
@@ -1227,7 +1228,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															v[4041].repeat Temp5,9  // v[4041..4050] = Temp5 //X
 															v[4051].repeat Temp6,9 // v[4051..4060] = Temp6 //Y
 															// y for SPR_STATIC_WRECK
-															v[4053] += agent_static_DEAD_wreck_Offset_MilY / 10000
+															v[4051..4060] += v[882]
+															v[4053] += agent_static_DEAD_wreck_Offset_MilY / 1000
 
 															Temp20 = agent_PicID
 
@@ -1509,7 +1511,8 @@ __fn draw_static_picture {
 
 								// erase sprite pixels
 								number_of_Pixels_to_be_erased = agent_static_DEAD_wreck_MilPixVy  / 1000
-								erase_start_y = agent_static_DEAD_wreck_Sprite_Height - agent_static_DEAD_wreck_Offset_MilY / 10000
+								number_of_Pixels_to_be_erased += 1
+								erase_start_y = agent_static_DEAD_wreck_Sprite_Height - agent_static_DEAD_wreck_Offset_MilY / 1000
 								@pic[v[188]].setPixel .xywh 0, erase_start_y, agent_static_DEAD_wreck_Sprite_Width, number_of_Pixels_to_be_erased .src v[ADR_NULL_HEAD]
 
 								__if DIS_DEBUG_BUILD == 1 {

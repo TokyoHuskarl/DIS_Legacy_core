@@ -2061,12 +2061,14 @@ __fn prepare_deadbody_pictures {
 						// init wreck data
 							// get sprite information
 							@pic[v[188]].getInfo .cewh .baseRect TT1, TT1, victim_static_DEAD_wreck_Sprite_Width, victim_static_DEAD_wreck_Sprite_Height
-							victim_static_DEAD_wreck_Timer_End = sqrt(victim_static_DEAD_wreck_Sprite_Height * 10000 * 2 / g_perFPS, 1000) / 1000 // t = sqrt(2y / g)
+							victim_static_DEAD_wreck_Ay =  divmul(12, victim_static_DEAD_wreck_Sprite_Width, g_perFPS)
+							victim_static_DEAD_wreck_Timer_End = sqrt(victim_static_DEAD_wreck_Sprite_Height * 1000 * 2 / victim_static_DEAD_wreck_Ay, 1000) / 1000 // t = sqrt(2y / g)
 							__if DIS_DEBUG_BUILD == 1 {
 								TT1 = victim_static_DEAD_wreck_Timer_End
 								TT2 = victim_static_DEAD_wreck_Sprite_Height
+								TT3 = victim_static_DEAD_wreck_Ay
 								@pic[99].strpic {
-									"wreck height \v[342] wreck timer set \v[341] frame - module_core_RTS_battlesystem_remove_agent.tpc"
+									"wreck height \v[342] wreck timer set \v[341] frame, Ay = \v[343] - module_core_RTS_battlesystem_remove_agent.tpc"
 										.pos 150, 150 .center
 										.size 0, 0 .scrollWithMap
 										.chromakey 1

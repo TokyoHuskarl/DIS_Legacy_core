@@ -277,7 +277,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 			@if agent_AgentType == -11 {
 							@if `1 { // agent_StaticBits &= StaticBits_FLAG_has_wreck_system {
 								@if agent_static_DEAD_wreck_Timer_End > agent_static_DEAD_wreck_Timer {
-									agent_static_DEAD_wreck_MilPixVy += g_perFPS // v = gt
+									agent_static_DEAD_wreck_MilPixVy += agent_static_DEAD_wreck_Ay // v = gt
 									val_add(agent_static_DEAD_wreck_Offset_MilY, agent_static_DEAD_wreck_MilPixVy) // y += v
 									increment_var(agent_static_DEAD_wreck_Timer) // t++
 
