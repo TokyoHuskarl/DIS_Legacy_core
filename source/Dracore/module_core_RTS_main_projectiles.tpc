@@ -5,6 +5,7 @@
 
 __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
+	defv loop_count_projectile = 214
 	defv Projectile_Ptr = __id(Ptr12) // given to each projectile proc, never change from Ptr12
 
 
@@ -26,8 +27,8 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 		v[462] = 1
 		v[217] = 0
 
-		@loop v[4559] .dst v[214] {
-			v[215] = v[214] * 100
+		@loop v[4559] .dst loop_count_projectile {
+			v[215] = loop_count_projectile * 100
 				// @comment "Access15 = ProjType"
 				Projectile_Ptr = v[215] + v[1075]
 				// @comment "弾が存在する"
@@ -47,10 +48,14 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
 								// also init hit flags
 								@if projectile_ProjectileType == 2 {
-										Ptr13 = v[214] * PRJ_HIT_FLAGS_SIZE 
-										Ptr13 += gPtr_ProjectileHitFlags_HEAD
-										v[ptr_null].copy v[Ptr13],PRJ_HIT_FLAGS_SIZE
+										// If projectile_HitFlagID is not set, use current loop_count_projectile to refer hit flags.
+										// BEWARE!!! => MACRO_INIT_HITFLAG in module_preset_skills_general.tpc
+										TT1 = projectile_HitFlagID - 1
+										projectile_HitFlagID = TT1 > -1 ? TT1 : loop_count_projectile
+										// init hit flags!
+										projectile_init_agent_hitflag()
 								}
+
 								projectile_ProjectileFlag2 |= PROJ_FL2_AbsSet
 
 						}
@@ -180,7 +185,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																@if ProjectileTeamSave != TT10 {
 
 																	// get meta team!
-																		Temp11 = v[ProjectileHitChecker] * v[1117] // let's check it out...
+																		Temp11 = v[ProjectileHitChecker] * v[1117] // let's check it...
 																		val_add(Temp11,N4701)
 																		v[Temp11].copy victim_AgentType, 12 // get only x,y,width or whatever here
 
@@ -189,13 +194,13 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																		//@comment "とりあえず矩形判定"
 																		projectile_hitcheck_rectangle()
 																		@if reg1 == 1 {
-																			//@comment "Hit flag switch v[377]"
+
+																				//@comment "Hit flag switch v[377]"
 																				//@comment "If the projectile is SingleHit Pierce type"
-																				
 																				@if projectile_ProjectileType == 2 {
 																						
 																						//opt 28.4.23
-																						Ptr13 = v[214] * PRJ_HIT_FLAGS_SIZE 
+																						Ptr13 = projectile_HitFlagID * PRJ_HIT_FLAGS_SIZE 
 																						Ptr13 += gPtr_ProjectileHitFlags_HEAD // set to head
 																						Ptr13 += v[ProjectileHitChecker] / 31 // / 32
 																						TT3 = pow(2, (v[ProjectileHitChecker] - 1) % 30)
@@ -205,6 +210,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
 																				}.else bl{
 																					val_asg(v[377],N1)
+
 																				}
 																				
 
@@ -291,7 +297,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																					@if projectile_CallFuncHit > 0 {
 																							projectile_ProjectileFlag1 &= -3//~2
 																							s[122].on
-																							val_asg(v[423],v[214])
+																							val_asg(v[423],loop_count_projectile)
 
 																							// check
 																							__if DEBUG_BUILD == 1 {
@@ -307,7 +313,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 																							LEGACY_extract_projectile_data_to_agent_buffer() // retard retard retard retard 
 																							@call .cev projectile_CallFuncHit
 																							// load up backup buffer
-																							val_asg(v[214],v[423]) // v[214] = v[423]
+																							val_asg(loop_count_projectile,v[423]) // loop_count_projectile = v[423]
 																							s[122].off
 
 																					}
@@ -336,7 +342,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
 										}
 										//@comment "ピクチャ番号"
-										Temp3 = v[4560] + v[214]
+										Temp3 = v[4560] + loop_count_projectile
 
 										//opt 28.4.23
 										@if `!(projectile_ProjectileFlag1 & PROJ_FL1_NoPicture) {
@@ -361,15 +367,15 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 									@if projectile_Timer <= 0 { // life time is over
 											@pic[Temp3].erase
 											@if projectile_CallFuncHit > 0 {
-												@if `projectile_ProjectileFlag1 & 2 {
+												@if `projectile_ProjectileFlag1 & PROJ_FL1_Splash_upon_timeup {
 														s[122].on
 														//@comment "#Parent Agent"
 														val_asg(Ptr19,projectile_ParentObject) // Ptr19 = projectile_ParentObject
-														val_asg(v[423],v[214]) // v[423] = v[214]
+														val_asg(v[423],loop_count_projectile) // v[423] = loop_count_projectile
 														projectile_RelativeX.copy v[607], 2 // legacy feature, should be removed
 														func_devlog("Projectile removed and Cev called - ID:\v[740604]")
 														@call .cev projectile_CallFuncHit
-														val_asg(v[214],v[423]) // v[214] = v[423]
+														val_asg(loop_count_projectile,v[423]) // loop_count_projectile = v[423]
 
 														s[122].off
 
@@ -378,7 +384,9 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 											}
 										// init all
 										v[1301].copy projectile_ProjectileType, 100
-										projectile_init_agent_hitflag()
+										@if `projectile_bits2 & PROJ_FL2_DoNot_init_hitflag_after_timeup {
+											projectile_init_agent_hitflag()
+										}
 									}
 									
 
@@ -394,9 +402,9 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 
 
 __fn projectile_init_agent_hitflag {
-	TT1 = v[214] * PRJ_HIT_FLAGS_SIZE 
-	TT1 += gPtr_ProjectileHitFlags_HEAD // set to head
-	v[ptr_null].copy v[TT1],PRJ_HIT_FLAGS_SIZE
+	Ptr13 = projectile_HitFlagID * PRJ_HIT_FLAGS_SIZE 
+	Ptr13 += gPtr_ProjectileHitFlags_HEAD // set to head
+	v[ptr_null].copy v[Ptr13],PRJ_HIT_FLAGS_SIZE
 }
 
 /**

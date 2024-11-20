@@ -1,5 +1,4 @@
-//Compiling this file updates the entire DraCore UI system in the ldb 
-//このファイルをコンパイルすると基幹部分のUIシステムが更新されます
+defv g_last_generated_projectile_ID = 28 // kari. you really should use other address
 
 #include "./../headers/header_common.tpc"
 
@@ -40,22 +39,44 @@ def MACRO_REFRESH_PROJECTILE_POS_FROM_REL_COORD = {
 
 
 
-def MACRO_SET_ABS_FOR_LEAGACY_PROJECTILES = {
+def MACRO_SET_ABS_FOR_LEGACY_PROJECTILES = {
 	projectile_rgst_RelativeX.copy projectile_rgst_AbsX,2
 	projectile_rgst_AbsX.sub LEGV_MainMAP_PointOfReferenceX,2
 	projectile_rgst_AbsX.copy projectile_rgst_milPixX,2
 	projectile_rgst_milPixX.mul N10000,2
 }
 
+def MACRO_INIT_HITFLAG_REGISTER = {
+	// optimize for proc in module_core_RTS_main_projectiles.tpc
+	TT1 = projectile_rgst_HitFlagID - 1
+
+		@if TT1 > -1 { // projectile_HitFlagID is set
+			projectile_rgst_HitFlagID = TT1 // this projec uses hitflags of the already generated projectile
+
+		}.else bl{ // otherwise
+			projectile_rgst_HitFlagID = v[216] // just use current id hitflags
+			// init hit flags
+			Ptr13 = projectile_rgst_HitFlagID * PRJ_HIT_FLAGS_SIZE 
+			Ptr13 += gPtr_ProjectileHitFlags_HEAD
+			v[ptr_null].copy v[Ptr13],PRJ_HIT_FLAGS_SIZE
+
+		}
+
+}
+
 def MACRO_SET_REWORKED_PROJECTILE = {
 	// temp
-	MACRO_SET_ABS_FOR_LEAGACY_PROJECTILES
+	MACRO_SET_ABS_FOR_LEGACY_PROJECTILES
+	MACRO_INIT_HITFLAG_REGISTER
 	projectile_rgst_ProjectileFlag1 |= PROJ_FL1_Aftermath_Projectile
 	projectile_rgst_ProjectileFlag2 |= PROJ_FL2_AbsSet
 	
 }
 
+// reg1 = generated projectile id
 __fn PSS_generate_projectile $define_projectile $effect {
+	// you should init reg1 innit?
+	// reg1 = -1
 	@if v[217] < v[4559] {
 			@loop v[4559] .dst v[320] {
 					v[216] %= v[4559]
@@ -70,6 +91,7 @@ __fn PSS_generate_projectile $define_projectile $effect {
 							// set your projectiles parameter manually!
 							$define_projectile
 
+							MACRO_SET_REWORKED_PROJECTILE
 							// generate
 							projectile_rgst_ProjectileType.copyTo v[v[295]], 100
 
@@ -79,6 +101,9 @@ __fn PSS_generate_projectile $define_projectile $effect {
 
 							// increment projectiles count
 							val_add(v[217],N1)
+
+							// return generated projectile id
+							g_last_generated_projectile_ID = v[216] + 1
 							@break
 
 					}
@@ -133,6 +158,7 @@ def skill_cev_devastating_charge = 1238
 // misc functions for Legacy game
 #include "./skills/pss_legacy_misc.tpc"
 
+// trebuchet
 #include "./skills/pss_treb_functions.tpc"
 def pss_cev_unpack_treb = 1301
 def pss_cev_pack_treb = 1302
@@ -140,4 +166,13 @@ def pss_cev_shoot_treb = 1303
 cev .id(pss_cev_unpack_treb), .name("fn:Treb_Unpack"),{pss_unpack_trebuchet()}
 cev .id(pss_cev_pack_treb), .name("fn:Treb_Pack"),{pss_pack_trebuchet()}
 cev .id(pss_cev_shoot_treb), .name("fn:Treb_Shoot"),{pss_trebuchet_shoot()}
+
+// catapults and cannons
+#include "./skills/pss_siege_weapon.tpc"
+def pss_cev_catapult_projectile = 1221
+cev .id(pss_cev_catapult_projectile), .name("fn:Catapult_Projectile"),{pss_register_catapult_projectile()}
+
+
+
+
 

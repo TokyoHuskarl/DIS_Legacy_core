@@ -50,6 +50,8 @@ defv {
 	projectile_CallFuncTimer=740648
 	projectile_HitPtr=740649
 	projectile_Spellpower=740650
+	projectile_ParentProjectile=740651
+	projectile_HitFlagID=740652
 	projectile_AbsX=740661
 	projectile_AbsY=740662
 	projectile_pictypeID=740668
@@ -106,6 +108,8 @@ defv projectile_rgst_Funcvar3=740745
 defv projectile_rgst_CallFuncTimer=740748
 defv projectile_rgst_HitPtr=740749
 defv projectile_rgst_Spellpower=740750
+defv projectile_rgst_ParentProjectile=740751
+defv projectile_rgst_HitFlagID=740752
 defv projectile_rgst_AbsX=740761
 defv projectile_rgst_AbsY=740762
 defv projectile_rgst_pictypeID=740768
@@ -122,6 +126,7 @@ def {
 	PROJ_FL1_Aftermath_Projectile = 536870912 // newly added projectile that uses projectile_rgst buffer above in its registoration proc.
 	PROJ_FL2_AbsSet = 1073741824
 	PROJ_FL2_MultipleHit = 1
+	PROJ_FL2_DoNot_init_hitflag_after_timeup = 2
 
 }
 
