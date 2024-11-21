@@ -9,3 +9,5 @@ std.loadScript("./source/js/jslib/noisejs/perlin.js")
 
 std.loadScript(jsdirpath + "DIS_js_system_main.js")
 std.loadScript(jsdirpath + "DIS_mapgenerator.js")
+
+std.loadScript("./test/testscript.js")

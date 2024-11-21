@@ -2154,6 +2154,7 @@ DIS.data = { // DIS.data
 		registerCheck_for_DataType("TROOP");
 		registerCheck_for_DataType("STATIC_UNIT");
 		registerCheck_for_DataType("SKIN");
+		registerCheck_for_DataType("SKILL");
 		deblog("autoregister called!");
 		deblog(Object.keys(obj));
 
@@ -2230,6 +2231,13 @@ DIS.data = { // DIS.data
 				for (let strid in dataobj[typ]){
 					let nu = this.SKIN.createNew(strid,dataobj[typ][strid]);
 					ptr2Res.push(nu);
+				};
+
+			} else if (typ == "SKILL"){ // SKILL data 
+				ptr2Res = neststart(typ,ptr2Res);
+				for (let strid in dataobj[typ]){
+					let nuskl = this.SKILL.createNew(strid,dataobj[typ][strid]);
+					ptr2Res.push(nuskl);
 				};
 
 			};
@@ -2677,11 +2685,9 @@ DIS.data = { // DIS.data
 		cnt_custom: 0,
 
 		init(){
-			this.pss_unpack_trebuchet = new DATA_skill("pss_unpack_trebuchet",{datatype:"preset",cev:1301}) 
-			this.register(this.pss_unpack_trebuchet);
-			this.pss_pack_trebuchet = new DATA_skill("pss_pack_trebuchet",{datatype:"preset",cev:1302}) 
-			this.register(this.pss_pack_trebuchet);
-			deblog("EXPERIMENTAL - SKL_pss_unpack_trebuchet set in DIS.data.SKILL.init();")
+			let mypath = DIS.modules.getCurrentModuleDataPath() + "data_skills.json";
+			deblog(`importing skill data: ${mypath}`);
+			Cmd.sys.importData(mypath);
 		},
 
 
@@ -2700,6 +2706,10 @@ DIS.data = { // DIS.data
 			};
 			sklid.register("SKL_" + elm.id, index);
 			deblog("SKL_" + elm.id + "reg!")
+		},
+
+		createNew: function(strid,data){
+			return this[strid] = new DATA_skill(strid,data); // do not register to ptrs yet
 		},
 
 		/**
