@@ -55,15 +55,19 @@ __fn drawing_set_grid_raw $Exmotion $Addmotion {
 
 }
 
+__fn init_agent_picture_strs $agentid {
+	var1 = $agentid - 1 
+	var1 = Const_str_agent_pictures_strings_start + var1 * 10
+	var2 = var1 + 9
+	t[var1..var2].asg ""
+}
+
 /**
  *
  * use 201 as your 
  */
 __fn func_drawing_agent_init_set_picture_strs $agentid {
-	var1 = $agentid - 1 
-	var1 = Const_str_agent_pictures_strings_start + var1 * 10
-		var2 = var1 + 9
-	t[var1..var2].asg ""
+	init_agent_picture_strs($agentid)
 	@if v[601] == 3 {
 		t[var2].asg Const_str_hair // hair setting is... oh-wow.
 		t[var2].cat "\v[670]" .extract
@@ -90,26 +94,18 @@ __fn func_drawing_agent_init_set_picture_strs $agentid {
 		//@if v[887]>0{ func_load_cache(t[var2]) }
 
 		var2 = var1 + 3
-		// t[var2].asg Const_str_helm
-		// t[var2].cat "\v[888]" .extract
 		t[var2].asg Str_slot_helmfile
-		@if v[888]>0{ func_load_cache(t[var2]) }
+		@if v[888] > 0 { func_load_cache(t[var2]) }
 
 		var2 = var1 + 4
-		// t[var2].asg Const_str_weapon
-		// t[var2].cat "\v[858]" .extract
 		t[var2].asg Str_slot_mainsetR
 		@if v[858] > 0 { func_load_cache(t[var2]) }
 
 		var2 = var1 + 5
-		// t[var2].asg Const_str_weapon
-		// t[var2].cat "\v[859]" .extract
 		t[var2].asg Str_slot_mainsetL
 		@if v[859] > 0 { func_load_cache(t[var2]) }
 
 		var2 = var1 + 6
-		// t[var2].asg Const_str_misc
-		// t[var2].cat "\v[889]" .extract
 		t[var2].asg Str_slot_accfile
 		@if v[889] > 0 { func_load_cache(t[var2]) }
 		// reserve set
@@ -192,18 +188,10 @@ __fn function_draw_moving_agent {
 		//@comment "Layer Setting"
 		TT16.copy v[449], 4
 
-		/*
-		Temp5 = 4040 + TT1
-		Temp6 = 4050 + TT1
-		*/
 		TT1.copy Temp5,2
 		Temp5 += 4040
 		Temp6 += 4050
 
-		/*
-		v[463] = 4100 + TT1
-		v[464] = 4120 + TT1
-		*/
 		TT1.copy v[463],2
 		v[463] += 4100
 		v[464] += 4120

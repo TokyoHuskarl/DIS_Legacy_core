@@ -206,10 +206,39 @@ class DATA_entity {
 			elm = "0";
 
 		};
-		return elm
+		return elm;
 	};
 
-	ezConvWord(wd,wdlist){return wdlist[wd];};
+	
+	// if default_value set above -1, consider it normal
+	ezConvWord(wd,wdlist,default_value = -1){
+		let ret = default_value;
+		if (typeof wd !== 'undefined'){ // it's defined
+			if (wdlist.hasOwnProperty(wd)){
+				ret = wdlist[wd];
+			} else {
+				errorlog(`ezConvWord(): Given word ${wd} does not match any of expected words.`);
+			};
+		} else {
+			if (default_value === -1){
+				errorlog(`ezConvWord(): Given property is undefined. Returns -1`);
+			};
+		};
+		return ret;
+	};
+
+	// check if the entitiy has essential element
+	ckEssentialElm(wdArray){
+		let bool = true;
+		for (let elm of wdArray) {
+			if (!this.hasOwnProperty(elm)){
+				errorlog(`${this.constructor.name}: Essential property missing: ${elm}.`);
+				bool = false;
+			};
+		};
+		
+		return bool;
+	};
 
 };
 
@@ -443,8 +472,92 @@ class DATA_static_unit extends DATA_entity { // building?
 		DATA.makeDataInherit(this,"STATIC_UNIT",src);
 		// copy given static template
 		DATA.giveSrcParamToData(this,src);
+		// convert datatype into int
+		// this.datatype = this.ezConvWord(this.datatype,{'custom':0, 'enhanced':1,'preset':2});
+		if (this.datatype !== 'preset'){ // NOT preset
+			
+			// if user set commonImageFile
+			if (this.commonImageFile !== ''){
+				this.imageDataDetail.FAC_common = [[this.commonImageFile],this.commonSpriteOffset] // use it
+			};
+			
+			// convert imageDataDetail Object to Array whose index expected to be FactionID
+			let goalArray = [0];
+			for (let elmname in this.imageDataDetail){
+				let i = facid.convert(elmname);
+				if (i !== -1){ // the FactionID dictionary has "elmname" property
+					goalArray[i] = (this.imageDataDetail[elmname]); // convert FAC_* to registered numeric ID
+					deblog(this.imageDataDetail[elmname][0])
+				} else {
+					errorlog(`${this.constructor.name} : imageDataDetail has property for an unexpected faction - "${elmname}"`)
+				};
+			};
+			this.imageDataDetail = goalArray; // replace with the result
 
+		};
 	};
+
+
+	staticType = 'simple';
+
+	commonImageFile = ''; // simplest way to set image for static file
+	commonSpriteOffset = [0,0];
+
+	// you can manually set detail actually
+	imageDataDetail = {
+		FAC_common:
+		[
+			[
+				[['spr_static_0'],[0,0]] // [[string filename][int OffsetX,int OffsetY]]
+			]
+		]
+	};
+
+ /**
+  * get_imageData().
+  *
+  * @param {FactionID} fac
+  * @param {int} variation = -1  If variation is -1, randomise which data index in factional image setting array you refer
+  */
+	get_imageData = function(fac,variation = -1){
+		let facIndex; // index for faction array
+		let result;
+		const commonData = this.imageDataDetail[0];
+		if ((facIndex  = facid.convert(fac)) !== -1){ // given faction is valid
+			if (typeof this.imageDataDetail[facIndex] !== 'undefined'){ // imageData for a Particular faction is set
+				let randomArray = this.imageDataDetail[facIndex];
+
+				if (variation === -1){ // if variation === -1, randomise
+					variation = Math.floor(Math.random() * randomArray.length);
+				} else {
+					variation = Math.min(variation,randomArray.length); // prevent overflow
+				};
+				result = randomArray[variation];
+			} else { // 
+				result = commonData; // returns commmon imageData
+			};
+		} else {
+			errorlog(`DATA_static.get_imageData(): Irregular faction is given - ${fac}`);
+			result = commonData; // returns commmon imageData
+		};
+		return result;
+	};
+
+
+	slots_Troop = [[0],[0],[0],[0]];
+	slots_Research = [[0],[0],[0]];
+
+	researchType = 'techtree'; // 'techtree' = 0, 'upgrade' = 1
+
+	/**
+	 * idk if this function should be a method within DATA_static class. 
+	 * Maybe relocated somewhere later
+	 */
+	convertTroopBranch = function(){
+		// UNDERCONSTRUCTION
+	};
+
+	is_Enhanced = function(){return (this.datatype === 'enhanced');};
 
 };
 
@@ -456,6 +569,7 @@ class DATA_skill extends DATA_entity {
 		DATA.makeDataInherit(this,"SKILL",src);
 		// copy given skill temp
 		DATA.giveSrcParamToData(this,src);
+
 
 		// if there's no data type setting but cev setting in given data, consider this skill as a preset one
 		if(typeof this.datatype === "undefined"){
@@ -470,15 +584,67 @@ class DATA_skill extends DATA_entity {
 		};
 
 		// convert datatype into int
-		this.datatype = this.ezConvWord(this.datatype,{'custom':0, 'enhanced':1,'preset':2});
-		if(this.datatype == 2){ // preset type
-			// override 
-			this.getCallID = function(){return this.cev}; // just return cev id. Do nothing else.
-			// this.setCallID = function(i){return 0};
-			this.isPreset = ()=>{true;};
+		// this.datatype = this.ezConvWord(this.datatype,{'custom':0, 'enhanced':1,'preset':2});
+
+		if(this.datatype === 'preset'){ // preset type
+			/*
+			 * If the data type is cev, game system ignores every property but cev
+			 */
+			if (this.ckEssentialElm(["cev"])){ // since this skill data type is preset, this needs to have cevid as a property
+				// override 
+				this.getCallID = function(){return this.cev}; // just return cev id. Do nothing else.
+				// this.setCallID = function(i){return 0};
+				this.isPreset = ()=>{true;};
+			} else {
+				this.datatype = -1; // set broken
+			};
+
+		} else { // enhanced or custom type
+			//
+			// convert skilltype string to int
+			this.skillType = this.ezConvWord(this.skillType,{
+				'passive':0,
+				'liner':1,
+				'point':2,
+				'target':3,
+				'AoE':4,
+				'self':5
+			});
+
+			// convert usage string to int
+			this.usage = this.ezConvWord(this.usage,{
+				'extra':-1,
+				'damage':0, 
+				'heal':1, 
+				'buff':2, 
+				'debuff':3, 
+				'dash':4,
+				'blink':5,
+				'modeChange':7
+			});
+
 		};
 
 	};
+
+	Name = "NAME UNDEFINED";
+	Description = "DESCRIPTION UNDEFINED";
+	skillType = 'passive';
+	usage = 'extra';
+	motionTime = 0;
+	extraAnimation = 0;
+	rangeMax = 0;
+	rangeMin = 0;
+	SPcost = 0;
+	cooldown = 0;
+	skillBits = [];
+	castAIBits = [];
+	spellPowerBase = [];
+
+	skillBits = [];
+	castAIBits = [];
+
+	
 
 	/**
 	 * #CallID is extra id for skill data.
@@ -516,7 +682,9 @@ class DATA_tech extends DATA_entity {
 
 		if(this.type == "preset"){
 			
-		}
+		} else if (this.type == "enhanced") {
+
+		};
 		
 		// if not
 		this.is_researchable = true;
@@ -690,7 +858,7 @@ class DIS_RMpicture extends DIS_entity { // simple picture object.
  * @extends {DIS_entity}
  */
 class DIS_unit extends DIS_entity {
-	constructor(unitid,type){
+	constructor(unitid,type = 0){
 		super();
 		this.type = type || 0; // static or land? unco 
 		if (type === 11){deblog("static data base system is still underconstruction")};
@@ -994,12 +1162,18 @@ class IDdict {
 		
 		if (typeof given == "string"){
 			if (given.lastIndexOf(this.prefix) != -1){
-				id = this[given];
+				if (typeof this[given] !== 'undefined'){
+					id = this[given];
+				} else {
+					errorlog(`"${given}" is not found in id dictionary!`);
+					id = -1;
+				};
 			} else {
 				errorlog(`"${given}" has no expected "${this.prefix}" prefix!`);
 				id = -1;
 			};
 		};
+
 		return id;
 	};
 
@@ -1197,6 +1371,7 @@ DIS = { // DIS fundamental components
 			// --------------------
 			facid = new IDdict("FAC"); // init facid
 			store_ID_table(facid,803) // get from ~/scripts/const_factions.
+			facid.FAC_common = 0; //  DEBUG
 			
 			// ~DATA converted from DIS json START~
 
@@ -1323,6 +1498,16 @@ DIS.building = {
 	upgradeBuilding: function(agtid,upslot){
 		
 	},
+
+	
+};
+
+/**
+ *
+ * Name space for functions for tech.
+ * @namespace 
+ */
+DIS.tech = {
 	
 };
 
@@ -1503,9 +1688,11 @@ DIS.string = (function(){
 
 
 
+				// $ prefix means global scope?
+				// 
 				let rsget = rs;
-				if (rs.lastIndexOf('$mstr_') == 0){
-					rs = rs.split("$mstr_")[1];
+				if (rs.lastIndexOf('@mstr_') == 0){
+					rs = rs.split("@mstr_")[1];
 					rsget = RTS.mission.strings[rs];
 				} else if (rs.lastIndexOf('$qstr_') == 0){
 					rsget = rs.split("$qstr_")[1];
@@ -1814,6 +2001,40 @@ DIS._tpc = {
 		};
 	},
 
+	building:{
+		/**
+		 * Called upon static agent generation.
+		 *
+		 * @param {int} staticid
+		 * @param {int} facid
+		 * @returnToTPC {DIStable} imagelayer to regs1
+		 * @returnToTPC {[int,int]} imageoffset to reg1..reg2
+		 */
+		getEnhancedGenerationInfo: function(staticid,facid){
+			deblog("getEnhancedGenerationInfo called")
+			let sta = DIS.data.STATIC_UNIT.ptrs[staticid];
+			const is_Enhanced = sta.is_Enhanced();
+			if (is_Enhanced){
+
+				// SET IMAGE DATA!
+				const imgData = sta.get_imageData(facid);
+
+
+				// ATTENTION! 
+				// THIS WON'T MAKE BUILDING LAYER SYSTEM VALID, SO YOU NEED TO CHANGE HERE!!
+				sett(1,make_Array_DIStable(imgData[0]));// gives image file name array to regs1
+
+				// set imgData[1] to reg1
+				setv(21,imgData[1]);
+				deblog(`Enhanced static unit generation done. ID: ${staticid}`);
+				deblog(`Img: ${gett(1)}`);
+				deblog(`Offset: ${imgData[1]}`);
+				deblog(getv(21));
+			};
+			return is_Enhanced;
+		},
+	},
+
 	/**
 	 * get js string to regs1 
 	 *
@@ -2097,8 +2318,7 @@ DIS.shell = (function(){
 })();
 
 
-// set DATA global pointer
-
+// simple function
 function createKeyArrayFromCsvLine(tmp){
 	let elms = tmp.trim().split(",")
 	let elmary = [];
@@ -2255,12 +2475,16 @@ DIS.data = { // DIS.data
 	*/
 	giveSrcParamToData: function(data,src){
 		for (let key in src){
-			if (typeof key == "object"){ // copy only array
-				let clone = [];
-				for (let elm of src[key]){ // make clone
-					clone.push(elm);
+			if (typeof src[key] === 'object'){
+				if (Array.isArray(src[key])){ // copy array
+					let clone = [];
+					for (let elm of src[key]){ // make clone
+						clone.push(elm);
+					};
+					data[key] = clone; // save new clone of array of parent tree
+				} else { // copy object
+					data[key] = {...src[key]}; // Object.assign({}, src[key]);
 				};
-				data[key] = clone; // save new clone of array of parent tree
 			} else {
 				data[key] = src[key]; // copy numbers and strings
 			};
@@ -2268,6 +2492,9 @@ DIS.data = { // DIS.data
 	},
 	
 	/**
+	 * 
+	 * ATTENTION YOU HAVE TO REMAKE this LIKE GiveSrcParamToData
+	 *
 	 * If the given src object imported from json has "INHERITS" property, 
 	 * then copy parent properties to the child data object.
 	 * This method is usually called in constructor of DATA entity.
@@ -2296,11 +2523,15 @@ DIS.data = { // DIS.data
 				let ptr2Parent = DtypPtr[what2inherit];
 				for (let aryname in ptr2Parent){
 					if (typeof ptr2Parent[aryname] == "object"){
-						let clone = [];
-						for (let elm of ptr2Parent[aryname]){ // make clone
-							clone.push(elm);
-						};
-						child[aryname] = clone; // save clone of array of parent tree
+						if (Array.isArray(ptr2Parent[aryname])){ // copy array
+							let clone = [];
+							for (let elm of ptr2Parent[aryname]){ // make clone
+								clone.push(elm);
+							};
+							child[aryname] = clone; // save clone of array of parent tree
+						} else { // object
+							child[aryname] = {...ptr2Parent[aryname]}; // Object.assign({}, src[key]);
+						}
 					} else {
 						if (datatype != "TREETEMP") {
 							child[aryname] = ptr2Parent[aryname];
@@ -2722,6 +2953,7 @@ DIS.data = { // DIS.data
 
 	// EVENTS?
 	EFFECT: {},
+
 
 };
 
@@ -5050,8 +5282,6 @@ if (!VIRTUAL_ENV){
 	DIS.data.init(); // reset DIS data
 	DIS.init.initID();
 
-	// Cmd.game.pic.loadToCache("camera_ball","test");
-	// Cmd.game.pic.pasteFromCache(DIS.cache.misc.test,800)
 };
 
 
@@ -5432,7 +5662,8 @@ const inheritancetest = `
 }
 `
 	DATA.init();
-	facid.FAC_dra = 114514;
+	facid.FAC_dra = 8;
+	facid.FAC_common = 0;
 	raceid.RACE_dragon = 4545;
 	DATA.parseDISjson(roottroop)
 	DATA.parseDISjson(sampletrp)

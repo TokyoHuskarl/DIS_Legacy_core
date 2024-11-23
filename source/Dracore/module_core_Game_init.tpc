@@ -5,7 +5,9 @@
 #include "./../headers/header_scripts.tpc"
 
 // -----------------------------------
-// GAME INIT
+// INIT GAME
+// This process is called exactly after the booting.
+// **Memory allocation** is done here.
 // -----------------------------------
 
 def {
@@ -450,17 +452,25 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	Const_save_var_UnitAISightRoot = v[4804] + 1000
 	Const_save_var_TileFlags = Const_save_var_UnitAISightRoot + 1000 //allocate 400*400
 	
+	// LMAO FUCKING TERRIBLE WTF
+	
+	// GLOBAL QUEUE UI
+	defv gPtr_UI_globalqueue_Array_HEAD = 4830
+	vname[__id(gPtr_UI_globalqueue_Array_HEAD)] "gPtr_UI_globalqueue_Array_HEAD"
+	def UI_GLOBALQUEUE_ICONS_LIMITNUMBER = 8
+	def UI_GLOBALQUEUE_DATA_SIZE = 4 // kari
+	gPtr_UI_globalqueue_Array_HEAD = Const_save_var_TileFlags + 400 * 400 + 1 // set head
+
 	//Projectiles begin
-	v[1075] = Const_save_var_TileFlags + 400 * 400 + 1
+	gPtr_ProjectileDataArray_HEAD = gPtr_UI_globalqueue_Array_HEAD + UI_GLOBALQUEUE_ICONS_LIMITNUMBER * UI_GLOBALQUEUE_DATA_SIZE
 	v[1076] = v[1075] - 1
 	//Projectiles Hit Flags begin
-	gPtr_ProjectileHitFlags_HEAD = v[1075] + v[4559] * 100 + 1
+	gPtr_ProjectileHitFlags_HEAD = v[1075] + v[4559] * PROJECTILE_DATA_SIZE + 1
 
 	//Effects begin
 	v[1018] = gPtr_ProjectileHitFlags_HEAD + v[4559] * PRJ_HIT_FLAGS_SIZE + 1 // after projectiles
 	v[4840] = v[1018] + 1 
 	//Particle
-	v[1198] = 275001
 	v[1198] = v[1018] + v[1017] * 100 + 1
 	v[1199] = Particle_Emitter_Limit // amount
 

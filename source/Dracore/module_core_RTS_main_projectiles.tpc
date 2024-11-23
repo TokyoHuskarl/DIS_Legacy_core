@@ -35,7 +35,7 @@ __fn MAIN_CEV_RTS_PROJECTILE_MANAGER {
 				@if v[Projectile_Ptr] >= 1 {
 
 					// deploy projectile data to buffer
-					v[Projectile_Ptr].copy projectile_ProjectileType,projectileMemSize
+					v[Projectile_Ptr].copy projectile_ProjectileType,PROJECTILE_DATA_SIZE
 
 						// this is shite, but needed since current projectile registering procs are all from classic awful design
 						// I mean the system that treats all projectiles based on Relative Coordinates

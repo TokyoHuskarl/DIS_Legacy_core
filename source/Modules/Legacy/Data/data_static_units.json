@@ -2,10 +2,19 @@
 	"STATIC_UNIT": {
 		"towncenter": {
 			"i": 1,
-			"datatype": "preset",
 			"size": [56,50],
 			"cost": [0,250,150,0,800],
-			"buildableTerrain": [0]
+			"buildableTerrain": [0],
+
+			"datatype": "enhanced",
+			"imageDataDetail": {
+				"FAC_common":[
+					[["spr_static_1"],[0,0]]
+				],
+				"FAC_dra":[
+					[["spr_static_1"],[0,0]]
+				]
+			}
 
 		},
 		"farm": {
@@ -14,6 +23,10 @@
 			"size": [24,24]
 		},
 		"castle": {"i": 3,
+			"datatype": "preset"
+		},
+		"construction_site": {
+			"i": 4,
 			"datatype": "preset"
 		},
 		"vikingship": {"i": 7,
@@ -68,7 +81,15 @@
 			"datatype": "preset"
 		},
 		"mage_altar": {"i": 27,
-			"datatype": "preset"
+			"datatype": "enhanced",
+			"imageDataDetail": {
+				"FAC_common":[
+						[["spr_static_27"],[0,0]]
+				],
+				"FAC_dra":[
+						[["spr_static_27"],[0,11],["spr_static_27"],[0,122]]
+					]
+			}
 		},
 		"market": {"i": 32,
 			"datatype": "preset"

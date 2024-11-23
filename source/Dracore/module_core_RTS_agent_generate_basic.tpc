@@ -1356,7 +1356,7 @@ __fn func_generate_agent_finish_set {
 										@if agent_ObjectType < 11 {
 											@if v[2218] <= 2 {
 												//@call .cev 1924
-												TT1 = 2
+													TT1 = 2
 													agent_ObjectType = 1
 													msg(t[20243])
 
@@ -1380,7 +1380,7 @@ __fn func_generate_agent_finish_set {
 										} .else bl {
 											@if v[2218] <= 2 {
 												@if agent_PicID != 104 {
-													TT1 = 2
+														TT1 = 2
 														agent_ObjectType = 1
 														msg(t[20244])
 
@@ -2187,7 +2187,9 @@ __fn agent_troops_set_picture_system {
 		//ATTENTION
 
 	@if BOOL_Gen_NoListAssigningFlag.isOff() {
-		func_drawing_agent_init_set_picture_strs(SpawnAgentID) // ->module_core_RTS_drawing_functions.tpc
+		@if agent_AgentType != 11 {
+			func_drawing_agent_init_set_picture_strs(SpawnAgentID) // ->module_core_RTS_drawing_functions.tpc
+		}
 	}
 
 		v[886..889] = 0
@@ -2435,9 +2437,43 @@ __fn agent_static_set_adjustments_for_pic_system {
 				agent_static_Spritepattern = agent_ActionState > 0 ? agent_ActionState + 2 : 2
 
 					__if DIS_EXPERIMENTAL == 1 {
+
+						/* Call js function:
+						 * DIS._tpc.building.getEnhancedGeneration(SpawnAgentID,agent_UnitID,agent_Culture)
+						 * This function directly sets sprite file name and offsets on js
+						 * => regs1 = DIStable pictureFiles; reg1 = OffsetX; reg1 = OffsetY;
+						 */
+						init_agent_picture_strs(SpawnAgentID)
+						val_init(var1)
+						eval_js("
+							try {
+								v[11] = DIS._tpc.building.getEnhancedGenerationInfo(v[701],v[822]);
+							} catch(error) {
+								errorlog(`DIS._tpc.building.getEnhancedGenerationInfo: Something went wrong.\n` + error)
+							};
+						")
+							@if var1 == 1 { // if the agent is enhanced
+								// set Offset
+								reg1.copy agent_InitialOffsetX,2 
+								// set picture
+								inputstr.asg "../Picture/static/" //kari
+								inputstr.cat regs1
+								function_set_agent_picture(SpawnAgentID,inputstr,SPR_STATIC_UPPER) // LAYER SYSTEM IS NOT YET COMPLETED
+								function_set_agent_picture(SpawnAgentID,inputstr,SPR_STATIC_WRECK) // LAYER SYSTEM IS NOT YET COMPLETED
+
+
+							}.else bl{ // NOT enhanced
+								// kari
+								var1 = (SpawnAgentID - 1) * 10
+								var1 += Const_str_agent_pictures_strings_start + SPR_STATIC_UPPER
+								t[var1].asg __str(PATH_pictureHome,"static\spr_static_")
+								t[var1].cat agent_PicID
+								
+							}
+
 						// multi layer system for static agent
 						@if `agent_StaticBits & StaticBits_FLAG_has_generated_sprite {	
-							agent_PictArray = 3 // kari
+							agent_PictArray = SPR_STATIC_GENERATED // kari
 						}.else bl{
 							agent_PictArray = SPR_STATIC_WRECK * 10 + SPR_STATIC_UPPER // kari
 
@@ -2501,5 +2537,4 @@ __fn agent_static_set_adjustments_for_finish_set {
 
 
 }
-
 

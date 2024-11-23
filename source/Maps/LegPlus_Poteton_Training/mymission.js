@@ -11,17 +11,17 @@
 
 	const trig1 = RTS.mission.createSimpleTrigger_Timer(0,0,1); // class RTStrigger(condtion)
 	trig1.effect = () => {
-		Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_OP1",33));
-		Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_OP2",33));
-		Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_Hint1",33));
+		Cmd.ui.pushDialogQueue(new DIS_dialog("@mstr_OP1",33));
+		Cmd.ui.pushDialogQueue(new DIS_dialog("@mstr_OP2",33));
+		Cmd.ui.pushDialogQueue(new DIS_dialog("@mstr_Hint1",33));
 	};
 
 
 	// battle 
 	const trig2 = RTS.mission.createSimpleTrigger_Timer(0,0,20); // class RTStrigger(condtion)
 	trig2.effect = () => {
-		Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_EnemyCharge",33));
-		Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_Hint2",33));
+		Cmd.ui.pushDialogQueue(new DIS_dialog("@mstr_EnemyCharge",33));
+		Cmd.ui.pushDialogQueue(new DIS_dialog("@mstr_Hint2",33));
 
 		MISSION.setTrigger(loop_gameend);
 
@@ -59,17 +59,17 @@
 		// player victory
 		if (g_PLAYER.getCombatPower() <= 4){
 
-			Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_Def1",33));
-			Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_Def2",33));
+			Cmd.ui.pushDialogQueue(new DIS_dialog("@mstr_Def1",33));
+			Cmd.ui.pushDialogQueue(new DIS_dialog("@mstr_Def2",33));
 			Cmd.mission.defeat(0);
 			this.finishLoop()
 
 			// player defeat
 		} else if (g_ENEMY.getCombatPower() <= 8){
 
-			Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_Vic1",33));
+			Cmd.ui.pushDialogQueue(new DIS_dialog("@mstr_Vic1",33));
 			if (g_PLAYER.combatpower < 24){
-				Cmd.ui.pushDialogQueue(new DIS_dialog("$mstr_Vic2",33));
+				Cmd.ui.pushDialogQueue(new DIS_dialog("@mstr_Vic2",33));
 			};
 
 			Cmd.mission.victory(0);

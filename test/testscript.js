@@ -1,3 +1,30 @@
+const teststatic =`
+{
+	"STATIC_UNIT": {
+		"simple": {
+			"datatype": "enchanced",
+			"commonImageFile": "penis"
+		},
+		"factional": {
+			"datatype": "enchanced",
+			"imageDataDetail": {
+				"FAC_common":[
+							[["spr_static_0"],[0,0]]
+					],
+				"FAC_zako":[
+							[["spr_static_0"],[0,0]]
+					],
+				"FAC_dra":[
+							[["spr_static_1"],[0,11],["spr_static_1"],[0,122]]
+					]
+			}
+		}
+	}
+}
+
+`
+
+
 const testskill = `
 	{
 	"SKILL":{
@@ -59,3 +86,12 @@ const testskill = `
 
 
 DATA.parseDISjson(testskill)
+DATA.parseDISjson(teststatic)
+
+let dataobj = JSON.parse(teststatic);
+
+let a = DATA.STATIC_UNIT.factional.get_imageData("FAC_dra");
+
+deblog(a[1][1])
+
+

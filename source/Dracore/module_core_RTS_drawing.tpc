@@ -134,14 +134,13 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 			v[ptr_null].copy v[187],1 // v[187] = 0
 			v[340] = v[1113] + v[401]
 			v[340].deref v[340],1 // v[340] = v[v[340]]
-			//v [340] = v[v[1113] + v[401]] % 1000
 			Temp1 = v[340] * 300 //opt 
 			val_add(Temp1,N5000) // Temp1 += 5000
 			v[Temp1].copy Address_agent_array_head, 300
 			/* @comment "表示処理 T1=ObjID T2=ピクチャの番号 T3=Ptrピクチャのx T4=Ptrピクチャのy T5=Getピクチャのx T6=Getピクチャのy T11=旧ピクチャ番号Ptr T20=ピクチャスプライト指定 T21=アクションステート取得*/
 			// @comment "MINIONS"
 			@if `agent_ExMotionFlags & 524288 {
-				AgentIDholder = v[340] + 1
+				AgentIDholder = v[340] + 1 // oi kore zuretene?
 				val_init(v[460]) // v[ptr_null].copy v[460],1 // v[460] = 0
 				//@comment "#描画範囲内か？T3 T4 Constx Consty"
 				@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //s[v[340] + 501] {
@@ -1245,10 +1244,6 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																		Temp6 = 4050 + TT1
 																		Temp5.deref Temp5,2
 
-																		/*
-																		v[454] = 4140 + TT1
-																		v[454] = v[v[454]]
-																		*/
 
 																		@if v[188] > 0 {
 																			draw_static_picture()
@@ -1445,9 +1440,14 @@ __fn draw_static_picture {
 		}
 
 	} .else bl {
+		// KARI
+		var1 =  v[340] * 10
+		var1 += Const_str_agent_pictures_strings_start
+		Ptr6 = SPR_STATIC_UPPER + var1 // kari
+
 		@if agent_UnitType == 103 {
 			@pic[v[188]].show {
-				"static\spr_static_1" .repl 1 Temp20
+					t[Ptr6]
 					.pos Temp5, Temp6 .center
 					.scrollWithMap
 					.chromakey 1
@@ -1467,7 +1467,7 @@ __fn draw_static_picture {
 			//@comment "#コリジョンないSTATICは一番下"
 			@if agent_UnitType == 105 {
 				@pic[v[188]].show {
-					"static\spr_static_1" .repl 1 Temp20
+						t[Ptr6]
 						.pos Temp5, Temp6 .center
 						.scrollWithMap
 						.chromakey 1
@@ -1485,7 +1485,7 @@ __fn draw_static_picture {
 			} .else bl {
 				@if TT1 == SPR_STATIC_UPPER {
 					@pic[v[188]].show {
-						"static\spr_static_1" .repl 1 Temp20
+							t[Ptr6]
 							.pos Temp5, Temp6 .center
 							.scrollWithMap
 							.chromakey 1
@@ -1560,7 +1560,7 @@ __fn draw_static_picture {
 					}.else bl{
 						// hide the wreck layer while the agent is alive
 						@pic[v[188]].show {
-							"static\spr_static_1" .repl 1 Temp20
+								t[Ptr6]
 								.pos Temp5, Temp6 .center
 								.scrollWithMap
 								.chromakey 1
