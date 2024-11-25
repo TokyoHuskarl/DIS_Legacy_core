@@ -932,18 +932,16 @@ __fn agent_aa_construction {
 						Temp5 -= 178
 						@if v[371] >= 1 {
 							v[2538] -= 1
-								// "#建築現場を消去"
-								/* "Access19 = AttackerObjectID
+								// #建築現場を消去
+								/* Access19 = AttackerObjectID
 									 Access20 = TargetObjectID
 									 Access18 = ObjTypeチェックPtr
-									 誤作動防止" */
+									 誤作動防止 */
 
 								@if Ptr20 > 0 {
 									// "#建築現場を消去"
 										Temp5 = Ptr20 * 300
 
-										TT1 = Temp5 + 4703
-										v[TT1] &= ~AgentBits_FLAG_Drawn_in_screen // kill drawn flag!
 
 										Temp5 += 4806
 										v[Temp5] = -1
@@ -969,6 +967,8 @@ __fn agent_aa_construction {
 										var2 = 11
 										// remove from foundation(basement) list
 										@call .cev 1896
+										
+
 										// "Team Get"
 										Temp8 += 4800
 										Temp8 = v[Temp8] % 3
@@ -1005,7 +1005,7 @@ __fn agent_aa_construction {
 										v[204] -= 1
 
 								}
-							Temp5 = Ptr20 * 300
+								Temp5 = Ptr20 * 300
 								Temp5 += 4707
 								v[Temp5].copy v[252], 2
 								Temp5 += 93
@@ -1026,8 +1026,17 @@ __fn agent_aa_construction {
 										}
 
 									// use the same ID as the foundation
-									v[201] = Ptr20 - 1
+										v[201] = Ptr20 - 1
 										@call .cev v[Temp5]
+
+										// If the called cev didn't create new units (e.g. terrain change)
+										@if v[Ptr18] < 0 {
+											TT1 = Ptr20 * 300
+											TT1 += 4703
+											v[TT1] &= ~AgentBits_FLAG_Drawn_in_screen // then kill drawn flag to prevent sprite bug
+										}
+
+
 										Temp15 = reg3 == 105 ? 1 : 0
 										// ""
 										Temp5 = 0

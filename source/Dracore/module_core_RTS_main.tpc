@@ -238,7 +238,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				    TT16 -= v[611] + v[882]
 				    TT17 += v[611] - v[882]
 				    @if v[608] >= TT16 {
-					    @if v[608] <= TT17{
+					    @if v[608] <= TT17 {
 								// "#Set OffsetY"
 								v[637] = v[608] + v[882]
 								// "Will_be_depicted"
@@ -248,7 +248,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 								// "#描画範囲内であれば保存"
 								v[v[1112] + v[184]] = (v[608] + v[611] + v[1011]) * 1000 + v[401]
 								v[v[1113] + v[184]] = v[401]
-								val_add(v[184],N1) // v[184] += 1
+								val_add(v[184],N1)
 								
 					    }
 				   }
@@ -425,7 +425,6 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
 	    TT10 = Address_agent_inSight_switch_array_head + v[401]
 	    @if s[TT10] .isOn() {
-					//@if `s[2001+v[401]] != 0 {
 				@if v[607] >= v[1008] {
 					@if v[607] <= v[1009]{
 						@if v[608] >= v[1010]{

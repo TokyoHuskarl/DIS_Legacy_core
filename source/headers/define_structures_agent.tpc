@@ -527,6 +527,8 @@ struct("agent",{
 	ExMotionFlags_FLAG_HeadHasDamagedSprite = 32768
 	ExMotionFlags_FLAG_HeadNotYetDamaged = 65536
 		ExMotionFlags_MASK_HeadPartDamageChecker = ExMotionFlags_FLAG_HeadHasDamagedSprite + ExMotionFlags_FLAG_HeadNotYetDamaged
+
+	ExMotionFlags_FLAG_LivingMobileAgent = 524288
 	ExMotionFlags_FLAG_Backshotflag = 67108864
 	ExMotionFlags_FLAG_horseback = 16777216
 	agent_ExMotionFlags_FLAG_horseback = 16777216
@@ -708,6 +710,7 @@ struct("agent",{
 	def STATIC_AGENT_WRECK_SYSTEM_DATA_SIZE = 12
 
 	def{
+		AgentBits_STATIC_FLAG_ConstructionSite = 32
 		AgentBits_STATIC_FLAG_No_function = 1024
 		AgentBits_STATIC_FLAG_Ignore_morton = 2097152
 	}

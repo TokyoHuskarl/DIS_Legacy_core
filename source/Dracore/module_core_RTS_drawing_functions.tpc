@@ -196,12 +196,6 @@ __fn function_draw_moving_agent {
 		v[463] += 4100
 		v[464] += 4120
 
-		/*
-		v[453] = 4130 + TT1
-		v[454] = 4140 + TT1
-		v[455] = 4030 + TT1
-		v[456] = 4150 + TT1
-		*/
 		v[453].repeat TT1,4
 		v[453] += 4130 
 		v[454] += 4140 
@@ -215,10 +209,10 @@ __fn function_draw_moving_agent {
 
 		//surprise, but this seems faster than above... opt 25.4.23
 		Temp5.deref Temp5,2
-		v[447].deref v[447],1 // v[447] = v[v[447]]
-		TT2.deref TT2,1 // TT2 = v[TT2]
+		v[447].deref v[447],1
+		TT2.deref TT2,1
 		v[463].deref v[463],2
-		v[321].deref v[321],1 // v[321] = v[v[321]]
+		v[321].deref v[321],1
 		v[453].deref v[453],4
 
 		v[449] .add v[TT2], 4
@@ -304,3 +298,8 @@ __fn function_draw_agent_inv_stats {
 	    }
 
 }
+
+__fn erase_agent_sprites $id {
+	
+}
+

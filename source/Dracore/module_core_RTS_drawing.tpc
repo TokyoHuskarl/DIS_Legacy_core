@@ -139,7 +139,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 			v[Temp1].copy Address_agent_array_head, 300
 			/* @comment "表示処理 T1=ObjID T2=ピクチャの番号 T3=Ptrピクチャのx T4=Ptrピクチャのy T5=Getピクチャのx T6=Getピクチャのy T11=旧ピクチャ番号Ptr T20=ピクチャスプライト指定 T21=アクションステート取得*/
 			// @comment "MINIONS"
-			@if `agent_ExMotionFlags & 524288 {
+			@if `agent_ExMotionFlags & ExMotionFlags_FLAG_LivingMobileAgent {
 				AgentIDholder = v[340] + 1 // oi kore zuretene?
 				val_init(v[460]) // v[ptr_null].copy v[460],1 // v[460] = 0
 				//@comment "#描画範囲内か？T3 T4 Constx Consty"
@@ -872,7 +872,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 			} .else bl {
 					// STATIC Agent
 					@if agent_AgentType == 11 {
-							@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //`s[v[340] + 501] {
+							@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 									AgentIDholder = v[340] + 1
 									Temp11 = Temp1 + 2
 
@@ -1222,7 +1222,9 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															//@comment "Get ID From Cache"
 															v[188] = v[178] = v[340] * Const_layer_amount + v[1201]
 															v[177] = v[186]
-															agent_LastSpriteIndex = v[186]
+															// renew agent_LastSpriteIndex
+															TT1 = Temp1 + 290
+															ptr_asg(TT1,v[186])
 
 															v[4041].repeat Temp5,9  // v[4041..4050] = Temp5 //X
 															v[4051].repeat Temp6,9 // v[4051..4060] = Temp6 //Y
@@ -1430,6 +1432,7 @@ __fn draw_agent_indicator $RGBS $T {
 __fn draw_static_picture {
 	// has generated sprite
 	@if `agent_StaticBits & StaticBits_FLAG_has_generated_sprite { // walls
+		v[447] = agent_AgentType < 0 ? 100 : v[447] // check if it's dood already
 		@pic[v[188]].move {
 			.pos Temp5, Temp6 .center
 				.scale 100

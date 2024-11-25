@@ -1,7 +1,6 @@
 cev .id(834), .name("wall"), {
-	@comment "WallTypeBuildingFlag"
+		@comment "WallTypeBuildingFlag"
 		v[35] = 1
-		t[501] .asg "壁"
 		v[91] = 0
 		v[21] = -1
 		@if s[261] .isOff() {
@@ -23,7 +22,7 @@ cev .id(834), .name("wall"), {
 			@if v[204] < v[1004] {
 				v[204] += 1
 					@loop v[1004] .dst v[320] {
-						v[201] %= v[1004]
+							v[201] %= v[1004]
 							v[301] = v[201] * 300
 							v[301] += 5000
 							v[300] = v[301] + 1
@@ -38,16 +37,17 @@ cev .id(834), .name("wall"), {
 									v[899] = v[v[201] * 300 + 5299]
 									v[15] = v[899]
 									@if v[899] != 0 {
-										@while v[15] > 0 .dst v[16] {
+										v[16] = 1
+										@while v[15] > 0 {
 											v[15] /= 10
+											v[16] += 1
 
 										}
 
-										v[16] += 1
 
 									}
 								v[302] = v[201] * Const_layer_amount + v[1201]
-									@if `v[v[201] * 300 + 5003] & AgentBits_FLAG_Drawn_in_screen { // `s[v[201] + 501] == 1 {
+									@if `v[v[201] * 300 + 5003] & AgentBits_FLAG_Drawn_in_screen {
 										v[17] = v[v[201] * 300 + 5290]
 											@if v[17] > 0 {
 												@loop v[16] .dst v[18] {
@@ -64,7 +64,7 @@ cev .id(834), .name("wall"), {
 											}
 
 									} .else bl {
-										@loop 6 .dst v[18] {
+										@loop Const_layer_amount .dst v[18] {
 											v[18] += v[302]
 												@if v[18] > 0 {
 													@pic[v[18]].erase
@@ -258,7 +258,7 @@ cev .id(834), .name("wall"), {
 												.size v[341], v[342]                        .scrollWithMap
 												.chromakey 1
 												.scale 100
-												.trans 100
+												.trans 0
 												.rgbs 100, 100, 100, 100
 												.font "", 10 .noShadow
 												.spacing 0, 0
@@ -269,6 +269,7 @@ cev .id(834), .name("wall"), {
 												.affectedByFlash
 												.affectedByShake
 										}
+
 										v[11] = v[302]
 											v[12..13] = 0
 											v[14] = 0
