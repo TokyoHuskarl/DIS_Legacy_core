@@ -2010,7 +2010,7 @@ DIS._tpc = {
 		 * @returnToTPC {DIStable} imagelayer to regs1
 		 * @returnToTPC {[int,int]} imageoffset to reg1..reg2
 		 */
-		getEnhancedGenerationInfo: function(staticid,facid){
+		getSpriteInfo: function(staticid,facid){
 			deblog("getEnhancedGenerationInfo called")
 			let sta = DIS.data.STATIC_UNIT.ptrs[staticid];
 			const is_Enhanced = sta.is_Enhanced();

@@ -1,55 +1,59 @@
 cev .id(95), .name("Pse:StaticDust"), {
-	@if s[141] .isOn() {
-		@loop v[1017] .dst v[320] {
-			v[242] %= v[1017]
-				v[301] = v[242] * 100
-				v[301] = v[301] + v[1018]
-				@if v[v[301]] <= 1 {
-					@comment "まず清掃"
-						v[1301].copy v[v[301]], 100
-						@comment "ポインタセット開始"
-						v[310] = v[242] + v[1220]
-						v[295] = v[301] + 99
-						@comment "設定"
-						v[v[301]] = 1
-						v[v[295]] = 2
-						@comment "普通にアニメ"
-						victim_RelativeX.copy v[361], 2
-						v[361] += rnd(-6, 6)
-						v[362] += rnd(-6, 6)
-						@pic[v[310]].show {
-							"effects\smoke"
-								.pos v[361], v[362] .center
-								.scrollWithMap
-								.chromakey 1
-								.scale 100
-								.trans 22
-								.rgbs 100, 100, 100, 100
-								.grid 3, 1 .cell 3
-								.mapLayer 8
-								.eraseWhenTransfer
-								.affectedByFlash
-								.affectedByShake
-						}
-						v[361] += rnd(-44, 44)
-						v[362] += rnd(-20, 0)
-						@pic[v[310]].move {
-							.pos v[361], v[362] .center
-								.scale 300
-								.trans 100
-								.time 12
-								.rgbs 100, 100, 100, 100
-						}
-					@comment "仕上げに登録消す"
-						v[242..243] += 1
-						@break
-
-				}
-			v[242] += 1
-
-		}
-
-		s[141].off
+	@if LEGS_ON_EFFECT_REGISTER_PROCESS .isOn() {
+		PSE_StaticWreckDust_register(victim_RelativeX)
+		LEGS_ON_EFFECT_REGISTER_PROCESS.off
 
 	}
+}
+
+__fn PSE_StaticWreckDust_register $var_Xstart {
+	@loop v[1017] .dst Temp20 {
+		v[242] %= v[1017]
+			Temp1 = v[242] * EFFECT_DATA_SIZE
+			Temp1 = Temp1 + v[1018]
+			@if v[Temp1] <= 1 {
+				@comment "まず清掃"
+					v[ptr_null].copy v[Temp1], 100
+					@comment "ポインタセット開始"
+					Temp10 = v[242] + v[1220]
+					Ptr15 = Temp1 + 99
+					@comment "設定"
+					v[Temp1] = 1
+					v[Ptr15] = 2
+					@comment "普通にアニメ"
+					v[__id($var_Xstart)].copy v[361], 2
+					v[361] += rnd(-6, 6)
+					v[362] += rnd(-6, 6)
+					@pic[Temp10].show {
+						"effects\smoke"
+							.pos v[361], v[362] .center
+							.scrollWithMap
+							.chromakey 1
+							.scale 100
+							.trans 22
+							.rgbs 100, 100, 100, 100
+							.grid 3, 1 .cell 3
+							.mapLayer 8
+							.eraseWhenTransfer
+							.affectedByFlash
+							.affectedByShake
+					}
+					v[361] += rnd(-44, 44)
+					v[362] += rnd(-20, 0)
+					@pic[Temp10].move {
+						.pos v[361], v[362] .center
+							.scale 300
+							.trans 100
+							.time 12
+							.rgbs 100, 100, 100, 100
+					}
+				@comment "仕上げに登録消す"
+					v[242..243] += 1
+					@break
+
+			}
+		v[242] += 1
+
+	}
+
 }

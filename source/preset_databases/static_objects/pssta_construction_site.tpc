@@ -135,6 +135,9 @@ cev .id(804), .name("Construction Site"), {
 								@comment "no function "
 								v[603] |= 1024
 								v[603] |= 2097152
+
+
+
 								@comment "Get ID From Cache"
 								v[0] = v[341..342] = [v[610] * 2, v[611] * 2]
 
@@ -177,7 +180,12 @@ cev .id(804), .name("Construction Site"), {
 														.affectedByFlash
 														.affectedByShake
 												}
+												
+
+
+											constructionsite_set_buildingghost_sprite()
 											}
+
 
 										}
 
@@ -215,6 +223,7 @@ cev .id(804), .name("Construction Site"), {
 														.affectedByShake
 												}
 											}
+											constructionsite_set_buildingghost_sprite()
 
 									}
 								}
@@ -243,4 +252,11 @@ cev .id(804), .name("Construction Site"), {
 
 
 		}
+}
+
+
+__fn constructionsite_set_buildingghost_sprite {
+
+		// get sprite data here
+		agent_PicID = v[880] - 800 // kari.
 }

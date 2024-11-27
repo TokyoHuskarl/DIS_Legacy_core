@@ -389,7 +389,9 @@ struct("agent",{
 
 
 	// for static agents
+	// **NAMING RULE IS FUCKIGN UNSTABLE REEEEEEE**
 	StaticBits_FLAG_working_on_tech = 1
+	StaticBits_FLAG_ConstructionSite = 32
 	StaticBits_FLAG_has_generated_sprite = 128
 	StaticBits_FLAG_has_gate_function = 256
 	StaticBits_FLAG_flammable = 2048
@@ -516,6 +518,7 @@ struct("agent",{
 	ExMotionFlags_FLAG_have_AA_CD_Spr = 1
 	ExMotionFlags_FLAG_slimy = 8
 	ExMotionFlags_FLAG_have_fundamental_movemotion = 16
+	ExMotionFlags_FLAG_has_skullpicture = 128
 	ExMotionFlags_FLAG_MoveAnim_OneDirectional = 256
 	ExMotionFlags_FLAG_MoveAnim = 512
 	ExMotionFlags_FLAG_no_footstepsound = 1024
@@ -710,7 +713,7 @@ struct("agent",{
 	def STATIC_AGENT_WRECK_SYSTEM_DATA_SIZE = 12
 
 	def{
-		AgentBits_STATIC_FLAG_ConstructionSite = 32
+		AgentBits_STATIC_FLAG_ConstructionSite = 32 // remove this in future :D
 		AgentBits_STATIC_FLAG_No_function = 1024
 		AgentBits_STATIC_FLAG_Ignore_morton = 2097152
 	}

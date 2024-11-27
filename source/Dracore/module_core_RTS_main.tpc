@@ -275,35 +275,55 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 			// STATIC
 			@if agent_AgentType == -11 {
-							@if `1 { // agent_StaticBits &= StaticBits_FLAG_has_wreck_system {
+							@if `agent_StaticBits &= StaticBits_FLAG_has_wreck_system { // agent_StaticBits &= StaticBits_FLAG_has_wreck_system {
 								@if agent_static_DEAD_wreck_Timer_End > agent_static_DEAD_wreck_Timer {
 									agent_static_DEAD_wreck_MilPixVy += agent_static_DEAD_wreck_Ay // v = gt
-									val_add(agent_static_DEAD_wreck_Offset_MilY, agent_static_DEAD_wreck_MilPixVy) // y += v
-									increment_var(agent_static_DEAD_wreck_Timer) // t++
+										val_add(agent_static_DEAD_wreck_Offset_MilY, agent_static_DEAD_wreck_MilPixVy) // y += v
+										increment_var(agent_static_DEAD_wreck_Timer) // t++
 
-									// if timer reached the estimated collapse completion frame, then turn off wreck system
-									agent_StaticBits &= agent_static_DEAD_wreck_Timer_End == agent_static_DEAD_wreck_Timer ? ~StaticBits_FLAG_has_wreck_system : agent_StaticBits
-									
-									
-								__if DIS_DEBUG_BUILD == 1 {
-									TT1 = agent_static_DEAD_wreck_MilPixVy
-									@pic[101].strpic {
-											"wreck dy = \v[341]"
-											.pos 200, 200 .center
-											.size 0, 0 .scrollWithMap
-											.chromakey 1
-											.scale 100
-											.trans 0
-											.rgbs 100, 100, 100, 100
-											.font Font_UI, 11
-											.spacing 0, 0
-											.skin "" .nobg .noframe .noGradation .noPadding
-											.mapLayer 7
-											.eraseWhenTransfer
-											.affectedByFlash
-											.affectedByShake
-									}
-								}
+										// if timer reached the estimated collapse completion frame
+										@if agent_static_DEAD_wreck_Timer_End == agent_static_DEAD_wreck_Timer {
+											agent_StaticBits &= ~StaticBits_FLAG_has_wreck_system // then turn off wreck system
+
+
+											// kari
+											// PSE_StaticWreckDust_register(agent_RelativeX)
+											LEGS_ON_EFFECT_REGISTER_PROCESS.on
+											agent_RelativeX.copy victim_RelativeX,2
+											@call .cev 95
+										} .else bl {
+											// collapse particle test
+											// maybe you should prepare particle emitter cev for new collapse particle and register it in remove proc 
+											regiter_particle({
+													val_asg(emitter_ParticleType,N1)
+													val_const(emitter_CallPartFunc,131)
+													agent_RelativeX.copy emitter_RelativeX,2 // where to x
+													emitter_RelativeX += rnd(agent_Width,-agent_Width)
+													val_add(emitter_RelativeY,agent_Height)
+													val_const(emitter_Timer,1)
+													})
+										}
+
+
+										__if DIS_DEBUG_BUILD == 1 {
+											TT1 = agent_static_DEAD_wreck_MilPixVy
+												@pic[101].strpic {
+													"wreck dy = \v[341]"
+														.pos 200, 200 .center
+														.size 0, 0 .scrollWithMap
+														.chromakey 1
+														.scale 100
+														.trans 0
+														.rgbs 100, 100, 100, 100
+														.font Font_UI, 11
+														.spacing 0, 0
+														.skin "" .nobg .noframe .noGradation .noPadding
+														.mapLayer 7
+														.eraseWhenTransfer
+														.affectedByFlash
+														.affectedByShake
+												}
+										}
 
 								}
 							}

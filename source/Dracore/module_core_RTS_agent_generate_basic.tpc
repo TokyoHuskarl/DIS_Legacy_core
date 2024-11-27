@@ -1419,7 +1419,7 @@ __fn func_generate_agent_finish_set {
 
 		}
 	s[157].off
-		deblog("\agent_PictArray")
+		deblog(agent_PictArray)
 
 }
 
@@ -2439,7 +2439,7 @@ __fn agent_static_set_adjustments_for_pic_system {
 					__if DIS_EXPERIMENTAL == 1 {
 
 						/* Call js function:
-						 * DIS._tpc.building.getEnhancedGeneration(SpawnAgentID,agent_UnitID,agent_Culture)
+						 * DIS._tpc.building.getSpriteInfo(agent_UnitID,agent_Culture)
 						 * This function directly sets sprite file name and offsets on js
 						 * => regs1 = DIStable pictureFiles; reg1 = OffsetX; reg1 = OffsetY;
 						 */
@@ -2447,9 +2447,9 @@ __fn agent_static_set_adjustments_for_pic_system {
 						val_init(var1)
 						eval_js("
 							try {
-								v[11] = DIS._tpc.building.getEnhancedGenerationInfo(v[701],v[822]);
+								v[11] = DIS._tpc.building.getSpriteInfo(v[701],v[822]);
 							} catch(error) {
-								errorlog(`DIS._tpc.building.getEnhancedGenerationInfo: Something went wrong.\n` + error)
+								errorlog(`DIS._tpc.building.getSpriteInfo: Something went wrong.\n` + error)
 							};
 						")
 							@if var1 == 1 { // if the agent is enhanced
@@ -2462,18 +2462,36 @@ __fn agent_static_set_adjustments_for_pic_system {
 								function_set_agent_picture(SpawnAgentID,inputstr,SPR_STATIC_WRECK) // LAYER SYSTEM IS NOT YET COMPLETED
 
 
-							}.else bl{ // NOT enhanced
-								// kari
+							} .else bl { // NOT enhanced
+
 								var1 = (SpawnAgentID - 1) * 10
-								var1 += Const_str_agent_pictures_strings_start + SPR_STATIC_UPPER
-								t[var1].asg __str(PATH_pictureHome,"static\spr_static_")
-								t[var1].cat agent_PicID
+								// construction site
+								@if `agent_StaticBits & StaticBits_FLAG_ConstructionSite {
+									// see also -> preset_databases/static_objects/pssta_construction_site.tpc
+									__if DIS_EXPERIMENTAL == 1 {
+										var1 += Const_str_agent_pictures_strings_start + SPR_STATIC_BUILDING_GHOST
+										t[var1].asg __str(PATH_pictureHome,"static\spr_static_")
+										t[var1].cat agent_PicID
+									}
+								}.else bl{
+									// kari
+									var1 += Const_str_agent_pictures_strings_start + SPR_STATIC_UPPER
+									t[var1].asg __str(PATH_pictureHome,"static\spr_static_")
+									t[var1].cat agent_PicID
+								}
 								
 							}
 
 						// multi layer system for static agent
 						@if `agent_StaticBits & StaticBits_FLAG_has_generated_sprite {	
-							agent_PictArray = SPR_STATIC_GENERATED // kari
+
+							@if `agent_StaticBits & StaticBits_FLAG_ConstructionSite { // construction site
+								agent_PictArray = SPR_STATIC_BUILDING_GHOST * 10 + SPR_STATIC_GENERATED
+
+							}.else bl{
+								agent_PictArray = SPR_STATIC_GENERATED // kari
+
+							}
 						}.else bl{
 							agent_PictArray = SPR_STATIC_WRECK * 10 + SPR_STATIC_UPPER // kari
 

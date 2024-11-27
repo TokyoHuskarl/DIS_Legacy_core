@@ -77,7 +77,7 @@ __fn Kill_Agent {
 					
 
 
-					@if s[302] .isOn() {
+					@if LEGS_CONFIG_RemoveDeadBodiesQuick .isOn() {
 						v[Kill_pointer + 4780] = 0
 				
 					} .else bl {
@@ -113,7 +113,7 @@ __fn Kill_Agent {
 									Temp5.copy v[TT1], 2
 									// "仕上げに登録消す"
 									v[242..243] += 1
-									s[141].off
+									LEGS_ON_EFFECT_REGISTER_PROCESS.off
 									@break
 							
 								}
@@ -152,7 +152,7 @@ __fn Kill_Agent {
 											TT1 = TT11 + 6
 											Temp5.copy v[TT1], 2
 											// "仕上げに登録消す"
-											s[141].off
+											LEGS_ON_EFFECT_REGISTER_PROCESS.off
 											v[244] += 1
 											@break
 											
@@ -183,13 +183,13 @@ __fn Kill_Agent {
 					var2 += 14
 					@call .cev 2010
 					// "#WATER"
-					@if `v[v[4505] + reg3] & 1 {
+					@if `v[v[4505] + reg3] & FLAG_TERRAIN_Water {
 						v[Kill_pointer + 4998] = 35
 						val_asg(death_terraintype,N1)
 				
 					}
 					// "#Forest"
-					@if `v[v[4505] + reg3] & 8 {
+					@if `v[v[4505] + reg3] & FLAG_TERRAIN_Forest {
 						v[Kill_pointer + 4998] = 35
 				
 					}
@@ -239,10 +239,12 @@ __fn Kill_Agent {
 
 								// "#########################"
 								// "If victim has big flag"
-								@if `victim_ProcessObjBit & 524288 {
+								@if `victim_ProcessObjBit & BaseObjBit_FLAG_big_unit {
 									// "#Sounds more heavier"
 									v[473] -= 18
+
 									// "#Dust Particle Effect"
+									/*
 									@loop v[1017] .dst Temp20 {
 										v[244] %= v[1199]
 										TT11 = v[244] * 50 
@@ -261,13 +263,24 @@ __fn Kill_Agent {
 											TT1 = TT11 + 6
 											victim_RelativeX.copy v[TT1], 2
 											// "仕上げに登録消す"
-											s[141].off
+											LEGS_ON_EFFECT_REGISTER_PROCESS.off
 											v[244] += 1
 											@break
 											
 										}
+
 										v[244] += 1
 									}
+									*/
+									regiter_particle({
+											val_asg(emitter_ParticleType,N1)
+											val_const(emitter_CallPartFunc,131)
+											victim_RelativeX.copy emitter_RelativeX,2 // where to x
+											val_const(emitter_Timer,3)
+
+									})
+
+
 								}
 
 								v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
@@ -315,7 +328,7 @@ __fn Kill_Agent {
 											// "#Human"
 											v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
 											@if victim_Race == 0 {
-												@if `victim_MoveTypeBIts & 2 { // cav type move bit
+												@if `victim_MoveTypeBIts & MoveTypeBits_Horse { // cav type move bit
 													@if `victim_AddMotionBits & AddMotionFlags_FLAG_OnHorse { // REAL horse
 														v[329] = rnd(1, 1)
 														// "#########################"
@@ -669,7 +682,7 @@ __fn Kill_Agent {
 												v[361].copy v[TT1], 2
 												// "仕上げに登録消す"
 												v[418] += 1
-												s[141].off
+												LEGS_ON_EFFECT_REGISTER_PROCESS.off
 												@break
 												
 											}
@@ -709,6 +722,7 @@ __fn Kill_Agent {
 
 
 												}
+
 												@if var10 >= 400 {
 													v[373] = 1
 
@@ -716,7 +730,7 @@ __fn Kill_Agent {
 
 											} .else bl {
 												@if v[190] == 4 {
-													@if `victim_ExMotionFlags & 128 {
+													@if `victim_ExMotionFlags & ExMotionFlags_FLAG_has_skullpicture {
 														TT10 = victim_PictArray
 															@while TT10 >= 1 {
 																// "detect head"
@@ -812,28 +826,30 @@ __fn Kill_Agent {
 								Bool_Refresh_Static_Minimap.on //request refresh minimap static
 								TT1 = Kill_pointer + 4712 
 								v[1301].copy v[TT1], 2
-								// "wrecks remain longer"
-								@if s[302] .isOff() {
+								// wrecks remain longer than minions
+								@if LEGS_CONFIG_RemoveDeadBodiesQuick .isOff() {
 										v[Kill_pointer + 4780] = v[1240] * v[4571] * 5
 										
 								}
 
+								// if the death is triggered by player del
 								@if s[34] .isOn() {
-										v[Kill_pointer + 4780] = 10
+										v[Kill_pointer + 4780] = 10 // the wreck fades out much faster
 										
 								}
 
 								// "########## Construction Basement ##########"
-								@if `victim_AgentBits & 32 {
+								@if `victim_AgentBits & AgentBits_STATIC_FLAG_ConstructionSite {
 
 										// set agent type 0
 										v[Ptr18] = 0
 
 										v[2538] -= 1
 
-										// Construction cancel
+										// Construction canceled by player
 										@if s[34] .isOn() {
-											// refund building cost!
+
+											// refund building cost if it's not touched by a worker
 											@if `victim_AgentBits & AgentBits_STATIC_FLAG_Ignore_morton { 
 
 													// get goal building
@@ -883,10 +899,12 @@ __fn Kill_Agent {
 								v[2515] += s[7] == 1 ? 1 : 0
 								@if victim_UnitID != 6 { // classic version's LEGACY - static ID 6 was living shadow. eventually you can get rid of this @if   
 										v[Ptr18] = -11
-										@if s[175] .isOff() {
-											v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
-											@if s[220] .isOn() {
-													@if v[TT1] == 2 {
+										@if LEGS_Construction_Refund .isOff() {
+											@if LEGS_DmgCalVictim_can_be_seen .isOn() {
+												v[474] = divmul(victim_RelativeX + v[1001], v[1281], 50)
+
+													// if it's farm
+													@if v[TT1] == 2 { // farm id
 														// "hatake"
 														v[471] = 11550
 														v[472] = divmul(85, 100, v[2216])
@@ -901,8 +919,11 @@ __fn Kill_Agent {
 														v[473] = rnd(75, 85)
 														// "#########################"
 														@cmd v[471], "Earth1", .args v[472], 3
-														s[141].on
-														@call .cev 95
+														
+														// smoke
+														PSE_StaticWreckDust_register()
+														// LEGS_ON_EFFECT_REGISTER_PROCESS.on
+														// @call .cev 95
 												
 													}
 													
@@ -1274,7 +1295,7 @@ cev .id(30) .name("BattleSystemFunc:Retreat"){
 					}
 					// "仕上げに登録消す"
 					v[242..242] += 1
-					s[141].off
+					LEGS_ON_EFFECT_REGISTER_PROCESS.off
 					@break
 					
 		    }
