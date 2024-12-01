@@ -151,13 +151,13 @@ cev .id(804), .name("Construction Site"), {
 											@if v[880] == 802 { // farmland
 												@pic[v[302]].show {
 													"static\spr_farmland_basic"
-														.pos v[607], v[607] .center
+														.pos v[607], v[608] .center
 														.chromakey 1
 														.scrollWithMap
 														.scale 100
 														.trans 100
 														.rgbs 100, 100, 100, 100
-														.mapLayer 3
+														.mapLayer 2
 														.affectedByTint
 														.affectedByFlash
 														.affectedByShake
@@ -166,7 +166,7 @@ cev .id(804), .name("Construction Site"), {
 												@pic[Temp2].strpic {
 													""
 														.pos v[607], v[608] .center
-														.size TT1, TT2                        .scrollWithMap
+														.size TT1, TT2
 														.chromakey 1
 														.scale 100
 														.scrollWithMap
@@ -199,8 +199,9 @@ cev .id(804), .name("Construction Site"), {
 														.chromakey 1
 														.scale 100
 														.trans 100
+														.scrollWithMap
 														.rgbs 100, 100, 100, 100
-														.mapLayer 3
+														.mapLayer 2
 														.affectedByTint
 														.affectedByFlash
 														.affectedByShake

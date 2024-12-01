@@ -1918,7 +1918,7 @@ __fn agent_troops_set_picture_system {
 						// @comment "default body sprite set"
 						@if agent_FootstepSoundTimer == 0 {
 							agent_FootstepSoundTimer = -1
-							agent_ExMotionFlags |= 512
+							agent_ExMotionFlags |= ExMotionFlags_FLAG_MoveAnim
 							
 						}
 						
@@ -1931,7 +1931,7 @@ __fn agent_troops_set_picture_system {
 						s[159].off
 						@if agent_FootstepSoundTimer == 0 {
 							agent_FootstepSoundTimer = -2
-							agent_ExMotionFlags |= 512
+							agent_ExMotionFlags |= ExMotionFlags_FLAG_MoveAnim
 							
 						}
 				}
@@ -2443,41 +2443,64 @@ __fn agent_static_set_adjustments_for_pic_system {
 						 * This function directly sets sprite file name and offsets on js
 						 * => regs1 = DIStable pictureFiles; reg1 = OffsetX; reg1 = OffsetY;
 						 */
+						def MACRO_GENERATE_generate_inputstr_Static_sprite_path_from_regs1 = {
+								inputstr.asg "../Picture/static/" //kari
+								inputstr.cat regs1
+						} 
 						init_agent_picture_strs(SpawnAgentID)
-						val_init(var1)
-						eval_js("
-							try {
-								v[11] = DIS._tpc.building.getSpriteInfo(v[701],v[822]);
-							} catch(error) {
-								errorlog(`DIS._tpc.building.getSpriteInfo: Something went wrong.\n` + error)
-							};
-						")
-							@if var1 == 1 { // if the agent is enhanced
+						val_init(reg3)
+						eval_js("v[23] = DIS._tpc.building.getSpriteInfo(v[701],v[822]);")
+							@if reg3 == 1 { // if the agent is enhanced
 								// set Offset
 								reg1.copy agent_InitialOffsetX,2 
 								// set picture
-								inputstr.asg "../Picture/static/" //kari
-								inputstr.cat regs1
-								function_set_agent_picture(SpawnAgentID,inputstr,SPR_STATIC_UPPER) // LAYER SYSTEM IS NOT YET COMPLETED
-								function_set_agent_picture(SpawnAgentID,inputstr,SPR_STATIC_WRECK) // LAYER SYSTEM IS NOT YET COMPLETED
+								MACRO_GENERATE_generate_inputstr_Static_sprite_path_from_regs1
+								function_set_agent_picture(SpawnAgentID,inputstr,SPR_STATIC_UPPER)
+								function_set_agent_picture(SpawnAgentID,inputstr,SPR_STATIC_WRECK)
 
 
 							} .else bl { // NOT enhanced
 
-								var1 = (SpawnAgentID - 1) * 10
 								// construction site
 								@if `agent_StaticBits & StaticBits_FLAG_ConstructionSite {
 									// see also -> preset_databases/static_objects/pssta_construction_site.tpc
-									__if DIS_EXPERIMENTAL == 1 {
-										var1 += Const_str_agent_pictures_strings_start + SPR_STATIC_BUILDING_GHOST
-										t[var1].asg __str(PATH_pictureHome,"static\spr_static_")
-										t[var1].cat agent_PicID
+
+									// get ghost sprite
+									// kari, using agent_PicID as a staticid, but it must be changed later
+									val_init(reg3)
+									@if agent_Culture == 0 { // if the agent has no culture
+										// then set player faction as its culture
+										func_get_player_faction_to_r1(agent_TeamID) 
+										val_asg(agent_Culture,reg1)
 									}
+									eval_js("v[23] = DIS._tpc.building.getSpriteInfo(v[602],v[822]);")
+									@if reg3 != 3 { // NOT dummy
+										@if reg3 == 1 { // currently: enhanced / later: json data has imageData
+											// set Offset
+											reg1.copy agent_InitialOffsetX,2 
+												// set picture
+												MACRO_GENERATE_generate_inputstr_Static_sprite_path_from_regs1
+												function_set_agent_picture(SpawnAgentID,inputstr,SPR_STATIC_BUILDING_GHOST)
+
+										}.else bl{ // CURRENTLY: if it's not enhanced, set from PicID
+											var2 = (SpawnAgentID - 1) * 10
+												var2 += Const_str_agent_pictures_strings_start + SPR_STATIC_BUILDING_GHOST
+												t[var2].asg __str(PATH_pictureHome,"static/spr_static_")
+												t[var2].cat agent_PicID
+
+										}
+									}.else bl{ // whenever dummy building is selected, forcibly set agent_PicID = 0
+										agent_PicID = 0 // kari. 
+
+									}
+
+								// ordinary static
 								}.else bl{
 									// kari
-									var1 += Const_str_agent_pictures_strings_start + SPR_STATIC_UPPER
-									t[var1].asg __str(PATH_pictureHome,"static\spr_static_")
-									t[var1].cat agent_PicID
+									var2 = (SpawnAgentID - 1) * 10
+									var2 += Const_str_agent_pictures_strings_start + SPR_STATIC_UPPER
+									t[var2].asg __str(PATH_pictureHome,"static/spr_static_")
+									t[var2].cat agent_PicID
 								}
 								
 							}
@@ -2486,17 +2509,32 @@ __fn agent_static_set_adjustments_for_pic_system {
 						@if `agent_StaticBits & StaticBits_FLAG_has_generated_sprite {	
 
 							@if `agent_StaticBits & StaticBits_FLAG_ConstructionSite { // construction site
-								agent_PictArray = SPR_STATIC_BUILDING_GHOST * 10 + SPR_STATIC_GENERATED
+								// if agent_PicID is not set, then just show construction frame
+								@if agent_PicID > 0 {
+									agent_PictArray = SPR_STATIC_BUILDING_GHOST * 10 + SPR_STATIC_GENERATED
+
+								}.else bl{
+									agent_PictArray = SPR_STATIC_GENERATED
+								}
 
 							}.else bl{
 								agent_PictArray = SPR_STATIC_GENERATED // kari
 
 							}
 						}.else bl{
-							agent_PictArray = SPR_STATIC_WRECK * 10 + SPR_STATIC_UPPER // kari
+							agent_PictArray = SPR_STATIC_UPPER // kari
 
-								@if s[314] .isOff() {
-									agent_StaticBits |= StaticBits_FLAG_has_wreck_system
+								@if agent_UnitType != 105 { // not downlayer static e.g farmland
+									@if s[314] .isOff() {
+										agent_PictArray = SPR_STATIC_WRECK * 10 + SPR_STATIC_UPPER // kari
+											agent_StaticBits |= StaticBits_FLAG_has_wreck_system
+
+											// copy upper sprite to wreck layer
+											var2 = (SpawnAgentID - 1) * 10
+											var2 += Const_str_agent_pictures_strings_start + SPR_STATIC_UPPER
+											inputstr.asg t[var2]
+											function_set_agent_picture(SpawnAgentID,inputstr,SPR_STATIC_WRECK)
+									}
 								}
 						}
 					}
@@ -2531,7 +2569,7 @@ __fn agent_static_set_adjustments_for_finish_set {
 					v[726] |= 1048576
 
 			}
-		str3 .asg ""
+			str3 .asg ""
 			str5 .asg t[20034]
 			@comment "Load"
 			v[1942] = agent_UnitID

@@ -13,6 +13,13 @@ defv marker_saturation = __id(Temp15)
 defv marker_RGB = __id(Temp16)
 defv expected_action_sprite = __id(Temp21)
 
+def MACRO_DRAWING_offset_by_z = {
+		val_const(TT13,3)
+		TT13 *= agent_getTerrainElevation - v[504] 
+		// TT13 *= 3
+		val_sub(Temp6,TT13)
+	}
+
 
 cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Units), {   
 	@comment "module_core_RTS_drawing.tpc"
@@ -215,11 +222,10 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 							
 							v[ptr_null].copy v[456], 1 // v[456] = 0
 							v[ptr_null].copy v[471], 2
+
 							//@comment "Height"
-							TT13 = agent_getTerrainElevation - v[504] 
-							TT13 *= 3
-							//@comment "Z "
-							val_sub(Temp6,TT13) // Temp6 -= TT13
+							MACRO_DRAWING_offset_by_z
+
 							//@comment "Get ID From Cache"
 							v[188] = v[178] = v[340] * Const_layer_amount + v[1201]
 							val_asg(v[177],v[186]) // v[177] = v[186]
@@ -885,11 +891,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									expected_action_sprite = agent_static_Spritepattern // v[843] + 2
 									Temp20 = agent_PicID
 									@if `!(agent_StaticBits & StaticBits_FLAG_newly_generated_static) {
-											//Ptr19 = Temp1 + 11
 											//@comment "Z"
-											TT13 = agent_getTerrainElevation - v[504] 
-											TT13 *= 3
-											Temp6 -= TT13
+											MACRO_DRAWING_offset_by_z
 											//@comment "#描画範囲内か？T3 T4 Constx Consty"
 											//@comment "Get ID From Cache"
 											v[188] = v[178] = v[340] * Const_layer_amount + v[1201]
@@ -921,6 +924,9 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 										// experimental multi layered static agents
 										__if DIS_EXPERIMENTAL == 1 {
+											var1 =  v[340] * 10
+											var1 += Const_str_agent_pictures_strings_start
+
 											@while agent_PictArray >= 1 {
 													TT1 = agent_PictArray % 10
 													Temp5 = 4040 + TT1
@@ -933,6 +939,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													*/
 
 													//@comment "Strings = t[Ptr6]"
+													Ptr6 = TT1 + var1
 													@if v[188] > 0 {
 														draw_static_picture()
 													}
@@ -1033,7 +1040,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													v[453] = 3
 													v[456] = 10000
 													//@comment "Z "
-													Temp6 -= (agent_getTerrainElevation - v[504]) * 3
+													// Temp6 -= (agent_getTerrainElevation - v[504]) * 3
+													MACRO_DRAWING_offset_by_z
 													//@comment "Get ID From Cache"
 													v[188] = v[178] = v[340] * Const_layer_amount + v[1201]
 													v[177] = v[186]
@@ -1226,10 +1234,12 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															TT1 = Temp1 + 290
 															ptr_asg(TT1,v[186])
 
+															MACRO_DRAWING_offset_by_z
 															v[4041].repeat Temp5,9  // v[4041..4050] = Temp5 //X
 															v[4051].repeat Temp6,9 // v[4051..4060] = Temp6 //Y
 															// y for SPR_STATIC_WRECK
-															v[4051..4060] += v[882]
+															v[4051..4060] += agent_InitialOffsetY
+															v[4054] -= agent_StaticBits & StaticBits_FLAG_ConstructionSite ? agent_InitialOffsetY : 0  // initial Offset setting doesn't affect construction frame
 															v[4053] += agent_static_DEAD_wreck_Offset_MilY / 1000
 
 															Temp20 = agent_PicID
@@ -1240,6 +1250,9 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 															__if DIS_EXPERIMENTAL == 1 {
 																// loop
+																var1 =  v[340] * 10
+																var1 += Const_str_agent_pictures_strings_start
+
 																@while agent_PictArray >= 1 {
 																		TT1 = agent_PictArray % 10
 																		Temp5 = 4040 + TT1
@@ -1247,6 +1260,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																		Temp5.deref Temp5,2
 
 
+																		Ptr6 = TT1 + var1
 																		@if v[188] > 0 {
 																			draw_static_picture()
 																		}
@@ -1443,12 +1457,7 @@ __fn draw_static_picture {
 		}
 
 	} .else bl {
-		// KARI
-		var1 =  v[340] * 10
-		var1 += Const_str_agent_pictures_strings_start
-		Ptr6 = SPR_STATIC_UPPER + var1 // kari
-
-		@if agent_UnitType == 103 {
+		@if agent_UnitType == 103 { // kore naniw
 			@pic[v[188]].show {
 					t[Ptr6]
 					.pos Temp5, Temp6 .center
@@ -1582,33 +1591,92 @@ __fn draw_static_picture {
 					}
 
 				}.elif TT1 == SPR_STATIC_BUILDING_GHOST { 
+						// hide the wreck layer while the agent is not alive
 						v[447] = agent_AgentType < 0 ? 100 : v[447] // check if it's dood already
-						// hide the wreck layer while the agent is alive
-						// kari
-						TT1 = agent_HP - 1
-						TT1 = muldiv(100,TT1,agent_MaxHP)
-						TT2 = 100 - TT1
-						@pic[v[188]].getInfo .cewh .baseRect TT3, TT3, TT3, TT4
-						TT4 = muldiv(TT4,TT2,400)
-						TT4 = Temp6 + TT4
+						@if v[880] == 802 { // building farmland
+							@if agent_HP == 1 { 
+								@pic[v[188]].show {
+									t[Ptr6]
+										.pos Temp5, Temp6 .center
+										.scrollWithMap
+										.chromakey 1
+										.trans 65
+										.scale 100
+										.rgbs 125, 200, 125, 100
+										.grid 5, 1 .cell expected_action_sprite
+										.mapLayer 2
+										.eraseWhenTransfer
+										.affectedByTint
+										.affectedByFlash
+										.affectedByShake
+								}
+							}.else bl{
+									TT1 = muldiv(100,agent_HP,agent_MaxHP)
+									TT1 = 100 - TT1
+									@pic[v[188]].show {
+										t[Ptr6]
+											.pos Temp5, Temp6 .center
+											.scrollWithMap
+											.chromakey 1
+											.trans TT1
+											.scale 100
+											.rgbs draw_main_R, draw_main_G, draw_main_B, draw_main_S
+											.grid 5, 1 .cell expected_action_sprite
+											.mapLayer 2
+											.eraseWhenTransfer
+											.affectedByTint
+											.affectedByFlash
+											.affectedByShake
+									}
+							}
 
-						@pic[v[188]].show {
-								t[Ptr6]
-								.pos Temp5, TT4 .center
-								.scrollWithMap
-								.chromakey 1
-								.trans 25
-								.scale2(100, TT1)
-								.rgbs draw_main_R, draw_main_G, draw_main_B, draw_main_S
-								.grid 5, 1 .cell expected_action_sprite
-								.mapLayer 4
-								.eraseWhenTransfer
-								.affectedByTint
-								.affectedByFlash
-								.affectedByShake
+
+						}.else bl { 
+							@if agent_HP == 1 { // show greencolour ghost when building job is not even started
+								@pic[v[188]].show {
+									t[Ptr6]
+										.pos Temp5, Temp6 .center
+										.scrollWithMap
+										.chromakey 1
+										.trans 65
+										.scale 100
+										.rgbs 125, 200, 125, 100
+										.grid 5, 1 .cell expected_action_sprite
+										.mapLayer 4
+										.eraseWhenTransfer
+										.affectedByTint
+										.affectedByFlash
+										.affectedByShake
+								}
+
+							}.else bl { // building ordinary static agent
+									TT1 = muldiv(100,agent_HP,agent_MaxHP)
+									TT2 = 100 - TT1
+									@pic[v[188]].getInfo .cewh .baseRect TT3, TT3, TT3, TT4
+									TT4 = muldiv(TT4,TT2,400)
+									TT4 += v[4054]
+									v[447] += 30
+									TT5 = draw_main_S + 35
+
+									@pic[v[188]].show {
+										t[Ptr6]
+											.pos Temp5, TT4 .center
+											.scrollWithMap
+											.chromakey 1
+											.trans v[447]
+											.scale2(100, TT1)
+											.rgbs draw_main_R, draw_main_G, draw_main_B, TT5
+											.grid 5, 1 .cell expected_action_sprite
+											.mapLayer 4
+											.eraseWhenTransfer
+											.affectedByTint
+											.affectedByFlash
+											.affectedByShake
+									}
+							}
+
+
 						}
-
-				
 				}
 
 			}

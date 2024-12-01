@@ -214,10 +214,12 @@ __fn Kill_Agent {
 
 
 
-					// Unless the victim is simple sprite agent, init agent_InitialOffset
+					// Unless the victim is simple sprite agent or static, init agent_InitialOffset
 					@if v[331] != 1 {
-						TT1 = Kill_pointer + 4981 
-						v[ptr_null].copy v[TT1], 2
+						@if v[331] != 11 {
+							TT1 = Kill_pointer + 4981 
+							v[ptr_null].copy v[TT1], 2
+						}
 					}
 
 					@if v[331] <= 10 {
@@ -921,9 +923,9 @@ __fn Kill_Agent {
 														@cmd v[471], "Earth1", .args v[472], 3
 														
 														// smoke
-														PSE_StaticWreckDust_register()
-														// LEGS_ON_EFFECT_REGISTER_PROCESS.on
-														// @call .cev 95
+														// PSE_StaticWreckDust_register()
+														LEGS_ON_EFFECT_REGISTER_PROCESS.on
+														@call .cev 95
 												
 													}
 													
@@ -2082,8 +2084,11 @@ __fn prepare_deadbody_pictures {
 						// init wreck data
 							// get sprite information
 							@pic[v[188]].getInfo .cewh .baseRect TT1, TT1, victim_static_DEAD_wreck_Sprite_Width, victim_static_DEAD_wreck_Sprite_Height
-							victim_static_DEAD_wreck_Ay =  divmul(12, victim_static_DEAD_wreck_Sprite_Width, g_perFPS)
-							victim_static_DEAD_wreck_Timer_End = sqrt(victim_static_DEAD_wreck_Sprite_Height * 1000 * 2 / victim_static_DEAD_wreck_Ay, 1000) / 1000 // t = sqrt(2y / g)
+							val_const(TT1,Const_StaticAgent_Wreck_vY_standard)
+							TT1 += rnd(-3,3)
+							victim_static_DEAD_wreck_Ay =  divmul(TT1, victim_static_DEAD_wreck_Sprite_Width, g_perFPS)
+							victim_static_DEAD_wreck_Timer_End = sqrt(victim_static_DEAD_wreck_Sprite_Height * 1000 * 2 / victim_static_DEAD_wreck_Ay, 1000) / 1000 // t = sqrt(2y / g) ?
+
 							__if DIS_DEBUG_BUILD == 1 {
 								TT1 = victim_static_DEAD_wreck_Timer_End
 								TT2 = victim_static_DEAD_wreck_Sprite_Height

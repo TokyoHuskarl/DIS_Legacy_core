@@ -465,6 +465,19 @@ class DATA_skin extends DATA_entity {
  * Data class for building units.
  * @class DATA_static_unit
  */
+
+// kore ippan ka suruno?
+const DATATYPE_CUSTOM = 0;
+const DATATYPE_ENHANCED = 1;
+const DATATYPE_PRESET = 2;
+const DATATYPE_DUMMY = 3;
+const DATATYPE_CONVERT_DICTIONARY = {
+			'custom':DATATYPE_CUSTOM,
+			'enhanced':DATATYPE_ENHANCED,
+			'preset':DATATYPE_PRESET,
+			'dummy':DATATYPE_DUMMY
+		};
+
 class DATA_static_unit extends DATA_entity { // building?
 	constructor(id,src){
 		super(id);
@@ -473,8 +486,9 @@ class DATA_static_unit extends DATA_entity { // building?
 		// copy given static template
 		DATA.giveSrcParamToData(this,src);
 		// convert datatype into int
-		// this.datatype = this.ezConvWord(this.datatype,{'custom':0, 'enhanced':1,'preset':2});
-		if (this.datatype !== 'preset'){ // NOT preset
+		this.datatype = this.ezConvWord(this.datatype,DATATYPE_CONVERT_DICTIONARY);
+
+		if (this.datatype !== DATATYPE_PRESET && this.datatype !== DATATYPE_DUMMY){ // NOT preset nor dummy
 			
 			// if user set commonImageFile
 			if (this.commonImageFile !== ''){
@@ -522,7 +536,7 @@ class DATA_static_unit extends DATA_entity { // building?
 	get_imageData = function(fac,variation = -1){
 		let facIndex; // index for faction array
 		let result;
-		const commonData = this.imageDataDetail[0];
+		const commonData = this.imageDataDetail[0][0];
 		if ((facIndex  = facid.convert(fac)) !== -1){ // given faction is valid
 			if (typeof this.imageDataDetail[facIndex] !== 'undefined'){ // imageData for a Particular faction is set
 				let randomArray = this.imageDataDetail[facIndex];
@@ -558,7 +572,7 @@ class DATA_static_unit extends DATA_entity { // building?
 	};
 
 	is_Enhanced = function(){return (this.datatype === 'enhanced');};
-
+	getDatatype(){return this.datatype;};
 };
 
 
@@ -800,7 +814,6 @@ class DIS_entity { // prototype for DIS RPGmaker Object
 	}
 
 	getClass(){return this.class;};
-
 
 
 }
@@ -1198,7 +1211,9 @@ class IDdict {
 		};
 
 		// if there's no happening, just register key and value
+		// this allows you to overwrite key with new value
 		return this[key] = val;
+
 	};
 
 };
@@ -1346,6 +1361,14 @@ DIS = { // DIS fundamental components
 				};
 				return DIS.log.push(text)
 			};
+
+			// --------------------
+			// load faction ID
+			// --------------------
+			facid = new IDdict("FAC"); // init facid
+			store_ID_table(facid,803) // get from ~/scripts/const_factions.
+			facid.FAC_common = 0; //  DEBUG
+
 			// --------------------
 			// load race ID
 			// --------------------
@@ -1366,13 +1389,6 @@ DIS = { // DIS fundamental components
 			// kari. this will be obsolete.
 			store_ID_table(staid,802) // get from ~/scripts/const_statics.
 
-			// --------------------
-			// load faction ID
-			// --------------------
-			facid = new IDdict("FAC"); // init facid
-			store_ID_table(facid,803) // get from ~/scripts/const_factions.
-			facid.FAC_common = 0; //  DEBUG
-			
 			// ~DATA converted from DIS json START~
 
 			// --------------------
@@ -2011,14 +2027,14 @@ DIS._tpc = {
 		 * @returnToTPC {[int,int]} imageoffset to reg1..reg2
 		 */
 		getSpriteInfo: function(staticid,facid){
-			deblog("getEnhancedGenerationInfo called")
+			deblog("js - getSpriteInfo() called")
 			let sta = DIS.data.STATIC_UNIT.ptrs[staticid];
-			const is_Enhanced = sta.is_Enhanced();
-			if (is_Enhanced){
+			let datatype = sta.getDatatype();
+			deblog(`datatype ck : ${datatype}`)
+			if (datatype !== DATATYPE_DUMMY){
 
 				// SET IMAGE DATA!
 				const imgData = sta.get_imageData(facid);
-
 
 				// ATTENTION! 
 				// THIS WON'T MAKE BUILDING LAYER SYSTEM VALID, SO YOU NEED TO CHANGE HERE!!
@@ -2026,12 +2042,12 @@ DIS._tpc = {
 
 				// set imgData[1] to reg1
 				setv(21,imgData[1]);
-				deblog(`Enhanced static unit generation done. ID: ${staticid}`);
+				deblog(`Enhanced static unit generation done. ID: ${staticid}, FactionID: ${facid}`);
 				deblog(`Img: ${gett(1)}`);
 				deblog(`Offset: ${imgData[1]}`);
 				deblog(getv(21));
 			};
-			return is_Enhanced;
+			return datatype; // why the fuck this function returns datatype????? terrible
 		},
 	},
 
@@ -2344,12 +2360,12 @@ DIS.data = { // DIS.data
 	},
 
 	init: function(){
-		// this.FACTION.init(); <- rewrite this!
 			this.RACE.init();
-		if(!VIRTUAL_ENV){ // ignore when debug run on VIRTUAL_ENV
-			this.TECH.init();
-		}
 			this.SKILL.init();
+			if(!VIRTUAL_ENV){ // ignore when debug run on VIRTUAL_ENV
+				this.TECH.init();
+			}
+		// this.FACTION.init(); <- rewrite this!
 			// load module STATIC UNIT DATA.
 			this.STATIC_UNIT.init();
 			this.SKIN.init();
@@ -2564,11 +2580,15 @@ DIS.data = { // DIS.data
 			// before running this js file, TPC loads it
 			let LOADED_TEMPLATE = JSON.parse(gett(633))["FACTION"]; // <- t[633] is str_moduleData_FacTemplate_json
 			let i = 1;
+
+			// and then, just register iddict
+			/*
 			for (let key in LOADED_TEMPLATE){
 				let fac = this.createNew(LOADED_TEMPLATE[key]);
 				this.register(fac,i); // even if it's dummy faction, register to as far as it's written in {module}/Data/faction_template.json
 				i++;
 			};
+			*/
 		},
 
 		
@@ -5279,8 +5299,8 @@ if (typeof NsGUI == "undefined"){
 if (!VIRTUAL_ENV){
 	DIS.init.loadBootconf();
 	Cmd.init();
-	DIS.data.init(); // reset DIS data
 	DIS.init.initID();
+	DIS.data.init(); // reset DIS data
 
 };
 
