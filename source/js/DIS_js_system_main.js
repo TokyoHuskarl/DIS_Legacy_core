@@ -488,26 +488,48 @@ class DATA_static_unit extends DATA_entity { // building?
 		// convert datatype into int
 		this.datatype = this.ezConvWord(this.datatype,DATATYPE_CONVERT_DICTIONARY);
 
+		// convert imageDataDetail Object to Array whose index expected to be FactionID
+		const convertPictPath = (file)=>{
+			return String('../Picture/static/' + file); // kari
+		};
+
 		if (this.datatype !== DATATYPE_PRESET && this.datatype !== DATATYPE_DUMMY){ // NOT preset nor dummy
 			
 			// if user set commonImageFile
+			// THIS IS NOT WORKING!!!
 			if (this.commonImageFile !== ''){
-				this.imageDataDetail.FAC_common = [[this.commonImageFile],this.commonSpriteOffset] // use it
+				this.imageDataDetail = [[[this.commonImageFile],this.commonSpriteOffset]] // use it
 			};
 			
-			// convert imageDataDetail Object to Array whose index expected to be FactionID
+
 			let goalArray = [0];
 			for (let elmname in this.imageDataDetail){
 				let i = facid.convert(elmname);
 				if (i !== -1){ // the FactionID dictionary has "elmname" property
 					goalArray[i] = (this.imageDataDetail[elmname]); // convert FAC_* to registered numeric ID
-					deblog(this.imageDataDetail[elmname][0])
+					for (let elmArray of this.imageDataDetail[elmname]) {
+						for (let picInd in elmArray[0]){
+							elmArray[0][picInd] = convertPictPath(elmArray[0][picInd]);
+							deblog(elmArray[0][picInd]);
+						}
+					};
+
 				} else {
 					errorlog(`${this.constructor.name} : imageDataDetail has property for an unexpected faction - "${elmname}"`)
+
 				};
 			};
+
 			this.imageDataDetail = goalArray; // replace with the result
 
+		} else if (this.datatype === DATATYPE_PRESET){ // preset
+			if (typeof this.i !== 'undefined'){
+				this.imageDataDetail = [
+					[
+						[[convertPictPath(String('spr_static_' + this.i))],[0,0]] // [[string filename][int OffsetX,int OffsetY]]
+					]
+				];
+			};
 		};
 	};
 
@@ -521,19 +543,17 @@ class DATA_static_unit extends DATA_entity { // building?
 	imageDataDetail = {
 		FAC_common:
 		[
-			[
-				[['spr_static_0'],[0,0]] // [[string filename][int OffsetX,int OffsetY]]
-			]
+			[['spr_static_0'],[0,0]] // [[string filename][int OffsetX,int OffsetY]]
 		]
 	};
 
  /**
-  * get_imageData().
+  * getImageData().
   *
   * @param {FactionID} fac
   * @param {int} variation = -1  If variation is -1, randomise which data index in factional image setting array you refer
   */
-	get_imageData = function(fac,variation = -1){
+	getImageData = function(fac,variation = -1){
 		let facIndex; // index for faction array
 		let result;
 		const commonData = this.imageDataDetail[0][0];
@@ -551,7 +571,7 @@ class DATA_static_unit extends DATA_entity { // building?
 				result = commonData; // returns commmon imageData
 			};
 		} else {
-			errorlog(`DATA_static.get_imageData(): Irregular faction is given - ${fac}`);
+			errorlog(`DATA_static.getImageData(): Irregular faction is given - ${fac}`);
 			result = commonData; // returns commmon imageData
 		};
 		return result;
@@ -1115,7 +1135,7 @@ function parse_DISData_IdArray(ary,dict){
 function make_Array_DIStable(array) {
 	let string = "";
 	for (let elm of array) {
-				if (typeof elm == "object"){
+				if (typeof elm === "object"){
 					string += make_Array_DIStable(elm) + "|";
 
 				} else {
@@ -1468,6 +1488,7 @@ DIS.macro = {
 
 		return flattenedArray;
 	},
+
 
 };
 
@@ -2034,7 +2055,7 @@ DIS._tpc = {
 			if (datatype !== DATATYPE_DUMMY){
 
 				// SET IMAGE DATA!
-				const imgData = sta.get_imageData(facid);
+				const imgData = sta.getImageData(facid);
 
 				// ATTENTION! 
 				// THIS WON'T MAKE BUILDING LAYER SYSTEM VALID, SO YOU NEED TO CHANGE HERE!!

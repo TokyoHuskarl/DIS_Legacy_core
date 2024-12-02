@@ -6,9 +6,10 @@
 #include "./../headers/header_control.tpc"
 #include "./../headers/header_scripts.tpc" 
 #include "./../headers/header_ai.tpc" 
+#include "./../headers/header_drawing.tpc" 
 // #include "./../headers/header_agent.tpc" -> imported in header_scripts.tpc
 
-
+#include "./module_core_RTS_player_functions.tpc"
 #include "./module_core_RTS_misc_functions.tpc"
 
 def moduletitle="module_core_RTS_control_general.tpc"
@@ -355,6 +356,13 @@ cev .id(2099), .name("cont:Search Worker"), {
 
 cev .id(795), .name("cont:buildcheck"), {
 	building_check_if_construction_is_possible()
+}
+
+cev .id(796), .name("cont:Build Command"), {
+	CEV_CONTROL_BUILD_COMMAND()
+}
+cev .id(797), .name("cont:call building"), {
+	CEV_CALL_BUILDING_GRP_SET()
 }
 
 #include "./module_core_RTS_control_camera.tpc"

@@ -174,7 +174,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		    macro_cord_diff(Temp11 Temp12)
 	    
 		    Temp13 = v[v[1182] + Temp11 - Map_LimitCoordX_min + (Temp12 - Map_LimitCoordY_min) * var_Map_Width]
-		    v[657] = Temp13 / 100000000
+		    agent_getTerrainElevation = Temp13 / 100000000
 		    v[640] = Temp13 % 100
 	    }
 	    // "######################"

@@ -300,7 +300,7 @@ s[70].off
 				@if v[87] == 0 {
 						// "＃Normal"
 						@pic[1000].show {
-								t[522]
+								Str_UI_customcursor
 								.pos v[41], v[48] .center
 								.chromakey 1
 								.scale 100
@@ -321,7 +321,7 @@ s[70].off
 						var3 = v[v[1182] + reg1 - Map_LimitCoordX_min + (reg2 - Map_LimitCoordY_min) * var_Map_Width] % 100
 						@if `var3 == 18 || var3 == 22 {
 								@pic[1000].show {
-										t[522]
+										Str_UI_customcursor
 										.pos v[41], v[48] .center
 										.chromakey 1
 										.scale 100
@@ -773,7 +773,7 @@ s[70].off
 										
 								}
 								@pic[1000].show {
-										t[522]
+										Str_UI_customcursor
 										.pos v[41], v[48] .center
 										.chromakey 1
 										.scale 100
@@ -1285,7 +1285,6 @@ s[70].off
 										var1.copy v[252], 2
 
 										// building check
-										// @call .cev 795 // this one can be fatal I suppose?
 										building_check_if_construction_is_possible()
 										MousePtr_x.copy var1, 2
 										var2 += 8
@@ -1363,7 +1362,7 @@ s[70].off
 								}
 
 								@pic[1000].show {
-										t[522]
+										Str_UI_customcursor
 										.pos v[41], v[48] .center
 										.chromakey 1
 										.scale 100
@@ -1388,8 +1387,8 @@ s[70].off
 								v[448] = 1
 								v[453..454] = 0
 								v[458] = 0
-								v[459] = 1
-								v[460] = 88
+								v[459] = 0 // mozi?
+								v[460] = 0 // number?
 								v[461..462] = 0
 								v[470] = 0
 								// "#"
@@ -1411,13 +1410,31 @@ s[70].off
 								v[466] = 2
 								v[467] = 0
 								v[468] = 5
+			
 								@if v[38] != 0 {
 										v[444] = 14
 										var4 = var2 + v[38] * 1
-										
 								}
+
+								// position fix
+
+								// get Z
+								macro_convert_relativeXY_into_maptileXY(var1,var2,Temp11,Temp12)
+								Temp13 = v[v[1182] + Temp11 - Map_LimitCoordX_min + (Temp12 - Map_LimitCoordY_min) * var_Map_Width]
+								TT1 = Temp13 / 100000000
+								val_init(Temp6)
+								DRAWING_get_offsetY_by_z(TT1) // return to Temp6
+								
+								val_asg(TT12,Temp6)
+								TT11 = var1 + UI_BuildGhost_OffsetX
+								TT12 += v[v[444]] + UI_BuildGhost_OffsetY
+								// x
+								v[443] = 351
+								// y
+								v[444] = 352
 								// show building sprite
-								@cmd 11110, "static\spr_static_1", .args v[441], 30
+								// @cmd 11110, "static\spr_static_1", .args v[441], 30
+								@cmd 11110, Str_UI_cursorBuildGhost, .args v[441], 30
 
 								@if Common_Control_Ck == LMB {
 										@if `MousePtr_y <= v[1286] && !(MousePtr_x <= v[4514] && MousePtr_y >= v[4515]) {

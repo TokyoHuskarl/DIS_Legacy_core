@@ -47,5 +47,12 @@ def MACRO_DRAWING_get_regular_action_sprite = {
 
 #include "./../Dracore/module_core_RTS_drawing_functions.tpc"
 
+__fn DRAWING_get_offsetY_by_z $elevation {
+	val_const(TT13,3)
+	TT13 *= $elevation - v[504] 
+	// TT13 *= 3
+	val_sub(Temp6,TT13)
+}
+
 def LOAD_HEADER_DRAW = 1
 }

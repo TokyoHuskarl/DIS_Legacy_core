@@ -84,6 +84,7 @@ cev .id(1210), .name("Summon Naskarl"), {
 }
 
 // building function called for by workers (maybe)
+// This seems actually not to be used at all? 
 cev .id(1217), .name("Extra:Building function"), {
 	COMMENT_defined_in_PSS_LEG_MISC
 		@if s[118] .isOn() {
@@ -105,9 +106,11 @@ cev .id(1217), .name("Extra:Building function"), {
 		} .else bl {
 			v[341] = v[204] >= 400 ? 1 : 0
 				@if v[341] == 0 {
-					@comment "Access19 = AttackerObjectID
+						/*
+						Access19 = AttackerObjectID
 						Access20 = TargetObjectID
-						Access18 = TargetObjTypeチェックPtr"
+						Access18 = TargetObjTypeチェックPtr
+						*/
 						v[341] = v[299] * 300
 						v[342] = v[341] + 4943
 						v[342] = v[v[342]] - 4
@@ -121,10 +124,18 @@ cev .id(1217), .name("Extra:Building function"), {
 								v[344] = v[344] == 3 ? 17 : v[344]
 
 						}
-					v[343] = 800 + v[344]
+
+						eval_js("v[23] = DIS._tpc.building.getSpriteInfo(v[344],v[822]);")
+						@if reg3 == 1 {
+							Str_UI_cursorBuildGhost.asg regs1
+							
+						}
+
+						v[343] = 800 + v[344]
 						s[151].on
-						@call .cev v[343]
+						@call .cev v[343] // this part is calling building cev to get building Data.
 						s[151].off
+
 						v[31].copyTo v[15], 4
 						v[341] = v[300001] >= v[15] ? 1 : 0
 						v[341] += v[300002] >= v[16] ? 1 : 0
@@ -136,7 +147,8 @@ cev .id(1217), .name("Extra:Building function"), {
 								v[88] = v[344]
 
 						} .else bl {
-							@se.play "Cancel1" .opt 90, 100, 50
+							// @se.play "Cancel1" .opt 90, 100, 50
+							play_system_se("Cancel1",90,100,50)
 
 						}
 

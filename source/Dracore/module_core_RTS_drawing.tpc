@@ -13,12 +13,7 @@ defv marker_saturation = __id(Temp15)
 defv marker_RGB = __id(Temp16)
 defv expected_action_sprite = __id(Temp21)
 
-def MACRO_DRAWING_offset_by_z = {
-		val_const(TT13,3)
-		TT13 *= agent_getTerrainElevation - v[504] 
-		// TT13 *= 3
-		val_sub(Temp6,TT13)
-	}
+
 
 
 cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Units), {   
@@ -224,7 +219,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 							v[ptr_null].copy v[471], 2
 
 							//@comment "Height"
-							MACRO_DRAWING_offset_by_z
+							DRAWING_get_offsetY_by_z(agent_getTerrainElevation)
 
 							//@comment "Get ID From Cache"
 							v[188] = v[178] = v[340] * Const_layer_amount + v[1201]
@@ -885,6 +880,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									// kore copy de yokune
 									agent_RelativeX.copy Temp5, 1
 									agent_SpriteY.copy Temp6, 1
+									DRAWING_get_offsetY_by_z(agent_getTerrainElevation)
 									v[4041].repeat Temp5,9
 									v[4051].repeat Temp6,9
 
@@ -892,7 +888,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									Temp20 = agent_PicID
 									@if `!(agent_StaticBits & StaticBits_FLAG_newly_generated_static) {
 											//@comment "Z"
-											MACRO_DRAWING_offset_by_z
+											v[4058] -= agent_StaticBits & StaticBits_FLAG_ConstructionSite ? agent_InitialOffsetY : 0  // initial Offset setting doesn't affect construction frame
 											//@comment "#描画範囲内か？T3 T4 Constx Consty"
 											//@comment "Get ID From Cache"
 											v[188] = v[178] = v[340] * Const_layer_amount + v[1201]
@@ -1041,7 +1037,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													v[456] = 10000
 													//@comment "Z "
 													// Temp6 -= (agent_getTerrainElevation - v[504]) * 3
-													MACRO_DRAWING_offset_by_z
+													
+													DRAWING_get_offsetY_by_z(agent_getTerrainElevation)
 													//@comment "Get ID From Cache"
 													v[188] = v[178] = v[340] * Const_layer_amount + v[1201]
 													v[177] = v[186]
@@ -1233,13 +1230,11 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 															// renew agent_LastSpriteIndex
 															TT1 = Temp1 + 290
 															ptr_asg(TT1,v[186])
-
-															MACRO_DRAWING_offset_by_z
+															DRAWING_get_offsetY_by_z(agent_getTerrainElevation)
 															v[4041].repeat Temp5,9  // v[4041..4050] = Temp5 //X
 															v[4051].repeat Temp6,9 // v[4051..4060] = Temp6 //Y
 															// y for SPR_STATIC_WRECK
 															v[4051..4060] += agent_InitialOffsetY
-															v[4054] -= agent_StaticBits & StaticBits_FLAG_ConstructionSite ? agent_InitialOffsetY : 0  // initial Offset setting doesn't affect construction frame
 															v[4053] += agent_static_DEAD_wreck_Offset_MilY / 1000
 
 															Temp20 = agent_PicID

@@ -1982,7 +1982,7 @@ __fn CALL_RTS_KEY_R {
 							}
 
 						} .else bl {
-							var1 = 4
+								var1 = 4
 								s[204].off
 								@call .cev 797
 
@@ -2020,7 +2020,6 @@ __fn CALL_RTS_KEY_R {
 											var1 = v[v[202]]
 											var2 = 4
 											s[83].on
-											// @call .cev 2008
 											func_CkIfSklCall(var1,AGTACT_SLOT_R,1)
 											s[83].off
 											@if reg1 <= 0 {
@@ -2616,8 +2615,12 @@ __fn CALL_RTS_KEY_F {
 
 }
 
+
+
 // cev 797
+// This controls building menu
 __fn CEV_CALL_BUILDING_GRP_SET {
+
 
 	@comment "In order to avoid glitch with Idle Villager search, save reg1 to reg17"
 		v[640] = 0
@@ -2654,6 +2657,8 @@ __fn CEV_CALL_BUILDING_GRP_SET {
 				}
 
 			}
+
+			// factional branch... this can be changed tbh
 			@if v[2403] == 3 {
 				@if s[491] .isOff() {
 					v[0] = v[557..560] = [-1, -2, -3, 0]
@@ -3099,7 +3104,7 @@ __fn CEV_CALL_BUILDING_GRP_SET {
 				v[31..35] = 0
 
 			}
-		s[151].off
+			s[151].off
 			v[31].copy var5, 4
 			@call .cev 1916
 			reg2 = 10
@@ -3387,5 +3392,74 @@ __fn cont_queue_static_agent_tech_research $slot {
 		v[472] = divmul(90, 100, v[2216])
 			@se.play "Buzzer1" .opt v[472], 100, 50
 
+	}
+}
+
+
+__fn CEV_CONTROL_BUILD_COMMAND {
+	def MACRO_get_building_sprite_data = {
+		func_get_player_faction_to_r1(0) 
+			eval_js("v[23] = DIS._tpc.building.getSpriteInfo(v[344],v[21]);")
+			@if reg3 != 3 {
+				Str_UI_cursorBuildGhost.asg regs1
+				reg1.copy UI_BuildGhost_OffsetX,2 
+
+			}
+	}
+	@comment "module_core_RTS_control_keyboard.tpc"
+	@if TT4 > 0 {
+			TT3 = 800 + TT4
+			MACRO_get_building_sprite_data
+			@if TT3 >= 800 {
+					s[151].on
+					@call .cev TT3
+					s[151].off
+					reg1 = reg1 == -1 ? -1 : 0
+					v[31].copy var5, 4
+					TT1 = v[300001] >= var5 ? 1 : 0
+					TT1 += v[300002] >= var6 ? 1 : 0
+					TT1 += v[300003] >= var7 ? 1 : 0
+					TT1 += v[300004] >= var8 ? 1 : 0
+					reg1 = TT1 != 4 ? -999 : reg1
+					
+			} .else bl {
+				reg1 = 1
+					
+			}
+		
+	} .else bl {
+		reg1 = 1
+			
+	}
+	@if reg1 == 0 {
+		s[177].off
+			s[178].off
+			s[179].off
+			s[180].off
+			v[87] = 2
+			v[88] = TT4
+			
+	} .else bl {
+		@comment "TileEdit"
+			@if reg1 == -1 {
+				v[87] = 1
+					v[88] = TT4
+					
+			} .else bl {
+				@comment "Buildings fit to Node"
+					@if reg1 == -2 {
+						v[87] = 2
+							v[88] = TT4
+							
+					} .else bl {
+						v[472] = divmul(90, 100, v[2216])
+							@se.play "Buzzer1" .opt v[472], 100, 50
+							@pic[999].erase
+							v[87..88] = 0
+							
+					}
+				
+			}
+		
 	}
 }

@@ -2444,8 +2444,8 @@ __fn agent_static_set_adjustments_for_pic_system {
 						 * => regs1 = DIStable pictureFiles; reg1 = OffsetX; reg1 = OffsetY;
 						 */
 						def MACRO_GENERATE_generate_inputstr_Static_sprite_path_from_regs1 = {
-								inputstr.asg "../Picture/static/" //kari
-								inputstr.cat regs1
+								// inputstr.asg "../Picture/static/" //kari
+								inputstr.asg regs1
 						} 
 						init_agent_picture_strs(SpawnAgentID)
 						val_init(reg3)
