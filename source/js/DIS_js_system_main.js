@@ -227,6 +227,30 @@ class DATA_entity {
 		return ret;
 	};
 
+
+  /**
+   * ezConvFlags.
+   *
+   * @param {array} flArray
+   * @param {object} flList
+   * @param {int} default_value
+   */
+		ezConvFlags(flArray,flList,default_value = 0){
+			let ret = default_value;
+			if (Array.isArray(flArray)){ // is it array?
+				for (let elm of flArray) {
+					if (wdlist.hasOwnProperty(elm)){
+						ret |= flList[elm];
+					} else {
+						errorlog(`ezConvFlags(): Given word ${wd} in ${flArray} does not match any of expected words.`);
+					};
+				};
+			} else {
+					errorlog(`ezConvFlags(): Given argument ${flArray} is not an array.`);
+			};
+			return ret;
+		}
+
 	// check if the entitiy has essential element
 	ckEssentialElm(wdArray){
 		let bool = true;
@@ -368,6 +392,20 @@ class DATA_troop extends DATA_entity {
 		pewpew("faction",facid);
 		pewpew("race",raceid);
 		
+
+
+		// convert unitclass
+		const DICT_UCLS = {
+			'infantry':0,
+			'archer':1,
+			'cavalry':2,
+			'mage':3,
+			'healer':4,
+			'siege':5,
+			'worker':9,
+		};
+		this.unitclass = this.ezConvWord(this.unitclass,DICT_UCLS)
+
 
 		// convert string skillid into numid
 		if (this.hasOwnProperty("ActiveSkill")){ 
@@ -576,6 +614,8 @@ class DATA_static_unit extends DATA_entity { // building?
 		};
 		return result;
 	};
+
+	
 
 
 	slots_Troop = [[0],[0],[0],[0]];

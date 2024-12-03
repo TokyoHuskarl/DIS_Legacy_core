@@ -359,6 +359,7 @@ struct("agent",{
 
 	//Agent bits
 	AgentBits_AmbushFlag = 1
+	AgentBits_in_shallow_water = 4
 	AgentBits_horse_in_forest = 8
 	AgentBits_Inertia = 16
 	AgentBits_Skate = 32
@@ -396,6 +397,7 @@ struct("agent",{
 	StaticBits_FLAG_has_gate_function = 256
 	StaticBits_FLAG_flammable = 2048
 	StaticBits_FLAG_newly_generated_static = 16384
+	StaticBits_FLAG_do_not_register_morton = 2097456
 	StaticBits_FLAG_has_wreck_system = 4194304
 
 
@@ -504,10 +506,11 @@ struct("agent",{
 
 	// add motions
 	AddMotionFlags_FLAG_Armor_has_second_sprite_line = 1 
-
+	AddMotionFlags_FLAG_Melee_double_handed_Weapon_Motion = 8
 	AddMotionFlags_FLAG_Pointy_Onehanded_Weapon = 32 
 	AddMotionFlags_FLAG_Blink_start = 64 
 	AddMotionFlags_FLAG_Blink_close = 128 
+	AddMotionFlags_FLAG_Blink_end = 256 
 	AddMotionFlags_FLAG_Camel = 1024 
 	AddMotionFlags_FLAG_OutOfBreath = 2048 
 	AddMotionFlags_FLAG_IdleAction = 4096 
@@ -517,6 +520,7 @@ struct("agent",{
 	ExMotionFlags_FLAG_have_AA_CD_Spr = 1
 	ExMotionFlags_FLAG_slimy = 8
 	ExMotionFlags_FLAG_have_fundamental_movemotion = 16
+	ExMotionFlags_FLAG_Decapitatable = 32
 	ExMotionFlags_FLAG_has_skullpicture = 128
 	ExMotionFlags_FLAG_MoveAnim_OneDirectional = 256
 	ExMotionFlags_FLAG_MoveAnim = 512
@@ -632,6 +636,7 @@ struct("agent",{
 
 	//Other
 
+	// are they really correct?
 	//SPRITE_DEAD = 0 ???
 	//SPRITE_STAND = 0 ???
 	ForceSprite_ATTACK = 1
