@@ -442,17 +442,17 @@ struct("agent",{
 
 	//AI routine bits
 	AI_routine_bits_FLAG_siegeweapon_flag = 1
-	AI_routine_bits_FLAG_skirmisher=2
-	AI_routine_bits_FLAG_assassin=4
-	AI_routine_bits_FLAG_ranged=8
-	AI_routine_bits_FLAG_targetting_ally=16
-	AI_routine_bits_FLAG_target_switched_by_AI=32
-	AI_routine_bits_FLAG_IdleAfterEnemySearch=64
-	AI_routine_bits_FLAG_AICohortGatheringAttack=128
+	AI_routine_bits_FLAG_skirmisher = 2
+	AI_routine_bits_FLAG_assassin = 4
+	AI_routine_bits_FLAG_ranged = 8
+	AI_routine_bits_FLAG_targetting_ally = 16
+	AI_routine_bits_FLAG_target_switched_by_AI = 32
+	AI_routine_bits_FLAG_IdleAfterEnemySearch = 64
+	AI_routine_bits_FLAG_AICohortGatheringAttack = 128
 	AI_routine_bits_FLAG_tracing_flag = 4096 // this flag means tracing WALL. odd naming since it's from legacy pathfinding
-	AI_routine_bits_FLAG_tracing_wp=8192
-	AI_routine_bits_FLAG_PATHFINDING =16384
-		AI_routine_bits_KILL_FLAG_PATHFINDING=-16385
+	AI_routine_bits_FLAG_tracing_wp = 8192
+	AI_routine_bits_FLAG_PATHFINDING = 16384
+		AI_routine_bits_KILL_FLAG_PATHFINDING = -16385
 	AI_routine_bits_FLAG_PFcontinue = 32768
 		AI_routine_bits_KILL_FLAG_PFcontinue=-32769
 		AI_routine_bits_FLAG_COMPOUND_PF_and_PFcontinue = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PFcontinue 

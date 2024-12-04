@@ -13,7 +13,15 @@ defv marker_saturation = __id(Temp15)
 defv marker_RGB = __id(Temp16)
 defv expected_action_sprite = __id(Temp21)
 
-
+// kari
+defv agentpic_HORSE_dir = 4036
+defv agentpic_HORSE_x = 4046
+defv agentpic_HORSE_y = 4056
+defv agentpic_HORSE_transparency = 4066
+defv agentpic_HORSE_sprite_column_size = 4106
+defv agentpic_HORSE_sprite_number = 4116
+defv agentpic_HORSE_sprite_line_size = 4126
+defv agentpic_HORSE_angle_type = 4136
 
 
 cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Units), {   
@@ -153,8 +161,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 				@if v[683] > 0 {
 					TT1 = 30 * v[683]
 					TT1 = sin(TT1, 1, -2) 
-					// TT1 *= v[844] == 0 ? 1 : -1
-					TT1 = v[844] == 0 ? TT1 : -TT1
+					// TT1 *= agent_Direction == 0 ? 1 : -1
+					TT1 = agent_Direction == 0 ? TT1 : -TT1
 					val_add(agent_SpriteX,TT1) // agent_SpriteX += TT1
 				}
 				// @comment "#Try Dodge Motion#Try Hit Motion"
@@ -179,13 +187,13 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 							//@comment "#Flee"
 
-							v[380] = agent_ProcessObjBit & BaseObjBit_FLAG_Flip_sprite && !(agent_ExMotionFlags & ExMotionFlags_FLAG_Backshotflag) ? v[844] : !v[844]
+							v[380] = agent_ProcessObjBit & BaseObjBit_FLAG_Flip_sprite && !(agent_ExMotionFlags & ExMotionFlags_FLAG_Backshotflag) ? agent_Direction : !agent_Direction
 							//@comment "ActionState見る"
 							//@comment "Is moving?"
 							//@comment "#extract and set sprite order"
 
 							//@comment "#Force Sprite"
-							//expected_action_sprite = agent_ForceSprite + 2 > 0 ? agent_ForceSprite + 2 : [v[883] % 10, v[883] / 10 % 10, v[883] / 100 % 10, v[883] / 1000 % 10, v[883] / 10000][(v[843] == 0 && agent_MovementOrder >= 1 ? 3 : min(v[843], 4))]
+							//expected_action_sprite = agent_ForceSprite + 2 > 0 ? agent_ForceSprite + 2 : [v[883] % 10, v[883] / 10 % 10, v[883] / 100 % 10, v[883] / 1000 % 10, v[883] / 10000][(agent_ActionState == 0 && agent_MovementOrder >= 1 ? 3 : min(agent_ActionState, 4))]
 							// change!
 							// check if Force Sprite is set
 							TT1 = agent_ForceSprite + 2
@@ -295,7 +303,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 									@if agent_ForceSprite > 100 {
 										//get AA motion end time or skill motion end time
-										agent_AAMotion = v[843] >= 4 ? v[Temp1 + (145 + (v[843] - 4) * 20)] : agent_AAMotion
+										agent_AAMotion = agent_ActionState >= 4 ? v[Temp1 + (145 + (agent_ActionState - 4) * 20)] : agent_AAMotion
 										//start
 										//Switch animations 
 										@if agent_ForceSprite == 101 { // sweeping strike skill motion
@@ -331,8 +339,8 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									@if `agent_ExMotionFlags & ExMotionFlags_FLAG_horseback {
 
 											// horse sprite column
-											v[4106] = 7
-											v[371] = 0
+											val_const(agentpic_HORSE_sprite_column_size,7)
+											val_init(v[371])
 
 
 											// basic horse movement  animation
@@ -346,7 +354,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													val_asg(v[4056],Temp6)// v[4056] = Temp6
 
 													// set horse sprite
-													v[4116] += (v[340] + v[2500] / (7 + 360 / v[868])) % 3
+													agentpic_HORSE_sprite_number += (v[340] + v[2500] / (7 + 360 / agent_ProcessMS)) % 3
 
 													val_asg(v[371],N1) // v[371] = 1
 															
@@ -426,7 +434,9 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																	}
 
 																// Weapon animation
-																v[4114] = agent_ExMotionFlags & ExMotionFlags_FLAG_Weapon_With_Anim ? v[4116] : v[4114] // sync to horse sprite
+																v[4114] = agent_ExMotionFlags & ExMotionFlags_FLAG_Weapon_With_Anim ? agentpic_HORSE_sprite_number : v[4114] // sync to horse sprite
+																// Helm Animation 
+																v[4113] = agent_ExMotionFlags & ExMotionFlags_FLAG_Helm_With_Anim ? agentpic_HORSE_sprite_number : v[4113] // sync to horse sprite
 
 																	
 															}.elif expected_action_sprite == 2 { // idle state
@@ -448,7 +458,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 													//@comment "parthian shot"
 													v[4036] = 4096 - v[455]
 													@if agent_MovementOrder == 11 {
-															v[4116] = 5 + (v[340] + v[2500] / (8 + 380 / v[868])) % 3
+															agentpic_HORSE_sprite_number = 5 + (v[340] + v[2500] / (8 + 380 / v[868])) % 3
 															
 													}
 													
@@ -489,7 +499,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 													@if `agent_ExMotionFlags & ExMotionFlags_FLAG_MoveAnim { // agent has movement animation
 															v[4117] = 6 + sin(TT1, 1, 9999) / 5000
-															v[4111] = v[4117]
+															val_asg(v[4111],v[4117]) // v[4111] = v[4117]
 															@if v[4111] == 6 {
 																	v[4052..4056] -= 1
 																	v[4059] -= 1
@@ -501,10 +511,13 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 																	v[4051] -= 1
 																	
 															}
-															@if `agent_ExMotionFlags & ExMotionFlags_FLAG_Weapon_With_Anim { // for draconarius or battle banners
-																v[4114] = v[4117] // kari.
 
-															}
+															// if weapon has walk animation, sync weapon sprite with body
+															v[4114] = agent_ExMotionFlags & ExMotionFlags_FLAG_Weapon_With_Anim ? v[4117] : v[4114]
+
+
+															// if helmet has walking animation, sync helmet sprite with body
+															v[4113] = agent_ExMotionFlags & ExMotionFlags_FLAG_Helm_With_Anim ? v[4117] : v[4113]
 															
 													}
 													
@@ -799,7 +812,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									// a
 									@if expected_action_sprite == 5 { // move
 											@if `agent_ExMotionFlags & ExMotionFlags_FLAG_MoveAnim {
-													v[4117] = agent_ExMotionFlags & ExMotionFlags_FLAG_MoveAnim_OneDirectional ? 5 + (v[340] + v[2500] / (7 + 360 / v[868])) % 3 : 6 + sin((v[340] + v[2500]) % 360 * (1 + v[868] / 15), 1, 9999) / 5000
+													v[4117] = (agent_ExMotionFlags & ExMotionFlags_FLAG_MoveAnim_OneDirectional) ? (5 + (v[340] + v[2500] / (7 + 360 / v[868])) % 3) : (6 + sin((v[340] + v[2500]) % 360 * (1 + v[868] / 15), 1, 9999) / 5000)
 													
 											}
 											
@@ -834,7 +847,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									Temp2 = v[233] + v[1196]
 									//@comment "Z "
 									Temp6 -= TT13 - 12
-									expected_action_sprite = (v[624] + 1) * 3 + 2 + v[844]
+									expected_action_sprite = (v[624] + 1) * 3 + 2 + agent_Direction
 									//@comment "#マーカーのサイズを指定"
 									v[610] = max(v[610] * 3 + 70, 100)
 									//@comment "if the obj sub sprite is not ""marker"", save it and let its parent obj swap sub sprite later"
@@ -883,7 +896,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 									v[4041].repeat Temp5,9
 									v[4051].repeat Temp6,9
 
-									expected_action_sprite = agent_static_Spritepattern // v[843] + 2
+									expected_action_sprite = agent_static_Spritepattern // agent_ActionState + 2
 									Temp20 = agent_PicID
 									@if `!(agent_StaticBits & StaticBits_FLAG_newly_generated_static) {
 											//@comment "Z"
@@ -1293,6 +1306,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 
 
 }
+
 __fn event_if_agent_is_clickable $block {
 	// clickable holder effect 
 	v[ptr_null].copy marker_saturation,2 // init both of marker vars
@@ -1659,7 +1673,7 @@ __fn draw_static_picture {
 
 
 def HORSEBACK_CHARGE_ANIMATION = {
-	v[4116] = 5 + (v[340] + v[2500] / (6 + 380 / agent_ProcessMS)) % 3
+	agentpic_HORSE_sprite_number = 5 + (v[340] + v[2500] / (6 + 380 / agent_ProcessMS)) % 3
 }
 
 def HORSEBACK_CHARGE_RIDER_POS = {
@@ -1668,6 +1682,5 @@ def HORSEBACK_CHARGE_RIDER_POS = {
 	v[4041..4050] -= Temp11
 	v[4046] += Temp11
 }
-
 
 

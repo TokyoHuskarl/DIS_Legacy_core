@@ -10,6 +10,7 @@ def moduletitle="module_core_RTS_cohort_general.tpc"
 def transparency = 45
 
 //Cohort manager
+// This cev manages only player cohorts
 cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode), {
 	@comment moduletitle
 		@if LEGV_Selected_Cohort_Number < 1 {
@@ -28,7 +29,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 	@loop 10 .dst TT2 {
 		// 
 		def COHORT_MACRO_TurnOnSwitches = {
-			s[222].on
+				s[222].on
 				s[223].on
 
 		}
@@ -50,7 +51,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 			TT1 = 10 + v[1118] 
 			val_add(TT1,TT20) // TT1 += TT20
 			@if v[v[202]] >= 1 {
-				//@comment "#"
+					//@comment "#"
 					v[ptr_null].copy v[302],3 // v[302..304] = 0
 
 					//opt 27.4.23
@@ -81,9 +82,10 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 							@if agent_TeamID == 0 {
 								@if `agent_Cohort_ID == TT20 + 1 {
 									@if agent_MaxHP >= 1 {
-											val_add(Temp2,N1) // Temp2 += 1
+											val_add(Temp2,N1)
 											//@comment "Get current HP"
 											val_add(Temp3,agent_MaxHP) // Temp3 += agent_MaxHP
+
 											@if agent_ObjectType >= 1 {
 												val_add(Temp4,agent_HP) // Temp4 += agent_HP
 													@if agent_Morale < 3 {
@@ -101,7 +103,8 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 																					s[201].on
 
 																				}
-																				v[CohortArrayPtr + 4] |= cohort_StateFlag_FLAG_fighting
+																				TT1 = CohortArrayPtr + 4
+																				v[TT1] |= cohort_StateFlag_FLAG_fighting
 
 																			} .else bl {
 
@@ -120,14 +123,14 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 									}
 
 								} .else bl {
-									//@comment "not the same cohort"
+									// @comment "not the same cohort"
 									v[v[202]] = 0
 									s[202].on
 
 								}
 
 							} .else bl {
-								//@comment "not my team"
+								// @comment "not my team"
 								v[v[202]] = 0
 								s[202].on
 
@@ -136,20 +139,20 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 
 					}
 
-				TT1 = CohortArrayPtr + 6
-				v[TT1] = Temp14
+					TT1 = CohortArrayPtr + 6
+					v[TT1] = Temp14
 					@if s[202] .isOn() {
 						v[202] = PlayerSelectList_Size * TT20 
-						v[202] += v[4524]
+						val_add(v[202],v[4524])
 
 						v[v[202]].sortDescending PlayerSelectList_Size
 
 					}
-					Temp15 = Temp14
+					val_asg(Temp15,Temp14)
 					v[Temp13] .div Temp14, 2
 					v[Temp20] .div Temp14, 2
 					//@comment "やっぱりちょっと危険な気がする"
-					@if cohort_CohortType == cohort_CohortType_TYPE_normal { //0 = normalunits
+					@if cohort_CohortType == cohort_CohortType_TYPE_normal { // 0 = normalunits
 						@if s[201] .isOn() {
 							//@comment "Alert and fighting"
 							@if cohort_StanceOrder == 0 {
@@ -161,7 +164,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 												@break
 
 											}
-											Temp1 = v[v[202]] * 300 
+												Temp1 = v[v[202]] * 300 
 												Temp1 += v[1005] - 300
 												Ptr1 = Temp1 + 1
 												v[Ptr1].copy agent_ObjectType, 300 //extract data
@@ -171,10 +174,10 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 															//enemy searched and still idle
 															@if `agent_AI_routine_bits & AI_routine_bits_FLAG_IdleAfterEnemySearch {
 																@if agent_LeftWPtoChase < 1 {
-																	agent_AgentBits |= 1048576
+																		agent_AgentBits |= AgentBits_FLAG_EnableBasicAI
 																		agent_TargetAgentID = v[330]
-																		agent_AI_routine_bits |= 128
-																		agent_AI_routine_bits &= -65//~64
+																		agent_AI_routine_bits |= AI_routine_bits_FLAG_AICohortGatheringAttack
+																		agent_AI_routine_bits &= -65// ~64 ~AI_routine_bits_FLAG_IdleAfterEnemySearch
 																}
 
 															}
@@ -184,7 +187,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 													}
 
 												}
-											agent_ObjectType.copy v[Ptr1], 300//save alle :D
+											agent_ObjectType.copy v[Ptr1], 300 // save alle :D
 											val_add(v[202],N1) // v[202] += 1
 
 										}
@@ -207,7 +210,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 												@break
 
 											}
-											Temp1 = v[v[202]] * 300 
+												Temp1 = v[v[202]] * 300 
 												Temp1 += v[1005] - 300
 												Temp1.copy Address_agent_array_head, 300 //extract data
 												@if agent_ObjectType >= 1 {
@@ -227,11 +230,11 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 									@if s[202] .isOff() {
 											v[CohortArrayPtr + 20] = cohort_StanceOrder == 2 ? 0 : cohort_StanceOrder
 											v[CohortArrayPtr + 4] &= -5 //~4
-											//@comment "try restore formation"
+											// "try restore formation"
 											var2 = TT20
 											var3 = 0
 											var4 = Temp14
-											@call .cev 2155//call reform line event - this can be improved 
+											@call .cev 2155 // call reform line event - this can be improved 
 
 									}
 
