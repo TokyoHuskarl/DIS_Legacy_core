@@ -1505,9 +1505,10 @@ __fn prepare_deadbody_pictures {
 
 		// "Get ID From Cache"
 		v[188] = (Ptr20 - 1) * Const_layer_amount + v[1201]
-		TT1 = victim_LastPictureIndex // v[Temp14 + 290]
+		val_asg(TT1,victim_LastPictureIndex)
 		// "Count Picture Layer Array"
-		TT5 = victim_PictArray
+		val_asg(TT5,victim_PictArray)
+
 		@if victim_PictArray != 0 {
 				@while TT5 > 0 .dst TT6 {
 					TT5 /= 10

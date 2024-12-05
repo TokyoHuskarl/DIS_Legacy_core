@@ -8,7 +8,7 @@ def {
 
 def macro_extract_selecting_unit_param = {
 	    Ptr1 = v[Adr_PlayerSelectList_Head] * 300
-	    val_add(Ptr1,N4701) // Ptr1 += 4701
+	    val_add(Ptr1,N4701)
 	    v[Ptr1].copy agent_ObjectType,300
 
 }
@@ -36,11 +36,15 @@ __fn macro_strcat_adjustment $str1 $var $colour {
 
 
 // ACTUAL PROCESS STARTS HERE
+// RTS GAME 
 __fn UI_CEV_MOUSE_OBSERVER {
 	@if LEGS_Player_can_control .isOn() {
 
 			@if s[5] .isOff() {
 				LEGS_Showing_PopupWindow_1.off
+
+				// globalqueue
+				UI_Glonalqueue_draw_icons()
 
 				// "Escape"
 				@if s[181] .isOn() {
@@ -106,32 +110,32 @@ __fn UI_CEV_MOUSE_OBSERVER {
 
 				// "Pause"
 				@if s[184] .isOn() {
-						LEGV_sentence_id_on_popup1 = 10003
+					LEGV_sentence_id_on_popup1 = 10003
 						LEGS_Showing_PopupWindow_1.on
 						@if LEGV_sentence_id_on_popup1 != LEGV_Watchdog_on_popupwindow1 {
-					LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
-					// "#call quickstrings"
-					var1 = 183
-					getQstr(var1)
-					@pic[PicID_Popup_1].strpic {
-							t[3000]
-							.pos LEGV_MousePointer_X, LEGV_MousePointer_Y .topRight
-							.size 0, 0                    .chromakey 1
-							.scale 100
-							.trans v[1066]
-							.rgbs 100, 100, 100, 100
-							.font Font_UI, v[4511]
-							.spacing 0, 0
-							.skin "" .stretch
-							.mapLayer 9
-							.eraseWhenTransfer
-							.affectedByFlash
-							.affectedByShake
-					}
-					
+							LEGV_Watchdog_on_popupwindow1 = LEGV_sentence_id_on_popup1
+								// "#call quickstrings"
+								var1 = 183
+								getQstr(var1)
+								@pic[PicID_Popup_1].strpic {
+									t[3000]
+										.pos LEGV_MousePointer_X, LEGV_MousePointer_Y .topRight
+										.size 0, 0                    .chromakey 1
+										.scale 100
+										.trans v[1066]
+										.rgbs 100, 100, 100, 100
+										.font Font_UI, v[4511]
+										.spacing 0, 0
+										.skin "" .stretch
+										.mapLayer 9
+										.eraseWhenTransfer
+										.affectedByFlash
+										.affectedByShake
+								}
+
 						}
-						s[201].on
-						
+					s[201].on
+
 				}
 
 				// "IdleWorker"
@@ -739,26 +743,7 @@ __fn UI_CEV_MOUSE_OBSERVER {
 									.affectedByFlash
 									.affectedByShake
 							}
-							/*
-							@pic[PicID_Popup_1].strpic {
-									"\c[2]\t[3001]\c[0]：
-			\t[3002]
-			\c[1]\t[3003]"
-									.pos TT1, TT2 .bottomLeft
-									.size 0, 0                            .chromakey 1
-									.scale 100
-									.trans v[1066]
-									.rgbs 100, 100, 100, 100
-									.font Font_UI, v[4511]
-									.spacing 0, 0
-									.skin "" .stretch
-									.mapLayer 9
-									.eraseWhenTransfer
-									.affectedByFlash
-									.affectedByShake
-							}
-							*/
-							
+
 								}
 								
 						}
@@ -2592,7 +2577,7 @@ __fn check_clickable_units $maskcondbl $flag {
 			@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
 				$maskcondbl // use reg10 as a masking condition for agent picking up.
 				@if reg10 == 1 { 
-				MACRO_ck_if_current_agent_is_clickable_to_reg6
+					MACRO_ck_if_current_agent_is_clickable_to_reg6
 					@if reg6 == 1 {
 						Control_ClickableAgentHolder = v[agent_pointer]
 						@break
@@ -2626,6 +2611,48 @@ __fn check_clickable_units $maskcondbl $flag {
 				.trans 100
 				.time 0
 				.rgbs 100, 100, 100, 100
+			}
+	}
+}
+
+/**
+ * HOW DO YOU BRING ICONS TO BE DRAWN?
+ * I REALLY DUNNO
+ */
+__fn UI_Glonalqueue_draw_icons {
+	// draw per 6f
+	@if LEGS_Request_Refresh_GlobalQueue.inOn() {
+		// init icons
+		@loop UI_GLOBALQUEUE_DATA_SIZE .dst var1 {
+			TT1 = PicID_UI_globalqueue_icon_HEAD + var1
+				@pic[TT1].move {
+					.pos 0, 0 .topLeft
+						.scale 100
+						.trans 100
+						.time 0
+						.rgbs 100, 100, 100, 100
+				}	
+		}
+
+		// get resource window info
+		@pic[PicID_ResourceWindow].getInfo .ltrb .currentRect Temp1,Temp2,Temp3,Temp4
+			@loop v[gPtr_UI_globalqueue_Array_COUNTER] .dst var1 {
+				TT1 = PicID_UI_globalqueue_icon_HEAD + var1
+					// kari
+					def UI_GROBALQUEUE_ICON_ESTIMATED_WIDTH = 16
+					TT11 = UI_GROBALQUEUE_ICON_ESTIMATED_WIDTH * var1
+					TT12 = Temp4
+					@pic[TT1].show {
+						"product_icons/icon_0"
+							.pos TT11, TT12 .topLeft
+							.chromakey 1
+							.scale 100
+							.trans 0
+							.rgbs 100, 100, 100, 100
+							.mapLayer 9
+							.eraseWhenTransfer
+							.affectedByShake
+					}
 			}
 	}
 }

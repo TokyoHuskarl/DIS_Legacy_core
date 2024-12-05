@@ -795,9 +795,15 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 }
 
 
+
 cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {   
 	@comment "module_core_RTS_main.tpc"
 		// "STATIC"
+
+		// refresh globalqueue ui!
+		LEGS_Request_Refresh_GlobalQueue.on
+		ptr_init(gPtr_UI_globalqueue_Array_COUNTER) // init globalqueue counter
+
 		// This process needs complete refactoring.
 		val_asg(Ptr_loop_current_agent,v[4533]) // Ptr_loop_current_agent = v[4533]
 		@while v[Ptr_loop_current_agent] != 0 {
@@ -977,44 +983,67 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 											}
 
-									}
+										// global queue UI SYSTEM register
+										@if s[314] .isOff() {
+											@if agent_TeamID == 0 { // player team
+												@if v[gPtr_UI_globalqueue_Array_COUNTER] < UI_GLOBALQUEUE_ICONS_LIMITNUMBER {
+													// set array
+													v[Ptr_loop_current_agent].copy TT11,1 // [0] staticid
+													val_asg(TT12,agent_static_current_product) // [1] product id
+													TT13 = muldiv(100,agent_SP,agent_MaxSP) // [2] progress
+													TT14 = agent_StaticBits // [3] flag
+													// set pointer
+													TT15 = v[gPtr_UI_globalqueue_Array_COUNTER] * UI_GLOBALQUEUE_DATA_SIZE
+													val_add(TT15,gPtr_UI_globalqueue_Array_HEAD)
+													// save array
+													TT11.copy v[TT15],UI_GLOBALQUEUE_DATA_SIZE
+													// count up 
+													ptr_add(gPtr_UI_globalqueue_Array_COUNTER,N1)
 
-							// }
+													// actual process is defined in UI file
 
-						// "research particle"
-						@if `agent_AgentBits & 1 {
-							@loop v[1017] .dst Temp20 {
-								v[244] %= v[1199]
-									//v[331] = v[244] * 50
-									v[331] = v[244] * 50 
-									v[331] += v[1198]
-									@if v[v[331]] <= 1 {
-										// "まず清掃"
-										v[1301].copy v[v[331]], 50
-											// "ポインタセット開始"
-											// "設定"
-											v[v[331]] = 1
-											// "500F"
-											v[v[331] + 49] = 6
-											// "Set itself"
-											v[v[331] + 3] = 126
-											// "Set Parent Obj"
-											v[v[331] + 9] = v[401] + 1
-											// "普通にアニメ"
-											//v[607] = Temp1 + 7
-											v[607].copy var1, 2
-											TT1 = v[331] + 6
-											var1.copy v[TT1], 2
-											// "Colour"
-											v[0] = v[v[331] + 31..v[331] + 38] = [180, 129, 0, 90, 180, 129, 0, 60]
-											// "仕上げに登録消す"
+												}
+											}
+										}
+
+
+										// "research particle"
+										@if `agent_StaticBits & StaticBits_FLAG_working_on_tech {
+											@loop v[1017] .dst Temp20 {
+												v[244] %= v[1199]
+													//v[331] = v[244] * 50
+													v[331] = v[244] * 50 
+													v[331] += v[1198]
+													@if v[v[331]] <= 1 {
+														// "まず清掃"
+														v[1301].copy v[v[331]], 50
+															// "ポインタセット開始"
+															// "設定"
+															v[v[331]] = 1
+															// "500F"
+															v[v[331] + 49] = 6
+															// "Set itself"
+															v[v[331] + 3] = 126
+															// "Set Parent Obj"
+															v[v[331] + 9] = v[401] + 1
+															// "普通にアニメ"
+															//v[607] = Temp1 + 7
+															v[607].copy var1, 2
+															TT1 = v[331] + 6
+															var1.copy v[TT1], 2
+															// "Colour"
+															v[0] = v[v[331] + 31..v[331] + 38] = [180, 129, 0, 90, 180, 129, 0, 60]
+															// "仕上げに登録消す"
+															v[244] += 1
+															@break
+
+													}
+
+											}
+
 											v[244] += 1
-											@break
 
-									}
-								v[244] += 1
-
-							}
+										}
 
 
 						}
@@ -1079,8 +1108,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 							// "#Flammable"
 							@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen {
-								@if `!(agent_AgentBits & 2048) {
-									// "#Hp 66%"
+								@if `!(agent_AgentBits & StaticBits_FLAG_unburnable) {
+
 									@if `divmul(v[Temp1 + 105], 100, 66) > v[Temp1 + 106] {
 										@if v[182] <= 0 {
 											@if v[522] <= 24 {
@@ -1101,6 +1130,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 										}
 
 									}
+									// HP 33% 
 
 								}
 
@@ -1183,11 +1213,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 								}
 
 						}
-					// "########################Particles"
+					// STATIC Particles!
 					@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { //`s[v[401] + 501] {
 						// "#Flammable"
-						@if `!(agent_StaticBits & StaticBits_FLAG_flammable) {
-							// "#Hp 66%"
+						@if `!(agent_StaticBits & StaticBits_FLAG_unburnable) {
+							// put fire particle emitter to the agent when its HP is below 66%
 							@if `divmul(v[Temp1 + 105], 100, 66) > v[Temp1 + 106] {
 								// "Fire Particle"
 								@loop v[1017] .dst Temp20 {
@@ -1338,6 +1368,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						}
 
 					}
+
+
+
+					// The agent has function AND the game is not paused
 					@if v[370] >= 2 {
 						/* "########################	PAssive#########################"*/
 						@if `v[Temp1 + 223] & 1 {
@@ -1349,9 +1383,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 						}
 						// "gate flag"
-						@if `agent_StaticBits & 256 {
+						@if `agent_StaticBits & StaticBits_FLAG_has_gate_function {
 							// "##############"
-							Ptr20 = Temp1 + 5
+								Ptr20 = Temp1 + 5
 								Ptr19 = Temp1 + 15
 								Ptr18 = Temp1 + 7
 								Ptr17 = 53
@@ -1456,7 +1490,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 										agent_AgentType = v[203] * 300 
 										agent_AgentType += 5001
 										@if v[agent_AgentType] <= 9 {
-											v[324] = v[Const_AgentMetaTeam_begin+v[203]] //v[v[203] * 300 + 5100] % 3
+											v[324] = v[Const_AgentMetaTeam_begin + v[203]] //v[v[203] * 300 + 5100] % 3
 												// "対象のColを見る"
 												// "#UnitID==NoColならとめる"
 												// "対象のObjIDが自分ならとめる"

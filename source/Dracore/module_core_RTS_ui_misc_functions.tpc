@@ -11,7 +11,7 @@ __fn func_refresh_resource_window {
 	    v[240] = v[496] * v[1129]
 	    v[240] += v[1130]
 	    v[240] = max(v[v[4575] + min(v[v[881]] + 1, 4) + 40 * (0 % 3)], v[240])
-	    @pic[986].strpic {
+	    @pic[PicID_ResourceWindow].strpic {
 		" \C[5]FOOD:\v[300001] (\v[2942]) \c[1]WOOD:\v[300002] (\v[2943])
  \C[3]STONE:\v[300003] (\v[2944]) \C[8]GOLD:\v[300004] (\v[2945])
  \c[0]WAVE:\v[2520] LIMIT:\v[240] WORKERS:(\v[2941])"
@@ -37,7 +37,7 @@ __fn func_refresh_resource_window {
 	    }
 	    v[16] = min(v[v[4580]], v[1080])
 	    v[17] = v[205] >= v[16] ? 17 : 0
-	    @pic[986].strpic {
+	    @pic[PicID_ResourceWindow].strpic {
 		" \C[5]FOOD:\v[300001] (\v[2942]) \c[1]WOOD:\v[300002] (\v[2943])
  \C[3]STONE:\v[300003] (\v[2944]) \C[8]GOLD:\v[300004] (\v[2945])
  \c[0]WAVE:\v[2520] UNITS:\c[\v[17]]\v[18](\v[2941])/\v[16]"

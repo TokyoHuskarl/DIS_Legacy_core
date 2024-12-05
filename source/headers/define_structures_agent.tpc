@@ -392,11 +392,17 @@ struct("agent",{
 	// for static agents
 	// **NAMING RULE IS FUCKIGN UNSTABLE REEEEEEE**
 	StaticBits_FLAG_working_on_tech = 1
+	StaticBits_FLAG_gate_open = 4 // this can be used for other purpose I suppose?
+	StaticBits_FLAG_gate_lock = 8 
+	StaticBits_FLAG_wallflag = 16 
+
 	StaticBits_FLAG_ConstructionSite = 32
 	StaticBits_FLAG_has_generated_sprite = 128
 	StaticBits_FLAG_has_gate_function = 256
-	StaticBits_FLAG_flammable = 2048
+	StaticBits_FLAG_has_no_function = 1024 // used to optimise
+	StaticBits_FLAG_unburnable = 2048 // NOT
 	StaticBits_FLAG_newly_generated_static = 16384
+	StaticBits_FLAG_auto_queue = 32768
 	StaticBits_FLAG_do_not_register_morton = 2097456
 	StaticBits_FLAG_has_wreck_system = 4194304
 
@@ -687,6 +693,7 @@ struct("agent",{
 	defv{
 	
 
+	agent_static_current_product = 738
 	agent_static_unit_slot_1 = 741
 	agent_static_ReserveAmount = 770
 

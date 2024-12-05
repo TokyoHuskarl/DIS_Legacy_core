@@ -1,6 +1,7 @@
 #include "./../headers/header_common.tpc"
 #include "./../headers/header_drawing.tpc"
 #include "./../headers/header_pathfinding.tpc"
+#include "./../headers/header_ui.tpc"
 
 #include "./../headers/header_scripts.tpc"
 
@@ -328,18 +329,6 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	v[4556] = 1737
 	@pic[974].show {
 	    "UI\Basic_UI"
-	    .pos v[1115], v[1002] .bottom
-	    .chromakey 1
-	    .scale 100
-	    .trans 100
-	    .rgbs 100, 100, 100, 100
-	    .mapLayer 8
-	    .eraseWhenTransfer
-	    .affectedByFlash
-	    .affectedByShake
-	}
-	@pic[974].show {
-	    "UI\Basic_UI"
 	    .pos v[1301], v[1002] .bottomLeft
 	    .chromakey 1
 	    .scale 100
@@ -455,14 +444,11 @@ cev .id(cevID_Game_Init), .name("@Game Init") , {
 	// LMAO FUCKING TERRIBLE WTF
 	
 	// GLOBAL QUEUE UI
-	defv gPtr_UI_globalqueue_Array_HEAD = 4830
-	vname[__id(gPtr_UI_globalqueue_Array_HEAD)] "gPtr_UI_globalqueue_Array_HEAD"
-	def UI_GLOBALQUEUE_ICONS_LIMITNUMBER = 8
-	def UI_GLOBALQUEUE_DATA_SIZE = 4 // kari
-	gPtr_UI_globalqueue_Array_HEAD = Const_save_var_TileFlags + 400 * 400 + 1 // set head
+	gPtr_UI_globalqueue_Array_COUNTER = Const_save_var_TileFlags + 400 * 400 + 1 // set head
+	gPtr_UI_globalqueue_Array_HEAD = gPtr_UI_globalqueue_Array_COUNTER + 1 // set head
 
 	//Projectiles begin
-	gPtr_ProjectileDataArray_HEAD = gPtr_UI_globalqueue_Array_HEAD + UI_GLOBALQUEUE_ICONS_LIMITNUMBER * UI_GLOBALQUEUE_DATA_SIZE
+	gPtr_ProjectileDataArray_HEAD = gPtr_UI_globalqueue_Array_HEAD + UI_GLOBALQUEUE_ICONS_LIMITNUMBER * UI_GLOBALQUEUE_DATA_SIZE + 1 // counter
 	v[1076] = v[1075] - 1
 	//Projectiles Hit Flags begin
 	gPtr_ProjectileHitFlags_HEAD = v[1075] + v[4559] * PROJECTILE_DATA_SIZE + 1
