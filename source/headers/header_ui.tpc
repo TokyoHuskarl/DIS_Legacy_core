@@ -1,5 +1,6 @@
 //UI system Design is very mountain blade WB-ish
 
+#include "./../Dracore/module_core_Game_ui_functions.tpc"
 #include "./../Dracore/module_core_RTS_ui_misc_functions.tpc"
 
 def limitOfHpBars_in_screen = 70
@@ -34,7 +35,7 @@ defv gPtr_UI_globalqueue_Array_HEAD = 4830
 vname[__id(gPtr_UI_globalqueue_Array_HEAD)] "gPtr_UI_globalqueue_Array_HEAD"
 defv gPtr_UI_globalqueue_Array_COUNTER = 4831
 vname[__id(gPtr_UI_globalqueue_Array_COUNTER)] "gPtr_UI_globalqueue_Array_COUNTER"
-def UI_GLOBALQUEUE_ICONS_LIMITNUMBER = 8
+def UI_GLOBALQUEUE_ICONS_LIMITNUMBER = 10
 def UI_GLOBALQUEUE_DATA_SIZE = 4
 
 defv index_MinimapPicId = 439

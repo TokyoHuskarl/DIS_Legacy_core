@@ -311,17 +311,13 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			Temp4 = pow(v[309], 2)
 			v[306] = pow(v[310], 2)
 
-	    //v[306] = pow(v[310] = v[620] - (agent_RelativeY + v[54]), 2)
 	    Temp4.add v[306],1 // Temp4 += v[306]
 	    //@comment "Set Object[23]"
-	    //v[300] = v[301] + 23
 	    agent_MilPixMoveOrderedPointDist = sqrt(Temp4, 1000)
-	    //v[318] = agent_MilPixMoveOrderedPointDist
 		
 		// -> relocated to walking pro
 		defv relX_sub_TargX_saved = 351
 		v[309].copy relX_sub_TargX_saved, 2
-	    // v[621].copy v[319], 2 // kore iru?
 
 	    @if agent_MovementOrder != MovementOrder_TYPE_force_moving {
 				@if Is_Paused .isOff() {
@@ -477,6 +473,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 												@if `agent_StanceOrder == ORD_DEF || agent_StanceOrder == ORD_STD {
 													LEGS_MAIN_Agent_tries_to_stop.off
 													agent_MovementOrder = MovementOrder_TYPE_moving
+
 											
 												}
 												
@@ -576,7 +573,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						@if agent_KnockBackTimer < 1 { // If Knock-Back ends in this frame
 							@if `agent_AgentBits & AgentBits_FLAG_EnableBasicAI { // normal military unit 
 									@if agent_StanceOrder == ORD_ATK { // was ordered to attack some unit
-										agent_MovementOrder = MovementOrder_TYPE_move_ordered // then back to free enemy searching mode
+										val_const(agent_MovementOrder,MovementOrder_TYPE_move_ordered) // then back to free enemy searching mode
 								
 									} .else bl { // not Attack ordered
 										// decides how to move after rising up by whether Forcemove flag is on or not
@@ -586,7 +583,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 									
 							} .else bl { // no mil AI
 									// then so be it
-									agent_MovementOrder = MovementOrder_TYPE_move_ordered
+									val_const(agent_MovementOrder,MovementOrder_TYPE_move_ordered)
 									
 							}
 							
@@ -636,10 +633,10 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	    val_asg(Temp18,var1) // Temp18 = var1 // Save Temp11 - v[69] to Temp18
 
 	    TT1 = var2 * var_Map_Width
-	    v[632] = var1 + TT1//map point saved
+	    agent_TileLink = var1 + TT1 //map point saved
 
 	    // set v313 as a pointer to map tile
-	    Temp13 = v[1182] + v[632]
+	    Temp13 = v[1182] + agent_TileLink
 	    
 	    defv Saved_Current_MapTile_Info = __id(Temp35)
 	    Temp13.deref Saved_Current_MapTile_Info,1 // Saved_Current_MapTile_Info = v[Temp13]
@@ -851,7 +848,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			def MAIN_KILLSCREENFLAG = ~AgentBits_FLAG_Drawn_in_screen
 	    agent_AgentBits &= MAIN_KILLSCREENFLAG
 	    TT10 = Address_agent_inSight_switch_array_head + v[401]
-	    @if s[TT10] .isOn() { //`s[2001+v[401]] != 0 { // found in sight..
+	    @if s[TT10] .isOn() { // found in sight..
 
 				// check if the agent is in screen
 				@if agent_RelativeX >= v[1008] {

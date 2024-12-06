@@ -801,7 +801,9 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		// "STATIC"
 
 		// refresh globalqueue ui!
-		LEGS_Request_Refresh_GlobalQueue.on
+		// LEGS_Request_Refresh_GlobalQueue.on
+		// LEGS_Request_get_GlobalQueue_filepath.on
+		s[__id(LEGS_Request_get_GlobalQueue_filepath)..__id(LEGS_Request_Refresh_GlobalQueue)].on
 		ptr_init(gPtr_UI_globalqueue_Array_COUNTER) // init globalqueue counter
 
 		// This process needs complete refactoring.
@@ -813,14 +815,12 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				func_main_extract_agent_vars()
 
 				//If Move Type STATIC
-				//@if `(agent_static_Attribution_flag & 2) {
 				// Save MapXY/5 for static minimap.
 				TT1 = Temp1 + 26
 				v[TT1] .copy v[AGENT_STATIC_SLOT_MINIMAP_X], 2
 				v[AGENT_STATIC_SLOT_MINIMAP_X..AGENT_STATIC_SLOT_MINIMAP_Y] /= 5
 				TT1 = Temp1 + AGENT_STATIC_SLOT_MINIMAP_X
 				v[AGENT_STATIC_SLOT_MINIMAP_X].copy v[TT1], 2
-				//}
 
 
 				// "########################Process Parameters Setting BEGIN########################"
@@ -842,33 +842,33 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 				//agent_AgentBits = Temp1 + 3
 				//v[702] = Temp1 + 102
 				v[370] = (Is_Paused == 0 ? 1 : -1) + (agent_AgentBits & AgentBits_STATIC_FLAG_No_function ? -1 : 1)
-				// "have function? "
-				//v[370] += v[agent_AgentBits] & 1024 ? -1 : 1
-				@if v[370] >= 2 {
 
+
+
+				@if v[370] >= 2 {
 					// "AAタイマー"
 					// turret type
 					@if v[702] == 106 {
-							@if v[628] > 0 {
-								// "まだAAできない"
-								@if v[v[843]] != 1 {
-										v[628] = Temp1 + 28
-										v[719] = Temp1 + 119
-										v[v[628]] -= v[v[719]]
-
-								}
-
-							} .else bl {
-								// "AA可能"
-								// "AAクールタイムモーションつきなら解消しておく"
-								// v[726] = Temp1 + 126
-								v[v[843]] = v[726] == 1 ? 0 : v[v[843]]
+						@if v[628] > 0 {
+							// "まだAAできない"
+							@if v[v[843]] != 1 {
+								v[628] = Temp1 + 28
+									v[719] = Temp1 + 119
+									v[v[628]] -= v[v[719]]
 
 							}
-							
-							// turret AI fix
-							@if agent_TargetAgentID > 0 {
-								TT1 = agent_TargetAgentID * 300
+
+						} .else bl {
+							// "AA可能"
+							// "AAクールタイムモーションつきなら解消しておく"
+							// v[726] = Temp1 + 126
+							v[v[843]] = v[726] == 1 ? 0 : v[v[843]]
+
+						}
+
+						// turret AI fix
+						@if agent_TargetAgentID > 0 {
+							TT1 = agent_TargetAgentID * 300
 								val_add(TT1,N4701)
 								// if the target is dead, set target 0
 								agent_TargetAgentID = v[TT1] <= 0 ? 0 : agent_TargetAgentID
@@ -876,183 +876,164 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 								TT2 = Temp1 + 18
 								v[TT2] = agent_TargetAgentID
 
-							}.else bl {
-								agent_StaticBits |= 1048576
+						}.else bl {
+							agent_StaticBits |= 1048576
 								// will be remade
 								TT2 = Temp1 + 3
 								v[TT2] = agent_StaticBits
 								v[v[843]] = 0 // init agent_ActionState
 
- 
-
-							}
-
-					}
-
-
-					// "#予約がある"
-					//v[770] = Temp1 + 170
-					@if v[770] >= 1 {
-						// "MP(生産力)をためようね"
-							@if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_StaticBits & 1 {
-								TT1 = Temp1 + 108
-								// TT2 = v[2409 + v[251] % 3]
-
-								macro_get_agent_MetaTeam_into_var(v[Ptr_loop_current_agent],TT2) // AEB
-								func_get_ptr_to_player_tech_slot_into_r1(TT2,2) // get address of player tech slot 2 to reg1
-
-									v[TT1] += v[740] * 6 // 6f per 
-									// "徴用スイッチ" conscription tech check 
-									v[TT1] += v[reg1] & 134217728 && !(v[Temp1 + 3] & StaticBits_FLAG_working_on_tech) ? v[740] << 1 : 0 // muldiv(v[740], 198, 100) : 0
-
-									// "MP(生産力)がたまった"
-									@if v[TT1] >= v[707] {
-											v[TT1] = 0
-											// "生産完了"
-											// "#Tech Flag"
-
-											//ACHTUNG - save all dealed parameters here once, since it will conflict in spawning functions 
-
-											v[251] = v[700]
-											v[255] = v[401] + 1
-											v[252] = v[607] + rnd(-6, 6)
-											v[253] = v[608] + v[611] + rnd(-3, 3)
-											@call .cev 46 //spawn ev
-											Temp1 = v[401] * 300 
-											Temp1 += 5000
-											func_main_extract_agent_vars() //extract STATIC datas again
-											defv Spawned_Agent_Id_Shift = __id(Temp2) 
-
-
-											v[Temp1 + 3] &= -2 //~1
-
-											@if reg1 >= 1 {
-												Spawned_Agent_Id_Shift = reg1 * 300 //use Temp2 as 
-													@if v[822] != 3 {
-														v[Spawned_Agent_Id_Shift + 4922] = v[Spawned_Agent_Id_Shift + 4922] == 0 ? v[Temp1 + 222] : v[Spawned_Agent_Id_Shift + 4922]
-
-													}
-												// "指定地点まで歩かせる"
-												TT1 = Spawned_Agent_Id_Shift + 4741
-													// "set reserved target "
-													v[371] = 0 // init Flag for trained troop
-
-													// if the spawned troop is a worker
-													@if `v[Spawned_Agent_Id_Shift + 4802] == 9 {
-														@if agent_static_WorkTarget >= 1 { // and the parent static agent has work target
-																// "Worker"
-																v[371] |= 1 // IT'S WORKER! - flag switch on
-																v[Spawned_Agent_Id_Shift + 4718] = agent_static_WorkTarget
-																v[Spawned_Agent_Id_Shift + 4942] = 1
-																v[Spawned_Agent_Id_Shift + 4941] = v[Spawned_Agent_Id_Shift + 4941] != 4 ? 2 : 4
-
-														}
-													}.else bl { // not a worker
-														@if v[618] >= 1 { // and the parent static agent has target
-															// Combat troops - check if the reserved target is enemy
-															v[Spawned_Agent_Id_Shift + 4718] = (v[Spawned_Agent_Id_Shift + 4800] % 3) == (v[v[618] * 300 + 4800] % 3) ? 0 : v[618]
-
-														}
-													}
-
-												// v[607] = Temp1 + 7
-												// v[v[607]].copy v[607], 2
-												// v[641] = Temp1 + 41
-												// v[v[641]].copy v[641], 2
-												@if `v[607] == v[641] && v[608] == v[642] {
-													// "指定されてない"
-														v[252] = v[607] + rnd(-3, 3)
-														v[253] = v[608] + v[611] + rnd(-3, 3)
-														v[252] .add v[53], 2
-														v[252].copy v[TT1], 2
-														v[Spawned_Agent_Id_Shift + 4942] = 2
-
-												} .else bl {
-														v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
-														// "指定されてる"
-														v[641].copy v[TT1], 2
-
-														def Order_Spawned_agent_Pathfinding = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PF2Agent 
-														// v[Spawned_Agent_Id_Shift + 4734] |= Order_Spawned_agent_Pathfinding
-														v[Spawned_Agent_Id_Shift + 4734] |= AI_routine_bits_FLAG_PATHFINDING
-														//v[reg1 * 300 + 4734] |= 524288
-
-												}
-											}
-
-
-											}
-
-										// global queue UI SYSTEM register
-										@if s[314] .isOff() {
-											@if agent_TeamID == 0 { // player team
-												@if v[gPtr_UI_globalqueue_Array_COUNTER] < UI_GLOBALQUEUE_ICONS_LIMITNUMBER {
-													// set array
-													v[Ptr_loop_current_agent].copy TT11,1 // [0] staticid
-													val_asg(TT12,agent_static_current_product) // [1] product id
-													TT13 = muldiv(100,agent_SP,agent_MaxSP) // [2] progress
-													TT14 = agent_StaticBits // [3] flag
-													// set pointer
-													TT15 = v[gPtr_UI_globalqueue_Array_COUNTER] * UI_GLOBALQUEUE_DATA_SIZE
-													val_add(TT15,gPtr_UI_globalqueue_Array_HEAD)
-													// save array
-													TT11.copy v[TT15],UI_GLOBALQUEUE_DATA_SIZE
-													// count up 
-													ptr_add(gPtr_UI_globalqueue_Array_COUNTER,N1)
-
-													// actual process is defined in UI file
-
-												}
-											}
-										}
-
-
-										// "research particle"
-										@if `agent_StaticBits & StaticBits_FLAG_working_on_tech {
-											@loop v[1017] .dst Temp20 {
-												v[244] %= v[1199]
-													//v[331] = v[244] * 50
-													v[331] = v[244] * 50 
-													v[331] += v[1198]
-													@if v[v[331]] <= 1 {
-														// "まず清掃"
-														v[1301].copy v[v[331]], 50
-															// "ポインタセット開始"
-															// "設定"
-															v[v[331]] = 1
-															// "500F"
-															v[v[331] + 49] = 6
-															// "Set itself"
-															v[v[331] + 3] = 126
-															// "Set Parent Obj"
-															v[v[331] + 9] = v[401] + 1
-															// "普通にアニメ"
-															//v[607] = Temp1 + 7
-															v[607].copy var1, 2
-															TT1 = v[331] + 6
-															var1.copy v[TT1], 2
-															// "Colour"
-															v[0] = v[v[331] + 31..v[331] + 38] = [180, 129, 0, 90, 180, 129, 0, 60]
-															// "仕上げに登録消す"
-															v[244] += 1
-															@break
-
-													}
-
-											}
-
-											v[244] += 1
-
-										}
 
 
 						}
 
 					}
+
+					// "#予約がある"
+					@if v[770] >= 1 {
+						// "MP(生産力)をためようね"
+						@if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_StaticBits & StaticBits_FLAG_working_on_tech {
+
+							macro_get_agent_MetaTeam_into_var(v[Ptr_loop_current_agent],TT2) // AEB
+								func_get_ptr_to_player_tech_slot_into_r1(TT2,2) // get address of player tech slot 2 to reg1
+
+								TT1 = Temp1 + 108
+								v[TT1] += v[740] * 6 // 6f per 
+								// "徴用スイッチ" conscription tech StaticBits_FLAG_working_check 
+								v[TT1] += v[reg1] & 134217728 && !(agent_StaticBits & StaticBits_FLAG_working_on_tech) ? v[740] << 1 : 0 // muldiv(v[740], 198, 100) : 0
+								agent_SP = v[TT1]
+								// global queue UI SYSTEM register
+								MAIN_STATIC_register_globalqueue()
+
+
+								// "MP(生産力)がたまった"
+								@if v[TT1] >= v[707] {
+									v[TT1] = 0
+										// "生産完了"
+										// "#Tech Flag"
+
+										//ACHTUNG - save all dealed parameters here once, since it will conflict in spawning functions 
+
+										v[251] = v[700]
+										v[255] = v[401] + 1
+										v[252] = v[607] + rnd(-6, 6)
+										v[253] = v[608] + v[611] + rnd(-3, 3)
+										@call .cev 46 //spawn ev
+										Temp1 = v[401] * 300 
+										Temp1 += 5000
+										func_main_extract_agent_vars() //extract STATIC datas again
+										defv Spawned_Agent_Id_Shift = __id(Temp2) 
+
+
+										v[Temp1 + 3] &= -2 //~1
+
+										@if reg1 >= 1 {
+											Spawned_Agent_Id_Shift = reg1 * 300 //use Temp2 as 
+												@if v[822] != 3 {
+													v[Spawned_Agent_Id_Shift + 4922] = v[Spawned_Agent_Id_Shift + 4922] == 0 ? v[Temp1 + 222] : v[Spawned_Agent_Id_Shift + 4922]
+
+												}
+											// "指定地点まで歩かせる"
+											TT1 = Spawned_Agent_Id_Shift + 4741
+												// "set reserved target "
+												v[371] = 0 // init Flag for trained troop
+
+												// if the spawned troop is a worker
+												@if `v[Spawned_Agent_Id_Shift + 4802] == 9 {
+													@if agent_static_WorkTarget >= 1 { // and the parent static agent has work target
+														// "Worker"
+														v[371] |= 1 // IT'S WORKER! - flag switch on
+															v[Spawned_Agent_Id_Shift + 4718] = agent_static_WorkTarget
+															v[Spawned_Agent_Id_Shift + 4942] = 1
+															v[Spawned_Agent_Id_Shift + 4941] = v[Spawned_Agent_Id_Shift + 4941] != 4 ? 2 : 4
+
+													}
+												}.else bl { // not a worker
+													@if v[618] >= 1 { // and the parent static agent has target
+														// Combat troops - check if the reserved target is enemy
+														v[Spawned_Agent_Id_Shift + 4718] = (v[Spawned_Agent_Id_Shift + 4800] % 3) == (v[v[618] * 300 + 4800] % 3) ? 0 : v[618]
+
+													}
+												}
+
+											@if `v[607] == v[641] && v[608] == v[642] {
+												// "指定されてない"
+												v[252] = v[607] + rnd(-3, 3)
+													v[253] = v[608] + v[611] + rnd(-3, 3)
+													v[252] .add v[53], 2
+													v[252].copy v[TT1], 2
+													v[Spawned_Agent_Id_Shift + 4942] = 2
+
+											} .else bl {
+												v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
+													// "指定されてる"
+													v[641].copy v[TT1], 2
+
+													def Order_Spawned_agent_Pathfinding = AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_PF2Agent 
+													// v[Spawned_Agent_Id_Shift + 4734] |= Order_Spawned_agent_Pathfinding
+													v[Spawned_Agent_Id_Shift + 4734] |= AI_routine_bits_FLAG_PATHFINDING
+													//v[reg1 * 300 + 4734] |= 524288
+
+											}
+										}
+
+
+								}
+
+
+
+
+							// "research particle"
+							@if `agent_StaticBits & StaticBits_FLAG_working_on_tech {
+								@loop v[1017] .dst Temp20 {
+									v[244] %= v[1199]
+										//v[331] = v[244] * 50
+										v[331] = v[244] * 50 
+										v[331] += v[1198]
+										@if v[v[331]] <= 1 {
+											// "まず清掃"
+											v[1301].copy v[v[331]], 50
+												// "ポインタセット開始"
+												// "設定"
+												v[v[331]] = 1
+												// "500F"
+												v[v[331] + 49] = 6
+												// "Set itself"
+												v[v[331] + 3] = 126
+												// "Set Parent Obj"
+												v[v[331] + 9] = v[401] + 1
+												// "普通にアニメ"
+												//v[607] = Temp1 + 7
+												v[607].copy var1, 2
+												TT1 = v[331] + 6
+												var1.copy v[TT1], 2
+												// "Colour"
+												v[0] = v[v[331] + 31..v[331] + 38] = [180, 129, 0, 90, 180, 129, 0, 60]
+												// "仕上げに登録消す"
+												v[244] += 1
+												@break
+
+										}
+
+								}
+
+								v[244] += 1
+
+							}
+
+
+
+
+						}
+
+					}
+
+
+
 					// "#Reg Timer"
 					@if v[699] <= 0 {
-							// "HP"
-							var1 = v[401] + 1
+						// "HP"
+						var1 = v[401] + 1
 							//var2 = 0
 							var3 = Temp1 + 131
 							var3 = v[var3]
@@ -1076,23 +1057,15 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 													@call .cev 41
 
 											} .else bl {
-												// "Dead Static is not removed from List!?"
-												/*@if s[1] .isOn() { DEBUG feature, needless now
-													var1 = Ptr20
-													@call .cev 2150
-													var1 = 734947
-													var2 = 1000
-													@call .cev 2149
 
-													}*/
 
 											}
 
 									}
 
 							}
-							// "SP reg"
-							var1 = v[401] + 1
+						// "SP reg"
+						var1 = v[401] + 1
 							//var2 = 1
 							var3 = v[Temp1 + 132]
 							//@call .cev 2006
@@ -1129,19 +1102,25 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 										}
 
-									}
-									// HP 33% 
+									} // HP 33% 
 
 								}
 
 							}
 
-							} 
+
+				}
+
+
 						v[699] = Temp1 + 99
 							TT1 = v[v[699]]
 							// "########################"
 
+					}.else bl {
+					@if v[770] >= 1 {
+						MAIN_STATIC_register_globalqueue()
 					}
+				}
 					// "目標位置"
 					v[619] = Temp1 + 19
 						v[620] = Temp1 + 20
@@ -2614,4 +2593,28 @@ __fn agent_behavior_effect_and_motion_check {
 
 	}
 
+}
+
+__fn MAIN_STATIC_register_globalqueue {
+	@if s[314] .isOff() {
+		@if agent_TeamID == 0 { // player team
+			@if v[gPtr_UI_globalqueue_Array_COUNTER] < UI_GLOBALQUEUE_ICONS_LIMITNUMBER {
+				// set array
+				v[Ptr_loop_current_agent].copy TT11,1 // [0] staticid
+					val_asg(TT12,agent_static_current_product) // [1] product id
+					TT13 = muldiv(19,agent_SP,agent_MaxSP) // [2] progress
+					TT14 = agent_StaticBits // [3] flag
+					// set pointer
+					TT15 = v[gPtr_UI_globalqueue_Array_COUNTER] * UI_GLOBALQUEUE_DATA_SIZE
+					val_add(TT15, gPtr_UI_globalqueue_Array_HEAD)
+					// save array
+					TT11.copy v[TT15],UI_GLOBALQUEUE_DATA_SIZE
+					// count up 
+					ptr_add(gPtr_UI_globalqueue_Array_COUNTER,N1)
+
+					// actual process is defined in UI file
+
+			}
+		}
+	}
 }

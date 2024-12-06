@@ -2621,9 +2621,36 @@ __fn check_clickable_units $maskcondbl $flag {
  */
 __fn UI_Glonalqueue_draw_icons {
 	// draw per 6f
-	@if LEGS_Request_Refresh_GlobalQueue.inOn() {
+	@if LEGS_Request_get_GlobalQueue_filepath.isOn() {
+		// get icon path
+		@loop v[gPtr_UI_globalqueue_Array_COUNTER] .dst var1 {
+			TT15 = var1 * UI_GLOBALQUEUE_DATA_SIZE
+			val_add(TT15,gPtr_UI_globalqueue_Array_HEAD)
+			v[TT15].copy Temp1,UI_GLOBALQUEUE_DATA_SIZE
+			Ptr10 = __id(Str_UI_globalqueue_path_0) + var1
+			// which kind of icon you gonna take?
+			@if `Temp4 & StaticBits_FLAG_working_on_tech { // research
+
+			}.else bl{ // get unit icon path
+				get_unit_icon_path_to_regs1(Temp2)
+				@if regs1.neq "" { // kari
+					t[Ptr10].asg .cat("/product_icons/","icon_",regs1)
+
+				}.else bl{
+					t[Ptr10].asg .cat("/product_icons/","icon_","0")
+
+				}
+				
+
+			}
+
+		}
+		LEGS_Request_get_GlobalQueue_filepath.off
+
+
+	}.elif LEGS_Request_Refresh_GlobalQueue.inOn() { // draw actual icons
 		// init icons
-		@loop UI_GLOBALQUEUE_DATA_SIZE .dst var1 {
+		@loop UI_GLOBALQUEUE_ICONS_LIMITNUMBER .dst var1 {
 			TT1 = PicID_UI_globalqueue_icon_HEAD + var1
 				@pic[TT1].move {
 					.pos 0, 0 .topLeft
@@ -2631,29 +2658,97 @@ __fn UI_Glonalqueue_draw_icons {
 						.trans 100
 						.time 0
 						.rgbs 100, 100, 100, 100
-				}	
+				}
+			TT1 = PicID_UI_globalqueue_progress_HEAD + var1
+				@pic[TT1].move {
+					.pos 0, 0 .topLeft
+						.scale 100
+						.trans 100
+						.time 0
+						.rgbs 100, 100, 100, 100
+				}
 		}
 
 		// get resource window info
-		@pic[PicID_ResourceWindow].getInfo .ltrb .currentRect Temp1,Temp2,Temp3,Temp4
+		@pic[PicID_ResourceWindow].getInfo .ltrb .currentRect Temp11,Temp12,Temp13,Temp14
+			defv {
+					draw_main_R = 4001
+					draw_main_G
+					draw_main_B
+					draw_main_S
+					draw_sub_R = 4005
+					draw_sub_G
+					draw_sub_B
+					draw_sub_S
+
+			}
+		// draw_main_R, draw_main_G, draw_main_B, draw_main_S
+			// if player faction hits the pop cap, change it 
+				draw_main_R.repeat 100,4 // kari, asg 100 
+			@if `v[205] >= min(v[1080], v[v[4580]]) { // pop limit hit
+				draw_main_S.repeat 0,1
+			}
 			@loop v[gPtr_UI_globalqueue_Array_COUNTER] .dst var1 {
-				TT1 = PicID_UI_globalqueue_icon_HEAD + var1
+					TT15 = var1 * UI_GLOBALQUEUE_DATA_SIZE
+					val_add(TT15,gPtr_UI_globalqueue_Array_HEAD)
+					v[TT15].copy Temp1,UI_GLOBALQUEUE_DATA_SIZE
 					// kari
-					def UI_GROBALQUEUE_ICON_ESTIMATED_WIDTH = 16
+					def UI_GROBALQUEUE_ICON_ESTIMATED_WIDTH = 19
+
+					// show icon
+					TT1 = PicID_UI_globalqueue_icon_HEAD + var1
 					TT11 = UI_GROBALQUEUE_ICON_ESTIMATED_WIDTH * var1
-					TT12 = Temp4
+					TT12 = Temp14
+					Ptr10 = __id(Str_UI_globalqueue_path_0) + var1
+
+					@if `Temp4 & StaticBits_FLAG_working_on_tech {
+						TT16.repeat 100,4
+					}.else bl{
+						draw_main_R.copy TT16,4
+					}
+
 					@pic[TT1].show {
-						"product_icons/icon_0"
+							t[Ptr10]
 							.pos TT11, TT12 .topLeft
 							.chromakey 1
 							.scale 100
 							.trans 0
-							.rgbs 100, 100, 100, 100
+							.rgbs TT16, TT17, TT18, TT19
 							.mapLayer 9
 							.eraseWhenTransfer
 							.affectedByShake
 					}
+
+					// show progress bar
+					TT1 = PicID_UI_globalqueue_progress_HEAD + var1
+					TT12 += 16
+					Temp3 = max(min(19,Temp3),1)
+					@if `Temp4 & StaticBits_FLAG_auto_queue {
+						// yellow
+						draw_sub_R.repeat 200,2
+						draw_sub_B.repeat 50,1
+					}.else bl{
+						// blue
+						draw_sub_R.repeat 50,2
+						draw_sub_B.repeat 200,1
+						
+					}
+					@pic[TT1].show {
+							"/ui/icon_bar"
+							.pos TT11, TT12 .topLeft
+							.chromakey 0
+							.scale 100
+							.trans 0
+							.rgbs draw_sub_R, draw_sub_G, draw_sub_B, draw_sub_S
+							.mapLayer 9
+							.grid 1, 19 .cell Temp3
+							.eraseWhenTransfer
+							.affectedByShake
+					}
+
+					t[Ptr10].asg "" // init
 			}
+			LEGS_Request_Refresh_GlobalQueue.off
 	}
 }
 

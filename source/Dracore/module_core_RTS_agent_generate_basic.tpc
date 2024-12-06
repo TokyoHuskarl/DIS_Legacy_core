@@ -9,13 +9,13 @@ __if LOAD_HEADER_DRAW != 1 {
 // temp korehido
 struct("weapon",{
 		defv  {
-		weapon_Ammo = 1920
+			weapon_Ammo = 1920
 		}
 		})
 
 
 __fn func_get_troopinfo_from_csv $int_trpid {
-		v[1941] = Const_save_var_Adrt_TroopDatabaseHEAD + int_trpid
+		v[1941] = Const_save_var_Adrt_TroopDatabaseHEAD + $int_trpid
 		// load csv line to CSVELM_AGENT_id
 		CSVELM_AGENT_id .asg t[v[1941]]
 		CSVELM_AGENT_id .split ",", CSVELM_AGENT_id, v[1941] // deploy to CSVELM buffer
