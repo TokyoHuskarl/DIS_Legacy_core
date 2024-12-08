@@ -18,8 +18,9 @@ def moduletitle="module_core_RTS_control_general.tpc"
 #include "./module_core_RTS_control_mapedit.tpc"
 #include "./module_core_RTS_control_moveorders.tpc"
 
-cev .id(47) ,.name("Control:Mouse"), .parallel , .cond(Const_Is_RTS_Mode), {
 #include "./module_core_RTS_control_mouse.tpc"
+cev .id(47) ,.name("Control:Mouse"), .parallel , .cond(Const_Is_RTS_Mode), {
+	CEV_CONTROL_MOUSE()
 }
 
 #include "./module_core_RTS_control_keyboard.tpc"

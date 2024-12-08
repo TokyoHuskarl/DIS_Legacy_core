@@ -38,6 +38,8 @@ vname[__id(gPtr_UI_globalqueue_Array_COUNTER)] "gPtr_UI_globalqueue_Array_COUNTE
 def UI_GLOBALQUEUE_ICONS_LIMITNUMBER = 10
 def UI_GLOBALQUEUE_DATA_SIZE = 4
 
+
+// minimap pic
 defv index_MinimapPicId = 439
 vname[__id(index_MinimapPicId)], "index_MinimapPicId"
 
@@ -49,12 +51,12 @@ vname[__id(ui_workers_for_gold_save)],"ui_workers_for_gold_save"
 __fn func_ui_DIS_basic_mouse_control {
 		    @wait 0
 		    //Check LMB 
-		    @if v[43] != 1005 {
-			s[11].off
-			
-		    }.else bl {
-			s[11].on
-		    }
+					@if v[43] != 1005 {
+						s[11].off
+
+					}.else bl {
+						s[11].on
+					}
 
 		    @if s[39] .isOff() {
 			@mouse.getPos v[49], v[50]

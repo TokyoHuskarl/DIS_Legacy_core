@@ -801,8 +801,6 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 		// "STATIC"
 
 		// refresh globalqueue ui!
-		// LEGS_Request_Refresh_GlobalQueue.on
-		// LEGS_Request_get_GlobalQueue_filepath.on
 		s[__id(LEGS_Request_get_GlobalQueue_filepath)..__id(LEGS_Request_Refresh_GlobalQueue)].on
 		ptr_init(gPtr_UI_globalqueue_Array_COUNTER) // init globalqueue counter
 
@@ -892,18 +890,19 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					// "#予約がある"
 					@if v[770] >= 1 {
 						// "MP(生産力)をためようね"
+
+						macro_get_agent_MetaTeam_into_var(v[Ptr_loop_current_agent],TT2) // AEB
+						func_get_ptr_to_player_tech_slot_into_r1(TT2,2) // get address of player tech slot 2 to reg1
+
+						agent_SP += v[740] * 6 // 6f per 
+						// "徴用スイッチ" conscription tech StaticBits_FLAG_working_check 
+						agent_SP += v[reg1] & 134217728 && !(agent_StaticBits & StaticBits_FLAG_working_on_tech) ? v[740] << 1 : 0 // muldiv(v[740], 198, 100) : 0
+						MAIN_STATIC_register_globalqueue()
 						@if `v[205 + v[700]] < min(v[v[4580] + v[700]], v[1080]) || agent_StaticBits & StaticBits_FLAG_working_on_tech {
 
-							macro_get_agent_MetaTeam_into_var(v[Ptr_loop_current_agent],TT2) // AEB
-								func_get_ptr_to_player_tech_slot_into_r1(TT2,2) // get address of player tech slot 2 to reg1
-
 								TT1 = Temp1 + 108
-								v[TT1] += v[740] * 6 // 6f per 
-								// "徴用スイッチ" conscription tech StaticBits_FLAG_working_check 
-								v[TT1] += v[reg1] & 134217728 && !(agent_StaticBits & StaticBits_FLAG_working_on_tech) ? v[740] << 1 : 0 // muldiv(v[740], 198, 100) : 0
-								agent_SP = v[TT1]
+								v[TT1] = agent_SP
 								// global queue UI SYSTEM register
-								MAIN_STATIC_register_globalqueue()
 
 
 								// "MP(生産力)がたまった"
@@ -1064,8 +1063,8 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 									}
 
 							}
-						// "SP reg"
-						var1 = v[401] + 1
+							// "SP reg"
+							var1 = v[401] + 1
 							//var2 = 1
 							var3 = v[Temp1 + 132]
 							//@call .cev 2006

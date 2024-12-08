@@ -24,10 +24,26 @@ def{
 	WheelUp = 1004
 	WheelDown = 1001
 
-
-
 }
 
+def MOUSE_RTS_BUTTON_OVERLAP_SIZE = 4
+defv {
+	MOUSE_RTS_BUTTON_OVERLAP_QWERTY = 2340
+	MOUSE_RTS_BUTTON_OVERLAP_QoL_UI = 2341
+	MOUSE_RTS_BUTTON_OVERLAP_reserve = 2342
+	MOUSE_RTS_BUTTON_OVERLAP_reserve2 = 2343
+	MOUSE_RTS_BUTTON_OVERLAP_SAVE_QWERTY = 2344
+	MOUSE_RTS_BUTTON_OVERLAP_SAVE_QoL_UI = 2345
+	MOUSE_RTS_BUTTON_OVERLAP_SAVE_reserve = 2346
+	MOUSE_RTS_BUTTON_OVERLAP_SAVE_reserve2 = 2347
+}
+vname[__id(MOUSE_RTS_BUTTON_OVERLAP_QWERTY)], "MOUSE_RTS_BUTTON_OVERLAP_QWERTY"
+vname[__id(MOUSE_RTS_BUTTON_OVERLAP_SAVE_QWERTY)], "MOUSE_RTS_BUTTON_OVERLAP_SAVE_QWERTY"
+vname[__id(MOUSE_RTS_BUTTON_OVERLAP_SAVE_reserve2)], "MOUSE_RTS_BUTTON_OVERLAP_SAVE_reserve2"
+
+def MOUSE_UNDER_OVERLAP_GQ1 = 0x1
+// ommit
+def MOUSE_UNDER_OVERLAP_GQ10 = (0x1 << 9)
 
 // clickable switches on screen
 def MOUSE_UNDER_OVERLAP_Q = 0x1
@@ -40,16 +56,6 @@ def MOUSE_UNDER_OVERLAP_S = 0x40
 def MOUSE_UNDER_OVERLAP_D = 0x80
 def MOUSE_UNDER_OVERLAP_F = 0x100
 def MOUSE_UNDER_OVERLAP_G = 0x200
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -149,8 +155,7 @@ __fn func_draw_pointer $R $G $B $C {
 }
 
 __fn func_get_mouse {
-
-    @comment "#そのうち整理"
+    // そのうち整理
     @key.input .dst Var_MAINCONT_get {
         .decision
         .number
@@ -168,7 +173,7 @@ __fn func_get_mouse {
 
 
 def forceRefresh_popwindow = {
-	save_descID_1fpast = 0
+	val_init(save_descID_1fpast)
 }
 
 // kek
@@ -182,11 +187,6 @@ def MACRO_ck_if_current_static_is_clickable_to_reg6 = {
 
 }
 
-/*
-def MACRO_ck_if_current_agent_is_clickable_to_reg6 = {
-	reg6 = between(MousePtr_x,(agent_RelativeX - agent_Width - (agent_Width <= 18 ? v[1122] : 0)),(agent_RelativeX + agent_Width + (agent_Width <= 18 ? v[1122] : 0))) && between(MousePtr_y,(agent_RelativeY - agent_Height - (agent_Height <= 18 ? v[1123] : 0)),(agent_RelativeY + agent_Height + (agent_Height <= 18 ? v[1123] : 0))) ? 1 : 0
-}
-*/
 
 defv Control_ClickableStaticHolder = 4857
 vname[__id(Control_ClickableStaticHolder)], "control_clickablestaticholder"

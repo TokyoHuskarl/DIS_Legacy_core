@@ -199,7 +199,7 @@ cev .id(20), .name("Main:Drawing Units") , .parallel , .cond(Const_Is_Drawing_Un
 							TT1 = agent_ForceSprite + 2
 
 							@if TT1 > 0 { // if forcesprite is set...
-									expected_action_sprite = TT1 
+									val_asg(expected_action_sprite,TT1)
 							}.else bl { // if not, pick from AEB
 									MACRO_DRAWING_get_regular_action_sprite
 
