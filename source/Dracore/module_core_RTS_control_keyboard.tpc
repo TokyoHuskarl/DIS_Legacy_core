@@ -132,14 +132,13 @@ __fn CEV_CONTROL_KEYBOARD {
 						}
 						
 						@if Temp15 > 0 {
-					v[313..314] /= Temp15
-					Temp13.copy var1, 2
-					v[11..12] *= 10000
-					//CrdRe->MAP 
-					@call .cev 1999
-					reg1.copy v[66], 2
-					s[44].on
-					
+							v[313..314] /= Temp15
+								Temp13.copy var1, 2
+								v[11..12] *= 10000
+								//CrdRe->MAP 
+								@call .cev 1999
+								reg1.copy v[66], 2
+								s[44].on
 						}
 						
 				}

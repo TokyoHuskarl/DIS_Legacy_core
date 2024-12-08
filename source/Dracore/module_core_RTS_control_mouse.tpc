@@ -1595,24 +1595,31 @@ __fn CONTROL_globalqueue_left_click { // kari
 
 				// you must completely rewrite cev 65!
 
-				// debug
-				@pic[40].strpic {
-						"GQ number \v[11]: target static id: \v[301]"
-						.pos v[1], v[2] .center
-						.size 200, 30                            .scrollWithMap
-						.chromakey 1
-						.scale 100
-						.trans 0
-						.rgbs 100, 200, 200, 100
-						.font "", 12 .noShadow
-						.spacing 0, 4
-						.skin "" .nobg .noGradation
-						.mapLayer 8
-						.eraseWhenTransfer
-						.affectedByShake
+
+				// proto select the static
+				init_player_selectlist()
+				change_agent_state_in_selecting_proc_reg1(Temp1)
+				@if reg1 > 0 { // the agent is alive
+						// add the agent to the head of the selecting list
+						val_asg(v[Adr_PlayerSelectList_Head],Temp1)
+						val_asg(v[100],Temp1) // set currently selecting shit - legacy design, should be changed
+						val_asg(LEGV_SelectedAmount,N1)
+
+						// kari
+						agent_RelativeX.copy var1,2
+						v[11..12] *= 10000
+						//CrdRe->MAP 
+						@call .cev 1999
+						reg1.copy v[66], 2
+						s[44].on // move camera to the agent!
+						s[27].on // selecting ally static switch
+						ui_selectsnd()
+						v[81] = 6
+						@call .cev 76
 				}
 
 				s[201].on
+				@break
 			}
 
 	}

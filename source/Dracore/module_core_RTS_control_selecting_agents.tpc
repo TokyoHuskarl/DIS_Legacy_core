@@ -7,7 +7,7 @@ __fn CEV_CONTROL_SELECT_AGENTS_DOUBLECLICK {
 				v[102..140] = 0
 				v[301] = 0
 				v[202] = 101
-				v[99] = 1
+				LEGV_SelectedAmount = 1
 				v[98] = 0
 				v[325] = v[101] * 300
 				v[98] = v[325] + 4805
@@ -51,7 +51,7 @@ __fn CEV_CONTROL_SELECT_AGENTS_DOUBLECLICK {
 																						v[v[310]] = 0
 																						@comment "選択範囲内"
 																						v[v[202]] = v[324]
-																						v[99] += 1
+																						LEGV_SelectedAmount += 1
 																						@comment "選択した集団の最大ＨＰを取得"
 																						v[327] = v[302] + 104
 																						v[98] += v[v[327]]
@@ -121,7 +121,7 @@ __fn CEV_CONTROL_SELECT_AGENTS_DOUBLECLICK {
 				v[102..140] = 0
 				v[301] = 0
 				v[202] = 101
-				v[99] = 1
+				LEGV_SelectedAmount = 1
 				v[98] = 0
 				v[325] = v[101] * 300
 				v[98] = v[325] + 4805
@@ -163,7 +163,7 @@ __fn CEV_CONTROL_SELECT_AGENTS_DOUBLECLICK {
 																						v[v[310]] = 0
 																						@comment "選択範囲内"
 																						v[v[202]] = v[324]
-																						v[99] += 1
+																						LEGV_SelectedAmount += 1
 																						@comment "選択した集団の最大ＨＰを取得"
 																						v[327] = v[302] + 104
 																						v[98] += v[v[327]]
@@ -248,7 +248,7 @@ __fn CEV_CONTROL_SELECT_AGENTS_GROUP {
 			Temp1 = 0
 			v[202] = 100
 			v[101..140] = 0
-			v[99] = 0
+			LEGV_SelectedAmount = 0
 			v[98] = 0
 			s[24].on
 			s[31].on
@@ -268,7 +268,7 @@ __fn CEV_CONTROL_SELECT_AGENTS_GROUP {
 			@if Control_ClickableAgentHolder > 0 {
 					Temp1 = Control_ClickableAgentHolder - 1
 					pick_agents_with_Temp1_ptr()
-					v[99] += 1
+					LEGV_SelectedAmount += 1
 			}
 		
 			@if s[25] .isOn() {
@@ -336,7 +336,7 @@ __fn CEV_CONTROL_SELECT_AGENTS_GROUP {
 																									s[27].off
 																									// "選択範囲内"
 																									v[v[202]] = Temp1 + 1
-																									v[99] += 1
+																									LEGV_SelectedAmount += 1
 																									// "Temp28用意"
 																									v[328] = Temp1 + 1
 																									// "選択した集団の最大ＨＰを取得"
@@ -415,7 +415,7 @@ __fn CEV_CONTROL_SELECT_AGENTS_GROUP {
 																							v[v[202]] = 0
 																							v[Temp10] = [1, 2, 3, 4][v[Temp20]]
 																							// "選択範囲内"
-																							v[99] -= 1
+																							LEGV_SelectedAmount -= 1
 																							// "Temp28用意"
 																							v[328] = Temp1 + 1
 																							// "選択した集団の最大ＨＰを取得"
@@ -479,7 +479,7 @@ __fn CEV_CONTROL_SELECT_AGENTS_GROUP {
 	}
 
 	@if s[63] .isOn() {
-			@if `v[v[4530] + (Temp10 - 1) * 20 + 6] == v[99] {
+			@if `v[v[4530] + (Temp10 - 1) * 20 + 6] == LEGV_SelectedAmount {
 					v[82] = Temp10
 					v[472] = divmul(70, 100, v[2216])
 					@se.play "ui\clock01" .opt v[472], 100, 50
@@ -499,7 +499,7 @@ __fn ui_selectsnd {
 
 	}.else bl {
 		v[472] = divmul(50, 100, v[2216])
-			@if v[99] > 0 {
+			@if LEGV_SelectedAmount > 0 {
 				@se.play "ui\UI_Quirky_44" .opt v[472], 105, 50
 			}.elif s[27].isOn(){
 				@se.play "ui\UI_Quirky_44" .opt v[472], 80, 50
@@ -563,7 +563,7 @@ __fn change_selected_agents_state_old {
 							s[27].off
 							// "選択範囲内"
 							v[v[202]] = Temp1 + 1
-							v[99] += 1
+							LEGV_SelectedAmount += 1
 							// "Temp28用意"
 							v[328] = Temp1 + 1
 							// "選択した集団の最大ＨＰを取得"
@@ -624,6 +624,50 @@ __fn change_selected_agents_state_old {
 
 }
 
+__fn init_player_selectlist {
+	@loop PlayerSelectList_Size .dst var1 {
+		Ptr10 = Adr_PlayerSelectList_Head + var1
+		@if v[Ptr10] < 1 {
+			@break
+		}
+		Ptr10.deref var2,1
+		reset_agent_marker_color(var2)
+	}
+	v[ptr_null].copy v[Adr_PlayerSelectList_Head],PlayerSelectList_Size
+}
 
+// LEGV_SelectedAmount += 1
+
+
+// if successfully processed, return true, otherwise false
+__fn change_agent_state_in_selecting_proc_reg1 $id {
+		val_asg(Ptr1,N4701)
+		Ptr1 += $id * 300
+		v[Ptr1].copy agent_AgentType,100
+		@if agent_AgentType > 0 {
+			// agent_MarkerColor = [1, 2, 3, 4][agent_TeamID] // init marker colour
+			val_init(agent_MarkerColor)
+			agent_AgentType.copy v[Ptr1],24 // save agent_MarkerColor
+			val_asg(reg1,N1)
+		}.else bl{
+			val_init(reg1)
+		}
+}
+
+__fn reset_agent_marker_color $id {
+		val_asg(Ptr1,N4701)
+		Ptr1 += $id * 300
+		v[Ptr1].copy agent_AgentType,100
+		@if agent_AgentType > 0 {
+			agent_MarkerColor = [1, 2, 3, 4][agent_TeamID] // init marker colour
+			agent_AgentType.copy v[Ptr1],24 // save agent_MarkerColor
+		}
+}
+
+// bring cev 48 here
+__fn finish_player_selecting_agent {
+	ui_selectsnd()
+	@call .cev 48
+}
 
 
