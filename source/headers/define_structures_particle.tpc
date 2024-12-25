@@ -79,7 +79,7 @@ __fn save_particle_emitter_data {
 __fn regiter_particle $block {
 	@loop v[1199] {
 		val_mod(v[244],v[1199]) // v[244] %= v[1199]
-		Temp21 = v[244] * 50 
+		Temp21 = v[244] * ParticleArraySize
 		val_add(Temp21,v[1198]) // Temp21 += v[1198]
 			@if v[Temp21] <= 1 {
 					v[1301].copy v[Temp21], ParticleArraySize // init particle memory

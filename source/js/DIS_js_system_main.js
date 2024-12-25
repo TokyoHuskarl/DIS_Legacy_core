@@ -405,7 +405,68 @@ class DATA_troop extends DATA_entity {
 			'worker':9,
 		};
 		this.unitclass = this.ezConvWord(this.unitclass,DICT_UCLS)
+		const DICT_AABITS = {
+			'aabit_anti_infanty': 0x1,
+			'aabit_anti_archer': 0x2,
+			'aabit_anti_cavalry': 0x4,
+			'aabit_anti_mage': 0x8,
+			'aabit_anti_siege': 0x10,
+			'aabit_anti_worker': 0x40,
+			'aabit_anti_building': 0x80,
+			'aabit_devastate_bulding': 0x100,
+			'aabit_cracking_shield': 0x400,
+			'aabit_devastating_strikes': 0x800,
+			'aabit_trample': 0x1000,
+			'aabit_anti_hero': 0x2000,
+			'aabit_anti_dragon': 0x4000,
+			'aabit_anti_air': 0x10000,
+			'aabit_cracking_shield_bonus': 0x20000,
+			'aabit_bladedance': 0x40000,
+			'aabit_camel': 0x80000,
+			'aabit_fatalblow': 0x100000,
 
+
+		};
+		const DICT_MOVEBITS = {
+			'movebit_flying': 0x1,
+			'movebit_horse': 0x2,
+			'movebit_skate': 0x8,
+			'movebit_snow': 0x10,
+			'movebit_roller': 0x20,
+			'movebit_amphibious': 0x40,
+			'movebit_sand': 0x80,
+		};
+
+		const DICT_OBJBITS = {
+			'objbit_ambush':0x1,
+			'objbit_enable_pikewall':0x2,
+			'objbit_enable_shieldwall':0x4,
+			'objbit_immune_to_knockback':0x8,
+			'objbit_enable_skirmish':0x10,
+			'objbit_halves_ranged_damage':0x20,
+			'objbit_halves_all_damage':0x40,
+			'objbit_immune_to_combat_debuff':0x80,
+			'objbit_has_no_mind':0x100,
+			'objbit_fleeing':0x200,
+			'objbit_flip_sprite':0x400,
+			'objbit_fearsome':0x800,
+			'objbit_does_not_bleed':0x1000,
+			'objbit_shield_bash':0x2000,
+			'objbit_discipline':0x4000,
+			'objbit_relentless':0x8000,
+			'objbit_immune_to_stun':0x10000,
+			'objbit_duelist_activated':0x20000,
+			'objbit_cant_cast_skill':0x40000,
+			'objbit_big_flag':0x80000,
+			'objbit_standard_bearer':0x100000,
+			'objbit_explosive':0x200000,
+			'objbit_hero':0x400000,
+			'objbit_enable_spellcastmode':0x800000,
+			'objbit_can_parry':0x1000000,
+			'objbit_lancecharge':0x2000000,
+			'objbit_shield_broken':0x4000000,
+			'objbit_gets_speedbonus':0x8000000,
+		};
 
 		// convert string skillid into numid
 		if (this.hasOwnProperty("ActiveSkill")){ 
@@ -793,6 +854,14 @@ class DATA_tech extends DATA_entity {
 		// let retme = [this.techflagslot[0],parseInt(this.techflagslot[1],16)];
 		// return retme;
 		return [this.techflagslot[0],this.techflagslot[1]];
+	};
+
+ /**
+  * getIcon.
+	* returns {string} icon file path.
+  */
+	getIcon(){
+		
 	};
 
 	/**
@@ -2126,6 +2195,10 @@ DIS._tpc = {
 	*/
 	simpleFormatString: (adrt)=>{
 		sett(1,DIS.string.formatUIText(gett(adrt)));
+	},
+
+	getTechIconPath(i){
+		
 	},
 
 	get_skill_CallID:function(strid){

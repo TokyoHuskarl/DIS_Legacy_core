@@ -133,3 +133,89 @@ def {
 
 defv ProjectileTeamSave = 531
 defv ProjectileHitChecker = 4860
+
+
+
+def MACRO_REFRESH_PROJECTILE_POS_FROM_REL_COORD = {
+	projectile_RelativeX.copy projectile_AbsX,2
+	projectile_AbsX.sub LEGV_MainMAP_PointOfReferenceX,2
+	projectile_AbsX.copy projectile_milPixX,2
+	projectile_milPixX.mul N10000,2
+}
+
+
+
+
+def MACRO_SET_ABS_FOR_LEGACY_PROJECTILES = {
+	projectile_rgst_RelativeX.copy projectile_rgst_AbsX,2
+	projectile_rgst_AbsX.sub LEGV_MainMAP_PointOfReferenceX,2
+	projectile_rgst_AbsX.copy projectile_rgst_milPixX,2
+	projectile_rgst_milPixX.mul N10000,2
+}
+
+def MACRO_INIT_HITFLAG_REGISTER = {
+	// optimize for proc in module_core_RTS_main_projectiles.tpc
+	TT1 = projectile_rgst_HitFlagID - 1
+
+		@if TT1 > -1 { // projectile_HitFlagID is set
+			projectile_rgst_HitFlagID = TT1 // this projec uses hitflags of the already generated projectile
+
+		}.else bl{ // otherwise
+			projectile_rgst_HitFlagID = v[216] // just use current id hitflags
+			// init hit flags
+			Ptr13 = projectile_rgst_HitFlagID * PRJ_HIT_FLAGS_SIZE 
+			Ptr13 += gPtr_ProjectileHitFlags_HEAD
+			v[ptr_null].copy v[Ptr13],PRJ_HIT_FLAGS_SIZE
+
+		}
+
+}
+
+def MACRO_SET_REWORKED_PROJECTILE = {
+	// temp
+	MACRO_SET_ABS_FOR_LEGACY_PROJECTILES
+	MACRO_INIT_HITFLAG_REGISTER
+	projectile_rgst_ProjectileFlag1 |= PROJ_FL1_Aftermath_Projectile
+	projectile_rgst_ProjectileFlag2 |= PROJ_FL2_AbsSet
+	
+}
+
+// reg1 = generated projectile id
+__fn PSS_generate_projectile $define_projectile $effect {
+	// you should init reg1 innit?
+	// reg1 = -1
+	@if v[217] < v[4559] {
+			@loop v[4559] .dst v[320] {
+					v[216] %= v[4559]
+					v[301] = v[216] * 100
+					val_add(v[301],v[1076])
+					v[295] = v[301] + 1
+					@if v[v[295]] == 0 {
+							// init register data array 
+							v[1301].copyTo projectile_rgst_ProjectileType, 100
+							v[1301].copyTo v[v[295]], 100
+
+							// set your projectiles parameter manually!
+							$define_projectile
+
+							MACRO_SET_REWORKED_PROJECTILE
+							// generate
+							projectile_rgst_ProjectileType.copyTo v[v[295]], 100
+
+
+							// set effect
+							$effect
+
+							// increment projectiles count
+							val_add(v[217],N1)
+
+							// return generated projectile id
+							g_last_generated_projectile_ID = v[216] + 1
+							@break
+
+					}
+				val_add(v[216],N1)
+
+			}
+	}
+}

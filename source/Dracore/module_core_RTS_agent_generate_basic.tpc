@@ -962,8 +962,8 @@ __fn func_generate_agent_finish_set {
 				}
 			@comment "#Obj Bits"
 				@comment "##If this is SiegeUnit, then flag bleed immunity"
-				agent_BaseObjBit |= agent_UnitType == 5 ? 4096 : 0
-				agent_BaseObjBit |= agent_ObjectType == 11 ? 4096 : 0
+				agent_BaseObjBit |= agent_UnitType == 5 ? BaseObjBit_FLAG_Immune_to_bleed : 0
+				agent_BaseObjBit |= agent_ObjectType == 11 ? BaseObjBit_FLAG_Immune_to_bleed : 0
 				@comment "#Cavalry Penalty"
 				@comment "##Init FootStepSound"
 				agent_FootstepSoundType = 0
@@ -971,7 +971,7 @@ __fn func_generate_agent_finish_set {
 					@comment "#If not flying"
 						@if `(agent_MoveTypeBIts & 1) == 0 {
 							@comment "#Horse Type Move Flag"
-								agent_MoveTypeBIts |= 2
+								agent_MoveTypeBIts |= MoveTypeBits_Horse
 								@comment "#Won't get MS penalty from fatigue "
 								agent_BaseObjBit |= BaseObjBit_FLAG_Relentless
 								@comment "#SP Bonus"
@@ -1014,14 +1014,14 @@ __fn func_generate_agent_finish_set {
 			@comment "#Siege Weapons"
 				@if agent_UnitType == 5 {
 					@comment "no_fatigue"
-						agent_ExMotionFlags |= 2048
+						agent_ExMotionFlags |= ExMotionFlags_FLAG_no_fatigue
 						@comment "immune to stun"
 						agent_BaseObjBit |= BaseObjBit_FLAG_Immune_to_stun
 						@comment "Big flag"
-						agent_BaseObjBit |= 524288
+						agent_BaseObjBit |= BaseObjBit_FLAG_big_unit
 						@comment "No mind"
 						agent_BaseObjBit |= BaseObjBit_FLAG_No_mind
-						agent_BaseObjBit |= 32
+						agent_BaseObjBit |= BaseObjBit_FLAG_RangedDamageResist
 						@comment "do not bleed"
 						agent_BaseObjBit |= BaseObjBit_FLAG_Immune_to_bleed
 
@@ -1069,7 +1069,7 @@ __fn func_generate_agent_finish_set {
 					} .else bl {
 						agent_BaseCamoValue = agent_UnitType != 107 ? 18000 : 80000
 							@comment "GATE"
-							@if `agent_AgentBits & 256 {
+							@if `agent_StaticBits & StaticBits_FLAG_has_gate_function {
 								agent_BaseCamoValue = 8500
 
 							}

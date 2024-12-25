@@ -339,7 +339,7 @@ __fn agent_autoattack_melee {
 									TT2 += TT3 < reg2 ? 3 : 0
 									TT2 *= v[243] < v[1124] ? 1 : 0
 									@if TT2 >= 8 {
-										v[372] = (victim_BaseObjBit & 4096) ? 1 : 0
+										v[372] = (victim_BaseObjBit & BaseObjBit_FLAG_Immune_to_bleed) ? 1 : 0
 										//set blood variation - mini_blood_damage_threshold is defined in module_core_RTS_main_effects_gib_functions.tpc 
 										var4 = reg2 >= mini_blood_damage_threshold ? 0 : 1
 										func_call_mini_blood_f_effect(v[361] v[362] v[372] var4)
@@ -431,82 +431,106 @@ __fn agent_autoattack_melee {
 				// "Trample Damage"
 				@if `agent_AABits & AABits_FLAG_Trample {
 						s[162].on
-						@if v[217] < v[4559] {
-							v[217] += 1
-							@loop v[4559] .dst Temp20 {
-									v[216] %= v[4559]
-									Temp1 = v[216] * 100 
-									Temp1 += v[1076]
-									Ptr15 = Temp1 + 1
-									@if v[Ptr15] == 0 {
-								// "Access17 = AttackerObjチェックPtr"
-								Ptr17 = Ptr9 
-								Ptr17 += 4700
-								// "まず清掃"
-								v[1301].copy v[601], 100
-								v[1301].copy v[Ptr15], 100
-								// "ParentObjセット"
-								v[609] = Ptr19
-								// "出る場所セット"
-								TT1 = Ptr17 + 7
-								v[TT1].copy v[605], 2
-								v[605..606] *= 10000
-								v[TT1].copy v[607], 2
-								// "Projectile team"
-								v[618] = v[Ptr17 + 100]
-								// "パラメータ等入力begin"
-								// "#Pic"
-								v[602] = 1
-								// "#ProjectileType"
-								v[601] = 2
-								// "#あたり判定"
-								v[610..611] = v[Ptr17 + 117] / 1000
-								// "#威力"
-								/*var1 = Ptr19
-								var2 = 1
-								@call .cev 2004*/
-								macro_get_agent_slot_to_r1(Ptr19 SLOT_CURRENT_AD)
-								// "[AD]*25%"
-								reg1 = muldiv(reg1, 20, 100)
-								v[621] = reg1
-								// "#ARMRと属性"
-								v[622] = 0
-								v[623] = v[Ptr17 + 123]
-								// "#Nopic"
-								v[628] |= 8
+						__if DIS_EXPERIMENTAL == 1 {
+							PSS_generate_projectile({
+								val_asg(projectile_rgst_ParentObject,Ptr19)
+								agent_RelativeX.copy projectile_rgst_milPixX, 2
+								v[__id(projectile_rgst_milPixX)..__id(projectile_rgst_milPixY)] *= 10000
+								agent_RelativeX.copy projectile_rgst_RelativeX, 2
+								val_asg(projectile_rgst_Team,agent_TeamID)
+								val_asg(projectile_rgst_ProjectileType,N2)
+								TT1 = agent_BaseRange_max / 1000
+								projectile_rgst_Width.repeat TT1,2
+								projectile_rgst_Damage = muldiv(agent_ProcessAD, 20, 100)
+								val_init(projectile_rgst_ARorMR) // AD damage
+								val_asg(projectile_rgst_Element,agent_AAElement)
+
+								// nopic
+								projectile_rgst_ProjectileFlag1 |= 8 
+
 								// "#Timer"
-								v[700] = 1
-								// "パラメータ等入力end"
-								v[601].copy v[Ptr15], 100
-								// "演出"
-								@break
-								
-									}
-									v[216] += 1
+								val_asg(projectile_rgst_Timer,N1)
 									
+								},{})
+
+						}.else bl { // old proc
+							@if v[217] < v[4559] {
+								v[217] += 1
+									@loop v[4559] .dst Temp20 {
+										v[216] %= v[4559]
+											Temp1 = v[216] * 100 
+											Temp1 += v[1076]
+											Ptr15 = Temp1 + 1
+											@if v[Ptr15] == 0 {
+												// "Access17 = AttackerObjチェックPtr"
+												Ptr17 = Ptr9 
+													Ptr17 += 4700
+													// "まず清掃"
+													v[1301].copy v[601], 100
+													v[1301].copy v[Ptr15], 100
+													// "ParentObjセット"
+													v[609] = Ptr19
+													// "出る場所セット"
+													TT1 = Ptr17 + 7
+													v[TT1].copy v[605], 2
+													v[605..606] *= 10000
+													v[TT1].copy v[607], 2
+													// "Projectile team"
+													v[618] = v[Ptr17 + 100]
+													// "パラメータ等入力begin"
+													// "#Pic"
+													v[602] = 1
+													// "#ProjectileType"
+													v[601] = 2
+													// "#あたり判定"
+													v[610..611] = v[Ptr17 + 117] / 1000
+													// "#威力"
+													/*var1 = Ptr19
+														var2 = 1
+														@call .cev 2004*/
+													macro_get_agent_slot_to_r1(Ptr19 SLOT_CURRENT_AD)
+													// "[AD]*25%"
+													reg1 = muldiv(reg1, 20, 100)
+													v[621] = reg1
+													// "#ARMRと属性"
+													v[622] = 0
+													v[623] = v[Ptr17 + 123]
+													// "#Nopic"
+													v[628] |= 8
+													// "#Timer"
+													v[700] = 1
+													// "パラメータ等入力end"
+													v[601].copy v[Ptr15], 100
+													// "演出"
+													@break
+
+											}
+										v[216] += 1
+
+									}
+
+
 							}
-							
-							
 						}
+
 						
 				}
 
 				// "Blade Dance"
 				@if `agent_AABits & AABits_FLAG_BladeDance {
-						var1 = 1243
-						var2 = Ptr19
-						func_bs_register_buff_with_time(1243 Ptr19 bladedance_time)
+						func_bs_register_buff_with_time(1243,Ptr19,bladedance_time)
 						
 				}
 				// "################"
+				/*
 				Ptr15 = 300 * Ptr19 
 				Ptr15 += 4700
 				// "#試作#Functionを呼ぶ"
 				v[730] = Ptr15 + 130
-				@if v[v[730]] >= 1 {
-						TT1 = Ptr15 + 7
-						v[TT1].copy v[590], 2
-						@call .cev v[v[730]]
+				*/
+				@if agent_AAFunction >= 1 {
+						agent_RelativeX.copy v[590], 2
+						@call .cev agent_AAFunction
 						
 				}
 				

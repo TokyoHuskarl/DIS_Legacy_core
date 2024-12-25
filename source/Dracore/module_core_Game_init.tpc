@@ -1620,7 +1620,9 @@ __fn init_DIS_database $already_loaded {
 	// legacy loading with csv
 	t[803].asg ""
 	v[4574] = 18700
-	inputstr .asg  .file "..\data\data_factiontemplates", .utf8, .extract
+	getModulePathTo(inputstr)
+	inputstr .cat "/data/data_factiontemplates"
+	inputstr .asg  .file inputstr, .utf8, .extract // change path to one in module 
 	// replace troop ID in template setting
 	convert_troopID_in_string(inputstr)
 

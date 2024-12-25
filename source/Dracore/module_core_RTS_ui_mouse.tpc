@@ -2797,6 +2797,7 @@ __fn UI_Glonalqueue_draw_icons {
 
 				// draw selecting frame if the flag was not turned on in the last frame
 					@if `!(MOUSE_RTS_BUTTON_OVERLAP_SAVE_QoL_UI & TT10) {
+						play_system_se("",70,100,50) // snd
 						// refresh the show frame
 						show_frame_overlap_effect_ltrb(InvVar2, InvVar3, InvVar4, InvVar5)
 							@pic[PicID_Popup_1].erase
