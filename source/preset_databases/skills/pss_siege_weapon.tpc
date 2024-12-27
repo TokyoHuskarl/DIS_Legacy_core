@@ -1,95 +1,3 @@
-cev .id(1221), .name("catapult_AoE Projectile"), {
-	@if s[118] .isOn() {
-		v[1301].copyTo v[581], 20
-
-	} .else bl {
-			v[607].copyTo v[361], 2
-			@comment "エフェクト処理から呼び出される"
-			v[341] = v[301] + 8
-			v[342] = v[301] + 22
-			@comment "Access19 = AttackerObjectID
-			Access20 = TargetObjectID
-			Access18 = TargetObjTypeチェックPtr"
-			v[299] = v[v[341]]
-			v[300] = v[v[342]]
-			v[298] = 300 * v[300]
-			v[298] += 4701
-			@if v[217] < v[4559] {
-				v[217] += 1
-					@loop v[4559] .dst v[355] {
-						v[216] %= v[4559]
-							v[281] = v[216] * 100
-							v[281] += v[1076]
-							v[285] = v[281] + 1
-							@if v[v[285]] == 0 {
-								@comment "Access17 = AttackerObjチェックPtr"
-									v[287] = v[299] * 300
-									v[287] += 4700
-									@comment "まず清掃"
-									v[1301].copyTo v[601], 100
-									v[1301].copyTo v[v[285]], 100
-									@comment "ParentObjセット"
-									v[609] = v[299]
-									@comment "出る場所セット"
-									v[361].copyTo v[605], 2
-									v[605..606] *= 10000
-									v[361].copyTo v[607], 2
-									@comment "Projectile team"
-									v[618] = -1
-									@comment "パラメータ等入力begin"
-									@comment "#Pic"
-									@comment "#ProjectileType"
-									v[601] = 2
-									@comment "#あたり判定"
-									v[610] = 23
-									v[611] = 23
-									@comment "#威力"
-									v[11] = v[299]
-									v[12] = 1
-									@call .cev 2004
-									@comment "[AD]*100%"
-									v[21] *= 10
-									v[21] /= 10
-									v[621] = v[21]
-									@comment "#ARMRと属性"
-									v[622] = 0
-									v[623] = 2
-									@comment "#AntiStatic"
-									v[624] |= v[2409 + v[v[287] + 100] % 3] & 0x10000 ? 32 : 0
-									@comment "#AntiSiege"
-									v[624] |= 16
-									@comment "#Timer"
-									v[700] = 1
-									@comment "#Effect"
-									v[628] |= 8
-									@comment "パラメータ等入力end"
-									v[601].copyTo v[v[285]], 100
-									@comment "描画"
-									@comment "演出"
-									v[371] = v[361] >= v[1008] ? 1 : 0
-									v[371] += v[361] <= v[1009] ? 1 : 0
-									v[371] += v[362] >= v[1010] ? 1 : 0
-									v[371] += v[362] <= v[1011] ? 1 : 0
-									v[371] += v[243] < v[1124] ? 1 : 0
-									@if v[371] >= 5 {
-										s[141].on
-											@call .cev 103
-
-									}
-								@break
-
-							}
-						v[216] += 1
-
-					}
-
-
-			}
-
-	}
-
-}
-
 __fn pss_register_catapult_projectile {
 	// called by effect loop
 	v[607].copyTo v[361], 2
@@ -207,6 +115,270 @@ __fn pss_register_catapult_projectile {
 
 
 			})
+}
+
+// not completed
+__fn pss_register_fire_catapult_shoot {
+	@if s[118] .isOn() {
+		v[1301].copy v[581], 20
+			
+	} .else bl {
+		@comment "#親Objと対象Objをセット"
+			v[609] = v[299]
+			v[623] = v[300]
+			@comment "Set Motion Timer"
+			v[v[210] + 83] = 6
+			@comment "#始点を設定"
+			v[607] = v[210] + 7
+			v[v[607]].copy v[607], 2
+			@comment "#終点を設定"
+			v[624] = v[298] + 6
+			v[v[624]].copy v[624], 2
+			@comment "#フレーム数を設定"
+			v[700] = v[210] + 128
+			v[603] = v[v[700]] - 1
+			v[700] = v[v[700]]
+			v[729] = v[210] + 129
+			v[729] = v[v[729]] > 0 ? v[v[729]] : 91
+			@comment "発射音"
+			@if `s[500 + v[299]] == 1 && v[182] < 4 {
+				v[182] += 1
+					@comment "#########################"
+					v[471] = 11550
+					v[472] = divmul(75, 100, v[2216])
+					v[473] = 100
+					v[474] = divmul(v[361] + v[1001], v[1281], 50)
+					@comment "#########################"
+					@cmd v[471], "mangonelfire1", .args v[472], 3
+					
+			}
+		v[725] = v[210] + 127
+			@loop v[v[725]] {
+				s[141].on
+					v[20] = 46
+					@call .cev 108
+					
+			}
+		
+			s[141].off
+			
+	}
+}
+
+// cev 1234
+__fn pss_register_fire_catapult_projectile {
+	@if s[118] .isOn() {
+		v[1301].copy v[581], 20
+			
+	} .else bl {
+		v[607].copy v[361], 2
+			@comment "エフェクト処理から呼び出される"
+			v[341] = v[301] + 8
+			v[342] = v[301] + 22
+			@comment "Access19 = AttackerObjectID
+			Access20 = TargetObjectID
+			Access18 = TargetObjTypeチェックPtr"
+			v[299] = v[v[341]]
+			v[300] = v[v[342]]
+
+			// generate direct hit projectile
+			PSS_generate_projectile({
+
+					// set parent
+					projectile_rgst_ParentObject = v[299]
+
+					// set type
+					projectile_rgst_ProjectileType = 2 // AoE
+
+					// set team
+					projectile_rgst_Team = -1
+
+					// get coordinates from effect  
+					v[361].copyTo projectile_rgst_RelativeX, 2
+
+					projectile_rgst_Width = 10
+					projectile_rgst_Height = 10
+
+
+					// can't we do any better? temp
+					v[11] = v[299]
+					v[12] = 1
+					@call .cev 2004
+					reg1 *= 12
+					reg1 /= 10 // [AD] * 120%
+					projectile_rgst_Damage = reg1
+
+					projectile_rgst_ARorMR = 0 // AR damage
+					projectile_rgst_Element = 4 // fire
+
+
+					// Anti static flag
+					projectile_rgst_bits1 |= 32
+					projectile_rgst_bits1 |= 16 // Anti Siege weapon flag
+
+					projectile_rgst_Timer = 1 // timer
+					projectile_rgst_ProjectileFlag1 |= PROJ_FL1_NoPicture // effect
+					projectile_rgst_ProjectileFlag2 |= PROJ_FL2_DoNot_init_hitflag_after_timeup // do not init hitflag after time up for following splash damage projectile
+
+
+
+			},{}
+		)
+		// Splash damage
+			PSS_generate_projectile({
+
+					// set parent
+					projectile_rgst_ParentProjectile = g_last_generated_projectile_ID // set last generated object as a parent projectile
+					projectile_rgst_HitFlagID = g_last_generated_projectile_ID // shares hit flag with 
+					projectile_rgst_ParentObject = v[299]
+
+					// set type
+					projectile_rgst_ProjectileType = 2 // AoE
+
+					// set team
+					projectile_rgst_Team = -1
+
+
+					// get coordinates from effect  
+					v[361].copyTo projectile_rgst_RelativeX, 2
+
+					projectile_rgst_Width = 21 // 24 
+					projectile_rgst_Height = 21 // 24
+
+
+					// can't we do any better? temp
+					v[11] = v[299]
+					v[12] = 1
+					@call .cev 2004
+					reg1 /= 2 // [AD] * 50%
+					projectile_rgst_Damage = reg1
+
+					projectile_rgst_ARorMR = 0 // AR damage
+					projectile_rgst_Element = 4 // fire
+
+
+					projectile_rgst_bits1 |= 16 // Anti Siege weapon flag
+
+
+					projectile_rgst_Timer = 1 // timer
+					projectile_rgst_ProjectileFlag1 |= 8 // effect
+
+
+
+			},
+		{
+
+			// effect
+			@if `between(v[361], v[1008], v[1009]) {
+				@if `between(v[362], v[1010], v[1011]) {
+					v[182] += 1
+						@comment "#########################"
+						v[471] = 11550
+						v[472] = divmul(100, 100, v[2216])
+						v[473] = rnd(88, 110)
+						v[474] = divmul(v[361] + v[1001], v[1281], 50)
+						@comment "#########################"
+						@cmd v[471], "weapons\explosion_01", .args v[472], 3
+						s[141].on
+						@call .cev 162
+						s[141].off
+
+				}
+			}
+
+
+
+
+
+		})
+			__if DIS_EXPERIMENTAL == 0 {
+				v[298] = 300 * v[300]
+					v[298] += 4701
+					@if v[217] < v[4559] {
+						v[217] += 1
+							@loop v[4559] .dst v[355] {
+								v[216] %= v[4559]
+									v[281] = v[216] * 100
+									v[281] += v[1076]
+									v[285] = v[281] + 1
+									@if v[v[285]] == 0 {
+										@comment "Access17 = AttackerObjチェックPtr"
+											v[287] = v[299] * 300
+											v[287] += 4700
+											@comment "まず清掃"
+											v[1301].copy v[601], 100
+											v[1301].copy v[v[285]], 100
+											@comment "ParentObjセット"
+											v[609] = v[299]
+											@comment "出る場所セット"
+											v[361].copy v[605], 2
+											v[605..606] *= 10000
+											v[361].copy v[607], 2
+											@comment "Projectile team"
+											v[341] = v[287] + 100
+											v[618] = v[v[341]]
+											v[618] = -1
+											@comment "パラメータ等入力begin"
+											@comment "#Pic"
+											@comment "#ProjectileType"
+											v[601] = 2
+											@comment "#あたり判定"
+											v[610] = 23
+											v[611] = 23
+											@comment "#威力"
+											v[11] = v[299]
+											v[12] = 1
+											@call .cev 2004
+											@comment "[AD]*100%"
+											v[21] *= 10
+											v[21] /= 10
+											v[621] = v[21]
+											@comment "#ARMRと属性"
+											v[622] = 0
+											@comment "#FIRE"
+											v[623] = 4
+											@comment "#AntiStatic"
+											v[624] |= 32
+											@comment "#AntiSiege"
+											v[624] |= 16
+											@comment "#Timer"
+											v[700] = 1
+											@comment "#Nopic"
+											v[628] |= 8
+											@comment "#Effect"
+											@comment "パラメータ等入力end"
+											v[601].copy v[v[285]], 100
+											@comment "描画"
+											@comment "演出"
+											@if `between(v[361], v[1008], v[1009]) {
+												@if `between(v[362], v[1010], v[1011]) {
+													v[182] += 1
+														@comment "#########################"
+														v[471] = 11550
+														v[472] = divmul(100, 100, v[2216])
+														v[473] = rnd(88, 110)
+														v[474] = divmul(v[361] + v[1001], v[1281], 50)
+														@comment "#########################"
+														@cmd v[471], "weapons\explosion_01", .args v[472], 3
+														s[141].on
+														@call .cev 162
+														s[141].off
+
+												}
+
+											}
+										@break
+
+									}
+								v[216] += 1
+
+							}
+
+
+					}
+			}
+		
+	}
 }
 
 // for cannon and trebuchet
