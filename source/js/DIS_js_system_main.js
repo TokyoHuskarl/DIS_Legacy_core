@@ -134,10 +134,11 @@ function getRM(typ,add){
 // DIS project
 
 
-// global pointers for important objects
+// global variables for important objects
 let MISSION; // {RTSmission} current mission - always refers to current RTS.mission
 let MAP; // {RTSmap} current map
 var scene = scene || {};
+var g_RTS_CAMPAIGN = {}; // isn't setting nu global variable retarded?
 
 
 // global variables
@@ -947,6 +948,15 @@ class DIS_entity { // prototype for DIS RPGmaker Object
 
 }
 
+class RMstrpicInfo {
+	constructor(){
+
+	};
+	font = [...DIS.lang.currentFontdata.common];
+	allignment = "topLeft"; // or Top
+	
+};
+
 class DIS_RMpicture extends DIS_entity { // simple picture object.
 	constructor(pid,file,pos){
 		super();
@@ -1598,6 +1608,22 @@ DIS.macro = {
 		return flattenedArray;
 	},
 
+	// if default_value set above -1, consider it normal
+	convertWordIntoNumber(wd,wdlist,default_value = -1){
+		let ret = default_value;
+		if (typeof wd !== 'undefined'){ // it's defined
+			if (wdlist.hasOwnProperty(wd)){
+				ret = wdlist[wd];
+			} else {
+				errorlog(`DIS.macro.convertWordIntoNumber(): Given word ${wd} does not match any of expected words.`);
+			};
+		} else {
+			if (default_value === -1){
+				errorlog(`DIS.macro.convertWordIntoNumber(): Given property is undefined. Returns -1`);
+			};
+		};
+		return ret;
+	}
 
 };
 
@@ -2115,6 +2141,41 @@ DIS.cache = {
  * @namespace DIS._tpc
  */
 DIS._tpc = {
+
+	test_campaign:()=>{
+
+		const nu = new DIS_RTScampaign(
+`
+{
+	"campaignID": "test_campaign",
+	"Name": "test campaign",
+	"Name_jp": "試験用キャンペーン",
+	"backgroundMaterial": "shade_twilight",
+	"BGM": "SESea",
+	"widgets":[
+		{
+			"Type": "titlelabel",
+			"Name": "Campaign Title",
+			"Text": "test campaign!",
+			"Text_jp": "テスト用キャンペーン"
+		},
+		{
+			"Type": "simplebutton",
+			"Name": "scenariobutton1",
+			"Material": "menu_pointer",
+			"pos": [24,24],
+			"size": [24,24],
+			"Clickevent": "OPENMISSION",
+			"MissionID": "mapgentest",
+			"ConditionType": [],
+			"Condition": ""
+		}
+	]
+}
+`
+		);
+		nu.start()
+	},
 
 
 	/**
@@ -3608,6 +3669,122 @@ class RTSmission {
 };
 
 
+
+/**
+ * DIS_RTScampaign.
+ */
+class DIS_RTScampaign {
+	constructor(infojson){
+		const RMMAPID_campaign = 32;
+		let src;
+		try {
+			src = JSON.parse(infojson);
+		} catch (error) {
+			errorlog("json file for current campaign seems broken. Check if it's written in correct JSON format or not.");
+			src = {};
+		};
+		DIS.data.giveSrcParamToData(this,src);
+
+		if (this.RMmapID == 0) {this.RMmapID = RMMAPID_campaign;};
+
+		if (this.widgets.length > 99){errorlog("DIS_RTScampaign:Too many widgets, this may cause bug");}
+
+		// I gave up united one gui system. it's over
+		/*
+		const convertCampaignWidget = function(widget){
+		let convertedWidget = [
+		0, // type
+		"undefined", // name
+		"", // material
+		0, // posX
+		0, // posY
+		0, // sizeX
+		0, // sizeY
+		"EVENT", // click event
+		"undefined", // event
+		];
+		const DICT_WIDGETTYPE = {
+			'label':0,
+			'simplebutton':1,
+		};
+			DIS.macro.convertWordIntoNumber(widget.Type, DICT_WIDGETTYPE)
+
+		};
+		*/
+
+	};
+
+	campaignID = "undefined";
+	scripts = [];
+	Name = "NAME UNDEFINED";
+	Description = "DESCRIPTION UNDEFINED";
+	BGM = "";
+	BGMinfo = [80,100,50];
+	backgroundMaterial = "";
+	campaignType = 0;
+	RMmapID = 0;
+	widgets = [];
+	widgetPicIDhead = 10;
+
+
+	// call this
+	start(){
+		// 
+		Cmd.game.gotoRMmap(this.RMmapID,[0,0]); // move to RMmap
+		// play BGM
+		Cmd.game.playBGM(this.BGM,this.BGMinfo);
+		Cmd.game.tintScreen([100,100,100,100],5);
+		// load and generate
+		let i = this.widgetPicIDhead;
+		Cmd.game.pic.load(i,this.backgroundMaterial); // load background sprite
+		i++;
+		for (let wid of this.widgets){
+			if (wid.Type == "simplebutton" || wid.Type == "simplesprite") {
+				Cmd.game.pic.load(i,wid.Material);
+				i++;
+			} else if (wid.Type == "label" || wid.Type == "titlelabel" || wid.Type == "sticky_label"){
+				let position;
+				if (wid.Type == "titlelabel"){
+					position = [400,2]; // kari
+				} else {
+					position = wid.pos;
+				};
+				Cmd.game.pic.drawString(i,wid.Text,position); // kari
+				i++;
+			};
+		};
+		g_RTS_CAMPAIGN = this;
+	};
+
+	// called by map event loop
+	// とにかく動けばいい、作りはゴミ
+	run(){
+		// const mouse = DGUI.wrappers.getMouseState();
+		const WIDTYP_simplebutton = 1;
+		let senddata = "";
+		for (let wid of this.widgets){
+			if (wid.Type == "simplebutton") {
+				senddata += `${wid.Type}|${wid.Material}|${wid.pos[0]}|${wid.pos[1]}|${wid.size[0]}|${wid.size[1]}|${wid.Clickevent}|${wid.MissionID}`; // simple and slow
+			} else {
+				senddata += "nofunction"; // do nothing
+			};
+				senddata += "\n"; // LF
+		};
+		sett(1,senddata); 
+	};
+
+	loadRecord(){
+
+	};
+
+	saveRecord(){
+		
+	};
+	
+
+};
+
+
 // RTS map class
 const MAPGEN_nomapgen = 0,
 	MAPGEN_loadPictureData = 2,
@@ -4622,8 +4799,14 @@ var Cmd = {
 				Cmd.Qset(CmdType,"pGSE",`${file},${vol},${tempo},${ballance}`);
 			},
 
-			playBGM: function(file,vol,tempo,ballance) { // "cmd_play_global_sound"
-				Cmd.Qset(CmdType,"pBGM",`${file},${vol},${tempo},${ballance}`);
+			/**
+			 * .
+			 *
+			 * @param {string} file
+			 * @param {array} info [vol,tempo,ballance]
+			 */
+			playBGM: function(file,info) { // "cmd_play_global_sound"
+				Cmd.Qset(CmdType,"pBGM",`${file},${info[0]},${info[1]},${info[2]}`);
 			},
 
 
@@ -4660,11 +4843,21 @@ var Cmd = {
 				/**
 				 * draw simple string. unco
 				 * @param {int} picid
-				 * @param {[int x,int y]} pos
-				 *
+				 * @param {[int,int]} pos [x,y]
+				 * @param {RMstrpicInfo}
 				 */
-				drawString: function(picid,str,pos) {
-					Cmd.Qset(CmdType,"drSimpleRect",`${picid},${str},${pos[0]},${pos[1]}`);
+				drawString: function(picid,str,pos,strpicInfo = 0) {
+					if (strpicInfo === 0){ // if strpicInfo is not set
+						strpicInfo = new RMstrpicInfo();
+					};
+
+					const DICT_PICALLIGNMENT = {
+						'topLeft':0,
+						'top':1,
+					};
+					const allign = DIS.macro.convertWordIntoNumber(RMstrpicInfo.allignment, DICT_PICALLIGNMENT)
+
+					Cmd.Qset(CmdType,"drsPic",`${picid},${str},${pos[0]},${pos[1]},${strpicInfo.font[0]},${strpicInfo.font[1]},${allign}`);
 				},
 
 
@@ -5443,6 +5636,9 @@ if (!VIRTUAL_ENV){
 
 // without RPG_RT.exe
 if (VIRTUAL_ENV){
+
+DIS._tpc.test_campaign()
+
 const techtest = `
 {
 	"TECH": {

@@ -13,6 +13,22 @@
 const NsGUI = (function(){
 	let module = {};
 
+	// UI types set
+	const UIOBJ_undefined = 0,
+		UIOBJ_checkbox = 1,
+		UIOBJ_simplebutton = 2,
+		UIOBJ_simplesprite = 3,
+		UIOBJ_strpic = 4,
+		UIOBJ_radiobutton = 5;
+
+	// UI render order
+	const PICCMD_Keep = 0,
+		PICCMD_Refresh = 1,
+		PICCMD_Erase = 2,
+		PICCMD_Genstr = 3;
+
+
+
 	class Ns_Picture {
 		constructor(picid,pdata,pos) {
 			this.picid = picid;
@@ -136,7 +152,7 @@ const NsGUI = (function(){
 
 		setpic = function(picture_file) {
 			this.picture = picture_file;
-			this.UI_objtype = UIOBJ_simplesprite;
+			this.UI_objtype = this.UI_objtype == UIOBJ_undefined ? UIOBJ_simplesprite : this.UI_objtype;
 		}
 
 		settxt = function(string) {
@@ -239,11 +255,11 @@ const NsGUI = (function(){
 
 			this.picCmd = PICCMD_Genstr;
 
-		}
+		};
 
 		UIcheck = function() {
 			// check hit box
-		}
+		};
 
 		render = function() {
 			// checkbox,pid,picCmd,text
@@ -251,7 +267,7 @@ const NsGUI = (function(){
 			let ORDER = `${this.UI_objtype},${this.pid},${this.picCmd},${this.txt},${this.x},${this.y}`;
 			this.picCmd = PICCMD_Keep; // reset picCmd
 			return ORDER;
-		}
+		};
 
 
 	};
@@ -259,7 +275,7 @@ const NsGUI = (function(){
 	class SimpleButton extends UI_object {
 		constructor(x,y) {
 			super(x,y);
-			this.UI_objtype = UIOBJ_checkbox;
+			this.UI_objtype = UIOBJ_simplebutton;
 			this.picCmd = PICCMD_Refresh;
 		}
 

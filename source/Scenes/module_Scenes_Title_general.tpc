@@ -63,9 +63,9 @@ PicID_N = 2189
 }
 
 
-mev .map(TitleSceneID), .name("Main"), .id(113), .pos (8,7)
+mev (.map(TitleSceneID), .name("Main"), .id(113), .pos (8,7),
 
-	mep[11] {
+	mep[11]{
 		.auto,
 		.ev bl {
 			v[2216] = 100
@@ -77,4 +77,5 @@ mev .map(TitleSceneID), .name("Main"), .id(113), .pos (8,7)
 			test()
 		},
 	}
+)
 

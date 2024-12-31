@@ -195,3 +195,83 @@ cev[2056] .name("UI:Y_or_N_? t[3000]") {
 	func_open_y_or_n_menu(2186,t[3000],"Yes","No")
 }
 
+
+// hardcoded map events
+
+// Campaign map event
+// see DIS_RTScampaign class in DIS_js_system_main.js
+mev (.map(32), .name("Campaign Manager"), .id(1), .pos(0,0))
+mep[1] .auto, .ev {
+	@wait 0 // wait for execution of JS Cmd
+		eval_js("v[21] = g_RTS_CAMPAIGN.widgetPicIDhead") // get pic id head
+		eval_js("t[1] = g_RTS_CAMPAIGN.backgroundMaterial") // get background picture file
+		// SHOW BACKGROUND PICTURE
+		@pic[reg1].show {
+			regs1
+				.pos 0, 0.topLeft
+				.chromakey 0
+				.scale 100
+				.trans 0
+				.rgbs 100, 100, 100, 100
+				.grid 1, 1 .cell 1
+				.mapLayer 2
+				.affectedByTint
+		}
+
+	// PicID head for widgets!
+	Temp10 = reg1 + 1
+		@loop bl {
+			eval_js("g_RTS_CAMPAIGN.run()") // run() => get widgets string to regs1
+				regs1.split(LF,strAr0,Temp1) // split to t[3000]
+				@loop Temp1 .dst(Temp2) {
+					// split widget's elements up
+					def CAMPAIGN_WIDGET_PROPERTIES_HEAD = 3200
+						Temp3 = __id(strAr0) + Temp2
+						t[Temp3].split("|",t[CAMPAIGN_WIDGET_PROPERTIES_HEAD],TT1)
+
+						// now check how widgets goes, bruh
+						@if t[CAMPAIGN_WIDGET_PROPERTIES_HEAD].eq "simplebutton" { // simple button type
+							UI_CAMPAIGN_WIDGET_simplebutton_run()
+
+						}.elif t[CAMPAIGN_WIDGET_PROPERTIES_HEAD].eq "nofunction" { // no function
+							
+						}.else bl{
+							errlog("Unknown widget type.")
+						}
+
+
+				}
+
+			@wait 0
+		}
+}
+
+// `${wid.Type}|${wid.Material}|${wid.pos[0]}|${wid.pos[1]}|${wid.size[0]}|${wid.size[1]}|${wid.Clickevent}|${wid.MissionID}}`
+__fn UI_CAMPAIGN_WIDGET_simplebutton_run {
+	Temp11 = Temp10 + Temp2 // Temp11 = PicID
+	t[3202].toNum(TT1) // x
+	t[3203].toNum(TT2) // y
+	t[3204].toNum(TT3) // w
+	t[3205].toNum(TT4) // h
+	ui_check_overlap_rectangle_to_reg1(MousePtr_x,MousePtr_y,TT1,TT2,TT3,TT4)
+	@if reg1 == 1 { // overlap
+    @pic[Temp11].move {
+        .pos TT1, TT2 .topLeft
+        .scale 100
+        .trans 0
+        .time 0
+        .rgbs 125, 125, 125, 100
+    }
+
+	}.else bl{
+    @pic[Temp11].move {
+        .pos TT1, TT2 .topLeft
+        .scale 100
+        .trans 0
+        .time 0
+        .rgbs 100, 100, 100, 100
+    }
+	}
+}
+
+

@@ -1584,43 +1584,47 @@ __fn CEV_CONTROL_MOUSE {
 
 
 __fn CONTROL_globalqueue_left_click { // kari
-	@loop v[gPtr_UI_globalqueue_Array_COUNTER] .dst var1 {
-			
-		TT10 = MOUSE_UNDER_OVERLAP_GQ1 << var1 // get which flag you'll check
-			@if `MOUSE_RTS_BUTTON_OVERLAP_QoL_UI & TT10 {
-				// when you clicked
-				TT15 = var1 * UI_GLOBALQUEUE_DATA_SIZE
-				val_add(TT15,gPtr_UI_globalqueue_Array_HEAD)
-				v[TT15].copy Temp1,UI_GLOBALQUEUE_DATA_SIZE // picking uponly the head elm may be suffice for what we wanna do tbh
+	@if s[11].isOff(){
+		@loop v[gPtr_UI_globalqueue_Array_COUNTER] .dst var1 {
 
-				// you must completely rewrite cev 65!
+			TT10 = MOUSE_UNDER_OVERLAP_GQ1 << var1 // get which flag you'll check
+				@if `MOUSE_RTS_BUTTON_OVERLAP_QoL_UI & TT10 {
+					// when you clicked
+					TT15 = var1 * UI_GLOBALQUEUE_DATA_SIZE
+						val_add(TT15,gPtr_UI_globalqueue_Array_HEAD)
+						v[TT15].copy Temp1,UI_GLOBALQUEUE_DATA_SIZE // picking uponly the head elm may be suffice for what we wanna do tbh
+
+						// you must completely rewrite cev 65!
 
 
-				// proto select the static
-				init_player_selectlist()
-				change_agent_state_in_selecting_proc_reg1(Temp1)
-				@if reg1 > 0 { // the agent is alive
-						// add the agent to the head of the selecting list
-						val_asg(v[Adr_PlayerSelectList_Head],Temp1)
-						val_asg(v[100],Temp1) // set currently selecting shit - legacy design, should be changed
-						val_asg(LEGV_SelectedAmount,N1)
+						// proto select the static
+						init_player_selectlist()
+						change_agent_state_in_selecting_proc_reg1(Temp1)
+						@if reg1 > 0 { // the agent is alive
+													 // add the agent to the head of the selecting list
+							val_asg(v[Adr_PlayerSelectList_Head],Temp1)
+								val_asg(v[100],Temp1) // set currently selecting shit - legacy design, should be changed
+								val_asg(LEGV_SelectedAmount,N1)
 
-						// kari
-						agent_RelativeX.copy var1,2
-						v[11..12] *= 10000
-						//CrdRe->MAP 
-						@call .cev 1999
-						reg1.copy v[66], 2
-						s[44].on // move camera to the agent!
-						s[27].on // selecting ally static switch
-						ui_selectsnd()
-						v[81] = 6
-						@call .cev 76
+								// kari
+								agent_RelativeX.copy var1,2
+								v[11..12] *= 10000
+								//CrdRe->MAP 
+								@call .cev 1999
+								reg1.copy v[66], 2
+								s[44].on // move camera to the agent!
+								s[27].on // selecting ally static switch
+								ui_selectsnd()
+								v[81] = 6
+								@call .cev 76
+						}
+
+					s[201].on
+					s[11].on
+					s[9].on
+						@break
 				}
 
-				s[201].on
-				@break
-			}
-
+		}
 	}
 }

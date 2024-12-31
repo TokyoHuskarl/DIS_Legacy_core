@@ -2653,6 +2653,8 @@ __fn UI_Glonalqueue_draw_icons {
 			Ptr10 = __id(Str_UI_globalqueue_path_0) + var1
 			// which kind of icon you gonna take?
 			@if `Temp4 & StaticBits_FLAG_working_on_tech { // research
+				get_tech_icon_path_to_regs1(Temp2)
+				t[Ptr10].asg .cat("/tech_icons/","",regs1) // kari
 
 			}.else bl{ // get unit icon path
 				get_unit_icon_path_to_regs1(Temp2)

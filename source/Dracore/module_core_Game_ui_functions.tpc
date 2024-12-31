@@ -5,7 +5,16 @@ __fn get_unit_icon_path_to_regs1 $unitid {
 }
 
 __fn get_tech_icon_path_to_regs1 $techid {
-	
-	
+	regs1.asg "0" // kari
+}
+
+/*
+ *
+ *
+ *
+ *
+ */
+__fn ui_check_overlap_rectangle_to_reg1 $x $y $x2 $y2 $w $h {
+	reg1 = between($x,$x2,$x2 + $w) && between($y,$y2,$y2 + $h) ? 1 : 0
 }
 
