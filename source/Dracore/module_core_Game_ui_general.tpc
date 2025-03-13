@@ -221,6 +221,7 @@ mep[1] .auto, .ev {
 	// PicID head for widgets!
 	Temp10 = reg1 + 1
 		@loop bl {
+			ui_get_DIS_basic_mouse_control() // get mouse state
 			eval_js("g_RTS_CAMPAIGN.run()") // run() => get widgets string to regs1
 				regs1.split(LF,strAr0,Temp1) // split to t[3000]
 				@loop Temp1 .dst(Temp2) {
@@ -254,7 +255,7 @@ __fn UI_CAMPAIGN_WIDGET_simplebutton_run {
 	t[3204].toNum(TT3) // w
 	t[3205].toNum(TT4) // h
 	ui_check_overlap_rectangle_to_reg1(MousePtr_x,MousePtr_y,TT1,TT2,TT3,TT4)
-	@if reg1 == 1 { // overlap
+	@if reg1 == 1 { // overlapped
     @pic[Temp11].move {
         .pos TT1, TT2 .topLeft
         .scale 100
@@ -262,6 +263,12 @@ __fn UI_CAMPAIGN_WIDGET_simplebutton_run {
         .time 0
         .rgbs 125, 125, 125, 100
     }
+
+		MACRO_ui_LMB_state_to_reg1 // get LMB state
+		@if reg1 == 1 { // clicked
+			// call event
+			UI_CAMPAIGN_WIDGET_call_event(t[3206]) // clickevent
+		}
 
 	}.else bl{
     @pic[Temp11].move {
@@ -271,6 +278,19 @@ __fn UI_CAMPAIGN_WIDGET_simplebutton_run {
         .time 0
         .rgbs 100, 100, 100, 100
     }
+	}
+}
+
+/*
+ * {stringvar} $ev
+ */
+__fn UI_CAMPAIGN_WIDGET_call_event $ev {
+	str3.asg t[__id($ev)] // copy to str3 once due to how TPC deals with meta variable
+	@if str3.eq "OPENMISSION" { // if event is set to open mission
+		sysfunc_search_mission_path_to_regs2(str3)
+		input_str.asg regs2
+		eval_js("RTS.openMission(t[510])")
+		@break
 	}
 }
 

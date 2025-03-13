@@ -523,12 +523,14 @@ __fn agent_autoattack_melee {
 				}
 				// "################"
 				/*
+				// "#試作#Functionを呼ぶ"
 				Ptr15 = 300 * Ptr19 
 				Ptr15 += 4700
-				// "#試作#Functionを呼ぶ"
 				v[730] = Ptr15 + 130
 				*/
-				@if agent_AAFunction >= 1 {
+				@if agent_AAFunction >= 1200 { // safety
+						Ptr15 = 300 * Ptr19 
+						Ptr15 += 4700
 						agent_RelativeX.copy v[590], 2
 						@call .cev agent_AAFunction
 						

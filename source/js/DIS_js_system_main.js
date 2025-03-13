@@ -2166,7 +2166,7 @@ DIS._tpc = {
 			"pos": [24,24],
 			"size": [24,24],
 			"Clickevent": "OPENMISSION",
-			"MissionID": "mapgentest",
+			"MissionID": "LegPlus_Poteton_Training",
 			"ConditionType": [],
 			"Condition": ""
 		}
@@ -2447,7 +2447,7 @@ DIS.shell = (function(){
 							"-t                 generate Map Tile data. / マップタイルデータを生成します\n" +
 							"-e                 generate Terrain Elevation data and png. / マップの地形高度マップ画像を生成します\n" +
 							"-m                 generate Map Picture. / マップを一枚の画像として出力します\n" +
-							"-A                 do All processes above at once. / 上の処理を一度に行います。\n" +
+							"-A                 do ALL processes above at once. / 上の処理を一度に行います。\n" +
 							"--help             display this help. / このヘルプを表示します");
 						dsLog(out);
 
@@ -2551,6 +2551,7 @@ DIS.data = { // DIS.data
 	 */
 	csvtemp: {
 		TROOP: createKeyArrayFromCsvLine(`id,Name,agentDefaultGrp,agentType,agentSprite,race,skin,size:0,size:1,faction,passiveId,unitclass,Lv,HP,SP,AD,AP,AR,MR,HIT,EVA,Crit,MS,WILL,MainWeapon,WEPvariations,Shield,SHDvariations,Armor,AMRvariations,Helmet,HELvariations,Accessory,ACCvariations,SubWeapon,SubWEPvariations,ReserveSetL,?,ActiveSkill:0,ActiveSkill:1,ActiveSkill:2,ActiveSkill:3,PassiveSkill,Perks1,Perks2,Perks3,Perks4,motionFlags,objFlags,AABits,ExtraSettingEv,ExtraParts,Hpreg,Spreg,AS,MoveTypeBits,AArangeMax,AArangeMin,AAmotiontime,AAcost,AAfunction,reserve,AtkTime,AAarmorEff,AAarmorPen,AAeffect,,AIFlag,spriteOffset_x,spriteOffset_y,,,,,,,,train_speed,food,wood,stone,gold,iconsprite,spawnsound,ex_spawn_cev,Description,Lore`),
+		WEAPON: createKeyArrayFromCsvLine(``), // not completed
 
 	},
 
@@ -3118,12 +3119,24 @@ DIS.data = { // DIS.data
 		
 		
 		return {
-			WEAPON: {},
-			SHIELD: {},
-			ARMOR: {},
-			HELMET: {},
-			ACCESSORY: {},
-			HORSE: {},
+			WEAPON: {
+
+			},
+			SHIELD: {
+
+			},
+			ARMOR: {
+
+			},
+			HELMET: {
+
+			},
+			ACCESSORY: {
+
+			},
+			HORSE: {
+				
+			},
 		}
 	}()),
 

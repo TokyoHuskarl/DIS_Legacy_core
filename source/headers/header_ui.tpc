@@ -1,5 +1,6 @@
 //UI system Design is very mountain blade WB-ish
 
+#include "./header_control.tpc"
 #include "./../Dracore/module_core_Game_ui_functions.tpc"
 #include "./../Dracore/module_core_RTS_ui_misc_functions.tpc"
 
@@ -48,32 +49,47 @@ vname[__id(index_MinimapPicId)], "index_MinimapPicId"
 vname[__id(ui_workers_for_gold_save)],"ui_workers_for_gold_save"
 
 
-__fn func_ui_DIS_basic_mouse_control {
-		    @wait 0
-		    //Check LMB 
-					@if v[43] != 1005 {
-						s[11].off
 
-					}.else bl {
-						s[11].on
-					}
+__fn ui_get_DIS_basic_mouse_control {
+		//Check LMB 
+		@if DIS_basic_control_key != 1005 {
+			Bool_LMB_DRAG.off
 
-		    @if s[39] .isOff() {
-			@mouse.getPos v[49], v[50]
-			
-		    }
-		    v[49].copy v[51], 2
-		    v[51..52] -= 3
-		    v[52..52] += 1
-		    @key.input .dst v[43] {
-			.decision
-			.number
-			.lclick
-			.rclick
-			.wheelDown
-			.wheelUp
-		    }
+		}.else bl {
+			Bool_LMB_DRAG.on
+		}
 
+	@if s[39] .isOff() {
+		@mouse.getPos v[49], v[50]
+
+	}
+		v[49].copy v[51], 2
+		v[51..52] -= 3
+		v[52..52] += 1
+		@key.input .dst DIS_basic_control_key {
+				.decision
+				.number
+				.lclick
+				.rclick
+				.wheelDown
+				.wheelUp
+		}
+
+}
+
+/*
+ * return 0:not pressed 1:pressed 2:dragging
+ * use with ui_get_DIS_basic_mouse_control() 
+ */
+def MACRO_ui_LMB_state_to_reg1 = {
+	val_init(reg1)
+	@if DIS_basic_control_key == 1005 {
+		@if Bool_LMB_DRAG.isOn(){
+			val_asg(reg1,N2)
+		}.else bl{
+			val_asg(reg1,N1)
+		}
+	}
 }
 
 

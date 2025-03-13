@@ -36,7 +36,7 @@ PicID_N = 2189
 		}),
 
 		ON_RUN({
-			func_ui_DIS_basic_mouse_control()
+			ui_get_DIS_basic_mouse_control()
 		    	//YES
 			ui_simple_button_process(PicID_Y, 
 				PROC({//L
@@ -53,6 +53,7 @@ PicID_N = 2189
 			)
 			ui_simple_checkbox_process(414,DIS_GUI_TARGET_TYPE_SWITCH,s[424])
 
+			@wait 0
 		}),
 
 		ON_CLOSE({

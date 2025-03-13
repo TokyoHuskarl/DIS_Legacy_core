@@ -149,3 +149,18 @@ __fn sysfunc_reload_RTS_data {
 }
 
 
+// UNDERCONSTRUCTION
+__fn sysfunc_search_mission_path_to_regs2 $missionid {
+	// module/campaigns/{yourcampaign}/{yourmission}/json
+	// module/{yourmission}/json
+	// HOME/Maps/{yourmission}/json
+	// once you found json, break and load up txt file to regs2
+
+	// kari
+	regs2.asg "../Maps/"
+	regs2.cat $missionid
+	regs2.cat "/missioninfo.json"
+
+}
+
+
