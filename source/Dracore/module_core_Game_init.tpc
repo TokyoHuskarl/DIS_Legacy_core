@@ -797,10 +797,20 @@ __fn init_DIS_database $already_loaded {
 	inputstr .split LF, t[2999], TT1
 	v[1] = v[2201] + 3000
 	t[v[1]] .split ",", t[3100], TT1
-	t[529] .asg t[3102]
+
+	// Normal fonts
+	Font_Common .asg t[3102]
 	t[3103] .toNum v[4510]
-	t[530] .asg t[3104]
+
+	// UI fonts
+	Font_UI .asg t[3104]
 	t[3105] .toNum v[4511]
+
+	// Imperial Fonts
+	Font_Imperial .asg t[3106]
+	t[3107] .toNum Font_Imperial_size
+
+
 	@msg.opt {
 			.opaq
 			.bottom
