@@ -610,7 +610,7 @@ class DATA_static_unit extends DATA_entity { // building?
 					for (let elmArray of this.imageDataDetail[elmname]) {
 						for (let picInd in elmArray[0]){
 							elmArray[0][picInd] = convertPictPath(elmArray[0][picInd]);
-							deblog(elmArray[0][picInd]);
+							// deblog(elmArray[0][picInd]);
 						}
 					};
 
@@ -2291,7 +2291,7 @@ DIS._tpc = {
 			};
 
 		} catch(error) {
-			errorlog(`DIS._tpc.convert_id(${strid}): Something went wrong.\n` + error)
+			errorlog(`DIS._tpc.get_skill_CallID(${strid}): Something went wrong.\n` + error)
 		};
 	},
 	
@@ -3164,7 +3164,8 @@ DIS.data = { // DIS.data
 				elm.setCallID((this.cnt_custom) * -1); // CallID set
 			};
 			sklid.register("SKL_" + elm.id, index);
-			deblog("SKL_" + elm.id + "reg!")
+			
+			// deblog("DATA.SKILL.register():" + "SKL_" + elm.id + " registered!")
 		},
 
 		createNew: function(strid,data){

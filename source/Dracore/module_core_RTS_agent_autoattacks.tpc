@@ -252,7 +252,7 @@ __fn agent_autoattack_melee {
 
 				// "Effect"
 				@if s[166] .isOn() {
-						TT2 = agent_ProcessObjBit & BaseObjBit_FLAG_Immune_to_bleed ? 999999 : v[1138]
+						TT2 = victim_ProcessObjBit & BaseObjBit_FLAG_Immune_to_bleed ? 999999 : v[1138]
 						@if reg2 >= TT2 {
 							// "Blood stain on 1h weapon"
 							@if `!(agent_ProcessObjBit & BaseObjBit_FLAG_Standard_Bearer) { // not Standard bearer
