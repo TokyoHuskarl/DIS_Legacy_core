@@ -2079,6 +2079,7 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 									t[2999] .asg t[v[1961]] .extract
 
 									// {id}|{name}|{first_main}|{first_lore}|{after}|{after_lore}
+									eval_js("t[2999] = DIS._tpc.formatUIText(t[2999]);") // call js ui format function
 									t[2999] .split "|", t[3001], v[1961]
 
 									// first_main
@@ -2308,6 +2309,12 @@ __fn UI_CEV_MOUSE_UNIT_DESCRIPTION_WINDOW {
 								UI_TRPDESC_Descslot = 3083
 								UI_TRPDESC_Loreslot = 3084
 							}
+
+
+							// RETARDED
+							eval_js("t[3083] = DIS._tpc.formatUIText(t[3083]);") // call js ui format function
+							eval_js("t[3084] = DIS._tpc.formatUIText(t[3084]);") // call js ui format function
+
 							// setup description
 							/*
 							UI_TRPDESC_Descslot .split "^", t[3201], v[1961]

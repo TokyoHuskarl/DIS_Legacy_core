@@ -1948,8 +1948,9 @@ DIS.string = (function(){
 			 */
 			formatUIText: function(text){
 				let res = this.convertString(text);
-				res = res.replace(/\$,/g, ",");
+				res = res.replace(/\$;/g, ",");
 				res = res.replace(/\^/g, "\n");
+				deblog(res);
 				return res;
 			},
 	};
@@ -2249,6 +2250,12 @@ DIS._tpc = {
 	getString: (str)=>{
 		sett(1,str);
 	},
+
+	/**
+	 * DIS._tpc.formatUIText()
+	 * called in module_core_RTS_ui_mouse.tpc
+	 */
+	formatUIText:(st)=>{return DIS.string.formatUIText(st);},
 
 	/**
 	* try formatting a string in the given string var and give it back to regs1 (t[1])
