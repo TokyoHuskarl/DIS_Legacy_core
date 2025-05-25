@@ -7,8 +7,12 @@ defv save_descID_1fpast = 85
 defs Bool_LMB_DRAG = 11
 defs Bool_CONTROL_Mouse_clipped = 39
 
+
+// LEGS_ready_for_doubletap
+defv click_frame = 42
 defv DIS_basic_control_key = 43
 
+defs Bool_Pointer_Moved = 70
 
 defv{
 	Contvar1 = 150
@@ -193,6 +197,8 @@ def MACRO_ck_if_current_static_is_clickable_to_reg6 = {
 }
 
 
+defv Control_ClickableAgentHolder_Save = 4856
+vname[__id(Control_ClickableAgentHolder_Save)], "Control_ClickableAgentHolder_Save"
 defv Control_ClickableStaticHolder = 4857
 vname[__id(Control_ClickableStaticHolder)], "control_clickablestaticholder"
 defv Control_ClickableAgentHolder = 4858

@@ -2518,6 +2518,9 @@ __fn check_clickable_units $maskcondbl $flag {
 	defv agent_pointer = 338 // __id(Temp38)
 	defv agent_counter = 339 // __id(Temp39)
 
+	// save overlapped unit in the last frame.
+	val_asg(Control_ClickableAgentHolder_Save,Control_ClickableAgentHolder) 
+
 	// init clickable agent
 	Control_ClickableStaticHolder = -1
 	Control_ClickableAgentHolder = -1
@@ -2634,6 +2637,8 @@ __fn check_clickable_units $maskcondbl $flag {
 
 		}
 	}
+
+	// 
 	@if Control_ClickableAgentHolder > 0 {
 		@pic[PicID_pointer_sub].move { // make terrain square disappear
 				.pos v[350], v[351] .bottom
@@ -2643,6 +2648,7 @@ __fn check_clickable_units $maskcondbl $flag {
 				.rgbs 100, 100, 100, 100
 			}
 	}
+	
 }
 
 /**

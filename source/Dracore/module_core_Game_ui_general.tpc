@@ -288,7 +288,7 @@ __fn UI_CAMPAIGN_WIDGET_call_event $ev {
 	str3.asg t[__id($ev)] // copy to str3 once due to how TPC deals with meta variable
 	@if str3.eq "OPENMISSION" { // if event is set to open mission
 		sysfunc_search_mission_path_to_regs2(str3)
-		input_str.asg regs2
+		inputstr.asg regs2
 		eval_js("RTS.openMission(t[510])")
 		@break
 	}

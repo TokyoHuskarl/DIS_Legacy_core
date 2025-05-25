@@ -1,5 +1,5 @@
 
-def click_waittime = 28 // 22
+def click_waittime = 32 // 22
 
 def click_animation = {
 	val_const(v[47],3)
@@ -13,12 +13,13 @@ __fn CEV_CONTROL_MOUSE {
 
 		Mouse_x.copy MousePtr_x, 2
 
-		// check if pointer is moved - s[70] is pointer move switch
-		s[70].off
+		// check if pointer is moved - Bool_Pointer_Moved is pointer move switch
+		Bool_Pointer_Moved.off
 		@if `MousePtr_x != TT1 || MousePtr_y != TT2 {
-			s[70].on
+			Bool_Pointer_Moved.on // 
+
 		}.else bl{
-			v[42] += v[42] > 0 ? 1 : 0
+			click_frame += click_frame > 0 ? 1 : 0
 		}
 
 	@if v[47] > 0 {
@@ -339,11 +340,31 @@ __fn CEV_CONTROL_MOUSE {
 					}
 
 				// check if pointer is moved
-				@if s[70] .isOn() {
-					// if moved, immediately start drag
-					v[42] = 0
-						// also no double tap
-						s[23].off
+				@if Bool_Pointer_Moved .isOn() {
+
+						// aa
+
+						@if Control_ClickableAgentHolder_Save == Control_ClickableAgentHolder { // selecting the same unit as in the last frame
+
+							// limit time
+							TT1 = Control_ClickableAgentHolder_Save != -1 ? 0 : 999999
+							@if TT1 < click_frame {
+								// double click is still available.
+								s[23].on
+
+							}.else bl{
+								// start drag
+								click_frame = 0
+								// also no double tap
+								s[23].off
+
+							}
+						} .else bl {
+							// if cursor moved, immediately start dragging
+							click_frame = 0
+							// also no double tap
+							s[23].off
+						}
 				}
 
 
@@ -352,7 +373,7 @@ __fn CEV_CONTROL_MOUSE {
 
 
 						@if s[9] .isOff() {
-							v[42] -= 1
+							click_frame -= 1
 								v[1].add v[53],2
 								v[1].copy TT1, 2
 								TT1 = max(v[1008], min(TT1, v[1009]))
@@ -361,7 +382,7 @@ __fn CEV_CONTROL_MOUSE {
 								v[8] = TT2 - MousePtr_y
 
 								// click frame is overino
-								@if v[42] <= 0 {
+								@if click_frame <= 0 {
 									v[5] = abs(v[7])
 										v[6] = abs(v[8])
 
@@ -513,8 +534,8 @@ __fn CEV_CONTROL_MOUSE {
 
 									// not on any ui button 
 									@if s[201] .isOff() {
-										v[42] = 5
-											v[42] = s[37] == 1 ? muldiv(v[42], 150, 100) : v[42]
+											click_frame = 6 
+											click_frame = s[37] == 1 ? muldiv(click_frame, 150, 100) : click_frame
 											v[1] = MousePtr_x
 											v[2] = MousePtr_y
 											v[7] = 0
@@ -580,18 +601,18 @@ __fn CEV_CONTROL_MOUSE {
 				} .else bl {
 					@if s[11] .isOn() {
 						@if s[9] .isOff() {
-							@if v[42] > 0 {
+							@if click_frame > 0 {
 								@if s[23] .isOn() {
 									// "ダブルクリック"
-									@call .cev 49
-										v[42] = 0
+										@call .cev 49
+										click_frame = 1
 										s[23].off
 
 								} .else bl {
-									// "ワンクリック"
-									s[23].on
-										v[42] = s[37] == 1 ? muldiv(click_waittime, 150, 100) : click_waittime
+										// "ワンクリック"
+										s[23].on
 										@call .cev 50
+										click_frame = s[37] == 1 ? muldiv(click_waittime, 150, 100) : click_waittime
 
 								}
 
@@ -599,16 +620,21 @@ __fn CEV_CONTROL_MOUSE {
 								// "ドラッグ終わったあとの処理"
 								@call .cev 50
 
+								// if selected amount is only 1
+								@if v[99] == 1 {
+									click_frame = s[37] == 1 ? muldiv(click_waittime, 150, 100) : click_waittime // set click wait time same as click
+								}
+
 							}
 
 						}
 
 					}
-					@if v[42] <= 0 {
+					@if click_frame <= 0 {
 						s[23].off
 
 					}
-					v[42] -= 1
+					click_frame -= 1
 						s[11].off
 						s[77].off
 						s[9].off
@@ -873,7 +899,7 @@ __fn CEV_CONTROL_MOUSE {
 					@if Common_Control_Ck == LMB {
 						@if s[11] .isOn() {
 							@if s[9] .isOff() {
-								v[42] -= 1
+								click_frame -= 1
 									v[1] += v[53]
 									v[2] += v[54]
 									v[1].copy v[3], 2
@@ -901,7 +927,7 @@ __fn CEV_CONTROL_MOUSE {
 									}
 								v[7] = v[3] - MousePtr_x
 									v[8] = v[4] - MousePtr_y
-									@if v[42] <= 0 {
+									@if click_frame <= 0 {
 										@if s[180] .isOff() {
 											v[5] = (abs(v[7] / 16) + 1) * 16
 												v[6] = (abs(v[8] / 16) + 1) * 16
@@ -1100,8 +1126,8 @@ __fn CEV_CONTROL_MOUSE {
 						} .else bl {
 							// "UIじゃない"
 							@if `MousePtr_y <= v[1286] && !(MousePtr_x <= v[4514] && MousePtr_y >= v[4515]) {
-								v[42] = 5
-									v[42] = s[37] == 1 ? muldiv(v[42], 150, 100) : v[42]
+								click_frame = 5
+									click_frame = s[37] == 1 ? muldiv(click_frame, 150, 100) : click_frame
 									@if s[180] .isOff() {
 										var1 = MousePtr_x
 											var2 = MousePtr_y
@@ -1205,7 +1231,7 @@ __fn CEV_CONTROL_MOUSE {
 
 								} .else bl {
 									// "ドラッグ終わったあとの処理"
-									v[42] = -1
+									click_frame = -1
 										@pic[973].getInfo .cewh .baseRect var1, var2, var3, var4
 										@if `var3 > 0 && var4 > 0 {
 											var1.copy v[252], 2
@@ -1243,11 +1269,11 @@ __fn CEV_CONTROL_MOUSE {
 							}
 
 						}
-						@if v[42] <= 0 {
+						@if click_frame <= 0 {
 							s[23].off
 
 						}
-						v[42] -= 1
+						click_frame -= 1
 							s[11].off
 							s[9].off
 
@@ -1450,7 +1476,7 @@ __fn CEV_CONTROL_MOUSE {
 							@if `MousePtr_y <= v[1286] && !(MousePtr_x <= v[4514] && MousePtr_y >= v[4515]) {
 								@if s[11] .isOff() {
 									s[11].on
-										v[42] = -1
+										click_frame = -1
 										var1.copy v[252], 2
 										v[251] = 0
 										// build foundation
@@ -1531,8 +1557,8 @@ __fn CEV_CONTROL_MOUSE {
 
 								}
 								// "UI"
-								@if `between(MousePtr_x, v[1282], v[1284]) && between(MousePtr_y, v[1283], v[1285]) && v[42] <= 0 {
-									v[42] = 7
+								@if `between(MousePtr_x, v[1282], v[1284]) && between(MousePtr_y, v[1283], v[1285]) && click_frame <= 0 {
+									click_frame = 7
 										/* "282 216 左端
 											 317 238　右端
 											 300 227 中央
@@ -1552,7 +1578,7 @@ __fn CEV_CONTROL_MOUSE {
 							}
 
 						} .else bl {
-							v[42] -= 1
+							click_frame -= 1
 								s[11].off
 
 						}
@@ -1579,7 +1605,7 @@ __fn CEV_CONTROL_MOUSE {
 	}
 
 	// "safety"
-	v[42] = min(v[42], 16)
+	click_frame = min(click_frame, click_waittime)
 }
 
 

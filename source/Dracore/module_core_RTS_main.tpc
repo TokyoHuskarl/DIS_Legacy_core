@@ -1214,10 +1214,10 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 												// "Set Parent Obj"
 												v[v[331] + 9] = v[401] + 1
 												// "普通にアニメ"
-												v[607] = Temp1 + 7
-												v[v[607]].copy v[607], 2
-												TT1 = v[331] + 6
-												v[607].copy v[TT1], 2
+												TT1 = Temp1 + 7
+												v[TT1].copy TT1, 2
+												TT3 = v[331] + 6
+												TT1.copy v[TT3], 2
 												// "仕上げに登録消す"
 												v[244] += 1
 												@break
@@ -1251,11 +1251,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 												// "Set Parent Obj"
 												v[v[331] + 9] = v[401] + 1
 												// "普通にアニメ"
-												v[607] = Temp1 + 7
-												v[v[607]].copy v[607], 2
-												v[608] -= 20
-												TT1 = v[331] + 6
-												v[607].copy v[TT1], 2
+												TT1 = Temp1 + 7
+												v[TT1].copy TT1, 2
+												TT2 -= 20
+												TT3 = v[331] + 6
+												TT1.copy v[TT3], 2
 												// "仕上げに登録消す"
 												v[244] += 1
 												@break
@@ -1289,11 +1289,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 														// "Set Parent Obj"
 														v[v[331] + 9] = v[401] + 1
 														// "普通にアニメ"
-														v[607] = Temp1 + 7
-														v[v[607]].copy v[607], 2
-														v[608] -= 12
-														TT1 = v[331] + 6
-														v[607].copy v[TT1], 2
+														TT1 = Temp1 + 7
+														v[TT1].copy TT1, 2
+														TT2 -= 12
+														TT3 = v[331] + 6
+														TT1.copy v[TT1], 2
 														// "仕上げに登録消す"
 														v[244] += 1
 														@break
@@ -1328,11 +1328,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 											// "Set Parent Obj"
 											v[v[331] + 9] = v[401] + 1
 											// "普通にアニメ"
-											v[607] = Temp1 + 7
-											v[v[607]].copy v[607], 2
-											v[608] -= 20
-											TT1 = v[331] + 6
-											v[607].copy v[TT1], 2
+												TT1 = Temp1 + 7
+												v[TT1].copy TT1, 2
+												TT2 -= 20
+												TT3 = v[331] + 6
+												TT1.copy v[TT3], 2
 											// "仕上げに登録消す"
 											v[244] += 1
 											@break
