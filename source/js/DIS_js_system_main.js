@@ -212,7 +212,7 @@ class DATA_entity {
 
 	
 	// if default_value set above -1, consider it normal
-	ezConvWord(wd,wdlist,default_value = -1){
+	static ezConvWord (wd,wdlist,default_value = -1){
 		let ret = default_value;
 		if (typeof wd !== 'undefined'){ // it's defined
 			if (wdlist.hasOwnProperty(wd)){
@@ -393,19 +393,8 @@ class DATA_troop extends DATA_entity {
 		pewpew("faction",facid);
 		pewpew("race",raceid);
 		
-
-
 		// convert unitclass
-		const DICT_UCLS = {
-			'infantry':0,
-			'archer':1,
-			'cavalry':2,
-			'mage':3,
-			'healer':4,
-			'siege':5,
-			'worker':9,
-		};
-		this.unitclass = this.ezConvWord(this.unitclass,DICT_UCLS)
+		this.unitclass = DATA_entity.ezConvWord(this.unitclass,DIS.consts.DICT_UCLS)
 		const DICT_AABITS = {
 			'aabit_anti_infanty': 0x1,
 			'aabit_anti_archer': 0x2,
@@ -425,8 +414,6 @@ class DATA_troop extends DATA_entity {
 			'aabit_bladedance': 0x40000,
 			'aabit_camel': 0x80000,
 			'aabit_fatalblow': 0x100000,
-
-
 		};
 		const DICT_MOVEBITS = {
 			'movebit_flying': 0x1,
@@ -561,6 +548,74 @@ class DATA_skin extends DATA_entity {
 };
 
 /**
+ * DATA_item
+ * template class for troops
+ * @extends {DATA_entity}
+ *
+ * no INHERITS function currently
+ */
+class DATA_item extends DATA_entity {
+	constructor(id,src){
+		super(id);
+		
+		// inherit DATA_troop object
+		// DATA.makeDataInherit(this,"HELMET",src);
+
+		// copy given item template
+		
+
+	};
+
+	Name = "undefined";
+	id = "undefined";
+	value = 0;
+
+
+	static CsvLine = [];
+
+};
+
+class DATA_helmet extends DATA_item {
+	constructor(id,src){
+		super(id,src);
+		DATA.giveSrcParamToData(this,src);
+		this.itemtype = DATA_entity.ezConvWord(this.itemtype,DIS.consts.DICT_ITEMTYPE);
+
+
+		// FOR HELEMT
+		const DICT_HELMMATERIAL = {
+			'common': 0,
+			'leather': 1,
+			'metal': 2,
+		};
+
+		this.helmMaterial = DATA_entity.ezConvWord(this.helmMaterial,DICT_HELMMATERIAL);
+	};
+
+	static CsvLine = createKeyArrayFromCsvLine(`id,Name,Description,helmMaterial,AR,MR,HIT,AVD,WILL,CritDamagegReduction,CritChanceReduction,,,,,,,,,,RangedPenalty,Weight,SpRegPenalty,isCoveringHead,isNotCoveringHair,,,drawBit2,drawBit1,,has_variation,itemtype,sprites,value`);
+
+	helmMaterial = "common";
+	AR = 0;
+	MR = 0;
+	HIT = 0;
+	AVD = 0;
+	WILL = 0;
+	CritDamagegReduction = 0;
+	CritChanceReduction = 0;
+	RangedPenalty = 0;
+	Weight = 0;
+	SpRegPenalty = 0;
+	drawBit1 = 0;
+	drawBit2 = 0;
+	has_variation = 0;
+	itemtype = 4;
+	sprites = ["null"];
+	itemtype = 4;
+
+
+};
+
+/**
  * underconstruction
  * Data class for building units.
  * @class DATA_static_unit
@@ -586,7 +641,7 @@ class DATA_static_unit extends DATA_entity { // building?
 		// copy given static template
 		DATA.giveSrcParamToData(this,src);
 		// convert datatype into int
-		this.datatype = this.ezConvWord(this.datatype,DATATYPE_CONVERT_DICTIONARY);
+		this.datatype = DATA_entity.ezConvWord(this.datatype,DATATYPE_CONVERT_DICTIONARY);
 
 		// convert imageDataDetail Object to Array whose index expected to be FactionID
 		const convertPictPath = (file)=>{
@@ -720,7 +775,7 @@ class DATA_skill extends DATA_entity {
 		};
 
 		// convert datatype into int
-		// this.datatype = this.ezConvWord(this.datatype,{'custom':0, 'enhanced':1,'preset':2});
+		// this.datatype = DATA_entity.ezConvWord(this.datatype,{'custom':0, 'enhanced':1,'preset':2});
 
 		if(this.datatype === 'preset'){ // preset type
 			/*
@@ -738,7 +793,7 @@ class DATA_skill extends DATA_entity {
 		} else { // enhanced or custom type
 			//
 			// convert skilltype string to int
-			this.skillType = this.ezConvWord(this.skillType,{
+			this.skillType = DATA_entity.ezConvWord(this.skillType,{
 				'passive':0,
 				'liner':1,
 				'point':2,
@@ -748,7 +803,7 @@ class DATA_skill extends DATA_entity {
 			});
 
 			// convert usage string to int
-			this.usage = this.ezConvWord(this.usage,{
+			this.usage = DATA_entity.ezConvWord(this.usage,{
 				'extra':-1,
 				'damage':0, 
 				'heal':1, 
@@ -1367,25 +1422,18 @@ var techid =  new IDdict("TECH"); // ["techid",[group,flagbit]]
 var sklid = new IDdict("SKL"); // skill ID table
 var skinid = new IDdict("SKIN"); // skill ID table
 
-// consts
-/**
- * might be changed later. 
- * @namespace DIS.consts
- */
-DIS.consts = {
-	
-	Adrv:{},
-	Adrs:{},
+// items
+// very low effort. lmao
+var itemids = [
+	new IDdict("MISC"), // misc item ID table
+	new IDdict("WEP"), // weapon ID table
+	new IDdict("SHD"), // shield ID table
+	new IDdict("AMR"), // armor ID table
+	new IDdict("HEL"), // helmet ID table
+	new IDdict("ACC"), // accessory ID table
+	new IDdict("HRS"), // horse ID table
+];
 
-	Adrt: { // address for RM string variables
-		TroopCsvDataHead: getv(1215),
-	},
-	
-}
-
-const ADRV = DIS.consts.Adrv
-const ADRS = DIS.consts.Adrs
-const ADRT = DIS.consts.Adrt
 
 /**
 * DIS API object
@@ -1489,6 +1537,8 @@ DIS = { // DIS fundamental components
 						text += `StaticID loaded - ${amount} statics are preset`
 					} else if (type == 803) {
 						text += `FactionID loaded - ${amount} factions are preset`
+					} else if (type == 807) {
+						text += `HelmetID loaded - ${amount} helmets are preset`
 					} else if (type == 810) {
 						text += `TechID loaded - ${amount} techs are preset`
 					} else {
@@ -1513,7 +1563,13 @@ DIS = { // DIS fundamental components
 			// --------------------
 
 			// ->DIS.data.RACE.init()
-			
+
+			// --------------------
+			// load helmet ID
+			// --------------------
+			// trpid = new IDdict("TRP"); // init trpid
+			DIS.data.ITEM.HELM.count = store_ID_table(itemids[4],807); // get from ~/scripts/const_helms.
+
 			// --------------------
 			// load troop ID
 			// --------------------
@@ -1563,6 +1619,54 @@ DIS = { // DIS fundamental components
 	// DIS game consts - never touch here blease?
 	RTSFPS: 48, // can be changed 
 },
+
+
+// consts
+/**
+ * might be changed later. 
+ * @namespace DIS.consts
+ */
+DIS.consts = {
+	
+	Adrv:{},
+	Adrs:{},
+
+	Adrt: { // address for RM string variables
+		TroopCsvDataHead: getv(1215),
+		HelmetCsvDataHead: getv(1209),
+	},
+
+
+	// for data
+	// unit class dictionary
+	DICT_UCLS: {
+			'infantry':0,
+			'archer':1,
+			'cavalry':2,
+			'mage':3,
+			'healer':4,
+			'siege':5,
+			'worker':9,
+	},
+
+	// item class dictionary
+	DICT_ITEMTYPE: {
+		'misc':0,
+		'weapon':1,
+		'shield':2,
+		'armor':3,
+		'helmet':4,
+		'accessory':5,
+		'horse':5, // current 5
+	},
+
+	
+	
+}
+
+const ADRV = DIS.consts.Adrv
+const ADRS = DIS.consts.Adrs
+const ADRT = DIS.consts.Adrt
 
 
 /**
@@ -2556,7 +2660,7 @@ DIS.data = { // DIS.data
 	 * Mask Templates strings for DIS-csvfying are here.
 	 * @namespace csvtemp
 	 */
-	csvtemp: {
+	csvtemp: { // THIS IS RETARDED
 		TROOP: createKeyArrayFromCsvLine(`id,Name,agentDefaultGrp,agentType,agentSprite,race,skin,size:0,size:1,faction,passiveId,unitclass,Lv,HP,SP,AD,AP,AR,MR,HIT,EVA,Crit,MS,WILL,MainWeapon,WEPvariations,Shield,SHDvariations,Armor,AMRvariations,Helmet,HELvariations,Accessory,ACCvariations,SubWeapon,SubWEPvariations,ReserveSetL,?,ActiveSkill:0,ActiveSkill:1,ActiveSkill:2,ActiveSkill:3,PassiveSkill,Perks1,Perks2,Perks3,Perks4,motionFlags,objFlags,AABits,ExtraSettingEv,ExtraParts,Hpreg,Spreg,AS,MoveTypeBits,AArangeMax,AArangeMin,AAmotiontime,AAcost,AAfunction,reserve,AtkTime,AAarmorEff,AAarmorPen,AAeffect,,AIFlag,spriteOffset_x,spriteOffset_y,,,,,,,,train_speed,food,wood,stone,gold,iconsprite,spawnsound,ex_spawn_cev,Description,Lore`),
 		WEAPON: createKeyArrayFromCsvLine(``), // not completed
 
@@ -2569,6 +2673,8 @@ DIS.data = { // DIS.data
 				this.TECH.init();
 			}
 		// this.FACTION.init(); <- rewrite this!
+		//
+			this.ITEM.init(); // experimental
 			// load module STATIC UNIT DATA.
 			this.STATIC_UNIT.init();
 			this.SKIN.init();
@@ -2594,6 +2700,7 @@ DIS.data = { // DIS.data
 		registerCheck_for_DataType("STATIC_UNIT");
 		registerCheck_for_DataType("SKIN");
 		registerCheck_for_DataType("SKILL");
+		registerCheck_for_DataType("ITEM");
 		deblog("autoregister called!");
 		deblog(Object.keys(obj));
 
@@ -2677,6 +2784,13 @@ DIS.data = { // DIS.data
 				for (let strid in dataobj[typ]){
 					let nuskl = this.SKILL.createNew(strid,dataobj[typ][strid]);
 					ptr2Res.push(nuskl);
+				};
+
+			} else if (typ == "ITEM"){ // item data 
+				ptr2Res = neststart(typ,ptr2Res);
+				for (let strid in dataobj[typ]){
+					let nu = this.ITEM.createNew(strid,dataobj[typ][strid]);
+					ptr2Res.push(nu);
 				};
 
 			};
@@ -2873,12 +2987,12 @@ DIS.data = { // DIS.data
 		 * using this method allows you to override already existing troop data on RM.
 		 * If you just want to add mod troop data to the game, you should use DATA.TROOP.register() than this method.
 		 *
-		 * @param {} index
 		 * @param {DATA_troop} trpdata
+		 * @param {} index
 		 */
 		writeIntoRM: function(trpdata,index){
 			const where2write = ADRT.TroopCsvDataHead + index;
-			deblog("writign nao")
+			deblog("writign TROOP DATA into RM nao :DDDDDDDDDD")
 			let idfied = "TRP_" + trpdata.id;
 			trpdata.i = index; // set index number into trpid container  
 			trpid.register(idfied, index);
@@ -3123,27 +3237,173 @@ DIS.data = { // DIS.data
 	},
 
 	ITEM: (function(){
+		const PATH_TO_CONTAINER = ["MISC","WEAPON","SHIELD","ARMOR","HELM","ACCESSORY","HORSE"];
+		const PREFIXES_FOR_ITEMS = ["MISC_","WEP_","SHD_","AMR_","HEL_","ACC_","HRS_"];
 		
 		
 		return {
+
+  /**
+   * init all items.
+   */
+		init: function(){
+			/*
+			let mypath = DIS.modules.getCurrentModuleDataPath() + "data_skins.json";
+			deblog(`importing skin data: ${mypath}`);
+			Cmd.sys.importData(mypath);
+			*/
+			let mypath = DIS.modules.getCurrentModuleDataPath() + "data_items.json";
+			deblog(`importing item data: ${mypath}`);
+			Cmd.sys.importData(mypath);
+		},
+
+		/**
+		 * みかんせい
+		 * register troop data to id array.
+		 * Newly registered DATA_troop will be pushed into id array(TROOP.ptrs).
+		 * If you want to add mod troop data to the game, use this method.
+		 *
+		 * @method register
+		 * @param {DATA_item} itmdata
+		 */
+		register: function(itmdata){
+			let ls4nuitm = [];
+			if (Array.isArray(itmdata)){
+				for (let elm of itmdata){
+					ls4nuitm.push(elm);
+				};
+			} else {
+				ls4nuitm.push(itmdata);
+			};
+
+			for (let nuitm of ls4nuitm) {
+				const ityp = nuitm.itemtype;
+				const container = this[PATH_TO_CONTAINER[ityp]];
+				container.count++; // increment troop data counter
+				let ck = PREFIXES_FOR_ITEMS[ityp] + nuitm.id;
+
+				// you need to check dictionary
+				// UNDERCONSTRUCTION!!!!!!!!!!!!!!!!!
+				const mydict = itemids[ityp];
+				if (mydict.hasOwnProperty(ck)) { // override
+					container.writeIntoRM(nuitm,mydict[ck])
+
+				} else {
+					container.writeIntoRM(nuitm,container.count);
+				}
+			};
+			deblog("register ITEM");
+		},
+
+		createNew: function(strid,data){
+			const itmtyp = DATA_entity.ezConvWord(data.itemtype, DIS.consts.DICT_ITEMTYPE);
+			const ITEM_SPACE = this[PATH_TO_CONTAINER[itmtyp]];
+			deblog(PATH_TO_CONTAINER[itmtyp])
+
+			return ITEM_SPACE[strid] = ITEM_SPACE.createNew(strid,data); // save in a correspondent container object below
+		},
+
+		writeIntoRM: function(itmdata,index){
+		},
+
+			
+			/**
+			 * {DATA_item} itmdata
+			 * 
+			 **/
+		convertIntoCsvLine: function(itmdata){ 
+			const ityp = itmdata.itemtype;
+			const container_name = PATH_TO_CONTAINER[ityp];
+
+			let str="";
+
+			const pushKeyStr = (key) => {
+				return itmdata.getElmAsString(key) + ",";
+			}; 
+	
+			let csv_temp_str = itmdata.constructor.CsvLine; // CsvLine must be set
+
+			// replace language element!
+			// get lang suffix for checking if there's translation for the itm.
+			const lngsf = DIS.lang.currentLangsuffix;
+			const translatable_elms = ["Name","Description"]; 
+
+			// It works, but retarded.
+			for (let strElm of translatable_elms){
+				let trelm_str = strElm + lngsf; // put suffix
+				if(itmdata.hasOwnProperty(trelm_str)){ // and check if the json has translation string for current language
+					for (let i in csv_temp_str) {
+						if (csv_temp_str[i] == strElm){
+						csv_temp_str[i] = trelm_str; // If it does, replace the element name with what with suffix
+						deblog(trelm_str);
+							break;
+						};
+					};
+				};
+			};
+
+			deblog(csv_temp_str) // print data format template for debug
+
+			for (let elm of csv_temp_str){
+				str += pushKeyStr(elm);
+			};
+
+			// If language system has translation string for the agent, overwrite again (IN FUTURE)
+
+			deblog(str)
+			return str;
+
+		},
+
+			MISC: {
+
+			},
+
 			WEAPON: {
+				count: 0, // COUNTERS FOR EACH ITEM CONTAINER MUST BE SET BY CSV ITEMS BEFORE EVERYTHING... wait, is counter really working?
 
 			},
 			SHIELD: {
+				count: 0,
 
 			},
 			ARMOR: {
+				count: 0,
 
 			},
-			HELMET: {
+			HELM: {
+				count: 0,
+				createNew: function(strid,data){return new DATA_helmet(strid,data)},
 
+				/**
+				 * 未完成！！！！！！！
+				 * convert troop data into actual DIS troop data CSV string on RM system and write it into RPG maker string system.
+				 * using this method allows you to override already existing troop data on RM.
+				 * If you just want to add mod troop data to the game, you should use DATA.TROOP.register() than this method.
+				 *
+				 * @param {DATA_troop} itmdata
+				 * @param {} index
+				 */
+				writeIntoRM: function(itmdata,index){
+					const where2write = ADRT.HelmetCsvDataHead + index;
+					deblog("writign HELM DATA into RM nao :DDDDDDDDDD");
+					let idfied = PREFIXES_FOR_ITEMS[4] + itmdata.id;
+					itmdata.i = index; // set index number into itmid container  
+					itemids[4].register(idfied, index);
+
+					sett(where2write,DATA.ITEM.convertIntoCsvLine(itmdata)); // go for it
+				},
+				convertIntoCsvLine: function(itmdata){ },
 			},
 			ACCESSORY: {
+				count: 0,
 
 			},
 			HORSE: {
+				count: 0,
 				
 			},
+
 		}
 	}()),
 
@@ -5657,6 +5917,13 @@ if (!VIRTUAL_ENV){
 
 // without RPG_RT.exe
 if (VIRTUAL_ENV){
+const test = DIS.data.ITEM.createNew("myhelm",{itemtype:"helmet",id:"testhelm",Name:"etsteta",AR:114514})
+deblog(test);
+
+DIS.data.ITEM.register(test);
+
+deblog("hasitta");
+deblog(stopme);
 
 DIS._tpc.test_campaign()
 

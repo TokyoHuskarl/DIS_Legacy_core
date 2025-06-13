@@ -128,4 +128,5 @@ Here, we announce almost-complete english translation of the whole game! (transl
 
 # プレイヤーに関係のない変更
 - スキルのjson定義システムを仮導入。
+- アイテムをjsonで定義可能に。
 
