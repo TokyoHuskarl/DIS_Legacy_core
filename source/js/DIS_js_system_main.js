@@ -250,7 +250,16 @@ class DATA_entity {
 					errorlog(`ezConvFlags(): Given argument ${flArray} is not an array.`);
 			};
 			return ret;
-		}
+		};
+
+
+	static convertBits(array){
+		let fl = 0;
+		for (let i of array){
+			fl |= i;
+		};
+		return fl;
+	};
 
 	// check if the entitiy has essential element
 	ckEssentialElm(wdArray){
@@ -570,12 +579,138 @@ class DATA_item extends DATA_entity {
 	id = "undefined";
 	value = 0;
 
+	variations = 0;
+	sprites = ["null"];
 
 	static CsvLine = [];
 
 };
 
+class DATA_weapon extends DATA_item { // unco
+	constructor(id,src){
+		super(id,src);
+		DATA.giveSrcParamToData(this,src);
+		this.itemtype = DATA_entity.ezConvWord(this.itemtype,DIS.consts.DICT_ITEMTYPE);
+
+	};
+
+	static CsvLine = createKeyArrayFromCsvLine(`id,Name,Description,weaponType,AD,AReffectiveness,ARpenetration,HIT,CRIT,AAtype,rangeMax,rangeMin,AS,motionFrame,cost,AABits,velocity_modifier,projectileTimer,effect,AAfunction,weaponSkill,weight,maxAmmo,unitBits,damageType,element,has_draw_priority,drawBits2,drawBits1,,spriteVariation,itemType,sprites,value`);
+
+	HIT = 0;
+	CRIT = 0;
+	weight = 0;
+	SpRegPenalty = 0;
+	drawBits1 = 0;
+	drawBits2 = 0;
+	itemtype = 1;
+
+
+};
+
+class DATA_shield extends DATA_item { // unco
+	constructor(id,src){
+		super(id,src);
+		DATA.giveSrcParamToData(this,src);
+		this.itemtype = DATA_entity.ezConvWord(this.itemtype,DIS.consts.DICT_ITEMTYPE);
+
+		const shieldBits = {
+			"shlbit_can_shieldwall" = 0x1;
+		};
+
+
+
+	};
+
+	static CsvLine = createKeyArrayFromCsvLine(`id,Name,Description,shieldType,meleeEVA,can_shieldwall_flag,crackResistance,rangedEVA,,,,,,,,,,,,,,weight,,,,,,drawBits2,drawBits1,,variation,itemType,sprites,value`);
+
+	shieldType = 1;
+	meleeEVA = 0;
+	rangedEVA = 0;
+	weight = 0;
+	drawBits1 = 0;
+	drawBits2 = 0;
+	can_shieldwall_flag = 0
+	itemtype = 2;
+
+
+};
+
+// unco
+class DATA_armor extends DATA_item {
+	constructor(id,src){
+		super(id,src);
+		DATA.giveSrcParamToData(this,src);
+		this.itemtype = DATA_entity.ezConvWord(this.itemtype,DIS.consts.DICT_ITEMTYPE);
+
+
+		// FOR HELEMT
+		const DICT_HELMMATERIAL = {
+			'common': 0,
+			'leather': 1,
+			'metal': 2,
+		};
+
+		this.helmMaterial = DATA_entity.ezConvWord(this.helmMaterial,DICT_HELMMATERIAL);
+	};
+
+	static CsvLine = createKeyArrayFromCsvLine(``);
+
+	helmMaterial = "common";
+	AR = 0;
+	MR = 0;
+	HIT = 0;
+	AVD = 0;
+	WILL = 0;
+	CritDamagegReduction = 0;
+	CritChanceReduction = 0;
+	RangedPenalty = 0;
+	Weight = 0;
+	SpRegPenalty = 0;
+	drawBits1 = 0;
+	drawBits2 = 0;
+	itemtype = 3;
+
+
+};
+
 class DATA_helmet extends DATA_item {
+	constructor(id,src){
+		super(id,src);
+		DATA.giveSrcParamToData(this,src);
+		this.itemtype = DATA_entity.ezConvWord(this.itemtype,DIS.consts.DICT_ITEMTYPE);
+
+
+		// FOR HELEMT
+		const DICT_HELMMATERIAL = {
+			'common': 0,
+			'leather': 1,
+			'metal': 2,
+		};
+
+		this.helmMaterial = DATA_entity.ezConvWord(this.helmMaterial,DICT_HELMMATERIAL);
+	};
+
+	static CsvLine = createKeyArrayFromCsvLine(`id,Name,Description,helmMaterial,AR,MR,HIT,AVD,WILL,critDamagegReduction,critChanceReduction,,,,,,,,,,rangedPenalty,weight,SPregPenalty,isCoveringHead,isNotCoveringHair,,,drawBits2,drawBits1,,variations,itemtype,sprites,value`);
+
+	helmMaterial = "common";
+	AR = 0;
+	MR = 0;
+	HIT = 0;
+	AVD = 0;
+	WILL = 0;
+	critDamagegReduction = 0;
+	critChanceReduction = 0;
+	rangedPenalty = 0;
+	weight = 0;
+	SPregPenalty = 0;
+	drawBits1 = 0;
+	drawBits2 = 0;
+	itemtype = 4;
+
+
+};
+
+class DATA_accessory extends DATA_item { // unco
 	constructor(id,src){
 		super(id,src);
 		DATA.giveSrcParamToData(this,src);
@@ -607,10 +742,7 @@ class DATA_helmet extends DATA_item {
 	SpRegPenalty = 0;
 	drawBit1 = 0;
 	drawBit2 = 0;
-	has_variation = 0;
-	itemtype = 4;
-	sprites = ["null"];
-	itemtype = 4;
+	itemtype = 5;
 
 
 };
@@ -741,10 +873,10 @@ class DATA_static_unit extends DATA_entity { // building?
 	researchType = 'techtree'; // 'techtree' = 0, 'upgrade' = 1
 
 	/**
-	 * idk if this function should be a method within DATA_static class. 
+	 * idk if this function should be a method within DATA_static_unit class. 
 	 * Maybe relocated somewhere later
 	 */
-	convertTroopBranch = function(){
+	static convertTroopBranch(){
 		// UNDERCONSTRUCTION
 	};
 
@@ -878,7 +1010,7 @@ class DATA_tech extends DATA_entity {
 		};
 		
 		// if not
-		this.is_researchable = true;
+		this.is_researchable = true; // maybe this property should be moved to PlState
 	};
 
   /**
@@ -1110,7 +1242,7 @@ class DIS_agent extends DIS_entity { // agents for RTS mode
 		this.isCertified = isCertified; 
 
 		// register to the world array
-		RTS.agents[agentid] = this;
+		RTS.agents[agentid] = this; // should we really do this?
 		
 	};
 
@@ -1136,6 +1268,8 @@ class DIS_agent extends DIS_entity { // agents for RTS mode
 		return res; 
 	};
 
+	getTargetAgent(){return this.getAgentSlot(18);};
+
 	isAlive(){ // check if the agent is alive
 		if(getv((1 + DIS.agent.getPtrToMainParam(this.agentid))) > 0){
 			return true;
@@ -1144,6 +1278,7 @@ class DIS_agent extends DIS_entity { // agents for RTS mode
 			return (this.activated = false);
 
 		};
+		
 	};
 
 	// #############
@@ -1170,6 +1305,17 @@ class DIS_agent extends DIS_entity { // agents for RTS mode
 	EV_OnKilling(){};
 
 	EV_OnSpawn(){};
+
+
+	/**
+	 * Mission Commands
+	 *
+	 *
+	 */
+	Cmd_moveTo(path){Cmd.group.moveToPoint([this.agentid],path,0,0,0x2)};
+	Cmd_attackMove(path){Cmd.group.moveToPoint([this.agentid],path,1,0,0x2)};
+	Cmd_attack(targ = this.getTargetAgent()){Cmd.group.attack([this.agentid],targ)};
+	Cmd_setStance(stance,fl = 0){Cmd.group.setStance([this.agentid],stance,fl)};
 
 };
 
@@ -1530,13 +1676,17 @@ DIS = { // DIS fundamental components
 
 			const initIDlog = function(amount,type){
 				let text = "DIS.initID():";
-				if (amount > 1){
+				if (amount > 1){ // isn't this retarded?
 					if (type == 801){
 						text += `TroopID loaded - ${amount} troops are preset`;
 					} else if (type == 802) {
 						text += `StaticID loaded - ${amount} statics are preset`
 					} else if (type == 803) {
 						text += `FactionID loaded - ${amount} factions are preset`
+					} else if (type == 804) {
+						text += `WeaponID loaded - ${amount} weapons are preset`
+					} else if (type == 806) {
+						text += `ArmorID loaded - ${amount} armors are preset`
 					} else if (type == 807) {
 						text += `HelmetID loaded - ${amount} helmets are preset`
 					} else if (type == 810) {
@@ -1565,10 +1715,14 @@ DIS = { // DIS fundamental components
 			// ->DIS.data.RACE.init()
 
 			// --------------------
-			// load helmet ID
+			// load item ID
 			// --------------------
 			// trpid = new IDdict("TRP"); // init trpid
+			DIS.data.ITEM.WEAPON.count = store_ID_table(itemids[1],804); // get from ~/scripts/const_weapons_id.
+			DIS.data.ITEM.SHIELD.count = store_ID_table(itemids[2],805); // get from ~/scripts/const_shields_id.
+			DIS.data.ITEM.ARMOR.count = store_ID_table(itemids[3],806); // get from ~/scripts/const_armors_id.
 			DIS.data.ITEM.HELM.count = store_ID_table(itemids[4],807); // get from ~/scripts/const_helms.
+			DIS.data.ITEM.ACCESSORY.count = store_ID_table(itemids[5],808); // get from ~/scripts/const_helms.
 
 			// --------------------
 			// load troop ID
@@ -1633,7 +1787,16 @@ DIS.consts = {
 
 	Adrt: { // address for RM string variables
 		TroopCsvDataHead: getv(1215),
+		ItemCsvDataHeadArray: [
+			getv(1206),
+			getv(1207),
+			getv(1208),
+			getv(1209),
+			getv(1210),
+			0, // horse, reserved
+		],
 		HelmetCsvDataHead: getv(1209),
+
 	},
 
 
@@ -2662,7 +2825,6 @@ DIS.data = { // DIS.data
 	 */
 	csvtemp: { // THIS IS RETARDED
 		TROOP: createKeyArrayFromCsvLine(`id,Name,agentDefaultGrp,agentType,agentSprite,race,skin,size:0,size:1,faction,passiveId,unitclass,Lv,HP,SP,AD,AP,AR,MR,HIT,EVA,Crit,MS,WILL,MainWeapon,WEPvariations,Shield,SHDvariations,Armor,AMRvariations,Helmet,HELvariations,Accessory,ACCvariations,SubWeapon,SubWEPvariations,ReserveSetL,?,ActiveSkill:0,ActiveSkill:1,ActiveSkill:2,ActiveSkill:3,PassiveSkill,Perks1,Perks2,Perks3,Perks4,motionFlags,objFlags,AABits,ExtraSettingEv,ExtraParts,Hpreg,Spreg,AS,MoveTypeBits,AArangeMax,AArangeMin,AAmotiontime,AAcost,AAfunction,reserve,AtkTime,AAarmorEff,AAarmorPen,AAeffect,,AIFlag,spriteOffset_x,spriteOffset_y,,,,,,,,train_speed,food,wood,stone,gold,iconsprite,spawnsound,ex_spawn_cev,Description,Lore`),
-		WEAPON: createKeyArrayFromCsvLine(``), // not completed
 
 	},
 
@@ -3286,10 +3448,10 @@ DIS.data = { // DIS.data
 				// UNDERCONSTRUCTION!!!!!!!!!!!!!!!!!
 				const mydict = itemids[ityp];
 				if (mydict.hasOwnProperty(ck)) { // override
-					container.writeIntoRM(nuitm,mydict[ck])
+					this.writeIntoRM(nuitm,mydict[ck])
 
 				} else {
-					container.writeIntoRM(nuitm,container.count);
+					this.writeIntoRM(nuitm,container.count);
 				}
 			};
 			deblog("register ITEM");
@@ -3303,8 +3465,6 @@ DIS.data = { // DIS.data
 			return ITEM_SPACE[strid] = ITEM_SPACE.createNew(strid,data); // save in a correspondent container object below
 		},
 
-		writeIntoRM: function(itmdata,index){
-		},
 
 			
 			/**
@@ -3355,52 +3515,61 @@ DIS.data = { // DIS.data
 
 		},
 
+			/**
+			 * 未完成！！！！！！！
+			 * convert troop data into actual DIS troop data CSV string on RM system and write it into RPG maker string system.
+			 * using this method allows you to override already existing troop data on RM.
+			 * If you just want to add mod troop data to the game, you should use DATA.TROOP.register() than this method.
+			 *
+			 * @param {DATA_troop} itmdata
+			 * @param {} index
+			 */
+			writeIntoRM: function(itmdata,index){
+				const itmi = itmdata.itemtype;
+				const where2write = ADRT.ItemCsvDataHeadArray[itmi] + index;
+				deblog("writign ITEM DATA into RM nao :DDDDDDDDDD");
+				let idfied = PREFIXES_FOR_ITEMS[itmi] + itmdata.id;
+				itmdata.i = index; // set index number into itmid container  
+				itemids[itmi].register(idfied, index);
+
+				sett(where2write,DATA.ITEM.convertIntoCsvLine(itmdata)); // go for it
+			},
+
 			MISC: {
 
 			},
 
 			WEAPON: {
-				count: 0, // COUNTERS FOR EACH ITEM CONTAINER MUST BE SET BY CSV ITEMS BEFORE EVERYTHING... wait, is counter really working?
+				count: 0,
+				createNew: function(strid,data){return new DATA_weapon(strid,data)},
 
 			},
 			SHIELD: {
 				count: 0,
+				createNew: function(strid,data){return new DATA_shield(strid,data)},
 
 			},
 			ARMOR: {
 				count: 0,
+				createNew: function(strid,data){return new DATA_armor(strid,data)},
 
 			},
+
 			HELM: {
 				count: 0,
 				createNew: function(strid,data){return new DATA_helmet(strid,data)},
 
-				/**
-				 * 未完成！！！！！！！
-				 * convert troop data into actual DIS troop data CSV string on RM system and write it into RPG maker string system.
-				 * using this method allows you to override already existing troop data on RM.
-				 * If you just want to add mod troop data to the game, you should use DATA.TROOP.register() than this method.
-				 *
-				 * @param {DATA_troop} itmdata
-				 * @param {} index
-				 */
-				writeIntoRM: function(itmdata,index){
-					const where2write = ADRT.HelmetCsvDataHead + index;
-					deblog("writign HELM DATA into RM nao :DDDDDDDDDD");
-					let idfied = PREFIXES_FOR_ITEMS[4] + itmdata.id;
-					itmdata.i = index; // set index number into itmid container  
-					itemids[4].register(idfied, index);
 
-					sett(where2write,DATA.ITEM.convertIntoCsvLine(itmdata)); // go for it
-				},
-				convertIntoCsvLine: function(itmdata){ },
 			},
+
 			ACCESSORY: {
 				count: 0,
+				createNew: function(strid,data){return new DATA_accessory(strid,data)},
 
 			},
 			HORSE: {
 				count: 0,
+				createNew: function(strid,data){return new DATA_helmet(strid,data)}, // kari
 				
 			},
 
@@ -4254,6 +4423,39 @@ class RTSmap {
 	};
 
 };
+
+
+/**
+ * PlState_entity
+ *
+ */
+
+class PlState_entity {
+	constructor(numid,name){
+		this.i = numid;
+		this.id = name;
+	};
+	i = -1;
+	id = "undefined";
+};
+
+/**
+ * PlState_entity
+ *
+ */
+
+class PlState_tech extends PlState_entity {
+	constructor(tech){
+		const id = tech.id;
+		const i = techid(id);
+		super(i,id);
+		
+	};
+	is_researched = false;
+	is_available = true;
+	requiredTech = [];
+};
+
 	
 /**
  * DIS_RTSplayer.
@@ -4303,6 +4505,16 @@ class DIS_RTSplayer extends DIS_entity {
 		troopTree: [],
 		techTree: [],
 		techFlags: [0,0,0,0], // new Array(4),
+		PlStates: {
+			techs: ()=>{
+				let arr = [0]; // isn't it retarded use of arr[0]?
+				for (let i = 1; DATA.TECH.ptrs.size; i++){
+					arr.push(DATA.TECH.ptrs[i]);
+				};
+				return arr;
+			},
+			staticunits: [],
+		},
 	};
 
 
@@ -4329,7 +4541,7 @@ class DIS_RTSplayer extends DIS_entity {
 
 	/**
 	 * setTechFlag.
-	 *
+	 * THIS ONE WILL BE OBSOLETE
 	 * @param {DATA_tech} tech
 	 * @return {int} - result after tech researched
 	 *

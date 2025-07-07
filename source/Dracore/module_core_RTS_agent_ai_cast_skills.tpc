@@ -106,17 +106,22 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 			@while v[v[536]] != 0 {
 				func_extract_agent_vars(v[v[536]])
 					@if agent_ActionTimer == 2 {
+						@if `agent_ScriptFlags & ScriptFlags_has_Extra_Tactics_AI { // the agent has extra scrpited AI
 
-						@if `agent_AgentBits & AgentBits_FLAG_EnableBasicSkillAI { // has ordinary attack skill AI
-							// maybe you can insert some procs here to implement script-driven skill AI. (use ScriptFlags)
+							// underconstruction tho
+
+							} .else bl {
+
+							@if `agent_AgentBits & AgentBits_FLAG_EnableBasicSkillAI { // has ordinary attack skill AI
+								// maybe you can insert some procs here to implement script-driven skill AI. (use ScriptFlags)
 								@if agent_TargetAgentID > 0 { // the agent has target
-										// in free MovementOrder state
-										@if agent_MovementOrder < 3 {
-											// not in silence 
-											@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_Manual_Ordered) {
+									// in free MovementOrder state
+									@if agent_MovementOrder < 3 {
+										// not in silence 
+										@if `!(agent_AI_routine_bits & AI_routine_bits_FLAG_Manual_Ordered) {
 
-												// leg set ptr
-												v[212] = v[v[536]] * 300 
+											// leg set ptr
+											v[212] = v[v[536]] * 300 
 												val_add(v[212],N4700) // v[212] += 4700
 												Ptr11 = v[v[536]] // asg agent id
 
@@ -127,8 +132,8 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 
 												@loop 1 {
-														//Temp9 = v[212] + 7
-														agent_RelativeX.copy Temp4, 2
+													//Temp9 = v[212] + 7
+													agent_RelativeX.copy Temp4, 2
 														// Temp1 = agent_TargetAgentID * 300 
 														// Temp1 += 4707
 														Temp4 .sub victim_RelativeX, 2
@@ -140,25 +145,25 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 															//@call .cev 2008
 															func_CkIfSklCall(Ptr11,AGTACT_SLOT_Q)
 																@if reg1 <= 0 {
-																	
-																		//macro_if_it_can_cast_then_do
-																		_agentai_try_skill_slot(AGTACT_SLOT_Q)
-																		/*
-																		TT1 = v[212] + 150
-																		func_ai_skill_usage_check()
-																		@if reg1 == 0 {
-																				TT5.copy v[TT1], 2
-																				TT3 = v[212] + 246
-																				ptr_asg(TT3,N1)
-																				@break
 
-																		}
-																		*/
+																	//macro_if_it_can_cast_then_do
+																	_agentai_try_skill_slot(AGTACT_SLOT_Q)
+																		/*
+																			 TT1 = v[212] + 150
+																			 func_ai_skill_usage_check()
+																			 @if reg1 == 0 {
+																			 TT5.copy v[TT1], 2
+																			 TT3 = v[212] + 246
+																			 ptr_asg(TT3,N1)
+																			 @break
+
+																			 }
+																		 */
 
 																}
 
 														}
-														@if `!(v[780] & 1) && v[772] >= v[3401] {
+													@if `!(v[780] & 1) && v[772] >= v[3401] {
 														//var1 = Ptr11
 														//var2 = 2
 														//@call .cev 2008 //9.3.23 found forgetting to comment out - this can be the root of weapon picture collapsing bug.
@@ -166,17 +171,17 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 															@if reg1 <= 0 {
 																//macro_if_it_can_cast_then_do
 																_agentai_try_skill_slot(AGTACT_SLOT_W)
-																/*
-																	TT1 = v[212] + 170
+																	/*
+																		 TT1 = v[212] + 170
 																	//@call .cev 1929
 																	func_ai_skill_usage_check()
 																	@if reg1 == 0 {
-																		TT5.copy v[TT1], 2
-																			v[v[212] + 246] = 2
-																			@break
+																	TT5.copy v[TT1], 2
+																	v[v[212] + 246] = 2
+																	@break
 
 																	}
-																	*/
+																	 */
 
 															}
 
@@ -185,7 +190,7 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 														//var1 = Ptr11
 														//var2 = 3
 														//@call .cev 2008
-															func_CkIfSklCall(Ptr11,AGTACT_SLOT_E)
+														func_CkIfSklCall(Ptr11,AGTACT_SLOT_E)
 															@if reg1 <= 0 {
 																//macro_if_it_can_cast_then_do
 																_agentai_try_skill_slot(AGTACT_SLOT_E)
@@ -204,17 +209,17 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 																//macro_if_it_can_cast_then_do
 																_agentai_try_skill_slot(AGTACT_SLOT_R)
 
-																/*
-																	TT1 = v[212] + 210
+																	/*
+																		 TT1 = v[212] + 210
 																	//@call .cev 1929
 																	func_ai_skill_usage_check()
 																	@if reg1 == 0 {
-																		TT5.copy v[TT1], 2
-																			v[v[212] + 246] = 4
-																			@break
+																	TT5.copy v[TT1], 2
+																	v[v[212] + 246] = 4
+																	@break
 
 																	}
-																	*/
+																	 */
 
 															}
 
@@ -223,13 +228,13 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 												}
 
 
-											}
-
 										}
 
+									}
 
 
-						// The agent has no target
+
+									// The agent has no target
 								}.else bl {
 
 									// for trebuchet!!
@@ -239,10 +244,10 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 												@if `agent_AI_decision_bits & AI_decision_bits_FLAG_Need_to_be_packed_to_move { // trebuchet flag is on!
 													// cast R Skill to change its mode!
 													func_CkIfSklCall(Ptr11,AGTACT_SLOT_R)
-													@if reg1 <= 0 {
-														//macro_if_it_can_cast_then_do
-														_agentai_try_skill_slot(AGTACT_SLOT_R)
-													}
+														@if reg1 <= 0 {
+															//macro_if_it_can_cast_then_do
+															_agentai_try_skill_slot(AGTACT_SLOT_R)
+														}
 												}
 											}
 										}
@@ -250,8 +255,9 @@ cev .id(12), .name("Agent:Skill AI") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 								}
 
-						}
+							}
 
+						}
 					}
 				val_add(v[536],N1) // v[536] += 1
 
