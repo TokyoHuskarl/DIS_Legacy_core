@@ -1398,7 +1398,7 @@ __fn show_Passive_description {
 					} .else bl {
 							def STRING_FACTIONNAME = __str("[\c[\v[", __id(reg10), "]]\n[6]\c[0]]\t[", __id(inputstr), "]")
 							t[2999] .asg STRING_FACTIONNAME .extract
-							@pic[996].strpic {
+							@pic[PicID_Popup_1].strpic {
 									t[2999]
 									.pos v[1301], v[1065] .bottomLeft
 									.size 0, 0                .chromakey 1
@@ -1440,7 +1440,7 @@ __fn show_Passive_description {
 					t[2999] .asg STRING_N6andLF .extract
 					t[2999] .cat LF
 					t[2999] .cat t[3000] .extract
-					@pic[996].strpic {
+					@pic[PicID_Popup_1].strpic {
 							t[2999]
 							.pos v[1301], v[1065] .bottomLeft
 							.size 0, 0            .chromakey 1
@@ -1479,7 +1479,7 @@ __fn show_Passive_description {
 					
 			}
 			@if s[201] .isOff() {
-					@pic[996].erase
+					@pic[PicID_Popup_1].erase
 					@pic[1765].erase
 					
 			}
@@ -1499,7 +1499,7 @@ __fn show_Buff_description {
 				v[341] = v[51]
 				v[342] = v[1286] - 16
 				@if v[84] == 0 {
-					@pic[996].erase
+					@pic[PicID_Popup_1].erase
 						s[201].on
 
 				} .else bl {
@@ -1537,7 +1537,7 @@ __fn show_Buff_description {
 						}
 						*/
 
-					@pic[996].strpic {
+					@pic[PicID_Popup_1].strpic {
 							regs1
 							.pos v[341], v[342] .bottomLeft
 							.size 0, 0            .chromakey 1
@@ -1547,14 +1547,14 @@ __fn show_Buff_description {
 							.font t[530], v[4511]
 							.spacing 0, 0
 							.skin "" .stretch
-							.mapLayer 9
+							.mapLayer 10
 							.eraseWhenTransfer
 							.affectedByFlash
 							.affectedByShake
 					}
 
 					/*
-					@pic[996].strpic {
+					@pic[PicID_Popup_1].strpic {
 						"\c[\v[351]]\t[3002]\c[0]：\c[\v[352]\t[3004]\c[\v[353]\t[3006]\c[\v[354]\t[3008]\c[\v[355]\t[3010]"
 							.pos v[341], v[342] .bottomLeft
 							.size 0, 0            .chromakey 1
@@ -1575,7 +1575,7 @@ __fn show_Buff_description {
 
 				}
 			@if s[201] .isOff() {
-				@pic[996].strpic {
+				@pic[PicID_Popup_1].strpic {
 					"UNKNOWN BUFF ID"
 						.pos v[341], v[342] .bottomLeft
 						.size 0, 0            .chromakey 1
@@ -1585,7 +1585,7 @@ __fn show_Buff_description {
 						.font t[530], 10
 						.spacing 0, 0
 						.skin "" .stretch
-						.mapLayer 9
+						.mapLayer 10
 						.eraseWhenTransfer
 						.affectedByFlash
 						.affectedByShake
@@ -1735,7 +1735,7 @@ __fn show_agent_skill_description {
 					t[501] .cat "\c[0]"
 					t[501] .cat t[503]
 					t[501] .asg t[501] .extract
-					@pic[996].strpic {
+					@pic[PicID_Popup_1].strpic {
 							t[501]
 							.pos v[1301], v[1065] .bottomLeft
 							.size 0, 0            .chromakey 1
@@ -1750,7 +1750,7 @@ __fn show_agent_skill_description {
 							.affectedByFlash
 							.affectedByShake
 					}
-					@pic[996].getInfo .ltrb .currentRect v[350], v[351], v[352], v[353]
+					@pic[PicID_Popup_1].getInfo .ltrb .currentRect v[350], v[351], v[352], v[353]
 					@if s[64] .isOff() {
 							v[11] = 431
 							@call .cev 1890
