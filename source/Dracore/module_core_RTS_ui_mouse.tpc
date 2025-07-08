@@ -48,6 +48,10 @@ __fn UI_CEV_MOUSE_OBSERVER {
 				// globalqueue
 				UI_Glonalqueue_draw_icons()
 
+
+				// cohort
+				UI_CohortIconAndBanner_get_overlap()
+
 				// "Escape"
 				@if s[181] .isOn() {
 						LEGV_sentence_id_on_popup1 = 10001
@@ -2831,3 +2835,39 @@ __fn UI_Glonalqueue_draw_icons {
 	}
 }
 
+__fn UI_CohortIconAndBanner_get_overlap {
+	// check overlaped or not per frame
+	@loop 10 .dst var1 {
+			// COHORT ICON START
+			TT1 = v[1118] + var1
+			// check if mouse cursor is overlapped or not
+			@pic[TT1].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
+			// x
+			val_asg(InvVar4,InvVar2)
+			InvVar2 -= 12
+			InvVar4 += 12
+			// y
+			val_asg(InvVar5,InvVar3)
+			InvVar3 -= 11
+			InvVar5 += 11
+
+			// mouse overlapped?
+			@if `between(LEGV_MousePointer_X, InvVar2, InvVar4) && between(LEGV_MousePointer_Y, InvVar3,InvVar5) {
+
+				TT10 = MOUSE_UNDER_OVERLAP_CohortIconHead << var1 // get which flag you'll turn on this time
+				val_or(MOUSE_RTS_BUTTON_OVERLAP_QoL_UI,TT10) // turn on ze flag
+
+				@if `MOUSE_RTS_BUTTON_OVERLAP_QoL_UI != MOUSE_RTS_BUTTON_OVERLAP_SAVE_QoL_UI { // if new cohort icon is selected
+					s[223].on // let cohort id refresh
+				}
+					
+					// kore iru?
+					LEGS_Showing_PopupWindow_1.on
+					LEGV_sentence_id_on_popup1 = -1
+
+					// do not rewrite the selecting frame
+					s[201].on
+					@break // anyway ends this loop if overlapping found. simple as
+			}
+	}
+}

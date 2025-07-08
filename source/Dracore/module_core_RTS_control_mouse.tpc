@@ -492,7 +492,21 @@ __fn CEV_CONTROL_MOUSE {
 							@if s[77] .isOff() {
 								@if `MousePtr_y <= v[1286] && !(MousePtr_x <= v[4514] && MousePtr_y >= v[4515]) { // cursor not on the left button panel
 									s[201].off
+									// COHORT
 										@loop 10 .dst v[340] {
+												TT10 = MOUSE_UNDER_OVERLAP_CohortIconHead << v[340]
+												@if `MOUSE_RTS_BUTTON_OVERLAP_QoL_UI & TT10 {
+													@if s[11] .isOff() {
+															s[11].on
+															v[45] = 1 + v[340]
+															@call .cev 1894
+															s[9].on
+
+													}
+													s[201].on
+
+												}
+											/*
 											TT1 = v[1118] + v[340]
 												@pic[TT1].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5
 												@if `between(MousePtr_x, InvVar2 - 12, InvVar2 + 12) && between(MousePtr_y, InvVar3 - 11, InvVar3 + 11) {
@@ -506,10 +520,13 @@ __fn CEV_CONTROL_MOUSE {
 													s[201].on
 
 												}
+											*/
 
 										}
 
 									@if `GETKEY_Alt == 1 || s[2] == 1 {
+									// COHORT
+									// fuck, it's hardcoded
 										@loop 10 .dst v[340] {
 											TT1 = v[4513] + v[340]
 												@pic[TT1].getInfo .cewh .currentRect InvVar2, InvVar3, InvVar4, InvVar5

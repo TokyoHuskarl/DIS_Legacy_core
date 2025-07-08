@@ -28,5 +28,11 @@ echo Compiling Game ui. - %target%
 call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
 echo;
 
+set target=module_core_RTS_cohort_general
+echo Compiling Cohort System. - %target%
+call %tpc% "./"%target%".tpc" > %log%%target%".txt" -en
+echo;
+
+
 echo All compile process finished. Es ist vorbei.
 pause

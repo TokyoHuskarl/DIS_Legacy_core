@@ -8,6 +8,7 @@
 
 def moduletitle="module_core_RTS_cohort_general.tpc"
 def transparency = 45
+def Trans_sub_overlapped = 35
 
 //Cohort manager
 // This cev manages only player cohorts
@@ -271,7 +272,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 									.time 0
 									.rgbs 100, 100, 100, 100
 							}
-						TT6 = TT20 + v[4809]
+						TT6 = TT20 + LEGV_ConstMMCohortPic
 							@pic[TT6].move {
 								.pos Temp5, Temp6 .center
 									.scale 100
@@ -327,9 +328,21 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 							//@comment ""
 							TT3 = 24 * TT10 
 							TT3 += v[1120]
+
+
+
+							// mouse overlap effect set up
+							var1 = MOUSE_UNDER_OVERLAP_CohortIconHead << TT2 // bit if icon overlapped
+							var2 = transparency
+							var2 -= MOUSE_RTS_BUTTON_OVERLAP_QoL_UI & var1 ? Trans_sub_overlapped : 0// 
+
 							TT2 += 1
 							TT2 %= 10
-							TT15 = TT10 == TT11 ? 0 : transparency
+
+
+
+
+							TT15 = TT10 == TT11 ? 0 : var2
 							@pic[TT1].show {
 								"ui\HP_bar_side_0" .repl 1 TT2
 									.pos v[1119], TT3 .right
@@ -360,7 +373,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 								TT5 = muldiv(v[Temp13 + 1], 100, v[431])
 								TT4 = v[1282] + TT4
 								TT5 = v[1283] + TT5
-								TT6 = TT20 + v[4809]
+								TT6 = TT20 + LEGV_ConstMMCohortPic
 								TT2 = TT20 + 1
 								@if s[296] .isOn() {
 									v[356..359] = 0
@@ -401,7 +414,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 							}
 
 						} .else bl {
-							TT6 = TT20 + v[4809]
+							TT6 = TT20 + LEGV_ConstMMCohortPic
 								@pic[TT6].move {
 									.pos TT2, TT3 .center
 										.scale 100
@@ -440,7 +453,7 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 							.time 0
 							.rgbs 100, 100, 100, 100
 					}
-				TT6 = TT20 + v[4809]
+				TT6 = TT20 + LEGV_ConstMMCohortPic
 					@pic[TT6].move {
 						.pos Temp5, Temp6 .center
 							.scale 100
@@ -544,8 +557,9 @@ cev .id(25) ,.name("Cohort:Cohort Manager"), .parallel , .cond(Const_Is_RTS_Mode
 		}
 
 	}
-
-	@wait 0
+	@if s[223] .isOff() {
+		@wait 0
+	}
 }
 
 cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
@@ -618,7 +632,7 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 					.time 0
 					.rgbs 100, 100, 100, 100
 				}
-				TT6 = TT20 + v[4809]
+				TT6 = TT20 + LEGV_ConstMMCohortPic
 				@pic[TT6].move {
 					.pos Temp5, Temp6 .center
 					.scale 100
@@ -641,6 +655,13 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 				TT2 += 1
 				TT2 %= 10
 				TT11 = 12
+
+				// mouse overlap effect
+				// var1 = MOUSE_UNDER_OVERLAP_CohortIconHead << TT2 // bit if icon overlapped
+				// var2 = transparency
+				// var2 -= MOUSE_RTS_BUTTON_OVERLAP_QoL_UI & var1 ? Trans_sub_overlapped : 0// 
+				// no meaning now
+
 				TT15 = TT10 == TT11 ? 0 : transparency
 				@pic[TT1].show {
 					"ui\HP_bar_side_0" .repl 1 TT2
@@ -675,7 +696,7 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 					TT5 = muldiv(v[Temp13 + 1], 100, v[431])
 					TT4 = v[1282] + TT4
 					TT5 = v[1283] + TT5
-					TT6 = TT20 + v[4809]
+					TT6 = TT20 + LEGV_ConstMMCohortPic
 					TT2 = TT20 + 1
 					@if s[296] .isOn() {
 						v[356..359] = 0
@@ -699,7 +720,7 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 					}
 					
 				} .else bl {
-					TT6 = TT20 + v[4809]
+					TT6 = TT20 + LEGV_ConstMMCohortPic
 					@pic[TT6].move {
 						.pos Temp5, Temp6 .center
 						.scale 100
@@ -737,7 +758,7 @@ cev .id(1894) ,.name("CohortFunc:Cohort selected"), {
 				.time 0
 				.rgbs 100, 100, 100, 100
 			}
-			TT6 = TT20 + v[4809]
+			TT6 = TT20 + LEGV_ConstMMCohortPic
 			@pic[TT6].move {
 				.pos Temp5, Temp6 .center
 				.scale 100
