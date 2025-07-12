@@ -103,7 +103,7 @@ __fn pffunc_node_getData $nodeid {
 __fn func_pathfinding_move {
 	// "移動指示	Center(x.y)=(wheretox,wheretoy)"
 
-	v[2878] = v[1212]
+	val_asg(v[2878],v[1212])
 	v[390] = 0
 	@if v[2875] >= 1 {
 	    // "WPをとおる"
@@ -127,123 +127,123 @@ __fn func_pathfinding_move {
 	@if reg1 != 1 {
 		// then start the movementa order
 		@loop .inf() {
-		    @if v[v[2878]] == 0 {
-			// "とぎれた"
-			@break
-			
-		    }
-		    // "配列ゲット"
-		    Temp1 = v[v[2878]] * 300 
-		    Temp1 += 4700
-		    Ptr20 = Temp1 + 242
-		    v[299] = Temp1 + 41
-		    v[298] = Temp1 + 42
-		    v[297] = Temp1 + 18
-		    Ptr15 = Temp1 + 241
-		    v[294] = Temp1 + 55
-		    v[629] = Temp1 + 29
-		    @if v[v[297]] > 0 {
-			// "if you have obj"
-			@if v[Ptr15] == 2 { // ATK
-			    v[Ptr20] = 2
-			    @if `v[Temp1 + 3] & AgentBits_FLAG_PF_walldetection_switch {
-			    	v[Temp1 + 34] |= AI_routine_bits_FLAG_1secDelay_PF
-			    }
+			@if v[v[2878]] == 0 {
+				// "とぎれた"
+				@break
 
-			} .else bl { // OTHERWISE
-			    v[Ptr20] = 3 // ForceMovement?
-			    @if `v[Temp1 + 3] & AgentBits_FLAG_PF_walldetection_switch {
-				v[Temp1 + 34] |= AI_routine_bits_FLAG_1secDelay_PF
-			    } .else bl {
-				v[Temp1 + 3] &= ~AgentBits_FLAG_NeedWpToReachObj
-				
-			    }
-			    
 			}
-			@if `!(v[Temp1 + 3] & AgentBits_FLAG_ForcemoveFlag) {
-			    @if v[2875] == 0 {
-				v[Ptr20] = 2
-				
-			    }
-			    
-			}
-			
-		    }
-		    @if s[279] .isOn() {
-			v[Ptr20] = 1
-			v[Temp1 + 3] &= ~AgentBits_FLAG_NeedWpToReachObj
-			@if `v[Temp1 + 3] & AgentBits_FLAG_PF_walldetection_switch {
-			    v[Temp1 + 3] |= AgentBits_FLAG_walldetected
-			    // 
-			    def Pathblock_AND_1secDelay = AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_1secDelay_PF
-			    v[Temp1 + 34] |= Pathblock_AND_1secDelay
-			    
-			}
-			
-		    }
+			// "配列ゲット"
+			Temp1 = v[v[2878]] * 300 
+				Temp1 += 4700
+				Ptr20 = Temp1 + 242
+				v[299] = Temp1 + 41
+				v[298] = Temp1 + 42
+				v[297] = Temp1 + 18
+				Ptr15 = Temp1 + 241
+				v[294] = Temp1 + 55
+				v[629] = Temp1 + 29
+				@if v[v[297]] > 0 {
+					// "if you have obj"
+					@if v[Ptr15] == 2 { // ATK
+						v[Ptr20] = 2
+							@if `v[Temp1 + 3] & AgentBits_FLAG_PF_walldetection_switch {
+								v[Temp1 + 34] |= AI_routine_bits_FLAG_1secDelay_PF
+							}
 
-				@if v[378] != -1 { // if only agents can go through
-					@if v[2875] >= 1 {
-						v[293] = 2873
-							v[293] -= v[2875] * 2
-							@loop v[2875] {
-								v[v[293]].copy v[v[299]], 2
-									v[293] += 2
-									v[299] += 2
+					} .else bl { // OTHERWISE
+						v[Ptr20] = 3 // ForceMovement?
+							@if `v[Temp1 + 3] & AgentBits_FLAG_PF_walldetection_switch {
+								v[Temp1 + 34] |= AI_routine_bits_FLAG_1secDelay_PF
+							} .else bl {
+								v[Temp1 + 3] &= ~AgentBits_FLAG_NeedWpToReachObj
 
 							}
 
-						v[v[293]].copy v[v[299]], 2
-							// "#Set 現在目指してるWPと総WP数"
-							v[v[294]] = v[2875]
-							v[2873] .add v[2855], 2
+					}
+					@if `!(v[Temp1 + 3] & AgentBits_FLAG_ForcemoveFlag) {
+						@if v[2875] == 0 {
+							v[Ptr20] = 2
 
-					} .else bl {
-						// "#Set 移動するX"
-						v[v[299]] = v[2851]
-							// "#Set 移動するY"
-							v[v[298]] = v[2852]
-							// "#Set 現在目指してるWPと総WP数"
-							v[v[294]] = -1
-							v[2851] .add v[2855], 2
+						}
 
 					}
-				}.else bl {
-						// "#Set 移動するX"
-						v[v[299]] = v[2851]
-							// "#Set 移動するY"
-							v[v[298]] = v[2852]
-							// "#Set 現在目指してるWPと総WP数"
-							v[v[294]] = -1
-							v[2851] .add v[2855], 2
-
-
 
 				}
-		    v[293] = Temp1 + 245
-		    v[v[293]] = 0
-		    // "Make 2nd line"
-		    v[390] += 1
-		    v[390] %= v[2859]
-		    @if v[390] == 0 {
-			@if v[2875] >= 1 {
-			    v[2853].copy v[2873], 2
-			    v[2873] .add v[2857], 2
-			    
-			} .else bl {
-			    v[2853].copy v[2851], 2
-			    v[2851] .add v[2857], 2
-			    
+			@if s[279] .isOn() {
+				v[Ptr20] = 1
+					v[Temp1 + 3] &= ~AgentBits_FLAG_NeedWpToReachObj
+					@if `v[Temp1 + 3] & AgentBits_FLAG_PF_walldetection_switch {
+						v[Temp1 + 3] |= AgentBits_FLAG_walldetected
+							// 
+							def Pathblock_AND_1secDelay = AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_1secDelay_PF
+							v[Temp1 + 34] |= Pathblock_AND_1secDelay
+
+					}
+
 			}
-			v[2851].copy v[2853], 2
-			
-		    }
-		    @if `v[Temp1 + 1] <= 8 {
-			v[Temp1 + 3] = v[Temp1 + 241] <= 4 ? [v[Temp1 + 3] | AgentBits_FLAG_EnableBasicAI, v[Temp1 + 3] | AgentBits_FLAG_EnableBasicAI, v[Temp1 + 3] & ~AgentBits_FLAG_EnableBasicAI, v[Temp1 + 3] | AgentBits_FLAG_EnableBasicAI, v[Temp1 + 3] & ~AgentBits_FLAG_EnableBasicAI][v[Temp1 + 241]] : v[Temp1 + 3]
-			
-		    }
-		    v[2878] += 1
-		    
+
+			@if v[378] != -1 { // if only agents can go through
+				@if v[2875] >= 1 {
+					v[293] = 2873
+						v[293] -= v[2875] * 2
+						@loop v[2875] {
+							v[v[293]].copy v[v[299]], 2
+								v[293] += 2
+								v[299] += 2
+
+						}
+
+					v[v[293]].copy v[v[299]], 2
+						// "#Set 現在目指してるWPと総WP数"
+						v[v[294]] = v[2875]
+						v[2873] .add v[2855], 2
+
+				} .else bl {
+					// "#Set 移動するX"
+					v[v[299]] = v[2851]
+						// "#Set 移動するY"
+						v[v[298]] = v[2852]
+						// "#Set 現在目指してるWPと総WP数"
+						v[v[294]] = -1
+						v[2851] .add v[2855], 2
+
+				}
+			}.else bl {
+				// "#Set 移動するX"
+				v[v[299]] = v[2851]
+					// "#Set 移動するY"
+					v[v[298]] = v[2852]
+					// "#Set 現在目指してるWPと総WP数"
+					v[v[294]] = -1
+					v[2851] .add v[2855], 2
+
+
+
+			}
+			v[293] = Temp1 + 245
+				v[v[293]] = 0
+				// "Make 2nd line"
+				v[390] += 1
+				v[390] %= v[2859]
+				@if v[390] == 0 {
+					@if v[2875] >= 1 {
+						v[2853].copy v[2873], 2
+							v[2873] .add v[2857], 2
+
+					} .else bl {
+						v[2853].copy v[2851], 2
+							v[2851] .add v[2857], 2
+
+					}
+					v[2851].copy v[2853], 2
+
+				}
+			@if `v[Temp1 + 1] <= 8 {
+				v[Temp1 + 3] = v[Temp1 + 241] <= 4 ? [v[Temp1 + 3] | AgentBits_FLAG_EnableBasicAI, v[Temp1 + 3] | AgentBits_FLAG_EnableBasicAI, v[Temp1 + 3] & ~AgentBits_FLAG_EnableBasicAI, v[Temp1 + 3] | AgentBits_FLAG_EnableBasicAI, v[Temp1 + 3] & ~AgentBits_FLAG_EnableBasicAI][v[Temp1 + 241]] : v[Temp1 + 3]
+
+			}
+			v[2878] += 1
+
 		}
 	}
 	v[ptr_null].copy v[2861],15 // v[2861..2875] = 0

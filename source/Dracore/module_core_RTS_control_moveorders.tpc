@@ -1558,6 +1558,12 @@ __fn func_control_moveorder_proc_move {
 		defv FNVar_control_moveorder_linecounter = __id(Temp20) 
 		val_init(FNVar_control_moveorder_linecounter)
 
+
+		// check if Attack move
+		@if s[16] .isOn() {
+			TempFlag1 |= FL_AGT_AI_MOVEORDER_ATTACKMOVE
+		}
+
 		@loop v[1004] .dst v[340] {
 			@if v[v[202]] == 0 {
 				// "とぎれた"
@@ -1569,12 +1575,22 @@ __fn func_control_moveorder_proc_move {
 				@break
 
 			}
-			// "skip foundation "
-			// "配列ゲット"
+			
+			agent_func_receive_moveorder(v[v[202]],FL_AGT_MVORDER_by_player)
+
+			v[202] += 1
+
+		}
+}
+
+				/*
+				// "skip foundation "
+				// "配列ゲット"
 				Temp1 = v[v[202]] * 300
 				val_add(Temp1,N4700) // Temp1 += 4700
 				val_asg(Ptr1,Temp1)
 				val_add(Ptr1,N1)
+
 				v[Ptr1].copy agent_ObjectType,agent_Basic_Array_size
 				
 				@if agent_UnitType != 104 {
@@ -1646,12 +1662,13 @@ __fn func_control_moveorder_proc_move {
 						v[Ptr13].copy v[Ptr19], 2
 							// "#Set 現在目指してるWPと総WP数"
 							v[Ptr14] = LEGV_WPamount_to_set
-							v[273].copy v[361], 2
+							v[273].copy v[361], 2 // kore iranai?
 							v[273] .add v[395], 2
 
 					} .else bl {
 						v[Temp1 + 34] |= v[Temp1 + 103] == 0 ? AI_routine_bits_FLAG_RayCast : 0 // set raycast anyway
 							v[Temp1 + 34] &= ~(AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_tracing_wp)
+
 							@if s[40] .isOn() {
 								v[Temp1 + 34] |= AI_routine_bits_FLAG_PATHFINDING
 									@if `between(v[Ptr13], 1, 10) {
@@ -1671,6 +1688,7 @@ __fn func_control_moveorder_proc_move {
 									}
 
 							}
+
 						// "#Set 移動するX"
 						v[Ptr19] = v[391]
 							// "#Set 移動するY"
@@ -1730,6 +1748,7 @@ __fn func_control_moveorder_proc_move {
 							}
 
 						}
+
 					@if `v[Temp1 + 1] <= 8 {
 						v[Temp1 + 3] = v[Temp1 + 241] <= 4 ? [v[Temp1 + 3] | 1048576, v[Temp1 + 3] | 1048576, v[Temp1 + 3] & ~1048576, v[Temp1 + 3] | 1048576, v[Temp1 + 3] & ~1048576][v[Temp1 + 241]] : v[Temp1 + 3]
 
@@ -1738,7 +1757,4 @@ __fn func_control_moveorder_proc_move {
 					s[21].on
 
 				}
-			v[202] += 1
-
-		}
-}
+				*/

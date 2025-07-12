@@ -61,11 +61,6 @@ __fn func_pathfinding_Astar() {
 	} .else bl { // No, it doesn't
 
 	    // Then get Target Agent position into var1 var2
-	    //Temp17 = TT2 + 14
-	    //TT2 = Pathfinding_AgentData_head_ptr + 41
-	    //Temp17 = max(v[Temp17], 0)
-	    //TT2 += Temp17 * 2
-	    //v[TT2].copy var1, 2
 
 	    TT2 =__id(pfagent_HoldPointX) // Pathfinding_AgentData_head_ptr + 41
 	    Temp17 = max(pfagent_LeftWPtoChase, 0)
@@ -75,8 +70,6 @@ __fn func_pathfinding_Astar() {
 	    v[TT2].copy var1, 2
 
 	    // convert into tile coordinate - maybe you can deal with this without this func if the PF agent has the target agent
-	    // @call .cev 2000
-	    // reg1.copy Temp11, 2
 			macro_convert_relativeXY_into_maptileXY(var1,var2,Temp11,Temp12)
 
 	    
@@ -94,7 +87,6 @@ __fn func_pathfinding_Astar() {
 	
 		// var2 = goal node
 		var2 = Temp11 + 1
-		// var2 += v[312] * v[433]
 		val_mul(Temp12,v[433])
 		val_add(var2,Temp12)
 		
@@ -106,7 +98,6 @@ __fn func_pathfinding_Astar() {
 
 		// var1 = start node id
 		var1 = Temp13 + 1 
-	 	// var1 += v[314] * v[433]
 		val_mul(Temp14,v[433])
 		val_add(var1,Temp14)
 
@@ -270,15 +261,10 @@ __fn func_pathfinding_Astar() {
 									v[TT13] = (v[4001] + v[4004] * 150) * 10 + TT12
 
 									v[TT13] += TT12 == v[4586] ? 2500 : 0
-									/*
-									@if TT12 == v[4586] {
-										v[TT13] += 2500
-									}
-									*/
 
 									val_add(v[4591],N1) // v[4591] += 1
+
 									//optimise
-									//v[3609 + v[2065]] = v[v[4581]] / 10
 									val_add(TT13,N8) // TT13 += 8 // since TT13 is 3601 + v[2065]
 									//Now TT13 = 3609 + v[2065]...  
 									ptr_asg(TT13,TT11) // v[TT13] = TT11
@@ -299,14 +285,12 @@ __fn func_pathfinding_Astar() {
 		@loop 8 .dst v[2065] {
 				@if v[v[4581]] > 0 {
 
-			//opt 28.4.23
-			//save v[v[4581]] / 10 to TT11
-			TT11 = v[v[4581]] / 10
+					TT11 = v[v[4581]] / 10
 
 			@if TT11 == PF_goal_Node {
 					v[Const_save_var_PFNodesLinkMINUS1 + TT11] = PF_current_checking_Node
 					PF_current_checking_Node = TT11
-					v[378] = 0
+					val_init(v[378])
 					@break .level 2
 					
 			}
@@ -327,7 +311,8 @@ __fn func_pathfinding_Astar() {
 
 					//opt 28.4.23
 					//v[3609 + v[2065]] = v[v[4581]] / 10
-					v[3609 + v[2065]] = TT11
+					var1 = 3609 + v[2065]
+					v[var1] = TT11
 			
 			}
 			
@@ -362,18 +347,18 @@ __fn func_pathfinding_Astar() {
 			val_asg(var9,PF_current_checking_Node) // v[19] = PF_current_checking_Node
 			v[Const_save_var_ClosedNodesListHead + v[4583]] = v[19]
 
-			val_add(v[4583],N1) // v[4583] += 1
+			val_add(v[4583],N1)
 			v[Const_save_var_ClosedNodesListHead].sortDescending v[4583]
 
 			var1 = Const_save_var_OpenNodesListHead + 1
 			v[var1].copy v[Const_save_var_OpenNodesListHead], v[4582]
-			// v[Const_save_var_OpenNodesListHead + v[4582]] = 0
+
 			var2 = Const_save_var_OpenNodesListHead + v[4582]
 			v[ptr_null].copy v[var2],1
 
 			var1 = v[4555] + 1
 			v[var1].copy v[v[4555]], v[4582]
-			// v[v[4555] + v[4582]] = 0
+
 			var2 = v[4555] + v[4582]
 			v[ptr_null].copy v[var2],1
 
@@ -468,34 +453,6 @@ __fn func_pathfinding_Astar() {
 		}
 		
 		// set to the agent waypoint array
-
-		/*
-		@if s[1] .isOn() {
-		    t[801] .asg "\v[4582]ko" .extract
-		    t[801] .cat t[525]
-		    @loop v[4582] .dst var1 {
-			var2 = Const_save_var_OpenNodesListHead + var1
-			var10 = v[var2]
-			t[801] .cat "\var10" .extract
-			t[801] .cat t[525]
-			
-		    }
-		    
-		    t[801] .toFile "debug_openlist", .utf8
-		    t[801] .asg "\v[4583]ko" .extract
-		    t[801] .cat t[525]
-		    @loop v[4583] .dst var1 {
-			var2 = Const_save_var_ClosedNodesListHead + var1
-			var10 = v[var2]
-			t[801] .cat "\var10" .extract
-			t[801] .cat t[525]
-			
-		    }
-		    
-		    t[801] .toFile "debug_closelist", .utf8
-		    
-		}
-		*/
 
 
 		// from this part seemingly buggy

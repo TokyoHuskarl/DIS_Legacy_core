@@ -4783,8 +4783,7 @@ let RTS = {
 		 */
 		storePath: function(agentid,PathArray){
 			this.PfWPbuffer[agentid] = PathArray; // send PathArray to RTS.path.PfWPbuffer.
-			let t = "RTS.path: stored " + PathArray; // tesT
-			deblog(t);
+			deblog("RTS.path: stored " + PathArray); // debug log
 
 		},
 
@@ -4831,7 +4830,7 @@ let RTS = {
 		 * @param {int} targetid - agent id of target agent
 		 */
 		copyPath: function(srcagtid,targetid){
-			deblog(srcagtid + " to " +targetid) 
+			deblog(srcagtid + " to " + targetid) 
 			this.PfWPbuffer[targetid] = []; // ? should I use let?
 
 			for (let elm of this.PfWPbuffer[srcagtid]) {

@@ -32,7 +32,7 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 		    val_add(Pathfinding_AgentData_head_ptr,N4700) // Pathfinding_AgentData_head_ptr += 4700
 
 		    // deploy agent data
-		    v[Pathfinding_AgentData_head_ptr].copy v[600], 300
+		    v[Pathfinding_AgentData_head_ptr].copy Address_agent_array_head, 300
 
 		    // NOT fleeing 
 		    @if `!(agent_ProcessObjBit & BaseObjBit_FLAG_Fleeing) {
@@ -129,22 +129,26 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 												RC_justmove_Deltax.sub var3,2
 												RC_justmove_Deltax.mul RC_justmove_Deltax,2
 												RC_justmove_Deltax.add RC_justmove_Deltay,1
+
 										}.else bl { // if it's the first time ray,
 											val_asg(RC_justmove_Deltax,N16)
+
 										}
 										@if RC_justmove_Deltax > 6 { // if it's not too close 
 											func_nodecheck_RayCast(var1,var2,var3,var4)
+
 										}.else bl{
 											val_init(reg1) // omit raycast calc and return 0
+
 										}
 
 										@if reg1 == 1 { // obstacle found
 											agent_AI_routine_bits |= (AI_routine_bits_FLAG_PATHFINDING + AI_routine_bits_FLAG_WP_set_by_RayCast)
-												agent_AI_routine_bits &= AI_routine_bits_KILL_FLAG_PFcontinue // search path from the beginning
+											agent_AI_routine_bits &= AI_routine_bits_KILL_FLAG_PFcontinue // search path from the beginning
 
 										}.else bl { // no obstacle found
 											def KILL_FLAG_raycast = ~(AI_routine_bits_FLAG_RayCast + AI_routine_bits_FLAG_WP_set_by_RayCast)
-												agent_AgentBits &= ~AgentBits_FLAG_PF_walldetection_switch
+											agent_AgentBits &= ~AgentBits_FLAG_PF_walldetection_switch
 
 										}
 										agent_AI_routine_bits &= KILL_FLAG_raycast
@@ -152,7 +156,7 @@ cev .id(69), .name("Pathfinding:Manager") , .parallel , .cond(Const_Is_RTS_Mode)
 
 								// after raycasting, kill the flag
 								Ptr1 = Pathfinding_AgentData_head_ptr + 1
-									agent_AgentType.copy v[Ptr1], 250
+								agent_AgentType.copy v[Ptr1], 250
 
 							}.else bl { // the agent is standing by mode
 								Ptr1 = Pathfinding_AgentData_head_ptr + 1

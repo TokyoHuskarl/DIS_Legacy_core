@@ -1,0 +1,232 @@
+// let agents move and etc etc
+
+// same as ai_order_agents_move() in module_core_RTS_ai_functions.tpc
+
+	// kari
+	// use TempFlag1 to check these flags
+	def FL_AGT_AI_MOVEORDER_ATTACKMOVE = 0x1
+	def FL_AGT_AI_MOVEORDER_DO_PATHFINDING = 0x2
+	// def AI_MOVEORDER_FL_CHANGE_ONLY_DIRECTION = 0x4
+
+// AMOVEまわりのフラグとインディケーター表示処理の追加が必要なので注意
+	def FL_AGT_MVORDER_by_player = 0x1
+__fn agent_func_receive_moveorder $agentid $fl {
+	// "skip foundation "
+		Temp1 = $agentid * 300
+		val_add(Temp1,N4700) // Temp1 += 4700
+		val_asg(Ptr1,Temp1)
+		val_add(Ptr1,N1)
+		v[Ptr1].copy agent_ObjectType,agent_Basic_Array_size
+
+		@if agent_UnitType != 104 {
+			Ptr19 = __id(agent_HoldPointX)
+				// Ptr14 is used
+				agent_AI_routine_bits &= ~4096
+				// "処理開始"
+				@if agent_MovementOrder != 4 {
+					agent_MovementOrder = TempFlag1 & FL_AGT_AI_MOVEORDER_ATTACKMOVE ? MovementOrder_TYPE_move_ordered : MovementOrder_TYPE_prioritize_moving
+
+				}
+			@if agent_AgentType != 11 {
+				agent_Formbits &= ~Formbits_MASK_Lines // init line assignment
+					agent_AgentBits &= ~384
+					agent_AgentBits &= AgentBits_MASK_for_initilizing_pathfinding
+					// "#ForceMoveFlag"
+
+					//is attack move?
+					@if `TempFlag1 & FL_AGT_AI_MOVEORDER_ATTACKMOVE {
+						agent_AI_routine_bits &= ~AI_routine_bits_FLAG_AIskip
+							agent_AgentBits &= ~AgentBits_FLAG_ForcemoveFlag // on attack move, kill forcemove flag
+
+							@if agent_InCombatTimer <= -10000 {
+								agent_InCombatTimer = v[1178]
+
+							}
+
+					} .else bl {
+						agent_AI_routine_bits |= AI_routine_bits_FLAG_AIskip
+							agent_AgentBits |= AgentBits_FLAG_ForcemoveFlag
+
+					}
+
+
+				agent_AI_routine_bits &= AI_routine_bits_MASK_for_initilizing_pathfinding
+
+
+					// "#アタックムーブじゃなければActionチェック"
+					TT1 = TempFlag1 & FL_AGT_AI_MOVEORDER_ATTACKMOVE ? -999 : agent_ActionState // ACHTUNG!!
+					// "#if Action==Attack, Set Action 0"
+					agent_ActionState = TT1 == 1 ? 0 : agent_ActionState
+					// "#if Forcemove, AA MotionTimer Reset"
+					agent_AttackFrame = TT1 == 1 ? 0 : agent_AttackFrame
+					// "#if Attack Stance, set stance alert"
+					agent_StanceOrder = agent_StanceOrder == 2 ? 0 : agent_StanceOrder
+					// "#Manual"
+					agent_StanceOrder = agent_AI_routine_bits & AI_routine_bits_FLAG_Manual_Ordered ? ORD_MANU : agent_StanceOrder
+
+			}
+
+			// use different variables between player order and ai order
+			__if $fl & FL_AGT_MVORDER_by_player {
+					$WPamount = LEGV_WPamount_to_set
+					$adrwheretoXd = 395
+					$adrX0 = 273
+					$adrWheretoX = 391
+					$adrWheretoXstart = 393
+					$adrWheretoXd2 = 397
+					$adrLengthofline = 399
+					
+			} .else bl {
+					$WPamount = v[2857]
+					$adrwheretoXd = 2855
+					$adrX0 = 2873
+					$adrWheretoX = 2851
+					$adrWheretoXstart = 2853
+					$adrWheretoXd2 = 2857
+					$adrLengthofline = 2859
+
+			}
+			
+			@if $WPamount >= 1 { // ACHTUNG need change
+					Ptr14 = $adrX0
+					Ptr14 -= $WPamount * 2
+					@loop $WPamount {
+							v[Ptr14].copy v[Ptr19], 2
+							Ptr14 += 2
+							Ptr19 += 2
+
+					}
+
+					v[Ptr14].copy v[Ptr19], 2
+					// "#Set 現在目指してるWPと総WP数"
+					agent_LeftWPtoChase = $WPamount
+
+					// for indicator
+					__if $fl & FL_AGT_MVORDER_by_player {
+						v[$adrX0].copy v[361], 2
+					}
+					v[$adrX0] .add v[$adrwheretoXd], 2
+
+			} .else bl {
+					agent_AI_routine_bits |= agent_AAType == 0 ? AI_routine_bits_FLAG_RayCast : 0 // set raycast anyway
+					agent_AI_routine_bits &= ~(AI_routine_bits_FLAG_Pathblocked + AI_routine_bits_FLAG_tracing_wp)
+
+
+					// PATHFINDING!!!
+					// if ordered by player, check cohort and flag
+					def MACRO_cohort_path = {
+						@if `between(agent_Cohort_ID, 1, 10) {
+							agent_AI_routine_bits |= 16793600
+						}
+					}
+					__if $fl & FL_AGT_MVORDER_by_player {
+						@if LEGS_MoveOrdered_by_clicking_minimap.isOn() {
+							agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+							MACRO_cohort_path
+
+						} .else bl {
+							agent_AI_routine_bits &= ~16809984
+								@if s[112] .isOn() {
+									agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+									MACRO_cohort_path
+
+								}
+
+						}
+
+					} .else bl {
+
+						// use A* pathfinding or not
+						@if `TempFlag1 & FL_AGT_AI_MOVEORDER_DO_PATHFINDING { // always true, temporary
+							agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
+
+								// How should I write here
+								/*
+									 @if `between(agent_Cohort_ID, 1, 10) {
+									 agent_AI_routine_bits |= 16793600
+									 }
+								 */
+
+
+						} .else bl {
+							agent_AI_routine_bits &= ~16809984
+					
+						}
+
+					}
+
+				// "#Set goal
+					v[$adrWheretoX].copy agent_HoldPointX,2
+					// "#Set 現在目指してるWPと総WP数"
+					agent_LeftWPtoChase = -1
+
+					// for indicator
+					__if $fl & FL_AGT_MVORDER_by_player {
+							v[$adrWheretoX].copy v[361], 2
+					}
+					// how should I deal with line deltas?
+					v[$adrWheretoX] .add v[$adrwheretoXd], 2
+
+			}
+
+			__if $fl & FL_AGT_MVORDER_by_player {
+				// "Formation Indicator"
+				@if s[40] .isOn() {
+					@if v[99] > 1 {
+						TT1 = v[1165] + v[340]
+							@pic[TT1].show {
+								"ui\direction_indicator"
+									.pos v[361], v[362] .center
+									.scrollWithMap
+									.chromakey 1
+									.scale 100
+									.trans 35
+									.rgbs 100, 100, 100, 100
+									.angle v[389], 1000
+									.mapLayer 3
+									.eraseWhenTransfer
+									.affectedByFlash
+									.affectedByShake
+							}
+					}
+				}
+			}
+
+			$adrlinecounter = __id(Temp20) 
+			val_init(v[$adrlinecounter])
+			agent_Formbits |= pow(2,v[$adrlinecounter]) // set current line flag
+
+				// "#Set 目標なし"
+				agent_TargetAgentID = 0
+				agent_ActionFlag = 0
+
+				// ここをどうにかしろ
+				// "Make 2nd line"
+				v[390] += 1
+				v[390] %= v[$adrLengthofline]
+				@if v[390] == 0 {
+					val_add(v[$adrlinecounter],N1)
+						@if $WPamount >= 1 {
+								v[$adrWheretoXstart].copy v[273], 2
+								v[273] .add v[$adrWheretoXd2], 2
+								v[273].copy v[$adrWheretoXstart], 2
+
+						} .else bl {
+								v[$adrWheretoXstart].copy v[$adrWheretoX], 2
+								v[$adrWheretoX] .add v[$adrWheretoXd2], 2
+								v[$adrWheretoX].copy v[$adrWheretoXstart], 2
+
+						}
+
+				}
+
+			@if agent_AgentType <= 8 {
+				agent_AgentBits = agent_StanceOrder <= ORD_MANU ? [agent_AgentBits | AgentBits_FLAG_EnableBasicAI, agent_AgentBits | AgentBits_FLAG_EnableBasicAI, agent_AgentBits & ~AgentBits_FLAG_EnableBasicAI, agent_AgentBits | AgentBits_FLAG_EnableBasicAI, agent_AgentBits & ~AgentBits_FLAG_EnableBasicAI][agent_StanceOrder] : agent_AgentBits
+
+			}
+
+		}
+	// save back
+	agent_ObjectType.copy v[Ptr1],agent_Basic_Array_size
+
+}

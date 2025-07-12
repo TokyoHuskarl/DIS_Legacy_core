@@ -116,7 +116,7 @@ __fn ai_order_calculate_form_line $listhead $listcounter $X1 $Y1 $X2 $Y2 {
  * @param {} listhead
  * 
  * 
- * 
+ * これで統一する
  */
 __fn ai_order_agents_move $listhead $listcounter $x $y $fl {
 
@@ -228,7 +228,7 @@ __fn ai_order_agents_move $listhead $listcounter $x $y $fl {
 						v[Ptr14].copy v[Ptr19], 2
 						// "#Set 現在目指してるWPと総WP数"
 						agent_LeftWPtoChase = AI_WP_amount_to_set
-						v[273] .add v[2855], 2
+						v[2873] .add v[2855], 2
 
 				} .else bl {
 						agent_AI_routine_bits |= agent_AAType == 0 ? AI_routine_bits_FLAG_RayCast : 0 // set raycast anyway
@@ -272,7 +272,7 @@ __fn ai_order_agents_move $listhead $listcounter $x $y $fl {
 
 				}
 
-				agent_Formbits |= pow(2,linecounter) // set current line flag
+					agent_Formbits |= pow(2,linecounter) // set current line flag
 
 					// "#Set 目標なし"
 					agent_TargetAgentID = 0
