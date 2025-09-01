@@ -56,11 +56,13 @@ strings strid
 	
 	511 = inputStr
 	512 = jsbuffer
+
 	
 	520=Game Version Info
 	521=keyinputsound
 	522=custom cursor?
-	
+
+
 	525=\n
 	526=languagestring
 	527="
@@ -73,6 +75,10 @@ strings strid
 
 	631 = modulename
 	633 = module.factiontemplate.json
+
+
+
+	681 = Imperial Font
 
 	701 = Envloop1
 	
@@ -693,8 +699,8 @@ picid
 		
 	2201~2300 = FreshEffect(2300~2400 heap)
 	2301~2400 = map_height
-12401~2440 = indicators
-	2441~2537 = Fogofwar
+// 2401~2440 = indicators
+// 2441~2537 = Fogofwar
 	//2538 = Alert
 	//2539~2548 = CohortMarker
 	//2549~2556 = Minimap WP
@@ -1043,9 +1049,6 @@ Object:
 
 	Dead Body:
 		279 =Angle 
-	#Custom Charactors Setting
-		#281 = Linked Weapon Obj
-		#282 = Linked sub Obj
 	280 = Transparency_default
 	281 = initialOffsetX
 	282 = initialOffsetY
@@ -1309,8 +1312,8 @@ Effect:
 	Timer = 100
 
 Static:
-	Agent_bit = 3# 1=producing_tech, /*2:2=gateflag*/ 3:4=gate_open,4:8=gate_lock,5:16=wallflag,6:32=building_basement,7:64=houseflag,8:128=have_generated_picture 9:256=gateflag 10:1024=has_no_function 11:2048=inflammable 12:4096=farmflag 13:8192=marketflag, 14:16384=Newly Generated Static,15:32768:auto_que  65536=KILLED  19:262144=invisible_from_enemy, 21:1048576=EnablebasicAI
-				22:2097152=do_not_register_morton 30:sameasagent 31:1073741824 = Drawn_in_screen // 31:not on screen
+	Agent_bit = 3 # 1=producing_tech, /*2:2=gateflag*/ 3:4=gate_open,4:8=gate_lock,5:16=wallflag,6:32=building_basement,7:64=houseflag,8:128=have_generated_picture 9:256=gateflag 10:1024=has_no_function 11:2048=inflammable 12:4096=farmflag 13:8192=marketflag, 14:16384=Newly Generated Static,15:32768:auto_que  65536=KILLED  19:262144=invisible_from_enemy, 21:1048576=EnablebasicAI
+				22:2097152=do_not_register_morton,23:4194304=wrecksystem 30:sameasagent 31:1073741824 = Drawn_in_screen // 31:not on screen
 
 	Producing_Unit = 138
 	Producing_Cost = 139
@@ -1367,6 +1370,18 @@ Static:
 	assigned_workers_counter = 256
 	StaticMapX/5 = 258
 	StaticMapY/5 = 259
+
+		// Wreck
+		261 = WreckX*10000
+		262 = WreckY*10000
+		263 = WreckVx*1000
+		264 = WreckVy*1000
+		265 = WreckTimer
+		266 = WreckTimerEnd
+		267 = WreckAngle
+		268 = WreckAngleV
+		269 = sprsizemilpixX
+		270 = "Y
 	
 	#280~ Sprite Setting for basement
 	280 = finished_building

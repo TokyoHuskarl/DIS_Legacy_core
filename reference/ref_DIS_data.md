@@ -119,9 +119,13 @@ Unit name.
 
 -----
 
-0:歩兵
-1:射手
-2:騎兵
+"infantry":歩兵
+"archer":射手
+"cavalry":騎兵
+"mage":魔術師
+"healer":回復
+"siege":攻城兵器
+"worker":労働者
 
 ### Lv
 
