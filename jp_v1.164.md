@@ -96,6 +96,8 @@ Here, we announce almost-complete english translation of the whole game! (transl
   - これまで共用のメイルホバークを着ていたユニットは代わりにこれを着用するように変更。
 
 # 演出面の変更
+## 一部の鎧にアニメーション追加
+- 「ギャンベゾン」
 ## 一部のヘルメットグラフィックに歩行アニメを設定
 ### 帝国系
 - 「スパンゲンヘルム」
@@ -129,4 +131,4 @@ Here, we announce almost-complete english translation of the whole game! (transl
 # プレイヤーに関係のない変更
 - スキルのjson定義システムを仮導入。
 - アイテムをjsonで定義可能に。
-
+- ユニット移動指示の処理をリファクタリングし、コマンドによる指示とプレイヤーによる指示を共通化。
