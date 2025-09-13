@@ -1,5 +1,7 @@
 
+// thanks to retarded old variable setting, we need to set two click timer that we never know what difference is between them 
 def click_waittime = 32 // 22
+
 
 def click_animation = {
 	val_const(v[47],3)
@@ -12,15 +14,22 @@ __fn CEV_CONTROL_MOUSE {
 		MousePtr_x.copy TT1, 2
 
 		Mouse_x.copy MousePtr_x, 2
-
 		// check if pointer is moved - Bool_Pointer_Moved is pointer move switch
 		Bool_Pointer_Moved.off
 		@if `MousePtr_x != TT1 || MousePtr_y != TT2 {
 			Bool_Pointer_Moved.on // 
 
 		}.else bl{
-			click_frame += click_frame > 0 ? 1 : 0
+			click_frame += click_frame >= 0 ? 1 : 0
 		}
+
+		// watchdog on double click
+		val_add(double_click_counter,N1)
+		TT1 = s[37] == 1 ? muldiv(click_waittime, 150, 100) : click_waittime
+		@if double_click_counter > TT1 {
+			s[23].off
+		}
+
 
 	@if v[47] > 0 {
 		v[41] = Mouse_x - 1
@@ -343,16 +352,22 @@ __fn CEV_CONTROL_MOUSE {
 				@if Bool_Pointer_Moved .isOn() {
 
 						// aa
+						/*
+						// IF CURSOR MOVED, IMMEDIATELY START DRAGGING
+						click_frame = 0
+						// ALSO NO DOUBLE TAP
+						s[23].off
+						*/
 
+						// this system seems completely broken.
 						@if Control_ClickableAgentHolder_Save == Control_ClickableAgentHolder { // selecting the same unit as in the last frame
 
+
+							// completely not working
 							// limit time
 							TT1 = Control_ClickableAgentHolder_Save != -1 ? 0 : 999999
-							@if TT1 < click_frame {
-								// double click is still available.
-								s[23].on
 
-							}.else bl{
+							@if  TT1 >= click_frame {
 								// start drag
 								click_frame = 0
 								// also no double tap
@@ -365,6 +380,8 @@ __fn CEV_CONTROL_MOUSE {
 							// also no double tap
 							s[23].off
 						}
+				}.else bl{
+
 				}
 
 
@@ -622,24 +639,30 @@ __fn CEV_CONTROL_MOUSE {
 								@if s[23] .isOn() {
 									// "ダブルクリック"
 										@call .cev 49
-										click_frame = 1
+										click_frame = 0
+										double_click_counter = 0
 										s[23].off
 
 								} .else bl {
 										// "ワンクリック"
 										s[23].on
 										@call .cev 50
-										click_frame = s[37] == 1 ? muldiv(click_waittime, 150, 100) : click_waittime
+										/// click_frame = s[37] == 1 ? muldiv(click_frame, 150, 100) : click_frame
+										click_frame = 1
+										double_click_counter = 0
 
 								}
 
 							} .else bl {
 								// "ドラッグ終わったあとの処理"
 								@call .cev 50
+								click_frame = 0
+								double_click_counter = 0
 
 								// if selected amount is only 1
 								@if v[99] == 1 {
-									click_frame = s[37] == 1 ? muldiv(click_waittime, 150, 100) : click_waittime // set click wait time same as click
+									// click_frame = s[37] == 1 ? muldiv(click_waittime, 125, 100) : click_waittime // set click wait time longer
+										click_frame = s[37] == 1 ? muldiv(click_frame, 150, 100) : click_frame
 								}
 
 							}
