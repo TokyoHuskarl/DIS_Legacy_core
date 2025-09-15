@@ -1557,7 +1557,7 @@ __fn func_control_moveorder_proc_move {
 		v[390] = 0
 		defv FNVar_control_moveorder_linecounter = __id(Temp20) 
 		val_init(FNVar_control_moveorder_linecounter)
-
+		val_init(TempFlag1)
 
 		// check if Attack move
 		@if s[16] .isOn() {
@@ -1581,6 +1581,7 @@ __fn func_control_moveorder_proc_move {
 			v[202] += 1
 
 		}
+		s[21].on
 }
 
 				/*

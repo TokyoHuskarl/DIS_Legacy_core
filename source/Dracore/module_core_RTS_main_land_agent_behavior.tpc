@@ -699,15 +699,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					}
 
 					agent_ProcessInstantState |= v[Temp20] - Saved_Current_MapTile_Info > 90000000 ? ProcessInstantState_FLAG_climb_hill : 0
-					//@if `agent_ExMotionFlags & agent_ExMotionFlags_FLAG_horseback {//horse back}
 					
-					/*
-					@if agent_MovementOrder > 1 {
-						//@comment "#Then break wall detection flag"
-						agent_AgentBits &= -8388609 //~8388608 ~AgentBits_FLAG_walldetected
-						
-					}
-					*/
 
 					agent_AgentBits &= agent_MovementOrder > 1 ? -8388609 : agent_AgentBits // if movement order is > 1, Then break wall detection flag
 
@@ -720,10 +712,11 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					}
 
 					//get v[v[297]] to TT1
-					v[53].copy TT1, 2
-					TT1 .mul v[4813], 2
+
+					// cam diff is treated here!
 					//add to v[v[300]]
-					agent_MilPixX .add TT1, 2
+					agent_MilPixX .add FrameCamDiff_MilX, 2
+					
 					agent_MilPixX.copy agent_RelativeX, 2
 					//div
 					agent_RelativeX .div v[4813], 2
@@ -790,6 +783,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 					agent_SpriteY = agent_RelativeY + agent_OneTimeOffsetY
 					
 				}
+
 				@if `agent_AgentBits & AgentBits_FLAG_walldetected {//walldetected
 					@if agent_StanceOrder == ORD_ATK { // Attack mode
 						agent_AI_routine_bits |= AI_routine_bits_FLAG_PATHFINDING
@@ -801,11 +795,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			
 			} .else bl {
 
-				v[53].copy TT1, 2
-				TT1 .mul v[4813], 2
 
 				//add to v[v[300]]
-				agent_MilPixX .add TT1, 2
+					agent_MilPixX .add FrameCamDiff_MilX, 2
 				agent_MilPixX.copy agent_RelativeX, 2
 				//div
 				agent_RelativeX .div v[4813], 2
