@@ -204,10 +204,13 @@ __fn ColCheck {
 
 			// this if seemingly not working. check it out
 			@if `agent_AgentBits & AgentBits_FLAG_Pushed_by_terrain {
-				Ptr18 = Temp1 + 7
-				Ptr20 = Temp1 + 5
-				Ptr15 = Temp1 + 296
-				Ptr16 = Temp1 + 36
+
+				/*
+				// need remake
+				Ptr18 = Temp1 + 7 // agent_RelativeX
+				Ptr20 = Temp1 + 5 // agent_MilPixX
+				Ptr15 = Temp1 + 296 // agent_OneTimeOffsetX
+				Ptr16 = Temp1 + 36 // agent_SpriteX
 				Ptr17 = 53
 				v[Col_Ptr2AgentBits] |= AgentBits_Collided_Other_Agent
 				//kabe no naka ni iru!
@@ -227,7 +230,38 @@ __fn ColCheck {
 				v[Ptr18] = v[Ptr20] / 10000
 				v[Ptr16] = v[Ptr18] + v[Ptr15]
 				v[Col_Ptr2AgentBits] &= ~AgentBits_FLAG_Pushed_by_terrain
-						
+				*/
+
+
+				
+				// Temp16 = 8
+				// Temp17 = 16
+
+				Temp14.repeat 60000,2 // move 6 pixel at most
+				agent_AbsoluteX.copy Temp18,2
+				// @ev[2].setPos .pos agent_MapX, agent_MapY // debug
+				/* ev[1].xORn is not needed - because ev[1] is always at [0,0] in DIS system
+				Temp16 = (agent_MapX - ev[1].x) * 16
+				Temp17 = (agent_MapY - ev[1].y) * 16
+				*/
+				agent_MapX.copy Temp16,2
+				Temp16..Temp17 *= 16
+				Temp16.add N8,1
+				val_sub(Temp17,N16)
+
+				Temp18.sub Temp16,2
+				// beware of zero divide
+				Temp14 .div Temp18, 2 // // inverse proportion... zero divide is not processed I suppose?
+				agent_MilPixX.add Temp14,2
+
+
+				agent_AgentBits |= AgentBits_Collided_Other_Agent
+				agent_AgentBits &= ~AgentBits_FLAG_Pushed_by_terrain
+				
+				// save back
+				val_add(Temp1,N1)
+				agent_AgentType.copy v[Temp1], 300
+
 				
 			} .else bl {
 				//Obj Collision

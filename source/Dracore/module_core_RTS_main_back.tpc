@@ -423,10 +423,12 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 					}
 			}
 
+	    // "#カメラずらして"
+			v[605].add FrameCamDiff_MilX,2
+			
 	    // "#座標を反映"
-			agent_MilPixX.copy agent_RelativeX, 2
-			agent_RelativeX.div v[4813], 2 // /= 10000
-			agent_RelativeX.add LEGV_MainMAP_PointOfReferenceX,2
+	    v[607] = v[605] / 10000
+	    v[608] = v[606] / 10000
 
 	    // "慣性終わり"
 	    // "#############

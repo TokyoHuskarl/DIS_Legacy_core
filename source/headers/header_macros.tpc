@@ -29,8 +29,8 @@ __fn macro_convert_maptileXY_into_relativeXY $TileX $TileY $regX $regY {
 
 __fn macro_convert_absolute_coord $RelXstart $regXstart {
 	// ?
-	//v[__id($RelXstart)].copy $regXstart, 2
-	//v[__id($regXstart)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
+	v[__id($RelXstart)].copy $regXstart, 2
+	v[__id($regXstart)].sub LEGV_MainMAP_PointOfRefereneX, 2 //?f0
 	
 }
 

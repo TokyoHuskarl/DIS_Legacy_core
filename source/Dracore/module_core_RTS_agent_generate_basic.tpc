@@ -81,12 +81,16 @@ __fn func_generate_agent {
 											agent_LeftWPtoChase = -1
 
 											// "出る場所セット"
+											macro_convert_absolute_coord(spawnSet_x,agent_AbsoluteX)
 											spawnSet_x.copy agent_MilPixX, 2
 
 											// "生成場所の数値を入れる"
 											agent_MilPixX.copy agent_RelativeX, 2
 											agent_MilPixX.copy agent_HoldPointX, 2
 											v[310..311] = 10000
+
+											// TEST
+											agent_AbsoluteX.copy agent_MilPixX,2
 											agent_MilPixX .mul Temp10, 2
 
 											// "Init end##################"
@@ -1172,7 +1176,12 @@ __fn func_generate_agent_finish_set {
 
 		@if BOOL_Gen_GetMinionData .isOff() {
 			@comment "mapxyset"
-				agent_MilPixX.copy agent_MapX, 2
+
+				// absolute test
+				// agent_MilPixX.copy agent_MapX, 2
+				agent_RelativeX.copy agent_MapX, 2
+				agent_MapX..agent_MapY *= 10000
+
 				agent_MapX .add v[1061], 2
 				v[626..627] /= 10000
 				@comment "ずれ計算"

@@ -6,14 +6,6 @@ __fn macro_get_tile_instant_flag_ptr $tilenum {
 	reg1 = Const_save_var_TileFlags + $tilenum
 }
 
-
-
-/*
-TODO:
-	動いてなかったらモートン座標計算飛ばす
-
-*/
-
 __fn RTS_MAIN_LAND_AGENT_1f {
 
 	    v[401] = v[v[536]] - 1
@@ -327,7 +319,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 		v[309].copy relX_sub_TargX_saved, 2
 
 		// kinda retarded but needed to avoid wall cameradiff bug 
-		// relX_sub_TargX_saved.sub v[53], 2
+		relX_sub_TargX_saved.sub v[53], 2
 
 	    @if agent_MovementOrder != MovementOrder_TYPE_force_moving {
 				@if Is_Paused .isOff() {
@@ -617,18 +609,14 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	#保存x*10000 303
 	#保存y*10000 304*/
 
-
-			// absolute test
 	    agent_MilPixX.copy Temp11, 2
-
 	    Temp11 .add v[1061], 2
 	    Temp11.copy Temp3, 2
 
 	    //v[311..312] /= 10000
 	    //@comment "ずれ計算"
 	    //24.4.23
-	    macro_cord_diff_abs(Temp11 Temp12)
-
+	    macro_cord_diff(Temp11 Temp12)
 	    //macro_diff_var311to312()
 
 	    //@comment "set mapXY"
@@ -637,7 +625,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 	    // Tile coordinate's origin is set by each map, meanwhile Map coordinate is exactly the same as original RM map coordinate system.
 	    // there was design flaw, because it seems that I had been confused which coord system is used in codes, and the confusion often makes roots of bugs...
 
-	    Temp11.copy agent_MapX, 2
+	    Temp11.copy v[626], 2
 
 
 	    /*@comment ######################Get Terrain and Elevation info*/
@@ -670,7 +658,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 			// get TileXY where the agent goes
 			Temp3 .add agent_MilPixVx, 2
-			macro_cord_diff_abs(Temp3,Temp4)
+			macro_cord_diff(Temp3,Temp4)
 
 			// now sub to fit DIS map
 			Temp3.sub v[69], 2
@@ -716,7 +704,7 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 							}
 
-							agent_ProcessInstantState |= (v[Temp20] - Saved_Current_MapTile_Info) > 90000000 ? ProcessInstantState_FLAG_climb_hill : 0
+						agent_ProcessInstantState |= (v[Temp20] - Saved_Current_MapTile_Info) > 90000000 ? ProcessInstantState_FLAG_climb_hill : 0
 
 
 							agent_AgentBits &= agent_MovementOrder > 1 ? -8388609 : agent_AgentBits // if movement order is > 1, Then break wall detection flag
@@ -726,13 +714,22 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 					} .else bl {
 						agent_AgentBits |= AgentBits_FLAG_walldetected
+						agent_MilPixX .sub FrameCamDiff_MilX, 2 // avoid Cam Diff bug
 					
 					}
 
 					//get v[v[297]] to TT1
 
 					// cam diff is treated here!
+					agent_MilPixX .add FrameCamDiff_MilX, 2 // Add Cam Diff
 					
+					agent_MilPixX.copy agent_RelativeX, 2
+					//div
+					agent_RelativeX .div v[4813], 2
+
+					agent_RelativeX.copy agent_SpriteX,2
+					agent_SpriteX.add agent_OneTimeOffsetX,2
+				
 					
 				} .else bl {
 					//@comment "wall detection"
@@ -753,12 +750,14 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 						//@comment "##壁がなければ速度を足す"
 						agent_MilPixX.add var1,1 // agent_MilPixX += var1
+						val_add(agent_MilPixY,FrameCamDiff_Mily)					
 
 
 					} .else bl {
 						agent_MilPixVx = divmul(agent_MilPixVx, TT2, TT1)
 						// agent_MilPixX.add agent_MilPixVx,1
 						// val_sub(agent_MilPixY,FrameCamDiff_Mily)					
+						val_sub(agent_MilPixX,FrameCamDiff_MilX)	// avoid Cam Diff bug				
 
 					
 					}
@@ -777,14 +776,22 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 						//@comment "##壁がなければ速度を足す"
 
 						agent_MilPixY.add var2,1 // agent_MilPixY += var2
+						val_add(agent_MilPixX,FrameCamDiff_MilX)					
 
 					} .else bl {
 						agent_MilPixVy = divmul(agent_MilPixVy, TT2, TT1)
 						// agent_MilPixY.add agent_MilPixVy,1
+						val_sub(agent_MilPixY,FrameCamDiff_MilY)					// avoid Cam Diff bug
 
 					}
 
-				
+
+					agent_MilPixX .add FrameCamDiff_MilX, 2
+					agent_MilPixX.copy agent_RelativeX, 2
+					//div
+					agent_RelativeX .div v[4813], 2
+					agent_RelativeX.copy agent_SpriteX,2
+					agent_SpriteX.add agent_OneTimeOffsetX,2				
 				}
 
 				@if `agent_AgentBits & AgentBits_FLAG_walldetected {//walldetected
@@ -799,23 +806,31 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 			} .else bl {
 
 
+				//add to v[v[300]]
+				agent_MilPixX .add FrameCamDiff_MilX, 2
+				agent_MilPixX.copy agent_RelativeX, 2
+				//div
+				agent_RelativeX .div v[4813], 2
+				agent_RelativeX.copy agent_SpriteX,2
+				agent_SpriteX.add agent_OneTimeOffsetX,2
 
+			
 			}
 		}.else bl{
 
+			v[53].copy TT1, 2
+			TT1 .mul v[4813], 2
+
+			//add to v[v[300]]
+			agent_MilPixX .add TT1, 2
+			agent_MilPixX.copy agent_RelativeX, 2
+			//div
+			agent_RelativeX.div v[4813], 2
+
+			agent_RelativeX.copy agent_SpriteX,2
+			agent_SpriteX.add agent_OneTimeOffsetX, 2
 		}
-
-		//add to v[v[300]]
-		agent_MilPixX.copy agent_RelativeX, 2
-		//div
-
-		// now relative Coord is just set here, not actually calculated
-		agent_RelativeX .div v[4813], 2 // /= 10000
-		agent_RelativeX.copy agent_AbsoluteX,2 // set abs coord
-		agent_RelativeX.add LEGV_MainMAP_PointOfReferenceX,2
-		agent_RelativeX.copy agent_SpriteX,2
-		agent_SpriteX.add agent_OneTimeOffsetX,2
-
+		
 		// init Ax Ay
 		v[1301].copy agent_MilPixAx, 2
 

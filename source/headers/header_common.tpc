@@ -598,6 +598,18 @@ __fn macro_cord_diff $x $y {
 	    v[__id($x)..__id($y)] /= 16
 }
 
+
+// abs test
+__fn macro_cord_diff_abs $x $y {
+	    
+	    //v[__id($x)] = ($x / 10000 + v[53] - v[403])/16
+	    //v[__id($y)] = ($y / 10000 + v[54] - v[404])/16
+	    
+	    //this one is far faster
+	    v[__id($x)..__id($y)] /= 10000
+	    v[__id($x)..__id($y)] /= 16
+}
+
 #include "./header_common_items.tpc"
 
 
