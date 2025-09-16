@@ -225,3 +225,26 @@ __fn force_agent_to_be_idle $agentid $flag {
 
 
 
+// use in process where you deploy agent array
+__fn MACRO_set_agent_my_morton_coordinate_ref {
+		agent_RelativeX.copy var1, 2
+		var1 .add v[53], 2
+		var1 .sub v[76], 2
+		var1 .div v[74], 2
+		//ビット演算して処理するよ"
+		var1 = (var1 | var1 << 8) & 0xFF00FF
+		var1 = (var1 | var1 << 4) & 0xF0F0F0F
+		var1 = (var1 | var1 << 2) & 0x33333333
+		var1 = (var1 | var1 << 1) & 0x55555555
+		var2 = (var2 | var2 << 8) & 0xFF00FF
+		var2 = (var2 | var2 << 4) & 0xF0F0F0F
+		var2 = (var2 | var2 << 2) & 0x33333333
+		var1 |= ((var2 | var2 << 1) & 0x55555555) << 1
+		var1 &= 1023 // mask with b1111111111 for safety, by this, var1 is always between 0~1023.
+
+		val_asg(agent_Morton,var1) // agent_Morton = var1
+		//@comment "モートン座標を記録しおえたよ
+
+}
+
+

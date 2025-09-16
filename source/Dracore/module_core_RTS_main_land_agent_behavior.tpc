@@ -17,90 +17,16 @@ TODO:
 __fn RTS_MAIN_LAND_AGENT_1f {
 
 	    v[401] = v[v[536]] - 1
-		
+			// v[v[536]].copy AgentIDholder,1 // give ID to AgentIDholder
+
+
 	    Ptr1 = v[401] * v[1117] 
 	    val_add(Ptr1,N5001) // Ptr1 += 5001
 			//macro_get_agent_basic_ptr(v[v[536]],v[301])
 
 	    v[Ptr1].copy agent_ObjectType, 300
 
-	    //@comment "Get [1-100]"
-	    //@comment "モートン座標を記録するよ"
-	    agent_RelativeX.copy TT1, 2
-	    TT1 .add v[53], 2
-	    TT1 .sub v[76], 2
-	    TT1 .div v[74], 2
-	    //@comment "TT1=MortX
-	    //TT2=MortY
-	    //ビット演算して処理するよ"
-	    TT1 = (TT1 | TT1 << 8) & 0xFF00FF
-	    TT1 = (TT1 | TT1 << 4) & 0xF0F0F0F
-	    TT1 = (TT1 | TT1 << 2) & 0x33333333
-	    TT1 = (TT1 | TT1 << 1) & 0x55555555
-	    TT2 = (TT2 | TT2 << 8) & 0xFF00FF
-	    TT2 = (TT2 | TT2 << 4) & 0xF0F0F0F
-	    TT2 = (TT2 | TT2 << 2) & 0x33333333
-	    TT1 |= ((TT2 | TT2 << 1) & 0x55555555) << 1
-			TT1 &= 1023 // mask with b1111111111 for safety, by this, TT1 is always between 0~1023.
-
-			//@comment "モートン座標を記録しおえたよ
-			//次はリストに登録するよ
-			val_asg(agent_Morton,TT1) // agent_Morton = TT1
-			//@comment "#ルート空間だよ"
-			TT2 = v[1067] + v[v[1071]]
-			v[v[536]].copy v[TT2],1 // v[TT2] = v[v[536]]
-			ptr_add(v[1071],N1) // v[v[1071]] += 1
-
-			
-			// forth mort dim ~ fifth mort dim
-			v[4537].copy var4, 2
-
-			//@comment "#第5空間だよ
-			//0~1023"
-			val_add(var5,TT1) // var5 += TT1
-			v[TT1 * Const_save_var_Agents_Limit + v[4535] + v[var5]] = v[v[536]]
-
-			v[var5].add N1,1 // v[var5] += 1
-
-			//@comment "#第四空間だよ
-			//0~255"
-			TT1.shr N2,1 // TT1 >>= 2 
-			val_add(var4,TT1) // var4 += TT1
-
-			v[TT1 * Const_save_var_Agents_Limit + v[4534] + v[var4]] = v[v[536]]
-			v[var4].add N1,1 // v[var4] += 1
-
-
-			// first mort dim ~ third mort dim
-			v[1072].copy reg1, 3
-
-			//@comment "#第三空間だよ
-			//0~63"
-			TT1.shr N2,1 // TT1 >>= 2 
-			val_add(reg3,TT1) // reg3 += TT1
-
-			v[TT1 * Const_save_var_Agents_Limit + v[1070] + v[reg3]] = v[v[536]]
-			v[reg3].add N1,1 // v[reg3] += 1
-
-
-
-			//@comment "#第二空間だよ
-			//0~15"
-			TT1.shr N2,1 // TT1 >>= 2 
-			//v[343] = v[1073] + TT1
-			val_add(reg2,TT1) // reg2 += TT1
-			v[TT1 * Const_save_var_Agents_Limit + v[1069] + v[reg2]] = v[v[536]]
-			v[reg2].add N1,1 // v[reg2] += 1
-
-			//@comment "#第一空間だよ
-			//0~3"
-			TT1.shr N2,1 // TT1 >>= 2 
-			//v[343] = v[1072] + TT1
-			val_add(reg1,TT1) // reg1 += TT1
-			v[TT1 * Const_save_var_Agents_Limit + v[1068] + v[reg1]] = v[v[536]]
-			v[reg1].add N1,1 // v[reg1] += 1
-
-			//@comment "モートン座標関係はこれで終わり"
+			// MAIN_land_agent_set_Morton() used to be here
 
 	    // Auto Attack Process 
 	    @if Is_Paused .isOff() { // optimizing 26.4.23
@@ -666,7 +592,9 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 		agent_MilPixVx .add agent_MilPixAx, 2
 
-		@if `agent_MilPixVx != 0 || agent_MilPixVy != 0 {
+		// @if `agent_MilPixVx != 0 || agent_MilPixVy != 0 {
+		TT1 = agent_MilPixVx | agent_MilPixVy
+		@if TT1 != 0 {
 
 			// get TileXY where the agent goes
 			Temp3 .add agent_MilPixVx, 2
@@ -811,10 +739,19 @@ __fn RTS_MAIN_LAND_AGENT_1f {
 
 		// now relative Coord is just set here, not actually calculated
 		agent_RelativeX .div v[4813], 2 // /= 10000
+
+		/*
+		get_AEB_array(AgentIDholder,__id(TT11),AgentExBuffer_SLOT_LastAbsx,2) // get last AbsX to TT11
+		set_AEB_array(AgentIDholder,__id(agent_AbsoluteX),AgentExBuffer_SLOT_LastAbsx,2) // save last abs coord
+		*/
+
+		agent_AbsoluteX.copy TT11,2 // save last AbsXY to TT11/TT12
 		agent_RelativeX.copy agent_AbsoluteX,2 // set abs coord
 		agent_RelativeX.add LEGV_MainMAP_PointOfReferenceX,2
 		agent_RelativeX.copy agent_SpriteX,2
 		agent_SpriteX.add agent_OneTimeOffsetX,2
+
+		MAIN_land_agent_set_Morton() // beware, this uses TT11 and TT12!
 
 		// init Ax Ay
 		v[1301].copy agent_MilPixAx, 2
@@ -947,5 +884,80 @@ __fn MAIN_macro_agent_WP_Array_pop {
 
 __fn MAIN_macro_agent_WP_Array_init {
 	val_const(agent_LeftWPtoChase,-1) // agent_LeftWPtoChase = -1 // Agent does not chase left WPs anymore
+
+}
+
+
+__fn MAIN_land_agent_set_Morton {
+
+			agent_AbsoluteX.copy TT13,2
+			TT11 |= TT12 << 16
+			TT13 |= TT14 << 16
+			@if TT11 != TT13 { //  this is faster! equvalent to `TT11 != agent_AbsoluteX || TT12 != agent_AbsoluteY without bit calculations above in DIS system.
+
+		
+					MACRO_set_agent_my_morton_coordinate_ref() // see -> module_core_RTS_agent_misc_functions.tpc
+
+			} // if the agent is not moved at all, use last morton 
+			val_asg(TT1,agent_Morton)
+
+	    //@comment "Get [1-100]"
+
+			//@comment "#ルート空間だよ"
+			TT2 = v[1067] + v[v[1071]]
+			v[v[536]].copy v[TT2],1 // v[TT2] = v[v[536]]
+			ptr_add(v[1071],N1) // v[v[1071]] += 1
+
+			
+			// forth mort dim ~ fifth mort dim
+			v[4537].copy var4, 2
+
+			//@comment "#第5空間だよ
+			//0~1023"
+			val_add(var5,TT1) // var5 += TT1
+			v[TT1 * Const_save_var_Agents_Limit + v[4535] + v[var5]] = v[v[536]]
+
+			v[var5].add N1,1 // v[var5] += 1
+
+			//@comment "#第四空間だよ
+			//0~255"
+			TT1.shr N2,1 // TT1 >>= 2 
+			val_add(var4,TT1) // var4 += TT1
+
+			v[TT1 * Const_save_var_Agents_Limit + v[4534] + v[var4]] = v[v[536]]
+			v[var4].add N1,1 // v[var4] += 1
+
+
+			// first mort dim ~ third mort dim
+			v[1072].copy reg1, 3
+
+			//@comment "#第三空間だよ
+			//0~63"
+			TT1.shr N2,1 // TT1 >>= 2 
+			val_add(reg3,TT1) // reg3 += TT1
+
+			v[TT1 * Const_save_var_Agents_Limit + v[1070] + v[reg3]] = v[v[536]]
+			v[reg3].add N1,1 // v[reg3] += 1
+
+
+
+			//@comment "#第二空間だよ
+			//0~15"
+			TT1.shr N2,1 // TT1 >>= 2 
+			//v[343] = v[1073] + TT1
+			val_add(reg2,TT1) // reg2 += TT1
+			v[TT1 * Const_save_var_Agents_Limit + v[1069] + v[reg2]] = v[v[536]]
+			v[reg2].add N1,1 // v[reg2] += 1
+
+			//@comment "#第一空間だよ
+			//0~3"
+			TT1.shr N2,1 // TT1 >>= 2 
+			//v[343] = v[1072] + TT1
+			val_add(reg1,TT1) // reg1 += TT1
+			v[TT1 * Const_save_var_Agents_Limit + v[1068] + v[reg1]] = v[v[536]]
+			v[reg1].add N1,1 // v[reg1] += 1
+
+			//@comment "モートン座標関係はこれで終わり"
+
 
 }
