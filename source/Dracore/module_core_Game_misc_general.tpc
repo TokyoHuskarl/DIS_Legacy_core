@@ -7,7 +7,51 @@ cev .id(2003), .name("macro:make vector_old"), {
 	func_make_unit_vector_from_two_points_sqrt(var1,var2,var3,var4)
 }
 
+cev .id(1914), .name("ForceSetObjPos v1v2v3LEGACY "), {
 
+	@comment "######
+		LEGACY Cev.  -> module_core_Game_misc_general.tpc
+		Used by vikang ship system in legacy island endurance levels"
+		@if s[1] .isOn() {
+			v[11..12] *= 10000
+				v[341] = v[13] * v[1117]
+				v[341] += 4705
+				v[11].copyTo v[v[341]], 2
+				v[11..12] /= 10000
+				v[341] += 2
+				v[11].copyTo v[v[341]], 2
+
+		}
+	v[11] .sub v[403], 2
+		v[11..12] *= 10000
+		v[341] = v[13] * v[1117]
+		v[341] += 4705
+		v[11].copyTo v[v[341]], 2
+		v[11..12] /= 10000
+		v[11] .add v[403], 2
+		v[341] += 2
+		v[11].copyTo v[v[341]], 2
+		@comment "Static
+		組み換え必要と思われ"
+		v[18] = v[13] * v[1117] + 4701
+		@if v[v[18]] == 11 {
+			v[11..12] *= 10000
+				v[11].copyTo v[351], 2
+				v[351] += 80000
+				v[352] += 240000
+				v[351..352] /= 10000
+				@comment "ずれ計算"
+				v[351] .sub v[403], 2
+				@comment "ずれおわり"
+				v[351..352] /= 16
+				@comment "処理開始"
+				v[351].copyTo v[803], 2
+				v[804] += 1
+				v[v[18] + 232] = max(min(muldiv(v[803], 100, v[430]) - 1, v[1277]), 0) + max(min(muldiv(v[804], 100, v[431]) - 1, v[1276]), 0) * v[1277]
+				v[11..12] /= 10000
+
+		}
+}
 
 cev .id(1889), .name("Lang_map_strings v1"), {
 	@comment "module_core_Game_misc_general.tpc"

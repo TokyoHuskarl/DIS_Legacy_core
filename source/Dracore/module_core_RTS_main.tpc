@@ -163,7 +163,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //#保存x*10000 303
 	    //#保存y*10000 304"
 	    //This part seems needless after once you save the height I guess?
-	    v[605].copy Temp11, 2
+	    agent_MilPixX.copy Temp11, 2
 	    Temp11 .add v[1061], 2
 	    Temp11.copy Temp3, 2
 		    
@@ -171,36 +171,27 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    @if `v[811] & 2 { // skip getting tile info unless it's moving static...
 
 		    // "ずれ計算"
-		    macro_cord_diff(Temp11 Temp12)
+		    macro_cord_diff_abs(Temp11 Temp12)
 	    
 		    Temp13 = v[v[1182] + Temp11 - Map_LimitCoordX_min + (Temp12 - Map_LimitCoordY_min) * var_Map_Width]
 		    agent_getTerrainElevation = Temp13 / 100000000
 		    v[640] = Temp13 % 100
 	    }
+
 	    // "######################"
 	    Temp3 .add v[612], 2
 
 	    // "ずれ計算"
-	    macro_cord_diff(Temp3 Temp4)
+	    macro_cord_diff_abs(Temp3,Temp4)
 
 	    // "set mapXY"
 	    Temp3.copy v[626], 2
 
-	    // "X座標"
-	    // "#カメラずらして"
-	    val_add(agent_MilPixX,FrameCamDiff_MilX) // v[605] += v[53] * 10000
-	    // "Y座標"
-	    // "#カメラずらして"
-			val_add(agent_MilPixY,FrameCamDiff_MilY) // agent_MilPixY += v[54] * 10000
-
-			/*
-	    // "#座標を反映"
-	    v[607] = v[605] / 10000
-	    // "#座標を反映"
-	    v[608] = v[606] / 10000
-			*/
 			agent_MilPixX.copy agent_RelativeX,2
-			v[__id(agent_RelativeX)..__id(agent_RelativeY)] /= 10000
+			agent_RelativeX .div v[4813], 2 // /= 10000
+
+			agent_RelativeX.copy agent_AbsoluteX,2 // set abs coord
+			agent_RelativeX.add LEGV_MainMAP_PointOfReferenceX,2
 
 	    // "###################"
 	    /* "#############
@@ -209,13 +200,11 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //TT4 = Temp1 + 1
 	    //TT5 = Temp1 + 7
 
-	    // set absolute coord
-	    macro_convert_absolute_coord(agent_RelativeX,agent_AbsoluteX)
 
 	    TT8 = v[401] + 501
 	    s[TT8].off
 
-	    agent_AgentBits &= -1073741825//~AgentBits_FLAG_Drawn_in_screen
+	    agent_AgentBits &= -1073741825 //~AgentBits_FLAG_Drawn_in_screen
 	    //opt
 	    TT10 = Address_agent_inSight_switch_array_head + v[401]
 	    @if s[TT10] .isOn() {
@@ -291,6 +280,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 											LEGS_ON_EFFECT_REGISTER_PROCESS.on
 											agent_RelativeX.copy victim_RelativeX,2
 											@call .cev 95
+
 										} .else bl {
 											// collapse particle test
 											// maybe you should prepare particle emitter cev for new collapse particle and register it in remove proc 
@@ -302,6 +292,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 													val_add(emitter_RelativeY,agent_Height)
 													val_const(emitter_Timer,1)
 													})
+
 										}
 
 										__if DIS_DEBUG_BUILD == 1 {
@@ -376,7 +367,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 	    //#自己y 312
 	    //#保存x*10000 303
 	    //#保存y*10000 304"
-	    v[605].copy Temp11, 2
+	    agent_MilPixX.copy Temp11, 2
 	    Temp11 .add v[1061], 2
 	    Temp11.copy Temp3, 2
 
@@ -409,7 +400,7 @@ cev .id(18), .name("Main:Agent per1f") , .parallel , .cond(Const_Is_RTS_Mode), {
 						@map.getTerrain .pos Temp3, Temp12 .dst Temp13
 						v[612] = muldiv(v[612], 9, 10)
 						v[612] = 500 >= abs(v[612]) ? 0 : v[612]
-						v[605] += Temp13 < 20 ? v[612] : 0
+						agent_MilPixX += Temp13 < 20 ? v[612] : 0
 						// "#カメラずらして"
 					}
 
@@ -1756,7 +1747,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 													v[609] = Ptr19
 													// "出る場所セット"
 													TT1 = Ptr17 + 7
-													v[TT1].copy v[605], 2
+													v[TT1].copy agent_MilPixX, 2
 													v[605..606] *= 10000
 													v[TT1].copy v[607], 2
 													// "Projectile team"

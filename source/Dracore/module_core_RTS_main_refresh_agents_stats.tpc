@@ -321,7 +321,7 @@ __fn agent_ref_stats(){
                 } .elif `agent_TacticsOrderFlag & 16 {//@comment "##Cast Support"
                     agent_ProcessRange_min = agent_ProcessRange_max / 2
                     agent_ProcessRange_max += agent_ProcessRange_max >> 3 //muldiv(agent_ProcessRange_max, 11, 10)
-                    agent_ProcessMS += agent_ProcessMS >> 2 //muldiv(agent_ProcessMS, 75, 100)
+                    agent_ProcessMS -= agent_ProcessMS >> 2 //muldiv(agent_ProcessMS, 75, 100)
                     agent_ProcessSPReg += 2
                     
                 }.elif `agent_TacticsOrderFlag & 64 {//@comment "##Rallying"
