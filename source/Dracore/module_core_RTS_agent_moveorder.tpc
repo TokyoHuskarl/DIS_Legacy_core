@@ -117,6 +117,7 @@ __fn agent_func_receive_moveorder $agentid $fl {
 					def MACRO_cohort_path = {
 						@if `between(agent_Cohort_ID, 1, 10) {
 							agent_AI_routine_bits |= 16793600
+
 						}
 					}
 					__if $fl & FL_AGT_MVORDER_by_player {
@@ -171,7 +172,6 @@ __fn agent_func_receive_moveorder $agentid $fl {
 
 			__if $fl & FL_AGT_MVORDER_by_player {
 				// "Formation Indicator"
-				@if s[40] .isOn() {
 					@if v[99] > 1 {
 						TT1 = v[1165] + v[340]
 							@pic[TT1].show {
@@ -189,7 +189,6 @@ __fn agent_func_receive_moveorder $agentid $fl {
 									.affectedByShake
 							}
 					}
-				}
 			}
 
 			$adrlinecounter = __id(Temp20) 

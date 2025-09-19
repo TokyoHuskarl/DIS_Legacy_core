@@ -39,7 +39,6 @@ cev .id(13), .name("SightSystem:Player") , .parallel , .cond(Const_Is_SightSyste
 	    val_div(TT9,TT6) // TT9 = TT1 / TT6
 
 	    TT5 = v[2931] + TT8
-	    // TT5 += TT9 * v[2927]
 			TT9.copy TT10,1
 			val_mul(TT10,v[2927])
 			val_add(TT5,TT10)
@@ -214,7 +213,6 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 	    @wait 0
 	    @if s[2] .isOff() {
 				def minimapnode_sum = 100 * 100 // kari 
-				// v[v[4527]..v[4527] + 100 * 100] &= -2 //~1
 				v[buffer_for_pixel_information_head].repeat -2,minimapnode_sum
 				v[v[4527]].and v[buffer_for_pixel_information_head],minimapnode_sum
 				
@@ -454,8 +452,6 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 							val_sub(TT10,N1) // -= 1 
 							v[ptr_null].copy v[v[4563]],TT10 // v[v[4563]..v[4563] + v[1277] * v[1276]] = 0
 							@loop v[1276] .dst TT4 {
-								// tempA = TT4 * v[1277] 
-								// tempB = v[4802] + TT4 ...no need to calc these in inner loop
 								@loop v[1277] .dst TT3 {
 										v[v[4563] + TT3 + TT4 * v[1277]] = v[v[4527] + v[v[4803] + TT3] + v[v[4802] + TT4] * v[2927]] & 2 ? 0x0 : 0xFF111111
 								
@@ -498,8 +494,6 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 						v[ptr_null].copy v[v[4563]],TT1
 
 						@loop v[1276] .dst TT4 {
-									// tempA = TT4 * v[1277] 
-									// tempB = v[4802] + TT4 ...no need to calc these in inner loop
 							@loop v[1277] .dst TT3 {
 									v[v[4563] + TT3 + TT4 * v[1277]] = v[v[4527] + v[v[4803] + TT3] + v[v[4802] + TT4] * v[2927]] & 1 ? 0x0 : 0xFF111111
 									
@@ -512,7 +506,6 @@ cev .id(14), .name("SightSystem:per4f") , .parallel , .cond(Const_Is_SightSystem
 						
 				}
 
-				//LEGS_Request_Refresh_FoW.off
 				LEGV_FoWManagementFlags &= ~4
 				
 	    }
