@@ -1,5 +1,17 @@
 
 // well, this one seems different...
+
+// retarded, kari
+__fn AGENT_worker_make_agent_idle {
+	force_agent_to_be_idle(Ptr19,0)
+	TT1 = Ptr19 * v[1117] 
+	TT2 = TT1 + 4707
+	TT3 = TT1 + 4719
+	v[TT2].copy v[TT3], 2
+	TT3 = TT1 + 4741
+	v[TT2].copy v[TT3], 2
+}
+
 // Attention please?
 cev .id(32), .name("AgentAct:Worker"), {
 
@@ -767,7 +779,7 @@ cev .id(32), .name("AgentAct:Worker"), {
 					} .else bl {
 
 						// need save back proc, but before putting it you have to refactor the entire resource collecting proc.
-						force_agent_to_be_idle(Ptr19,0)
+						AGENT_worker_make_agent_idle() // force_agent_to_be_idle(Ptr19,0)
 
 						// there's no resource left in the static agent...
 						@if victim_UnitID == 12 { // fruits
@@ -1304,11 +1316,14 @@ __fn agent_aa_repair {
 							v[421] = 130 // multiplier 130%
 							@call .cev 40
 
+							// job change
+							v[Ptr19 * 300 + 4947] = 6
+					}.else bl {
+						AGENT_worker_make_agent_idle()
+							
 					}
 
 			}
-			// job change
-			v[Ptr19 * 300 + 4947] = 6
 
 		}
 

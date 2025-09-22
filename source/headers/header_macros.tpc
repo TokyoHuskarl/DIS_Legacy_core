@@ -118,6 +118,10 @@ __fn val_const $v1 $c {
 
 }
 
+__fn val_pow2 $v1 {
+	v[__id($v1)].mul v[__id($v1)],1
+}
+
 
 // ptr series
 __fn ptr_asg $v1 $v2 {

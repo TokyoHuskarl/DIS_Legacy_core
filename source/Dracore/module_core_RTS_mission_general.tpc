@@ -34,7 +34,7 @@ RTS.mission.run();
 // actual functions are written in js file.
 // this cev just call run() functions of objects under RTS module.
 
-cev .id(1830), .name("JS Mission/CommandManager"),.parallel, {
+cev .id(1830), .name("JS Mission/CommandManager"),.parallel, .cond(s[6]),  {
 	
 	@if s[20].isOn(){ // RTS GAME
 		@if s[2].isOff(){ // pause

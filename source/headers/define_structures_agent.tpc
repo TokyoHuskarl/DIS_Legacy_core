@@ -478,7 +478,12 @@ struct("agent",{
 	AI_routine_bits_FLAG_RayCast = 33554432
 	AI_routine_bits_FLAG_WP_set_by_RayCast = 67108864
 	AI_routine_bits_FLAG_1secDelay_PF = 134217728
-	AI_routine_bits_FLAG_StuckCheckReady = 268435456
+	AI_routine_bits_FLAG_StuckCheckReady = 268435456 // 28 bit
+	AI_routine_bits_FLAG_Have_to_check_my_range = 536870912
+	AI_routine_bits_MASK_Have_to_check_my_range = ~AI_routine_bits_FLAG_Have_to_check_my_range
+	AI_routine_bits_FLAG_Target_seems_to_be_in_range  = 1073741824
+	AI_routine_bits_MASK_Target_seems_to_be_in_range  = ~AI_routine_bits_FLAG_Target_seems_to_be_in_range
+
 
 		AI_routine_bits_KILL_StuckCheckReady = ~AI_routine_bits_FLAG_StuckCheckReady
 
@@ -761,6 +766,8 @@ struct("agent",{
 		victim_ColDimension = 740039
 		victim_getTerrainElevation = 740057
 		victim_SaveActualTeamID = 740058
+		victim_AbsoluteX  = 740061
+		victim_AbsoluteY  = 740062
 		victim_Skin = 740063 // 0=Rtpian, 1=Nord, 2= Azghazi, 6= female ...This parameter is for UserCharactors
 		victim_Race = 740064
 		victim_PerkFlagBits1 = 740065

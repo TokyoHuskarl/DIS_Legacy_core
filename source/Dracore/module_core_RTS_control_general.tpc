@@ -22,6 +22,11 @@ cev .id(47) ,.name("Control:Mouse"), .parallel , .cond(Const_Is_RTS_Mode), {
 	CEV_CONTROL_MOUSE()
 }
 
+
+cev .id(49) ,.name("-Double Click Select"), {
+	CEV_CONTROL_SELECT_AGENTS_DOUBLECLICK()
+}
+
 #include "./module_core_RTS_control_keyboard.tpc"
 cev .id(52) ,.name("Control:Keyboard"), .parallel , .cond(Const_Is_RTS_Mode), {
 	CEV_CONTROL_KEYBOARD()

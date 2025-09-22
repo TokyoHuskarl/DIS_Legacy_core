@@ -33,7 +33,7 @@ __fn CEV_CONTROL_SELECT_AGENTS_DOUBLECLICK {
 													@if v[v[302]] != 11 {
 														@comment "選択しているユニットの割り振り番号"
 															v[324] = v[301] + 1
-															v[v[302]].copyTo v[601], 11
+															v[v[302]].copyTo v[601], 300
 															v[310] = v[302] + 23
 															v[311] = v[302] + 100
 															v[320] = v[302] + 99
@@ -44,17 +44,37 @@ __fn CEV_CONTROL_SELECT_AGENTS_DOUBLECLICK {
 																			v[82] = v[944] <= 0 && v[v[302] + 34] != 0 ? v[v[302] + 34] : -1
 																				v[202] += 1
 																				@if v[202] <= v[1007] {
-																					@comment "民間？"
-																						v[701] = 1 + v[311]
-																						v[375] = v[v[701] - 99] & 2097152 ? v[375] : 0
-																						s[22].on
-																						v[v[310]] = 0
-																						@comment "選択範囲内"
-																						v[v[202]] = v[324]
-																						LEGV_SelectedAmount += 1
-																						@comment "選択した集団の最大ＨＰを取得"
-																						v[327] = v[302] + 104
-																						v[98] += v[v[327]]
+																					@if `agent_AgentBits & AgentBits_FLAG_EnableCivAI { // worker
+																							// only idling worker can be selected by double click
+																						@if agent_worker_JobType == 0 {
+																							@if agent_ActionState == 0 {
+																								@if agent_MovementOrder <= 0 {
+																										v[701] = 1 + v[311]
+																										s[22].on
+																										v[v[310]] = 0
+																										@comment "選択範囲内"
+																										v[v[202]] = v[324]
+																										LEGV_SelectedAmount += 1
+																										@comment "選択した集団の最大ＨＰを取得"
+																										v[327] = v[302] + 104
+																										v[98] += v[v[327]]
+
+																								}
+																							}
+																						}
+
+																					}.else bl{ // not worker
+																							v[701] = 1 + v[311]
+																							s[22].on
+																							v[v[310]] = 0
+																							@comment "選択範囲内"
+																							v[v[202]] = v[324]
+																							LEGV_SelectedAmount += 1
+																							@comment "選択した集団の最大ＨＰを取得"
+																							v[327] = v[302] + 104
+																							v[98] += v[v[327]]
+																							v[375] = 0 // kill worker flag
+																					}
 
 																				}
 

@@ -604,6 +604,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 			agent_behavior_effect_and_motion_check()
 			main_agent_footsound()
+			MAIN_agent_check_range()
 
 	    agent_AgentType.copy v[Ptr19], 300    
 	    // "++"
@@ -628,6 +629,7 @@ cev .id(16), .name("Main:Agent per3f") , .parallel , .cond(Const_Is_RTS_Mode), {
 
 			agent_behavior_effect_and_motion_check()
 			main_agent_footsound()
+			MAIN_agent_check_range()
 
 	    agent_AgentType.copy v[Ptr19], 300    
 	    // "++"
@@ -950,10 +952,11 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 													v[253] = v[608] + v[611] + rnd(-3, 3)
 													v[252] .add v[53], 2
 													v[252].copy v[TT1], 2
-													v[Spawned_Agent_Id_Shift + 4942] = 2
+													v[Spawned_Agent_Id_Shift + 4942] = MovementOrder_TYPE_move_ordered
 
 											} .else bl {
-												v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? 2 : 3 //if the unit is worker, then give them loose move order 
+												// v[Spawned_Agent_Id_Shift + 4942] = v[371] & 1 ? MovementOrder_TYPE_move_ordered : MovementOrder_TYPE_prioritize_moving //if the unit is worker, then give them loose move order 
+												v[Spawned_Agent_Id_Shift + 4942] = MovementOrder_TYPE_move_ordered 
 													// "指定されてる"
 													v[641].copy v[TT1], 2
 
@@ -1282,7 +1285,7 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 														v[TT1].copy TT1, 2
 														TT2 -= 12
 														TT3 = v[331] + 6
-														TT1.copy v[TT1], 2
+														TT1.copy v[TT3], 2
 														// "仕上げに登録消す"
 														v[244] += 1
 														@break
@@ -2067,90 +2070,17 @@ cev .id(15), .name("Main:Agent per6f") , .parallel , .cond(Const_Is_RTS_Mode), {
 								@if agent_MovementOrder <= 0 {
 									s[187].on // there's at least one idle worker unit 
 										@if `agent_AgentBits & AgentBits_FLAG_Drawn_in_screen { 
-											__if DIS_EXPERIMENTAL == 1 {
-												func_set_preset_particle_emitter(v[331],
-														PROC({
-															emitter_ParticleType = 1
-															emitter_Timer = 6
-															emitter_CallPartFunc = cevid_psp_idle_worker
-															emitter_ParentObject = v[Ptr_loop_current_agent]
-															// "普通にアニメ"
-															agent_RelativeX.copy emitter_RelativeX, 2
-															val_sub(emitter_RelativeY,N8)
-															})
-														)
-
-											}.else bl{
-												@if Is_Paused .isOff() { // not pause
-													@if `(agent_InCombatTimer + agent_generated_ID) / 4 % 124 == 0 { // 124 = magic number but maybe 48*3
-														@if `!(agent_ProcessObjBit & BaseObjBit_FLAG_Immune_to_bleed) { // skeletons won't say anything
-															agent_RelativeX.copy v[361], 2
-																TT1 = 20422 // quote quickstring
-																//Dragon voice
-																@if agent_Race == 3 {
-																	// quotes of dragon workers vary
-																	TT1 += agent_UnitID == 10 ? 1 : 2
-
-																}
-
-															str1 .asg t[TT1] // text that says "I'm idle"
-																// Set new particle emitter
-																@loop v[1017] .dst Temp20 {
-																	v[242] %= v[1017]
-																		v[331] = v[242] * 100
-																		v[331] = v[331] + v[1018]
-																		@if v[v[331]] <= 1 {
-																			v[243] -= v[v[331]] == 1 ? 1 : 0
-																				v[242] %= v[1017]
-																				// "まず清掃"
-																				v[ptr_null].copy v[v[331]], 100
-																				// "ポインタセット開始"
-																				Temp10 = v[242] + v[1220]
-																				Ptr15 = v[331] + 99
-																				// "設定"
-																				v[v[331]] = 1
-																				v[Ptr15] = 0
-																				// "普通にアニメ"
-																				v[607].copy v[361], 2
-																				@pic[Temp10].strpic {
-																					str1
-																						.pos v[361], v[362] .center
-																						.size 0, 0                                                   .scrollWithMap
-																						.chromakey 1
-																						.scale 100
-																						.trans v[1066]
-																						.rgbs 100, 100, 100, 100
-																						.font Font_UI, 11
-																						.spacing 0, 0
-																						.skin "" .nobg .noframe .noGradation .noPadding
-																						.mapLayer 7
-																						.eraseWhenTransfer
-																						.affectedByFlash
-																						.affectedByShake
-																				}
-																			v[362] -= 48
-																				@pic[Temp10].move {
-																					.pos v[361], v[362] .center
-																						.scale 100
-																						.trans 100
-																						.time 45
-																						.rgbs 100, 100, 100, 100
-																				}
-																			// "仕上げに登録消す"
-																			v[242..243] += 1
-																				@break
-
-																		}
-																	v[242] += 1
-
-																}
-
-
-														}
-
-													}
-												}
-											}
+											func_set_preset_particle_emitter(v[331],
+													PROC({
+														emitter_ParticleType = 1
+														emitter_Timer = 6
+														emitter_CallPartFunc = cevid_psp_idle_worker
+														emitter_ParentObject = v[Ptr_loop_current_agent]
+														// "普通にアニメ"
+														agent_RelativeX.copy emitter_RelativeX, 2
+														val_sub(emitter_RelativeY,N8)
+														})
+													)
 
 										}
 										
@@ -2516,6 +2446,44 @@ __fn main_agent_footsound {
 	}
 }
 
+
+__fn MAIN_agent_check_range {
+	
+	@if agent_TargetAgentID > 0 {
+		@if `agent_AI_routine_bits & AI_routine_bits_FLAG_Have_to_check_my_range {
+
+
+			// get victim's absoluteXY
+			val_const(Ptr2,4761)
+			Ptr2 += agent_TargetAgentID * 300
+			v[Ptr2].copy victim_AbsoluteX,2
+
+			// calc distance
+			agent_AbsoluteX.copy TT1, 2
+			v[Ptr2].copy Temp9, 2
+			Temp9 .sub TT1, 2
+			val_pow2(Temp9)
+			val_pow2(Temp10)
+	    Temp9.add Temp10,1
+	    Temp9  = sqrt(Temp9, 1000)
+		
+			// get range
+			agent_ProcessRange_max.copy TT1, 2
+				@if Temp9 <= TT1 {
+					@if Temp9 >= TT2 {
+						// TARGET IN RANGE!
+						agent_AI_routine_bits |= AI_routine_bits_FLAG_Target_seems_to_be_in_range
+
+					}
+				}
+		}
+	}.else bl{
+		agent_AI_routine_bits &= AI_routine_bits_MASK_Target_seems_to_be_in_range 
+	}
+	agent_AI_routine_bits &= AI_routine_bits_MASK_Have_to_check_my_range 
+	
+}
+
 __fn agent_behavior_effect_and_motion_check {
 	/* "###############Timers Check###############"*/
 	// "#Check if AI timer is <=4"
@@ -2530,35 +2498,6 @@ __fn agent_behavior_effect_and_motion_check {
 					agent_HitMoveTimer = 48
 						// "Sweat Particle"
 
-						/*
-							 @loop v[1017] .dst Temp20 {
-							 v[244] %= v[1199]
-							 v[331] = v[244] * 50 
-							 v[331] += v[1198]
-							 @if v[v[331]] <= 1 {
-						// "まず清掃"
-						v[1301].copy v[v[331]], 50
-						// "ポインタセット開始"
-						// "設定"
-						v[v[331]] = 1
-						// "500F"
-						v[v[331] + 49] = v[682]
-						// "Set itself"
-						v[v[331] + 3] = 124
-						// "Set Parent Obj"
-						v[v[331] + 9] = v[401] + 1
-						// "普通にアニメ"
-						TT1 = v[331] + 6
-						v[607].copy v[TT1], 2
-						// "仕上げに登録消す"
-						v[244] += 1
-						@break
-
-						}
-						v[244] += 1
-
-						}
-						 */
 
 						func_set_preset_particle_emitter(v[331],
 								PROC({
