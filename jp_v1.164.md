@@ -219,6 +219,7 @@ Here, we announce almost-complete english translation of the whole game! (transl
 - 建築カーソル表示に地形高度が反映されていなかったのを修正。
 - 畑の予定地の表示がカメラ移動にうまく同期できていなかったのを修正。
 - 外れた投げ斧が飛んでいった方向に関係なく右向きに落ちていたのを修正。
+- TIPSが表示されないことがあったのを修正。
 
 
 # プレイヤーに関係のない変更
