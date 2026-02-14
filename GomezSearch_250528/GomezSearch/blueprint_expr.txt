@@ -1,0 +1,221 @@
+
+
+// 式の結果そのものを変数のIDとして受け取る時、式をこのノードの以下に配置して検出を行う
+v: 8
+
+
+def 0 {
+	size: 0
+}
+
+def 1 {
+	number: 0
+	size: 1
+	0: i8
+}
+
+def 2 {
+	number: 0
+	size: 1
+	0: i16
+}
+
+def 3 {
+	number: 0
+	size: 1
+	0: i32
+}
+
+def 4 {
+	number: 0
+	size: 1
+	0: i8
+}
+
+def 5 {
+	number: 0
+	size: 1
+	0: i16
+}
+
+def 6 {
+	number: 0
+	size: 1
+	0: i32
+}
+
+def 8 {
+	size: 1
+	*: $ == @0 && any(type(0), 1, 2, 3, 4, 5, 6) => v()
+}
+
+def 9 {
+	size: 1
+	*: $ == @0 && any(type(0), 1, 2, 3, 4, 5, 6) => s()
+}
+
+def 13 {
+	size: 1
+	*: $ == @0 && any(type(0), 1, 2, 3, 4, 5, 6) => v()
+}
+
+def 14 {
+	size: 1
+	*: $ == @0 && any(type(0), 1, 2, 3, 4, 5, 6) => v()
+}
+
+def 19 {
+	size: @0 + 1
+	0: sber
+}
+
+def 24 {
+	size: 1
+}
+
+def 25 {
+	size: 1
+}
+
+def 26 {
+	size: 1
+}
+
+def 34 {
+	size: 2
+}
+
+def 35 {
+	size: 2
+}
+
+def 36 {
+	size: 2
+}
+
+def 37 {
+	size: 2
+}
+
+def 38 {
+	size: 2
+}
+
+def 39 {
+	size: 2
+}
+
+def 40 {
+	size: 2
+}
+
+def 41 {
+	size: 2
+}
+
+def 42 {
+	size: 2
+}
+
+def 43 {
+	size: 2
+}
+
+def 44 {
+	size: 2
+}
+
+def 48 {
+	size: 2
+}
+
+def 49 {
+	size: 2
+}
+
+def 50 {
+	size: 2
+}
+
+def 51 {
+	size: 2
+}
+
+def 52 {
+	size: 2
+}
+
+def 53 {
+	size: 2
+}
+
+def 54 {
+	size: 2
+}
+
+def 55 {
+	size: 2
+}
+
+def 56 {
+	size: 2
+}
+
+def 57 {
+	size: 2
+}
+
+def 58 {
+	size: 2
+}
+
+def 59 {
+	size: 2
+}
+
+def 60 {
+	size: 2
+}
+
+def 61 {
+	size: 2
+}
+
+def 62 {
+	size: 2
+}
+
+def 63 {
+	size: 2
+}
+
+def 64 {
+	size: 2
+}
+
+def 65 {
+	size: 2
+}
+
+def 66 {
+	size: 2
+	*: any(type(-1), 8, 13, 14) && any(type(0), 1, 2, 3, 4, 5, 6) && any(type(1), 1, 2, 3, 4, 5, 6) && $ >= min(@0, @1) && $ <= min(@0, @1) => v(), 
+	   type(-1) == 9 && any(type(0), 1, 2, 3, 4, 5, 6) && any(type(1), 1, 2, 3, 4, 5, 6) && $ >= min(@0, @1) && $ <= max(@0, @1) => s()
+}
+
+def 67 {
+	size: 2
+}
+
+def 72 {
+	size: 3
+}
+
+def 78 {
+	size: @1 + 2
+	0: i8
+	1: sber
+	*: any(@0, 20, 21, 22) && any(type(2), 1, 2, 3, 4, 5, 6) && any(type(3), 1, 2, 3, 4, 5, 6) && $ >= @2 && $ < @2 + @3 => v()
+}
+
+

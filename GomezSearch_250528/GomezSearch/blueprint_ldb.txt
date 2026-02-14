@@ -1,0 +1,740 @@
+
+def toBeLearned {
+    1: ber, 1
+    2: ber, 1
+}
+
+def bgm {
+    1: str # => file("bgm_name")
+    2: ber
+    3: ber
+    4: ber
+    5: ber
+}
+
+def se {
+    1: str # => file("se_name")
+    3: ber
+    4: ber
+    5: ber
+}
+
+def cba {
+    2: ber
+    3: ber
+    4: ber
+    5: ber
+    6: ber
+    7: ber
+    8: i8
+    9: ber
+    12: ber
+    13: ber
+    14: ber
+}
+
+def cbaWeapon {
+    1: str # => str("cba_weapon_name")
+    2: str # => file("cba_weapon_graphic")
+    3: ber
+}
+
+def cbaBase {
+    1: str # => str("cba_base_name")
+    2: str # => file("cba_base_graphic")
+    3: ber
+    4: ber
+    5: ber
+}
+
+def battleCommand {
+    1: str # => str("battle_command_name")
+    2: ber
+}
+
+def enemyAct {
+    1: i8
+    2: i8
+    3: ber
+    4: ber
+    5: i8
+    6: ber
+    7: ber
+    8: ber
+    9: i8
+    10: ber
+    11: i8
+    12: ber
+    13: ber
+}
+
+def enemyMember {
+    1: ber
+    2: ber
+    3: ber
+    4: ber
+}
+
+def battleEventTrigger {
+    1: i16  
+    2: ber, 1 # bit(@1, 8, 8) == 1 => s("battle_event_trigger_var_switch_1")
+    3: ber, 1 # bit(@1, 9, 9) == 1 => s("battle_event_trigger_var_switch_2")
+    4: ber, 1 # bit(@1, 10, 10) == 1 => v("battle_event_trigger_var_number")
+    5: ber
+    6: ber
+    7: ber
+    8: ber
+    9: ber
+    10: ber
+    11: ber
+    12: ber
+    13: ber
+    14: ber
+    15: ber
+    16: ber
+    17: ber
+    18: ber
+    19: ber
+    20: ber
+    21: ber
+    22: ber
+    23: ber
+}
+
+def battleEventPage {
+    2: battleEventTrigger
+    11: $size, 4
+    12: <evc>
+}
+
+def animation_effect {
+    1: ber
+    2: se, "se_animation_effect"
+    3: i8
+    4: ber
+    5: ber
+    6: ber
+    7: ber
+    8: ber
+}
+
+def cell {
+    1: i8
+    2: ber
+    3: ber
+    4: ber
+    5: ber
+    6: ber
+    7: ber
+    8: ber
+    9: ber
+    10: ber
+}
+
+def animation_frame {
+    1: [cell]
+}
+
+def troop {
+    1: str # => str("troop_name")
+    2: [enemyMember]
+    3: ber
+    4: ber
+    5: [i8]
+    6: i8
+    11: [battleEventPage, {current_battle_event_page}], "battle_event"
+}
+
+def battleTest {
+    1: ber
+    2: ber
+    11: ber
+    12: ber
+    13: ber
+    14: ber
+    15: ber    
+}
+
+
+def actor {
+    1: str # => str("actor_name")
+    2: str # => str("actor_desc")
+    3: str # => file("actor_char")
+    4: ber, 0
+    5: i8, 0     
+    7: ber, 1    
+    8: ber, 99  
+    9: i8, 1       
+    10: ber, 30  
+    15: str # => file("actor_face")
+    16: ber, 0  
+    21: i8, 0   
+    22: i8, 0  
+    23: i8, 0    
+    24: i8, 0  
+    31: [i16]  
+    41: ber, 300  
+    42: ber, 300 
+    43: ber, 0 
+    51: [i16]
+    56: ber, 0
+    57: ber, 0
+    58: ber, 0
+    59: ber, 0
+    60: ber, 0
+    62: ber, 0
+    63: [toBeLearned]
+    64: ber, 0          
+    71: ber, 0
+    72: [i8]
+    73: ber, 0
+    74: [i8]
+    80: [i32]
+}
+
+
+def skill {
+    1: str # => str("skill_name")
+    2: str # => str("skill_desc")
+    7: ber, 0
+    8: ber, 0
+    9: ber, 0
+    10: ber, 1
+    11: ber, 0
+    12: ber, 0
+    13: ber, 1 # @8 == 3 => s("skill_switch")
+    14: ber, 1
+    16: se, "se_skill"
+    18: i8, 1
+    19: i8, 0
+    20: i8, 0
+    21: ber, 0
+    22: ber, 3
+    23: ber, 4
+    24: ber, 0
+    25: ber, 100
+    31: i8, 0
+    32: i8, 0
+    33: i8, 0
+    34: i8, 0
+    35: i8, 0
+    36: i8, 0
+    37: i8, 0
+    38: i8, 0
+    39: i8, 0
+    41: ber, 0
+    42: [i8]
+    43: ber, 0
+    44: [i8]
+    45: i8, 0
+    49: ber, 0
+    50: [cba]
+}
+
+
+def item {
+    1: str # => str("item_name")
+    2: str # => str("item_desc")
+    3: i8
+    5: ber
+    6: ber
+    11: ber
+    12: ber
+    13: ber
+    14: ber
+    15: i8
+    16: ber
+    17: ber
+    18: ber
+    20: ber
+    21: i8
+    22: i8
+    23: i8
+    24: i8
+    25: i8
+    26: i8
+    27: i8
+    28: i8
+    29: i8
+    31: i8
+    32: ber
+    33: ber
+    34: ber
+    35: ber
+    37: i8
+    38: ber
+    41: ber
+    42: ber
+    43: ber
+    44: ber
+    45: ber
+    46: ber
+    51: i8
+    53: ber
+    55: ber # => s("item_switch")
+    57: i8
+    58: i8
+    61: ber
+    62: [i8]
+    63: ber
+    64: [i8]
+    65: ber
+    66: [i8]
+    67: ber
+    68: ber
+    69: ber
+    70: [cba]
+    71: i8
+    72: ber
+    73: [i8]
+    75: ber
+    76: ber
+}
+
+def enemy {
+    1: str # => str("enemy_name")
+    2: str # => file("enemy_graphic")
+    3: ber
+    4: ber
+    5: ber
+    6: ber
+    7: ber
+    8: ber
+    9: ber
+    10: i8
+    11: ber
+    12: ber
+    13: ber
+    14: ber
+    21: i8
+    22: ber
+    26: i8
+    28: i8
+    31: ber
+    32: [i8]
+    33: ber
+    34: [i8]
+    42: [enemyAct]
+}
+
+def terrain {
+    1: str # => str("terrain_name")
+    2: ber
+    3: ber
+    4: str # => file("terrain_backdrop")
+    5: i8
+    6: i8
+    7: i8
+    9: i8
+    11: i8
+    15: se, "se_terrain"
+    16: i8
+    17: ber
+    21: str # => file("terrain_panorama_back")
+    22: i8
+    23: i8
+    24: ber
+    25: ber
+    30: i8
+    31: str # => file("terrain_panorama_fore")
+    32: i8
+    33: i8
+    34: ber
+    35: ber
+    40: ber
+    41: ber
+    42: ber
+    43: ber
+    44: ber
+    45: ber
+    46: ber
+    47: ber
+    48: ber
+}
+
+def element {
+    1: str # => str("element_name")
+    2: i8
+    11: ber
+    12: ber
+    13: ber
+    14: ber
+    15: ber
+}
+
+def state {
+    1: str # => str("state_name")
+    2: i8
+    3: ber
+    4: ber
+    5: i8
+    11: ber
+    12: ber
+    13: ber
+    14: ber
+    15: ber
+    21: ber
+    22: ber
+    23: ber
+    30: ber
+    31: i8
+    32: i8
+    33: i8
+    34: i8
+    35: ber
+    36: i8
+    37: i8
+    38: i8
+    39: ber
+    41: i8
+    42: ber
+    43: i8
+    44: ber
+    45: ber
+    46: ber
+    51: str # => str("state_party_infected")
+    52: str # => str("state_enemy_infected")
+    53: str # => str("state_already_infected")
+    54: str # => str("state_turn")
+    55: str # => str("state_healed")
+    61: ber
+    62: ber
+    63: ber
+    64: ber
+    65: ber
+    66: ber
+    67: ber
+    68: ber
+}
+
+def animation {
+    1: str # => str("animation_name")
+    2: str # => str("animation_graphic")
+    3: i8
+    6: [animation_effect]
+    9: i8
+    10: i8
+    12: [animation_frame]
+}
+
+def tileset {
+    1: str # => str("tileset_name")
+    2: str # => str("tileset_graphic")
+    3: [i16]
+    4: [i8]
+    5: [i8]
+    11: ber
+    12: ber
+}
+
+def terms {
+    2: str
+    4: str
+    5: str
+    6: str
+    7: str
+    8: str
+    9: str
+    10: str
+    11: str
+    12: str
+    13: str
+    14: str
+    15: str
+    16: str
+    17: str
+    18: str
+    19: str
+    20: str
+    21: str
+    22: str
+    23: str
+    24: str
+    25: str
+    26: str
+    27: str
+    28: str
+    29: str
+    30: str
+    31: str
+    32: str
+    33: str
+    34: str
+    35: str
+    36: str
+    37: str
+    38: str
+    39: str
+    41: str
+    42: str
+    43: str
+    44: str
+    45: str
+    46: str
+    47: str
+    48: str
+    49: str
+    50: str
+    51: str
+    54: str
+    55: str
+    56: str
+    57: str
+    58: str
+    59: str
+    60: str
+    61: str
+    62: str
+    63: str
+    64: str
+    67: str
+    68: str
+    69: str
+    70: str
+    71: str
+    72: str
+    73: str
+    74: str
+    75: str
+    76: str
+    77: str
+    80: str
+    81: str
+    82: str
+    83: str
+    84: str
+    85: str
+    86: str
+    87: str
+    88: str
+    89: str
+    92: str
+    93: str
+    95: str
+    101: str
+    102: str
+    103: str
+    104: str
+    105: str
+    106: str
+    107: str
+    108: str
+    110: str
+    112: str
+    114: str
+    115: str
+    117: str
+    118: str
+    119: str
+    120: str
+    121: str
+    122: str
+    123: str
+    124: str
+    125: str
+    126: str
+    127: str
+    128: str
+    129: str
+    130: str
+    131: str
+    132: str
+    133: str
+    134: str
+    135: str
+    136: str
+    137: str
+    138: str
+    139: str
+    140: str
+    146: str
+    147: str
+    148: str
+    151: str
+    152: str
+    153: str
+
+    161: str
+    162: str
+    163: str
+    164: str
+    165: str
+    166: str
+    200: str
+    201: str
+    202: str
+    203: str
+    204: str
+    205: str
+    206: str
+    207: str
+    208: str
+    209: str
+    210: str
+    211: str
+    212: str
+    213: str
+    214: str
+    215: str
+    216: str
+    217: str
+    218: str
+    219: str
+    
+    
+}
+
+def system {
+    10: ber
+    11: str # => file("boat_graphic")
+    12: str # => file("ship_graphic")
+    13: str # => file("airship_graphic")
+    14: ber
+    15: ber
+    16: ber
+    17: str # => file("title_graphic")
+    18: str # => file("gameover_graphic")
+    19: str # => file("system_graphic")
+    20: str # => file("system2_graphic")
+    21: ber
+    22: [i16]
+    26: ber
+    27: [i16]
+    31: bgm, "bgm_title"
+    32: bgm, "bgm_battle"
+    33: bgm, "bgm_battle_end"
+    34: bgm, "bgm_inn"
+    35: bgm, "bgm_boat"
+    36: bgm, "bgm_ship"
+    37: bgm, "bgm_airship"
+    38: bgm, "bgm_gameover"
+    41: se, "se_cursor"
+    42: se, "se_decision"
+    43: se, "se_cancel"
+    44: se, "se_buzzer"
+    45: se, "se_battle_begin"
+    46: se, "se_escape"
+    47: se, "se_enemy_attack"
+    48: se, "se_damage_enemy"
+    49: se, "se_damage_party"
+    50: se, "se_avoid"
+    51: se, "se_enemy_disappear"
+    52: se, "se_item_use"
+    61: i8
+    62: i8
+    63: i8
+    64: i8
+    65: i8
+    66: i8
+    71: ber
+    72: ber
+    73: ber
+    81: ber
+    82: i8
+    84: str # => file("troop_backdrop")
+    85: [battleTest]
+    91: ber
+    94: ber
+    95: ber
+    96: ber
+    97: ber
+    98: ber
+    99: ber
+    100: str # => file("screen_frame")
+    101: i8
+    111: i8
+    121: ber
+    122: ber # => v("title_hook")
+    123: ber
+    124: ber
+    125: ber # => v("save_hook")
+    126: ber
+}
+
+def commonEvent {
+    1: str, {current_common_event_name} # => str("common_event_name")
+    11: i8
+    12: i8, 0
+    13: ber, 1 # @11 != 5 && @12 == 1 => s("common_event_trigger")
+    21: $size, 4
+    22: <evc>
+}
+
+def class {
+    1: str
+    2: str
+    21: i8
+    22: i8
+    23: i8
+    24: i8
+    31: [i16]
+    41: ber
+    42: ber
+    43: ber
+    62: ber
+    63: [toBeLearned]
+    71: ber
+    72: [i8]
+    73: ber
+    74: [i8]
+    80: [i32]
+}
+
+def animation2 {
+    1: str # => str("animation2_name")
+    2: ber
+    10: [cbaBase, {current_cba_base_id}]
+    11: [cbaWeapon, {current_cba_weapon_id}]
+}
+
+def battle {
+    2: ber
+    4: ber
+    6: ber
+    7: ber
+    9: i8
+    10: [battleCommand, {current_battle_command_id}]
+    15: ber
+    16: ber
+    20: ber
+    24: i8
+    25: i8
+    26: ber
+    27: ber
+    28: ber
+    29: ber
+}
+
+def var_number {
+    1: str # => str("var_number")
+}
+
+def var_switch {
+    1: str # => str("var_switch")
+}
+
+def var_string {
+    1: str # => str("var_string")
+}
+
+def database {
+    11: [actor, {current_actor_id}]
+    12: [skill, {current_skill_id}]
+    13: [item, {current_item_id}]
+    14: [enemy, {current_enemy_id}]
+    15: [troop, {current_troop_id}]
+    16: [terrain, {current_terrain_id}]
+    17: [element, {current_element_id}]
+    18: [state, {current_state_id}]
+    19: [animation, {current_animation_id}]
+    20: [tileset, {current_tileset_id}]
+    21: terms
+    22: system
+    23: [var_switch, {current_var_switch_id}]
+    24: [var_number, {current_var_number_id}]
+    25: [commonEvent, {current_common_event_id}], "common_event"
+    29: battle
+    30: [class, {current_class_id}]
+    32: [animation2, {current_animation2_id}]
+    33: [var_string, {current_var_string_id}]
+}

@@ -1,0 +1,88 @@
+
+def cond {
+    1: ber, 0
+    2: ber, 1 # bit(@1, 0, 0) == 1 => s("mep_cond_sw1")
+    3: ber, 1 # bit(@1, 1, 1) == 1 => s("mep_cond_sw2")
+    4: ber, 1 # bit(@1, 2, 2) == 1 => v("mep_cond_var")
+    5: ber, 0
+    6: ber
+    7: ber
+    8: ber
+    9: ber
+    10: ber
+}
+
+def tkroute {
+    11: $size
+    12: <route> # => route("mep_route_sw", "mep_route_char", "mep_route_se")
+    21: i8
+    22: i8
+}
+
+def mep {
+    2: cond
+    21: str # => file("mep_char")
+    22: ber
+    23: i8
+    24: ber
+    25: i8
+    31: i8
+    32: ber
+    33: i8
+    34: i8
+    35: i8
+    36: i8
+    37: ber
+    41: tkroute
+    51: $size, 0
+    52: <evc>
+}
+
+def mev {
+    1: str
+    2: ber, 0, {current_map_event_x}
+    3: ber, 0, {current_map_event_y}
+    5: [mep, {current_map_event_page}], "map_event"
+}
+
+def map {
+    1: ber
+    2: ber
+    3: ber
+    11: i8
+    31: i8
+    32: str # => file("map_panorama") 
+    33: i8
+    34: i8
+    35: i8
+    36: ber
+    37: i8
+    38: ber
+    40: i8
+    41: ber
+    42: i8
+    43: ber
+    44: ber
+    45: ber
+    46: ber
+    47: ber
+    48: ber
+    49: ber
+    50: ber
+    51: i8
+    52: i8
+    53: i8
+    54: i8
+    55: i8
+    56: i8
+    60: [i16]
+    61: [i16]
+    62: [i16]
+    71: [i16]
+    72: [i16]
+    81: [mev, {current_map_event_id}]
+    90: ber
+    91: ber
+}
+
+

@@ -1,0 +1,619 @@
+
+
+// データベース ----------------------------------------------------------------------------------------------------
+
+actor_name=◆主人公 [{current_actor_id}] の名前  >  {$}
+actor_desc=◆主人公 [{current_actor_id}] の肩書  >  {$}
+actor_face=◆主人公 [{current_actor_id}] の顔グラフィック  >  {$}
+actor_char=◆主人公[{current_actor_id}] の歩行グラフィック  >  {$}
+skill_name=◆特殊技能 [{current_skill_id}] の名前   >  {$}
+skill_desc=◆特殊技能 [{current_skill_id}] の説明  >  {$}
+skill_switch=◆特殊技能 [{current_skill_id}] でONにするスイッチ
+item_name=◆アイテム [{current_item_id}] の名前  >  {$}
+item_desc=◆アイテム [{current_item_id}] の説明  >  {$}
+item_switch=◆アイテム [{current_item_id}] でONにするスイッチ
+
+enemy_name=◆敵 [{current_enemy_id}] の名前  >  {$}
+enemy_graphic=◆敵 [{current_enemy_id}] のグラフィック  >  {$}
+
+bgm_name=◆BGM ({{*}}) のファイル名  >  {$}
+se_name=◆効果音 ({{*}}) のファイル名  >  {$}
+bgm_title=タイトル
+bgm_battle=戦闘
+bgm_inn=宿屋
+bgm_boat=小型船
+bgm_ship=大型船
+bgm_airship=飛行船
+bgm_gameover=ゲームオーバー
+se_cursor=カーソル移動
+se_decision=決定
+se_cancel=キャンセル
+se_buzzer=ブザー
+se_battle_begin=戦闘開始
+se_escape=逃走
+se_enemy_attack=敵の通常攻撃
+se_damage_enemy=敵ダメージ
+se_damage_party=味方ダメージ
+se_avoid=回避
+se_enemy_disappear=敵消滅
+se_item_use=アイテム使用
+se_skill= 特殊技能 [{current_skill_id}] 
+se_animation_effect= 戦闘アニメ [{current_animation_id}] 
+se_terrain= 地形 [{current_terrain_id}] の足音 
+
+troop_name=◆敵グループ [{current_troop_id}] の名前  >  {$}
+troop_backdrop=◆敵グループの背景  >  {$}
+battle_command_name=◆バトルコマンド [{current_battle_command_id}]  >  {$}
+battle_event_trigger_var_switch_1=◆バトルイベント / 敵グループ [{current_troop_id}] / {current_battle_event_page} ページ目 / 開始条件
+battle_event_trigger_var_number=◆バトルイベント / 敵グループ [{current_troop_id}] / {current_battle_event_page} ページ目 / 開始条件
+
+element_name=◆属性 [{current_element_id}] の名前  >  {$}
+
+state_name=◆状態 [{current_state_id}] の名前
+state_party_infected=◆状態 [{current_state_id}] に味方がなった時のメッセージ  >  {$}
+state_enemy_infected=◆状態 [{current_state_id}] に敵がなった時のメッセージ  >  {$}
+state_already_infected=◆状態 [{current_state_id}] に既になっている時のメッセージ  >  {$}
+state_turn=◆状態 [{current_state_id}] になっているキャラにターンが来た時のメッセージ  >  {$}
+state_healed=◆状態 [{current_state_id}] から回復した時のメッセージ
+
+animation_name=◆戦闘アニメ [{current_animation_id}] の名前  >  {$}
+animation_graphic=◆戦闘アニメ [{current_animation_id}] のファイル名  >  {$}
+
+animation2_name=◆戦闘アニメ2 [{current_animation2_id}] の名前  >  {$}
+cba_weapon_name=◆戦闘アニメ2 [{current_animation2_id}] の武器の {current_cba_weapon_id} 番の名前  >  {$}
+cba_weapon_graphic=◆戦闘アニメ2 [{current_animation2_id}] の武器の {current_cba_weapon_id} 番のファイル名  >  {$}
+cba_base_name=◆戦闘アニメ2 [{current_animation2_id}] の基本の {current_cba_base_id} 番の名前  >  {$}
+cba_base_graphic=◆戦闘アニメ2 [{current_animation2_id}] の基本の {current_cba_base_id} 番のファイル名  >  {$}
+
+terrain_name=◆地形 [{current_terrain_id}] の名前  >  {$}
+terrain_backdrop=◆地形 [{current_terrain_id}] の戦闘背景  >  {$}
+terrain_panorama_back=◆地形 [{current_terrain_id}] の遠景 (奥)  >  {$}
+terrain_panorama_fore=◆地形 [{current_terrain_id}] の遠景 (手前)  >  {$}
+
+tileset_name=◆チップセット [{current_tileset_id}] の名前  >  {$}
+tileset_graphic=◆チップセット [{current_tileset_id}] のファイル名  >  {$}
+
+boat_graphic=◆システム/小型船のファイル名  >  {$}
+ship_graphic=◆システム/大型船のファイル名  >  {$}
+airship_graphic=◆システム/飛行船のファイル名  >  {$}
+title_graphic=◆システム/タイトル画面のファイル名  >  {$}
+gameover_graphic=◆システム/ゲームオーバー画面のファイル名  >  {$}
+system_graphic=◆システム/システムグラフィックのファイル名  >  {$}
+system2_graphic=◆システム/システムグラフィック2のファイル名  >  {$}
+
+common_event_name=◆コモンイベント [{current_common_event_id}] の名前  >  {$}
+common_event_trigger=◆コモンイベント [{current_common_event_id}] の出現条件
+
+screen_frame=◆飾り枠 / ファイル名  >  {$}
+
+title_hook=◆タイトルシーン制御
+save_hook=◆セーブ・ロードシーン制御
+
+var_number=◆V[{current_var_number_id}]の名前  >  {$}
+var_switch=◆S[{current_var_switch_id}]の名前  >  {$}
+var_string=◆T[{current_var_string_id}]の名前  >  {$}
+
+
+
+// マップツリー ----------------------------------------------------------------------------------------------------
+
+map_name=◆マップ [{__current_map_id}] のマップ名  >  {$}
+map_bgm=◆マップ [{__current_map_id}] のBGM  >  {$}
+map_backdrop=◆マップ [{__current_map_id}] の戦闘背景  >  {$}
+
+
+
+// マップ ----------------------------------------------------------------------------------------------------
+
+map_panorama=◆マップ [{__current_map_id}] の遠景  >  {$}
+mep_cond_sw1=◆{map_event} / 出現条件 / スイッチ1
+mep_cond_sw2=◆{map_event} / 出現条件 / スイッチ2
+mep_cond_var=◆{map_event} / 出現条件 / 変数
+mep_char=◆{map_event} / 歩行グラフィック  >  {$}
+mep_route_sw=◆{map_event} / 移動ルート / スイッチ
+mep_route_char=◆{map_event} / 移動ルート / 歩行グラフィック  >  {$}
+mep_route_se=◆{map_event} / 移動ルート / 効果音  >  {$}
+
+
+
+// イベントコマンド ----------------------------------------------------------------------------------------------------
+
+cmd_pos=◆{{*}} / {~} 行目
+common_event=コモンイベント [{current_common_event_id}] 【 {current_common_event_name} 】
+battle_event=バトルイベント / 敵グループ [{current_troop_id}] / {current_battle_event_page} ページ目
+map_event=マップ [{__current_map_id}] 【 {__current_map_name} 】 / マップイベント [{current_map_event_id}] ({current_map_event_x}, {current_map_event_y}) / [{current_map_event_page}] ページ目
+
+
+evc_1005_id={cmd_pos}  -  コモンイベントの呼び出し (戦闘中) / イベントID
+
+evc_1006_single_enemy={cmd_pos}  -  100%脱出 / 敵単体
+
+evc_1007_target={cmd_pos}  -  連続攻撃+ / 対象
+evc_1007_act={cmd_pos}  -  連続攻撃+ / 行動
+evc_1007_times={cmd_pos}  -  連続攻撃+ / 回数
+
+evc_1008_target={cmd_pos}  -  職業の変更 / 対象
+evc_1008_job={cmd_pos}  -  職業の変更 / 職業
+
+evc_1009_target={cmd_pos}  -  戦闘コマンドの変更 / 対象
+evc_1009_command={cmd_pos}  -  戦闘コマンドの変更 / 戦闘コマンド
+
+evc_3001_save={cmd_pos}  -  セーブ情報の取得 / セーブファイルの番号
+evc_3001_date={cmd_pos}  -  セーブ情報の取得 / 日時 / 日付
+evc_3001_time={cmd_pos}  -  セーブ情報の取得 / 日時 / 時刻
+evc_3001_level={cmd_pos}  -  セーブ情報の取得 / パーティ先頭キャラ / レベル
+evc_3001_hp={cmd_pos}  -  セーブ情報の取得 / パーティ先頭キャラ / HP
+evc_3001_name={cmd_pos}  -  セーブ情報の取得 / パーティ先頭キャラ / 名前
+evc_3001_member_pic_1={cmd_pos}  -  セーブ情報の取得 / 顔グラフィック描画 / 1人目
+evc_3001_member_pic_2={cmd_pos}  -  セーブ情報の取得 / 顔グラフィック描画 / 2人目
+evc_3001_member_pic_3={cmd_pos}  -  セーブ情報の取得 / 顔グラフィック描画 / 3人目
+evc_3001_member_pic_4={cmd_pos}  -  セーブ情報の取得 / 顔グラフィック描画 / 4人目
+
+evc_3002_save={cmd_pos}  -  セーブの実行 / セーブファイルの番号
+evc_3002_success={cmd_pos}  -  セーブの実行 / 成否を受け取る変数
+
+evc_3003_save={cmd_pos}  -  ロードの実行 / セーブファイルの番号
+
+evc_3005_x={cmd_pos}  -  マウス座標の取得 / X座標
+evc_3005_y={cmd_pos}  -  マウス座標の取得 / Y座標
+
+evc_3006_x={cmd_pos}  -  マウス座標の設定 / X座標
+evc_3006_y={cmd_pos}  -  マウス座標の設定 / Y座標
+
+evc_3007_str_fixed={cmd_pos}  -  文字列ピクチャの表示 / 表示文字列  >  {$}
+evc_3007_str_var={cmd_pos}  -  文字列ピクチャの表示 / 表示文字列
+evc_3007_font_fixed={cmd_pos}  -  文字列ピクチャの表示 / フォント名  >  {$}
+evc_3007_font_var={cmd_pos}  -  文字列ピクチャの表示 / フォント名
+evc_3007_sys_fixed={cmd_pos}  -  文字列ピクチャの表示 / システムグラフィック  >  {$}
+evc_3007_sys_var={cmd_pos}  -  文字列ピクチャの表示 / システムグラフィック
+evc_3007_id={cmd_pos}  -  文字列ピクチャの表示 / ID
+evc_3007_x={cmd_pos}  -  文字列ピクチャの表示 / X座標
+evc_3007_y={cmd_pos}  -  文字列ピクチャの表示 / Y座標
+evc_3007_scale={cmd_pos}  -  文字列ピクチャの表示 / 拡大率
+evc_3007_scale2_w={cmd_pos}  -  文字列ピクチャの表示 / 拡大率 / W
+evc_3007_scale2_h={cmd_pos}  -  文字列ピクチャの表示 / 拡大率 / H
+evc_3007_size_w={cmd_pos}  -  文字列ピクチャの表示 / ピクチャサイズ / W
+evc_3007_size_h={cmd_pos}  -  文字列ピクチャの表示 / ピクチャサイズ / H
+evc_3007_font_size={cmd_pos}  -  文字列ピクチャの表示 / フォントサイズ
+
+evc_3008_target={cmd_pos}  -  ピクチャ情報の取得 / 対象
+evc_3008_rect={cmd_pos}  -  ピクチャ情報の取得 / 矩形 / 値が格納される変数
+evc_3008_pixel_range={cmd_pos}  -  ピクチャ情報の取得 / ピクセル / 矩形範囲
+evc_3008_pixel_source={cmd_pos}  -  ピクチャ情報の取得 / ピクセル / ピクセルを格納する変数
+
+evc_3009_cev={cmd_pos}  -  戦闘処理の制御 / コモンイベントID
+evc_3009_values={cmd_pos}  -  戦闘処理の制御 / 値を受け取る変数
+
+evc_3010_target={cmd_pos}  -  ATBゲージの操作 / 対象
+evc_3010_value={cmd_pos}  -  ATBゲージの操作 / 値
+
+evc_3012_target={cmd_pos}  -  戦闘情報の取得 / 対象
+evc_3012_values={cmd_pos}  -  戦闘情報の取得 / 値を格納する変数の始点 
+
+evc_3013_target_1={cmd_pos}  -  変数配列の操作 / 対象1
+evc_3013_target_2={cmd_pos}  -  変数配列の操作 / 対象2
+evc_3013_length={cmd_pos}  -  変数配列の操作 / 長さ
+
+evc_3014_keystate={cmd_pos}  -  キー入力の処理EX / キー状態を受け取る変数
+evc_3014_keycode={cmd_pos}  -  キー入力の処理EX / キーコード
+
+evc_3015_source_single={cmd_pos}  -  マップの書き換え / 指定方法 / 単体
+evc_3015_source_batch={cmd_pos}  -  マップの書き換え / 指定方法 / 範囲
+evc_3015_range_x={cmd_pos}  -  マップの書き換え / 位置 / X
+evc_3015_range_y={cmd_pos}  -  マップの書き換え / 位置 / Y
+evc_3015_range_w={cmd_pos}  -  マップの書き換え / 位置 / W
+evc_3015_range_h={cmd_pos}  -  マップの書き換え / 位置 / H
+
+evc_3016_var={cmd_pos}  -  共有セーブの操作 / 現在のセーブ
+evc_3016_global={cmd_pos}  -  共有セーブの操作 / 共有セーブ
+evc_3016_length={cmd_pos}  -  共有セーブの操作 / 長さ
+
+evc_3017_target1={cmd_pos}  -  ピクチャのID変更 / 対象1
+evc_3017_target2={cmd_pos}  -  ピクチャのID変更 / 対象2
+evc_3017_distance={cmd_pos}  -  ピクチャのID変更 / 距離
+evc_3017_size={cmd_pos}  -  ピクチャのID変更 / サイズ
+
+evc_3018_fps={cmd_pos}  -  ゲームのオプション設定 / FPS
+evc_3018_pic={cmd_pos}  -  ゲームのオプション設定 / ピクチャ最大数
+evc_3018_mouse={cmd_pos}  -  ゲームのオプション設定 / マウス制御
+evc_3018_anim={cmd_pos}  -  ゲームのオプション設定 / 戦闘アニメ最大数
+evc_3018_face={cmd_pos}  -  ゲームのオプション設定 / 顔グラフィックのサイズ
+
+evc_3019_code={cmd_pos}  -  コマンドの呼び出し / コマンドコード
+evc_3019_str_fixed={cmd_pos}  -  コマンドの呼び出し / 文字列引数  >  {$}
+evc_3019_str_var={cmd_pos}  -  コマンドの呼び出し / 文字列引数
+evc_3019_beg={cmd_pos}  -  コマンドの呼び出し / 変数配列 / 始点
+evc_3019_length={cmd_pos}  -  コマンドの呼び出し / 変数配列 / 長さ
+evc_3019_const={cmd_pos}  -  コマンドの呼び出し / 定数配列
+evc_3019_expr={cmd_pos}  -  コマンドの呼び出し / 式配列
+
+evc_3020_target={cmd_pos}  -  文字列変数の操作 / 対象
+evc_3020_opr={cmd_pos}  -  文字列変数の操作 / オペランド
+evc_3020_opr_fixed={cmd_pos}  -  文字列変数の操作 / オペランド  >  {$}
+
+evc_3021_mapsize_output={cmd_pos}  -  ゲーム情報の取得 / マップサイズ / 出力先
+evc_3021_tile_output={cmd_pos}  -  ゲーム情報の取得 / タイルID / 出力先
+evc_3021_tile_x={cmd_pos}  -  ゲーム情報の取得 / タイルID / X
+evc_3021_tile_y={cmd_pos}  -  ゲーム情報の取得 / タイルID / Y
+evc_3021_tile_w={cmd_pos}  -  ゲーム情報の取得 / タイルID / W
+evc_3021_tile_h={cmd_pos}  -  ゲーム情報の取得 / タイルID / H
+evc_3021_winsize_output={cmd_pos}  -  ゲーム情報の取得 / ウィンドウサイズ / 出力先
+evc_3021_pixel_output={cmd_pos}  -  ゲーム情報の取得 / 画面ピクセル / 出力先
+evc_3021_pixel_x={cmd_pos}  -  ゲーム情報の取得 / 画面ピクセル / X
+evc_3021_pixel_y={cmd_pos}  -  ゲーム情報の取得 / 画面ピクセル / Y
+evc_3021_pixel_w={cmd_pos}  -  ゲーム情報の取得 / 画面ピクセル / W
+evc_3021_pixel_h={cmd_pos}  -  ゲーム情報の取得 / 画面ピクセル / H
+evc_3021_interpreter_output={cmd_pos}  -  ゲーム情報の取得 / インタプリタ / 出力先
+evc_3021_interpreter_nest={cmd_pos}  -  ゲーム情報の取得 / インタプリタ / 階層
+evc_3021_chipset_output={cmd_pos}  -  ゲーム情報の取得 / チップセットID / 出力先
+evc_3021_face_output={cmd_pos}  -  ゲーム情報の取得 / 顔グラフィック / 出力先
+evc_3021_face_id={cmd_pos}  -  ゲーム情報の取得 / 顔グラフィック / 主人公ID
+evc_3021_char_output={cmd_pos}  -  ゲーム情報の取得 / 歩行グラフィック / 出力先
+evc_3021_char_id={cmd_pos}  -  ゲーム情報の取得 / 歩行グラフィック / 主人公ID
+evc_3021_camera_output={cmd_pos}  -  ゲーム情報の取得 / カメラ位置 / 出力先
+evc_3021_shake_output={cmd_pos}  -  ゲーム情報の取得 / シェイク / 出力先
+evc_3021_bgm_output={cmd_pos}  -  ゲーム情報の取得 / BGM / 出力先
+
+evc_3025_id={cmd_pos}  -  ピクチャの編集 / ID
+evc_3025_x={cmd_pos}  -  ピクチャの編集 / X
+evc_3025_y={cmd_pos}  -  ピクチャの編集 / Y
+evc_3025_w={cmd_pos}  -  ピクチャの編集 / W
+evc_3025_h={cmd_pos}  -  ピクチャの編集 / H
+evc_3025_source={cmd_pos}  -  ピクチャの編集 / ピクセルを格納した変数
+
+evc_3026_file_fixed={cmd_pos}  -  画像の出力 / 出力ファイル名  >  {$}
+evc_3026_file_var={cmd_pos}  -  画像の出力 / 出力ファイル名
+evc_3026_pic={cmd_pos}  -  画像の出力 / ピクチャID
+
+evc_3027_file_fixed={cmd_pos}  -  キャラクターの動作追加 / ファイル名  >  {$}
+evc_3027_var={cmd_pos}  -  キャラクターの動作追加 / 変数指定
+
+evc_3028_id={cmd_pos}  -  ピクチャの編集 (チップ) / ピクチャID
+evc_3028_x={cmd_pos}  -  ピクチャの編集 (チップ) / X
+evc_3028_y={cmd_pos}  -  ピクチャの編集 (チップ) / Y
+evc_3028_w={cmd_pos}  -  ピクチャの編集 (チップ) / W
+evc_3028_h={cmd_pos}  -  ピクチャの編集 (チップ) / H
+evc_3028_source={cmd_pos}  -  ピクチャの編集 (チップ) / タイルIDを格納した変数
+evc_3028_chipset={cmd_pos}  -  ピクチャの編集 (チップ) / チップセットID
+evc_3028_anim={cmd_pos}  -  ピクチャの編集 (チップ) / アニメパターン
+
+evc_3029_cev={cmd_pos}  -  文章処理の制御 / コモンイベントID1
+evc_3029_user_sys={cmd_pos}  -  文章処理の制御 / ユーザーイベント / システム変数
+evc_3029_user_user={cmd_pos}  -  文章処理の制御 / ユーザーイベント / ユーザー変数
+evc_3029_wingen_sys={cmd_pos}  -  文章処理の制御 / ウィンドウ生成 / システム変数
+evc_3029_windes_sys={cmd_pos}  -  文章処理の制御 / ウィンドウ破棄 / システム変数
+evc_3029_char_sys={cmd_pos}  -  文章処理の制御 / 文字描画 / システム変数
+
+evc_3030_source_fixed={cmd_pos}  -  スクリプト / 実行内容  >  {$}
+evc_3030_source_var={cmd_pos}  -  スクリプト / 実行内容
+evc_3030_output={cmd_pos}  -  スクリプト / 戻り値を受け取る変数
+
+evc_3032_x={cmd_pos}  -  画面のズーム / 中心X
+evc_3032_y={cmd_pos}  -  画面のズーム / 中心Y
+evc_3032_zoom={cmd_pos}  -  画面のズーム / 拡大率
+evc_3032_time={cmd_pos}  -  画面のズーム / 動作フレーム
+evc_3032_layer={cmd_pos}  -  画面のズーム / レイヤー
+
+evc_3033_output_fixed={cmd_pos}  -  コンソール / 出力内容  >  {$}
+evc_3033_output_var={cmd_pos}  -  コンソール / 出力内容
+evc_3033_input={cmd_pos}  -  コンソール / 入力を受け取る変数
+evc_3033_max={cmd_pos}  -  コンソール / 最大入力文字数
+evc_3033_forecolor={cmd_pos}  -  コンソール / 前景色
+evc_3033_backcolor={cmd_pos}  -  コンソール / 背景色
+
+evc_10110={cmd_pos}  -  文章の表示  >  {$}
+
+evc_10120_font_name_fixed={cmd_pos}  -  文章オプションの変更 / フォント名  >  {$}
+evc_10120_font_name_var={cmd_pos}  -  文章オプションの変更 / フォント名
+evc_10120_font_size={cmd_pos}  -  文章オプションの変更 / フォントサイズ
+evc_10120_win_w={cmd_pos}  -  文章オプションの変更 / ウィンドウの幅
+evc_10120_win_h={cmd_pos}  -  文章オプションの変更 / ウィンドウの高さ
+evc_10120_char_spacing={cmd_pos}  -  文章オプションの変更 / 字間
+evc_10120_line_spacing={cmd_pos}  -  文章オプションの変更 / 行間
+
+evc_10130_file_fixed={cmd_pos}  -  顔グラフィックの変更 / ファイル名  >  {$}
+evc_10130_file_var={cmd_pos}  -  顔グラフィックの変更 / ファイル名
+evc_10130_index={cmd_pos}  -  顔グラフィックの変更 / ファイル内インデックス
+evc_10130_end_index={cmd_pos}  -  顔グラフィックの変更 / アニメ / 終了インデックス
+evc_10130_frame={cmd_pos}  -  顔グラフィックの変更 / アニメ / セルあたりの表示フレーム
+evc_10130_frame_width={cmd_pos}  -  顔グラフィックの変更 / アニメ / セル表示時間の振れ幅
+evc_10130_interval={cmd_pos}  -  顔グラフィックの変更 / アニメ / アニメ間のインターバル
+evc_10130_interval_width={cmd_pos}  -  顔グラフィックの変更 / アニメ / アニメ間インターバルの振れ幅
+
+evc_10140_str={cmd_pos}  -  選択肢の表示 / 選択肢  >  {$}
+
+evc_10150={cmd_pos}  -  数値入力の処理 / 受け取る変数
+
+evc_10210_single={cmd_pos}  -  スイッチの操作 / 操作対象
+evc_10210_batch={cmd_pos}  -  スイッチの操作 / 操作対象 (一括)
+
+evc_10220_target={cmd_pos}  -  変数の操作 / 操作対象
+evc_10220_opr={cmd_pos}  -  変数の操作 / オペランド
+
+evc_10230={cmd_pos}  -  タイマーの操作 / 秒数
+
+evc_10310={cmd_pos}  -  所持金の増減 / 増減させる値
+
+evc_10320_target={cmd_pos}  -  アイテムの増減 / 対象
+evc_10320_value={cmd_pos}  -  アイテムの増減 / 数
+
+evc_10330_target={cmd_pos}  -  メンバーの入れ替え / 対象
+
+evc_10410_target={cmd_pos}  -  経験値の増減 / 対象
+evc_10410_value={cmd_pos}  -  経験値の増減 / 増減させる値
+
+evc_10420_target={cmd_pos}  -  レベルの増減 / 対象
+evc_10420_value={cmd_pos}  -  レベルの増減 / 増減させる値
+
+evc_10430_target={cmd_pos}  -  能力値の増減 / 対象
+evc_10430_value={cmd_pos}  -  能力値の増減 / 増減させる値
+
+evc_10440_target={cmd_pos}  -  特殊技能の増減 / 対象
+evc_10440_skill={cmd_pos}  -  特殊技能の増減 / 増減させる特殊技能
+
+evc_10450_target={cmd_pos}  -  装備の変更 / 対象
+evc_10450_item={cmd_pos}  -  装備の変更 / 装備させるアイテム
+
+evc_10460_target={cmd_pos}  -  HPの増減 / 対象
+evc_10460_value={cmd_pos}  -  HPの増減 / 増減させる値
+
+evc_10470_target={cmd_pos}  -  MPの増減 / 対象
+evc_10470_value={cmd_pos}  -  MPの増減 / 増減させる値
+
+evc_10480_target={cmd_pos}  -  状態の変更 / 対象
+evc_10480_state={cmd_pos}  -  状態の変更 / 状態
+
+evc_10490={cmd_pos}  -  全回復 / 対象
+
+evc_10500_target={cmd_pos}  -  ダメージの処理 / 対象
+evc_10500_output={cmd_pos}  -  ダメージの処理 / ダメージ値を受け取る変数
+
+evc_10610_target={cmd_pos}  -  主人公の名前変更 / 対象
+evc_10610_name_fixed={cmd_pos}  -  主人公の名前変更 / 変更先の名前  >  {$}
+evc_10610_name_var={cmd_pos}  -  主人公の名前変更 / 変更先の名前
+
+evc_10620_target={cmd_pos}  -  主人公の肩書き変更 / 対象
+evc_10620_nickname_fixed={cmd_pos}  -  主人公の肩書き変更 / 変更先の肩書き  >  {$}
+evc_10620_nickname_var={cmd_pos}  -  主人公の肩書き変更 / 変更先の肩書き
+
+evc_10630_target={cmd_pos}  -  主人公の歩行グラフィック変更 / 対象
+evc_10630_file_fixed={cmd_pos}  -  主人公の歩行グラフィック変更 / ファイル名  >  {$}
+evc_10630_file_var={cmd_pos}  -  主人公の歩行グラフィック変更 / ファイル名
+evc_10630_index={cmd_pos}  -  主人公の歩行グラフィック変更 / ファイル内インデックス
+
+evc_10640_target={cmd_pos}  -  主人公の顔グラフィック変更 / 対象
+evc_10640_file_fixed={cmd_pos}  -  主人公の顔グラフィック変更 / ファイル名  >  {$}
+evc_10640_file_var={cmd_pos}  -  主人公の顔グラフィック変更 / ファイル名
+evc_10640_index={cmd_pos}  -  主人公の顔グラフィック変更 / ファイル内インデックス
+
+evc_10650_file_fixed={cmd_pos}  -  乗り物グラフィックの変更 / ファイル名  >  {$}
+
+evc_10660_file_fixed={cmd_pos}  -  システムBGMの変更 / ファイル名  >  {$}
+evc_10660_file_var={cmd_pos}  -  システムBGMの変更 / ファイル名
+evc_10660_fadein={cmd_pos}  -  システムBGMの変更 / フェードイン時間
+evc_10660_volume={cmd_pos}  -  システムBGMの変更 / ボリューム
+evc_10660_tempo={cmd_pos}  -  システムBGMの変更 / テンポ
+evc_10660_panner={cmd_pos}  -  システムBGMの変更 / 左右バランス
+
+evc_10670_file_fixed={cmd_pos}  -  システム効果音の変更 / ファイル名  >  {$}
+evc_10670_file_var={cmd_pos}  -  システム効果音の変更 / ファイル名
+evc_10670_volume={cmd_pos}  -  システム効果音の変更 / ボリューム
+evc_10670_tempo={cmd_pos}  -  システム効果音の変更 / テンポ
+evc_10670_panner={cmd_pos}  -  システム効果音の変更 / 左右バランス
+
+evc_10680_file_fixed={cmd_pos}  -  システムグラフィックの変更 / ファイル名  >  {$}
+evc_10680_file_var={cmd_pos}  -  システムグラフィックの変更 / ファイル名
+
+evc_10710_backdrop_file_fixed={cmd_pos}  -  戦闘の処理 / 背景 / ファイル名  >  {$}
+evc_10710_troop={cmd_pos}  -  戦闘の処理 / 敵グループ
+
+evc_10720_goods_begin={cmd_pos}  -  お店の処理 / アイテム / 配列 / 始点
+evc_10720_goods_length={cmd_pos}  -  お店の処理 / アイテム / 配列 / 長さ
+evc_10720_goods_range={cmd_pos}  -  お店の処理 / アイテム / 配列 / 配列範囲
+
+evc_10740_target={cmd_pos}  -  名前入力の処理 / 対象
+
+evc_10820_map={cmd_pos}  -  現在の場所を記憶 / マップID
+evc_10820_x={cmd_pos}  -  現在の場所を記憶 / X座標
+evc_10820_y={cmd_pos}  -  現在の場所を記憶 / Y座標
+
+evc_10830_map={cmd_pos}  -  記憶した場所へ移動 / マップID
+evc_10830_x={cmd_pos}  -  記憶した場所へ移動 / X座標
+evc_10830_y={cmd_pos}  -  記憶した場所へ移動 / Y座標
+
+evc_10850_map={cmd_pos}  -  乗り物の位置を設定 / マップID
+evc_10850_x={cmd_pos}  -  乗り物の位置を設定 / X座標
+evc_10850_y={cmd_pos}  -  乗り物の位置を設定 / Y座標
+
+evc_10860_ev={cmd_pos}  -  イベントの位置を設定 / イベントID
+evc_10860_x={cmd_pos}  -  イベントの位置を設定 / 座標X
+evc_10860_y={cmd_pos}  -  イベントの位置を設定 / 座標Y
+evc_10860_direction={cmd_pos}  -  イベントの位置を設定 / 移動後の向き
+
+evc_10870_ev_1={cmd_pos}  -  イベントの位置を交換 / イベント1
+evc_10870_ev_2={cmd_pos}  -  イベントの位置を交換 / イベント2
+
+evc_10910_x={cmd_pos}  -  指定位置の地形ID取得 / 座標X
+evc_10910_y={cmd_pos}  -  指定位置の地形ID取得 / 座標Y
+evc_10910_output={cmd_pos}  -  指定位置の地形ID取得 / 地形IDを受け取る変数
+
+evc_10920_x={cmd_pos}  -  指定位置のイベントID取得 / 座標X
+evc_10920_y={cmd_pos}  -  指定位置のイベントID取得 / 座標Y
+evc_10920_output={cmd_pos}  -  指定位置のイベントID取得 / 地形IDを受け取る変数
+
+evc_11010_type={cmd_pos}  -  画面の消去 / 消去方法
+
+evc_11020_type={cmd_pos}  -  画面の表示 / 表示方法
+
+evc_11060_x={cmd_pos}  -  画面のスクロール / ピクセル移動 / X
+evc_11060_y={cmd_pos}  -  画面のスクロール / ピクセル移動 / Y
+evc_11060_velocity={cmd_pos}  -  画面のスクロール / ピクセル移動 / 速度
+
+evc_11110_file_fixed={cmd_pos}  -  ピクチャーの表示 / ファイル名  >  {$}
+evc_11110_file_var={cmd_pos}  -  ピクチャーの表示 / ファイル名
+evc_11110_id={cmd_pos}  -  ピクチャーの表示 / ID
+evc_11110_x={cmd_pos}  -  ピクチャーの表示 / 位置 / X
+evc_11110_y={cmd_pos}  -  ピクチャーの表示 / 位置 / Y
+evc_11110_scale={cmd_pos}  -  ピクチャーの表示 / 拡大率
+evc_11110_transp={cmd_pos}  -  ピクチャーの表示 / 透明度
+evc_11110_color_r={cmd_pos}  -  ピクチャーの表示 / 色調 / R (赤)
+evc_11110_color_g={cmd_pos}  -  ピクチャーの表示 / 色調 / G (緑)
+evc_11110_color_b={cmd_pos}  -  ピクチャーの表示 / 色調 / B (青)
+evc_11110_color_s={cmd_pos}  -  ピクチャーの表示 / 色調 / S (彩度)
+evc_11110_angle={cmd_pos}  -  ピクチャーの表示 / 特殊効果 / 角度
+evc_11110_replace={cmd_pos}  -  ピクチャーの表示 / ファイル名末尾置換 / 置換する値
+evc_11110_spr_grid_h={cmd_pos}  -  ピクチャーの表示 / スプライトシート / 分割数 / 水平方向
+evc_11110_spr_grid_v={cmd_pos}  -  ピクチャーの表示 / スプライトシート / 分割数 / 垂直方向
+evc_11110_spr_cell={cmd_pos}  -  ピクチャーの表示 / スプライトシート / 表示セル
+evc_11110_spr_range_anim_begin={cmd_pos}  -  ピクチャーの表示 / スプライトシート / 範囲再生 / 始点
+evc_11110_spr_range_anim_end={cmd_pos}  -  ピクチャーの表示 / スプライトシート / 範囲再生 / 終点
+
+evc_11120_id={cmd_pos}  -  ピクチャーの移動 / ID
+evc_11120_x={cmd_pos}  -  ピクチャーの移動 / 位置 /X
+evc_11120_y={cmd_pos}  -  ピクチャーの移動 / 位置 /Y
+evc_11120_scale={cmd_pos}  -  ピクチャーの移動 / 拡大率
+evc_11120_transp={cmd_pos}  -  ピクチャーの移動 / 透明度
+evc_11120_angle={cmd_pos}  -  ピクチャーの移動 / 特殊効果 / 角度
+evc_11120_color_r={cmd_pos}  -  ピクチャーの移動 / 色調 / R (赤)
+evc_11120_color_g={cmd_pos}  -  ピクチャーの移動 / 色調 / G (緑)
+evc_11120_color_b={cmd_pos}  -  ピクチャーの移動 / 色調 / B (青)
+evc_11120_color_s={cmd_pos}  -  ピクチャーの移動 / 色調 / S (彩度)
+evc_11120_time={cmd_pos}  -  ピクチャーの移動 / 移動にかける時間
+
+evc_11130_target={cmd_pos}  -  ピクチャーの消去 / 対象
+
+evc_11210_anime={cmd_pos}  -  戦闘アニメの表示 / 戦闘アニメID
+evc_11210_buffer={cmd_pos}  -  戦闘アニメの表示 / 再生バッファ
+evc_11210_event={cmd_pos}  -  戦闘アニメの表示 / 対象 / イベントID
+evc_11210_picture={cmd_pos}  -  戦闘アニメの表示 / 対象 / ピクチャーID
+evc_11210_fixed_x={cmd_pos}  -  戦闘アニメの表示 / 対象 / 固定位置 / X
+evc_11210_fixed_y={cmd_pos}  -  戦闘アニメの表示 / 対象 / 固定位置 / Y
+evc_11210_bind_x={cmd_pos}  -  戦闘アニメの表示 / 対象 / 変数追従 / X
+evc_11210_bind_y={cmd_pos}  -  戦闘アニメの表示 / 対象 / 変数追従 / Y
+evc_11210_reverse={cmd_pos}  -  戦闘アニメの表示 / 反転表示
+
+evc_11320_target={cmd_pos}  -  キャラクターのフラッシュ / 対象
+evc_11320_color_r={cmd_pos}  -  キャラクターのフラッシュ / 色 / R (赤)
+evc_11320_color_g={cmd_pos}  -  キャラクターのフラッシュ / 色 / G (緑)
+evc_11320_color_b={cmd_pos}  -  キャラクターのフラッシュ / 色 / B (青)
+evc_11320_color_v={cmd_pos}  -  キャラクターのフラッシュ / 色 / V (強さ)
+
+evc_11330_route_sw={cmd_pos}  -  キャラクターの動作指定 / スイッチの操作
+evc_11330_route_char={cmd_pos}  -  キャラクターの動作指定 / グラフィックの変更  >  {$}
+evc_11330_route_se={cmd_pos}  -  キャラクターの動作指定 / 効果音の演奏  >  {$}
+evc_11330_target={cmd_pos}  -  キャラクターの動作指定 / 対象
+evc_11330_frequency={cmd_pos}  -  キャラクターの動作指定 / 移動頻度
+
+evc_11410_time={cmd_pos}  -  ウェイト / 時間
+
+evc_11510_file_fixed={cmd_pos}  -  BGMの演奏 / ファイル名  >  {$}
+evc_11510_file_var={cmd_pos}  -  BGMの演奏 / ファイル名
+evc_11510_volume={cmd_pos}  -  BGMの演奏 / ボリューム
+evc_11510_tempo={cmd_pos}  -  BGMの演奏 / テンポ
+evc_11510_panner={cmd_pos}  -  BGMの演奏 / 左右バランス
+evc_11510_fadein={cmd_pos}  -  BGMの演奏 / フェードイン時間
+
+evc_11520_time={cmd_pos}  -  BGMのフェードアウト / 時間
+
+evc_11550_file_fixed={cmd_pos}  -  効果音の演奏 / ファイル名  >  {$}
+evc_11550_file_var={cmd_pos}  -  効果音の演奏 / ファイル名
+evc_11550_volume={cmd_pos}  -  効果音の演奏 / ボリューム
+evc_11550_tempo={cmd_pos}  -  効果音の演奏 / テンポ
+evc_11550_panner={cmd_pos}  -  効果音の演奏 / 左右バランス
+
+evc_11560_file_fixed={cmd_pos}  -  ムービーの再生 / ファイル名  >  {$}
+evc_11560_pos_x={cmd_pos}  -  ムービーの再生 / 表示位置 / X
+evc_11560_pos_y={cmd_pos}  -  ムービーの再生 / 表示位置 / Y
+
+evc_11610_store={cmd_pos}  -  キー入力の処理 / キーコードを受け取る変数
+evc_11610_wait={cmd_pos}  -  キー入力の処理 / キーが押されるまでの長さを受け取る変数
+
+evc_11710_id={cmd_pos}  -  チップセットの変更 / 変更先のID
+
+evc_11720_file_fixed={cmd_pos}  -  遠景の変更 / ファイル名  >  {$}
+evc_11720_file_var={cmd_pos}  -  遠景の変更 / ファイル名
+evc_11720_h={cmd_pos}  -  遠景の変更 / 横方向ループ速度
+evc_11720_v={cmd_pos}  -  遠景の変更 / 縦方向ループ速度
+
+evc_11810_switch={cmd_pos}  -  テレポート位置の増減 / テレポート後にオンにするスイッチ
+
+evc_11830_switch={cmd_pos}  -  エスケープ位置の設定 / エスケープ後にオンにするスイッチ
+
+evc_12010_string_fixed={cmd_pos}  -  条件分岐 / 文字列変数  >  {$}
+evc_12010_switch={cmd_pos}  -  条件分岐 / スイッチ
+evc_12010_number={cmd_pos}  -  条件分岐 / 変数
+evc_12010_string={cmd_pos}  -  条件分岐 / 文字列変数
+evc_12010_item={cmd_pos}  -  条件分岐 / アイテム
+evc_12010_actor={cmd_pos}  -  条件分岐 / 主人公
+evc_12010_mev={cmd_pos}  -  条件分岐 / マップイベント
+evc_12010_expr={cmd_pos}  -  条件分岐 / 式
+
+evc_12210_xtimes={cmd_pos}  -  繰り返し処理 / 回数指定 / 回数
+evc_12210_count_up_begin={cmd_pos}  -  繰り返し処理 / カウントアップ / 初期値
+evc_12210_count_up_end={cmd_pos}  -  繰り返し処理 / カウントアップ / 目標値
+evc_12210_count_down_begin={cmd_pos}  -  繰り返し処理 / カウントダウン / 初期値
+evc_12210_count_down_end={cmd_pos}  -  繰り返し処理 / カウントダウン / 目標値
+evc_12210_while_left={cmd_pos}  -  繰り返し処理 / While / 左辺
+evc_12210_while_right={cmd_pos}  -  繰り返し処理 / While / 右辺
+evc_12210_dowhile_left={cmd_pos}  -  繰り返し処理 / DoWhile / 左辺
+evc_12210_dowhile_right={cmd_pos}  -  繰り返し処理 / DoWhile / 右辺
+evc_12210_temp={cmd_pos}  -  繰り返し処理 / 一時配列
+evc_12210_array_begin={cmd_pos}  -  繰り返し処理 / ポインタ配列 / 始点
+evc_12210_array_length={cmd_pos}  -  繰り返し処理 / ポインタ配列 / 長さ
+evc_12210_array_range={cmd_pos}  -  繰り返し処理 / ポインタ配列 / 配列範囲
+evc_12210_output={cmd_pos}  -  繰り返し処理 / 出力先
+
+evc_12320_target={cmd_pos}  -  イベントの一時消去 / 対象
+
+evc_12330_mev={cmd_pos}  -  イベントの呼び出し (マップイベント) / イベントID
+evc_12330_mep={cmd_pos}  -  イベントの呼び出し (マップイベント) / イベントページ
+evc_12330_cev={cmd_pos}  -  イベントの呼び出し (コモンイベント) / イベントID
+
+evc_12410={cmd_pos}  -  注釈  >  {$}
+
+evc_13110_target={cmd_pos}  -  敵キャラのHPの増減 / 対象
+evc_13110_value={cmd_pos}  -  敵キャラのHPの増減 / 増減させる値
+
+evc_13120_target={cmd_pos}  -  敵キャラのMPの増減 / 対象
+evc_13120_value={cmd_pos}  -  敵キャラのMPの増減 / 増減させる値
+
+evc_13130_target={cmd_pos}  -  敵キャラの状態の変更 / 対象
+evc_13130_state={cmd_pos}  -  敵キャラの状態の変更 / 状態
+
+evc_13150_target={cmd_pos}  -  敵キャラの出現 / 対象
+
+evc_13210_fixed={cmd_pos}  -  戦闘背景の変更 / 画像  >  {$}
+evc_13210_var={cmd_pos}  -  戦闘背景の変更 / 画像
+
+evc_13260_anime={cmd_pos}  -  戦闘アニメの表示 (戦闘中) / 戦闘アニメ
+evc_13260_target={cmd_pos}  -  戦闘アニメの表示 (戦闘中) / 対象
+
+
+
+
+
+// エラー ----------------------------------------------------------------------------------------------------
+
+err_pos="{token}", {line}行, {char}文字目, {source}
+err_missing_string_table=エラー : 文字列定義ファイルが見つかりません  -  {source}
+err_missing_blueprint_ldb=エラー : データベース定義ファイルが見つかりません  -  {source}
+err_missing_blueprint_lmu=エラー : マップ定義ファイルが見つかりません  -  {source}
+err_missing_blueprint_lmt=エラー : マップツリー定義ファイルが見つかりません  -  {source}
+err_missing_blueprint_evc=エラー : イベントコマンド定義ファイルが見つかりません  -  {source}
+err_missing_blueprint_expr=エラー : 式定義ファイルが見つかりません  -  {source}
+err_blueprint_missing_database_object=エラー : データベース定義ファイルに基底となるdatabaseオブジェクトが定義されていません  -  {source}
+err_blueprint_missing_map_object=エラー : マップ定義ファイルに基底となるmapオブジェクトが定義されていません  -  {source}
+err_blueprint_missing_maptree_object=エラー : マップツリー定義ファイルに基底となるmapTreeオブジェクトが定義されていません  -  {source}
+err_blueprint_invalid_token=エラー : 不正なトークンです  -  {err_pos}
+err_blueprint_not_declared=エラー : 宣言されていません  -  {err_pos}
+err_blueprint_overflow=エラー : 数値が大きすぎます (32bit signed int)  -  {err_pos}
+err_blueprint_overflow_byte=エラー : 数値が大きすぎます (byte)  -  {err_pos}
+err_blueprint_bracket_not_closed=エラー : 括弧が閉じられていません  -  {err_pos}
+err_blueprint_invalid_type_in_arguments=エラー : 引数の型が一致しません  -  {err_pos}
+err_blueprint_not_enough_arguments=エラー : 引数の数が少なすぎます  -  {err_pos}
+err_blueprint_too_many_arguments=エラー : 引数の数が多すぎます
+err_blueprint_invalid_execution_type=エラー : アロー演算子の右辺が有効な検出関数ではありません  -  {err_pos}
+err_blueprint_invalid_binary_operator=エラー : 無効な二項演算子です  -  {err_pos}
+err_blueprint_invalid_newline=エラー : 無効な改行です  -  {err_pos}
+err_blueprint_missing_expression=エラー : 検出式が必要です  -  {err_pos}
+err_blueprint_size_is_not_equal_to_specified_type=エラー : 数値型のサイズが間違っています  -  {token}, {source}
