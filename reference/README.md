@@ -13,6 +13,11 @@ JSONデータパックインポート機能の導入（v1.162時点では兵士�
 [AI/エージェント向けにTPCコードベースを横断するためのガイド](./AI_TPC_CODEBASE_GUIDE.md)です。
 コンパイル順序、主要モジュールの責務、編集時の安全確認項目などをまとめています。
 
+### AI_RTS_ANALYSIS_README.md
+[AI/エージェント向けのRTS解析用README](./AI_RTS_ANALYSIS_README.md)です。
+`spec_RTS_main_loop.md` を起点に、main loop から戦闘計算式（命中/ダメージ/士気）まで追う最短導線と、
+TPC配布物側 `readme.txt` を一次参照にするための覚書をまとめています。
+
 ### AI_JS_AUX_SYSTEM_GUIDE.md
 [AI/エージェント向けにJS補助システムを追跡するためのガイド](./AI_JS_AUX_SYSTEM_GUIDE.md)です。
 TPC↔JSブリッジ、`Cmd`キュー実行、mission/mapクラス、GUI関連の現状を整理しています。
