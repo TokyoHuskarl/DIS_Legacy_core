@@ -2833,6 +2833,18 @@ __fn UI_Glonalqueue_draw_icons {
 					@break // anyway ends this loop if overlapping found. simple as
 			}
 	}
+	// Erase the shared hover frame only when it belonged to a global queue icon
+	// in the previous frame and no QoL UI owns it in the current frame.
+	TT20 = 0
+	@loop UI_GLOBALQUEUE_ICONS_LIMITNUMBER .dst TT18 {
+		TT19 = MOUSE_UNDER_OVERLAP_GQ1 << TT18
+			TT20 |= TT19
+
+	}
+	@if `(MOUSE_RTS_BUTTON_OVERLAP_SAVE_QoL_UI & TT20) && MOUSE_RTS_BUTTON_OVERLAP_QoL_UI == 0 {
+		@pic[PicID_ButtonSelect].erase
+
+	}
 }
 
 __fn UI_CohortIconAndBanner_get_overlap {

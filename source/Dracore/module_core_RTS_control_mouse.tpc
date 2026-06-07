@@ -682,6 +682,9 @@ __fn CEV_CONTROL_MOUSE {
 
 				}
 				@if Common_Control_Ck == RMB {
+					TT20 = 0
+					CONTROL_globalqueue_right_click()
+					@if TT20 == 0 {
 					// "ミニマップ上クリック"
 					@if `between(MousePtr_x, v[1282], v[1284]) && between(MousePtr_y, v[1283], v[1285]) {
 						s[40].on
@@ -826,6 +829,8 @@ __fn CEV_CONTROL_MOUSE {
 					s[40].off
 						click_animation
 						s[13].on
+
+					}
 
 				} .else bl {
 					s[15].off
@@ -1645,7 +1650,81 @@ __fn CEV_CONTROL_MOUSE {
 	}
 
 	// "safety"
-	click_frame = min(click_frame, click_waittime)
+click_frame = min(click_frame, click_waittime)
+}
+
+
+__fn CONTROL_cancel_static_current_production $static_id $amount {
+	Temp1 = $static_id * 300 + 4700
+		TT1 = Temp1 + 1
+		@if v[TT1] >= 10 {
+			TT2 = TT1 + 137
+				TT3 = TT1 + 169
+				TT6 = TT1 + 107
+				@if v[TT3] >= 1 {
+					reg1 = 0
+						@loop $amount {
+							@if v[TT3] <= 0 {
+								@break
+
+							}
+							TT4 = TT1 + 170
+								TT5 = TT1 + 171
+								@loop 29 {
+									v[TT4] = v[TT5]
+										v[344..345] += 1
+
+								}
+
+							TT7 = v[TT2] + v[1053]
+								s[151].on
+								@if TT7 >= 10000 {
+									TT7 -= 9800
+										TT7 -= v[1053]
+										v[255] = $static_id
+										@call .cev TT7
+
+								} .else bl {
+									@if v[TT2] <= 80 {
+										@call .cev TT7
+
+									} .else bl {
+										s[152].on
+											v[254] = v[TT2]
+											@call .cev 300
+
+									}
+
+								}
+							s[151].off
+								v[TT3] -= 1
+								v[Temp1 + 3] &= ~StaticBits_FLAG_working_on_tech
+								@if v[TT3] <= 0 {
+									v[1301].copy v[TT2], 3
+										v[TT6] = -1
+
+								} .else bl {
+									TT4 = TT1 + 170
+										TT4 = v[TT4] * 3
+										TT4 += TT1 + 137
+										v[TT4].copy v[TT2], 3
+										v[TT6] = 0
+
+								}
+							v[472] = divmul(80, 100, v[2216])
+								@se.play "Clock" .opt v[472], 50, 50
+								@if v[300001] < 999999999 {
+									v[300001] .add v[31], 4
+
+								}
+							@call .cev 84
+								reg1 += 1
+
+						}
+
+				}
+
+		}
 }
 
 
@@ -1653,8 +1732,35 @@ __fn CONTROL_globalqueue_left_click { // kari
 	@if s[11].isOff(){
 		@loop v[gPtr_UI_globalqueue_Array_COUNTER] .dst var1 {
 
+			TT10 = MOUSE_UNDER_OVERLAP_GQ1 << var1
+				@if `MOUSE_RTS_BUTTON_OVERLAP_QoL_UI & TT10 {
+					TT15 = var1 * UI_GLOBALQUEUE_DATA_SIZE
+						val_add(TT15,gPtr_UI_globalqueue_Array_HEAD)
+						v[TT15].copy Temp1,UI_GLOBALQUEUE_DATA_SIZE
+						TT16 = GETKEY_Shift >= 1 ? 5 : 1
+						TT16 = GETKEY_Ctrl >= 1 ? 10 : TT16
+						CONTROL_cancel_static_current_production(Temp1, TT16)
+						LEGS_Request_get_GlobalQueue_filepath.on
+						LEGS_Request_Refresh_GlobalQueue.on
+						s[201].on
+						s[11].on
+						s[9].on
+						@break
+				}
+
+		}
+	}
+}
+
+
+__fn CONTROL_globalqueue_right_click { // kari
+	@loop 1 {
+		@loop v[gPtr_UI_globalqueue_Array_COUNTER] .dst var1 {
+
 			TT10 = MOUSE_UNDER_OVERLAP_GQ1 << var1 // get which flag you'll check
 				@if `MOUSE_RTS_BUTTON_OVERLAP_QoL_UI & TT10 {
+					TT20 = 1
+					@if s[13].isOff(){
 					// when you clicked
 					TT15 = var1 * UI_GLOBALQUEUE_DATA_SIZE
 						val_add(TT15,gPtr_UI_globalqueue_Array_HEAD)
@@ -1687,8 +1793,11 @@ __fn CONTROL_globalqueue_left_click { // kari
 
 					s[201].on
 					s[11].on
+					s[13].on
 					s[9].on
 						@break
+					}
+					@break
 				}
 
 		}
